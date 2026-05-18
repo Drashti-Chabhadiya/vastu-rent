@@ -71,6 +71,7 @@ const SIDEBAR_MENU_CONFIG: Record<string, { id: string; label: string; icon: Rea
   owner: [
     { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'listings', label: 'My Listings', icon: List, hasSub: true },
+    { id: 'categories', label: 'Propose Categories', icon: Grid, hasSub: true },
     { id: 'orders', label: 'Booking Requests', icon: ShoppingCart, hasSub: true },
     { id: 'bookings', label: 'Rentals Calendar', icon: Calendar, hasSub: true },
     { id: 'payments', label: 'Earnings Payouts', icon: CreditCard, hasSub: true },

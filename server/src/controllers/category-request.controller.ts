@@ -4,7 +4,16 @@ import { auth } from "../config/auth.js";
 
 export class CategoryRequestController {
   async getAllRequests(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+
+    const { role, id: userId } = session.user;
+    const isSearchAdmin = role === 'admin' || role === 'superAdmin';
+
     const requests = await prisma.categoryRequest.findMany({
+      where: isSearchAdmin ? {} : { ownerId: userId },
       orderBy: { createdAt: "desc" },
       include: {
         owner: {
@@ -21,7 +30,7 @@ export class CategoryRequestController {
       return reply.status(401).send({ message: "Unauthorized" });
     }
 
-    const { name, icon, color, image } = request.body as any;
+    const { name, icon, color, image, description, requestReason } = request.body as any;
     if (!name) {
       return reply.status(400).send({ message: "Category name is required" });
     }
@@ -32,6 +41,8 @@ export class CategoryRequestController {
         icon,
         color,
         image,
+        description,
+        requestReason,
         ownerId: session.user.id,
         status: "pending"
       }

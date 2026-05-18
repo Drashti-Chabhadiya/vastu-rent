@@ -45,13 +45,13 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
 
   // Category Request states
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false)
-  const [reqName, setReqName] = useState('')
-  const [reqIcon, setReqIcon] = useState('Folder')
-  const [reqColor, setReqColor] = useState('#166534')
   
   // Rejection state
   const [rejectingRequest, setRejectingRequest] = useState<any>(null)
   const [rejectReason, setRejectReason] = useState('')
+
+  // Approval state
+  const [approvingRequest, setApprovingRequest] = useState<any>(null)
 
   const { data: categories, isLoading } = useAdminCategories()
   const { data: requests, isLoading: requestsLoading } = useCategoryRequests()
@@ -111,20 +111,10 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
     }
   }
 
-  const handleCreateRequest = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!reqName.trim()) return
-    
-    createRequestMutation.mutate({
-      name: reqName,
-      icon: reqIcon,
-      color: reqColor
-    }, {
+  const handleCreateRequest = (data: any) => {
+    createRequestMutation.mutate(data, {
       onSuccess: () => {
         setIsRequestDialogOpen(false)
-        setReqName('')
-        setReqIcon('Folder')
-        setReqColor('#166534')
       }
     })
   }
@@ -388,8 +378,20 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
                         <p className="text-xs text-gray-400 mt-1">
                           Requested by {req.owner?.name || req.owner?.email || 'Unknown Owner'} • {new Date(req.createdAt).toLocaleDateString()}
                         </p>
+                        {req.description && (
+                          <p className="text-xs text-gray-600 mt-2 bg-gray-50/80 px-3 py-1.5 rounded-xl border border-gray-100/50 w-full max-w-lg">
+                            <span className="font-bold text-[10px] text-gray-400 uppercase block tracking-wide mb-0.5">Description</span>
+                            {req.description}
+                          </p>
+                        )}
+                        {req.requestReason && (
+                          <p className="text-xs text-gray-600 mt-2 bg-emerald-50/20 px-3 py-1.5 rounded-xl border border-emerald-50/50 w-full max-w-lg">
+                            <span className="font-bold text-[10px] text-emerald-600/70 uppercase block tracking-wide mb-0.5">Proposed Reason</span>
+                            {req.requestReason}
+                          </p>
+                        )}
                         {req.status === 'rejected' && req.reason && (
-                          <div className="flex items-center gap-1.5 text-xs text-red-500 font-medium mt-1 bg-red-50 px-2 py-0.5 rounded-md w-fit">
+                          <div className="flex items-center gap-1.5 text-xs text-red-500 font-medium mt-2 bg-red-50 px-2 py-1 rounded-md w-fit border border-red-100">
                             <AlertCircle size={12} />
                             Reason: {req.reason}
                           </div>
@@ -411,7 +413,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
                       {isAdmin && req.status === 'pending' && (
                         <div className="flex items-center gap-2">
                           <Button
-                            onClick={() => handleApproveRequest(req.id)}
+                            onClick={() => setApprovingRequest(req)}
                             className="bg-green-600 hover:bg-green-700 text-white rounded-xl h-9 w-9 p-0 flex items-center justify-center shadow-sm"
                             title="Approve & Create Category"
                           >
@@ -453,69 +455,14 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
       />
 
       {/* Category Request Dialog for Owners */}
-      {isRequestDialogOpen && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-gray-100 shadow-2xl relative">
-            <button 
-              onClick={() => setIsRequestDialogOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
-            >
-              <X size={20} />
-            </button>
-
-            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">Category Proposal</h3>
-            <p className="text-sm text-gray-500 mb-6">Propose a new category structure. Admins will review and approve your suggestion.</p>
-
-            <form onSubmit={handleCreateRequest} className="space-y-5">
-              <div>
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Category Name</label>
-                <Input
-                  required
-                  placeholder="e.g., Photography, Audio Gear, Heavy Tools"
-                  value={reqName}
-                  onChange={(e) => setReqName(e.target.value)}
-                  className="h-12 rounded-xl"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Icon Type</label>
-                  <select
-                    value={reqIcon}
-                    onChange={(e) => setReqIcon(e.target.value)}
-                    className="w-full h-12 border border-gray-200 rounded-xl px-3 bg-white text-sm focus:ring-1 focus:ring-dash-brand"
-                  >
-                    <option value="Folder">Folder</option>
-                    <option value="Laptop">Laptop</option>
-                    <option value="ShoppingBag">Shopping Bag</option>
-                    <option value="Home">Home</option>
-                    <option value="Sparkles">Sparkles</option>
-                    <option value="Palmtree">Outdoor</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Color Accent</label>
-                  <Input
-                    type="color"
-                    value={reqColor}
-                    onChange={(e) => setReqColor(e.target.value)}
-                    className="h-12 rounded-xl p-1 w-full cursor-pointer"
-                  />
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={createRequestMutation.isPending}
-                className="w-full bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 font-bold mt-2"
-              >
-                {createRequestMutation.isPending ? 'Submitting...' : 'Submit Request'}
-              </Button>
-            </form>
-          </div>
-        </div>
-      )}
+      <CategoryFormDialog 
+        isOpen={isRequestDialogOpen}
+        onOpenChange={setIsRequestDialogOpen}
+        editingCategory={null}
+        onSubmit={handleCreateRequest}
+        isPending={createRequestMutation.isPending}
+        isRequest={true}
+      />
 
       {/* Admin Rejection Dialog */}
       {rejectingRequest && (
@@ -533,9 +480,8 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
 
             <form onSubmit={handleRejectRequest} className="space-y-5">
               <div>
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Rejection Feedback</label>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Rejection Feedback (Optional)</label>
                 <textarea
-                  required
                   placeholder="State why this category is rejected (e.g. Duplicated category name, not relevant, etc.)"
                   value={rejectReason}
                   onChange={(e) => setRejectReason(e.target.value)}
@@ -561,6 +507,54 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Approval Confirmation Dialog */}
+      {approvingRequest && (
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-gray-100 shadow-2xl relative">
+            <button 
+              onClick={() => setApprovingRequest(null)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center mb-4 text-green-600 border border-green-100">
+              <Check size={28} />
+            </div>
+
+            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">Approve Category Proposal</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              Are you sure you want to approve and create the category <strong className="text-gray-900">"{approvingRequest.name}"</strong>? 
+              This will automatically add it to the active category database catalog for all platform users.
+            </p>
+
+            <div className="flex gap-3 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setApprovingRequest(null)}
+                className="rounded-xl h-12 px-6 font-bold"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  updateRequestStatusMutation.mutate({ id: approvingRequest.id, status: 'approved' }, {
+                    onSuccess: () => {
+                      setApprovingRequest(null)
+                    }
+                  })
+                }}
+                disabled={updateRequestStatusMutation.isPending}
+                className="bg-green-600 hover:bg-green-700 text-white rounded-xl h-12 px-6 font-bold"
+              >
+                {updateRequestStatusMutation.isPending ? 'Approving...' : 'Confirm Approval'}
+              </Button>
+            </div>
           </div>
         </div>
       )}

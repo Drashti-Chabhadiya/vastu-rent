@@ -30,6 +30,7 @@ interface CategoryFormDialogProps {
   editingCategory: any
   onSubmit: (data: any) => void
   isPending: boolean
+  isRequest?: boolean
 }
 
 export const CategoryFormDialog = ({
@@ -38,12 +39,15 @@ export const CategoryFormDialog = ({
   editingCategory,
   onSubmit,
   isPending,
+  isRequest = false,
 }: CategoryFormDialogProps) => {
   const [categoryName, setCategoryName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState<string>('Folder')
   const [selectedColor, setSelectedColor] = useState<string>('#166534')
   const [categoryImage, setCategoryImage] = useState<string>('')
   const [useImage, setUseImage] = useState(false)
+  const [description, setDescription] = useState('')
+  const [requestReason, setRequestReason] = useState('')
   
   const COLORS = [
     '#166534', '#15803d', '#1e40af', '#1d4ed8', '#7c3aed', 
@@ -61,12 +65,16 @@ export const CategoryFormDialog = ({
         setSelectedColor(editingCategory.color || '#166534')
         setCategoryImage(editingCategory.image || '')
         setUseImage(!!editingCategory.image)
+        setDescription(editingCategory.description || '')
+        setRequestReason(editingCategory.requestReason || '')
       } else {
         setCategoryName('')
         setSelectedIcon('Folder')
         setSelectedColor('#166534')
         setCategoryImage('')
         setUseImage(false)
+        setDescription('')
+        setRequestReason('')
       }
     }
   }, [isOpen, editingCategory])
@@ -104,6 +112,11 @@ export const CategoryFormDialog = ({
       payload.image = null
     }
 
+    if (isRequest) {
+      payload.description = description.trim()
+      payload.requestReason = requestReason.trim()
+    }
+
     onSubmit(payload)
   }
 
@@ -113,12 +126,16 @@ export const CategoryFormDialog = ({
         <div className="bg-gradient-to-br from-[#166534] to-[#2f6a4a] p-8 text-white relative">
           <DialogHeader>
             <DialogTitle className="text-2xl font-extrabold tracking-tight">
-              {editingCategory ? 'Update Category' : 'New Category'}
+              {isRequest 
+                ? 'Propose Category' 
+                : editingCategory ? 'Update Category' : 'New Category'}
             </DialogTitle>
             <p className="text-white/70 text-sm font-medium mt-1">
-              {editingCategory
-                ? 'Modify the category name and properties.'
-                : 'Create a new collection for your rentals.'}
+              {isRequest
+                ? 'Propose a new collection. Admins will review and approve your suggestion.'
+                : editingCategory
+                  ? 'Modify the category name and properties.'
+                  : 'Create a new collection for your rentals.'}
             </p>
           </DialogHeader>
         </div>
@@ -137,6 +154,38 @@ export const CategoryFormDialog = ({
               autoFocus
             />
           </div>
+
+          {isRequest && (
+            <>
+              <div className="space-y-2.5">
+                <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+                  <LucideIcons.FileText size={14} className="text-dash-brand" />
+                  Description
+                </label>
+                <textarea
+                  required
+                  placeholder="Briefly describe what items belong in this category..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full min-h-[80px] bg-white border border-gray-200 rounded-xl p-3 text-[15px] text-gray-900 placeholder:text-gray-400 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
+                />
+              </div>
+
+              <div className="space-y-2.5">
+                <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+                  <LucideIcons.HelpCircle size={14} className="text-dash-brand" />
+                  Request Reason
+                </label>
+                <textarea
+                  required
+                  placeholder="Why is this category needed? (e.g., I have 10 cameras to list)"
+                  value={requestReason}
+                  onChange={(e) => setRequestReason(e.target.value)}
+                  className="w-full min-h-[80px] bg-white border border-gray-200 rounded-xl p-3 text-[15px] text-gray-900 placeholder:text-gray-400 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
+                />
+              </div>
+            </>
+          )}
 
           <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
@@ -352,7 +401,12 @@ export const CategoryFormDialog = ({
               disabled={isPending || isUploading}
               className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
-              {editingCategory ? (
+              {isRequest ? (
+                <>
+                  <Check size={18} strokeWidth={3} />
+                  Submit Proposal
+                </>
+              ) : editingCategory ? (
                 <>
                   <Check size={18} strokeWidth={3} />
                   Save Changes

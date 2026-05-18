@@ -13,12 +13,11 @@ export async function categoryRequestRoutes(fastify: FastifyInstance) {
     }
   }, categoryRequestController.createRequest);
 
-  // Admin Routes
   fastify.get("/", {
     preHandler: async (request, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin")) {
-        return reply.status(403).send({ message: "Forbidden: Admin access required" });
+      if (!session) {
+        return reply.status(401).send({ message: "Unauthorized" });
       }
     }
   }, categoryRequestController.getAllRequests);

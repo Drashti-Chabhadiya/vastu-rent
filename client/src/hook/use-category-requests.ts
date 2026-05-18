@@ -31,7 +31,7 @@ export const useCategoryRequests = () => {
 export const useCreateCategoryRequest = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: { name: string; icon?: string; color?: string; image?: string }) => {
+    mutationFn: async (data: { name: string; icon?: string; color?: string; image?: string; description?: string; requestReason?: string }) => {
       const res = await apiClient.post('/category-requests', data)
       return res.data.categoryRequest
     },
