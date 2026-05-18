@@ -9,6 +9,7 @@ import { CategoryManagement } from './category/CategoryManagement';
 import { ReviewsManagement } from './review/ReviewsManagement';
 import { DeleteRequestsManagement } from './listing/DeleteRequestsManagement';
 import { MyBookings } from './booking/MyBookings';
+import { RentalsCalendar } from './booking/RentalsCalendar';
 import { OrdersManagement } from './booking/OrdersManagement';
 import { PaymentsManagement } from './booking/PaymentsManagement';
 import { DisputesManagement } from './booking/DisputesManagement';
@@ -17,11 +18,15 @@ import { NotificationsManagement } from './booking/NotificationsManagement';
 import { ReportsManagement } from './booking/ReportsManagement';
 import { SettingsManagement } from './booking/SettingsManagement';
 import { useAdminStats, useAdminRecentUsers, useAdminRecentProducts } from '#/hook';
+import { authClient } from '#/lib/auth/auth-client';
 
 const DashboardPage = () => {
   const [currentTab, setCurrentTab] = useState('overview');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const { data: session } = authClient.useSession();
+  const role = session?.user?.role || 'owner';
 
   const { data: statsData, isLoading: statsLoading } = useAdminStats();
   const { data: recentUsers, isLoading: usersLoading } = useAdminRecentUsers();
@@ -100,7 +105,7 @@ const DashboardPage = () => {
           ) : currentTab === 'delete-requests' ? (
             <DeleteRequestsManagement />
           ) : currentTab === 'bookings' ? (
-            <MyBookings />
+            role === 'owner' ? <RentalsCalendar /> : <MyBookings />
           ) : currentTab === 'orders' ? (
             <OrdersManagement />
           ) : currentTab === 'payments' ? (

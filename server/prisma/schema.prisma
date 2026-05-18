@@ -41,6 +41,9 @@ model User {
   reviews       Review[]  // User એ આપેલા Reviews
   likes         Like[]    // User એ લાઈક કરેલી વસ્તુઓ
   deleteRequests DeleteProductRequest[] @relation("AdminRequests")
+  categoryRequests CategoryRequest[]
+  disputes         Dispute[]         @relation("ReportedDisputes")
+  notifications    Notification[]
 
   @@map("user")
 }
@@ -149,6 +152,8 @@ model Rental {
   
   transactionId String? // Razorpay transaction ID
   
+  dispute    Dispute?
+  
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
@@ -206,3 +211,67 @@ model DeleteProductRequest {
 
   @@map("delete_product_request")
 }
+
+model CategoryRequest {
+  id          String   @id @default(cuid())
+  name        String
+  icon        String?
+  color       String?
+  image       String?
+  status      String   @default("pending") // "pending", "approved", "rejected"
+  reason      String?  // reason for rejection
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("category_request")
+}
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  discount    Float     // Percentage discount or fixed value
+  type        String    @default("percentage") // "percentage" or "fixed"
+  maxDiscount Float?    // Maximum discount amount for percentage type
+  minBooking  Float?    // Minimum booking price to apply coupon
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean   @default(true)
+  usageLimit  Int?      // Max times coupon can be used
+  usedCount   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("coupon")
+}
+
+model Dispute {
+  id          String   @id @default(cuid())
+  rentalId    String   @unique
+  rental      Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  reportedById String
+  reportedBy  User     @relation("ReportedDisputes", fields: [reportedById], references: [id])
+  reason      String
+  description String
+  status      String   @default("open") // "open", "resolved", "dismissed"
+  resolution  String?  // resolution description
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("dispute")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("info") // "info", "booking", "payment", "alert"
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notification")
+}
+

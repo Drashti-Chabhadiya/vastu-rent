@@ -9,6 +9,10 @@ import { categoryRoutes } from "./routes/category.routes.js";
 import { reviewRoutes } from "./routes/review.routes.js";
 import { rentalRoutes } from "./routes/rental.routes.js";
 import { statsRoutes } from "./routes/stats.routes.js";
+import { categoryRequestRoutes } from "./routes/category-request.routes.js";
+import { couponRoutes } from "./routes/coupon.routes.js";
+import { disputeRoutes } from "./routes/dispute.routes.js";
+import { notificationRoutes } from "./routes/notification.routes.js";
 
 import multipart from "@fastify/multipart";
 import { uploadRoutes } from "./routes/upload.routes.js";
@@ -30,7 +34,7 @@ app.register(multipart, {
 app.register(cors, {
   origin: process.env.CLIENT_URL ?? "http://localhost:3000",
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "x-better-auth-session-token", "better-auth-session-token"],
 });
 
@@ -44,6 +48,10 @@ app.register(userRoutes, { prefix: "/api/users" }); // Public profile access
 app.register(userRoutes, { prefix: "/api/admin/users" }); // Admin management
 app.register(productRoutes, { prefix: "/api/products" });
 app.register(categoryRoutes, { prefix: "/api/categories" });
+app.register(categoryRequestRoutes, { prefix: "/api/category-requests" });
+app.register(couponRoutes, { prefix: "/api/coupons" });
+app.register(disputeRoutes, { prefix: "/api/disputes" });
+app.register(notificationRoutes, { prefix: "/api/notifications" });
 app.register(reviewRoutes, { prefix: "/api/reviews" });
 app.register(rentalRoutes, { prefix: "/api/rentals" });
 app.register(statsRoutes, { prefix: "/api/admin/stats" });

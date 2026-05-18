@@ -1,5 +1,5 @@
 import { useParams } from "@tanstack/react-router"
-import { useUserProfile } from "#/hook/users"
+import { useUserProfile } from "#/hook/use-users"
 import { ProductCard } from "#/components/common/ProductCard"
 import { UserProfilePageSkeleton } from "#/components/skeletons"
 import { Badge } from "#/components/ui/badge"

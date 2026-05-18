@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { authClient } from "#/lib/auth/auth-client"
 import { Button } from "#/components/ui/button"
 import { cn } from "#/lib/utils"
@@ -10,6 +10,7 @@ import { useUploadProfileImage } from "#/hook"
 
 export function PersonalInfo() {
   const [isEditing, setIsEditing] = useState(false)
+  const [name, setName] = useState("")
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -24,8 +25,16 @@ export function PersonalInfo() {
     },
   })
 
+  // Synchronize state once session data loads
+  useEffect(() => {
+    if (session?.user?.name) {
+      setName(session.user.name)
+    }
+  }, [session])
+
   const handleEditClick = () => {
     if (isEditing) {
+      setName(session?.user?.name || "")
       setImagePreview(null)
       setIsEditing(false)
     } else {
@@ -52,10 +61,19 @@ export function PersonalInfo() {
 
   const handleSaveChanges = async () => {
     try {
+      // 1. Update name via better-auth if edited
+      if (name.trim() && name.trim() !== session?.user?.name) {
+        await authClient.updateUser({
+          name: name.trim()
+        })
+      }
+
+      // 2. Upload image if chosen
       if (fileInputRef.current?.files?.[0]) {
         await uploadImage(fileInputRef.current.files[0])
-        await refetch()
       }
+
+      await refetch()
       setIsEditing(false)
       setImagePreview(null)
     } catch (error) {
@@ -132,7 +150,8 @@ export function PersonalInfo() {
                 <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
                 <Input 
                   id="name" 
-                  defaultValue={session.user.name} 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   disabled={!isEditing}
                   className={cn(
                     "h-12 pl-12 rounded-xl border-gray-100 font-bold transition-all",

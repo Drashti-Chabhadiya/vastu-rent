@@ -18,11 +18,109 @@ import { useOrders } from '#/hook';
 export const PaymentsManagement = () => {
   const { data: orders, isLoading } = useOrders();
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6 animate-pulse">
+        {/* Breadcrumbs */}
+        <div className="space-y-2">
+          <div className="h-3 bg-gray-100 rounded-md w-32" />
+          <div className="h-6 bg-gray-200 rounded-lg w-48" />
+        </div>
+
+        {/* Payment Overview Section */}
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <div className="space-y-2 mb-8">
+            <div className="h-5 bg-gray-250 rounded-md w-36" />
+            <div className="h-3.5 bg-gray-150 rounded-md w-64" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 p-5 rounded-3xl border border-slate-50 bg-white">
+                <div className="w-12 h-12 rounded-2xl bg-gray-100 shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-2.5 bg-gray-250 rounded-md w-20" />
+                  <div className="h-5 bg-gray-200 rounded-lg w-16" />
+                  <div className="h-2.5 bg-gray-150 rounded-md w-24" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Grid: Transactions & Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column: Payment Transactions */}
+          <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="h-5 bg-gray-250 rounded-md w-40" />
+              <div className="h-3 bg-gray-200 rounded-md w-16" />
+            </div>
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between p-4 rounded-2xl border border-slate-50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gray-100 shrink-0" />
+                    <div className="space-y-2">
+                      <div className="h-2.5 bg-gray-150 rounded-md w-24" />
+                      <div className="h-4 bg-gray-200 rounded-lg w-36" />
+                      <div className="h-2.5 bg-gray-100 rounded-md w-24" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="h-4 bg-gray-200 rounded-md w-16" />
+                    <div className="h-6 bg-gray-150 rounded-lg w-16" />
+                    <div className="w-4 h-4 bg-gray-100 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column: Payment Method & Summary */}
+          <div className="space-y-6">
+            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
+              <div className="h-5 bg-gray-250 rounded-md w-32" />
+              <div className="h-20 bg-gray-50 rounded-2xl" />
+              <div className="h-12 bg-gray-100 rounded-xl" />
+            </div>
+            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
+              <div className="h-5 bg-gray-250 rounded-md w-32" />
+              <div className="space-y-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex justify-between">
+                    <div className="h-3 bg-gray-150 rounded-md w-20" />
+                    <div className="h-3 bg-gray-200 rounded-md w-16" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const totalEarnings = orders
+    ?.filter((o: any) => o.status === 'approved' || o.status === 'completed')
+    ?.reduce((sum: number, o: any) => sum + (o.totalPrice || 0), 0) || 0;
+
+  const pendingEarnings = orders
+    ?.filter((o: any) => o.status === 'pending')
+    ?.reduce((sum: number, o: any) => sum + (o.totalPrice || 0), 0) || 0;
+
+  const pendingCount = orders?.filter((o: any) => o.status === 'pending')?.length || 0;
+  const completedCount = orders?.filter((o: any) => o.status === 'approved' || o.status === 'completed')?.length || 0;
+
+  const refundValue = orders
+    ?.filter((o: any) => o.status === 'cancelled')
+    ?.reduce((sum: number, o: any) => sum + (o.totalPrice || 0), 0) || 0;
+  const refundCount = orders?.filter((o: any) => o.status === 'cancelled')?.length || 0;
+
   const stats = [
-    { label: 'Total Earnings', value: '₹1,25,000', sub: '+12.5% from last month', icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Pending Payments', value: '₹15,000', sub: '3 payments', icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50' },
-    { label: 'Completed Payments', value: '₹1,10,000', sub: '15 payments', icon: Zap, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'Refunds', value: '₹2,500', sub: '1 refund', icon: ArrowUpRight, color: 'text-orange-500', bg: 'bg-orange-50' },
+    { label: 'Total Earnings', value: `₹ ${totalEarnings.toLocaleString()}`, sub: `From ${completedCount} listings`, icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Pending Payments', value: `₹ ${pendingEarnings.toLocaleString()}`, sub: `${pendingCount} pending orders`, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50' },
+    { label: 'Completed Payments', value: `₹ ${totalEarnings.toLocaleString()}`, sub: `${completedCount} payments`, icon: Zap, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Refunds / Penalty', value: `₹ ${refundValue.toLocaleString()}`, sub: `${refundCount} cancelled`, icon: ArrowUpRight, color: 'text-orange-500', bg: 'bg-orange-50' },
   ];
 
   return (

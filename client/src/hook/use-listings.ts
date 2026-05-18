@@ -82,6 +82,7 @@ export const useToggleProductStatus = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
     }
   })
 }

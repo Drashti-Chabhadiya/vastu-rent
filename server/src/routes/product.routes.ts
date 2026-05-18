@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { productController } from "../controllers/product.controller.js";
 import { auth } from "../config/auth.js";
+import { prisma } from "../config/prisma.js";
 
 export async function productRoutes(fastify: FastifyInstance) {
   // ─── Public Routes ──────────────────────────────────────────────────────────
@@ -29,13 +30,31 @@ export async function productRoutes(fastify: FastifyInstance) {
   fastify.put("/:id", { preHandler: [ownerOrAdmin] }, productController.updateProduct);
   fastify.delete("/:id", { preHandler: [ownerOrAdmin] }, productController.deleteProduct);
   
-  // Admin Only
+  // Toggle product availability (Owner of the product, or Admin/SuperAdmin)
   fastify.post("/:id/available", {
-    preHandler: async (request, reply) => {
+    preHandler: async (request: any, reply: any) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin")) {
-        return reply.status(403).send({ message: "Forbidden: Admin access required" });
+      if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+      const role = session.user.role;
+      const { id } = request.params as any;
+
+      if (role === "admin" || role === "superAdmin") {
+        request.user = session.user;
+        return;
       }
+
+      if (role === "owner") {
+        const product = await prisma.product.findUnique({ where: { id } });
+        if (!product) return reply.status(404).send({ message: "Product not found" });
+        if (product.ownerId !== session.user.id) {
+          return reply.status(403).send({ message: "Forbidden: You do not own this listing" });
+        }
+        request.user = session.user;
+        return;
+      }
+
+      return reply.status(403).send({ message: "Forbidden: Owner or Admin access required" });
     }
   }, productController.toggleAvailability);
 }
