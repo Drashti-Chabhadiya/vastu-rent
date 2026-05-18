@@ -16,7 +16,7 @@ import { likeRoutes } from "./routes/like.routes.js";
 import { deleteRequestRoutes } from "./routes/delete-request.routes.js";
 import { paymentRoutes } from "./routes/payment.routes.js";
 
-export const app = Fastify({ logger: true });
+export const app = Fastify({ logger: true, trustProxy: true });
 
 // ─── Plugins ─────────────────────────────────────────────────────────────────
 
