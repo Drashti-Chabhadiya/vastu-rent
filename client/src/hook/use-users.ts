@@ -75,3 +75,18 @@ export const useUserProfile = (id: string) => {
     enabled: !!id
   })
 }
+
+// Update user settings mutation (Bank & preferences)
+export const useUpdateUserSettings = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: { upiId?: string; bankName?: string; accountNumber?: string; ifscCode?: string; accountHolder?: string; bookingAlerts?: boolean; settlementAlerts?: boolean; marketingAlerts?: boolean }) => {
+      const res = await apiClient.patch('/users/settings', data)
+      return res.data.user
+    },
+    onSuccess: () => {
+      // Invalidate the session query to reload user data globally!
+      queryClient.invalidateQueries({ queryKey: ['session'] })
+    }
+  })
+}

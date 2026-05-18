@@ -153,7 +153,7 @@ export const PaymentsManagement = () => {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 font-sans">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Breadcrumbs / Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
@@ -504,6 +504,16 @@ export const PaymentsManagement = () => {
               <span className="text-[10px] font-bold text-slate-400 block pt-1">
                 Max withdrawable: <strong className="text-emerald-600 font-black">₹{stats.withdrawableBalance.toLocaleString()}</strong>
               </span>
+
+              {session?.user && ((session.user as any).upiId || (session.user as any).bankName) ? (
+                <span className="text-[9px] font-bold text-emerald-600 block mt-2 bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100/50">
+                  Direct transfer to: {(session.user as any).upiId ? `UPI: ${(session.user as any).upiId}` : `${(session.user as any).bankName} (A/C: *${(session.user as any).accountNumber?.slice(-4)})`}
+                </span>
+              ) : (
+                <span className="text-[9px] font-bold text-amber-600 block mt-2 bg-amber-50/50 p-2.5 rounded-xl border border-amber-100/50">
+                  ⚠️ No active payout method set! Set your UPI / Bank account details in the <strong className="font-black underline">Settings</strong> tab to ensure direct settlement.
+                </span>
+              )}
             </div>
 
             {/* Platform notice */}

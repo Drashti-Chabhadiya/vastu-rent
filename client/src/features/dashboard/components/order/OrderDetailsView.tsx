@@ -129,7 +129,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
   };
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-[#f8fafc] -m-8 p-10 min-h-screen font-sans">
+    <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-[#f8fafc] -m-8 p-10 min-h-screen">
       {/* Breadcrumbs & Header */}
       <div className="flex flex-col gap-1 mb-4">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">

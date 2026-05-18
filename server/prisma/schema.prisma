@@ -32,6 +32,18 @@ model User {
   emailVerified Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  // Bank & UPI Settlement details
+  upiId          String?
+  bankName       String?
+  accountNumber  String?
+  ifscCode       String?
+  accountHolder  String?
+
+  // Alert preferences
+  bookingAlerts    Boolean @default(true)
+  settlementAlerts Boolean @default(true)
+  marketingAlerts  Boolean @default(false)
   
   // Relations
   sessions      Session[]
