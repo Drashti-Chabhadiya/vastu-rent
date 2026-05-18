@@ -44,6 +44,7 @@ model User {
   categoryRequests CategoryRequest[]
   disputes         Dispute[]         @relation("ReportedDisputes")
   notifications    Notification[]
+  payouts          Payout[]
 
   @@map("user")
 }
@@ -273,5 +274,18 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@map("notification")
+}
+
+model Payout {
+  id            String   @id @default(cuid())
+  ownerId       String
+  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  amount        Float
+  status        String   @default("pending") // pending, approved, rejected, paid
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("payout")
 }
 

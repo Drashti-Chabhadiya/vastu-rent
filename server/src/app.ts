@@ -19,6 +19,7 @@ import { uploadRoutes } from "./routes/upload.routes.js";
 import { likeRoutes } from "./routes/like.routes.js";
 import { deleteRequestRoutes } from "./routes/delete-request.routes.js";
 import { paymentRoutes } from "./routes/payment.routes.js";
+import { payoutRoutes } from "./routes/payout.routes.js";
 
 export const app = Fastify({ logger: true, trustProxy: true });
 
@@ -59,6 +60,7 @@ app.register(uploadRoutes, { prefix: "/api/upload" });
 app.register(likeRoutes, { prefix: "/api/likes" });
 app.register(deleteRequestRoutes, { prefix: "/api/delete-requests" });
 app.register(paymentRoutes, { prefix: "/api/payments" });
+app.register(payoutRoutes, { prefix: "/api/payouts" });
 
 // Aliases for backward compatibility with the frontend
 app.register(productRoutes, { prefix: "/api/admin/products" });
