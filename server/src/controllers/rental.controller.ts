@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { rentalService } from "../services/rental.service.js";
+import { prisma } from "../config/prisma.js";
 
 export class RentalController {
   async createRental(request: FastifyRequest, reply: FastifyReply) {
@@ -49,10 +50,25 @@ export class RentalController {
     const { status } = request.body as { status: string };
     const user = (request as any).user;
 
-    // Optional: Add logic to check if this user is the owner of the product
-    // For now, allow admin/superAdmin/owner
-    if (user.role !== "admin" && user.role !== "superAdmin" && user.role !== "owner") {
-      return reply.status(403).send({ message: "Forbidden" });
+    // Retrieve rental with its linked product details
+    const rentalExists = await prisma.rental.findUnique({
+      where: { id },
+      include: { product: true }
+    });
+
+    if (!rentalExists) {
+      return reply.status(404).send({ message: "Booking request not found" });
+    }
+
+    // Role-based permissions validation: Only admin, superAdmin, or the actual listed product's owner can update status
+    if (user.role !== "admin" && user.role !== "superAdmin") {
+      if (user.role === "owner") {
+        if (rentalExists.product.ownerId !== user.id) {
+          return reply.status(403).send({ message: "Forbidden: You are not authorized to manage bookings for this product" });
+        }
+      } else {
+        return reply.status(403).send({ message: "Forbidden: Owner permissions required" });
+      }
     }
 
     const rental = await rentalService.updateRentalStatus(id, status);

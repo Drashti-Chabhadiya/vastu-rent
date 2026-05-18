@@ -7,6 +7,16 @@ import {
 import { Input } from '#/components/ui/input';
 import { Button } from '#/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '#/components/ui/alert-dialog';
 
 // Sub-components
 import { ListingsTable } from './ListingsTable';
@@ -18,7 +28,8 @@ import {
   useCreateProduct, 
   useToggleProductStatus, 
   useDeleteProduct,
-  useCreateDeleteRequest
+  useCreateDeleteRequest,
+  useMyListings
 } from '#/hook';
 import { authClient } from '#/lib/auth/auth-client';
 import { toast } from 'sonner';
@@ -32,6 +43,7 @@ export const ListingsManagement = ({ initialCategoryFilter }: ListingsManagement
   const [categoryFilter, setCategoryFilter] = useState(initialCategoryFilter || 'all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<any>(null);
 
   // Sync initial filter if it changes
   useEffect(() => {
@@ -46,16 +58,36 @@ export const ListingsManagement = ({ initialCategoryFilter }: ListingsManagement
   // Fetch users (providers) - using same params as before if needed, or just all users
   const { data: users } = useAdminUsers();
 
-  // Fetch products
-  const { data: products, isLoading } = useAdminProducts({
-    search,
-    categoryId: categoryFilter === 'all' ? undefined : categoryFilter,
-    status: statusFilter === 'all' ? undefined : statusFilter
-  });
-
   // Auth
   const { data: session } = authClient.useSession();
   const currentUser = session?.user;
+  const isOwner = currentUser?.role === 'owner';
+
+  // Fetch products based on role
+  const { data: adminProducts, isLoading: isAdminLoading } = useAdminProducts(
+    !isOwner ? {
+      search,
+      categoryId: categoryFilter === 'all' ? undefined : categoryFilter,
+      status: statusFilter === 'all' ? undefined : statusFilter
+    } : undefined
+  );
+
+  const { data: myProducts, isLoading: isMyLoading } = useMyListings();
+
+  const isLoading = isOwner ? isMyLoading : isAdminLoading;
+
+  // Filter listings locally if owner
+  const products = isOwner 
+    ? myProducts?.filter((p: any) => {
+        const matchesSearch = !search.trim() || 
+          p.title?.toLowerCase().includes(search.toLowerCase()) || 
+          p.description?.toLowerCase().includes(search.toLowerCase());
+        const matchesCategory = categoryFilter === 'all' || p.categoryId === categoryFilter;
+        const matchesStatus = statusFilter === 'all' || 
+          (statusFilter === 'available' ? p.isAvailable === true : p.isAvailable === false);
+        return matchesSearch && matchesCategory && matchesStatus;
+      })
+    : adminProducts;
 
   // Mutations
   const createMutation = useCreateProduct();
@@ -65,30 +97,42 @@ export const ListingsManagement = ({ initialCategoryFilter }: ListingsManagement
 
   const handleDelete = (product: any) => {
     if (!currentUser) return;
+    setProductToDelete(product);
+  };
 
-    const isOwner = product.ownerId === currentUser.id;
+  const handleConfirmDelete = () => {
+    if (!currentUser || !productToDelete) return;
+
+    const isOwner = productToDelete.ownerId === currentUser.id;
     const isSuperAdmin = currentUser.role === 'superAdmin';
     const isAdmin = currentUser.role === 'admin';
 
     if (isSuperAdmin || isOwner) {
-      if (window.confirm("Are you sure you want to delete this listing?")) {
-        deleteMutation.mutate(product.id, {
-          onSuccess: () => toast.success("Listing deleted successfully"),
-          onError: () => toast.error("Failed to delete listing")
-        });
-      }
+      deleteMutation.mutate(productToDelete.id, {
+        onSuccess: () => {
+          toast.success("Listing deleted successfully");
+          setProductToDelete(null);
+        },
+        onError: (err: any) => {
+          toast.error(err.response?.data?.message || "Failed to delete listing");
+        }
+      });
     } else if (isAdmin) {
-      if (window.confirm("You don't own this listing. Do you want to request SuperAdmin to delete it?")) {
-        createDeleteRequestMutation.mutate({ 
-          productId: product.id, 
-          reason: `Admin ${currentUser.name} requested deletion` 
-        }, {
-          onSuccess: () => toast.success("Deletion request sent to SuperAdmin"),
-          onError: (err: any) => toast.error(err.response?.data?.message || "Failed to send request")
-        });
-      }
+      createDeleteRequestMutation.mutate({ 
+        productId: productToDelete.id, 
+        reason: `Admin ${currentUser.name} requested deletion` 
+      }, {
+        onSuccess: () => {
+          toast.success("Deletion request sent to SuperAdmin");
+          setProductToDelete(null);
+        },
+        onError: (err: any) => {
+          toast.error(err.response?.data?.message || "Failed to send request");
+        }
+      });
     } else {
       toast.error("You don't have permission to delete this listing");
+      setProductToDelete(null);
     }
   };
 
@@ -164,7 +208,16 @@ export const ListingsManagement = ({ initialCategoryFilter }: ListingsManagement
       <ListingsTable 
         products={products} 
         isLoading={isLoading} 
-        onToggleStatus={(id, isAvailable) => toggleStatusMutation.mutate({ id, isAvailable })}
+        onToggleStatus={(id, isAvailable) => {
+          toggleStatusMutation.mutate({ id, isAvailable }, {
+            onSuccess: () => {
+              toast.success(`Listing is now ${isAvailable ? 'public' : 'hidden'}`);
+            },
+            onError: (err: any) => {
+              toast.error(err.response?.data?.message || "Failed to update visibility");
+            }
+          });
+        }}
         onDelete={handleDelete}
         currentUser={currentUser}
       />
@@ -179,6 +232,50 @@ export const ListingsManagement = ({ initialCategoryFilter }: ListingsManagement
         users={users || []}
         currentUser={currentUser}
       />
+
+      {/* Delete Confirmation Alert Dialog */}
+      <AlertDialog open={!!productToDelete} onOpenChange={(open) => !open && setProductToDelete(null)}>
+        <AlertDialogContent className="bg-white rounded-[2rem] border border-gray-100 shadow-2xl p-8 max-w-md animate-in fade-in zoom-in-95 duration-200">
+          <AlertDialogHeader className="space-y-3 text-left">
+            <AlertDialogTitle className="text-xl font-black text-dash-text flex items-center gap-2.5">
+              {productToDelete && (
+                currentUser?.role === 'superAdmin' || productToDelete.ownerId === currentUser?.id
+                  ? 'Delete Listing permanently?'
+                  : 'Request Deletion?'
+              )}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm text-dash-text-soft font-medium leading-relaxed">
+              {productToDelete && (
+                currentUser?.role === 'superAdmin' || productToDelete.ownerId === currentUser?.id
+                  ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
+                  : `You don't own "${productToDelete.title}". Sending this request will notify the SuperAdmin to review and approve the deletion. Do you want to proceed?`
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-6 flex gap-3">
+            <AlertDialogCancel className="h-12 rounded-xl font-black text-dash-text-soft hover:bg-gray-100 transition-all border-none bg-gray-50/50">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={(e) => {
+                e.preventDefault();
+                handleConfirmDelete();
+              }}
+              disabled={deleteMutation.isPending || createDeleteRequestMutation.isPending}
+              className="h-12 bg-red-500 hover:bg-red-600 text-white rounded-xl font-black transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2"
+            >
+              {deleteMutation.isPending || createDeleteRequestMutation.isPending ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <span>Confirm</span>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

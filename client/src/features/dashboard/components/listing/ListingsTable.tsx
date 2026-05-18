@@ -39,11 +39,40 @@ export const ListingsTable = ({
           </thead>
           <tbody className="divide-y divide-gray-50">
             {isLoading ? (
-              <tr>
-                <td colSpan={6} className="px-6 py-20 text-center text-dash-text-soft animate-pulse font-bold uppercase tracking-widest">
-                  Fetching marketplace data...
-                </td>
-              </tr>
+              Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i} className="animate-pulse">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gray-100 shrink-0" />
+                      <div className="space-y-2">
+                        <div className="h-3.5 bg-gray-200 rounded-md w-28" />
+                        <div className="h-2.5 bg-gray-100 rounded-md w-16" />
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-6 bg-gray-100 rounded-lg w-20" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="space-y-1.5">
+                      <div className="h-3 bg-gray-200 rounded-md w-20" />
+                      <div className="h-2.5 bg-gray-100 rounded-md w-28" />
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-gray-200 rounded-md w-12 mx-auto" />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-8 bg-gray-100 rounded-full w-20 mx-auto" />
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-gray-150" />
+                      <div className="w-8 h-8 rounded-lg bg-gray-150" />
+                    </div>
+                  </td>
+                </tr>
+              ))
             ) : products?.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-20 text-center text-dash-text-soft font-bold uppercase tracking-widest">
@@ -109,9 +138,17 @@ export const ListingsTable = ({
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
-                    <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all">
-                      <ExternalLink size={14} />
-                    </Button>
+                    <a 
+                      href={`/products/${item.id}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block"
+                      title="View Listing on Marketplace"
+                    >
+                      <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all">
+                        <ExternalLink size={14} />
+                      </Button>
+                    </a>
                     <Button 
                       variant="ghost" 
                       size="icon" 

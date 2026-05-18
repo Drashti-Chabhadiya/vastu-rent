@@ -18,10 +18,54 @@ export const MyBookings = () => {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-32 bg-white rounded-2xl animate-pulse border border-gray-100" />
-        ))}
+      <div className="space-y-6 animate-pulse">
+        {/* Header */}
+        <div className="space-y-2.5">
+          <div className="h-7 bg-gray-200 rounded-lg w-48" />
+          <div className="h-4 bg-gray-100 rounded-md w-96" />
+        </div>
+        {/* Bookings list */}
+        <div className="grid gap-4">
+          {[1, 2].map((i) => (
+            <div key={i} className="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col md:flex-row gap-6">
+              {/* Product Info */}
+              <div className="flex gap-4 flex-1">
+                <div className="w-24 h-24 rounded-2xl bg-gray-100 shrink-0" />
+                <div className="flex flex-col justify-between py-1 flex-1">
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <div className="h-5 bg-gray-150 rounded w-16" />
+                      <div className="h-5 bg-gray-150 rounded w-16" />
+                    </div>
+                    <div className="h-5 bg-gray-200 rounded w-48" />
+                  </div>
+                  <div className="h-4 bg-gray-150 rounded w-24" />
+                </div>
+              </div>
+              {/* Date & Price Info */}
+              <div className="flex flex-wrap md:flex-nowrap items-center gap-8 md:gap-12 px-2">
+                <div className="flex items-center gap-4">
+                  <div className="space-y-1">
+                    <div className="h-3 bg-gray-200 rounded w-16" />
+                    <div className="h-4 bg-gray-200 rounded w-24" />
+                  </div>
+                  <div className="w-4 h-4 bg-gray-100 rounded mt-4" />
+                  <div className="space-y-1">
+                    <div className="h-3 bg-gray-200 rounded w-16" />
+                    <div className="h-4 bg-gray-200 rounded w-24" />
+                  </div>
+                </div>
+                <div className="flex flex-col items-end min-w-[120px] space-y-1.5">
+                  <div className="h-3 bg-gray-200 rounded w-16" />
+                  <div className="h-5 bg-gray-200 rounded w-20" />
+                  <div className="h-4 bg-gray-150 rounded w-12" />
+                  <div className="h-3 bg-gray-100 rounded w-24" />
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-gray-100" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

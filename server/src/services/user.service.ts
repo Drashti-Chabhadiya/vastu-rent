@@ -120,6 +120,22 @@ export class UserService {
       reviewCount
     };
   }
+
+  async updateUserSettings(id: string, data: { upiId?: string; bankName?: string; accountNumber?: string; ifscCode?: string; accountHolder?: string; bookingAlerts?: boolean; settlementAlerts?: boolean; marketingAlerts?: boolean }) {
+    return prisma.user.update({
+      where: { id },
+      data: {
+        upiId: data.upiId !== undefined ? data.upiId : undefined,
+        bankName: data.bankName !== undefined ? data.bankName : undefined,
+        accountNumber: data.accountNumber !== undefined ? data.accountNumber : undefined,
+        ifscCode: data.ifscCode !== undefined ? data.ifscCode : undefined,
+        accountHolder: data.accountHolder !== undefined ? data.accountHolder : undefined,
+        bookingAlerts: data.bookingAlerts !== undefined ? data.bookingAlerts : undefined,
+        settlementAlerts: data.settlementAlerts !== undefined ? data.settlementAlerts : undefined,
+        marketingAlerts: data.marketingAlerts !== undefined ? data.marketingAlerts : undefined,
+      }
+    });
+  }
 }
 
 export const userService = new UserService();

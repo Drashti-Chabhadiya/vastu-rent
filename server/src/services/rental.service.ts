@@ -32,9 +32,8 @@ export class RentalService {
       throw new Error("This product is already booked for the selected dates.");
     }
 
-    // For COD (Cash), we can set status to confirmed immediately or keep it pending
-    // Let's set it to 'confirmed' but paymentStatus 'pending'
-    const initialStatus = data.paymentMethod === "cash" ? "confirmed" : "pending";
+    // For COD (Cash), we set status to pending initially so the owner can confirm/reject it
+    const initialStatus = "pending";
 
     return prisma.rental.create({
       data: {
@@ -118,7 +117,7 @@ export class RentalService {
   }
 
   async updateRentalStatus(id: string, status: string, paymentStatus?: string, transactionId?: string) {
-    return prisma.rental.update({
+    const updatedRental = await prisma.rental.update({
       where: { id },
       data: { 
         status,
@@ -130,6 +129,33 @@ export class RentalService {
         renter: true,
       },
     });
+
+    // Generate real-time DB notifications for the customer/renter
+    try {
+      if (status === "active" || status === "confirmed") {
+        await prisma.notification.create({
+          data: {
+            userId: updatedRental.renterId,
+            title: "Booking Confirmed! 🎉",
+            message: `Your booking request for "${updatedRental.product.title}" has been successfully confirmed.`,
+            type: "booking"
+          }
+        });
+      } else if (status === "cancelled" || status === "rejected") {
+        await prisma.notification.create({
+          data: {
+            userId: updatedRental.renterId,
+            title: "Booking Rejected ❌",
+            message: `Your booking request for "${updatedRental.product.title}" was rejected by the owner.`,
+            type: "alert"
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Failed to save database notification for renter:", err);
+    }
+
+    return updatedRental;
   }
 }
 

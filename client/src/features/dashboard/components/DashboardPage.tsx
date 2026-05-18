@@ -9,23 +9,30 @@ import { CategoryManagement } from './category/CategoryManagement';
 import { ReviewsManagement } from './review/ReviewsManagement';
 import { DeleteRequestsManagement } from './listing/DeleteRequestsManagement';
 import { MyBookings } from './booking/MyBookings';
-import { OrdersManagement } from './booking/OrdersManagement';
-import { PaymentsManagement } from './booking/PaymentsManagement';
-import { DisputesManagement } from './booking/DisputesManagement';
-import { CouponsManagement } from './booking/CouponsManagement';
-import { NotificationsManagement } from './booking/NotificationsManagement';
-import { ReportsManagement } from './booking/ReportsManagement';
-import { SettingsManagement } from './booking/SettingsManagement';
+import { RentalsCalendar } from './order/RentalsCalendar';
+import { OrdersManagement } from './order/OrdersManagement';
+import { PaymentsManagement } from './payments/PaymentsManagement';
+import { DisputesManagement } from './disputes/DisputesManagement';
+import { CouponsManagement } from './coupons/CouponsManagement';
+import { NotificationsManagement } from './notifications/NotificationsManagement';
+import { ReportsManagement } from './reports/ReportsManagement';
+import { SettingsManagement } from './settings/SettingsManagement';
 import { useAdminStats, useAdminRecentUsers, useAdminRecentProducts } from '#/hook';
+import { authClient } from '#/lib/auth/auth-client';
 
 const DashboardPage = () => {
   const [currentTab, setCurrentTab] = useState('overview');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const { data: statsData, isLoading: statsLoading } = useAdminStats();
-  const { data: recentUsers, isLoading: usersLoading } = useAdminRecentUsers();
-  const { data: recentProducts, isLoading: productsLoading } = useAdminRecentProducts();
+  const { data: session } = authClient.useSession();
+  const role = session?.user?.role || 'owner';
+
+  const isAdmin = role === 'admin' || role === 'superAdmin';
+
+  const { data: statsData, isLoading: statsLoading } = useAdminStats({ enabled: isAdmin });
+  const { data: recentUsers, isLoading: usersLoading } = useAdminRecentUsers({ enabled: isAdmin });
+  const { data: recentProducts, isLoading: productsLoading } = useAdminRecentProducts({ enabled: isAdmin });
 
   const handleManageCategory = (categoryId: string) => {
     setActiveCategoryFilter(categoryId);
@@ -100,7 +107,7 @@ const DashboardPage = () => {
           ) : currentTab === 'delete-requests' ? (
             <DeleteRequestsManagement />
           ) : currentTab === 'bookings' ? (
-            <MyBookings />
+            role === 'owner' ? <RentalsCalendar /> : <MyBookings />
           ) : currentTab === 'orders' ? (
             <OrdersManagement />
           ) : currentTab === 'payments' ? (

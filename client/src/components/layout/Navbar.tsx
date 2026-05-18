@@ -131,7 +131,7 @@ export function Navbar() {
               <Smartphone className="h-4 w-4" />
             </button>
           </Link>
-          <Link to="/wishlist">
+          <Link to="/account/wishlist">
             <button
               aria-label="Saved"
               className="group relative grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
@@ -169,13 +169,13 @@ export function Navbar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <Link to="/profile">
+                  <Link to="/account">
                     <DropdownMenuItem className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
+                      <span>Profile Summary</span>
                     </DropdownMenuItem>
                   </Link>
-                  {(session.user.role === 'admin' || session.user.role === 'super-admin') && (
+                  {(session.user.role === 'admin' || session.user.role === 'superAdmin') && (
                     <Link to="/admin/dashboard">
                       <DropdownMenuItem className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -183,7 +183,7 @@ export function Navbar() {
                       </DropdownMenuItem>
                     </Link>
                   )}
-                  <Link to="/profile/settings">
+                  <Link to="/account/profile">
                     <DropdownMenuItem className="cursor-pointer">
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>

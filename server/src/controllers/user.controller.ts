@@ -49,6 +49,18 @@ export class UserController {
     if (!profile) return reply.status(404).send({ message: "Profile not found" });
     return profile;
   }
+
+  async updateSettings(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    try {
+      const user = await userService.updateUserSettings(session.user.id, request.body as any);
+      return { user };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to update settings" });
+    }
+  }
 }
 
 export const userController = new UserController();

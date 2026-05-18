@@ -1,6 +1,6 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useProduct, useProducts, useWishlist, useCreateRental, useProductRentals } from '#/hook'
-import { useProductReviews, useCreateReview } from '#/hook/reviews'
+import { useProductReviews, useCreateReview } from '#/hook/use-reviews'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductDetailSkeleton } from '#/components/skeletons'
 import { Button } from '#/components/ui/button'
@@ -28,7 +28,6 @@ import { cn } from '#/lib/utils'
 import { apiClient } from '#/lib/api'
 
 export function ProductDetail({ id }: { id: string }) {
-  const navigate = useNavigate()
   const { data: product, isLoading, error } = useProduct(id)
   const { data: similarProducts } = useProducts({ categoryId: product?.categoryId })
   const { toggleLike, isLiked } = useWishlist()
@@ -804,7 +803,7 @@ export function ProductDetail({ id }: { id: string }) {
             </div>
             <div className="flex gap-3">
               <Button variant="outline" className="flex-1 rounded-xl font-bold" onClick={() => setShowBookingConfirm(false)}>Close</Button>
-              <Link to="/profile/bookings" className="flex-1">
+              <Link to="/account/bookings" className="flex-1">
                 <Button className="w-full rounded-xl bg-primary text-white font-bold">My Bookings</Button>
               </Link>
             </div>

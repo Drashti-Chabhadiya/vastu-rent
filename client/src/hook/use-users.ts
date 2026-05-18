@@ -13,13 +13,14 @@ export const useAdminUsers = (params?: { search?: string; role?: string; status?
 }
 
 // Fetch recent users
-export const useAdminRecentUsers = () => {
+export const useAdminRecentUsers = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['recent-users'],
     queryFn: async () => {
       const res = await apiClient.get('/admin/users/recent')
       return res.data.users
-    }
+    },
+    ...options
   })
 }
 
@@ -73,5 +74,20 @@ export const useUserProfile = (id: string) => {
       return res.data
     },
     enabled: !!id
+  })
+}
+
+// Update user settings mutation (Bank & preferences)
+export const useUpdateUserSettings = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: { upiId?: string; bankName?: string; accountNumber?: string; ifscCode?: string; accountHolder?: string; bookingAlerts?: boolean; settlementAlerts?: boolean; marketingAlerts?: boolean }) => {
+      const res = await apiClient.patch('/users/settings', data)
+      return res.data.user
+    },
+    onSuccess: () => {
+      // Invalidate the session query to reload user data globally!
+      queryClient.invalidateQueries({ queryKey: ['session'] })
+    }
   })
 }
