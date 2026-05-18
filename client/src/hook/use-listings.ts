@@ -49,13 +49,14 @@ export const useAdminProducts = (params?: { search?: string; categoryId?: string
 }
 
 // Fetch recent listings
-export const useAdminRecentProducts = () => {
+export const useAdminRecentProducts = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['recent-products'],
     queryFn: async () => {
       const res = await apiClient.get('/admin/products/recent')
       return res.data.products
-    }
+    },
+    ...options
   })
 }
 

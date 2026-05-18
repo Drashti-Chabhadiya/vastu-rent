@@ -28,9 +28,11 @@ const DashboardPage = () => {
   const { data: session } = authClient.useSession();
   const role = session?.user?.role || 'owner';
 
-  const { data: statsData, isLoading: statsLoading } = useAdminStats();
-  const { data: recentUsers, isLoading: usersLoading } = useAdminRecentUsers();
-  const { data: recentProducts, isLoading: productsLoading } = useAdminRecentProducts();
+  const isAdmin = role === 'admin' || role === 'superAdmin';
+
+  const { data: statsData, isLoading: statsLoading } = useAdminStats({ enabled: isAdmin });
+  const { data: recentUsers, isLoading: usersLoading } = useAdminRecentUsers({ enabled: isAdmin });
+  const { data: recentProducts, isLoading: productsLoading } = useAdminRecentProducts({ enabled: isAdmin });
 
   const handleManageCategory = (categoryId: string) => {
     setActiveCategoryFilter(categoryId);

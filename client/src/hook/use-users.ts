@@ -13,13 +13,14 @@ export const useAdminUsers = (params?: { search?: string; role?: string; status?
 }
 
 // Fetch recent users
-export const useAdminRecentUsers = () => {
+export const useAdminRecentUsers = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['recent-users'],
     queryFn: async () => {
       const res = await apiClient.get('/admin/users/recent')
       return res.data.users
-    }
+    },
+    ...options
   })
 }
 
