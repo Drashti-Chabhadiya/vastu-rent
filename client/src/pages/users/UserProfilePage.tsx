@@ -1,35 +1,17 @@
 import { useParams } from "@tanstack/react-router"
 import { useUserProfile } from "#/hook/users"
 import { ProductCard } from "#/components/common/ProductCard"
-import { Skeleton } from "#/components/ui/skeleton"
+import { UserProfilePageSkeleton } from "#/components/skeletons"
 import { Badge } from "#/components/ui/badge"
 import { Button } from "#/components/ui/button"
 import { Star, MapPin, Calendar, CheckCircle2, MessageCircle, Share2, Package } from "lucide-react"
-import { cn } from "#/lib/utils"
 
 export function UserProfilePage() {
   const { id } = useParams({ from: '/users/$id' })
   const { data: profile, isLoading } = useUserProfile(id)
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-bg-base pt-24 pb-16">
-        <div className="mx-auto max-w-[1200px] px-4">
-          <div className="flex flex-col md:flex-row gap-8 mb-12">
-            <Skeleton className="w-32 h-32 rounded-full" />
-            <div className="space-y-4 flex-1">
-              <Skeleton className="h-10 w-48" />
-              <Skeleton className="h-6 w-32" />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-80 rounded-2xl" />
-            ))}
-          </div>
-        </div>
-      </div>
-    )
+    return <UserProfilePageSkeleton />
   }
 
   if (!profile) {

@@ -5,10 +5,11 @@ import { ProductCard } from "#/components/common/ProductCard"
 import { Search, SlidersHorizontal, ArrowLeft } from "lucide-react"
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
+import { CategoryDetailSkeleton } from "#/components/skeletons"
 
 export function CategoryDetail() {
   const { id } = useParams({ from: '/categories/$id' })
-  const { data: categories } = useCategories()
+  const { data: categories, isLoading: categoriesLoading } = useCategories()
   const { data: products, isLoading: productsLoading } = useProducts({ categoryId: id })
   
   const [searchTerm, setSearchTerm] = useState("")
@@ -18,6 +19,10 @@ export function CategoryDetail() {
   const filteredProducts = products?.filter((p: any) => 
     (p.title || p.name)?.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  if (productsLoading || categoriesLoading || !category) {
+    return <CategoryDetailSkeleton />
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,15 +78,8 @@ export function CategoryDetail() {
             Filter
           </button>
         </div>
-
         {/* Product Grid */}
-        {productsLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-[420px] bg-white rounded-2xl animate-pulse border border-gray-100" />
-            ))}
-          </div>
-        ) : filteredProducts?.length === 0 ? (
+        {filteredProducts?.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-[32px] border border-gray-100 shadow-sm">
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="text-gray-300" size={32} />

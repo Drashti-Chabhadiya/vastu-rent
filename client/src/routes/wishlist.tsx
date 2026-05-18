@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useWishlist, useWishlistProducts } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
-import { Skeleton } from '#/components/ui/skeleton'
+import { ProductCardSkeleton } from '#/components/skeletons'
 import { Heart, ShoppingBag, ArrowLeft } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Link } from '@tanstack/react-router'
@@ -37,15 +37,7 @@ function WishlistPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="space-y-4 bg-white p-4 rounded-2xl border border-gray-100">
-                <Skeleton className="h-[220px] w-full rounded-xl" />
-                <Skeleton className="h-6 w-3/4" />
-                <div className="flex justify-between">
-                  <Skeleton className="h-5 w-1/4" />
-                  <Skeleton className="h-5 w-1/4" />
-                </div>
-                <Skeleton className="h-11 w-full rounded-xl" />
-              </div>
+              <ProductCardSkeleton key={i} />
             ))}
           </div>
         ) : products && products.length > 0 ? (

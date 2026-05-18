@@ -2,7 +2,7 @@ import { motion, type Variants } from "motion/react";
 import { ArrowUpRight, Home, ShoppingBag, Laptop, Palmtree, Sparkles, type LucideIcon } from "lucide-react";
 import { useCategories } from "#/hook"
 import { Link } from "@tanstack/react-router"
-import { Skeleton } from "#/components/ui/skeleton"
+import { CategoryCardSkeleton } from "#/components/skeletons"
 
 const iconMap: Record<string, LucideIcon> = {
   HomeIcon: Home,
@@ -66,16 +66,7 @@ export function Categories() {
       >
         {isLoading
           ? Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="aspect-[4/5] w-full rounded-[1.75rem]" />
-                <div className="flex items-center justify-between px-1">
-                  <div className="space-y-2">
-                    <Skeleton className="h-5 w-32" />
-                    <Skeleton className="h-4 w-20" />
-                  </div>
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                </div>
-              </div>
+              <CategoryCardSkeleton key={i} />
             ))
           : categories?.map((c: any) => (
               <motion.div key={c.id} variants={fadeUp}>

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useProducts } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
-import { Skeleton } from '#/components/ui/skeleton'
+import { ProductCardSkeleton } from '#/components/skeletons'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -50,15 +50,7 @@ function ProductsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {isLoading ? (
             Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="h-[240px] w-full rounded-2xl" />
-                <Skeleton className="h-6 w-3/4" />
-                <div className="flex justify-between">
-                  <Skeleton className="h-5 w-1/4" />
-                  <Skeleton className="h-5 w-1/4" />
-                </div>
-                <Skeleton className="h-11 w-full rounded-2xl" />
-              </div>
+              <ProductCardSkeleton key={i} />
             ))
           ) : products?.length > 0 ? (
             products.map((product: any) => (

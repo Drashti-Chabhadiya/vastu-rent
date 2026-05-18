@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useProduct, useProducts, useWishlist, useCreateRental, useProductRentals } from '#/hook'
 import { useProductReviews, useCreateReview } from '#/hook/reviews'
 import { ProductCard } from '#/components/common/ProductCard'
-import { Skeleton } from '#/components/ui/skeleton'
+import { ProductDetailSkeleton } from '#/components/skeletons'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
 import { Textarea } from '#/components/ui/textarea'
@@ -209,27 +209,7 @@ export function ProductDetail({ id }: { id: string }) {
   }
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white pt-24 pb-16">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2 space-y-6">
-              <Skeleton className="h-[500px] w-full rounded-[32px]" />
-              <div className="flex gap-4">
-                <Skeleton className="h-20 w-20 rounded-xl" />
-                <Skeleton className="h-20 w-20 rounded-xl" />
-                <Skeleton className="h-20 w-20 rounded-xl" />
-              </div>
-            </div>
-            <div className="space-y-6">
-              <Skeleton className="h-10 w-3/4" />
-              <Skeleton className="h-40 w-full rounded-2xl" />
-              <Skeleton className="h-60 w-full rounded-2xl" />
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+    return <ProductDetailSkeleton />
   }
 
   if (error || !product) {

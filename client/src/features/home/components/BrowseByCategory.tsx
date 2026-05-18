@@ -2,6 +2,7 @@ import { ChevronRight, Grid3x3 } from "lucide-react"
 import { useCategories } from "#/hook"
 import { CategoryIcon } from "#/components/common/CategoryIcon"
 import { Link } from "@tanstack/react-router"
+import { CategoryIconSkeleton } from "#/components/skeletons"
 
 export function BrowseByCategory() {
   const { data: categories, isLoading } = useCategories()
@@ -27,10 +28,7 @@ export function BrowseByCategory() {
           {isLoading ? (
             // Skeleton loader
             Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center gap-3 sm:gap-4 animate-pulse">
-                <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] rounded-2xl sm:rounded-3xl bg-gray-100" />
-                <div className="w-16 h-3 bg-gray-100 rounded" />
-              </div>
+              <CategoryIconSkeleton key={i} />
             ))
           ) : (
             <>
