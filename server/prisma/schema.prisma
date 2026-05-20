@@ -58,8 +58,27 @@ model User {
   notifications    Notification[]
   payouts          Payout[]
   cloudinaryConfig CloudinaryConfig?
+  stories          Story[]
 
   @@map("user")
+}
+
+model Story {
+  id        String   @id @default(cuid())
+  title     String
+  excerpt   String
+  content   String?  // Optional detailed content
+  tag       String   // e.g., "Living", "Hosts", "Impact"
+  readTime  String   // e.g., "5 min"
+  imageUrl  String   // Cover image URL
+  
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("story")
 }
 
 model Session {

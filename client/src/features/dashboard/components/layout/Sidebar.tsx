@@ -18,6 +18,7 @@ import {
   LogOut,
   ExternalLink,
   User,
+  BookOpen,
 } from 'lucide-react';
 import { cn } from '#/lib/utils';
 import { authClient } from '#/lib/auth/auth-client';
@@ -86,6 +87,7 @@ const SIDEBAR_MENU_CONFIG: Record<string, { id: string; label: string; icon: Rea
     { id: 'users', label: 'Manage Users', icon: Users, hasSub: true },
     { id: 'listings', label: 'Manage Listings', icon: List, hasSub: true },
     { id: 'categories', label: 'Manage Categories', icon: Grid, hasSub: true },
+    { id: 'stories', label: 'Stories (Catalogue)', icon: BookOpen, hasSub: true },
     { id: 'disputes', label: 'Handle Disputes', icon: AlertCircle, hasSub: true },
     { id: 'notifications', label: 'Platform Alerts', icon: Bell },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -95,6 +97,7 @@ const SIDEBAR_MENU_CONFIG: Record<string, { id: string; label: string; icon: Rea
     { id: 'users', label: 'Manage Admins', icon: Users, hasSub: true },
     { id: 'listings', label: 'Manage Listings', icon: List, hasSub: true },
     { id: 'categories', label: 'Manage Categories', icon: Grid, hasSub: true },
+    { id: 'stories', label: 'Stories (Catalogue)', icon: BookOpen, hasSub: true },
     { id: 'delete-requests', label: 'Delete Requests', icon: Trash2 },
     { id: 'payments', label: 'Earnings & Payouts', icon: CreditCard, hasSub: true },
     { id: 'settings', label: 'Settings', icon: Settings },

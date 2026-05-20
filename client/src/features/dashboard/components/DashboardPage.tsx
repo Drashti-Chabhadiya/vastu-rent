@@ -17,6 +17,7 @@ import { CouponsManagement } from './coupons/CouponsManagement';
 import { NotificationsManagement } from './notifications/NotificationsManagement';
 import { ReportsManagement } from './reports/ReportsManagement';
 import { SettingsManagement } from './settings/SettingsManagement';
+import { StoriesManagement } from './stories/StoriesManagement';
 import { useAdminStats, useAdminRecentUsers, useAdminRecentProducts } from '#/hook';
 import { authClient } from '#/lib/auth/auth-client';
 
@@ -102,6 +103,8 @@ const DashboardPage = () => {
             <ListingsManagement initialCategoryFilter={activeCategoryFilter} />
           ) : currentTab === 'categories' ? (
             <CategoryManagement onManageCategory={handleManageCategory} />
+          ) : currentTab === 'stories' ? (
+            <StoriesManagement />
           ) : currentTab === 'reviews' ? (
             <ReviewsManagement />
           ) : currentTab === 'delete-requests' ? (

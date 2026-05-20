@@ -1,9 +1,8 @@
-import { ArrowUpRight, Calendar, Clock, Search, Tag } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, Calendar, Clock, Search } from "lucide-react";
 import { motion, type Variants } from "motion/react";
 import { Link } from "@tanstack/react-router";
-import featureNook from "../../../../public/assets/feature-nook.jpg";
-import catFurniture from "../../../../public/assets/cat-furniture.jpg";
-import catOutdoor from "../../../../public/assets/cat-outdoor.jpg";
+import { useStories } from "#/hook/use-stories";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -17,50 +16,83 @@ const stagger: Variants = {
   show: { transition: { staggerChildren: 0.1 } },
 };
 
-const posts = [
+const featureNook = "/assets/feature-nook.jpg";
+const catFurniture = "/assets/cat-furniture.jpg";
+const catOutdoor = "/assets/cat-outdoor.jpg";
+
+const fallbackPosts = [
   {
-    id: 1,
+    id: "fallback-1",
     tag: "Living",
     title: "The art of the seasonal swap: Rotating your decor",
     excerpt: "Discover the secrets to keeping your home fresh and inspired through the changing seasons with minimal effort and maximum impact.",
-    date: "May 12, 2024",
+    createdAt: "2024-05-12T00:00:00.000Z",
     readTime: "5 min",
-    img: featureNook,
-    author: "Elena Rossi"
+    imageUrl: featureNook,
+    author: { name: "Elena Rossi" }
   },
   {
-    id: 2,
+    id: "fallback-2",
     tag: "Hosts",
     title: "Inside Anneli's lending atelier in Copenhagen",
     excerpt: "Meet the neighbor who turned her passion for Scandinavian design into a community resource for everyone in her district.",
-    date: "May 08, 2024",
+    createdAt: "2024-05-08T00:00:00.000Z",
     readTime: "8 min",
-    img: catFurniture,
-    author: "Marcus Lind"
+    imageUrl: catFurniture,
+    author: { name: "Marcus Lind" }
   },
   {
-    id: 3,
+    id: "fallback-3",
     tag: "Impact",
     title: "What 25,000 kg of CO₂ looks like in rental impact",
     excerpt: "Measuring the environmental difference of circular consumption in our local neighborhoods through data-driven storytelling.",
-    date: "April 28, 2024",
+    createdAt: "2024-04-28T00:00:00.000Z",
     readTime: "12 min",
-    img: catOutdoor,
-    author: "Sarah Chen"
+    imageUrl: catOutdoor,
+    author: { name: "Sarah Chen" }
   },
   {
-    id: 4,
+    id: "fallback-4",
     tag: "Guides",
     title: "How to perfectly photograph your rental items",
     excerpt: "A comprehensive guide to capturing the beauty and utility of your belongings to attract more borrowers.",
-    date: "April 15, 2024",
+    createdAt: "2024-04-15T00:00:00.000Z",
     readTime: "6 min",
-    img: featureNook,
-    author: "David Kim"
+    imageUrl: featureNook,
+    author: { name: "David Kim" }
   }
 ];
 
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  });
+};
+
 export function JournalPage() {
+  const { data: dbStories, isLoading } = useStories();
+  const [selectedCategory, setSelectedCategory] = useState("All Stories");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(6);
+
+  const allStories = dbStories && dbStories.length > 0 ? dbStories : fallbackPosts;
+
+  const filteredStories = allStories.filter((story: any) => {
+    const matchesCategory =
+      selectedCategory === "All Stories" ||
+      story.tag.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesSearch =
+      story.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      story.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const displayedStories = filteredStories.slice(0, visibleCount);
+  const hasMore = filteredStories.length > visibleCount;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -89,11 +121,15 @@ export function JournalPage() {
       <section className="sticky top-[80px] z-30 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-4 px-6 py-4 md:flex-row md:items-center md:px-10">
           <div className="flex items-center gap-6 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-            {["All Stories", "Living", "Impact", "Hosts", "Guides"].map((filter, i) => (
+            {["All Stories", "Living", "Impact", "Hosts", "Guides"].map((filter) => (
               <button
                 key={filter}
+                onClick={() => {
+                  setSelectedCategory(filter);
+                  setVisibleCount(6); // Reset pagination on filter change
+                }}
                 className={`text-[13px] font-medium whitespace-nowrap transition-colors hover:text-primary ${
-                  i === 0 ? "text-primary" : "text-muted-foreground"
+                  selectedCategory === filter ? "text-primary font-bold" : "text-muted-foreground"
                 }`}
               >
                 {filter}
@@ -104,6 +140,11 @@ export function JournalPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setVisibleCount(6); // Reset pagination on search change
+              }}
               placeholder="Search stories..."
               className="h-10 w-full rounded-full border border-border bg-surface/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/5 md:w-[300px]"
             />
@@ -113,72 +154,87 @@ export function JournalPage() {
 
       {/* Posts Grid */}
       <section className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-24">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3"
-        >
-          {posts.map((p, idx) => (
-            <motion.div 
-              variants={fadeUp} 
-              key={p.id}
-              className={idx === 0 ? "md:col-span-2 lg:col-span-2" : ""}
-            >
-              <Link to="/about" className="group block">
-                <div className={`relative overflow-hidden rounded-[2.5rem] bg-surface ${idx === 0 ? "aspect-[16/9]" : "aspect-[4/3]"}`}>
-                  <img
-                    src={p.img}
-                    alt={p.title}
-                    className="h-full w-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-[1.06]"
-                  />
-                  <div className="absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/10" />
-                  <div className="absolute bottom-6 left-6">
-                    <span className="rounded-full bg-background/95 px-5 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground backdrop-blur-md">
-                      {p.tag}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          </div>
+        ) : filteredStories.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-muted-foreground text-lg">No stories found matching your criteria.</p>
+          </div>
+        ) : (
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {displayedStories.map((p: any, idx: number) => (
+              <motion.div 
+                variants={fadeUp} 
+                key={p.id}
+                className={idx === 0 ? "md:col-span-2 lg:col-span-2" : ""}
+              >
+                <Link to="/journal/$id" params={{ id: p.id }} className="group block cursor-pointer">
+                  <div className={`relative overflow-hidden rounded-[2.5rem] bg-surface ${idx === 0 ? "aspect-[16/9]" : "aspect-[4/3]"}`}>
+                    <img
+                      src={p.imageUrl || featureNook}
+                      alt={p.title}
+                      className="h-full w-full object-cover transition-transform duration-[2000ms] ease-out group-hover:scale-[1.06]"
+                    />
+                    <div className="absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/10" />
+                    <div className="absolute bottom-6 left-6">
+                      <span className="rounded-full bg-background/95 px-5 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground backdrop-blur-md">
+                        {p.tag}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 flex items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                    <span className="flex items-center gap-2">
+                      <Calendar className="h-3.5 w-3.5" />
+                      {formatDate(p.createdAt)}
+                    </span>
+                    <span className="h-1 w-1 rounded-full bg-border" />
+                    <span className="flex items-center gap-2">
+                      <Clock className="h-3.5 w-3.5" />
+                      {p.readTime}
                     </span>
                   </div>
-                </div>
-                
-                <div className="mt-8 flex items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  <span className="flex items-center gap-2">
-                    <Calendar className="h-3.5 w-3.5" />
-                    {p.date}
-                  </span>
-                  <span className="h-1 w-1 rounded-full bg-border" />
-                  <span className="flex items-center gap-2">
-                    <Clock className="h-3.5 w-3.5" />
-                    {p.readTime}
-                  </span>
-                </div>
 
-                <h2 className={`mt-5 font-display tracking-tight text-foreground transition-colors group-hover:text-primary ${
-                  idx === 0 ? "text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1]" : "text-2xl leading-tight"
-                }`}>
-                  {p.title}
-                </h2>
-                
-                <p className={`mt-4 text-muted-foreground leading-relaxed ${
-                  idx === 0 ? "max-w-2xl text-lg line-clamp-3" : "text-base line-clamp-2"
-                }`}>
-                  {p.excerpt}
-                </p>
+                  <h2 className={`mt-5 font-display tracking-tight text-foreground transition-colors group-hover:text-primary ${
+                    idx === 0 ? "text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1]" : "text-2xl leading-tight"
+                  }`}>
+                    {p.title}
+                  </h2>
+                  
+                  <p className={`mt-4 text-muted-foreground leading-relaxed ${
+                    idx === 0 ? "max-w-2xl text-lg line-clamp-3" : "text-base line-clamp-2"
+                  }`}>
+                    {p.excerpt}
+                  </p>
 
-                <div className="mt-8 flex items-center gap-2 text-[13px] font-bold text-foreground transition-all group-hover:gap-3 group-hover:text-primary">
-                  Read story <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+                  <div className="mt-8 flex items-center gap-2 text-[13px] font-bold text-foreground transition-all group-hover:gap-3 group-hover:text-primary">
+                    Read story <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
 
         {/* Load More */}
-        <div className="mt-24 flex justify-center">
-          <button className="rounded-full border border-border px-10 py-4 text-[14px] font-bold transition-all hover:bg-foreground hover:text-background active:scale-95">
-            Load more stories
-          </button>
-        </div>
+        {hasMore && (
+          <div className="mt-24 flex justify-center">
+            <button
+              onClick={() => setVisibleCount((prev) => prev + 6)}
+              className="rounded-full border border-border px-10 py-4 text-[14px] font-bold transition-all hover:bg-foreground hover:text-background active:scale-95"
+            >
+              Load more stories
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Newsletter Section */}
@@ -191,7 +247,7 @@ export function JournalPage() {
             <p className="mt-6 text-lg text-background/70">
               Join 5,000+ neighbors who receive our weekly dispatch on circular living and design.
             </p>
-            <form className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <form onSubmit={(e) => e.preventDefault()} className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <input
                 type="email"
                 placeholder="Email address"
@@ -207,3 +263,4 @@ export function JournalPage() {
     </div>
   );
 }
+
