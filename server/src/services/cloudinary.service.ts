@@ -1,45 +1,110 @@
-import { cloudinary } from '../config/cloudinary.js';
+import { v2 as cloudinary } from 'cloudinary';
+import { prisma } from '../config/prisma.js';
+import { decrypt } from '../config/encryption.js';
 
 export class CloudinaryService {
   /**
-   * Upload an image to Cloudinary
-   * @param fileBuffer The file buffer or base64 string
-   * @param folder The folder to store the image in (e.g., 'products', 'profiles')
+   * Get dynamic Cloudinary credentials for a user
    */
-  async uploadImage(file: string, folder: string): Promise<{ url: string; publicId: string }> {
+  async getCredentialsForUser(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { cloudinaryConfig: true }
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const role = user.role;
+    const isDashboardRole = role === "owner" || role === "admin" || role === "superAdmin";
+
+    if (isDashboardRole) {
+      if (!user.cloudinaryConfig) {
+        throw new Error("Cloudinary credentials are not configured. Please set them up in your dashboard settings before uploading.");
+      }
+      
+      const decryptedSecret = decrypt(user.cloudinaryConfig.apiSecret);
+      return {
+        cloud_name: user.cloudinaryConfig.cloudName,
+        api_key: user.cloudinaryConfig.apiKey,
+        api_secret: decryptedSecret,
+      };
+    }
+
+    // Fallback for regular users (e.g. uploading profile pictures) if they don't have dashboard roles,
+    // we can use the global environment credentials if available.
+    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+      return {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+      };
+    }
+
+    throw new Error("Cloudinary storage is not configured for this application.");
+  }
+
+  /**
+   * Upload an image to Cloudinary
+   * @param file The file buffer or base64 string
+   * @param folder The folder to store the image in (e.g., 'products', 'profiles')
+   * @param userId The ID of the user uploading the image (for dynamic credentials)
+   */
+  async uploadImage(file: string, folder: string, userId?: string): Promise<{ url: string; publicId: string }> {
     try {
-      const result = await cloudinary.uploader.upload(file, {
+      let options: any = {
         folder: `vastu-rent/${folder}`,
         resource_type: 'auto',
-      });
+      };
+
+      if (userId) {
+        const creds = await this.getCredentialsForUser(userId);
+        options = {
+          ...options,
+          ...creds
+        };
+      }
+
+      const result = await cloudinary.uploader.upload(file, options);
       
       return {
         url: result.secure_url,
         publicId: result.public_id,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Cloudinary Upload Error:', error);
-      throw new Error('Failed to upload image to Cloudinary');
+      throw new Error(error.message || 'Failed to upload image to Cloudinary');
     }
   }
 
   /**
    * Delete an image from Cloudinary
    * @param publicId The public ID of the image to delete
+   * @param userId The ID of the user who owns the image
    */
-  async deleteImage(publicId: string): Promise<void> {
+  async deleteImage(publicId: string, userId?: string): Promise<void> {
     try {
       if (!publicId) return;
       
-      const result = await cloudinary.uploader.destroy(publicId);
+      let options: any = {};
+      if (userId) {
+        try {
+          const creds = await this.getCredentialsForUser(userId);
+          options = { ...creds };
+        } catch {
+          // If custom credentials fail, fall back to global config
+        }
+      }
+
+      const result = await cloudinary.uploader.destroy(publicId, options);
       
       if (result.result !== 'ok' && result.result !== 'not found') {
         console.warn('Cloudinary Delete Warning:', result);
       }
     } catch (error) {
       console.error('Cloudinary Delete Error:', error);
-      // We don't necessarily want to throw here to avoid breaking the main flow
-      // if the image is already gone or there's a temporary network issue.
+      // We don't throw here to avoid breaking the main application flow
     }
   }
 

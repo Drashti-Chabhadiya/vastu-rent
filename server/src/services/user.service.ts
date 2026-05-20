@@ -68,7 +68,7 @@ export class UserService {
       const { cloudinaryService } = await import("./cloudinary.service.js");
       const publicId = cloudinaryService.extractPublicId(user.image);
       if (publicId) {
-        await cloudinaryService.deleteImage(publicId);
+        await cloudinaryService.deleteImage(publicId, id);
       }
     }
     return prisma.user.delete({ where: { id } });
@@ -135,6 +135,58 @@ export class UserService {
         marketingAlerts: data.marketingAlerts !== undefined ? data.marketingAlerts : undefined,
       }
     });
+  }
+
+  async getCloudinaryConfig(userId: string) {
+    const config = await prisma.cloudinaryConfig.findUnique({
+      where: { userId }
+    });
+    if (!config) return null;
+    return {
+      cloudName: config.cloudName,
+      apiKey: config.apiKey,
+      uploadPreset: config.uploadPreset,
+      hasSecret: !!config.apiSecret,
+    };
+  }
+
+  async saveCloudinaryConfig(userId: string, data: { cloudName: string; apiKey: string; apiSecret?: string; uploadPreset?: string }) {
+    const { cloudName, apiKey, apiSecret, uploadPreset } = data;
+    
+    let encryptedSecret: string | undefined;
+    if (apiSecret) {
+      const { encrypt } = await import("../config/encryption.js");
+      encryptedSecret = encrypt(apiSecret);
+    }
+
+    const existing = await prisma.cloudinaryConfig.findUnique({
+      where: { userId }
+    });
+
+    if (existing) {
+      return prisma.cloudinaryConfig.update({
+        where: { userId },
+        data: {
+          cloudName,
+          apiKey,
+          uploadPreset: uploadPreset !== undefined ? uploadPreset : null,
+          ...(encryptedSecret ? { apiSecret: encryptedSecret } : {}),
+        }
+      });
+    } else {
+      if (!apiSecret) {
+        throw new Error("API Secret is required for new configurations");
+      }
+      return prisma.cloudinaryConfig.create({
+        data: {
+          userId,
+          cloudName,
+          apiKey,
+          apiSecret: encryptedSecret!,
+          uploadPreset,
+        }
+      });
+    }
   }
 }
 

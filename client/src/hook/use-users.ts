@@ -2,13 +2,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
 
 // Fetch all users with filters
-export const useAdminUsers = (params?: { search?: string; role?: string; status?: string }) => {
+export const useAdminUsers = (
+  params?: { search?: string; role?: string; status?: string },
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
     queryKey: ['admin-users', params],
     queryFn: async () => {
       const res = await apiClient.get('/admin/users', { params })
       return res.data.users
-    }
+    },
+    ...options
   })
 }
 
@@ -89,5 +93,21 @@ export const useUpdateUserSettings = () => {
       // Invalidate the session query to reload user data globally!
       queryClient.invalidateQueries({ queryKey: ['session'] })
     }
+  })
+}
+
+// Fetch Cloudinary storage usage metrics
+export const useCloudinaryUsage = (options?: {
+  enabled?: boolean;
+  staleTime?: number;
+  refetchOnWindowFocus?: boolean;
+}) => {
+  return useQuery({
+    queryKey: ['cloudinary-usage'],
+    queryFn: async () => {
+      const res = await apiClient.get('/users/settings/cloudinary/usage')
+      return res.data
+    },
+    ...options
   })
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { 
   ChevronRight, 
   Calendar, 
@@ -13,10 +13,28 @@ import { Badge } from '#/components/ui/badge';
 import { Button } from '#/components/ui/button';
 import { Input } from '#/components/ui/input';
 import { Switch } from '#/components/ui/switch';
+import {
+  Dialog,
+  DialogContent,
+} from '#/components/ui/dialog';
 import { authClient } from '#/lib/auth/auth-client';
-import { useUploadProfileImage, useUpdateUserSettings } from '#/hook';
+import { useUploadProfileImage, useUpdateUserSettings, useCloudinaryUsage } from '#/hook';
+import { apiClient } from '#/lib/api';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+
+// Pure helper — lives outside the component so it never changes reference.
+const formatBytes = (bytes: number, decimals: number = 1): { value: string; unit: string } => {
+  if (bytes === 0) return { value: '0', unit: 'GB' };
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return {
+    value: parseFloat((bytes / Math.pow(k, i)).toFixed(dm)).toString(),
+    unit: sizes[i],
+  };
+};
 
 export const SettingsManagement = () => {
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
@@ -42,9 +60,137 @@ export const SettingsManagement = () => {
   const [settlementAlerts, setSettlementAlerts] = useState(true);
   const [marketingAlerts, setMarketingAlerts] = useState(false);
 
+  // Cloudinary Integration States
+  const [cloudinaryCloudName, setCloudinaryCloudName] = useState('');
+  const [cloudinaryApiKey, setCloudinaryApiKey] = useState('');
+  const [cloudinaryApiSecret, setCloudinaryApiSecret] = useState('');
+  const [cloudinaryUploadPreset, setCloudinaryUploadPreset] = useState('');
+  const [cloudinaryHasSecret, setCloudinaryHasSecret] = useState(false);
+  const [isTestingCloudinary, setIsTestingCloudinary] = useState(false);
+  const [isSavingCloudinary, setIsSavingCloudinary] = useState(false);
+  const [isLoadingCloudinary, setIsLoadingCloudinary] = useState(false);
+
   // Profile Image Upload Hook & Settings Update Hook
   const uploadProfileImg = useUploadProfileImage();
   const updateSettings = useUpdateUserSettings();
+
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+  // Fetch real-time Cloudinary usage metrics — staleTime prevents
+  // session re-polls from causing the storage value to flicker.
+  const isCloudinaryTabActive = activeSubTab === 'cloudinary' && activeUser !== undefined;
+  const { data: usageData, refetch: refetchUsage } = useCloudinaryUsage({
+    enabled: isCloudinaryTabActive,
+    staleTime: 60_000,          // treat data as fresh for 60 s
+    refetchOnWindowFocus: false, // avoid refetch noise on focus
+  });
+
+  // Memoize derived storage stats so they only recompute when usageData changes,
+  // not on every parent render (which was causing the blink).
+  const { storageStats, formattedUsed, formattedLimit, usedPercent } = useMemo(() => {
+    const stats = usageData?.storage || { usage: 0, limit: 10485760000, used_percent: 0 };
+    return {
+      storageStats: stats,
+      formattedUsed: formatBytes(stats.usage),
+      formattedLimit: formatBytes(stats.limit),
+      usedPercent: Math.min(100, Math.max(0, stats.used_percent)),
+    };
+  }, [usageData]);
+
+  // Load Cloudinary config when active tab is selected
+  useEffect(() => {
+    if (activeSubTab === 'cloudinary' && activeUser) {
+      setIsLoadingCloudinary(true);
+      apiClient.get('/users/settings/cloudinary')
+        .then((res) => {
+          const config = res.data.config;
+          if (config) {
+            setCloudinaryCloudName(config.cloudName || '');
+            setCloudinaryApiKey(config.apiKey || '');
+            setCloudinaryUploadPreset(config.uploadPreset || '');
+            setCloudinaryHasSecret(config.hasSecret || false);
+          } else {
+            setCloudinaryCloudName('');
+            setCloudinaryApiKey('');
+            setCloudinaryUploadPreset('');
+            setCloudinaryHasSecret(false);
+          }
+        })
+        .catch(() => {
+          toast.error("Failed to load Cloudinary settings");
+        })
+        .finally(() => {
+          setIsLoadingCloudinary(false);
+        });
+    }
+  }, [activeSubTab, activeUser]);
+
+  // Handle Save Cloudinary Config
+  const handleSaveCloudinary = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cloudinaryCloudName.trim() || !cloudinaryApiKey.trim()) {
+      toast.error("Cloud Name and API Key are required");
+      return;
+    }
+    if (!cloudinaryHasSecret && !cloudinaryApiSecret.trim()) {
+      toast.error("API Secret is required for new configurations");
+      return;
+    }
+
+    setIsSavingCloudinary(true);
+    try {
+      const payload: any = {
+        cloudName: cloudinaryCloudName.trim(),
+        apiKey: cloudinaryApiKey.trim(),
+        uploadPreset: cloudinaryUploadPreset.trim() || undefined,
+      };
+      if (cloudinaryApiSecret.trim()) {
+        payload.apiSecret = cloudinaryApiSecret.trim();
+      }
+
+      await apiClient.post('/users/settings/cloudinary', payload);
+      toast.success("Cloudinary credentials successfully saved and secured! ☁️");
+      setCloudinaryHasSecret(true);
+      setCloudinaryApiSecret('');
+      refetchUsage();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || err.message || "Failed to save Cloudinary settings");
+    } finally {
+      setIsSavingCloudinary(false);
+    }
+  };
+
+  // Handle Test Cloudinary Connection
+  const handleTestCloudinary = async () => {
+    if (!cloudinaryCloudName.trim() || !cloudinaryApiKey.trim()) {
+      toast.error("Cloud Name and API Key are required to test");
+      return;
+    }
+    if (!cloudinaryHasSecret && !cloudinaryApiSecret.trim()) {
+      toast.error("API Secret is required to test");
+      return;
+    }
+
+    setIsTestingCloudinary(true);
+    const promise = apiClient.post('/users/settings/cloudinary/test', {
+      cloudName: cloudinaryCloudName.trim(),
+      apiKey: cloudinaryApiKey.trim(),
+      apiSecret: cloudinaryApiSecret.trim() || undefined,
+    });
+
+    toast.promise(promise, {
+      loading: 'Testing Cloudinary connection...',
+      success: () => {
+        setIsTestingCloudinary(false);
+        refetchUsage();
+        return 'Successfully connected to Cloudinary! ☁️🎉';
+      },
+      error: (err) => {
+        setIsTestingCloudinary(false);
+        return err.response?.data?.message || err.message || 'Failed to connect. Please verify keys.';
+      }
+    });
+  };
 
   // Load user session details dynamically
   useEffect(() => {
@@ -159,10 +305,13 @@ export const SettingsManagement = () => {
     );
   }
 
+  const isDashboardRole = activeUser?.role === 'owner' || activeUser?.role === 'admin' || activeUser?.role === 'superAdmin';
+
   const sidebarItems = [
     { id: 'profile', label: 'Profile Settings', desc: 'Update your profile information', icon: User },
     { id: 'payment', label: 'Payout Settings', desc: 'Configure bank and settlement methods', icon: CreditCard },
     { id: 'notifications', label: 'Notification Preferences', desc: 'Control your alert preferences', icon: Bell },
+    ...(isDashboardRole ? [{ id: 'cloudinary', label: 'Cloudinary Storage', desc: 'Manage your custom storage keys', icon: Upload }] : []),
   ];
 
   return (
@@ -429,6 +578,250 @@ export const SettingsManagement = () => {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* TAB 4: CLOUDINARY SETTINGS */}
+          {activeSubTab === 'cloudinary' && (
+              <div className="space-y-8 animate-in fade-in duration-300">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-[16px] font-black text-slate-800">Cloudinary Storage</h3>
+                    <p className="text-[11px] font-bold text-slate-400">Connect your personal Cloudinary account. Images you upload will be stored here.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={handleTestCloudinary}
+                      disabled={isTestingCloudinary || isLoadingCloudinary}
+                      variant="outline"
+                      className="border-slate-200 text-slate-600 hover:bg-slate-50 font-black text-[10px] uppercase tracking-wider px-4 h-11 rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1.5 shrink-0"
+                    >
+                      {isTestingCloudinary ? 'Testing...' : 'Test Connection'}
+                    </Button>
+                    <Button 
+                      type="button"
+                      onClick={handleSaveCloudinary}
+                      disabled={isSavingCloudinary || isLoadingCloudinary}
+                      className="bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[10px] uppercase tracking-wider px-5 h-11 rounded-xl transition-all shadow-sm active:scale-95 shrink-0"
+                    >
+                      {isSavingCloudinary ? 'Saving...' : 'Save Settings'}
+                    </Button>
+                  </div>
+                </div>
+
+                {isLoadingCloudinary ? (
+                  <div className="space-y-6 animate-pulse">
+                    <div className="h-10 bg-slate-100 rounded-xl w-full" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <div className="h-3 bg-slate-100 rounded w-16" />
+                        <div className="h-12 bg-slate-50 rounded-2xl w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-3 bg-slate-100 rounded w-16" />
+                        <div className="h-12 bg-slate-50 rounded-2xl w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-3 bg-slate-100 rounded w-16" />
+                        <div className="h-12 bg-slate-50 rounded-2xl w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-3 bg-slate-100 rounded w-16" />
+                        <div className="h-12 bg-slate-50 rounded-2xl w-full" />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left Column: Form config */}
+                    <div className="lg:col-span-2 space-y-6">
+                      <form onSubmit={handleSaveCloudinary} className="space-y-6">
+                        {/* Status Banner */}
+                        <div className={`p-4 rounded-2xl border flex items-start gap-2.5 ${
+                          cloudinaryHasSecret 
+                            ? 'bg-emerald-50/50 border-emerald-100/50 text-emerald-800' 
+                            : 'bg-amber-50/50 border-amber-100/50 text-amber-800'
+                        }`}>
+                          <AlertCircle size={16} className={`${cloudinaryHasSecret ? 'text-emerald-600' : 'text-amber-600'} shrink-0 mt-0.5`} />
+                          <div className="text-[10px] font-semibold leading-relaxed">
+                            {cloudinaryHasSecret ? (
+                              <p>
+                                <strong>Connected!</strong> Your custom Cloudinary storage is active. Images for your products, categories, and profile will be uploaded securely using your credentials.
+                              </p>
+                            ) : (
+                              <p>
+                                <strong>Not Configured:</strong> You haven't connected your custom Cloudinary credentials yet. You must set them up before you can upload any product, category, or profile images.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Cloud Name */}
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Cloud Name</label>
+                            <Input 
+                              value={cloudinaryCloudName}
+                              onChange={(e) => setCloudinaryCloudName(e.target.value)}
+                              placeholder="e.g. dxyz12345" 
+                              className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20" 
+                            />
+                          </div>
+
+                          {/* API Key */}
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">API Key</label>
+                            <Input 
+                              value={cloudinaryApiKey}
+                              onChange={(e) => setCloudinaryApiKey(e.target.value)}
+                              placeholder="e.g. 123456789012345" 
+                              className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20" 
+                            />
+                          </div>
+
+                          {/* API Secret */}
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                              API Secret {cloudinaryHasSecret && <span className="text-[9px] text-[#059669] font-black lowercase tracking-normal">(Saved)</span>}
+                            </label>
+                            <Input 
+                              type="password"
+                              value={cloudinaryApiSecret}
+                              onChange={(e) => setCloudinaryApiSecret(e.target.value)}
+                              placeholder={cloudinaryHasSecret ? "••••••••••••••••••••••••••••" : "Enter Cloudinary API Secret"} 
+                              className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20" 
+                            />
+                          </div>
+
+                          {/* Upload Preset */}
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Upload Preset (Optional)</label>
+                            <Input 
+                              value={cloudinaryUploadPreset}
+                              onChange={(e) => setCloudinaryUploadPreset(e.target.value)}
+                              placeholder="e.g. ml_default" 
+                              className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20" 
+                            />
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+
+                    {/* Right Column: Storage Usage Card */}
+                    <div className="space-y-6">
+                      <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[190px]">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-black text-slate-800 tracking-wide uppercase">Storage Usage</h4>
+                            <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase">
+                              Real-time
+                            </span>
+                          </div>
+
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-[11px] font-bold text-slate-600">
+                              <span>
+                                <strong className="text-slate-800 font-black">{formattedUsed.value} {formattedUsed.unit}</strong> / {formattedLimit.value} {formattedLimit.unit} Used
+                              </span>
+                              <span className="font-extrabold text-slate-800">
+                                {usedPercent.toFixed(0)}%
+                              </span>
+                            </div>
+                            
+                            {/* Progress Bar */}
+                            <div className="w-full h-2.5 bg-slate-50 border border-slate-100 rounded-full overflow-hidden">
+                              <div 
+                                className="bg-emerald-650 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                                style={{ width: `${usedPercent}%`, backgroundColor: '#059669' }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setIsDetailsModalOpen(true)}
+                          className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-black text-[#059669] hover:text-[#059669]/80 transition-all uppercase tracking-wider group w-full text-left"
+                        >
+                          <span>View Storage Details</span>
+                          <ChevronRight size={14} className="text-[#059669] group-hover:translate-x-0.5 transition-transform" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* STORAGE DETAILS DIALOG MODAL */}
+                <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>
+                  <DialogContent className="max-w-md p-8 border-none bg-white rounded-[2.5rem] shadow-2xl font-sans animate-in fade-in zoom-in-95 duration-200">
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-[#059669] bg-emerald-50 px-2 py-0.5 rounded">
+                          Storage Audit
+                        </span>
+                        <h3 className="text-xl font-extrabold text-slate-800">Cloudinary Resource Metrics</h3>
+                        <p className="text-[11px] font-bold text-slate-400">
+                          Real-time resource and bandwidth allocations from your connected Cloudinary bucket.
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        {/* Cloud name & plan */}
+                        <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Storage Bucket</span>
+                            <p className="text-xs font-black text-slate-800">{usageData?.cloudName || cloudinaryCloudName || 'Global Fallback'}</p>
+                          </div>
+                          <Badge className="bg-emerald-50 text-emerald-600 border-none px-2.5 py-0.5 rounded-md font-black text-[10px] uppercase">
+                            Connected
+                          </Badge>
+                        </div>
+
+                        {/* Storage Details */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                            <span>Byte Storage Allocated</span>
+                            <span className="text-slate-800">{usedPercent.toFixed(1)}% Used</span>
+                          </div>
+                          <div className="p-4 bg-white rounded-2xl border border-slate-100 space-y-1">
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-lg font-black text-slate-800">{formattedUsed.value} {formattedUsed.unit}</span>
+                              <span className="text-[10px] text-slate-400 font-bold">of {formattedLimit.value} {formattedLimit.unit} limit</span>
+                            </div>
+                            <p className="text-[9px] font-bold text-slate-400">Total size of active image resources, folders, and assets.</p>
+                          </div>
+                        </div>
+
+                        {/* Billing Universal Credits */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                            <span>Universal Billing Credits</span>
+                            <span className="text-slate-800">{(usageData?.credits?.used_percent || 0).toFixed(1)}% Used</span>
+                          </div>
+                          <div className="p-4 bg-white rounded-2xl border border-slate-100 space-y-1">
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-lg font-black text-slate-800">{usageData?.credits?.usage || 0}</span>
+                              <span className="text-[10px] text-slate-400 font-bold">of {usageData?.credits?.limit || 25} Credits limit</span>
+                            </div>
+                            <p className="text-[9px] font-bold text-slate-400">Cloudinary's universal usage metrics (Transformations, Bandwidth & Storage combined).</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex">
+                        <Button 
+                          type="button"
+                          onClick={() => setIsDetailsModalOpen(false)}
+                          className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-[11px] uppercase tracking-wider shadow-lg flex items-center justify-center animate-all"
+                        >
+                          Close Metrics
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
           )}
 
         </div>

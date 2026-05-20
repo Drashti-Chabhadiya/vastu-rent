@@ -38,7 +38,7 @@ export const PaymentsManagement = () => {
 
   // Fetch queries
   const { data: dashboardData, isLoading: isDashboardLoading } = usePayoutDashboard();
-  const { data: allAdminPayouts, isLoading: isAdminPayoutsLoading } = useAllPayoutRequests();
+  const { data: allAdminPayouts, isLoading: isAdminPayoutsLoading } = useAllPayoutRequests({ enabled: isAdmin });
 
   // Mutations
   const createPayout = useCreatePayoutRequest();

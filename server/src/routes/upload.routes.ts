@@ -1,11 +1,17 @@
 import { FastifyInstance } from "fastify";
 import { uploadController } from "../controllers/upload.controller.js";
+import { auth } from "../config/auth.js";
 
 export async function uploadRoutes(app: FastifyInstance) {
-  // We'll need a middleware to check authentication for profile uploads
-  // For now, we'll assume the user is authenticated if they hit this route
-  // Better Auth stores session in cookies which Fastify can read.
-  
-  app.post("/profile", uploadController.uploadProfileImage);
-  app.post("/product", uploadController.uploadProductImage);
+  // Authentication middleware for upload routes
+  const authHandler = async (request: any, reply: any) => {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized: Please log in." });
+    }
+    request.user = session.user;
+  };
+
+  app.post("/profile", { preHandler: [authHandler] }, uploadController.uploadProfileImage);
+  app.post("/product", { preHandler: [authHandler] }, uploadController.uploadProductImage);
 }
