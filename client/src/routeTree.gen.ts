@@ -34,7 +34,6 @@ import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedOwnerRouteImport } from './routes/_authenticated/_owner'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/_admin'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account.index'
-import { Route as AuthenticatedAccountWishlistRouteImport } from './routes/_authenticated/account.wishlist'
 import { Route as AuthenticatedAccountReviewsRouteImport } from './routes/_authenticated/account.reviews'
 import { Route as AuthenticatedAccountProfileRouteImport } from './routes/_authenticated/account.profile'
 import { Route as AuthenticatedAccountPaymentsRouteImport } from './routes/_authenticated/account.payments'
@@ -169,12 +168,6 @@ const AuthenticatedAccountIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAccountRoute,
   } as any)
-const AuthenticatedAccountWishlistRoute =
-  AuthenticatedAccountWishlistRouteImport.update({
-    id: '/wishlist',
-    path: '/wishlist',
-    getParentRoute: () => AuthenticatedAccountRoute,
-  } as any)
 const AuthenticatedAccountReviewsRoute =
   AuthenticatedAccountReviewsRouteImport.update({
     id: '/reviews',
@@ -265,7 +258,6 @@ export interface FileRoutesByFullPath {
   '/account/payments': typeof AuthenticatedAccountPaymentsRoute
   '/account/profile': typeof AuthenticatedAccountProfileRoute
   '/account/reviews': typeof AuthenticatedAccountReviewsRoute
-  '/account/wishlist': typeof AuthenticatedAccountWishlistRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
   '/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRoute
   '/superadmin/dashboard': typeof AuthenticatedAdminSuperadminDashboardRoute
@@ -297,7 +289,6 @@ export interface FileRoutesByTo {
   '/account/payments': typeof AuthenticatedAccountPaymentsRoute
   '/account/profile': typeof AuthenticatedAccountProfileRoute
   '/account/reviews': typeof AuthenticatedAccountReviewsRoute
-  '/account/wishlist': typeof AuthenticatedAccountWishlistRoute
   '/account': typeof AuthenticatedAccountIndexRoute
   '/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRoute
   '/superadmin/dashboard': typeof AuthenticatedAdminSuperadminDashboardRoute
@@ -336,7 +327,6 @@ export interface FileRoutesById {
   '/_authenticated/account/payments': typeof AuthenticatedAccountPaymentsRoute
   '/_authenticated/account/profile': typeof AuthenticatedAccountProfileRoute
   '/_authenticated/account/reviews': typeof AuthenticatedAccountReviewsRoute
-  '/_authenticated/account/wishlist': typeof AuthenticatedAccountWishlistRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
   '/_authenticated/_admin/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRoute
   '/_authenticated/_admin/superadmin/dashboard': typeof AuthenticatedAdminSuperadminDashboardRoute
@@ -373,7 +363,6 @@ export interface FileRouteTypes {
     | '/account/payments'
     | '/account/profile'
     | '/account/reviews'
-    | '/account/wishlist'
     | '/account/'
     | '/admin/dashboard'
     | '/superadmin/dashboard'
@@ -405,7 +394,6 @@ export interface FileRouteTypes {
     | '/account/payments'
     | '/account/profile'
     | '/account/reviews'
-    | '/account/wishlist'
     | '/account'
     | '/admin/dashboard'
     | '/superadmin/dashboard'
@@ -443,7 +431,6 @@ export interface FileRouteTypes {
     | '/_authenticated/account/payments'
     | '/_authenticated/account/profile'
     | '/_authenticated/account/reviews'
-    | '/_authenticated/account/wishlist'
     | '/_authenticated/account/'
     | '/_authenticated/_admin/admin/dashboard'
     | '/_authenticated/_admin/superadmin/dashboard'
@@ -644,13 +631,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountIndexRouteImport
       parentRoute: typeof AuthenticatedAccountRoute
     }
-    '/_authenticated/account/wishlist': {
-      id: '/_authenticated/account/wishlist'
-      path: '/wishlist'
-      fullPath: '/account/wishlist'
-      preLoaderRoute: typeof AuthenticatedAccountWishlistRouteImport
-      parentRoute: typeof AuthenticatedAccountRoute
-    }
     '/_authenticated/account/reviews': {
       id: '/_authenticated/account/reviews'
       path: '/reviews'
@@ -757,7 +737,6 @@ interface AuthenticatedAccountRouteChildren {
   AuthenticatedAccountPaymentsRoute: typeof AuthenticatedAccountPaymentsRoute
   AuthenticatedAccountProfileRoute: typeof AuthenticatedAccountProfileRoute
   AuthenticatedAccountReviewsRoute: typeof AuthenticatedAccountReviewsRoute
-  AuthenticatedAccountWishlistRoute: typeof AuthenticatedAccountWishlistRoute
   AuthenticatedAccountIndexRoute: typeof AuthenticatedAccountIndexRoute
 }
 
@@ -770,7 +749,6 @@ const AuthenticatedAccountRouteChildren: AuthenticatedAccountRouteChildren = {
   AuthenticatedAccountPaymentsRoute: AuthenticatedAccountPaymentsRoute,
   AuthenticatedAccountProfileRoute: AuthenticatedAccountProfileRoute,
   AuthenticatedAccountReviewsRoute: AuthenticatedAccountReviewsRoute,
-  AuthenticatedAccountWishlistRoute: AuthenticatedAccountWishlistRoute,
   AuthenticatedAccountIndexRoute: AuthenticatedAccountIndexRoute,
 }
 

@@ -1,10 +1,6 @@
-import SignUpPage from '#/pages/auth/signup'
 import { createFileRoute } from '@tanstack/react-router'
+import { SignUpFormPage } from '#/features/auth'
 
 export const Route = createFileRoute('/signup')({
-  component: RouteComponent,
+  component: SignUpFormPage,
 })
-
-function RouteComponent() {
-  return <SignUpPage />
-}

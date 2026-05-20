@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { JournalPage } from '#/pages/journal/JournalPage'
+import { JournalPage } from '#/features/journal'
 
 export const Route = createFileRoute('/journal')({
   component: JournalPage,
