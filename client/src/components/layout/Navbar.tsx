@@ -175,6 +175,14 @@ export function Navbar() {
                       <span>Profile Summary</span>
                     </DropdownMenuItem>
                   </Link>
+                  {(session.user.role === 'owner' || session.user.role === 'admin' || session.user.role === 'superAdmin') && (
+                    <Link to="/owner/dashboard">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Owner Dashboard</span>
+                      </DropdownMenuItem>
+                    </Link>
+                  )}
                   {(session.user.role === 'admin' || session.user.role === 'superAdmin') && (
                     <Link to="/admin/dashboard">
                       <DropdownMenuItem className="cursor-pointer">

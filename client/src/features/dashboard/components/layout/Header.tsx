@@ -5,15 +5,12 @@ import {
   ChevronDown,
   Menu,
 } from 'lucide-react';
-import { authClient } from '#/lib/auth/auth-client';
 
 interface HeaderProps {
   onMenuClick?: () => void;
 }
 
 export const Header = ({ onMenuClick }: HeaderProps) => {
-  const { data: session } = authClient.useSession();
-  const user = session?.user;
 
   const [rangeType, setRangeType] = useState<'7days' | '30days' | 'thisMonth'>('7days');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -119,21 +116,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         <button className="relative p-2.5 hover:bg-gray-50 rounded-xl text-gray-500 transition-all group">
           <Bell size={20} />
           <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
-        </button>
-
-        {/* Profile */}
-        <button className="p-1 hover:bg-gray-50 rounded-full transition-all">
-          {user?.image ? (
-            <img 
-              src={user.image} 
-              alt={user.name || 'User'} 
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border-2 border-emerald-50"
-            />
-          ) : (
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-dash-brand rounded-full flex items-center justify-center text-white font-black text-sm uppercase">
-              {user?.name ? user.name[0] : 'U'}
-            </div>
-          )}
         </button>
       </div>
     </header>
