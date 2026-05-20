@@ -6,7 +6,6 @@ import {
   Package, 
   LogOut, 
   ChevronRight, 
-  Heart, 
   Ticket, 
   Bell, 
   Star,
@@ -15,7 +14,6 @@ import {
 import { cn } from "#/lib/utils"
 import { authClient } from "#/lib/auth/auth-client"
 import { useState, useEffect } from "react"
-import { Button } from "#/components/ui/button"
 
 export const Route = createFileRoute('/_authenticated/account')({
   component: AccountLayout,
@@ -38,7 +36,6 @@ function AccountLayout() {
     { id: "personal", label: "Profile Summary", icon: User, href: "/account" },
     { id: "profile", label: "Edit Profile", icon: Settings, href: "/account/profile" },
     { id: "bookings", label: "My Bookings", icon: ShoppingBag, href: "/account/bookings" },
-    { id: "wishlist", label: "My Wishlist", icon: Heart, href: "/account/wishlist" },
     { id: "coupons", label: "My Coupons", icon: Ticket, href: "/account/coupons" },
     { id: "notifications", label: "Notifications", icon: Bell, href: "/account/notifications" },
     { id: "reviews", label: "My Reviews", icon: Star, href: "/account/reviews" },

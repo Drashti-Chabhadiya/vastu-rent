@@ -518,7 +518,7 @@ export const DashboardOverview = ({
               )}
             </div>
 
-            <Link to="/account/wishlist" className="mt-6">
+            <Link to="/wishlist" className="mt-6">
               <Button className="w-full bg-gray-50 hover:bg-gray-100 text-gray-700 font-bold h-11 rounded-xl border border-gray-100 transition-all flex items-center justify-center gap-1">
                 Manage Wishlist
                 <Heart size={16} />

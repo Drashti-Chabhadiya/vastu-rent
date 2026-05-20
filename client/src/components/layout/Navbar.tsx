@@ -131,7 +131,7 @@ export function Navbar() {
               <Smartphone className="h-4 w-4" />
             </button>
           </Link>
-          <Link to="/account/wishlist">
+          <Link to="/wishlist">
             <button
               aria-label="Saved"
               className="group relative grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
