@@ -6,10 +6,12 @@ import {
   HowItWorks,
   Journal,
   OwnerCTA,
+  // PopularItems,
+  RecentProducts,
 } from '#/features/home'
 
 export const Route = createFileRoute('/')({
-  component: HomePage
+  component: HomePage,
 })
 
 function HomePage() {
@@ -17,6 +19,8 @@ function HomePage() {
     <main className="bg-background">
       <HeroSection />
       <Categories />
+      {/* <PopularItems /> */}
+      <RecentProducts />
       <Editorial />
       <HowItWorks />
       <Journal />
