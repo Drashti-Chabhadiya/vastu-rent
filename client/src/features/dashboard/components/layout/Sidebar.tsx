@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   LayoutDashboard, 
   Users, 
@@ -14,11 +14,15 @@ import {
   ChevronRight,
   ChevronDown,
   TrendingUp,
-  Trash2
+  Trash2,
+  LogOut,
+  ExternalLink,
+  User,
 } from 'lucide-react';
 import { cn } from '#/lib/utils';
 import { authClient } from '#/lib/auth/auth-client';
 import { Button } from '#/components/ui/button';
+import { useNavigate } from '@tanstack/react-router';
 
 interface NavItemProps {
   icon: React.ElementType;
@@ -107,7 +111,27 @@ interface SidebarProps {
 export const Sidebar = ({ currentTab, onTabChange, isOpen, onClose }: SidebarProps) => {
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
   const user = session?.user;
-  const role = user?.role || 'owner'; // Default/Fallback to owner config
+  const role = user?.role || 'owner';
+  const navigate = useNavigate();
+
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    navigate({ to: '/' });
+  };
 
   // Retrieve menus dynamically based on role; fallback if role is basic 'user' to owner stats
   const menuItems = SIDEBAR_MENU_CONFIG[role] || SIDEBAR_MENU_CONFIG['owner'];
@@ -192,19 +216,84 @@ export const Sidebar = ({ currentTab, onTabChange, isOpen, onClose }: SidebarPro
         </div>
       )}
 
-      {/* User Section at Sidebar Bottom */}
-      <div className="p-4 border-t border-gray-100">
-        <div className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors group">
+      {/* User Profile Section — interactive dropdown, professional standard */}
+      <div ref={profileRef} className="p-4 border-t border-gray-100 relative">
+        {/* Profile Dropdown Panel */}
+        {isProfileOpen && (
+          <div className="absolute bottom-full left-3 right-3 mb-2 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+            {/* User info header */}
+            <div className="px-4 pt-4 pb-3 border-b border-gray-50">
+              <div className="flex items-center gap-3">
+                <div className="relative shrink-0">
+                  <img
+                    src={user?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Vastu'}`}
+                    alt={user?.name || 'User'}
+                    className="w-10 h-10 rounded-xl object-cover border border-gray-100 bg-gray-50"
+                  />
+                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-sm font-black text-dash-text truncate">{user?.name || '—'}</p>
+                  <p className="text-[10px] text-dash-text-muted truncate">{user?.email || ''}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Menu items */}
+            <div className="py-1.5">
+              <button
+                onClick={() => { onTabChange('settings'); setIsProfileOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors"
+              >
+                <Settings size={15} className="text-gray-400" />
+                Settings
+              </button>
+              <button
+                onClick={() => { navigate({ to: '/account' }); setIsProfileOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors"
+              >
+                <User size={15} className="text-gray-400" />
+                My Account
+              </button>
+              <button
+                onClick={() => { navigate({ to: '/' }); setIsProfileOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors"
+              >
+                <ExternalLink size={15} className="text-gray-400" />
+                View Public Site
+              </button>
+            </div>
+
+            <div className="border-t border-gray-50 py-1.5">
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-red-500 hover:bg-red-50 transition-colors"
+              >
+                <LogOut size={15} />
+                Sign out
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Trigger button */}
+        <button
+          onClick={() => setIsProfileOpen((prev) => !prev)}
+          className={cn(
+            "w-full flex items-center justify-between p-2 rounded-xl cursor-pointer transition-colors group",
+            isProfileOpen ? "bg-gray-100" : "hover:bg-gray-50"
+          )}
+        >
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="relative shrink-0">
-              <img 
-                src={user?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Vastu'}`} 
-                alt={user?.name || 'User'} 
-                className="w-10 h-10 rounded-xl bg-gray-50 object-cover border border-gray-100"
+              <img
+                src={user?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Vastu'}`}
+                alt={user?.name || 'User'}
+                className="w-9 h-9 rounded-xl bg-gray-50 object-cover border border-gray-100"
               />
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
             </div>
-            <div className="overflow-hidden">
+            <div className="overflow-hidden text-left">
               <p className="text-sm font-black text-dash-text truncate group-hover:text-primary transition-colors">
                 {user?.name || 'Loading...'}
               </p>
@@ -213,8 +302,14 @@ export const Sidebar = ({ currentTab, onTabChange, isOpen, onClose }: SidebarPro
               </p>
             </div>
           </div>
-          <ChevronDown size={15} className="text-dash-text-muted shrink-0 group-hover:text-dash-text transition-colors" />
-        </div>
+          <ChevronDown
+            size={15}
+            className={cn(
+              "text-dash-text-muted shrink-0 transition-all duration-200",
+              isProfileOpen ? "rotate-180 text-dash-text" : "group-hover:text-dash-text"
+            )}
+          />
+        </button>
       </div>
     </aside>
   );

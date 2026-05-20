@@ -15,13 +15,14 @@ function RootDocument() {
   const routerState = useRouterState()
   const isAuthPage = routerState.location.pathname.startsWith('/login') || routerState.location.pathname.startsWith('/signup')
   const isAdminPage = routerState.location.pathname.startsWith('/admin')
+  const isOwnerPage = routerState.location.pathname.startsWith('/owner')
   
   return (
     <div className={cn('bg-white', 'font-sans', 'antialiased')}>
       <QueryClientProvider client={queryClient}>
-        {!isAuthPage && !isAdminPage && <Navbar />}
+        {!isAuthPage && !isAdminPage && !isOwnerPage && <Navbar />}
         <Outlet />
-        {!isAuthPage && !isAdminPage && <Footer />}
+        {!isAuthPage && !isAdminPage && !isOwnerPage && <Footer />}
       </QueryClientProvider>
       <TanStackDevtools
         config={{ position: 'bottom-right' }}

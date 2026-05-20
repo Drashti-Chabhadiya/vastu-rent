@@ -52,16 +52,16 @@ export const ListingsManagement = ({ initialCategoryFilter }: ListingsManagement
     }
   }, [initialCategoryFilter]);
 
-  // Fetch categories
-  const { data: categories } = useAdminCategories();
-
-  // Fetch users (providers) - using same params as before if needed, or just all users
-  const { data: users } = useAdminUsers();
-
   // Auth
   const { data: session } = authClient.useSession();
   const currentUser = session?.user;
   const isOwner = currentUser?.role === 'owner';
+
+  // Fetch categories
+  const { data: categories } = useAdminCategories();
+
+  // Fetch users (providers) - using same params as before if needed, or just all users
+  const { data: users } = useAdminUsers(undefined, { enabled: !isOwner });
 
   // Fetch products based on role
   const { data: adminProducts, isLoading: isAdminLoading } = useAdminProducts(

@@ -57,6 +57,7 @@ model User {
   disputes         Dispute[]         @relation("ReportedDisputes")
   notifications    Notification[]
   payouts          Payout[]
+  cloudinaryConfig CloudinaryConfig?
 
   @@map("user")
 }
@@ -302,4 +303,19 @@ model Payout {
 
   @@map("payout")
 }
+
+model CloudinaryConfig {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cloudName    String
+  apiKey       String
+  apiSecret    String
+  uploadPreset String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("cloudinary_config")
+}
+
 

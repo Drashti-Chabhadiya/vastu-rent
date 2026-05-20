@@ -174,7 +174,7 @@ export class ProductService {
       for (const imageUrl of product.images) {
         const publicId = cloudinaryService.extractPublicId(imageUrl);
         if (publicId) {
-          await cloudinaryService.deleteImage(publicId);
+          await cloudinaryService.deleteImage(publicId, product.ownerId);
         }
       }
     }

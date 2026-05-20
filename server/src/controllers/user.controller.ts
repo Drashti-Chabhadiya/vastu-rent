@@ -61,6 +61,157 @@ export class UserController {
       return reply.status(400).send({ message: error.message || "Failed to update settings" });
     }
   }
+
+  async getCloudinaryConfig(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const role = session.user.role;
+    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+      return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
+    }
+
+    try {
+      const config = await userService.getCloudinaryConfig(session.user.id);
+      return { config };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to get settings" });
+    }
+  }
+
+  async saveCloudinaryConfig(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const role = session.user.role;
+    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+      return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
+    }
+
+    try {
+      const config = await userService.saveCloudinaryConfig(session.user.id, request.body as any);
+      return { success: true, config };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to save settings" });
+    }
+  }
+
+  async testCloudinaryConfig(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const role = session.user.role;
+    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+      return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
+    }
+
+    const { cloudName, apiKey, apiSecret } = request.body as any;
+
+    let testCloudName = cloudName;
+    let testApiKey = apiKey;
+    let testApiSecret = apiSecret;
+
+    const { prisma } = await import("../config/prisma.js");
+
+    if (!testApiSecret) {
+      const config = await prisma.cloudinaryConfig.findUnique({
+        where: { userId: session.user.id }
+      });
+      if (config) {
+        const { decrypt } = await import("../config/encryption.js");
+        testApiSecret = decrypt(config.apiSecret);
+        if (!testCloudName) testCloudName = config.cloudName;
+        if (!testApiKey) testApiKey = config.apiKey;
+      }
+    }
+
+    if (!testCloudName || !testApiKey || !testApiSecret) {
+      return reply.status(400).send({ message: "Missing Cloudinary configuration parameters" });
+    }
+
+    try {
+      const { v2: cloudinary } = await import("cloudinary");
+      
+      const pingResult = await cloudinary.api.ping({
+        cloud_name: testCloudName,
+        api_key: testApiKey,
+        api_secret: testApiSecret
+      });
+
+      return { success: true, message: "Connection successful!", result: pingResult };
+    } catch (error: any) {
+      console.error("Cloudinary test failed:", error);
+      return reply.status(400).send({ message: error.message || "Failed to connect to Cloudinary" });
+    }
+  }
+
+  async getCloudinaryUsage(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const role = session.user.role;
+    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+      return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
+    }
+
+    const { prisma } = await import("../config/prisma.js");
+    const config = await prisma.cloudinaryConfig.findUnique({
+      where: { userId: session.user.id }
+    });
+
+    let cloudName = config?.cloudName || process.env.CLOUDINARY_CLOUD_NAME;
+    let apiKey = config?.apiKey || process.env.CLOUDINARY_API_KEY;
+    let apiSecret = "";
+
+    if (config) {
+      const { decrypt } = await import("../config/encryption.js");
+      try {
+        apiSecret = decrypt(config.apiSecret);
+      } catch (err) {
+        console.error("Failed to decrypt API Secret for usage tracking:", err);
+      }
+    } else {
+      apiSecret = process.env.CLOUDINARY_API_SECRET || "";
+    }
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      return { 
+        hasConfig: false, 
+        storage: { usage: 0, limit: 10485760000, used_percent: 0 } // 10 GB default placeholder
+      };
+    }
+
+    try {
+      const { v2: cloudinary } = await import("cloudinary");
+      const usageResult = await cloudinary.api.usage({
+        cloud_name: cloudName,
+        api_key: apiKey,
+        api_secret: apiSecret
+      });
+
+      return {
+        hasConfig: true,
+        cloudName,
+        storage: {
+          usage: usageResult.storage?.usage || 0,
+          limit: usageResult.storage?.limit || 10485760000,
+          used_percent: usageResult.storage?.used_percent || 0
+        },
+        credits: {
+          usage: usageResult.credits?.usage || 0,
+          limit: usageResult.credits?.limit || 25,
+          used_percent: usageResult.credits?.used_percent || 0
+        }
+      };
+    } catch (error: any) {
+      console.error("Cloudinary usage API failed:", error);
+      return { 
+        hasConfig: false, 
+        message: error.message || "Failed to fetch Cloudinary usage",
+        storage: { usage: 0, limit: 10485760000, used_percent: 0 }
+      };
+    }
+  }
 }
 
 export const userController = new UserController();

@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Reusable Stat Card Skeleton
 export const StatCardSkeleton = () => (
   <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm flex items-center justify-between animate-pulse">

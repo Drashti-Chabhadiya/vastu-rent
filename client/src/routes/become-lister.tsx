@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { BecomeListerPage } from '#/pages/become-lister/BecomeListerPage'
+import { BecomeListerPage } from '#/features/pages'
 
 export const Route = createFileRoute('/become-lister')({
   component: BecomeListerPage

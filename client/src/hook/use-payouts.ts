@@ -29,13 +29,14 @@ export const useCreatePayoutRequest = () => {
 };
 
 // Fetch all payout requests (Admin only)
-export const useAllPayoutRequests = () => {
+export const useAllPayoutRequests = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['all-payouts'],
     queryFn: async () => {
       const res = await apiClient.get('/payouts/requests');
       return res.data.payouts;
-    }
+    },
+    ...options
   });
 };
 
