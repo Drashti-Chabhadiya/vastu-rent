@@ -17,34 +17,45 @@ const stagger: Variants = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
 };
 
+import { useStories } from "#/hook";
 
 export function Journal() {
-  const posts = [
+  const { data: fetchedStories, isLoading } = useStories();
+
+  const fallbackPosts = [
     {
+      id: '1',
       tag: "Living",
       title: "The art of the seasonal swap: Rotating your decor",
       excerpt: "Discover the secrets to keeping your home fresh and inspired through the changing seasons.",
       date: "May 12, 2024",
       readTime: "5 min",
-      img: featureNook
+      imageUrl: featureNook
     },
     {
+      id: '2',
       tag: "Hosts",
       title: "Inside Anneli's lending atelier in Copenhagen",
       excerpt: "Meet the neighbor who turned her passion for Scandinavian design into a community resource.",
       date: "May 08, 2024",
       readTime: "8 min",
-      img: catFurniture
+      imageUrl: catFurniture
     },
     {
+      id: '3',
       tag: "Impact",
       title: "What 25,000 kg of CO₂ looks like in rental impact",
       excerpt: "Measuring the environmental difference of circular consumption in our local neighborhoods.",
       date: "April 28, 2024",
       readTime: "12 min",
-      img: catOutdoor
+      imageUrl: catOutdoor
     },
   ];
+
+  const displayStories = fetchedStories && fetchedStories.length > 0 
+    ? fetchedStories 
+    : fallbackPosts;
+
   return (
     <section id="journal" className="bg-surface/70">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32">
@@ -67,12 +78,12 @@ export function Journal() {
           viewport={{ once: true }}
           className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3"
         >
-          {posts.map((p) => (
-            <motion.div variants={fadeUp} key={p.title}>
+          {displayStories.map((p: any) => (
+            <motion.div variants={fadeUp} key={p.id || p.title}>
               <Link to="/journal" className="group block">
                 <div className="relative overflow-hidden rounded-[2rem] bg-background">
                   <img
-                    src={p.img}
+                    src={p.imageUrl}
                     alt={p.title}
                     width={800}
                     height={600}
@@ -89,7 +100,7 @@ export function Journal() {
                 <div className="mt-7 flex items-center gap-5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-3 w-3" />
-                    {p.date}
+                    {p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : p.date}
                   </span>
                   <span className="h-px w-6 bg-border" />
                   <span className="flex items-center gap-1.5">

@@ -23,11 +23,13 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
+import { Route as JournalIndexRouteImport } from './routes/journal.index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as UsersIdRouteImport } from './routes/users.$id'
 import { Route as ProfileListingsRouteImport } from './routes/profile.listings'
 import { Route as ProfileBookingsRouteImport } from './routes/profile.bookings'
 import { Route as ProductsIdRouteImport } from './routes/products.$id'
+import { Route as JournalIdRouteImport } from './routes/journal.$id'
 import { Route as CategoriesIdRouteImport } from './routes/categories.$id'
 import { Route as AuthenticatedWishlistRouteImport } from './routes/_authenticated/wishlist'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
@@ -114,6 +116,11 @@ const ProductsIndexRoute = ProductsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ProductsRoute,
 } as any)
+const JournalIndexRoute = JournalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => JournalRoute,
+} as any)
 const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -138,6 +145,11 @@ const ProductsIdRoute = ProductsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ProductsRoute,
+} as any)
+const JournalIdRoute = JournalIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => JournalRoute,
 } as any)
 const CategoriesIdRoute = CategoriesIdRouteImport.update({
   id: '/$id',
@@ -237,7 +249,7 @@ export interface FileRoutesByFullPath {
   '/download': typeof DownloadRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/journal': typeof JournalRoute
+  '/journal': typeof JournalRouteWithChildren
   '/login': typeof LoginRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
@@ -245,11 +257,13 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
+  '/journal/$id': typeof JournalIdRoute
   '/products/$id': typeof ProductsIdRoute
   '/profile/bookings': typeof ProfileBookingsRoute
   '/profile/listings': typeof ProfileListingsRoute
   '/users/$id': typeof UsersIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/journal/': typeof JournalIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/account/bookings': typeof AuthenticatedAccountBookingsRoute
   '/account/coupons': typeof AuthenticatedAccountCouponsRoute
@@ -270,17 +284,18 @@ export interface FileRoutesByTo {
   '/download': typeof DownloadRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/journal': typeof JournalRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRouteWithChildren
   '/signup': typeof SignupRoute
   '/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
+  '/journal/$id': typeof JournalIdRoute
   '/products/$id': typeof ProductsIdRoute
   '/profile/bookings': typeof ProfileBookingsRoute
   '/profile/listings': typeof ProfileListingsRoute
   '/users/$id': typeof UsersIdRoute
   '/categories': typeof CategoriesIndexRoute
+  '/journal': typeof JournalIndexRoute
   '/products': typeof ProductsIndexRoute
   '/account/bookings': typeof AuthenticatedAccountBookingsRoute
   '/account/coupons': typeof AuthenticatedAccountCouponsRoute
@@ -304,7 +319,7 @@ export interface FileRoutesById {
   '/download': typeof DownloadRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/journal': typeof JournalRoute
+  '/journal': typeof JournalRouteWithChildren
   '/login': typeof LoginRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
@@ -314,11 +329,13 @@ export interface FileRoutesById {
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
   '/_authenticated/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
+  '/journal/$id': typeof JournalIdRoute
   '/products/$id': typeof ProductsIdRoute
   '/profile/bookings': typeof ProfileBookingsRoute
   '/profile/listings': typeof ProfileListingsRoute
   '/users/$id': typeof UsersIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/journal/': typeof JournalIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/_authenticated/account/bookings': typeof AuthenticatedAccountBookingsRoute
   '/_authenticated/account/coupons': typeof AuthenticatedAccountCouponsRoute
@@ -350,11 +367,13 @@ export interface FileRouteTypes {
     | '/account'
     | '/wishlist'
     | '/categories/$id'
+    | '/journal/$id'
     | '/products/$id'
     | '/profile/bookings'
     | '/profile/listings'
     | '/users/$id'
     | '/categories/'
+    | '/journal/'
     | '/products/'
     | '/account/bookings'
     | '/account/coupons'
@@ -375,17 +394,18 @@ export interface FileRouteTypes {
     | '/download'
     | '/help'
     | '/how-it-works'
-    | '/journal'
     | '/login'
     | '/profile'
     | '/signup'
     | '/wishlist'
     | '/categories/$id'
+    | '/journal/$id'
     | '/products/$id'
     | '/profile/bookings'
     | '/profile/listings'
     | '/users/$id'
     | '/categories'
+    | '/journal'
     | '/products'
     | '/account/bookings'
     | '/account/coupons'
@@ -418,11 +438,13 @@ export interface FileRouteTypes {
     | '/_authenticated/account'
     | '/_authenticated/wishlist'
     | '/categories/$id'
+    | '/journal/$id'
     | '/products/$id'
     | '/profile/bookings'
     | '/profile/listings'
     | '/users/$id'
     | '/categories/'
+    | '/journal/'
     | '/products/'
     | '/_authenticated/account/bookings'
     | '/_authenticated/account/coupons'
@@ -446,7 +468,7 @@ export interface RootRouteChildren {
   DownloadRoute: typeof DownloadRoute
   HelpRoute: typeof HelpRoute
   HowItWorksRoute: typeof HowItWorksRoute
-  JournalRoute: typeof JournalRoute
+  JournalRoute: typeof JournalRouteWithChildren
   LoginRoute: typeof LoginRoute
   ProductsRoute: typeof ProductsRouteWithChildren
   ProfileRoute: typeof ProfileRouteWithChildren
@@ -554,6 +576,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsIndexRouteImport
       parentRoute: typeof ProductsRoute
     }
+    '/journal/': {
+      id: '/journal/'
+      path: '/'
+      fullPath: '/journal/'
+      preLoaderRoute: typeof JournalIndexRouteImport
+      parentRoute: typeof JournalRoute
+    }
     '/categories/': {
       id: '/categories/'
       path: '/'
@@ -588,6 +617,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/$id'
       preLoaderRoute: typeof ProductsIdRouteImport
       parentRoute: typeof ProductsRoute
+    }
+    '/journal/$id': {
+      id: '/journal/$id'
+      path: '/$id'
+      fullPath: '/journal/$id'
+      preLoaderRoute: typeof JournalIdRouteImport
+      parentRoute: typeof JournalRoute
     }
     '/categories/$id': {
       id: '/categories/$id'
@@ -787,6 +823,19 @@ const CategoriesRouteWithChildren = CategoriesRoute._addFileChildren(
   CategoriesRouteChildren,
 )
 
+interface JournalRouteChildren {
+  JournalIdRoute: typeof JournalIdRoute
+  JournalIndexRoute: typeof JournalIndexRoute
+}
+
+const JournalRouteChildren: JournalRouteChildren = {
+  JournalIdRoute: JournalIdRoute,
+  JournalIndexRoute: JournalIndexRoute,
+}
+
+const JournalRouteWithChildren =
+  JournalRoute._addFileChildren(JournalRouteChildren)
+
 interface ProductsRouteChildren {
   ProductsIdRoute: typeof ProductsIdRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
@@ -823,7 +872,7 @@ const rootRouteChildren: RootRouteChildren = {
   DownloadRoute: DownloadRoute,
   HelpRoute: HelpRoute,
   HowItWorksRoute: HowItWorksRoute,
-  JournalRoute: JournalRoute,
+  JournalRoute: JournalRouteWithChildren,
   LoginRoute: LoginRoute,
   ProductsRoute: ProductsRouteWithChildren,
   ProfileRoute: ProfileRouteWithChildren,
