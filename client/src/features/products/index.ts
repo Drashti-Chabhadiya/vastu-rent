@@ -1,2 +1,2 @@
-export * from "./components/ProductDetail"
-export * from "./components/ProductsExplorePage"
+export * from './components/ProductDetail'
+export * from './components/ProductsExplorePage'

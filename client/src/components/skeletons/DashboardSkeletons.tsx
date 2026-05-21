@@ -8,10 +8,16 @@ export const StatCardSkeleton = () => (
     </div>
     <div className="w-12 h-12 bg-gray-100 rounded-xl shrink-0" />
   </div>
-);
+)
 
 // Reusable Table Skeleton
-export const TableSkeleton = ({ rows = 4, cols = 4 }: { rows?: number; cols?: number }) => (
+export const TableSkeleton = ({
+  rows = 4,
+  cols = 4,
+}: {
+  rows?: number
+  cols?: number
+}) => (
   <div className="space-y-4 w-full animate-pulse">
     {/* Header */}
     <div className="flex gap-4 border-b border-gray-50 pb-3">
@@ -20,15 +26,18 @@ export const TableSkeleton = ({ rows = 4, cols = 4 }: { rows?: number; cols?: nu
       ))}
     </div>
     {/* Body Rows */}
-    {Array.from({ length: rows }).map((_, r) => (
-      <div key={r} className="flex gap-4 py-3 border-b border-gray-50/50 items-center">
-        {Array.from({ length: cols }).map((_, c) => (
+    {Array.from({ length: rows }).map((__, r) => (
+      <div
+        key={r}
+        className="flex gap-4 py-3 border-b border-gray-50/50 items-center"
+      >
+        {Array.from({ length: cols }).map((___, c) => (
           <div key={c} className="h-5 bg-gray-100 rounded-lg flex-1" />
         ))}
       </div>
     ))}
   </div>
-);
+)
 
 // Reusable Chart Skeleton Mockup
 export const ChartSkeleton = () => (
@@ -42,21 +51,24 @@ export const ChartSkeleton = () => (
     </div>
     <div className="h-48 flex items-end gap-3 pt-6 border-b border-l border-gray-50 pl-4 pb-2">
       {[40, 60, 45, 80, 55, 90, 70, 85].map((height, i) => (
-        <div 
-          key={i} 
-          className="bg-gray-100/70 rounded-t-lg flex-1 transition-all duration-300" 
+        <div
+          key={i}
+          className="bg-gray-100/70 rounded-t-lg flex-1 transition-all duration-300"
           style={{ height: `${height}%` }}
         />
       ))}
     </div>
   </div>
-);
+)
 
 // Reusable Listings Grid Card Skeleton
 export const ListingsGridSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
     {Array.from({ length: 3 }).map((_, i) => (
-      <div key={i} className="bg-white rounded-3xl p-4 border border-gray-100 space-y-4">
+      <div
+        key={i}
+        className="bg-white rounded-3xl p-4 border border-gray-100 space-y-4"
+      >
         <div className="aspect-[4/3] rounded-2xl bg-gray-150 w-full" />
         <div className="space-y-2">
           <div className="h-4 bg-gray-250 rounded-md w-3/4" />
@@ -69,7 +81,7 @@ export const ListingsGridSkeleton = () => (
       </div>
     ))}
   </div>
-);
+)
 
 // Unified Dashboard Full Page Loader (prevents layout shifting)
 export const DashboardOverviewSkeleton = () => (
@@ -115,4 +127,4 @@ export const DashboardOverviewSkeleton = () => (
       </div>
     </div>
   </div>
-);
+)

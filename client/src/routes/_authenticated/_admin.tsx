@@ -5,7 +5,7 @@ export const Route = createFileRoute('/_authenticated/_admin')({
     // Read session from parent context
     const session = (context as any).session
     const role = session?.user?.role
-    
+
     if (role !== 'admin' && role !== 'superAdmin') {
       throw redirect({
         to: '/',

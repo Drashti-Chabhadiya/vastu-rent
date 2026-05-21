@@ -4,7 +4,7 @@ import { apiClient } from '#/lib/api'
 // Fetch all users with filters
 export const useAdminUsers = (
   params?: { search?: string; role?: string; status?: string },
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) => {
   return useQuery({
     queryKey: ['admin-users', params],
@@ -12,7 +12,7 @@ export const useAdminUsers = (
       const res = await apiClient.get('/admin/users', { params })
       return res.data.users
     },
-    ...options
+    ...options,
   })
 }
 
@@ -24,7 +24,7 @@ export const useAdminRecentUsers = (options?: { enabled?: boolean }) => {
       const res = await apiClient.get('/admin/users/recent')
       return res.data.users
     },
-    ...options
+    ...options,
   })
 }
 
@@ -38,7 +38,7 @@ export const useBanUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-users'] })
       queryClient.invalidateQueries({ queryKey: ['recent-users'] })
-    }
+    },
   })
 }
 
@@ -52,7 +52,7 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-users'] })
       queryClient.invalidateQueries({ queryKey: ['recent-users'] })
-    }
+    },
   })
 }
 
@@ -65,7 +65,7 @@ export const useUpdateUserRole = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-users'] })
-    }
+    },
   })
 }
 
@@ -77,7 +77,7 @@ export const useUserProfile = (id: string) => {
       const res = await apiClient.get(`/users/profile/${id}`)
       return res.data
     },
-    enabled: !!id
+    enabled: !!id,
   })
 }
 
@@ -85,22 +85,31 @@ export const useUserProfile = (id: string) => {
 export const useUpdateUserSettings = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: { upiId?: string; bankName?: string; accountNumber?: string; ifscCode?: string; accountHolder?: string; bookingAlerts?: boolean; settlementAlerts?: boolean; marketingAlerts?: boolean }) => {
+    mutationFn: async (data: {
+      upiId?: string
+      bankName?: string
+      accountNumber?: string
+      ifscCode?: string
+      accountHolder?: string
+      bookingAlerts?: boolean
+      settlementAlerts?: boolean
+      marketingAlerts?: boolean
+    }) => {
       const res = await apiClient.patch('/users/settings', data)
       return res.data.user
     },
     onSuccess: () => {
       // Invalidate the session query to reload user data globally!
       queryClient.invalidateQueries({ queryKey: ['session'] })
-    }
+    },
   })
 }
 
 // Fetch Cloudinary storage usage metrics
 export const useCloudinaryUsage = (options?: {
-  enabled?: boolean;
-  staleTime?: number;
-  refetchOnWindowFocus?: boolean;
+  enabled?: boolean
+  staleTime?: number
+  refetchOnWindowFocus?: boolean
 }) => {
   return useQuery({
     queryKey: ['cloudinary-usage'],
@@ -108,6 +117,6 @@ export const useCloudinaryUsage = (options?: {
       const res = await apiClient.get('/users/settings/cloudinary/usage')
       return res.data
     },
-    ...options
+    ...options,
   })
 }

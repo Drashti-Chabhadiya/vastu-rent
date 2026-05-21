@@ -12,18 +12,18 @@ import {
   Check,
   X,
   FileText,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
-import { 
-  useAdminCategories, 
-  useCreateCategory, 
-  useUpdateCategory, 
+import {
+  useAdminCategories,
+  useCreateCategory,
+  useUpdateCategory,
   useDeleteCategory,
   useCategoryRequests,
   useCreateCategoryRequest,
-  useUpdateCategoryRequestStatus
+  useUpdateCategoryRequestStatus,
 } from '#/hook'
 import { CategoryFormDialog } from './CategoryFormDialog'
 import { DeleteConfirmDialog } from './DeleteConfirmDialog'
@@ -33,10 +33,14 @@ interface CategoryManagementProps {
   onManageCategory?: (categoryId: string) => void
 }
 
-export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps) => {
+export const CategoryManagement = ({
+  onManageCategory,
+}: CategoryManagementProps) => {
   const [search, setSearch] = useState('')
-  const [activeTab, setActiveTab] = useState<'categories' | 'requests'>('categories')
-  
+  const [activeTab, setActiveTab] = useState<'categories' | 'requests'>(
+    'categories',
+  )
+
   // Category CRUD states
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<any>(null)
@@ -45,7 +49,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
 
   // Category Request states
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false)
-  
+
   // Rejection state
   const [rejectingRequest, setRejectingRequest] = useState<any>(null)
   const [rejectReason, setRejectReason] = useState('')
@@ -56,7 +60,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
   const { data: categories, isLoading } = useAdminCategories()
   const { data: requests, isLoading: requestsLoading } = useCategoryRequests()
   const { data: session } = authClient.useSession()
-  
+
   const user = session?.user
   const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin'
   const isOwner = user?.role === 'owner'
@@ -64,7 +68,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
   const createMutation = useCreateCategory()
   const updateMutation = useUpdateCategory()
   const deleteMutation = useDeleteCategory()
-  
+
   const createRequestMutation = useCreateCategoryRequest()
   const updateRequestStatusMutation = useUpdateCategoryRequestStatus()
 
@@ -84,18 +88,18 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
     if (editingCategory) {
       updateMutation.mutate(
         { id: editingCategory.id, ...data },
-        { 
+        {
           onSuccess: () => {
             setIsDialogOpen(false)
             setEditingCategory(null)
-          }
-        }
+          },
+        },
       )
     } else {
       createMutation.mutate(data, {
         onSuccess: () => {
           setIsDialogOpen(false)
-        }
+        },
       })
     }
   }
@@ -106,7 +110,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
         onSuccess: () => {
           setIsDeleteDialogOpen(false)
           setCategoryToDelete(null)
-        }
+        },
       })
     }
   }
@@ -115,7 +119,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
     createRequestMutation.mutate(data, {
       onSuccess: () => {
         setIsRequestDialogOpen(false)
-      }
+      },
     })
   }
 
@@ -126,37 +130,41 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
   const handleRejectRequest = (e: React.FormEvent) => {
     e.preventDefault()
     if (!rejectingRequest || !rejectReason.trim()) return
-    
-    updateRequestStatusMutation.mutate({
-      id: rejectingRequest.id,
-      status: 'rejected',
-      reason: rejectReason
-    }, {
-      onSuccess: () => {
-        setRejectingRequest(null)
-        setRejectReason('')
-      }
-    })
+
+    updateRequestStatusMutation.mutate(
+      {
+        id: rejectingRequest.id,
+        status: 'rejected',
+        reason: rejectReason,
+      },
+      {
+        onSuccess: () => {
+          setRejectingRequest(null)
+          setRejectReason('')
+        },
+      },
+    )
   }
 
   const filteredCategories = categories?.filter((cat: any) =>
-    cat.name.toLowerCase().includes(search.toLowerCase())
+    cat.name.toLowerCase().includes(search.toLowerCase()),
   )
 
-  const ownerRequests = requests?.filter((req: any) => 
-    isAdmin ? true : req.ownerId === user?.id
+  const ownerRequests = requests?.filter((req: any) =>
+    isAdmin ? true : req.ownerId === user?.id,
   )
 
   const renderCategoryIcon = (category: any) => {
     if (category.image) {
       return (
         <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-          <img 
-            src={category.image} 
-            alt={category.name} 
+          <img
+            src={category.image}
+            alt={category.name}
             className="w-full h-full object-cover"
             onError={(e) => {
-              (e.target as any).src = 'https://via.placeholder.com/100?text=Category'
+              ;(e.target as any).src =
+                'https://via.placeholder.com/100?text=Category'
             }}
           />
         </div>
@@ -166,13 +174,13 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
     const iconName = category.icon || 'Folder'
     const IconComponent = (LucideIcons as any)[iconName]
     const iconColor = category.color || '#166534'
-    
+
     return (
-      <div 
+      <div
         className="w-12 h-12 rounded-xl flex items-center justify-center transition-all group-hover:scale-110 shadow-sm"
-        style={{ 
+        style={{
           backgroundColor: `${iconColor}15`,
-          color: iconColor 
+          color: iconColor,
         }}
       >
         {IconComponent ? <IconComponent size={24} /> : <Folder size={24} />}
@@ -187,7 +195,9 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
         <button
           onClick={() => setActiveTab('categories')}
           className={`pb-4 text-sm font-bold tracking-tight transition-all relative ${
-            activeTab === 'categories' ? 'text-dash-brand' : 'text-gray-400 hover:text-gray-600'
+            activeTab === 'categories'
+              ? 'text-dash-brand'
+              : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           Active Categories
@@ -198,15 +208,22 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
         <button
           onClick={() => setActiveTab('requests')}
           className={`pb-4 text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 ${
-            activeTab === 'requests' ? 'text-dash-brand' : 'text-gray-400 hover:text-gray-600'
+            activeTab === 'requests'
+              ? 'text-dash-brand'
+              : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           Category Requests
-          {ownerRequests && ownerRequests.filter((r: any) => r.status === 'pending').length > 0 && (
-            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
-              {ownerRequests.filter((r: any) => r.status === 'pending').length}
-            </span>
-          )}
+          {ownerRequests &&
+            ownerRequests.filter((r: any) => r.status === 'pending').length >
+              0 && (
+              <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
+                {
+                  ownerRequests.filter((r: any) => r.status === 'pending')
+                    .length
+                }
+              </span>
+            )}
           {activeTab === 'requests' && (
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-dash-brand rounded-t-full" />
           )}
@@ -218,7 +235,10 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
           {/* Categories List Controls */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10" size={18} />
+              <Search
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10"
+                size={18}
+              />
               <Input
                 type="text"
                 placeholder="Search categories..."
@@ -253,7 +273,10 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {isLoading ? (
               Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-32 bg-white rounded-xl border border-gray-100 animate-pulse" />
+                <div
+                  key={i}
+                  className="h-32 bg-white rounded-xl border border-gray-100 animate-pulse"
+                />
               ))
             ) : filteredCategories?.length === 0 ? (
               <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
@@ -268,8 +291,8 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
                   key={category.id}
                   className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-dash-brand/20 transition-all group relative overflow-hidden"
                 >
-                  <div 
-                    className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 opacity-[0.03]" 
+                  <div
+                    className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 opacity-[0.03]"
                     style={{ backgroundColor: category.color || '#166534' }}
                   />
 
@@ -281,12 +304,17 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
                           {category.name}
                         </h3>
                         <div className="flex items-center gap-2 mt-2">
-                          <div 
+                          <div
                             className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
-                            style={{ backgroundColor: `${category.color || '#166534'}15` }}
+                            style={{
+                              backgroundColor: `${category.color || '#166534'}15`,
+                            }}
                           >
-                            <Layers size={12} style={{ color: category.color || '#166534' }} />
-                            <span 
+                            <Layers
+                              size={12}
+                              style={{ color: category.color || '#166534' }}
+                            />
+                            <span
                               className="text-[11px] font-extrabold uppercase tracking-wider"
                               style={{ color: category.color || '#166534' }}
                             >
@@ -322,14 +350,17 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
                     )}
                   </div>
 
-                  <div 
+                  <div
                     onClick={() => onManageCategory?.(category.id)}
                     className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between cursor-pointer group/manage"
                   >
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover/manage:text-dash-brand transition-colors">
                       Manage Collection
                     </span>
-                    <ArrowRight size={16} className="text-gray-300 group-hover/manage:text-dash-brand group-hover/manage:translate-x-1 transition-all" />
+                    <ArrowRight
+                      size={16}
+                      className="text-gray-300 group-hover/manage:text-dash-brand group-hover/manage:translate-x-1 transition-all"
+                    />
                   </div>
                 </div>
               ))
@@ -340,7 +371,9 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
         /* Requests Tab View */
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="font-bold text-gray-900">Category Request Pipeline</h3>
+            <h3 className="font-bold text-gray-900">
+              Category Request Pipeline
+            </h3>
             {isOwner && (
               <Button
                 onClick={() => setIsRequestDialogOpen(true)}
@@ -354,39 +387,58 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
 
           <div className="divide-y divide-gray-50">
             {requestsLoading ? (
-              <div className="p-8 text-center text-gray-400">Loading requests...</div>
+              <div className="p-8 text-center text-gray-400">
+                Loading requests...
+              </div>
             ) : ownerRequests?.length === 0 ? (
               <div className="p-12 text-center text-gray-400">
                 <FileText className="mx-auto w-12 h-12 text-gray-200 mb-3" />
                 <p className="font-bold text-gray-500">No requests found</p>
-                <p className="text-xs mt-1">Requested category proposals will display here.</p>
+                <p className="text-xs mt-1">
+                  Requested category proposals will display here.
+                </p>
               </div>
             ) : (
               ownerRequests?.map((req: any) => {
-                const Icon = (LucideIcons as any)[req.icon || 'Folder'] || Folder
+                const Icon =
+                  (LucideIcons as any)[req.icon || 'Folder'] || Folder
                 return (
-                  <div key={req.id} className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors">
+                  <div
+                    key={req.id}
+                    className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-gray-50/50 transition-colors"
+                  >
                     <div className="flex items-center gap-4">
-                      <div 
+                      <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: `${req.color || '#166534'}15`, color: req.color || '#166534' }}
+                        style={{
+                          backgroundColor: `${req.color || '#166534'}15`,
+                          color: req.color || '#166534',
+                        }}
                       >
                         <Icon size={24} />
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900">{req.name}</h4>
                         <p className="text-xs text-gray-400 mt-1">
-                          Requested by {req.owner?.name || req.owner?.email || 'Unknown Owner'} • {new Date(req.createdAt).toLocaleDateString()}
+                          Requested by{' '}
+                          {req.owner?.name ||
+                            req.owner?.email ||
+                            'Unknown Owner'}{' '}
+                          • {new Date(req.createdAt).toLocaleDateString()}
                         </p>
                         {req.description && (
                           <p className="text-xs text-gray-600 mt-2 bg-gray-50/80 px-3 py-1.5 rounded-xl border border-gray-100/50 w-full max-w-lg">
-                            <span className="font-bold text-[10px] text-gray-400 uppercase block tracking-wide mb-0.5">Description</span>
+                            <span className="font-bold text-[10px] text-gray-400 uppercase block tracking-wide mb-0.5">
+                              Description
+                            </span>
                             {req.description}
                           </p>
                         )}
                         {req.requestReason && (
                           <p className="text-xs text-gray-600 mt-2 bg-emerald-50/20 px-3 py-1.5 rounded-xl border border-emerald-50/50 w-full max-w-lg">
-                            <span className="font-bold text-[10px] text-emerald-600/70 uppercase block tracking-wide mb-0.5">Proposed Reason</span>
+                            <span className="font-bold text-[10px] text-emerald-600/70 uppercase block tracking-wide mb-0.5">
+                              Proposed Reason
+                            </span>
                             {req.requestReason}
                           </p>
                         )}
@@ -401,11 +453,15 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
 
                     <div className="flex items-center gap-3">
                       {/* Status badge */}
-                      <span className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${
-                        req.status === 'approved' ? 'bg-green-50 text-green-700' :
-                        req.status === 'rejected' ? 'bg-red-50 text-red-700' :
-                        'bg-yellow-50 text-yellow-700'
-                      }`}>
+                      <span
+                        className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${
+                          req.status === 'approved'
+                            ? 'bg-green-50 text-green-700'
+                            : req.status === 'rejected'
+                              ? 'bg-red-50 text-red-700'
+                              : 'bg-yellow-50 text-yellow-700'
+                        }`}
+                      >
                         {req.status}
                       </span>
 
@@ -438,7 +494,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
       )}
 
       {/* Forms & Dialogs */}
-      <CategoryFormDialog 
+      <CategoryFormDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         editingCategory={editingCategory}
@@ -446,7 +502,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
         isPending={createMutation.isPending || updateMutation.isPending}
       />
 
-      <DeleteConfirmDialog 
+      <DeleteConfirmDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         onConfirm={handleDeleteConfirm}
@@ -455,7 +511,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
       />
 
       {/* Category Request Dialog for Owners */}
-      <CategoryFormDialog 
+      <CategoryFormDialog
         isOpen={isRequestDialogOpen}
         onOpenChange={setIsRequestDialogOpen}
         editingCategory={null}
@@ -468,19 +524,25 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
       {rejectingRequest && (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-gray-100 shadow-2xl relative">
-            <button 
+            <button
               onClick={() => setRejectingRequest(null)}
               className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
             >
               <X size={20} />
             </button>
 
-            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">Reject Proposed Category</h3>
-            <p className="text-sm text-gray-500 mb-6">State the reason for rejecting "{rejectingRequest.name}".</p>
+            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">
+              Reject Proposed Category
+            </h3>
+            <p className="text-sm text-gray-500 mb-6">
+              State the reason for rejecting "{rejectingRequest.name}".
+            </p>
 
             <form onSubmit={handleRejectRequest} className="space-y-5">
               <div>
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Rejection Feedback (Optional)</label>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">
+                  Rejection Feedback (Optional)
+                </label>
                 <textarea
                   placeholder="State why this category is rejected (e.g. Duplicated category name, not relevant, etc.)"
                   value={rejectReason}
@@ -503,7 +565,9 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
                   disabled={updateRequestStatusMutation.isPending}
                   className="bg-red-600 hover:bg-red-700 text-white rounded-xl h-12 px-6 font-bold"
                 >
-                  {updateRequestStatusMutation.isPending ? 'Rejecting...' : 'Reject Request'}
+                  {updateRequestStatusMutation.isPending
+                    ? 'Rejecting...'
+                    : 'Reject Request'}
                 </Button>
               </div>
             </form>
@@ -515,7 +579,7 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
       {approvingRequest && (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-gray-100 shadow-2xl relative">
-            <button 
+            <button
               onClick={() => setApprovingRequest(null)}
               className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
             >
@@ -526,10 +590,16 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
               <Check size={28} />
             </div>
 
-            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">Approve Category Proposal</h3>
+            <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">
+              Approve Category Proposal
+            </h3>
             <p className="text-sm text-gray-500 mb-6">
-              Are you sure you want to approve and create the category <strong className="text-gray-900">"{approvingRequest.name}"</strong>? 
-              This will automatically add it to the active category database catalog for all platform users.
+              Are you sure you want to approve and create the category{' '}
+              <strong className="text-gray-900">
+                "{approvingRequest.name}"
+              </strong>
+              ? This will automatically add it to the active category database
+              catalog for all platform users.
             </p>
 
             <div className="flex gap-3 justify-end">
@@ -543,16 +613,21 @@ export const CategoryManagement = ({ onManageCategory }: CategoryManagementProps
               </Button>
               <Button
                 onClick={() => {
-                  updateRequestStatusMutation.mutate({ id: approvingRequest.id, status: 'approved' }, {
-                    onSuccess: () => {
-                      setApprovingRequest(null)
-                    }
-                  })
+                  updateRequestStatusMutation.mutate(
+                    { id: approvingRequest.id, status: 'approved' },
+                    {
+                      onSuccess: () => {
+                        setApprovingRequest(null)
+                      },
+                    },
+                  )
                 }}
                 disabled={updateRequestStatusMutation.isPending}
                 className="bg-green-600 hover:bg-green-700 text-white rounded-xl h-12 px-6 font-bold"
               >
-                {updateRequestStatusMutation.isPending ? 'Approving...' : 'Confirm Approval'}
+                {updateRequestStatusMutation.isPending
+                  ? 'Approving...'
+                  : 'Confirm Approval'}
               </Button>
             </div>
           </div>

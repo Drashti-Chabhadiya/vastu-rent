@@ -1,111 +1,142 @@
-import { useState } from 'react';
-import { 
-  Bell, 
-  Calendar, 
-  ChevronDown,
-  Menu,
-} from 'lucide-react';
+import { useState } from 'react'
+import { Bell, Calendar, ChevronDown, Menu } from 'lucide-react'
 
 interface HeaderProps {
-  onMenuClick?: () => void;
+  onMenuClick?: () => void
 }
 
 export const Header = ({ onMenuClick }: HeaderProps) => {
-
-  const [rangeType, setRangeType] = useState<'7days' | '30days' | 'thisMonth'>('7days');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [rangeType, setRangeType] = useState<'7days' | '30days' | 'thisMonth'>(
+    '7days',
+  )
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const getFormattedRange = () => {
-    const endDate = new Date();
-    const startDate = new Date();
-    
+    const endDate = new Date()
+    const startDate = new Date()
+
     if (rangeType === '7days') {
-      startDate.setDate(endDate.getDate() - 6);
+      startDate.setDate(endDate.getDate() - 6)
     } else if (rangeType === '30days') {
-      startDate.setDate(endDate.getDate() - 29);
+      startDate.setDate(endDate.getDate() - 29)
     } else {
       // This Month
-      startDate.setDate(1);
+      startDate.setDate(1)
     }
 
     const formatMonthDay = (date: Date) => {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    };
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      })
+    }
 
-    return `${formatMonthDay(startDate)} - ${formatMonthDay(endDate)}, ${endDate.getFullYear()}`;
-  };
+    return `${formatMonthDay(startDate)} - ${formatMonthDay(endDate)}, ${endDate.getFullYear()}`
+  }
 
   const getLabel = () => {
     switch (rangeType) {
-      case '7days': return 'Last 7 Days';
-      case '30days': return 'Last 30 Days';
-      case 'thisMonth': return 'This Month';
+      case '7days':
+        return 'Last 7 Days'
+      case '30days':
+        return 'Last 30 Days'
+      case 'thisMonth':
+        return 'This Month'
     }
-  };
+  }
 
   return (
     <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
       <div className="flex items-center gap-2 md:gap-6">
-        <button 
+        <button
           onClick={onMenuClick}
           className="p-2 hover:bg-gray-50 rounded-lg text-gray-500 transition-colors lg:hidden"
         >
           <Menu size={22} />
         </button>
         <div className="hidden sm:block">
-          <h2 className="text-lg md:text-xl font-bold text-dash-text">Dashboard</h2>
-          <p className="hidden md:block text-sm text-dash-text-muted">Welcome back! Here's what's happening with your platform.</p>
+          <h2 className="text-lg md:text-xl font-bold text-dash-text">
+            Dashboard
+          </h2>
+          <p className="hidden md:block text-sm text-dash-text-muted">
+            Welcome back! Here's what's happening with your platform.
+          </p>
         </div>
       </div>
 
       <div className="flex items-center gap-2 md:gap-4">
         {/* Date Range Picker */}
         <div className="relative">
-          <div 
+          <div
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="hidden lg:flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-xl hover:border-gray-300 cursor-pointer transition-all active:scale-[0.98]"
           >
             <Calendar size={18} className="text-dash-brand" />
             <div className="flex flex-col items-start leading-none gap-0.5">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{getLabel()}</span>
-              <span className="text-xs font-bold text-[#1e293b]">{getFormattedRange()}</span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                {getLabel()}
+              </span>
+              <span className="text-xs font-bold text-[#1e293b]">
+                {getFormattedRange()}
+              </span>
             </div>
             <ChevronDown size={14} className="text-gray-400 ml-1" />
           </div>
 
           {isDropdownOpen && (
             <>
-              <div 
-                className="fixed inset-0 z-10" 
+              <div
+                className="fixed inset-0 z-10"
                 onClick={() => setIsDropdownOpen(false)}
               />
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-150">
                 <button
-                  onClick={() => { setRangeType('7days'); setIsDropdownOpen(false); }}
+                  onClick={() => {
+                    setRangeType('7days')
+                    setIsDropdownOpen(false)
+                  }}
                   className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between ${
-                    rangeType === '7days' ? 'text-dash-brand bg-emerald-50/50' : 'text-gray-600 hover:bg-gray-50'
+                    rangeType === '7days'
+                      ? 'text-dash-brand bg-emerald-50/50'
+                      : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   Last 7 Days
-                  {rangeType === '7days' && <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />}
+                  {rangeType === '7days' && (
+                    <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />
+                  )}
                 </button>
                 <button
-                  onClick={() => { setRangeType('30days'); setIsDropdownOpen(false); }}
+                  onClick={() => {
+                    setRangeType('30days')
+                    setIsDropdownOpen(false)
+                  }}
                   className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between ${
-                    rangeType === '30days' ? 'text-dash-brand bg-emerald-50/50' : 'text-gray-600 hover:bg-gray-50'
+                    rangeType === '30days'
+                      ? 'text-dash-brand bg-emerald-50/50'
+                      : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   Last 30 Days
-                  {rangeType === '30days' && <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />}
+                  {rangeType === '30days' && (
+                    <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />
+                  )}
                 </button>
                 <button
-                  onClick={() => { setRangeType('thisMonth'); setIsDropdownOpen(false); }}
+                  onClick={() => {
+                    setRangeType('thisMonth')
+                    setIsDropdownOpen(false)
+                  }}
                   className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between ${
-                    rangeType === 'thisMonth' ? 'text-dash-brand bg-emerald-50/50' : 'text-gray-600 hover:bg-gray-50'
+                    rangeType === 'thisMonth'
+                      ? 'text-dash-brand bg-emerald-50/50'
+                      : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   This Month
-                  {rangeType === 'thisMonth' && <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />}
+                  {rangeType === 'thisMonth' && (
+                    <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />
+                  )}
                 </button>
               </div>
             </>
@@ -119,5 +150,5 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         </button>
       </div>
     </header>
-  );
-};
+  )
+}

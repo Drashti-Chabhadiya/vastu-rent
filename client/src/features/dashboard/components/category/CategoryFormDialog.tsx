@@ -48,11 +48,22 @@ export const CategoryFormDialog = ({
   const [useImage, setUseImage] = useState(false)
   const [description, setDescription] = useState('')
   const [requestReason, setRequestReason] = useState('')
-  
+
   const COLORS = [
-    '#166534', '#15803d', '#1e40af', '#1d4ed8', '#7c3aed', 
-    '#9333ea', '#c026d3', '#db2777', '#e11d48', '#ea580c', 
-    '#d97706', '#65a30d', '#4b5563', '#000000'
+    '#166534',
+    '#15803d',
+    '#1e40af',
+    '#1d4ed8',
+    '#7c3aed',
+    '#9333ea',
+    '#c026d3',
+    '#db2777',
+    '#e11d48',
+    '#ea580c',
+    '#d97706',
+    '#65a30d',
+    '#4b5563',
+    '#000000',
   ]
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -79,7 +90,8 @@ export const CategoryFormDialog = ({
     }
   }, [isOpen, editingCategory])
 
-  const { mutateAsync: uploadImage, isPending: isUploading } = useUploadProductImage()
+  const { mutateAsync: uploadImage, isPending: isUploading } =
+    useUploadProductImage()
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -126,9 +138,11 @@ export const CategoryFormDialog = ({
         <div className="bg-gradient-to-br from-[#166534] to-[#2f6a4a] p-8 text-white relative">
           <DialogHeader>
             <DialogTitle className="text-2xl font-extrabold tracking-tight">
-              {isRequest 
-                ? 'Propose Category' 
-                : editingCategory ? 'Update Category' : 'New Category'}
+              {isRequest
+                ? 'Propose Category'
+                : editingCategory
+                  ? 'Update Category'
+                  : 'New Category'}
             </DialogTitle>
             <p className="text-white/70 text-sm font-medium mt-1">
               {isRequest
@@ -140,7 +154,10 @@ export const CategoryFormDialog = ({
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-gray-900">
+        <form
+          onSubmit={handleSubmit}
+          className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-gray-900"
+        >
           <div className="space-y-2.5">
             <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
               <Tag size={14} className="text-dash-brand" />
@@ -173,7 +190,10 @@ export const CategoryFormDialog = ({
 
               <div className="space-y-2.5">
                 <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
-                  <LucideIcons.HelpCircle size={14} className="text-dash-brand" />
+                  <LucideIcons.HelpCircle
+                    size={14}
+                    className="text-dash-brand"
+                  />
                   Request Reason
                 </label>
                 <textarea
@@ -190,7 +210,11 @@ export const CategoryFormDialog = ({
           <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
               <label className="text-[13px] font-bold text-gray-900 flex items-center gap-2">
-                {useImage ? <ImageIcon size={14} className="text-dash-brand" /> : <Type size={14} className="text-dash-brand" />}
+                {useImage ? (
+                  <ImageIcon size={14} className="text-dash-brand" />
+                ) : (
+                  <Type size={14} className="text-dash-brand" />
+                )}
                 {useImage ? 'Category Image' : 'Category Icon'}
               </label>
               <button
@@ -204,13 +228,17 @@ export const CategoryFormDialog = ({
 
             {useImage ? (
               <div className="space-y-4">
-                <div 
+                <div
                   onClick={() => fileInputRef.current?.click()}
                   className="aspect-video rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-dash-brand/30 hover:bg-gray-100 transition-all overflow-hidden relative group"
                 >
                   {categoryImage ? (
                     <>
-                      <img src={categoryImage} alt="Preview" className="w-full h-full object-cover" />
+                      <img
+                        src={categoryImage}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Upload className="text-white" size={24} />
                       </div>
@@ -221,8 +249,12 @@ export const CategoryFormDialog = ({
                         <Upload className="text-gray-400" size={20} />
                       </div>
                       <div className="text-center text-gray-900">
-                        <p className="text-sm font-bold">Click to upload image</p>
-                        <p className="text-xs text-gray-500 mt-1">PNG, JPG or SVG (max. 2MB)</p>
+                        <p className="text-sm font-bold">
+                          Click to upload image
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          PNG, JPG or SVG (max. 2MB)
+                        </p>
                       </div>
                     </>
                   )}
@@ -240,16 +272,20 @@ export const CategoryFormDialog = ({
                 {/* Color Picker */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between px-1">
-                    <span className="text-[12px] font-bold text-gray-500">Brand Color & Shades</span>
+                    <span className="text-[12px] font-bold text-gray-500">
+                      Brand Color & Shades
+                    </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-gray-400 uppercase">{selectedColor}</span>
-                      <div 
-                        className="w-4 h-4 rounded-full border border-gray-200" 
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">
+                        {selectedColor}
+                      </span>
+                      <div
+                        className="w-4 h-4 rounded-full border border-gray-200"
                         style={{ backgroundColor: selectedColor }}
                       />
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col gap-4 p-4 bg-gray-50/50 rounded-2xl border border-gray-100">
                     <div className="flex flex-wrap gap-2">
                       {COLORS.map((color) => (
@@ -258,8 +294,10 @@ export const CategoryFormDialog = ({
                           type="button"
                           onClick={() => setSelectedColor(color)}
                           className={cn(
-                            "w-8 h-8 rounded-full border-2 transition-all hover:scale-110 active:scale-95 shadow-sm",
-                            selectedColor === color ? "border-gray-900 scale-110" : "border-white"
+                            'w-8 h-8 rounded-full border-2 transition-all hover:scale-110 active:scale-95 shadow-sm',
+                            selectedColor === color
+                              ? 'border-gray-900 scale-110'
+                              : 'border-white',
                           )}
                           style={{ backgroundColor: color }}
                         />
@@ -277,9 +315,9 @@ export const CategoryFormDialog = ({
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
-                      <Input 
+                      <Input
                         type="text"
                         value={selectedColor}
                         onChange={(e) => setSelectedColor(e.target.value)}
@@ -289,10 +327,13 @@ export const CategoryFormDialog = ({
                       <div className="flex-1 h-2 rounded-full overflow-hidden flex">
                         {/* Visual shade representation */}
                         {[0.1, 0.3, 0.5, 0.7, 0.9].map((op) => (
-                          <div 
-                            key={op} 
-                            className="flex-1 h-full" 
-                            style={{ backgroundColor: selectedColor, opacity: op }} 
+                          <div
+                            key={op}
+                            className="flex-1 h-full"
+                            style={{
+                              backgroundColor: selectedColor,
+                              opacity: op,
+                            }}
                           />
                         ))}
                       </div>
@@ -302,10 +343,12 @@ export const CategoryFormDialog = ({
 
                 {/* Icon Selector */}
                 <div className="space-y-3">
-                  <span className="text-[12px] font-bold text-gray-500 ml-1">Select Icon</span>
-                  <IconSelector 
-                    selectedIcon={selectedIcon} 
-                    onSelect={setSelectedIcon} 
+                  <span className="text-[12px] font-bold text-gray-500 ml-1">
+                    Select Icon
+                  </span>
+                  <IconSelector
+                    selectedIcon={selectedIcon}
+                    onSelect={setSelectedIcon}
                   />
                 </div>
               </div>
@@ -318,13 +361,13 @@ export const CategoryFormDialog = ({
               <Check size={14} className="text-dash-brand" />
               Card Preview
             </label>
-            
+
             <div className="max-w-xs mx-auto">
               <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group">
                 {/* Background Accent */}
                 {!useImage && (
-                  <div 
-                    className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 opacity-[0.03]" 
+                  <div
+                    className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 opacity-[0.03]"
                     style={{ backgroundColor: selectedColor }}
                   />
                 )}
@@ -334,7 +377,11 @@ export const CategoryFormDialog = ({
                     {useImage ? (
                       <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-100">
                         {categoryImage ? (
-                          <img src={categoryImage} alt="Preview" className="w-full h-full object-cover" />
+                          <img
+                            src={categoryImage}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300">
                             <ImageIcon size={20} />
@@ -342,33 +389,50 @@ export const CategoryFormDialog = ({
                         )}
                       </div>
                     ) : (
-                      <div 
+                      <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm"
-                        style={{ 
+                        style={{
                           backgroundColor: `${selectedColor}15`,
-                          color: selectedColor 
+                          color: selectedColor,
                         }}
                       >
                         {(() => {
-                          const IconComp = (LucideIcons as any)[selectedIcon || 'Folder']
-                          return IconComp ? <IconComp size={24} /> : <Folder size={24} />
+                          const IconComp = (LucideIcons as any)[
+                            selectedIcon || 'Folder'
+                          ]
+                          return IconComp ? (
+                            <IconComp size={24} />
+                          ) : (
+                            <Folder size={24} />
+                          )
                         })()}
                       </div>
                     )}
-                    
+
                     <div>
                       <h3 className="text-lg font-extrabold text-gray-900">
                         {categoryName || 'Category Name'}
                       </h3>
                       <div className="flex items-center gap-2 mt-2">
-                        <div 
+                        <div
                           className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
-                          style={{ backgroundColor: !useImage ? `${selectedColor}15` : '#f3f4f6' }}
+                          style={{
+                            backgroundColor: !useImage
+                              ? `${selectedColor}15`
+                              : '#f3f4f6',
+                          }}
                         >
-                          <Layers size={12} style={{ color: !useImage ? selectedColor : '#9ca3af' }} />
-                          <span 
+                          <Layers
+                            size={12}
+                            style={{
+                              color: !useImage ? selectedColor : '#9ca3af',
+                            }}
+                          />
+                          <span
                             className="text-[11px] font-extrabold uppercase tracking-wider"
-                            style={{ color: !useImage ? selectedColor : '#4b5563' }}
+                            style={{
+                              color: !useImage ? selectedColor : '#4b5563',
+                            }}
                           >
                             0 Items
                           </span>

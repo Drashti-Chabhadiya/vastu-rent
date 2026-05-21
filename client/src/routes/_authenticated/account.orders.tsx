@@ -5,8 +5,11 @@ export const Route = createFileRoute('/_authenticated/account/orders')({
   component: () => (
     <div className="p-4 md:p-6">
       <h1 className="text-2xl font-black text-gray-900 mb-2">Rental Orders</h1>
-      <p className="text-sm text-gray-500 mb-8">Manage rental requests submitted by renters for your published product listings.</p>
+      <p className="text-sm text-gray-500 mb-8">
+        Manage rental requests submitted by renters for your published product
+        listings.
+      </p>
       <OrdersManagement />
     </div>
-  )
+  ),
 })

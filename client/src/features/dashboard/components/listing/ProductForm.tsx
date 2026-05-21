@@ -1,5 +1,5 @@
-import { type UseFormReturn } from 'react-hook-form'
-import { type ListingSchema } from '../../../../schema/listing-schema'
+import type { UseFormReturn } from 'react-hook-form'
+import type { ListingSchema } from '../../../../schema/listing-schema'
 import { ImageGalleryManager } from './ImageGalleryManager'
 import {
   FormControl,
@@ -17,16 +17,16 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { Textarea } from '#/components/ui/textarea'
-import { 
-  PackagePlus, 
-  Tag, 
-  AlignLeft, 
-  IndianRupee, 
-  MapPin, 
-  User, 
+import {
+  PackagePlus,
+  Tag,
+  AlignLeft,
+  IndianRupee,
+  MapPin,
+  User,
   Image as ImageIcon,
   Type,
-  ShieldCheck
+  ShieldCheck,
 } from 'lucide-react'
 
 interface Category {
@@ -48,13 +48,18 @@ interface ProductFormProps {
   currentUser?: any
 }
 
-export const ProductForm = ({ form, categories, users, currentUser }: ProductFormProps) => {
-  const isOwner = currentUser?.role === 'owner';
+export const ProductForm = ({
+  form,
+  categories,
+  users,
+  currentUser,
+}: ProductFormProps) => {
+  const isOwner = currentUser?.role === 'owner'
   return (
     <div className="space-y-6">
       {/* Hero Preview Section */}
       <div className="relative group overflow-hidden rounded-xl bg-gray-50 border border-gray-100 min-h-[220px] flex items-center justify-center shadow-inner">
-        {form.watch('images')?.length > 0 ? (
+        {form.watch('images').length > 0 ? (
           <img
             src={form.watch('images')[0]}
             className="w-full h-[260px] object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
@@ -103,7 +108,7 @@ export const ProductForm = ({ form, categories, users, currentUser }: ProductFor
               </FormLabel>
               <FormControl>
                 <ImageGalleryManager
-                  images={field.value}
+                  images={field.value as string[]}
                   onChange={field.onChange}
                 />
               </FormControl>
@@ -216,7 +221,7 @@ export const ProductForm = ({ form, categories, users, currentUser }: ProductFor
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
-                  {categories?.map((cat) => (
+                  {categories.map((cat) => (
                     <SelectItem
                       key={cat.id}
                       value={cat.id}
@@ -248,7 +253,9 @@ export const ProductForm = ({ form, categories, users, currentUser }: ProductFor
               >
                 <FormControl>
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-gray-50/50 transition-all disabled:opacity-100 disabled:bg-gray-50">
-                    <SelectValue placeholder={isOwner ? currentUser.name : "Select Owner"} />
+                    <SelectValue
+                      placeholder={isOwner ? currentUser.name : 'Select Owner'}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
@@ -268,7 +275,7 @@ export const ProductForm = ({ form, categories, users, currentUser }: ProductFor
                       </div>
                     </SelectItem>
                   ) : (
-                    users?.map((user) => (
+                    users.map((user) => (
                       <SelectItem
                         key={user.id}
                         value={user.id}

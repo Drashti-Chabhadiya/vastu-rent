@@ -1,10 +1,18 @@
-import { useParams } from "@tanstack/react-router"
-import { useUserProfile } from "#/hook/use-users"
-import { ProductCard } from "#/components/common/ProductCard"
-import { UserProfilePageSkeleton } from "#/components/skeletons"
-import { Badge } from "#/components/ui/badge"
-import { Button } from "#/components/ui/button"
-import { Star, MapPin, Calendar, CheckCircle2, MessageCircle, Share2, Package } from "lucide-react"
+import { useParams } from '@tanstack/react-router'
+import { useUserProfile } from '#/hook/use-users'
+import { ProductCard } from '#/components/common/ProductCard'
+import { UserProfilePageSkeleton } from '#/components/skeletons'
+import { Badge } from '#/components/ui/badge'
+import { Button } from '#/components/ui/button'
+import {
+  Star,
+  MapPin,
+  Calendar,
+  CheckCircle2,
+  MessageCircle,
+  Share2,
+  Package,
+} from 'lucide-react'
 
 export function UserProfilePage() {
   const { id } = useParams({ from: '/users/$id' })
@@ -25,19 +33,22 @@ export function UserProfilePage() {
   return (
     <div className="min-h-screen bg-bg-base pt-24 pb-16">
       <div className="mx-auto max-w-[1200px] px-4">
-        
         {/* Profile Header */}
         <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-gray-100 mb-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-          
+
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
             <div className="relative">
               <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-100 overflow-hidden border-4 border-white shadow-lg">
                 {profile.image ? (
-                  <img src={profile.image} alt={profile.name} className="w-full h-full object-cover" />
+                  <img
+                    src={profile.image}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-primary text-white text-4xl font-black">
-                    {profile.name?.[0] || "U"}
+                    {profile.name?.[0] || 'U'}
                   </div>
                 )}
               </div>
@@ -49,15 +60,27 @@ export function UserProfilePage() {
 
             <div className="flex-1 text-center md:text-left">
               <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">{profile.name}</h1>
+                <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+                  {profile.name}
+                </h1>
                 <div className="flex items-center justify-center md:justify-start gap-3">
-                  <Badge variant="outline" className="rounded-xl px-3 py-1 font-bold text-gray-600 border-gray-200">
+                  <Badge
+                    variant="outline"
+                    className="rounded-xl px-3 py-1 font-bold text-gray-600 border-gray-200"
+                  >
                     {profile.listingsCount} Listings
                   </Badge>
                   <div className="flex items-center gap-1.5 px-3 py-1 bg-yellow-50 rounded-xl">
-                    <Star size={14} className="text-yellow-500 fill-yellow-500" />
-                    <span className="text-sm font-black text-yellow-700">{profile.averageRating}</span>
-                    <span className="text-xs font-bold text-yellow-600/60">({profile.reviewCount})</span>
+                    <Star
+                      size={14}
+                      className="text-yellow-500 fill-yellow-500"
+                    />
+                    <span className="text-sm font-black text-yellow-700">
+                      {profile.averageRating}
+                    </span>
+                    <span className="text-xs font-bold text-yellow-600/60">
+                      ({profile.reviewCount})
+                    </span>
                   </div>
                 </div>
               </div>
@@ -69,7 +92,13 @@ export function UserProfilePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-primary" />
-                  <span>Member since {new Date(profile.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}</span>
+                  <span>
+                    Member since{' '}
+                    {new Date(profile.createdAt).toLocaleDateString('en-IN', {
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MessageCircle size={18} className="text-primary" />
@@ -81,7 +110,10 @@ export function UserProfilePage() {
                 <Button className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-white font-bold shadow-lg shadow-brand/20 transition-all active:scale-95">
                   Message Owner
                 </Button>
-                <Button variant="outline" className="h-12 px-6 rounded-2xl border-gray-200 font-bold text-gray-700 gap-2 hover:bg-gray-50">
+                <Button
+                  variant="outline"
+                  className="h-12 px-6 rounded-2xl border-gray-200 font-bold text-gray-700 gap-2 hover:bg-gray-50"
+                >
                   <Share2 size={18} />
                   Share Profile
                 </Button>
@@ -110,13 +142,16 @@ export function UserProfilePage() {
             ) : (
               <div className="col-span-full py-20 bg-white rounded-3xl border border-dashed border-gray-200 text-center">
                 <Package size={48} className="mx-auto text-gray-200 mb-4" />
-                <h3 className="text-lg font-bold text-gray-900">No active listings</h3>
-                <p className="text-gray-500">This user hasn't listed any items for rent yet.</p>
+                <h3 className="text-lg font-bold text-gray-900">
+                  No active listings
+                </h3>
+                <p className="text-gray-500">
+                  This user hasn't listed any items for rent yet.
+                </p>
               </div>
             )}
           </div>
         </div>
-
       </div>
     </div>
   )

@@ -36,32 +36,47 @@ export const useDisputes = () => {
     queryFn: async () => {
       const res = await apiClient.get('/disputes')
       return res.data.disputes
-    }
+    },
   })
 }
 
 export const useCreateDispute = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: { rentalId: string; reason: string; description: string }) => {
+    mutationFn: async (data: {
+      rentalId: string
+      reason: string
+      description: string
+    }) => {
       const res = await apiClient.post('/disputes', data)
       return res.data.dispute
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['disputes'] })
-    }
+    },
   })
 }
 
 export const useResolveDispute = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, status, resolution }: { id: string; status: 'resolved' | 'dismissed'; resolution?: string }) => {
-      const res = await apiClient.put(`/disputes/${id}/resolve`, { status, resolution })
+    mutationFn: async ({
+      id,
+      status,
+      resolution,
+    }: {
+      id: string
+      status: 'resolved' | 'dismissed'
+      resolution?: string
+    }) => {
+      const res = await apiClient.put(`/disputes/${id}/resolve`, {
+        status,
+        resolution,
+      })
       return res.data.dispute
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['disputes'] })
-    }
+    },
   })
 }

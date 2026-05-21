@@ -18,17 +18,47 @@ import { AccountLayoutSkeleton } from '#/components/skeletons'
 
 // ─── Menu config ─────────────────────────────────────────────────────────────
 const BASE_MENU_ITEMS = [
-  { id: 'personal',      label: 'Profile Summary',   icon: User,      href: '/account' },
-  { id: 'profile',       label: 'Edit Profile',       icon: Settings,  href: '/account/profile' },
-  { id: 'bookings',      label: 'My Bookings',        icon: ShoppingBag, href: '/account/bookings' },
-  { id: 'coupons',       label: 'My Coupons',         icon: Ticket,    href: '/account/coupons' },
-  { id: 'notifications', label: 'Notifications',      icon: Bell,      href: '/account/notifications' },
-  { id: 'reviews',       label: 'My Reviews',         icon: Star,      href: '/account/reviews' },
+  { id: 'personal', label: 'Profile Summary', icon: User, href: '/account' },
+  {
+    id: 'profile',
+    label: 'Edit Profile',
+    icon: Settings,
+    href: '/account/profile',
+  },
+  {
+    id: 'bookings',
+    label: 'My Bookings',
+    icon: ShoppingBag,
+    href: '/account/bookings',
+  },
+  {
+    id: 'coupons',
+    label: 'My Coupons',
+    icon: Ticket,
+    href: '/account/coupons',
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    icon: Bell,
+    href: '/account/notifications',
+  },
+  { id: 'reviews', label: 'My Reviews', icon: Star, href: '/account/reviews' },
 ] as const
 
 const LISTER_MENU_ITEMS = [
-  { id: 'orders',   label: 'Rental Orders',    icon: Package,    href: '/account/orders' },
-  { id: 'payments', label: 'Earnings Payouts', icon: CreditCard, href: '/account/payments' },
+  {
+    id: 'orders',
+    label: 'Rental Orders',
+    icon: Package,
+    href: '/account/orders',
+  },
+  {
+    id: 'payments',
+    label: 'Earnings Payouts',
+    icon: CreditCard,
+    href: '/account/payments',
+  },
 ] as const
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
@@ -49,18 +79,15 @@ export function AccountLayout() {
 
   const role = session?.user?.role
   const isLister = role === 'owner' || role === 'admin' || role === 'superAdmin'
-  const menuItems = [
-    ...BASE_MENU_ITEMS,
-    ...(isLister ? LISTER_MENU_ITEMS : []),
-  ]
+  const menuItems = [...BASE_MENU_ITEMS, ...(isLister ? LISTER_MENU_ITEMS : [])]
 
-  const activeTab = menuItems.find((item) => pathname === item.href)?.id || 'personal'
+  const activeTab =
+    menuItems.find((item) => pathname === item.href)?.id || 'personal'
 
   return (
     <div className="min-h-screen bg-[#faf7f0] pt-24 pb-12 font-sans">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
-
           {/* Sidebar */}
           <aside className="w-full lg:w-80 shrink-0">
             <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden p-6">
@@ -69,8 +96,12 @@ export function AccountLayout() {
                   {session.user.name?.[0]?.toUpperCase() || 'U'}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-bold text-gray-900 truncate text-lg">{session.user.name || 'User'}</h3>
-                  <p className="text-xs text-gray-500 truncate font-medium">{session.user.email}</p>
+                  <h3 className="font-bold text-gray-900 truncate text-lg">
+                    {session.user.name || 'User'}
+                  </h3>
+                  <p className="text-xs text-gray-500 truncate font-medium">
+                    {session.user.email}
+                  </p>
                 </div>
               </div>
 
@@ -81,7 +112,7 @@ export function AccountLayout() {
                   return (
                     <Link
                       key={item.id}
-                      to={item.href as any}
+                      to={item.href}
                       className={cn(
                         'flex items-center justify-between p-4 rounded-2xl transition-all duration-200 group',
                         isActive
@@ -94,10 +125,14 @@ export function AccountLayout() {
                           size={20}
                           className={cn(
                             'transition-colors',
-                            isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary',
+                            isActive
+                              ? 'text-white'
+                              : 'text-gray-400 group-hover:text-primary',
                           )}
                         />
-                        <span className="font-bold text-[13px]">{item.label}</span>
+                        <span className="font-bold text-[13px]">
+                          {item.label}
+                        </span>
                       </div>
                       <ChevronRight
                         size={16}
@@ -132,7 +167,6 @@ export function AccountLayout() {
               <Outlet />
             </div>
           </main>
-
         </div>
       </div>
     </div>

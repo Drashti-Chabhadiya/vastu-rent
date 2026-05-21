@@ -15,7 +15,7 @@ export const useProductReviews = (productId: string) => {
         user: { name: string; image?: string }
       }[]
     },
-    enabled: !!productId
+    enabled: !!productId,
   })
 }
 
@@ -28,9 +28,11 @@ export const useCreateReview = (productId: string) => {
       return res.data.review
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-reviews', productId] })
+      queryClient.invalidateQueries({
+        queryKey: ['product-reviews', productId],
+      })
       queryClient.invalidateQueries({ queryKey: ['product', productId] })
-    }
+    },
   })
 }
 
@@ -41,7 +43,7 @@ export const useAdminReviews = (params?: { search?: string }) => {
     queryFn: async () => {
       const res = await apiClient.get('/admin/reviews', { params })
       return res.data.reviews
-    }
+    },
   })
 }
 
@@ -54,6 +56,6 @@ export const useDeleteReview = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-    }
+    },
   })
 }

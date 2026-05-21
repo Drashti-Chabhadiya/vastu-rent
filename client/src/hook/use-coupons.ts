@@ -22,7 +22,7 @@ export const useCoupons = () => {
     queryFn: async () => {
       const res = await apiClient.get('/coupons')
       return res.data.coupons
-    }
+    },
   })
 }
 
@@ -35,7 +35,7 @@ export const useCreateCoupon = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coupons'] })
-    }
+    },
   })
 }
 
@@ -47,15 +47,21 @@ export const useDeleteCoupon = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['coupons'] })
-    }
+    },
   })
 }
 
 export const useApplyCoupon = () => {
   return useMutation({
-    mutationFn: async ({ code, totalPrice }: { code: string; totalPrice: number }) => {
+    mutationFn: async ({
+      code,
+      totalPrice,
+    }: {
+      code: string
+      totalPrice: number
+    }) => {
       const res = await apiClient.post('/coupons/apply', { code, totalPrice })
       return res.data.coupon
-    }
+    },
   })
 }

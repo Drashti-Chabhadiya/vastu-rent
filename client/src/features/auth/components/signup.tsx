@@ -1,6 +1,6 @@
-import { AuthLayout } from "../components/auth-layout"
-import { AuthLeftSection } from "../components/auth-left-section"
-import { SignupForm } from "../components/signup-form"
+import { AuthLayout } from '../components/auth-layout'
+import { AuthLeftSection } from '../components/auth-left-section'
+import { SignupForm } from '../components/signup-form'
 
 export function SignUpFormPage() {
   return (

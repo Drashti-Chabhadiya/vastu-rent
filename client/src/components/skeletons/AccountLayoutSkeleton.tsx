@@ -3,7 +3,6 @@ export function AccountLayoutSkeleton() {
     <div className="min-h-screen bg-[#faf7f0] pt-24 pb-12 font-sans">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
-
           {/* Sidebar skeleton */}
           <aside className="w-full lg:w-80 shrink-0">
             <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden p-6 animate-pulse">
@@ -19,12 +18,23 @@ export function AccountLayoutSkeleton() {
               {/* Nav items */}
               <div className="space-y-2">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50">
+                  <div
+                    key={i}
+                    className="flex items-center justify-between p-4 rounded-2xl bg-gray-50"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="w-5 h-5 rounded-lg bg-gray-200" />
-                      <div className={`h-3 bg-gray-200 rounded-lg ${
-                        i === 0 ? 'w-32' : i === 1 ? 'w-24' : i === 2 ? 'w-28' : 'w-20'
-                      }`} />
+                      <div
+                        className={`h-3 bg-gray-200 rounded-lg ${
+                          i === 0
+                            ? 'w-32'
+                            : i === 1
+                              ? 'w-24'
+                              : i === 2
+                                ? 'w-28'
+                                : 'w-20'
+                        }`}
+                      />
                     </div>
                     <div className="w-4 h-4 rounded bg-gray-100" />
                   </div>
@@ -70,7 +80,6 @@ export function AccountLayoutSkeleton() {
               </div>
             </div>
           </main>
-
         </div>
       </div>
     </div>

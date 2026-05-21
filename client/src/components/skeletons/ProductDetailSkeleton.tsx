@@ -1,4 +1,4 @@
-import { Skeleton } from "#/components/ui/skeleton"
+import { Skeleton } from '#/components/ui/skeleton'
 
 export function ProductDetailSkeleton() {
   return (
@@ -40,7 +40,6 @@ export function ProductDetailSkeleton() {
           {/* Right Column: Details (7 cols) */}
           <div className="lg:col-span-7">
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-              
               {/* Product Info Section */}
               <div className="xl:col-span-7 space-y-6">
                 <div className="space-y-4">
@@ -49,9 +48,9 @@ export function ProductDetailSkeleton() {
                   <Skeleton className="h-8 w-40 rounded" />
                   <Skeleton className="h-20 w-full rounded-xl" />
                 </div>
-                
+
                 <hr className="border-gray-100" />
-                
+
                 <div className="space-y-3">
                   <Skeleton className="h-5 w-32 rounded" />
                   <div className="space-y-2">
@@ -83,7 +82,6 @@ export function ProductDetailSkeleton() {
                   <Skeleton className="h-48 w-full rounded-xl" />
                 </div>
               </div>
-
             </div>
           </div>
         </div>

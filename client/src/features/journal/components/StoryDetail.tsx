@@ -1,27 +1,38 @@
-import { ArrowLeft, Calendar, Clock, User, Share2, Heart, BookOpen } from "lucide-react";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useStory, useStories } from "#/hook/use-stories";
-import { motion } from "motion/react";
-import { useState } from "react";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  User,
+  Share2,
+  Heart,
+  BookOpen,
+} from 'lucide-react'
+import { Link, useNavigate } from '@tanstack/react-router'
+import { useStory, useStories } from '#/hook/use-stories'
+import { motion } from 'motion/react'
+import { useState } from 'react'
 
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 /* ─── Fallback data (mirrors JournalPage fallbacks) ─────────────────────── */
-const fallbackArticles: Record<string, {
-  title: string;
-  tag: string;
-  excerpt: string;
-  content: string;
-  createdAt: string;
-  readTime: string;
-  imageUrl: string;
-  author: { name: string; image?: string };
-}> = {
-  "fallback-1": {
-    title: "The art of the seasonal swap: Rotating your decor",
-    tag: "Living",
+const fallbackArticles: Record<
+  string,
+  {
+    title: string
+    tag: string
+    excerpt: string
+    content: string
+    createdAt: string
+    readTime: string
+    imageUrl: string
+    author: { name: string; image?: string }
+  }
+> = {
+  'fallback-1': {
+    title: 'The art of the seasonal swap: Rotating your decor',
+    tag: 'Living',
     excerpt:
-      "Discover the secrets to keeping your home fresh and inspired through the changing seasons with minimal effort and maximum impact.",
+      'Discover the secrets to keeping your home fresh and inspired through the changing seasons with minimal effort and maximum impact.',
     content: `
 <p>There is a quiet joy in the shifting of seasons. As the light changes outside, our indoor spaces naturally want to respond. But true circular living isn't about buying new decorations every three months. Instead, the art of the seasonal swap is about curation, rotation, and rediscovering the beauty of the objects you already own.</p>
 
@@ -34,16 +45,16 @@ const fallbackArticles: Record<string, {
 <h3>3. Bringing the Outside In</h3>
 <p>The simplest seasonal swap is entirely free: foliage. A handful of bare branches in a ceramic vase in January, a bundle of wild grasses in July, or a single brilliant branch of autumn leaves in October. It connects the indoor environment directly to the external rhythms of the natural world.</p>
     `,
-    createdAt: "2024-05-12T00:00:00.000Z",
-    readTime: "5 min",
-    imageUrl: "/assets/feature-nook.jpg",
-    author: { name: "Elena Rossi" },
+    createdAt: '2024-05-12T00:00:00.000Z',
+    readTime: '5 min',
+    imageUrl: '/assets/feature-nook.jpg',
+    author: { name: 'Elena Rossi' },
   },
-  "fallback-2": {
+  'fallback-2': {
     title: "Inside Anneli's lending atelier in Copenhagen",
-    tag: "Hosts",
+    tag: 'Hosts',
     excerpt:
-      "Meet the neighbor who turned her passion for Scandinavian design into a community resource for everyone in her district.",
+      'Meet the neighbor who turned her passion for Scandinavian design into a community resource for everyone in her district.',
     content: `
 <p>In the heart of Copenhagen's Vesterbro neighborhood, Anneli Schmidt has built something revolutionary. Behind a forest-green storefront lies a collection of classic mid-century chairs, sculptural lighting, and handcrafted stoneware. But nothing here is for sale.</p>
 
@@ -55,16 +66,16 @@ const fallbackArticles: Record<string, {
 <h3>The Ritual of Return</h3>
 <p>What makes the Lending Atelier work isn't just the design value of the objects; it's the social thread it weaves. "When someone returns a chair," Anneli notes, "they return it with a story. 'We sat here and laughed till midnight.' That memory becomes part of the object's patina. It makes the next rental even more special."</p>
     `,
-    createdAt: "2024-05-08T00:00:00.000Z",
-    readTime: "8 min",
-    imageUrl: "/assets/cat-furniture.jpg",
-    author: { name: "Marcus Lind" },
+    createdAt: '2024-05-08T00:00:00.000Z',
+    readTime: '8 min',
+    imageUrl: '/assets/cat-furniture.jpg',
+    author: { name: 'Marcus Lind' },
   },
-  "fallback-3": {
-    title: "What 25,000 kg of CO₂ looks like in rental impact",
-    tag: "Impact",
+  'fallback-3': {
+    title: 'What 25,000 kg of CO₂ looks like in rental impact',
+    tag: 'Impact',
     excerpt:
-      "Measuring the environmental difference of circular consumption in our local neighborhoods through data-driven storytelling.",
+      'Measuring the environmental difference of circular consumption in our local neighborhoods through data-driven storytelling.',
     content: `
 <p>Data has a way of feeling abstract. When we say circular consumption reduces environmental stress, it sounds nice. But what does it actually look like in real, measurable numbers?</p>
 
@@ -81,16 +92,16 @@ const fallbackArticles: Record<string, {
 <h3>Beyond the Carbon</h3>
 <p>While the carbon reduction is substantial, the circular footprint also saves thousands of gallons of manufacturing water and prevents valuable materials from ending up in local landfills. Every shared object is a small victory for the climate, proving that luxury and sustainability can go hand-in-hand when design meets community intentionality.</p>
     `,
-    createdAt: "2024-04-28T00:00:00.000Z",
-    readTime: "12 min",
-    imageUrl: "/assets/cat-outdoor.jpg",
-    author: { name: "Sarah Chen" },
+    createdAt: '2024-04-28T00:00:00.000Z',
+    readTime: '12 min',
+    imageUrl: '/assets/cat-outdoor.jpg',
+    author: { name: 'Sarah Chen' },
   },
-  "fallback-4": {
-    title: "How to perfectly photograph your rental items",
-    tag: "Guides",
+  'fallback-4': {
+    title: 'How to perfectly photograph your rental items',
+    tag: 'Guides',
     excerpt:
-      "A comprehensive guide to capturing the beauty and utility of your belongings to attract more borrowers.",
+      'A comprehensive guide to capturing the beauty and utility of your belongings to attract more borrowers.',
     content: `
 <p>In a sharing marketplace, trust is your most valuable currency. And the quickest way to build trust is through honest, warm, and beautiful photography. You don't need professional cameras; a modern smartphone and a keen eye for light are more than enough.</p>
 
@@ -103,19 +114,19 @@ const fallbackArticles: Record<string, {
 <h3>3. Show the Patina and Details</h3>
 <p>Honesty is key. If a vintage wooden table has a small coffee ring or a characterful scratch, photograph it closely. Patina isn't a defect; it's a testament to the object's history and durability. Clear, close-up shots of textures and minor imperfections build immediate confidence with borrowers.</p>
     `,
-    createdAt: "2024-04-15T00:00:00.000Z",
-    readTime: "6 min",
-    imageUrl: "/assets/feature-nook.jpg",
-    author: { name: "David Kim" },
+    createdAt: '2024-04-15T00:00:00.000Z',
+    readTime: '6 min',
+    imageUrl: '/assets/feature-nook.jpg',
+    author: { name: 'David Kim' },
   },
-};
+}
 
 const formatDate = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
 /* ─── Related card ───────────────────────────────────────────────────────── */
 function RelatedCard({ story }: { story: any }) {
@@ -123,7 +134,7 @@ function RelatedCard({ story }: { story: any }) {
     <Link to="/journal/$id" params={{ id: story.id }} className="group block">
       <div className="relative aspect-video overflow-hidden rounded-3xl bg-surface">
         <img
-          src={story.imageUrl || "/assets/feature-nook.jpg"}
+          src={story.imageUrl || '/assets/feature-nook.jpg'}
           alt={story.title}
           className="h-full w-full object-cover transition-transform duration-2000 ease-out group-hover:scale-[1.06]"
         />
@@ -149,40 +160,44 @@ function RelatedCard({ story }: { story: any }) {
         {story.title}
       </h3>
     </Link>
-  );
+  )
 }
 
 /* ─── Main component ─────────────────────────────────────────────────────── */
 export function StoryDetail({ id }: { id: string }) {
-  const navigate = useNavigate();
-  const { data: dbStory, isLoading } = useStory(id);
-  const { data: allStories } = useStories();
-  const [isLiked, setIsLiked] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const navigate = useNavigate()
+  const { data: dbStory, isLoading } = useStory(id)
+  const { data: allStories } = useStories()
+  const [isLiked, setIsLiked] = useState(false)
+  const [copied, setCopied] = useState(false)
 
-  const isFallback = id.startsWith("fallback-");
-  const story = isFallback ? fallbackArticles[id] : dbStory;
+  const isFallback = id.startsWith('fallback-')
+  const story = isFallback ? fallbackArticles[id] : dbStory
 
   /* Related stories: up to 3 others, same tag preferred */
   const relatedStories = (() => {
-    const pool = allStories && allStories.length > 0
-      ? allStories
-      : Object.entries(fallbackArticles).map(([fbId, s]) => ({ ...s, id: fbId }));
-    const others = pool.filter((s: any) => s.id !== id);
-    const sameTag = others.filter((s: any) => s.tag === story?.tag);
-    const rest = others.filter((s: any) => s.tag !== story?.tag);
-    return [...sameTag, ...rest].slice(0, 3);
-  })();
+    const pool =
+      allStories && allStories.length > 0
+        ? allStories
+        : Object.entries(fallbackArticles).map(([fbId, s]) => ({
+            ...s,
+            id: fbId,
+          }))
+    const others = pool.filter((s: any) => s.id !== id)
+    const sameTag = others.filter((s: any) => s.tag === story?.tag)
+    const rest = others.filter((s: any) => s.tag !== story?.tag)
+    return [...sameTag, ...rest].slice(0, 3)
+  })()
 
   const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(window.location.href)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     } catch {
       /* ignore */
     }
-  };
+  }
 
   /* ── Loading ── */
   if (isLoading && !isFallback) {
@@ -190,7 +205,7 @@ export function StoryDetail({ id }: { id: string }) {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
-    );
+    )
   }
 
   /* ── Not found ── */
@@ -200,7 +215,9 @@ export function StoryDetail({ id }: { id: string }) {
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-surface">
           <BookOpen className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h2 className="font-display text-3xl tracking-tight">Story not found</h2>
+        <h2 className="font-display text-3xl tracking-tight">
+          Story not found
+        </h2>
         <p className="mt-3 max-w-sm text-muted-foreground">
           The story you're looking for doesn't exist or has been removed.
         </p>
@@ -211,16 +228,15 @@ export function StoryDetail({ id }: { id: string }) {
           Back to Journal
         </Link>
       </div>
-    );
+    )
   }
 
   return (
     <div className="min-h-screen bg-background">
-
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="relative h-[70vh] min-h-[480px] w-full overflow-hidden bg-surface">
         <img
-          src={story.imageUrl || "/assets/feature-nook.jpg"}
+          src={story.imageUrl || '/assets/feature-nook.jpg'}
           alt={story.title}
           className="h-full w-full object-cover"
         />
@@ -230,7 +246,7 @@ export function StoryDetail({ id }: { id: string }) {
         {/* top bar */}
         <div className="absolute left-0 right-0 top-0 z-10 mx-auto flex max-w-[1400px] items-center justify-between px-6 pt-6 md:px-10">
           <button
-            onClick={() => navigate({ to: "/journal" })}
+            onClick={() => navigate({ to: '/journal' })}
             className="flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-black/60 active:scale-95"
           >
             <ArrowLeft size={14} />
@@ -242,12 +258,12 @@ export function StoryDetail({ id }: { id: string }) {
               onClick={() => setIsLiked((v) => !v)}
               className={`rounded-full border border-white/20 p-2.5 backdrop-blur-md transition-all active:scale-95 ${
                 isLiked
-                  ? "bg-red-500 text-white"
-                  : "bg-black/40 text-white hover:bg-black/60"
+                  ? 'bg-red-500 text-white'
+                  : 'bg-black/40 text-white hover:bg-black/60'
               }`}
               aria-label="Like story"
             >
-              <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
+              <Heart size={16} fill={isLiked ? 'currentColor' : 'none'} />
             </button>
             <button
               onClick={handleShare}
@@ -342,9 +358,9 @@ export function StoryDetail({ id }: { id: string }) {
         {story.author?.name && (
           <div className="mt-16 flex items-center gap-5 rounded-3xl border border-border bg-surface/60 p-6">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-              {(story.author as any).image ? (
+              {story.author.image ? (
                 <img
-                  src={(story.author as any).image}
+                  src={story.author.image}
                   alt={story.author.name}
                   className="h-14 w-14 rounded-full object-cover"
                 />
@@ -378,7 +394,7 @@ export function StoryDetail({ id }: { id: string }) {
             className="flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-bold transition-all hover:bg-foreground hover:text-background active:scale-95"
           >
             <Share2 size={14} />
-            {copied ? "Link copied!" : "Share story"}
+            {copied ? 'Link copied!' : 'Share story'}
           </button>
         </div>
       </motion.div>
@@ -441,5 +457,5 @@ export function StoryDetail({ id }: { id: string }) {
         </div>
       </section>
     </div>
-  );
+  )
 }

@@ -1,95 +1,117 @@
-import { useState } from 'react';
-import { cn } from '#/lib/utils';
-import { Sidebar } from './layout/Sidebar';
-import { Header } from './layout/Header';
-import { DashboardOverview } from './overview/DashboardOverview';
-import { UsersManagement } from './user/UsersManagement';
-import { ListingsManagement } from './listing/ListingsManagement';
-import { CategoryManagement } from './category/CategoryManagement';
-import { ReviewsManagement } from './review/ReviewsManagement';
-import { DeleteRequestsManagement } from './listing/DeleteRequestsManagement';
-import { MyBookings } from './booking/MyBookings';
-import { RentalsCalendar } from './order/RentalsCalendar';
-import { OrdersManagement } from './order/OrdersManagement';
-import { PaymentsManagement } from './payments/PaymentsManagement';
-import { DisputesManagement } from './disputes/DisputesManagement';
-import { CouponsManagement } from './coupons/CouponsManagement';
-import { NotificationsManagement } from './notifications/NotificationsManagement';
-import { ReportsManagement } from './reports/ReportsManagement';
-import { SettingsManagement } from './settings/SettingsManagement';
-import { StoriesManagement } from './stories/StoriesManagement';
-import { useAdminStats, useAdminRecentUsers, useAdminRecentProducts } from '#/hook';
-import { authClient } from '#/lib/auth/auth-client';
+import { useState } from 'react'
+import { cn } from '#/lib/utils'
+import { Sidebar } from './layout/Sidebar'
+import { Header } from './layout/Header'
+import { DashboardOverview } from './overview/DashboardOverview'
+import { UsersManagement } from './user/UsersManagement'
+import { ListingsManagement } from './listing/ListingsManagement'
+import { CategoryManagement } from './category/CategoryManagement'
+import { ReviewsManagement } from './review/ReviewsManagement'
+import { DeleteRequestsManagement } from './listing/DeleteRequestsManagement'
+import { MyBookings } from './booking/MyBookings'
+import { RentalsCalendar } from './order/RentalsCalendar'
+import { OrdersManagement } from './order/OrdersManagement'
+import { PaymentsManagement } from './payments/PaymentsManagement'
+import { DisputesManagement } from './disputes/DisputesManagement'
+import { CouponsManagement } from './coupons/CouponsManagement'
+import { NotificationsManagement } from './notifications/NotificationsManagement'
+import { ReportsManagement } from './reports/ReportsManagement'
+import { SettingsManagement } from './settings/SettingsManagement'
+import { StoriesManagement } from './stories/StoriesManagement'
+import {
+  useAdminStats,
+  useAdminRecentUsers,
+  useAdminRecentProducts,
+} from '#/hook'
+import { authClient } from '#/lib/auth/auth-client'
 
 const DashboardPage = () => {
-  const [currentTab, setCurrentTab] = useState('overview');
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentTab, setCurrentTab] = useState('overview')
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<
+    string | null
+  >(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const { data: session } = authClient.useSession();
-  const role = session?.user?.role || 'owner';
+  const { data: session } = authClient.useSession()
+  const role = session?.user.role || 'owner'
 
-  const isAdmin = role === 'admin' || role === 'superAdmin';
+  const isAdmin = role === 'admin' || role === 'superAdmin'
 
-  const { data: statsData, isLoading: statsLoading } = useAdminStats({ enabled: isAdmin });
-  const { data: recentUsers, isLoading: usersLoading } = useAdminRecentUsers({ enabled: isAdmin });
-  const { data: recentProducts, isLoading: productsLoading } = useAdminRecentProducts({ enabled: isAdmin });
+  const { data: statsData, isLoading: statsLoading } = useAdminStats({
+    enabled: isAdmin,
+  })
+  const { data: recentUsers, isLoading: usersLoading } = useAdminRecentUsers({
+    enabled: isAdmin,
+  })
+  const { data: recentProducts, isLoading: productsLoading } =
+    useAdminRecentProducts({ enabled: isAdmin })
 
   const handleManageCategory = (categoryId: string) => {
-    setActiveCategoryFilter(categoryId);
-    setCurrentTab('listings');
-  };
+    setActiveCategoryFilter(categoryId)
+    setCurrentTab('listings')
+  }
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
 
-  const PlaceholderView = ({ title, icon: Icon }: { title: string; icon: any }) => (
+  const PlaceholderView = ({
+    title,
+    icon: Icon,
+  }: {
+    title: string
+    icon: any
+  }) => (
     <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white rounded-[2.5rem] border border-gray-100 shadow-sm animate-in fade-in zoom-in-95 duration-500">
       <div className="w-24 h-24 bg-dash-brand/5 rounded-full flex items-center justify-center mb-6 relative">
         <Icon className="text-dash-brand" size={48} />
         <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 border-4 border-white rounded-full animate-bounce"></div>
       </div>
-      <h3 className="text-2xl font-black text-dash-text mb-2 tracking-tight">{title}</h3>
+      <h3 className="text-2xl font-black text-dash-text mb-2 tracking-tight">
+        {title}
+      </h3>
       <p className="text-dash-text-soft font-bold max-w-sm text-center px-6 leading-relaxed">
-        We're currently building this feature to enhance your marketplace experience. Check back soon for updates!
+        We're currently building this feature to enhance your marketplace
+        experience. Check back soon for updates!
       </p>
-      <button 
+      <button
         onClick={() => setCurrentTab('overview')}
         className="mt-8 px-8 py-3 bg-gray-50 hover:bg-gray-100 text-dash-text font-extrabold rounded-2xl transition-all active:scale-95 border border-gray-200 shadow-sm"
       >
         Back to Overview
       </button>
     </div>
-  );
+  )
 
   return (
     <div className="min-h-screen bg-dash-bg flex overflow-x-hidden">
-      <Sidebar 
-        currentTab={currentTab} 
+      <Sidebar
+        currentTab={currentTab}
         onTabChange={(tab) => {
-          setCurrentTab(tab);
-          setIsSidebarOpen(false); // Close sidebar on mobile after clicking
-        }} 
+          setCurrentTab(tab)
+          setIsSidebarOpen(false) // Close sidebar on mobile after clicking
+        }}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
-      
+
       {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden animate-in fade-in duration-300"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-      
-      <main className={cn(
-        "flex-1 flex flex-col transition-all duration-300 min-w-0",
-        "lg:ml-64"
-      )}>
+
+      <main
+        className={cn(
+          'flex-1 flex flex-col transition-all duration-300 min-w-0',
+          'lg:ml-64',
+        )}
+      >
         <Header onMenuClick={toggleSidebar} />
-        
+
         <div className="p-4 md:p-8 w-full max-w-full overflow-x-hidden">
           {currentTab === 'overview' ? (
-            <DashboardOverview 
+            <DashboardOverview
               statsData={statsData}
               statsLoading={statsLoading}
               recentUsers={recentUsers}
@@ -110,7 +132,11 @@ const DashboardPage = () => {
           ) : currentTab === 'delete-requests' ? (
             <DeleteRequestsManagement />
           ) : currentTab === 'bookings' ? (
-            role === 'owner' ? <RentalsCalendar /> : <MyBookings />
+            role === 'owner' ? (
+              <RentalsCalendar />
+            ) : (
+              <MyBookings />
+            )
           ) : currentTab === 'orders' ? (
             <OrdersManagement />
           ) : currentTab === 'payments' ? (
@@ -133,8 +159,8 @@ const DashboardPage = () => {
         </div>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default DashboardPage;
-export { DashboardPage };
+export default DashboardPage
+export { DashboardPage }

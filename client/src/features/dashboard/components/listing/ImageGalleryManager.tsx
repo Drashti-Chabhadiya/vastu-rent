@@ -1,53 +1,53 @@
-import { useRef } from 'react';
-import { 
-  Plus, 
-  Trash2, 
-  ChevronLeft, 
-  ChevronRight, 
-  Star 
-} from 'lucide-react';
-import { Badge } from '#/components/ui/badge';
-import { useUploadProductImages } from '#/hook';
+import { useRef } from 'react'
+import { Plus, Trash2, ChevronLeft, ChevronRight, Star } from 'lucide-react'
+import { Badge } from '#/components/ui/badge'
+import { useUploadProductImages } from '#/hook'
 
 interface ImageGalleryManagerProps {
-  images: string[];
-  onChange: (images: string[]) => void;
+  images: string[]
+  onChange: (images: string[]) => void
 }
 
-export const ImageGalleryManager = ({ images, onChange }: ImageGalleryManagerProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { mutateAsync: uploadImages, isPending: uploading } = useUploadProductImages()
+export const ImageGalleryManager = ({
+  images,
+  onChange,
+}: ImageGalleryManagerProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { mutateAsync: uploadImages, isPending: uploading } =
+    useUploadProductImages()
 
   const handleUpload = async (files: FileList | null) => {
-    if (!files) return;
+    if (!files) return
     try {
       const newUrls = await uploadImages(files)
-      onChange([...images, ...newUrls]);
+      onChange([...images, ...newUrls])
     } catch (error) {
       console.error('Upload Error:', error)
       alert('Failed to upload one or more images. Please try again.')
     }
-  };
+  }
 
   const moveImage = (index: number, direction: 'left' | 'right') => {
-    const newImages = [...images];
-    const targetIndex = direction === 'left' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= newImages.length) return;
-
-    [newImages[index], newImages[targetIndex]] = [newImages[targetIndex], newImages[index]];
-    onChange(newImages);
-  };
+    const newImages = [...images]
+    const targetIndex = direction === 'left' ? index - 1 : index + 1
+    if (targetIndex < 0 || targetIndex >= newImages.length) return
+    ;[newImages[index], newImages[targetIndex]] = [
+      newImages[targetIndex],
+      newImages[index],
+    ]
+    onChange(newImages)
+  }
 
   const setMainImage = (index: number) => {
-    const newImages = [...images];
-    const [main] = newImages.splice(index, 1);
-    newImages.unshift(main);
-    onChange(newImages);
-  };
+    const newImages = [...images]
+    const [main] = newImages.splice(index, 1)
+    newImages.unshift(main)
+    onChange(newImages)
+  }
 
   const removeImage = (index: number) => {
-    onChange(images.filter((_, i) => i !== index));
-  };
+    onChange(images.filter((_, i) => i !== index))
+  }
 
   return (
     <div className="space-y-4">
@@ -63,7 +63,10 @@ export const ImageGalleryManager = ({ images, onChange }: ImageGalleryManagerPro
             <div className="w-6 h-6 border-2 border-dash-brand/30 border-t-dash-brand rounded-full animate-spin" />
           ) : (
             <>
-              <Plus size={24} className="group-hover:text-dash-brand transition-colors" />
+              <Plus
+                size={24}
+                className="group-hover:text-dash-brand transition-colors"
+              />
               <span className="text-[10px] font-bold uppercase">Add Photo</span>
             </>
           )}
@@ -71,13 +74,22 @@ export const ImageGalleryManager = ({ images, onChange }: ImageGalleryManagerPro
 
         {/* Previews */}
         {images.map((url, i) => (
-          <div key={url} className="relative aspect-square overflow-hidden rounded-2xl border border-gray-100 group shadow-sm bg-white">
-            <img src={url} alt={`Photo ${i + 1}`} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
-            
+          <div
+            key={url}
+            className="relative aspect-square overflow-hidden rounded-2xl border border-gray-100 group shadow-sm bg-white"
+          >
+            <img
+              src={url}
+              alt={`Photo ${i + 1}`}
+              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            />
+
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
               <div className="flex items-center justify-between">
                 {i === 0 ? (
-                  <Badge className="bg-dash-success text-white border-none font-bold text-[8px] uppercase px-1.5 py-0 h-4">Cover</Badge>
+                  <Badge className="bg-dash-success text-white border-none font-bold text-[8px] uppercase px-1.5 py-0 h-4">
+                    Cover
+                  </Badge>
                 ) : (
                   <button
                     type="button"
@@ -115,7 +127,7 @@ export const ImageGalleryManager = ({ images, onChange }: ImageGalleryManagerPro
                 </button>
               </div>
             </div>
-            
+
             <div className="absolute left-2 bottom-2 w-5 h-5 rounded-full bg-black/60 backdrop-blur-sm text-[10px] font-bold text-white flex items-center justify-center group-hover:opacity-0 transition-opacity">
               {i + 1}
             </div>
@@ -132,5 +144,5 @@ export const ImageGalleryManager = ({ images, onChange }: ImageGalleryManagerPro
         onChange={(e) => handleUpload(e.target.files)}
       />
     </div>
-  );
-};
+  )
+}

@@ -1,8 +1,7 @@
-import { Plus } from "lucide-react";
-import { motion } from "motion/react";
+import { Plus } from 'lucide-react'
+import { motion } from 'motion/react'
 
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 export function OwnerCTA() {
   return (
@@ -17,7 +16,9 @@ export function OwnerCTA() {
         <div className="bg-grain absolute inset-0 opacity-[0.4]" />
         <div className="relative grid grid-cols-1 items-end gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <div className="text-[11px] uppercase tracking-[0.22em] text-primary-foreground/70">— Become a host</div>
+            <div className="text-[11px] uppercase tracking-[0.22em] text-primary-foreground/70">
+              — Become a host
+            </div>
             <h2 className="mt-5 font-display text-[clamp(2rem,4.5vw,4rem)] leading-[1.02] tracking-tight text-balance">
               Lend the things you love.
               <br />
@@ -26,15 +27,21 @@ export function OwnerCTA() {
           </div>
           <div className="lg:col-span-5">
             <p className="text-[15.5px] leading-relaxed text-primary-foreground/80">
-              Open your shelves to neighbors, set your own terms, and turn the objects you've
-              already invested in into a gentle stream of income.
+              Open your shelves to neighbors, set your own terms, and turn the
+              objects you've already invested in into a gentle stream of income.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#" className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3.5 text-[14px] font-medium text-foreground transition-all hover:bg-background/90">
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3.5 text-[14px] font-medium text-foreground transition-all hover:bg-background/90"
+              >
                 List your first item
                 <Plus className="h-4 w-4" />
               </a>
-              <a href="#" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-[14px] font-medium text-primary-foreground transition-all hover:bg-primary-foreground/10">
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-[14px] font-medium text-primary-foreground transition-all hover:bg-primary-foreground/10"
+              >
                 Read the host guide
               </a>
             </div>
@@ -42,5 +49,5 @@ export function OwnerCTA() {
         </div>
       </motion.div>
     </section>
-  );
+  )
 }

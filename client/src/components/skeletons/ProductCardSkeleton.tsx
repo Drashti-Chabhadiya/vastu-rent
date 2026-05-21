@@ -1,17 +1,17 @@
-import { Skeleton } from "#/components/ui/skeleton"
+import { Skeleton } from '#/components/ui/skeleton'
 
 export function ProductCardSkeleton() {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col h-full">
       {/* Image Area Skeleton */}
       <Skeleton className="w-full h-[220px] rounded-xl mb-4 shrink-0" />
-      
+
       {/* Title Skeleton */}
       <div className="space-y-2 mb-4">
         <Skeleton className="h-4 w-3/4 rounded-md" />
         <Skeleton className="h-4 w-1/2 rounded-md" />
       </div>
-      
+
       {/* Price & Rating Row Skeleton */}
       <div className="flex items-center justify-between mb-4 mt-auto">
         <div className="space-y-1">

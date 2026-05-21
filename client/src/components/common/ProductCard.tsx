@@ -1,9 +1,9 @@
-import { useState } from "react"
-import { Heart, MapPin, Star, Package } from "lucide-react"
-import { Button } from "#/components/ui/button"
-import { Link } from "@tanstack/react-router"
-import { useWishlist } from "#/hook"
-import { cn } from "#/lib/utils"
+import { useState } from 'react'
+import { Heart, MapPin, Star, Package } from 'lucide-react'
+import { Button } from '#/components/ui/button'
+import { Link } from '@tanstack/react-router'
+import { useWishlist } from '#/hook'
+import { cn } from '#/lib/utils'
 
 interface ProductCardProps {
   product: {
@@ -22,63 +22,84 @@ export function ProductCard({ product }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
   const { toggleLike, isLiked } = useWishlist()
   const liked = isLiked(product.id)
-  const mainImage = product.images?.[0] || "https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80"
+  const mainImage =
+    product.images?.[0] ||
+    'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80'
 
   return (
-    <Link to={`/products/${product.id}` as any} className="block group h-full">
+    <Link
+      to="/products/$id"
+      params={{ id: product.id }}
+      className="block group h-full"
+    >
       <div className="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-gray-100 group-hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
         <div className="relative w-full h-[220px] rounded-xl bg-gray-100 mb-4 overflow-hidden shrink-0 flex items-center justify-center">
           {!imageError ? (
-            <img 
-              src={mainImage} 
-              alt={product.title || product.name} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+            <img
+              src={mainImage}
+              alt={product.title || product.name}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               onError={() => setImageError(true)}
             />
           ) : (
             <div className="flex flex-col items-center justify-center text-gray-300 gap-2">
               <Package size={48} className="opacity-20" />
-              <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">No Image</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
+                No Image
+              </span>
             </div>
           )}
           <div className="absolute top-3 right-3 z-10">
-            <button 
+            <button
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 toggleLike(product.id)
               }}
               className={cn(
-                "p-2.5 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm",
-                liked 
-                  ? "bg-red-50 text-red-500 scale-110" 
-                  : "bg-white/90 text-gray-600 hover:text-red-500 hover:bg-white"
+                'p-2.5 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm',
+                liked
+                  ? 'bg-red-50 text-red-500 scale-110'
+                  : 'bg-white/90 text-gray-600 hover:text-red-500 hover:bg-white',
               )}
             >
-              <Heart className={cn("w-5 h-5 transition-transform active:scale-90", liked && "fill-current")} />
+              <Heart
+                className={cn(
+                  'w-5 h-5 transition-transform active:scale-90',
+                  liked && 'fill-current',
+                )}
+              />
             </button>
           </div>
         </div>
-        
+
         <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
           {product.title || product.name}
         </h3>
-        
+
         <div className="flex items-end justify-between mb-3 mt-auto">
           <div className="flex items-baseline gap-1">
-            <span className="text-lg font-bold text-primary-light">₹{product.price.toLocaleString()}</span>
+            <span className="text-lg font-bold text-primary-light">
+              ₹{product.price.toLocaleString()}
+            </span>
             <span className="text-xs font-medium text-gray-500">/day</span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-            <span className="text-xs font-bold text-gray-700">{product.rating || "5.0"}</span>
-            <span className="text-xs font-medium text-gray-400">({product.reviewsCount || "0"})</span>
+            <span className="text-xs font-bold text-gray-700">
+              {product.rating || '5.0'}
+            </span>
+            <span className="text-xs font-medium text-gray-400">
+              ({product.reviewsCount || '0'})
+            </span>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5 text-gray-500 mb-4">
           <MapPin className="w-3.5 h-3.5 shrink-0" />
-          <span className="text-xs font-medium truncate">{product.location || "Ahmedabad"}</span>
+          <span className="text-xs font-medium truncate">
+            {product.location || 'Ahmedabad'}
+          </span>
         </div>
 
         <Button className="w-full bg-primary group-hover:bg-primary-hover text-white font-semibold rounded-xl h-11 shrink-0 transition-colors">

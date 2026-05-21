@@ -20,12 +20,14 @@ export const useUploadProductImages = () => {
   return useMutation({
     mutationFn: async (files: FileList) => {
       const urls: string[] = []
-      for (let i = 0; i < files.length; i++) {
+      for (const file of Array.from(files)) {
         const formData = new FormData()
-        formData.append('file', files[i])
+        formData.append('file', file)
+
         const res = await apiClient.post('/upload/product', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         })
+
         urls.push(res.data.url as string)
       }
       return urls
@@ -46,4 +48,3 @@ export const useUploadProfileImage = () => {
     },
   })
 }
-
