@@ -5,7 +5,7 @@ import { Field, FieldLabel } from '@/components/ui/field'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Mail, Lock, EyeOff, User, Eye } from 'lucide-react'
 import { authClient } from '#/lib/auth/auth-client'
 
@@ -22,6 +22,22 @@ export function SignupForm() {
     resolver: zodResolver(signupSchema),
   })
 
+  // Verification-related states
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
+  const [resendLoading, setResendLoading] = useState(false)
+  const [resendSuccess, setResendSuccess] = useState(false)
+  const [resendError, setResendError] = useState<string | null>(null)
+  const [resendCooldown, setResendCooldown] = useState(0)
+
+  // Countdown timer for resending verification email
+  useEffect(() => {
+    if (resendCooldown === 0) return
+    const interval = setInterval(() => {
+      setResendCooldown((prev) => prev - 1)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [resendCooldown])
+
   const onSubmit = async (values: SignupSchema) => {
     setServerError(null)
 
@@ -37,7 +53,104 @@ export function SignupForm() {
       return
     }
 
-    navigate({ to: '/' })
+    // Set the email to switch to the premium verification success view
+    setRegisteredEmail(values.email)
+  }
+
+  const handleResend = async () => {
+    if (!registeredEmail || resendCooldown > 0) return
+
+    setResendLoading(true)
+    setResendError(null)
+
+    const { error } = await authClient.sendVerificationEmail({
+      email: registeredEmail,
+      callbackURL: '/',
+    })
+
+    setResendLoading(false)
+
+    if (error) {
+      setResendError(error.message ?? 'Failed to resend. Please try again.')
+    } else {
+      setResendSuccess(true)
+      setResendCooldown(60)
+      setTimeout(() => setResendSuccess(false), 5000)
+    }
+  }
+
+  if (registeredEmail) {
+    return (
+      <div className="w-full relative py-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="mb-8">
+          <h1 className="text-[32px] font-bold text-text-dark tracking-tight font-display">
+            Verify Your Email
+          </h1>
+          <p className="mt-2 text-[15px] text-gray-500 font-medium">
+            We've sent a verification link to your inbox.
+          </p>
+        </div>
+
+        <div className="bg-primary-soft/50 border border-primary/20 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-5 animate-pulse">
+            <Mail className="h-8 w-8 text-primary" strokeWidth={1.5} />
+          </div>
+
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Check your inbox</h3>
+          <p className="text-[14px] text-gray-600 max-w-[340px] leading-relaxed mb-4">
+            A confirmation link was sent to{' '}
+            <strong className="text-gray-900 break-all">{registeredEmail}</strong>.
+            Please click the link to activate your account.
+          </p>
+
+          {resendSuccess && (
+            <p className="text-sm text-primary font-bold mb-4 bg-primary/10 px-3 py-1.5 rounded-lg animate-in fade-in duration-200">
+              Verification email resent successfully!
+            </p>
+          )}
+
+          {resendError && (
+            <p className="text-sm text-red-500 font-semibold mb-4 bg-red-50 px-3 py-1.5 rounded-lg">
+              {resendError}
+            </p>
+          )}
+
+          <Button
+            type="button"
+            disabled={resendLoading || resendCooldown > 0}
+            onClick={handleResend}
+            className="w-full h-12 rounded-xl bg-primary text-white text-[14px] font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {resendLoading ? (
+              <span className="flex items-center gap-1.5">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Resending...
+              </span>
+            ) : resendCooldown > 0 ? (
+              `Resend email in ${resendCooldown}s`
+            ) : (
+              'Resend Verification Email'
+            )}
+          </Button>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={() => setRegisteredEmail(null)}
+            className="w-full h-11 rounded-xl border border-gray-200 bg-white text-gray-700 text-[14px] font-bold hover:bg-gray-50 transition-colors cursor-pointer"
+          >
+            Back to Sign Up
+          </button>
+
+          <Link
+            to="/login"
+            className="w-full h-11 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-[14px] font-bold transition-colors flex items-center justify-center cursor-pointer"
+          >
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
