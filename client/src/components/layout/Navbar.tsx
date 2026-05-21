@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
-import { Logo } from "#/components/layout";
+import { Logo } from '#/components/layout'
 import { useCategories, useWishlist } from '#/hook'
 import { Link, useNavigate } from '@tanstack/react-router'
 import {
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "#/components/ui/dropdown-menu"
+} from '#/components/ui/dropdown-menu'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -20,10 +20,20 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "#/components/ui/navigation-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar"
-import { User, LogOut, LayoutDashboard, Settings, Heart, ArrowUpRight, Search, Smartphone } from "lucide-react"
+} from '#/components/ui/navigation-menu'
+import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import {
+  User,
+  LogOut,
+  LayoutDashboard,
+  Settings,
+  Heart,
+  ArrowUpRight,
+  Search,
+  Smartphone,
+} from 'lucide-react'
 import { cn } from '#/lib/utils'
+
 const navLinks = [
   { label: 'Catalogue', path: '/', hash: 'categories' },
   { label: 'How it works', path: '/', hash: 'how-it-works' },
@@ -76,7 +86,9 @@ export function Navbar() {
                             params={{ id: category.id }}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">{category.name}</div>
+                            <div className="text-sm font-medium leading-none">
+                              {category.name}
+                            </div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               Explore items in {category.name}
                             </p>
@@ -85,7 +97,9 @@ export function Navbar() {
                       </li>
                     ))}
                     {!categories?.length && (
-                      <div className="p-4 text-sm text-muted-foreground">No categories found</div>
+                      <div className="p-4 text-sm text-muted-foreground">
+                        No categories found
+                      </div>
                     )}
                   </ul>
                 </NavigationMenuContent>
@@ -97,16 +111,16 @@ export function Navbar() {
                     hash={link.hash}
                     onClick={(e) => {
                       if (link.hash && window.location.pathname === '/') {
-                        const el = document.getElementById(link.hash);
+                        const el = document.getElementById(link.hash)
                         if (el) {
-                          e.preventDefault();
-                          el.scrollIntoView({ behavior: 'smooth' });
+                          e.preventDefault()
+                          el.scrollIntoView({ behavior: 'smooth' })
                         }
                       }
                     }}
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "bg-transparent hover:bg-transparent focus:bg-transparent"
+                      'bg-transparent hover:bg-transparent focus:bg-transparent',
                     )}
                   >
                     {link.label}
@@ -151,7 +165,10 @@ export function Navbar() {
               <DropdownMenuTrigger asChild>
                 <button className="relative h-10 w-10 rounded-full border border-border outline-none transition-all hover:ring-4 hover:ring-primary/10">
                   <Avatar className="h-full w-full">
-                    <AvatarImage src={session.user.image || ''} alt={session.user.name} />
+                    <AvatarImage
+                      src={session.user.image || ''}
+                      alt={session.user.name}
+                    />
                     <AvatarFallback className="bg-primary/5 text-[13px] font-medium text-primary">
                       {session.user.name?.charAt(0).toUpperCase()}
                     </AvatarFallback>
@@ -161,7 +178,9 @@ export function Navbar() {
               <DropdownMenuContent className="w-56" align="end" sideOffset={8}>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{session.user.name}</p>
+                    <p className="text-sm font-medium leading-none">
+                      {session.user.name}
+                    </p>
                     <p className="text-xs leading-none text-muted-foreground">
                       {session.user.email}
                     </p>
@@ -175,7 +194,9 @@ export function Navbar() {
                       <span>Profile Summary</span>
                     </DropdownMenuItem>
                   </Link>
-                  {(session.user.role === 'owner' || session.user.role === 'admin' || session.user.role === 'superAdmin') && (
+                  {(session.user.role === 'owner' ||
+                    session.user.role === 'admin' ||
+                    session.user.role === 'superAdmin') && (
                     <Link to="/owner/dashboard">
                       <DropdownMenuItem className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -183,7 +204,8 @@ export function Navbar() {
                       </DropdownMenuItem>
                     </Link>
                   )}
-                  {(session.user.role === 'admin' || session.user.role === 'superAdmin') && (
+                  {(session.user.role === 'admin' ||
+                    session.user.role === 'superAdmin') && (
                     <Link to="/admin/dashboard">
                       <DropdownMenuItem className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -199,8 +221,8 @@ export function Navbar() {
                   </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/5" 
+                <DropdownMenuItem
+                  className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/5"
                   onClick={handleSignOut}
                 >
                   <LogOut className="mr-2 h-4 w-4" />

@@ -1,18 +1,19 @@
-import { motion, type Variants } from "motion/react";
-import featureKitchen from "../../../../public/assets/feature-kitchen.jpg";
-import { CreditCard, Leaf, ShieldCheck, Star } from "lucide-react";
+import { motion } from 'motion/react'
+import type { Variants } from 'motion/react'
+import featureKitchen from '../../../../public/assets/feature-kitchen.jpg'
+import { CreditCard, Leaf, ShieldCheck, Star } from 'lucide-react'
 
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
+}
 
 const stagger: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
-};
+}
 
 export function Editorial() {
   return (
@@ -25,7 +26,14 @@ export function Editorial() {
           transition={{ duration: 0.8, ease: EASE }}
           className="relative overflow-hidden rounded-[2.25rem] lg:col-span-7"
         >
-          <img src={featureKitchen} alt="A calm Scandinavian kitchen with sage tile backsplash" width={1024} height={800} loading="lazy" className="aspect-[5/4] w-full object-cover" />
+          <img
+            src={featureKitchen}
+            alt="A calm Scandinavian kitchen with sage tile backsplash"
+            width={1024}
+            height={800}
+            loading="lazy"
+            className="aspect-[5/4] w-full object-cover"
+          />
         </motion.div>
 
         <motion.div
@@ -35,34 +43,71 @@ export function Editorial() {
           viewport={{ once: true }}
           className="lg:col-span-5 lg:py-8"
         >
-          <motion.div variants={fadeUp} className="text-[11px] uppercase tracking-[0.22em] text-primary">— Manifesto № 01</motion.div>
-          <motion.h2 variants={fadeUp} className="mt-5 font-display text-[clamp(1.85rem,3.4vw,2.75rem)] leading-[1.1] tracking-tight text-foreground text-balance">
+          <motion.div
+            variants={fadeUp}
+            className="text-[11px] uppercase tracking-[0.22em] text-primary"
+          >
+            — Manifesto № 01
+          </motion.div>
+          <motion.h2
+            variants={fadeUp}
+            className="mt-5 font-display text-[clamp(1.85rem,3.4vw,2.75rem)] leading-[1.1] tracking-tight text-foreground text-balance"
+          >
             Less ownership. <span className="italic">More presence.</span>
           </motion.h2>
-          <motion.p variants={fadeUp} className="mt-6 text-[15.5px] leading-relaxed text-muted-foreground">
-            Vastu is built on a simple belief: a well-made object should be used, not stored.
-            We connect homes that have, with homes that need — turning idle quality into
-            shared abundance.
+          <motion.p
+            variants={fadeUp}
+            className="mt-6 text-[15.5px] leading-relaxed text-muted-foreground"
+          >
+            Vastu is built on a simple belief: a well-made object should be
+            used, not stored. We connect homes that have, with homes that need —
+            turning idle quality into shared abundance.
           </motion.p>
 
-          <motion.div variants={fadeUp} className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <motion.div
+            variants={fadeUp}
+            className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2"
+          >
             {[
-              { icon: ShieldCheck, t: "Trusted community", d: "Verified profiles, transparent reviews, real neighbors." },
-              { icon: CreditCard, t: "Secure payments", d: "Escrow protection, fair pricing, no surprises." },
-              { icon: Leaf, t: "Sustainable living", d: "Every rental keeps another object out of landfill." },
-              { icon: Star, t: "Editor curated", d: "Listings hand-picked for quality and care." },
+              {
+                icon: ShieldCheck,
+                t: 'Trusted community',
+                d: 'Verified profiles, transparent reviews, real neighbors.',
+              },
+              {
+                icon: CreditCard,
+                t: 'Secure payments',
+                d: 'Escrow protection, fair pricing, no surprises.',
+              },
+              {
+                icon: Leaf,
+                t: 'Sustainable living',
+                d: 'Every rental keeps another object out of landfill.',
+              },
+              {
+                icon: Star,
+                t: 'Editor curated',
+                d: 'Listings hand-picked for quality and care.',
+              },
             ].map((f) => (
-              <div key={f.t} className="rounded-2xl border border-border bg-background/60 p-5">
+              <div
+                key={f.t}
+                className="rounded-2xl border border-border bg-background/60 p-5"
+              >
                 <div className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-primary">
                   <f.icon className="h-4 w-4" />
                 </div>
-                <div className="mt-4 font-display text-[17px] text-foreground">{f.t}</div>
-                <div className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">{f.d}</div>
+                <div className="mt-4 font-display text-[17px] text-foreground">
+                  {f.t}
+                </div>
+                <div className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
+                  {f.d}
+                </div>
               </div>
             ))}
           </motion.div>
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

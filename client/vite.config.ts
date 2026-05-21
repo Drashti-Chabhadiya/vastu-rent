@@ -16,11 +16,17 @@ const config = defineConfig({
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
           if (req.url?.endsWith('.apk')) {
-            res.setHeader('Content-Type', 'application/vnd.android.package-archive');
-            res.setHeader('Content-Disposition', 'attachment; filename="VastuRent.apk"');
+            res.setHeader(
+              'Content-Type',
+              'application/vnd.android.package-archive',
+            )
+            res.setHeader(
+              'Content-Disposition',
+              'attachment; filename="VastuRent.apk"',
+            )
           }
-          next();
-        });
+          next()
+        })
       },
     },
   ],
@@ -32,4 +38,3 @@ const config = defineConfig({
 })
 
 export default config
-

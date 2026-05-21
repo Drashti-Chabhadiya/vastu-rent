@@ -1,5 +1,5 @@
-import { Skeleton } from "#/components/ui/skeleton"
-import { ProductCardSkeleton } from "./ProductCardSkeleton"
+import { Skeleton } from '#/components/ui/skeleton'
+import { ProductCardSkeleton } from './ProductCardSkeleton'
 
 export function CategoryDetailSkeleton() {
   return (
@@ -16,14 +16,14 @@ export function CategoryDetailSkeleton() {
           <div className="flex flex-col md:flex-row md:items-center gap-8">
             {/* Category Icon Skeleton */}
             <Skeleton className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl shrink-0" />
-            
+
             {/* Title & Description Skeleton */}
             <div className="flex-1 space-y-3">
               <Skeleton className="h-9 w-64 rounded-lg" />
               <Skeleton className="h-4 w-full max-w-xl rounded-md" />
               <Skeleton className="h-4 w-3/4 max-w-lg rounded-md" />
             </div>
-            
+
             {/* Items Count Skeleton */}
             <div className="shrink-0">
               <Skeleton className="h-16 w-20 rounded-2xl" />

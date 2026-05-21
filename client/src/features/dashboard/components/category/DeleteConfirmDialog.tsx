@@ -6,10 +6,9 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "#/components/ui/alert-dialog"
+} from '#/components/ui/alert-dialog'
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean
@@ -25,7 +24,7 @@ export const DeleteConfirmDialog = ({
   isOpen,
   onOpenChange,
   onConfirm,
-  title = "Delete Category?",
+  title = 'Delete Category?',
   description,
   isPending = false,
   itemName,
@@ -38,18 +37,26 @@ export const DeleteConfirmDialog = ({
             <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-6 mx-auto relative group">
               <div className="absolute inset-0 rounded-full bg-red-500/10 animate-ping group-hover:animate-none" />
               <div className="relative w-11 h-11 rounded-full bg-white shadow-sm flex items-center justify-center">
-                <AlertTriangle className="text-red-600" size={24} strokeWidth={2.5} />
+                <AlertTriangle
+                  className="text-red-600"
+                  size={24}
+                  strokeWidth={2.5}
+                />
               </div>
             </div>
-            
+
             <AlertDialogTitle className="text-2xl font-black text-gray-900 text-center tracking-tight leading-tight">
               {title}
             </AlertDialogTitle>
-            
+
             <AlertDialogDescription className="text-gray-500 font-semibold text-center text-sm leading-relaxed mt-4 px-2">
               {description || (
                 <>
-                  Are you sure you want to delete <span className="text-gray-900 font-black">"{itemName || 'this item'}"</span>? 
+                  Are you sure you want to delete{' '}
+                  <span className="text-gray-900 font-black">
+                    "{itemName || 'this item'}"
+                  </span>
+                  ?
                   <br />
                   <p className="text-gray-400 text-xs font-bold mt-4 bg-gray-50 py-2.5 px-4 rounded-xl border border-gray-100">
                     This action is permanent and cannot be reversed.
@@ -58,15 +65,15 @@ export const DeleteConfirmDialog = ({
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          
+
           <div className="grid grid-cols-2 gap-3 mt-10">
-            <AlertDialogCancel 
+            <AlertDialogCancel
               disabled={isPending}
               className="rounded-xl font-bold h-11 border-none bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-all active:scale-[0.98] text-sm"
             >
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault()
                 onConfirm()

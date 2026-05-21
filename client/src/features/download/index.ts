@@ -1,1 +1,1 @@
-export * from "./components/DownloadPage"
+export * from './components/DownloadPage'

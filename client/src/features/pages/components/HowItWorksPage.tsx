@@ -1,43 +1,55 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
-import { Button } from "#/components/ui/button"
-import { CheckCircle2, Search, Calendar, UserCheck, ShieldCheck, CreditCard } from "lucide-react"
-import { Link } from "@tanstack/react-router"
+import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card'
+import { Button } from '#/components/ui/button'
+import {
+  CheckCircle2,
+  Search,
+  Calendar,
+  UserCheck,
+  ShieldCheck,
+  CreditCard,
+} from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 
 const steps = [
   {
     icon: <Search className="w-10 h-10 text-primary" />,
-    title: "1. Find What You Need",
-    description: "Browse our extensive catalog of rental items, from electronics and furniture to vehicles and tools."
+    title: '1. Find What You Need',
+    description:
+      'Browse our extensive catalog of rental items, from electronics and furniture to vehicles and tools.',
   },
   {
     icon: <Calendar className="w-10 h-10 text-primary" />,
-    title: "2. Choose Your Dates",
-    description: "Select the pickup and return dates that work for you. Our system ensures items are available when you need them."
+    title: '2. Choose Your Dates',
+    description:
+      'Select the pickup and return dates that work for you. Our system ensures items are available when you need them.',
   },
   {
     icon: <CreditCard className="w-10 h-10 text-primary" />,
-    title: "3. Secure Booking",
-    description: "Pay securely through our platform. Your money is held safely until the rental process is complete."
+    title: '3. Secure Booking',
+    description:
+      'Pay securely through our platform. Your money is held safely until the rental process is complete.',
   },
   {
     icon: <UserCheck className="w-10 h-10 text-primary" />,
-    title: "4. Meet and Collect",
-    description: "Coordinate with the owner to pick up the item. Verify its condition and you're good to go!"
-  }
+    title: '4. Meet and Collect',
+    description:
+      "Coordinate with the owner to pick up the item. Verify its condition and you're good to go!",
+  },
 ]
 
 const benefits = [
   {
-    title: "Verified Users",
-    description: "Every user on our platform undergoes a verification process to ensure safety and trust.",
-    icon: <ShieldCheck className="w-6 h-6 text-primary" />
+    title: 'Verified Users',
+    description:
+      'Every user on our platform undergoes a verification process to ensure safety and trust.',
+    icon: <ShieldCheck className="w-6 h-6 text-primary" />,
   },
   {
-    title: "Quality Guarantee",
-    description: "We encourage honest reviews and high standards to ensure you get what you pay for.",
-    icon: <CheckCircle2 className="w-6 h-6 text-primary" />
-  }
+    title: 'Quality Guarantee',
+    description:
+      'We encourage honest reviews and high standards to ensure you get what you pay for.',
+    icon: <CheckCircle2 className="w-6 h-6 text-primary" />,
+  },
 ]
 
 export function HowItWorksPage() {
@@ -50,7 +62,8 @@ export function HowItWorksPage() {
             Renting Made Simple
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Vastu-Rent connects people who have things with people who need them. It's the smarter, more sustainable way to live.
+            Vastu-Rent connects people who have things with people who need
+            them. It's the smarter, more sustainable way to live.
           </p>
         </div>
       </section>
@@ -59,21 +72,30 @@ export function HowItWorksPage() {
       <section className="py-20">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How it works for Renters</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              How it works for Renters
+            </h2>
             <div className="w-20 h-1.5 bg-primary mx-auto rounded-full" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((step, index) => (
-              <Card key={index} className="bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 rounded-[32px] overflow-hidden group">
+              <Card
+                key={index}
+                className="bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 rounded-[32px] overflow-hidden group"
+              >
                 <CardHeader className="pt-10 flex items-center justify-center">
                   <div className="w-20 h-20 bg-primary/5 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                     {step.icon}
                   </div>
                 </CardHeader>
                 <CardContent className="text-center px-8 pb-10">
-                  <CardTitle className="text-xl font-bold text-gray-900 mb-3">{step.title}</CardTitle>
-                  <p className="text-gray-600 leading-relaxed text-sm">{step.description}</p>
+                  <CardTitle className="text-xl font-bold text-gray-900 mb-3">
+                    {step.title}
+                  </CardTitle>
+                  <p className="text-gray-600 leading-relaxed text-sm">
+                    {step.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -86,9 +108,13 @@ export function HowItWorksPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="bg-primary/5 rounded-[40px] p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center gap-12">
             <div className="lg:w-1/2">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Built on Trust and Safety</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+                Built on Trust and Safety
+              </h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                We've built Vastu-Rent with security at its core. From verified profiles to secure payments, we've got you covered every step of the way.
+                We've built Vastu-Rent with security at its core. From verified
+                profiles to secure payments, we've got you covered every step of
+                the way.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {benefits.map((benefit, i) => (
@@ -97,20 +123,25 @@ export function HowItWorksPage() {
                       {benefit.icon}
                     </div>
                     <div>
-                      <h4 className="font-bold text-gray-900 mb-1">{benefit.title}</h4>
-                      <p className="text-sm text-gray-600">{benefit.description}</p>
+                      <h4 className="font-bold text-gray-900 mb-1">
+                        {benefit.title}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {benefit.description}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
             <div className="lg:w-1/2">
-              <img 
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80" 
-                alt="Safety" 
+              <img
+                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                alt="Safety"
                 className="rounded-[32px] shadow-2xl bg-white"
                 onError={(e) => {
-                  (e.target as any).src = 'https://placehold.co/800x600/166534/FFFFFF/png?text=Trust+and+Safety'
+                  ;(e.target as any).src =
+                    'https://placehold.co/800x600/166534/FFFFFF/png?text=Trust+and+Safety'
                 }}
               />
             </div>
@@ -121,15 +152,20 @@ export function HowItWorksPage() {
       {/* CTA */}
       <section className="py-20 text-center">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Ready to start renting?</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            Ready to start renting?
+          </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to={"/" as any}>
+            <Link to={'/'}>
               <Button className="h-14 px-10 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl text-lg">
                 Browse Items
               </Button>
             </Link>
-            <Link to={"/become-lister" as any}>
-              <Button variant="outline" className="h-14 px-10 border-gray-200 hover:bg-gray-50 text-gray-900 font-bold rounded-2xl text-lg">
+            <Link to={'/become-lister'}>
+              <Button
+                variant="outline"
+                className="h-14 px-10 border-gray-200 hover:bg-gray-50 text-gray-900 font-bold rounded-2xl text-lg"
+              >
                 Learn to List
               </Button>
             </Link>

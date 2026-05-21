@@ -5,7 +5,7 @@ export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ location }) => {
     const sessionRes = await authClient.getSession()
     const session = sessionRes.data
-    
+
     if (!session) {
       throw redirect({
         to: '/login',
@@ -14,7 +14,7 @@ export const Route = createFileRoute('/_authenticated')({
         },
       })
     }
-    
+
     return {
       session,
     }

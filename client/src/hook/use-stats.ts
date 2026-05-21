@@ -9,6 +9,6 @@ export const useAdminStats = (options?: { enabled?: boolean }) => {
       const res = await apiClient.get('/admin/stats')
       return res.data.stats
     },
-    ...options
+    ...options,
   })
 }

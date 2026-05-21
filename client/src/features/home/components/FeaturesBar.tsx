@@ -1,25 +1,56 @@
-import { LayoutGrid, ShieldCheck, UserCheck, Headset, TicketX } from "lucide-react"
+import {
+  LayoutGrid,
+  ShieldCheck,
+  UserCheck,
+  Headset,
+  TicketX,
+} from 'lucide-react'
 
 const features = [
   {
-    icon: <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={1.5} />,
-    title: "Wide Range\nof Categories",
+    icon: (
+      <LayoutGrid
+        className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
+        strokeWidth={1.5}
+      />
+    ),
+    title: 'Wide Range\nof Categories',
   },
   {
-    icon: <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={1.5} />,
-    title: "Secure\nPayments",
+    icon: (
+      <ShieldCheck
+        className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
+        strokeWidth={1.5}
+      />
+    ),
+    title: 'Secure\nPayments',
   },
   {
-    icon: <UserCheck className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={1.5} />,
-    title: "Verified\nUsers",
+    icon: (
+      <UserCheck
+        className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
+        strokeWidth={1.5}
+      />
+    ),
+    title: 'Verified\nUsers',
   },
   {
-    icon: <Headset className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={1.5} />,
-    title: "24/7\nSupport",
+    icon: (
+      <Headset
+        className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
+        strokeWidth={1.5}
+      />
+    ),
+    title: '24/7\nSupport',
   },
   {
-    icon: <TicketX className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" strokeWidth={1.5} />,
-    title: "Easy\nCancellations",
+    icon: (
+      <TicketX
+        className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
+        strokeWidth={1.5}
+      />
+    ),
+    title: 'Easy\nCancellations',
   },
 ]
 

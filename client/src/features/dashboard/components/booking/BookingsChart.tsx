@@ -1,10 +1,7 @@
-
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react'
 
 export const BookingsChart = () => {
   // Mock data for the curve
-  const points = "0,80 50,120 100,60 150,100 200,40 250,80 300,20";
-  
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
       <div className="flex items-center justify-between mb-8">
@@ -26,19 +23,34 @@ export const BookingsChart = () => {
 
         {/* Grid Lines */}
         <div className="ml-10 h-56 border-b border-gray-100 flex flex-col justify-between">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="w-full border-t border-gray-50 border-dashed"></div>
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="w-full border-t border-gray-50 border-dashed"
+            ></div>
           ))}
         </div>
 
         {/* The Chart */}
         <div className="absolute left-10 right-0 top-0 bottom-8">
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            className="w-full h-full overflow-visible"
+          >
             {/* Gradient Area */}
             <defs>
               <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--color-brand-light)" stopOpacity="0.1" />
-                <stop offset="100%" stopColor="var(--color-brand-light)" stopOpacity="0" />
+                <stop
+                  offset="0%"
+                  stopColor="var(--color-brand-light)"
+                  stopOpacity="0.1"
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--color-brand-light)"
+                  stopOpacity="0"
+                />
               </linearGradient>
             </defs>
             <path
@@ -56,10 +68,23 @@ export const BookingsChart = () => {
             />
             {/* Data points */}
             {[
-              {x: 0, y: 60}, {x: 16.6, y: 65}, {x: 33.3, y: 45}, 
-              {x: 50, y: 60}, {x: 66.6, y: 55}, {x: 83.3, y: 35}, {x: 100, y: 20}
+              { x: 0, y: 60 },
+              { x: 16.6, y: 65 },
+              { x: 33.3, y: 45 },
+              { x: 50, y: 60 },
+              { x: 66.6, y: 55 },
+              { x: 83.3, y: 35 },
+              { x: 100, y: 20 },
             ].map((p, i) => (
-              <circle key={i} cx={p.x} cy={p.y} r="3" fill="white" stroke="var(--color-brand-light)" strokeWidth="2" />
+              <circle
+                key={i}
+                cx={p.x}
+                cy={p.y}
+                r="3"
+                fill="white"
+                stroke="var(--color-brand-light)"
+                strokeWidth="2"
+              />
             ))}
           </svg>
         </div>
@@ -76,5 +101,5 @@ export const BookingsChart = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

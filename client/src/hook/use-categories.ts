@@ -8,7 +8,7 @@ export const useCategories = () => {
     queryFn: async () => {
       const res = await apiClient.get('/categories')
       return res.data.categories
-    }
+    },
   })
 }
 
@@ -19,7 +19,7 @@ export const useAdminCategories = () => {
     queryFn: async () => {
       const res = await apiClient.get('/admin/categories')
       return res.data.categories
-    }
+    },
   })
 }
 
@@ -27,12 +27,17 @@ export const useAdminCategories = () => {
 export const useCreateCategory = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: { name: string; icon?: string; color?: string; image?: string }) => {
+    mutationFn: async (data: {
+      name: string
+      icon?: string
+      color?: string
+      image?: string
+    }) => {
       await apiClient.post('/admin/categories', data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] })
-    }
+    },
   })
 }
 
@@ -40,12 +45,21 @@ export const useCreateCategory = () => {
 export const useUpdateCategory = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, ...data }: { id: string; name: string; icon?: string; color?: string; image?: string }) => {
+    mutationFn: async ({
+      id,
+      ...data
+    }: {
+      id: string
+      name: string
+      icon?: string
+      color?: string
+      image?: string
+    }) => {
       await apiClient.put(`/admin/categories/${id}`, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] })
-    }
+    },
   })
 }
 
@@ -58,6 +72,6 @@ export const useDeleteCategory = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] })
-    }
+    },
   })
 }

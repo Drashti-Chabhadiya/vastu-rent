@@ -1,4 +1,5 @@
-import { motion, type Variants } from 'motion/react'
+import { motion } from 'motion/react'
+import type { Variants } from 'motion/react'
 import { ShieldCheck, Leaf, CreditCard, ArrowRight, Star } from 'lucide-react'
 import heroImg from '../../../../public/assets/hero-living.jpg'
 import featureNook from '../../../../public/assets/feature-nook.jpg'

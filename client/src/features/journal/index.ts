@@ -1,2 +1,2 @@
-export * from "./components/JournalPage";
-export * from "./components/StoryDetail";
+export * from './components/JournalPage'
+export * from './components/StoryDetail'

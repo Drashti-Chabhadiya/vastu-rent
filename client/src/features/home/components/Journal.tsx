@@ -1,73 +1,45 @@
-import { ArrowUpRight, Calendar, Clock } from "lucide-react";
-import { motion, type Variants } from "motion/react";
-import { Link } from "@tanstack/react-router";
-import featureNook from "../../../../public/assets/feature-nook.jpg";
-import catFurniture from "../../../../public/assets/cat-furniture.jpg";
-import catOutdoor from "../../../../public/assets/cat-outdoor.jpg";
+import type { Variants } from 'motion/react'
+import { ArrowUpRight, Calendar, Clock } from 'lucide-react'
+import { motion } from 'motion/react'
+import { Link } from '@tanstack/react-router'
+import { useStories } from '#/hook'
 
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
+}
 
 const stagger: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
-};
-
-import { useStories } from "#/hook";
+}
 
 export function Journal() {
-  const { data: fetchedStories, isLoading } = useStories();
+  const { data: fetchedStories } = useStories()
 
-  const fallbackPosts = [
-    {
-      id: '1',
-      tag: "Living",
-      title: "The art of the seasonal swap: Rotating your decor",
-      excerpt: "Discover the secrets to keeping your home fresh and inspired through the changing seasons.",
-      date: "May 12, 2024",
-      readTime: "5 min",
-      imageUrl: featureNook
-    },
-    {
-      id: '2',
-      tag: "Hosts",
-      title: "Inside Anneli's lending atelier in Copenhagen",
-      excerpt: "Meet the neighbor who turned her passion for Scandinavian design into a community resource.",
-      date: "May 08, 2024",
-      readTime: "8 min",
-      imageUrl: catFurniture
-    },
-    {
-      id: '3',
-      tag: "Impact",
-      title: "What 25,000 kg of CO₂ looks like in rental impact",
-      excerpt: "Measuring the environmental difference of circular consumption in our local neighborhoods.",
-      date: "April 28, 2024",
-      readTime: "12 min",
-      imageUrl: catOutdoor
-    },
-  ];
-
-  const displayStories = fetchedStories && fetchedStories.length > 0 
-    ? fetchedStories 
-    : fallbackPosts;
+  const displayStories =
+    fetchedStories && fetchedStories.length > 0 ? fetchedStories : []
 
   return (
     <section id="journal" className="bg-surface/70">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32">
         <div className="flex items-end justify-between gap-6">
           <div>
-            <div className="text-[11px] uppercase tracking-[0.22em] text-primary">— Journal</div>
+            <div className="text-[11px] uppercase tracking-[0.22em] text-primary">
+              — Journal
+            </div>
             <h2 className="mt-4 font-display text-[clamp(2.1rem,4vw,3.25rem)] leading-[1.05] tracking-tight text-foreground">
               Stories from the catalogue.
             </h2>
           </div>
-          <Link to="/journal" className="hidden items-center gap-2 text-[13px] font-medium text-foreground/80 underline decoration-border decoration-2 underline-offset-[8px] transition-all hover:text-primary hover:decoration-primary md:inline-flex">
-            Read the journal <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <Link
+            to="/journal"
+            className="hidden items-center gap-2 text-[13px] font-medium text-foreground/80 underline decoration-border decoration-2 underline-offset-[8px] transition-all hover:text-primary hover:decoration-primary md:inline-flex"
+          >
+            Read the journal{' '}
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
 
@@ -100,7 +72,13 @@ export function Journal() {
                 <div className="mt-7 flex items-center gap-5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground/80">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-3 w-3" />
-                    {p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : p.date}
+                    {p.createdAt
+                      ? new Date(p.createdAt).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })
+                      : p.date}
                   </span>
                   <span className="h-px w-6 bg-border" />
                   <span className="flex items-center gap-1.5">
@@ -123,5 +101,5 @@ export function Journal() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

@@ -1,8 +1,17 @@
-import { motion, type Variants } from "motion/react";
-import { ArrowUpRight, Home, ShoppingBag, Laptop, Palmtree, Sparkles, type LucideIcon } from "lucide-react";
-import { useCategories } from "#/hook"
-import { Link } from "@tanstack/react-router"
-import { CategoryCardSkeleton } from "#/components/skeletons"
+import { motion } from 'motion/react'
+import type { Variants } from 'motion/react'
+import {
+  ArrowUpRight,
+  Home,
+  ShoppingBag,
+  Laptop,
+  Palmtree,
+  Sparkles,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { useCategories } from '#/hook'
+import { Link } from '@tanstack/react-router'
+import { CategoryCardSkeleton } from '#/components/skeletons'
 
 const iconMap: Record<string, LucideIcon> = {
   HomeIcon: Home,
@@ -10,50 +19,66 @@ const iconMap: Record<string, LucideIcon> = {
   LaptopIcon: Laptop,
   PalmtreeIcon: Palmtree,
   SparklesIcon: Sparkles,
-};
+}
 
-const IconComponent = ({ iconName, color }: { iconName: string; color?: string }) => {
-  const Icon = iconMap[iconName] || Sparkles;
+const IconComponent = ({
+  iconName,
+  color,
+}: {
+  iconName: string
+  color?: string
+}) => {
+  const Icon = iconMap[iconName] ?? Sparkles
+
   return (
-    <div 
+    <div
       className="flex h-full w-full items-center justify-center"
-      style={{ backgroundColor: `${color}15` || 'var(--primary-10)' }}
+      style={{
+        backgroundColor: color ? `${color}15` : 'var(--primary-10)',
+      }}
     >
-      <Icon 
-        className="h-12 w-12" 
-        style={{ color: color || 'var(--primary)' }} 
+      <Icon
+        className="h-12 w-12"
+        style={{
+          color: color ?? 'var(--primary)',
+        }}
         strokeWidth={1.5}
       />
     </div>
-  );
-};
+  )
+}
 
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
+}
 
 const stagger: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
-};
+}
 
 export function Categories() {
   const { data: categories, isLoading } = useCategories()
   return (
-    <section id="categories" className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32">
+    <section
+      id="categories"
+      className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32"
+    >
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-xl">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-primary">— The Catalogue</div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-primary">
+            — The Catalogue
+          </div>
           <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] tracking-tight text-foreground text-balance">
             Quietly considered, beautifully kept.
           </h2>
         </div>
         <p className="max-w-sm text-[15px] leading-relaxed text-muted-foreground">
-          Browse a slow-edited selection across home, work and play — every item kept in
-          condition by neighbors who care.
+          Browse a slow-edited selection across home, work and play — every item
+          kept in condition by neighbors who care.
         </p>
       </div>
 
@@ -61,7 +86,7 @@ export function Categories() {
         variants={stagger}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: '-80px' }}
         className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
       >
         {isLoading
@@ -96,7 +121,9 @@ export function Categories() {
                   </div>
                   <div className="flex items-center justify-between px-1 py-5">
                     <div>
-                      <div className="font-display text-lg text-foreground">{c.name}</div>
+                      <div className="font-display text-lg text-foreground">
+                        {c.name}
+                      </div>
                       <div className="mt-0.5 text-[12px] text-muted-foreground">
                         {c._count?.products || 0} items
                       </div>
@@ -110,5 +137,5 @@ export function Categories() {
             ))}
       </motion.div>
     </section>
-  );
+  )
 }

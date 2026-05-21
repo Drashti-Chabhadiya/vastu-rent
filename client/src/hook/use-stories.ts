@@ -7,7 +7,7 @@ export const useStories = () => {
     queryFn: async () => {
       const res = await apiClient.get('/stories')
       return res.data.stories
-    }
+    },
   })
 }
 
@@ -18,7 +18,7 @@ export const useStory = (id: string) => {
       const res = await apiClient.get(`/stories/${id}`)
       return res.data.story
     },
-    enabled: !!id
+    enabled: !!id,
   })
 }
 
@@ -31,20 +31,20 @@ export const useCreateStory = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['stories'] })
-    }
+    },
   })
 }
 
 export const useUpdateStory = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string, data: any }) => {
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
       const res = await apiClient.put(`/stories/${id}`, data)
       return res.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['stories'] })
-    }
+    },
   })
 }
 
@@ -57,6 +57,6 @@ export const useDeleteStory = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['stories'] })
-    }
+    },
   })
 }

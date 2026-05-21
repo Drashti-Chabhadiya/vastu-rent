@@ -1,25 +1,45 @@
-import { Home, Users, ShieldCheck, Star } from "lucide-react"
+import { Home, Users, ShieldCheck, Star } from 'lucide-react'
 
 const stats = [
   {
-    icon: <Home className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent" strokeWidth={1.5} />,
-    value: "25,000+",
-    label: "Items Available",
+    icon: (
+      <Home
+        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+        strokeWidth={1.5}
+      />
+    ),
+    value: '25,000+',
+    label: 'Items Available',
   },
   {
-    icon: <Users className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent" strokeWidth={1.5} />,
-    value: "15,000+",
-    label: "Happy Customers",
+    icon: (
+      <Users
+        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+        strokeWidth={1.5}
+      />
+    ),
+    value: '15,000+',
+    label: 'Happy Customers',
   },
   {
-    icon: <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent" strokeWidth={1.5} />,
-    value: "98%",
-    label: "Verified & Trusted",
+    icon: (
+      <ShieldCheck
+        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+        strokeWidth={1.5}
+      />
+    ),
+    value: '98%',
+    label: 'Verified & Trusted',
   },
   {
-    icon: <Star className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent" strokeWidth={1.5} />,
-    value: "4.8/5",
-    label: "Customer Rating",
+    icon: (
+      <Star
+        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+        strokeWidth={1.5}
+      />
+    ),
+    value: '4.8/5',
+    label: 'Customer Rating',
   },
 ]
 
@@ -34,8 +54,12 @@ export function StatsSection() {
                 {stat.icon}
               </div>
               <div>
-                <div className="text-xl sm:text-2xl font-extrabold text-gray-900">{stat.value}</div>
-                <div className="text-xs sm:text-sm font-medium text-gray-600">{stat.label}</div>
+                <div className="text-xl sm:text-2xl font-extrabold text-gray-900">
+                  {stat.value}
+                </div>
+                <div className="text-xs sm:text-sm font-medium text-gray-600">
+                  {stat.label}
+                </div>
               </div>
             </div>
           ))}

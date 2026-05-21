@@ -1,1 +1,1 @@
-export * from "./components/UserProfilePage"
+export * from './components/UserProfilePage'

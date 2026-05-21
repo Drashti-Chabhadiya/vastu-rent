@@ -1,8 +1,8 @@
-import { ChevronRight, Sparkles } from "lucide-react"
-import { useProducts } from "#/hook"
-import { ProductCard } from "#/components/common/ProductCard"
-import { ProductCardSkeleton } from "#/components/skeletons"
-import { Link } from "@tanstack/react-router"
+import { ChevronRight, Sparkles } from 'lucide-react'
+import { useProducts } from '#/hook'
+import { ProductCard } from '#/components/common/ProductCard'
+import { ProductCardSkeleton } from '#/components/skeletons'
+import { Link } from '@tanstack/react-router'
 
 export function RecentProducts() {
   const { data: products, isLoading } = useProducts({ status: 'active' })
@@ -10,7 +10,10 @@ export function RecentProducts() {
   // Sort by date/id descending to get the latest 4 added items
   const recentProducts = products
     ? [...products]
-        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
         .slice(0, 4)
     : []
 
@@ -35,15 +38,15 @@ export function RecentProducts() {
               Be the first to rent these brand new listings.
             </p>
           </div>
-          <Link 
-            to="/products" 
+          <Link
+            to="/products"
             className="text-sm font-black text-primary hover:text-primary-hover flex items-center gap-1.5 group transition-all shrink-0 self-start sm:self-center"
           >
             Explore all new arrivals
             <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
-        
+
         <div className="relative z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {isLoading ? (
@@ -56,8 +59,12 @@ export function RecentProducts() {
               ))
             ) : (
               <div className="col-span-full py-16 bg-gray-50 rounded-3xl text-center border border-dashed border-gray-200">
-                <p className="text-gray-500 font-bold">No newly added items found.</p>
-                <p className="text-gray-400 text-sm mt-1">Check back later for fresh listings!</p>
+                <p className="text-gray-500 font-bold">
+                  No newly added items found.
+                </p>
+                <p className="text-gray-400 text-sm mt-1">
+                  Check back later for fresh listings!
+                </p>
               </div>
             )}
           </div>

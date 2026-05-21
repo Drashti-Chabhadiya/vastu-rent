@@ -1,20 +1,21 @@
-import { useState, useRef, useEffect } from "react"
-import { authClient } from "#/lib/auth/auth-client"
-import { Button } from "#/components/ui/button"
-import { cn } from "#/lib/utils"
-import { Input } from "#/components/ui/input"
-import { Label } from "#/components/ui/label"
-import { Mail, User as UserIcon, Calendar, Camera, Loader2 } from "lucide-react"
-import { useQuery } from "@tanstack/react-query"
-import { useUploadProfileImage } from "#/hook"
+import { useState, useRef, useEffect } from 'react'
+import { authClient } from '#/lib/auth/auth-client'
+import { Button } from '#/components/ui/button'
+import { cn } from '#/lib/utils'
+import { Input } from '#/components/ui/input'
+import { Label } from '#/components/ui/label'
+import { Mail, User as UserIcon, Calendar, Camera, Loader2 } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { useUploadProfileImage } from '#/hook'
 
 export function PersonalInfo() {
   const [isEditing, setIsEditing] = useState(false)
-  const [name, setName] = useState("")
+  const [name, setName] = useState('')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { mutateAsync: uploadImage, isPending: isSaving } = useUploadProfileImage()
+  const { mutateAsync: uploadImage, isPending: isSaving } =
+    useUploadProfileImage()
 
   // Fetch session via React Query for consistency
   const { data: session, refetch } = useQuery({
@@ -27,14 +28,14 @@ export function PersonalInfo() {
 
   // Synchronize state once session data loads
   useEffect(() => {
-    if (session?.user?.name) {
+    if (session?.user.name) {
       setName(session.user.name)
     }
   }, [session])
 
   const handleEditClick = () => {
     if (isEditing) {
-      setName(session?.user?.name || "")
+      setName(session?.user.name || '')
       setImagePreview(null)
       setIsEditing(false)
     } else {
@@ -62,9 +63,9 @@ export function PersonalInfo() {
   const handleSaveChanges = async () => {
     try {
       // 1. Update name via better-auth if edited
-      if (name.trim() && name.trim() !== session?.user?.name) {
+      if (name.trim() && name.trim() !== session?.user.name) {
         await authClient.updateUser({
-          name: name.trim()
+          name: name.trim(),
         })
       }
 
@@ -88,20 +89,24 @@ export function PersonalInfo() {
     <div className="p-8 lg:p-12">
       <div className="flex items-center justify-between mb-10">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Personal Information</h1>
-          <p className="text-gray-500">Manage your account details and profile settings.</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+            Personal Information
+          </h1>
+          <p className="text-gray-500">
+            Manage your account details and profile settings.
+          </p>
         </div>
-        <Button 
-          variant={isEditing ? "outline" : "default"}
+        <Button
+          variant={isEditing ? 'outline' : 'default'}
           onClick={handleEditClick}
           className={cn(
-            "rounded-xl font-bold h-11 px-6 transition-all",
-            isEditing 
-              ? "border-brand bg-primary hover:bg-primary/5" 
-              : "bg-primary hover:bg-primary-hover text-white shadow-lg shadow-brand/20"
+            'rounded-xl font-bold h-11 px-6 transition-all',
+            isEditing
+              ? 'border-brand bg-primary hover:bg-primary/5'
+              : 'bg-primary hover:bg-primary-hover text-white shadow-lg shadow-brand/20',
           )}
         >
-          {isEditing ? "Cancel" : "Edit Profile"}
+          {isEditing ? 'Cancel' : 'Edit Profile'}
         </Button>
       </div>
 
@@ -111,33 +116,47 @@ export function PersonalInfo() {
           <div className="relative group">
             <div className="w-32 h-32 lg:w-48 lg:h-48 rounded-[40px] bg-primary/5 border-4 border-white shadow-xl flex items-center justify-center text-4xl lg:text-6xl font-bold text-primary overflow-hidden relative">
               {imagePreview ? (
-                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
               ) : session.user.image ? (
-                <img src={session.user.image} alt="Profile" className="w-full h-full object-cover" />
+                <img
+                  src={session.user.image}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                session.user.name?.[0]?.toUpperCase() || 'U'
+                session.user.name.charAt(0).toUpperCase() || 'U'
               )}
               {isEditing && (
-                <div 
+                <div
                   onClick={handleImageClick}
                   className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <Camera size={32} className="mb-2" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-center px-4">Change Photo</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-center px-4">
+                    Change Photo
+                  </span>
                 </div>
               )}
             </div>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
               accept="image/*"
               onChange={handleFileChange}
             />
           </div>
           <div className="text-center">
-            <h4 className="font-bold text-gray-900 text-lg">{session.user.name}</h4>
-            <p className="text-sm text-gray-500 uppercase tracking-widest font-medium">Verified Account</p>
+            <h4 className="font-bold text-gray-900 text-lg">
+              {session.user.name}
+            </h4>
+            <p className="text-sm text-gray-500 uppercase tracking-widest font-medium">
+              Verified Account
+            </p>
           </div>
         </div>
 
@@ -145,41 +164,68 @@ export function PersonalInfo() {
         <div className="lg:col-span-2 space-y-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-gray-400">Full Name</Label>
+              <Label
+                htmlFor="name"
+                className="text-xs font-bold uppercase tracking-widest text-gray-400"
+              >
+                Full Name
+              </Label>
               <div className="relative">
-                <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
-                <Input 
-                  id="name" 
+                <UserIcon
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={18}
+                />
+                <Input
+                  id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   disabled={!isEditing}
                   className={cn(
-                    "h-12 pl-12 rounded-xl border-gray-100 font-bold transition-all",
-                    isEditing 
-                      ? "bg-white border-brand ring-2 ring-brand/5 text-gray-900" 
-                      : "bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default"
+                    'h-12 pl-12 rounded-xl border-gray-100 font-bold transition-all',
+                    isEditing
+                      ? 'bg-white border-brand ring-2 ring-brand/5 text-gray-900'
+                      : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
                   )}
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-gray-400">Email Address</Label>
+              <Label
+                htmlFor="email"
+                className="text-xs font-bold uppercase tracking-widest text-gray-400"
+              >
+                Email Address
+              </Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
-                <Input 
-                  id="email" 
-                  defaultValue={session.user.email} 
+                <Mail
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={18}
+                />
+                <Input
+                  id="email"
+                  defaultValue={session.user.email}
                   disabled
                   className="h-12 pl-12 rounded-xl border-gray-100 bg-gray-50/50 disabled:opacity-100 text-gray-900 font-bold disabled:cursor-default"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-gray-400">Member Since</Label>
+              <Label className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                Member Since
+              </Label>
               <div className="relative">
-                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
-                <Input 
-                  defaultValue={new Date(session.user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} 
+                <Calendar
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"
+                  size={18}
+                />
+                <Input
+                  defaultValue={new Date(
+                    session.user.createdAt,
+                  ).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
                   disabled
                   className="h-12 pl-12 rounded-xl border-gray-100 bg-gray-50/50 disabled:opacity-100 text-gray-900 font-bold disabled:cursor-default"
                 />
@@ -189,13 +235,13 @@ export function PersonalInfo() {
 
           {isEditing && (
             <div className="pt-6 border-t border-gray-50 flex gap-4">
-              <Button 
+              <Button
                 onClick={handleSaveChanges}
                 disabled={isSaving}
                 className="bg-primary hover:bg-primary-hover text-white h-12 px-8 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-brand/20"
               >
                 {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-                {isSaving ? "Saving..." : "Save Changes"}
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           )}
@@ -204,4 +250,3 @@ export function PersonalInfo() {
     </div>
   )
 }
-

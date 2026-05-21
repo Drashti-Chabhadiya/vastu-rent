@@ -4,9 +4,13 @@ import { MyBookings } from '#/features/dashboard'
 export const Route = createFileRoute('/_authenticated/account/bookings')({
   component: () => (
     <div className="p-4 md:p-6">
-      <h1 className="text-2xl font-black text-gray-900 mb-2">My Rental Bookings</h1>
-      <p className="text-sm text-gray-500 mb-8">View and manage your current active and past product bookings.</p>
+      <h1 className="text-2xl font-black text-gray-900 mb-2">
+        My Rental Bookings
+      </h1>
+      <p className="text-sm text-gray-500 mb-8">
+        View and manage your current active and past product bookings.
+      </p>
       <MyBookings />
     </div>
-  )
+  ),
 })

@@ -23,10 +23,17 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 
 export function WishlistPage() {
   const { wishlist, dislike, isLoading: wishlistLoading } = useWishlist()
-  const { data: products, isLoading, refetch, isFetching } = useWishlistProducts()
+  const {
+    data: products,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useWishlistProducts()
 
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'name'>('default')
+  const [sortBy, setSortBy] = useState<
+    'default' | 'price-asc' | 'price-desc' | 'name'
+  >('default')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [clearConfirmId, setClearConfirmId] = useState<string | null>(null)
   const [isSortOpen, setIsSortOpen] = useState(false)
@@ -49,20 +56,24 @@ export function WishlistPage() {
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
-      result = result.filter((p: any) =>
-        p.name?.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q) ||
-        p.category?.name?.toLowerCase().includes(q)
+      result = result.filter(
+        (p: any) =>
+          p.name?.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q) ||
+          p.category?.name?.toLowerCase().includes(q),
       )
     }
 
-    if (sortBy === 'price-asc') result.sort((a: any, b: any) => (a.price ?? 0) - (b.price ?? 0))
-    else if (sortBy === 'price-desc') result.sort((a: any, b: any) => (b.price ?? 0) - (a.price ?? 0))
-    else if (sortBy === 'name') result.sort((a: any, b: any) => {
-      const aName = (a.title ?? a.name ?? '').toLowerCase()
-      const bName = (b.title ?? b.name ?? '').toLowerCase()
-      return aName.localeCompare(bName)
-    })
+    if (sortBy === 'price-asc')
+      result.sort((a: any, b: any) => (a.price ?? 0) - (b.price ?? 0))
+    else if (sortBy === 'price-desc')
+      result.sort((a: any, b: any) => (b.price ?? 0) - (a.price ?? 0))
+    else if (sortBy === 'name')
+      result.sort((a: any, b: any) => {
+        const aName = (a.title ?? a.name ?? '').toLowerCase()
+        const bName = (b.title ?? b.name ?? '').toLowerCase()
+        return aName.localeCompare(bName)
+      })
 
     return result
   }, [products, searchQuery, sortBy])
@@ -77,14 +88,16 @@ export function WishlistPage() {
   return (
     <div className="min-h-screen bg-[#faf7f0] pt-24 pb-16 font-sans">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-
         {/* Back navigation */}
         <div className="mb-6">
           <Link
             to="/"
             className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors group"
           >
-            <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft
+              size={16}
+              className="group-hover:-translate-x-0.5 transition-transform"
+            />
             Back to Home
           </Link>
         </div>
@@ -125,7 +138,10 @@ export function WishlistPage() {
                   disabled={isFetching}
                   className="flex items-center gap-2 bg-white border border-gray-100 shadow-sm px-4 py-2.5 rounded-2xl text-xs font-black text-gray-500 hover:text-gray-900 hover:border-gray-200 transition-all disabled:opacity-50"
                 >
-                  <RefreshCw size={13} className={isFetching ? 'animate-spin' : ''} />
+                  <RefreshCw
+                    size={13}
+                    className={isFetching ? 'animate-spin' : ''}
+                  />
                   Refresh
                 </button>
               </div>
@@ -138,7 +154,10 @@ export function WishlistPage() {
           <div className="mb-6 flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none" />
+              <Search
+                size={16}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none"
+              />
               <input
                 type="text"
                 placeholder="Search saved items…"
@@ -167,12 +186,18 @@ export function WishlistPage() {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <SlidersHorizontal size={14} className="text-primary/60 shrink-0" />
+                  <SlidersHorizontal
+                    size={14}
+                    className="text-primary/60 shrink-0"
+                  />
                   <span>
-                    {sortBy === 'default' ? 'Default Order'
-                      : sortBy === 'name' ? 'Name A–Z'
-                      : sortBy === 'price-asc' ? 'Price: Low → High'
-                      : 'Price: High → Low'}
+                    {sortBy === 'default'
+                      ? 'Default Order'
+                      : sortBy === 'name'
+                        ? 'Name A–Z'
+                        : sortBy === 'price-asc'
+                          ? 'Price: Low → High'
+                          : 'Price: High → Low'}
                   </span>
                 </div>
                 <ChevronDown
@@ -185,15 +210,20 @@ export function WishlistPage() {
 
               {isSortOpen && (
                 <div className="absolute top-full mt-2 left-0 right-0 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden py-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
-                  {([
-                    { value: 'default', label: 'Default Order' },
-                    { value: 'name',    label: 'Name A–Z' },
-                    { value: 'price-asc',  label: 'Price: Low → High' },
-                    { value: 'price-desc', label: 'Price: High → Low' },
-                  ] as const).map((opt) => (
+                  {(
+                    [
+                      { value: 'default', label: 'Default Order' },
+                      { value: 'name', label: 'Name A–Z' },
+                      { value: 'price-asc', label: 'Price: Low → High' },
+                      { value: 'price-desc', label: 'Price: High → Low' },
+                    ] as const
+                  ).map((opt) => (
                     <button
                       key={opt.value}
-                      onClick={() => { setSortBy(opt.value); setIsSortOpen(false); }}
+                      onClick={() => {
+                        setSortBy(opt.value)
+                        setIsSortOpen(false)
+                      }}
                       className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors ${
                         sortBy === opt.value
                           ? 'text-primary bg-primary/5'
@@ -250,7 +280,9 @@ export function WishlistPage() {
             {/* Result count when searching */}
             {searchQuery && (
               <p className="text-xs font-bold text-primary/70 mb-4 uppercase tracking-wider">
-                {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''} for &ldquo;{searchQuery}&rdquo;
+                {filteredProducts.length} result
+                {filteredProducts.length !== 1 ? 's' : ''} for &ldquo;
+                {searchQuery}&rdquo;
               </p>
             )}
 
@@ -261,7 +293,9 @@ export function WishlistPage() {
                     <ProductCard product={product} />
                     {clearConfirmId === product.id ? (
                       <div className="absolute inset-0 bg-white/95 rounded-3xl flex flex-col items-center justify-center gap-3 z-10 animate-in fade-in duration-150">
-                        <p className="text-xs font-bold text-gray-700 text-center px-4">Remove from wishlist?</p>
+                        <p className="text-xs font-bold text-gray-700 text-center px-4">
+                          Remove from wishlist?
+                        </p>
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleRemove(product.id)}
@@ -283,7 +317,10 @@ export function WishlistPage() {
                         className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-50 hover:border-red-100 shadow-sm"
                         title="Remove from wishlist"
                       >
-                        <Trash2 size={13} className="text-gray-400 hover:text-red-500 transition-colors" />
+                        <Trash2
+                          size={13}
+                          className="text-gray-400 hover:text-red-500 transition-colors"
+                        />
                       </button>
                     )}
                   </div>
@@ -292,10 +329,20 @@ export function WishlistPage() {
             ) : (
               <div className="space-y-3">
                 {filteredProducts.map((product: any) => (
-                  <div key={product.id} className="bg-white border border-gray-100 rounded-2xl shadow-sm flex items-center gap-4 p-4 hover:shadow-md hover:border-primary/20 transition-all group">
-                    <Link to="/products/$id" params={{ id: product.id }} className="shrink-0">
+                  <div
+                    key={product.id}
+                    className="bg-white border border-gray-100 rounded-2xl shadow-sm flex items-center gap-4 p-4 hover:shadow-md hover:border-primary/20 transition-all group"
+                  >
+                    <Link
+                      to="/products/$id"
+                      params={{ id: product.id }}
+                      className="shrink-0"
+                    >
                       <img
-                        src={product.images?.[0] || `https://placehold.co/80x80/f8f8f8/ccc?text=Item`}
+                        src={
+                          product.images?.[0] ||
+                          `https://placehold.co/80x80/f8f8f8/ccc?text=Item`
+                        }
                         alt={product.name}
                         className="w-20 h-20 rounded-xl object-cover bg-gray-50"
                       />
@@ -311,11 +358,16 @@ export function WishlistPage() {
                           {product.category.name}
                         </span>
                       )}
-                      <p className="text-xs text-gray-500 mt-1.5 line-clamp-1">{product.description}</p>
+                      <p className="text-xs text-gray-500 mt-1.5 line-clamp-1">
+                        {product.description}
+                      </p>
                     </div>
                     <div className="flex flex-col items-end gap-2 shrink-0">
                       <p className="text-sm font-black text-gray-900">
-                        ₹{(product.price ?? 0).toLocaleString('en-IN')}<span className="text-[10px] font-bold text-gray-400">/day</span>
+                        ₹{(product.price ?? 0).toLocaleString('en-IN')}
+                        <span className="text-[10px] font-bold text-gray-400">
+                          /day
+                        </span>
                       </p>
                       <div className="flex gap-2">
                         <Link to="/products/$id" params={{ id: product.id }}>
@@ -342,8 +394,12 @@ export function WishlistPage() {
             <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mb-4">
               <Search size={24} className="text-primary/30" />
             </div>
-            <h2 className="text-lg font-bold text-gray-900 mb-1">No results for &ldquo;{searchQuery}&rdquo;</h2>
-            <p className="text-sm text-gray-500 mb-4">Try adjusting your search terms.</p>
+            <h2 className="text-lg font-bold text-gray-900 mb-1">
+              No results for &ldquo;{searchQuery}&rdquo;
+            </h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Try adjusting your search terms.
+            </p>
             <button
               onClick={() => setSearchQuery('')}
               className="text-sm font-bold text-primary hover:text-primary/80 hover:underline transition-colors"
@@ -364,9 +420,12 @@ export function WishlistPage() {
               </div>
             </div>
 
-            <h2 className="text-2xl font-black text-gray-900 mb-2">Your wishlist is empty</h2>
+            <h2 className="text-2xl font-black text-gray-900 mb-2">
+              Your wishlist is empty
+            </h2>
             <p className="text-sm text-gray-500 font-medium mb-8 max-w-xs leading-relaxed">
-              Browse our catalogue and tap the heart icon on any item to save it here for later.
+              Browse our catalogue and tap the heart icon on any item to save it
+              here for later.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -377,7 +436,10 @@ export function WishlistPage() {
                 </Button>
               </Link>
               <Link to="/" hash="categories">
-                <Button variant="outline" className="px-8 h-12 rounded-2xl font-black flex items-center gap-2 border-gray-200 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all">
+                <Button
+                  variant="outline"
+                  className="px-8 h-12 rounded-2xl font-black flex items-center gap-2 border-gray-200 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all"
+                >
                   <Grid3X3 size={16} />
                   Explore Categories
                 </Button>
@@ -390,8 +452,19 @@ export function WishlistPage() {
                 Popular right now
               </p>
               <div className="flex flex-wrap gap-2 justify-center">
-                {['Electronics', 'Furniture', 'Vehicles', 'Cameras', 'Appliances', 'Tools'].map((cat) => (
-                  <Link key={cat} to="/products" className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-600 hover:border-primary/30 hover:text-primary hover:bg-primary/5 transition-all shadow-sm">
+                {[
+                  'Electronics',
+                  'Furniture',
+                  'Vehicles',
+                  'Cameras',
+                  'Appliances',
+                  'Tools',
+                ].map((cat) => (
+                  <Link
+                    key={cat}
+                    to="/products"
+                    className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-600 hover:border-primary/30 hover:text-primary hover:bg-primary/5 transition-all shadow-sm"
+                  >
                     {cat}
                   </Link>
                 ))}

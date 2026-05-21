@@ -1,17 +1,19 @@
-import { createAuthClient } from "better-auth/react";
-import { adminClient } from "better-auth/client/plugins";
+import { createAuthClient } from 'better-auth/react'
+import { adminClient } from 'better-auth/client/plugins'
 
 const getAuthBaseUrl = () => {
   // If we are in a browser and NOT on localhost/local network, use the current origin's /api/auth proxy path
-  if (typeof window !== 'undefined' && 
-      window.location.hostname !== 'localhost' && 
-      window.location.hostname !== '127.0.0.1' && 
-      !window.location.hostname.startsWith('192.168.')) {
-    return `${window.location.origin}/api/auth`;
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1' &&
+    !window.location.hostname.startsWith('192.168.')
+  ) {
+    return `${window.location.origin}/api/auth`
   }
   // Otherwise, use the configured environment variable or fallback to localhost
-  return import.meta.env.VITE_AUTH_URL || "http://localhost:4000/api/auth";
-};
+  return import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
+}
 
 /**
  * Better Auth client — the single source of truth for all auth actions
@@ -22,7 +24,5 @@ const getAuthBaseUrl = () => {
  */
 export const authClient = createAuthClient({
   baseURL: getAuthBaseUrl(),
-  plugins: [
-    adminClient(),
-  ],
-});
+  plugins: [adminClient()],
+})

@@ -16,7 +16,7 @@ export const useNotifications = () => {
     queryFn: async () => {
       const res = await apiClient.get('/notifications')
       return res.data.notifications
-    }
+    },
   })
 }
 
@@ -28,7 +28,7 @@ export const useMarkNotificationRead = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
-    }
+    },
   })
 }
 
@@ -40,6 +40,6 @@ export const useMarkAllNotificationsRead = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
-    }
+    },
   })
 }

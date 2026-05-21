@@ -1,15 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
-import { type ListingSchema } from '#/schema'
+import type { ListingSchema } from '#/schema'
 
 // Fetch all listings with filters (Public)
-export const useProducts = (params?: { search?: string; categoryId?: string; status?: string }) => {
+export const useProducts = (params?: {
+  search?: string
+  categoryId?: string
+  status?: string
+}) => {
   return useQuery({
     queryKey: ['products', params],
     queryFn: async () => {
       const res = await apiClient.get('/products', { params })
       return res.data.products
-    }
+    },
   })
 }
 
@@ -21,7 +25,7 @@ export const useWishlistProducts = () => {
     queryFn: async () => {
       const res = await apiClient.get('/likes')
       return res.data.products
-    }
+    },
   })
 }
 
@@ -33,18 +37,22 @@ export const useProduct = (id: string) => {
       const res = await apiClient.get(`/products/${id}`)
       return res.data.product
     },
-    enabled: !!id
+    enabled: !!id,
   })
 }
 
 // Fetch all listings with filters (Admin)
-export const useAdminProducts = (params?: { search?: string; categoryId?: string; status?: string }) => {
+export const useAdminProducts = (params?: {
+  search?: string
+  categoryId?: string
+  status?: string
+}) => {
   return useQuery({
     queryKey: ['admin-products', params],
     queryFn: async () => {
       const res = await apiClient.get('/admin/products', { params })
       return res.data.products
-    }
+    },
   })
 }
 
@@ -56,7 +64,7 @@ export const useAdminRecentProducts = (options?: { enabled?: boolean }) => {
       const res = await apiClient.get('/admin/products/recent')
       return res.data.products
     },
-    ...options
+    ...options,
   })
 }
 
@@ -70,7 +78,7 @@ export const useCreateProduct = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       queryClient.invalidateQueries({ queryKey: ['recent-products'] })
-    }
+    },
   })
 }
 
@@ -78,13 +86,19 @@ export const useCreateProduct = () => {
 export const useToggleProductStatus = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, isAvailable }: { id: string; isAvailable: boolean }) => {
+    mutationFn: async ({
+      id,
+      isAvailable,
+    }: {
+      id: string
+      isAvailable: boolean
+    }) => {
       await apiClient.post(`/admin/products/${id}/available`, { isAvailable })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       queryClient.invalidateQueries({ queryKey: ['my-listings'] })
-    }
+    },
   })
 }
 
@@ -99,7 +113,7 @@ export const useDeleteProduct = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       queryClient.invalidateQueries({ queryKey: ['recent-products'] })
       queryClient.invalidateQueries({ queryKey: ['my-listings'] })
-    }
+    },
   })
 }
 
@@ -107,12 +121,18 @@ export const useDeleteProduct = () => {
 export const useCreateDeleteRequest = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ productId, reason }: { productId: string; reason?: string }) => {
+    mutationFn: async ({
+      productId,
+      reason,
+    }: {
+      productId: string
+      reason?: string
+    }) => {
       await apiClient.post('/delete-requests', { productId, reason })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['delete-requests'] })
-    }
+    },
   })
 }
 
@@ -123,7 +143,7 @@ export const useDeleteRequests = () => {
     queryFn: async () => {
       const res = await apiClient.get('/delete-requests')
       return res.data.requests
-    }
+    },
   })
 }
 
@@ -131,26 +151,40 @@ export const useDeleteRequests = () => {
 export const useProcessDeleteRequest = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: 'approved' | 'rejected' }) => {
+    mutationFn: async ({
+      id,
+      status,
+    }: {
+      id: string
+      status: 'approved' | 'rejected'
+    }) => {
       await apiClient.patch(`/delete-requests/${id}/process`, { status })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['delete-requests'] })
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-    }
+    },
   })
 }
 // Create rental (Rent Now)
 export const useCreateRental = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: { productId: string; startDate: string; endDate: string; totalPrice: number; rentalFee: number; depositAmount: number; paymentMethod?: string }) => {
+    mutationFn: async (data: {
+      productId: string
+      startDate: string
+      endDate: string
+      totalPrice: number
+      rentalFee: number
+      depositAmount: number
+      paymentMethod?: string
+    }) => {
       const res = await apiClient.post('/rentals', data)
       return res.data.rental
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
-    }
+    },
   })
 }
 
@@ -162,7 +196,7 @@ export const useMyRentals = () => {
       const res = await apiClient.get('/rentals/my')
       return res.data.rentals
     },
-    retry: false
+    retry: false,
   })
 }
 
@@ -173,7 +207,7 @@ export const useMyListings = () => {
     queryFn: async () => {
       const res = await apiClient.get('/products/my-listings')
       return res.data.products
-    }
+    },
   })
 }
 // Fetch orders (for Owners/Admins)
@@ -183,7 +217,7 @@ export const useOrders = () => {
     queryFn: async () => {
       const res = await apiClient.get('/rentals/orders')
       return res.data.rentals
-    }
+    },
   })
 }
 
@@ -197,7 +231,7 @@ export const useUpdateRentalStatus = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] })
       queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
-    }
+    },
   })
 }
 
@@ -209,6 +243,6 @@ export const useProductRentals = (productId: string) => {
       const res = await apiClient.get('/rentals/product/' + productId)
       return res.data.rentals
     },
-    enabled: !!productId
+    enabled: !!productId,
   })
 }

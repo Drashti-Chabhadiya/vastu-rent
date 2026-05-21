@@ -2,7 +2,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router'
 import { StoryDetail } from '#/features/journal'
 
 export const Route = createFileRoute('/journal/$id')({
-  component: StoryDetailPage
+  component: StoryDetailPage,
 })
 
 function StoryDetailPage() {
