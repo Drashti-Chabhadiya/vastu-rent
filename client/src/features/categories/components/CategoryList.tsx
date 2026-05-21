@@ -33,7 +33,8 @@ export function CategoryList() {
             {categories?.map((category: any) => (
               <Link
                 key={category.id}
-                to={`/categories/${category.id}`}
+                to="/categories/$id"
+                params={{ id: String(category.id) }}
                 className="group relative bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
               >
                 {/* Background Decoration */}
