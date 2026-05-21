@@ -2,25 +2,26 @@ import "dotenv/config";
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
-import { authRoutes } from "./routes/auth.routes.js";
-import { userRoutes } from "./routes/user.routes.js";
-import { productRoutes } from "./routes/product.routes.js";
-import { categoryRoutes } from "./routes/category.routes.js";
-import { reviewRoutes } from "./routes/review.routes.js";
-import { rentalRoutes } from "./routes/rental.routes.js";
-import { statsRoutes } from "./routes/stats.routes.js";
-import { categoryRequestRoutes } from "./routes/category-request.routes.js";
-import { couponRoutes } from "./routes/coupon.routes.js";
-import { disputeRoutes } from "./routes/dispute.routes.js";
-import { notificationRoutes } from "./routes/notification.routes.js";
-
 import multipart from "@fastify/multipart";
-import { uploadRoutes } from "./routes/upload.routes.js";
-import { likeRoutes } from "./routes/like.routes.js";
-import { deleteRequestRoutes } from "./routes/delete-request.routes.js";
-import { paymentRoutes } from "./routes/payment.routes.js";
-import { payoutRoutes } from "./routes/payout.routes.js";
-import { storyRoutes } from "./routes/story.routes.js";
+
+// ─── Feature Routes ───────────────────────────────────────────────────────────
+import { authRoutes } from "./features/auth/auth.routes.js";
+import { userRoutes } from "./features/user/user.routes.js";
+import { productRoutes } from "./features/product/product.routes.js";
+import { categoryRoutes } from "./features/category/category.routes.js";
+import { categoryRequestRoutes } from "./features/category-request/category-request.routes.js";
+import { couponRoutes } from "./features/coupon/coupon.routes.js";
+import { disputeRoutes } from "./features/dispute/dispute.routes.js";
+import { notificationRoutes } from "./features/notification/notification.routes.js";
+import { reviewRoutes } from "./features/review/review.routes.js";
+import { rentalRoutes } from "./features/rental/rental.routes.js";
+import { statsRoutes } from "./features/stats/stats.routes.js";
+import { uploadRoutes } from "./features/upload/upload.routes.js";
+import { likeRoutes } from "./features/like/like.routes.js";
+import { deleteRequestRoutes } from "./features/delete-request/delete-request.routes.js";
+import { paymentRoutes } from "./features/payment/payment.routes.js";
+import { payoutRoutes } from "./features/payout/payout.routes.js";
+import { storyRoutes } from "./features/story/story.routes.js";
 
 export const app = Fastify({ logger: true, trustProxy: true });
 
@@ -46,8 +47,8 @@ app.register(cors, {
 app.register(authRoutes, { prefix: "/api/auth" });
 
 // Entity Routes
-app.register(userRoutes, { prefix: "/api/users" }); // Public profile access
-app.register(userRoutes, { prefix: "/api/admin/users" }); // Admin management
+app.register(userRoutes, { prefix: "/api/users" });          // Public profile access
+app.register(userRoutes, { prefix: "/api/admin/users" });    // Admin management
 app.register(productRoutes, { prefix: "/api/products" });
 app.register(categoryRoutes, { prefix: "/api/categories" });
 app.register(categoryRequestRoutes, { prefix: "/api/category-requests" });
@@ -68,7 +69,6 @@ app.register(storyRoutes, { prefix: "/api/stories" });
 app.register(productRoutes, { prefix: "/api/admin/products" });
 app.register(categoryRoutes, { prefix: "/api/admin/categories" });
 app.register(reviewRoutes, { prefix: "/api/admin/reviews" });
-
 
 // Legacy redirects
 app.get("/api/my-rentals", async (req, reply) => reply.redirect("/api/rentals/my"));
