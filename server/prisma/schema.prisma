@@ -138,6 +138,7 @@ model Product {
   location        String   // કઈ જગ્યાએ વસ્તુ ઉપલબ્ધ છે
   images          String[] // Image URLs
   isAvailable     Boolean  @default(true)
+  city            String
   
   // New Enhanced Fields
   condition       String?  // e.g., "Like New", "Good", "Fair"

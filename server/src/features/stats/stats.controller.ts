@@ -105,8 +105,8 @@ export class StatsController {
   async getTopCities(request: FastifyRequest, reply: FastifyReply) {
     try {
       const products = await prisma.product.findMany({
+        where: { city: { not: "" } },
         select: { city: true },
-        where: { city: { not: null } },
       });
 
       const cityCount: Record<string, number> = {};
