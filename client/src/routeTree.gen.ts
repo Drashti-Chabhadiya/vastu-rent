@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
@@ -47,6 +48,11 @@ import { Route as AuthenticatedOwnerOwnerDashboardRouteImport } from './routes/_
 import { Route as AuthenticatedAdminSuperadminDashboardRouteImport } from './routes/_authenticated/_admin/superadmin.dashboard'
 import { Route as AuthenticatedAdminAdminDashboardRouteImport } from './routes/_authenticated/_admin/admin.dashboard'
 
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
@@ -287,6 +294,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRouteWithChildren
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/journal/$id': typeof JournalIdRoute
@@ -324,6 +332,7 @@ export interface FileRoutesById {
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
   '/signup': typeof SignupRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/_owner': typeof AuthenticatedOwnerRouteWithChildren
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
@@ -364,6 +373,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/signup'
+    | '/verify-email'
     | '/account'
     | '/wishlist'
     | '/categories/$id'
@@ -397,6 +407,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/signup'
+    | '/verify-email'
     | '/wishlist'
     | '/categories/$id'
     | '/journal/$id'
@@ -433,6 +444,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/signup'
+    | '/verify-email'
     | '/_authenticated/_admin'
     | '/_authenticated/_owner'
     | '/_authenticated/account'
@@ -473,11 +485,19 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRouteWithChildren
   ProfileRoute: typeof ProfileRouteWithChildren
   SignupRoute: typeof SignupRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   UsersIdRoute: typeof UsersIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -877,6 +897,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRouteWithChildren,
   ProfileRoute: ProfileRouteWithChildren,
   SignupRoute: SignupRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   UsersIdRoute: UsersIdRoute,
 }
 export const routeTree = rootRouteImport
