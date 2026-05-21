@@ -37,7 +37,8 @@ export function BrowseByCategory() {
               {displayCategories.map((category: any) => (
                 <Link
                   key={category.id}
-                  to={`/categories/${category.id}`}
+                  to="/categories/$id"
+                  params={{ id: category.id }}
                   className="flex flex-col items-center gap-3 sm:gap-4 cursor-pointer group"
                 >
                   <CategoryIcon
