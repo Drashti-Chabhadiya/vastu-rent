@@ -50,7 +50,7 @@ export function CategoryList() {
                     className="mb-6 group-hover:scale-110 transition-transform duration-500"
                   />
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:bg-primary transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
                     {category.name}
                   </h3>
 
@@ -58,7 +58,7 @@ export function CategoryList() {
                     {category._count?.products || 0} active listings
                   </p>
 
-                  <div className="flex items-center gap-2 text-sm font-bold bg-primary group-hover:gap-3 transition-all duration-300">
+                  <div className="flex items-center gap-2 text-sm font-bold text-primary group-hover:gap-3 transition-all duration-300">
                     Explore Now
                     <ChevronRight
                       size={18}

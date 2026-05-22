@@ -7,11 +7,88 @@ import { prisma } from "../../config/prisma.js";
 export class StatsController {
   async getDashboardStats(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const [users, products, rentalStats] = await Promise.all([
+      const now = new Date();
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(now.getDate() - 30);
+      const sixtyDaysAgo = new Date();
+      sixtyDaysAgo.setDate(now.getDate() - 60);
+
+      const [
+        users,
+        products,
+        rentalStats,
+        currentUsersCount,
+        previousUsersCount,
+        currentListingsCount,
+        previousListingsCount,
+        currentBookingsCount,
+        previousBookingsCount,
+        currentRevenueRes,
+        previousRevenueRes,
+      ] = await Promise.all([
         userService.getAllUsers({}),
         productService.getAllProducts({}),
         rentalService.getStats(),
+        prisma.user.count({
+          where: {
+            createdAt: { gte: thirtyDaysAgo, lte: now },
+          },
+        }),
+        prisma.user.count({
+          where: {
+            createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+          },
+        }),
+        prisma.product.count({
+          where: {
+            createdAt: { gte: thirtyDaysAgo, lte: now },
+          },
+        }),
+        prisma.product.count({
+          where: {
+            createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+          },
+        }),
+        prisma.rental.count({
+          where: {
+            createdAt: { gte: thirtyDaysAgo, lte: now },
+          },
+        }),
+        prisma.rental.count({
+          where: {
+            createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+          },
+        }),
+        prisma.rental.aggregate({
+          where: {
+            createdAt: { gte: thirtyDaysAgo, lte: now },
+            status: { in: ["confirmed", "active", "completed", "approved"] },
+          },
+          _sum: { totalPrice: true },
+        }),
+        prisma.rental.aggregate({
+          where: {
+            createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+            status: { in: ["confirmed", "active", "completed", "approved"] },
+          },
+          _sum: { totalPrice: true },
+        }),
       ]);
+
+      const currentRevenue = currentRevenueRes._sum.totalPrice || 0;
+      const previousRevenue = previousRevenueRes._sum.totalPrice || 0;
+
+      const calculateChange = (current: number, previous: number) => {
+        if (previous === 0) {
+          return current === 0 ? 0 : 100;
+        }
+        return parseFloat(((current - previous) / previous * 100).toFixed(1));
+      };
+
+      const usersChange = calculateChange(currentUsersCount, previousUsersCount);
+      const listingsChange = calculateChange(currentListingsCount, previousListingsCount);
+      const bookingsChange = calculateChange(currentBookingsCount, previousBookingsCount);
+      const revenueChange = calculateChange(currentRevenue, previousRevenue);
 
       return {
         stats: {
@@ -19,6 +96,10 @@ export class StatsController {
           totalListings: products.length,
           totalBookings: rentalStats.totalBookings,
           totalRevenue: rentalStats.totalRevenue,
+          usersChange,
+          listingsChange,
+          bookingsChange,
+          revenueChange,
         }
       };
     } catch (error) {

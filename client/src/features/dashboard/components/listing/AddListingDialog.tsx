@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import type { SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PackagePlus } from 'lucide-react'
+import { PackagePlus, Plus } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -54,6 +54,7 @@ export const AddListingDialog = ({
       title: '',
       description: '',
       price: 0,
+      city: '',
       location: '',
       categoryId: '',
       ownerId: '',
@@ -70,6 +71,7 @@ export const AddListingDialog = ({
         description: '',
         price: 0,
         securityDeposit: 0,
+        city: '',
         location: '',
         categoryId: '',
         ownerId: currentUser?.role === 'owner' ? currentUser.id : '',
@@ -114,20 +116,21 @@ export const AddListingDialog = ({
               currentUser={currentUser}
             />
 
-            <DialogFooter className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-4">
+            <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-gray-100">
               <Button
                 type="button"
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
-                className="w-full sm:w-auto h-14 rounded-2xl font-bold"
+                className="rounded-xl font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
               >
                 Discard
               </Button>
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full sm:flex-1 h-14 bg-gradient-to-r from-[#166534] to-[#2f6a4a] text-white rounded-2xl font-extrabold text-base shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98]"
+                className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
               >
+                <Plus size={18} strokeWidth={3} />
                 {isLoading ? 'Publishing...' : 'Publish to Marketplace'}
               </Button>
             </DialogFooter>

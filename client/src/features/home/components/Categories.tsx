@@ -62,6 +62,11 @@ const stagger: Variants = {
 
 export function Categories() {
   const { data: categories, isLoading } = useCategories()
+
+  const latestCategories = categories
+    ? [...categories].sort((a: any, b: any) => b.id.localeCompare(a.id)).slice(0, 4)
+    : []
+
   return (
     <section
       id="categories"
@@ -76,66 +81,79 @@ export function Categories() {
             Quietly considered, beautifully kept.
           </h2>
         </div>
-        <p className="max-w-sm text-[15px] leading-relaxed text-muted-foreground">
-          Browse a slow-edited selection across home, work and play — every item
-          kept in condition by neighbors who care.
-        </p>
+        <div className="flex flex-col gap-4 max-w-sm">
+          <p className="text-[15px] leading-relaxed text-muted-foreground">
+            Browse a slow-edited selection across home, work and play — every item
+            kept in condition by neighbors who care.
+          </p>
+          <Link
+            to="/categories"
+            className="group inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-primary underline decoration-primary/20 decoration-2 underline-offset-[6px] transition-all hover:decoration-primary"
+          >
+            Explore all categories
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+        </div>
       </div>
 
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '-80px' }}
-        className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
-      >
-        {isLoading
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <CategoryCardSkeleton key={i} />
-            ))
-          : categories?.map((c: any) => (
-              <motion.div key={c.id} variants={fadeUp}>
-                <Link
-                  to="/categories/$id"
-                  params={{ id: c.id }}
-                  className="group relative overflow-hidden rounded-[1.75rem] bg-card block"
-                >
-                  <div className="relative overflow-hidden bg-accent/30 aspect-[4/5]">
-                    {c.image ? (
-                      <img
-                        src={c.image}
-                        alt={c.name}
-                        width={800}
-                        height={1024}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-                      />
-                    ) : (
-                      <IconComponent iconName={c.icon} color={c.color} />
-                    )}
-                    {c.tag && (
-                      <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-foreground backdrop-blur">
-                        {c.tag}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between px-1 py-5">
-                    <div>
-                      <div className="font-display text-lg text-foreground">
-                        {c.name}
-                      </div>
-                      <div className="mt-0.5 text-[12px] text-muted-foreground">
-                        {c._count?.products || 0} items
-                      </div>
-                    </div>
-                    <span className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                      <ArrowUpRight className="h-4 w-4" />
+      {isLoading ? (
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <CategoryCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : (
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-80px' }}
+          className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {latestCategories.map((c: any) => (
+            <motion.div key={c.id} variants={fadeUp}>
+              <Link
+                to="/categories/$id"
+                params={{ id: c.id }}
+                className="group relative overflow-hidden rounded-[1.75rem] bg-card block"
+              >
+                <div className="relative overflow-hidden bg-accent/30 aspect-[4/5]">
+                  {c.image ? (
+                    <img
+                      src={c.image}
+                      alt={c.name}
+                      width={800}
+                      height={1024}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                    />
+                  ) : (
+                    <IconComponent iconName={c.icon} color={c.color} />
+                  )}
+                  {c.tag && (
+                    <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-foreground backdrop-blur">
+                      {c.tag}
                     </span>
+                  )}
+                </div>
+                <div className="flex items-center justify-between px-1 py-5">
+                  <div>
+                    <div className="font-display text-lg text-foreground">
+                      {c.name}
+                    </div>
+                    <div className="mt-0.5 text-[12px] text-muted-foreground">
+                      {c._count?.products || 0} items
+                    </div>
                   </div>
-                </Link>
-              </motion.div>
-            ))}
-      </motion.div>
+                  <span className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+                    <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </section>
   )
 }

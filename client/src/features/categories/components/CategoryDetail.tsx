@@ -32,7 +32,7 @@ export function CategoryDetail() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <Link
             to={'/categories'}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:bg-primary transition-colors mb-8"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-primary transition-colors mb-8"
           >
             <ArrowLeft size={16} />
             Back to All Categories
@@ -76,7 +76,7 @@ export function CategoryDetail() {
         <div className="flex flex-col md:flex-row items-center gap-4 mb-10">
           <div className="relative flex-1 group w-full">
             <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:bg-primary transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors"
               size={20}
             />
             <input

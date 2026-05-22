@@ -163,7 +163,7 @@ export const CategoryManagement = ({
             alt={category.name}
             className="w-full h-full object-cover"
             onError={(e) => {
-              ;(e.target as any).src =
+              (e.target as any).src =
                 'https://via.placeholder.com/100?text=Category'
             }}
           />
@@ -194,11 +194,10 @@ export const CategoryManagement = ({
       <div className="flex border-b border-gray-100 gap-6">
         <button
           onClick={() => setActiveTab('categories')}
-          className={`pb-4 text-sm font-bold tracking-tight transition-all relative ${
-            activeTab === 'categories'
-              ? 'text-dash-brand'
-              : 'text-gray-400 hover:text-gray-600'
-          }`}
+          className={`pb-4 text-sm font-bold tracking-tight transition-all relative ${activeTab === 'categories'
+            ? 'text-dash-brand'
+            : 'text-gray-400 hover:text-gray-600'
+            }`}
         >
           Active Categories
           {activeTab === 'categories' && (
@@ -207,16 +206,15 @@ export const CategoryManagement = ({
         </button>
         <button
           onClick={() => setActiveTab('requests')}
-          className={`pb-4 text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 ${
-            activeTab === 'requests'
-              ? 'text-dash-brand'
-              : 'text-gray-400 hover:text-gray-600'
-          }`}
+          className={`pb-4 text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 ${activeTab === 'requests'
+            ? 'text-dash-brand'
+            : 'text-gray-400 hover:text-gray-600'
+            }`}
         >
           Category Requests
           {ownerRequests &&
             ownerRequests.filter((r: any) => r.status === 'pending').length >
-              0 && (
+            0 && (
               <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
                 {
                   ownerRequests.filter((r: any) => r.status === 'pending')
@@ -415,7 +413,35 @@ export const CategoryManagement = ({
                           color: req.color || '#166534',
                         }}
                       >
-                        <Icon size={24} />
+                        {req.image ? (
+                          <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                            <img
+                              src={req.image}
+                              alt={req.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                ; (e.target as any).src =
+                                  'https://via.placeholder.com/100?text=Category'
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center transition-all group-hover:scale-110 shadow-sm"
+                            style={{
+                              backgroundColor: `${req.color || '#166534'}15`,
+                              color: req.color || '#166534',
+                            }}
+                          >
+                            {req.icon ? (
+                              <Icon size={24} />
+                            ) : (
+                              <span className="font-bold text-xl">
+                                {req.name.charAt(0).toUpperCase()}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900">{req.name}</h4>
@@ -454,13 +480,12 @@ export const CategoryManagement = ({
                     <div className="flex items-center gap-3">
                       {/* Status badge */}
                       <span
-                        className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${
-                          req.status === 'approved'
-                            ? 'bg-green-50 text-green-700'
-                            : req.status === 'rejected'
-                              ? 'bg-red-50 text-red-700'
-                              : 'bg-yellow-50 text-yellow-700'
-                        }`}
+                        className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${req.status === 'approved'
+                          ? 'bg-green-50 text-green-700'
+                          : req.status === 'rejected'
+                            ? 'bg-red-50 text-red-700'
+                            : 'bg-yellow-50 text-yellow-700'
+                          }`}
                       >
                         {req.status}
                       </span>

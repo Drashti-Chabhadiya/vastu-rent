@@ -689,6 +689,15 @@ export const DashboardOverview = ({
   }
 
   // 3. ADMIN / SUPER ADMIN DASHBOARD OVERVIEW
+  const usersChange = statsData?.usersChange ?? 0
+  const listingsChange = statsData?.listingsChange ?? 0
+  const bookingsChange = statsData?.bookingsChange ?? 0
+  const revenueChange = statsData?.revenueChange ?? 0
+
+  const formatChange = (val: number) => {
+    return `${val >= 0 ? '' : '-'}${Math.abs(val).toFixed(1)}%`
+  }
+
   return (
     <div className={cn('space-y-6', 'md:space-y-8')}>
       {/* Top Stats Row */}
@@ -700,8 +709,8 @@ export const DashboardOverview = ({
               ? '...'
               : statsData?.totalUsers?.toLocaleString() || '0'
           }
-          change="16.5%"
-          isPositive={true}
+          change={statsLoading ? '...' : formatChange(usersChange)}
+          isPositive={usersChange >= 0}
           icon={Users}
           iconBg="bg-green-50"
           iconColor="bg-primary-light"
@@ -714,8 +723,8 @@ export const DashboardOverview = ({
               ? '...'
               : statsData?.totalListings?.toLocaleString() || '0'
           }
-          change="12.3%"
-          isPositive={true}
+          change={statsLoading ? '...' : formatChange(listingsChange)}
+          isPositive={listingsChange >= 0}
           icon={Tag}
           iconBg="bg-emerald-50"
           iconColor="bg-primary-light-alt"
@@ -728,8 +737,8 @@ export const DashboardOverview = ({
               ? '...'
               : statsData?.totalBookings?.toLocaleString() || '0'
           }
-          change="18.7%"
-          isPositive={true}
+          change={statsLoading ? '...' : formatChange(bookingsChange)}
+          isPositive={bookingsChange >= 0}
           icon={ShoppingBag}
           iconBg="bg-green-50"
           iconColor="bg-primary-light"
@@ -742,8 +751,8 @@ export const DashboardOverview = ({
               ? '...'
               : `₹ ${statsData?.totalRevenue?.toLocaleString() || '0'}`
           }
-          change="20.4%"
-          isPositive={true}
+          change={statsLoading ? '...' : formatChange(revenueChange)}
+          isPositive={revenueChange >= 0}
           icon={IndianRupee}
           iconBg="bg-emerald-50"
           iconColor="bg-primary-light-alt"

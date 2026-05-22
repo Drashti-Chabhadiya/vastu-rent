@@ -1,19 +1,8 @@
 import { useCategories } from '#/hook'
 import { useMemo } from 'react'
 
-const fallbackColors = [
-  'var(--color-dash-brand)',
-  'var(--color-brand-light)',
-  'var(--color-brand-light-light)',
-  'var(--color-dash-warning-light)',
-  'var(--color-dash-error-light)',
-  'var(--color-dash-border)',
-]
-
 export const CategoryDonut = () => {
   const { data: categories = [], isLoading } = useCategories()
-  console.log('categories :>> ', categories)
-
   const chartData = useMemo(() => {
     if (!categories?.length) return []
 
@@ -30,11 +19,14 @@ export const CategoryDonut = () => {
 
       const percentage = total ? (value / total) * 100 : 0
 
+      // Dynamically generate a distinct, vibrant, and high-contrast HSL color using the golden angle
+      const generatedColor = `hsl(${(index * 137.5) % 360}, 65%, 45%)`
+
       const data = {
         name: item.name,
         count: value,
         percentage: percentage.toFixed(1),
-        color: item.color || fallbackColors[index % fallbackColors.length],
+        color: item.color || generatedColor,
 
         strokeDasharray: `${percentage} ${100 - percentage}`,
 
