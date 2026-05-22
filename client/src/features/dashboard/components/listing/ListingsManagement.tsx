@@ -22,8 +22,7 @@ import {
 
 // Sub-components
 import { ListingsTable } from './ListingsTable'
-import { AddListingDialog } from './AddListingDialog'
-import { EditListingDialog } from './EditListingDialog'
+import { ListingDialog } from './ListingDialog'
 import {
   useAdminCategories,
   useAdminUsers,
@@ -274,7 +273,7 @@ export const ListingsManagement = ({
       />
 
       {/* Add Listing Dialog Component */}
-      <AddListingDialog
+      <ListingDialog
         open={isAddOpen}
         onOpenChange={setIsAddOpen}
         onSubmit={(data) => {
@@ -295,7 +294,7 @@ export const ListingsManagement = ({
       />
 
       {/* Edit Listing Dialog Component */}
-      <EditListingDialog
+      <ListingDialog
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
         product={productToEdit}
