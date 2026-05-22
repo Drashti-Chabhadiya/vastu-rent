@@ -27,12 +27,12 @@ import {
 } from '#/components/ui/alert-dialog'
 
 // Import extracted sub-components
-import { OrderStatusBadge } from './components/OrderStatusBadge'
-import { OrderTimelineCard } from './components/OrderTimelineCard'
-import { OrderInvoiceDialog } from './components/OrderInvoiceDialog'
-import { OrderProductDetailsCard } from './components/OrderProductDetailsCard'
-import { OrderCustomerDetailsCard } from './components/OrderCustomerDetailsCard'
-import { OrderPaymentDetailsCard } from './components/OrderPaymentDetailsCard'
+import { OrderStatusBadge } from './OrderStatusBadge'
+import { OrderTimelineCard } from './OrderTimelineCard'
+import { OrderInvoiceDialog } from './OrderInvoiceDialog'
+import { OrderProductDetailsCard } from './OrderProductDetailsCard'
+import { OrderCustomerDetailsCard } from './OrderCustomerDetailsCard'
+import { OrderPaymentDetailsCard } from './OrderPaymentDetailsCard'
 
 interface OrderDetailsViewProps {
   order: any
@@ -217,10 +217,10 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                   <div className="flex items-center justify-center gap-2 text-sm font-bold text-slate-700">
                     {(order.status === 'confirmed' ||
                       order.status === 'active') && (
-                      <span className="text-[#059669] flex items-center gap-1">
-                        <CheckCircle2 size={16} /> Confirmed
-                      </span>
-                    )}
+                        <span className="text-[#059669] flex items-center gap-1">
+                          <CheckCircle2 size={16} /> Confirmed
+                        </span>
+                      )}
                     {order.status === 'completed' && (
                       <span className="text-[#059669] flex items-center gap-1">
                         <CheckCircle2 size={16} /> Completed
@@ -228,10 +228,10 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                     )}
                     {(order.status === 'cancelled' ||
                       order.status === 'rejected') && (
-                      <span className="text-red-500 flex items-center gap-1">
-                        <XCircle size={16} /> Rejected / Cancelled
-                      </span>
-                    )}
+                        <span className="text-red-500 flex items-center gap-1">
+                          <XCircle size={16} /> Rejected / Cancelled
+                        </span>
+                      )}
                   </div>
                 </div>
               )}

@@ -15,8 +15,8 @@ import {
   useCreateCategoryRequest,
   useUpdateCategoryRequestStatus,
 } from '#/hook'
-import { CategoryFormDialog } from './CategoryFormDialog'
-import { DeleteConfirmDialog } from './DeleteConfirmDialog'
+import { CategoryFormDialog } from './components/CategoryFormDialog'
+import { DeleteConfirmDialog } from './components/DeleteConfirmDialog'
 import { authClient } from '#/lib/auth/auth-client'
 
 // Import extracted sub-components
@@ -159,11 +159,10 @@ export const CategoryManagement = ({
       <div className="flex border-b border-gray-100 gap-6">
         <button
           onClick={() => setActiveTab('categories')}
-          className={`pb-4 text-sm font-bold tracking-tight transition-all relative cursor-pointer ${
-            activeTab === 'categories'
-              ? 'text-dash-brand font-black'
-              : 'text-gray-400 hover:text-gray-600'
-          }`}
+          className={`pb-4 text-sm font-bold tracking-tight transition-all relative cursor-pointer ${activeTab === 'categories'
+            ? 'text-dash-brand font-black'
+            : 'text-gray-400 hover:text-gray-600'
+            }`}
         >
           Active Categories
           {activeTab === 'categories' && (
@@ -172,16 +171,15 @@ export const CategoryManagement = ({
         </button>
         <button
           onClick={() => setActiveTab('requests')}
-          className={`pb-4 text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer ${
-            activeTab === 'requests'
-              ? 'text-dash-brand font-black'
-              : 'text-gray-400 hover:text-gray-600'
-          }`}
+          className={`pb-4 text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer ${activeTab === 'requests'
+            ? 'text-dash-brand font-black'
+            : 'text-gray-400 hover:text-gray-600'
+            }`}
         >
           Category Requests
           {ownerRequests &&
             ownerRequests.filter((r: any) => r.status === 'pending').length >
-              0 && (
+            0 && (
               <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
                 {
                   ownerRequests.filter((r: any) => r.status === 'pending')
