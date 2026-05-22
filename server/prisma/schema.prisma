@@ -59,6 +59,7 @@ model User {
   payouts          Payout[]
   cloudinaryConfig CloudinaryConfig?
   stories          Story[]
+  coupons          Coupon[]
 
   @@map("user")
 }
@@ -159,6 +160,7 @@ model Product {
   reviews     Review[]
   likes       Like[]
   deleteRequests DeleteProductRequest[]
+  coupons     Coupon[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -185,6 +187,9 @@ model Rental {
   returnOTP  String?
   
   transactionId String? // Razorpay transaction ID
+  
+  couponId   String?
+  coupon     Coupon?  @relation(fields: [couponId], references: [id], onDelete: SetNull)
   
   dispute    Dispute?
   
@@ -274,8 +279,14 @@ model Coupon {
   startDate   DateTime
   endDate     DateTime
   isActive    Boolean   @default(true)
-  usageLimit  Int?      // Max times coupon can be used
+  usageLimit  Int?      // Max global redemptions (null = unlimited) — FCFS
   usedCount   Int       @default(0)
+  perUserLimit Int?     // Max redemptions per individual user (null = unlimited, 1 = once per user)
+  ownerId     String?
+  owner       User?     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rentals     Rental[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

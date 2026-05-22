@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 import { cn } from '#/lib/utils'
 
 interface ProductInfoSectionProps {
@@ -24,6 +25,15 @@ interface ProductInfoSectionProps {
   endDate: Date | null
   rentalDays: number
   totalPrice: number
+  
+  // Coupon Props
+  couponCode: string
+  setCouponCode: (code: string) => void
+  handleApplyCoupon: () => void
+  appliedCoupon: { id: string; code: string; discountAmount: number } | null
+  handleRemoveCoupon: () => void
+  couponError: string
+  applyCouponIsPending: boolean
 }
 
 export const ProductInfoSection = ({
@@ -38,7 +48,17 @@ export const ProductInfoSection = ({
   endDate,
   rentalDays,
   totalPrice,
+  couponCode,
+  setCouponCode,
+  handleApplyCoupon,
+  appliedCoupon,
+  handleRemoveCoupon,
+  couponError,
+  applyCouponIsPending,
 }: ProductInfoSectionProps) => {
+  const discountAmount = appliedCoupon?.discountAmount || 0
+  const finalPayable = Math.max(0, totalPrice - discountAmount + (product.securityDeposit || 0))
+
   return (
     <div className="space-y-6">
       {/* Header Info */}
@@ -219,7 +239,7 @@ export const ProductInfoSection = ({
       </div>
 
       {startDate && (
-        <div className="p-4 rounded-xl bg-primary/5 border border-brand/10 space-y-2">
+        <div className="p-4 rounded-xl bg-primary/5 border border-brand/10 space-y-3 shadow-sm">
           <div className="flex items-center justify-between text-xs text-gray-700">
             <span className="font-bold">Dates:</span>
             <span>
@@ -235,6 +255,64 @@ export const ProductInfoSection = ({
                 <span className="font-bold">Rental Fee ({rentalDays} days):</span>
                 <span>₹{totalPrice.toLocaleString()}</span>
               </div>
+
+              {/* Coupon Row */}
+              <div className="pt-2 border-t border-brand/5 space-y-1.5">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                  Marketplace Promo Code
+                </div>
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl p-2.5 px-3">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <span className="font-black text-[10px] text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded uppercase tracking-widest shrink-0">
+                        {appliedCoupon.code}
+                      </span>
+                      <span className="text-[10px] font-black text-emerald-700 truncate">
+                        Discount Applied
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveCoupon}
+                      className="text-[9px] font-black text-red-500 hover:text-red-700 uppercase tracking-wider shrink-0 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter code (e.g. MONSOON30)"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        className="h-9 rounded-xl bg-white border-gray-200 text-xs font-bold placeholder:text-gray-300"
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleApplyCoupon}
+                        disabled={applyCouponIsPending || !couponCode.trim()}
+                        className="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shrink-0"
+                      >
+                        {applyCouponIsPending ? 'Applying...' : 'Apply'}
+                      </Button>
+                    </div>
+                    {couponError && (
+                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pl-1">
+                        <AlertCircle size={10} /> {couponError}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {appliedCoupon && (
+                <div className="flex items-center justify-between text-xs text-emerald-600 font-bold bg-emerald-50/50 p-2 rounded-lg">
+                  <span>Coupon Discount ({appliedCoupon.code}):</span>
+                  <span>- ₹{discountAmount.toLocaleString()}</span>
+                </div>
+              )}
+
               <div className="flex items-center justify-between text-xs text-gray-700">
                 <span className="font-bold">Security Deposit (Refundable):</span>
                 <span>₹{(product.securityDeposit || 0).toLocaleString()}</span>
@@ -242,7 +320,7 @@ export const ProductInfoSection = ({
               <div className="pt-2 border-t border-brand/10 flex items-center justify-between text-sm text-gray-900 font-black">
                 <span>Total Payable:</span>
                 <span className="text-primary">
-                  ₹{(totalPrice + (product.securityDeposit || 0)).toLocaleString()}
+                  ₹{finalPayable.toLocaleString()}
                 </span>
               </div>
             </>

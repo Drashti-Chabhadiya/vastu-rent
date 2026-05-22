@@ -19,6 +19,7 @@ import {
   ExternalLink,
   User,
   BookOpen,
+  Ticket,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
@@ -112,6 +113,7 @@ const SIDEBAR_MENU_CONFIG: Record<
       icon: CreditCard,
       hasSub: true,
     },
+    { id: 'coupons', label: 'Manage Coupons', icon: Ticket },
     { id: 'settings', label: 'Settings', icon: Settings },
   ],
   admin: [
@@ -131,6 +133,7 @@ const SIDEBAR_MENU_CONFIG: Record<
       icon: AlertCircle,
       hasSub: true,
     },
+    { id: 'coupons', label: 'Manage Coupons', icon: Ticket },
     { id: 'notifications', label: 'Platform Alerts', icon: Bell },
     { id: 'settings', label: 'Settings', icon: Settings },
   ],
@@ -152,6 +155,7 @@ const SIDEBAR_MENU_CONFIG: Record<
       icon: CreditCard,
       hasSub: true,
     },
+    { id: 'coupons', label: 'Manage Coupons', icon: Ticket },
     { id: 'settings', label: 'Settings', icon: Settings },
   ],
 }

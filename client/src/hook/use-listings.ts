@@ -84,6 +84,23 @@ export const useCreateProduct = () => {
   })
 }
 
+// Update listing mutation
+export const useUpdateProduct = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: ListingSchema }) => {
+      await apiClient.put(`/admin/products/${id}`, data)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      queryClient.invalidateQueries({ queryKey: ['recent-products'] })
+      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({ queryKey: ['product'] })
+    },
+  })
+}
+
 // Toggle listing availability mutation
 export const useToggleProductStatus = () => {
   const queryClient = useQueryClient()
@@ -180,6 +197,7 @@ export const useCreateRental = () => {
       rentalFee: number
       depositAmount: number
       paymentMethod?: string
+      couponCode?: string
     }) => {
       const res = await apiClient.post('/rentals', data)
       return res.data.rental

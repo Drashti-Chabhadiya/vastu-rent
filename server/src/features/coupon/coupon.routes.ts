@@ -7,12 +7,12 @@ export async function couponRoutes(fastify: FastifyInstance) {
   fastify.get("/", couponController.getAllCoupons);
   fastify.post("/apply", couponController.applyCoupon);
 
-  // Admin / Super Admin Routes
+  // Admin / Super Admin / Owner Routes
   fastify.post("/", {
     preHandler: async (request, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin")) {
-        return reply.status(403).send({ message: "Forbidden: Admin access required" });
+      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin" && session.user.role !== "owner")) {
+        return reply.status(403).send({ message: "Forbidden: Unauthorized" });
       }
     }
   }, couponController.createCoupon);
@@ -20,8 +20,8 @@ export async function couponRoutes(fastify: FastifyInstance) {
   fastify.delete("/:id", {
     preHandler: async (request, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin")) {
-        return reply.status(403).send({ message: "Forbidden: Admin access required" });
+      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin" && session.user.role !== "owner")) {
+        return reply.status(403).send({ message: "Forbidden: Unauthorized" });
       }
     }
   }, couponController.deleteCoupon);

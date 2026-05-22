@@ -5,6 +5,7 @@ import {
   useWishlist,
   useCreateRental,
   useProductRentals,
+  useApplyCoupon,
 } from '#/hook'
 import { useProductReviews, useCreateReview } from '#/hook/use-reviews'
 import { ProductCard } from '#/components/common/ProductCard'
@@ -57,6 +58,44 @@ export function ProductDetail({ id }: { id: string }) {
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'cash'>(
     'online',
   )
+
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('')
+  const [appliedCoupon, setAppliedCoupon] = useState<{ id: string; code: string; discountAmount: number } | null>(null)
+  const [couponError, setCouponError] = useState('')
+  const applyCoupon = useApplyCoupon()
+
+  // Reset coupon if dates change
+  useEffect(() => {
+    setAppliedCoupon(null)
+    setCouponCode('')
+    setCouponError('')
+  }, [startDate, endDate])
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return
+    setCouponError('')
+    try {
+      const result = await applyCoupon.mutateAsync({
+        code: couponCode,
+        totalPrice,
+        productId: id,
+      })
+      setAppliedCoupon(result)
+      setCouponError('')
+    } catch (err: any) {
+      setAppliedCoupon(null)
+      setCouponError(
+        err.response?.data?.message || 'Failed to apply coupon.'
+      )
+    }
+  }
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null)
+    setCouponCode('')
+    setCouponError('')
+  }
 
   // Load Razorpay script
   useEffect(() => {
@@ -158,8 +197,10 @@ export function ProductDetail({ id }: { id: string }) {
     const days =
       Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000) + 1
     const rentalFee = days * (product?.price || 0)
+    const discountAmount = appliedCoupon?.discountAmount || 0
+    const finalRentalFee = Math.max(0, rentalFee - discountAmount)
     const depositAmount = product?.securityDeposit || 0
-    const total = rentalFee + depositAmount
+    const total = finalRentalFee + depositAmount
 
     try {
       setIsPaying(true)
@@ -168,10 +209,11 @@ export function ProductDetail({ id }: { id: string }) {
         productId: id,
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
-        rentalFee,
+        rentalFee: finalRentalFee,
         depositAmount,
         totalPrice: total,
         paymentMethod: paymentMethod,
+        couponCode: appliedCoupon?.code || undefined,
       })
 
       // If COD, we are done
@@ -350,6 +392,13 @@ export function ProductDetail({ id }: { id: string }) {
                   endDate={endDate}
                   rentalDays={rentalDays}
                   totalPrice={totalPrice}
+                  couponCode={couponCode}
+                  setCouponCode={setCouponCode}
+                  handleApplyCoupon={handleApplyCoupon}
+                  appliedCoupon={appliedCoupon}
+                  handleRemoveCoupon={handleRemoveCoupon}
+                  couponError={couponError}
+                  applyCouponIsPending={applyCoupon.isPending}
                 />
               </div>
 
@@ -408,7 +457,7 @@ export function ProductDetail({ id }: { id: string }) {
         productTitle={product.title || product.name}
         startDate={startDate}
         endDate={endDate}
-        totalPrice={totalPrice}
+        totalPrice={Math.max(0, totalPrice - (appliedCoupon?.discountAmount || 0)) + (product.securityDeposit || 0)}
       />
     </div>
   )
