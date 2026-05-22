@@ -7,13 +7,8 @@ import {
   CreditCard,
   ShieldCheck,
   Upload,
-  AlertCircle,
 } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
-import { Button } from '#/components/ui/button'
-import { Input } from '#/components/ui/input'
-import { Switch } from '#/components/ui/switch'
-import { Dialog, DialogContent } from '#/components/ui/dialog'
 import { authClient } from '#/lib/auth/auth-client'
 import {
   useUploadProfileImage,
@@ -23,6 +18,13 @@ import {
 import { apiClient } from '#/lib/api'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
+
+// Import extracted sub-components
+import { ProfileSettingsForm } from './components/ProfileSettingsForm'
+import { PayoutSettingsForm } from './components/PayoutSettingsForm'
+import { NotificationSettingsForm } from './components/NotificationSettingsForm'
+import { CloudinarySettingsForm } from './components/CloudinarySettingsForm'
+import { StorageDetailsDialog } from './components/StorageDetailsDialog'
 
 // Pure helper — lives outside the component so it never changes reference.
 const formatBytes = (
@@ -92,7 +94,7 @@ export const SettingsManagement = () => {
 
   // Memoize derived storage stats so they only recompute when usageData changes,
   // not on every parent render (which was causing the blink).
-  const { storageStats, formattedUsed, formattedLimit, usedPercent } =
+  const { formattedUsed, formattedLimit, usedPercent } =
     useMemo(() => {
       const stats = usageData?.storage || {
         usage: 0,
@@ -100,7 +102,6 @@ export const SettingsManagement = () => {
         used_percent: 0,
       }
       return {
-        storageStats: stats,
         formattedUsed: formatBytes(stats.usage),
         formattedLimit: formatBytes(stats.limit),
         usedPercent: Math.min(100, Math.max(0, stats.used_percent)),
@@ -440,604 +441,65 @@ export const SettingsManagement = () => {
 
         {/* Middle Column: Dynamic Forms */}
         <div className="xl:col-span-2 bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-          {/* TAB 1: PROFILE SETTINGS */}
           {activeSubTab === 'profile' && (
-            <form onSubmit={handleSaveProfile} className="space-y-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-[16px] font-black text-slate-800">
-                    Profile Settings
-                  </h3>
-                  <p className="text-[11px] font-bold text-slate-400">
-                    Update your public profile and avatar.
-                  </p>
-                </div>
-                <Button
-                  type="submit"
-                  disabled={isSavingProfile}
-                  className="bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[11px] px-6 h-11 rounded-xl transition-all shadow-sm active:scale-95"
-                >
-                  {isSavingProfile ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
-
-              {/* Avatar Uploader Section */}
-              <div className="flex items-center gap-6 p-6 rounded-2xl bg-slate-50/50 border border-slate-100">
-                <div className="w-20 h-20 rounded-full border-2 border-white overflow-hidden shadow-md bg-slate-200 shrink-0 relative group">
-                  {profileImage ? (
-                    <img
-                      src={profileImage}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center font-extrabold text-slate-500 uppercase text-lg">
-                      {profileName.slice(0, 2) || 'US'}
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="text-xs font-black text-slate-800">
-                    Profile Photo
-                  </h4>
-                  <p className="text-[10px] font-semibold text-slate-400">
-                    Upload high-res JPG, PNG (Max 5MB)
-                  </p>
-
-                  <div className="flex gap-2">
-                    <label className="h-9 px-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
-                      <Upload size={12} /> Upload Photo
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
-                    {profileImage && (
-                      <Button
-                        type="button"
-                        onClick={() => setProfileImage('')}
-                        variant="ghost"
-                        className="h-9 px-3 rounded-xl text-red-500 hover:bg-red-50 text-[10px] font-black uppercase tracking-wider"
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Text Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                    Full Name
-                  </label>
-                  <Input
-                    value={profileName}
-                    onChange={(e) => setProfileName(e.target.value)}
-                    placeholder="Enter your name"
-                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                    Email Address
-                  </label>
-                  <Input
-                    value={activeUser?.email || ''}
-                    disabled
-                    className="h-12 bg-slate-100 border-none rounded-2xl text-[12px] font-black text-slate-400 px-5 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-            </form>
+            <ProfileSettingsForm
+              profileName={profileName}
+              setProfileName={setProfileName}
+              profileImage={profileImage}
+              setProfileImage={setProfileImage}
+              isSavingProfile={isSavingProfile}
+              activeUser={activeUser}
+              handleSaveProfile={handleSaveProfile}
+              handleImageUpload={handleImageUpload}
+            />
           )}
 
-          {/* TAB 2: PAYOUT SETTINGS */}
           {activeSubTab === 'payment' && (
-            <form onSubmit={handleSaveBankDetails} className="space-y-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-[16px] font-black text-slate-800">
-                    Payout Settlements
-                  </h3>
-                  <p className="text-[11px] font-bold text-slate-400">
-                    Configure bank accounts or UPI IDs to receive earnings
-                    settlements.
-                  </p>
-                </div>
-                <Button
-                  type="submit"
-                  className="bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[11px] px-6 h-11 rounded-xl transition-all shadow-sm active:scale-95"
-                >
-                  Save Payout Details
-                </Button>
-              </div>
-
-              <div className="bg-amber-50/50 p-4 rounded-2xl border border-amber-100/50 flex items-start gap-2.5">
-                <AlertCircle
-                  size={16}
-                  className="text-amber-600 shrink-0 mt-0.5"
-                />
-                <p className="text-[10px] font-semibold text-amber-800 leading-relaxed">
-                  Settlements are processed via bank accounts or UPI within
-                  24-48 hours of approved payout withdrawal requests. Ensure
-                  details are fully accurate.
-                </p>
-              </div>
-
-              {/* UPI Option */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                    UPI ID / Address (Recommended)
-                  </label>
-                  <Input
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    placeholder="e.g. name@upi"
-                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                  />
-                </div>
-
-                <div className="border-t border-slate-100 pt-6">
-                  <h4 className="text-xs font-black text-slate-800 mb-4 uppercase tracking-wider">
-                    Or Bank Account Transfer
-                  </h4>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                        Account Holder Name
-                      </label>
-                      <Input
-                        value={accountHolder}
-                        onChange={(e) => setAccountHolder(e.target.value)}
-                        placeholder="Enter bank account name"
-                        className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                        Bank Name
-                      </label>
-                      <Input
-                        value={bankName}
-                        onChange={(e) => setBankName(e.target.value)}
-                        placeholder="e.g. HDFC Bank"
-                        className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                        Account Number
-                      </label>
-                      <Input
-                        value={accountNumber}
-                        onChange={(e) => setAccountNumber(e.target.value)}
-                        placeholder="Enter Account Number"
-                        className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                        IFSC Code
-                      </label>
-                      <Input
-                        value={ifscCode}
-                        onChange={(e) => setIfscCode(e.target.value)}
-                        placeholder="e.g. HDFC0000123"
-                        className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
+            <PayoutSettingsForm
+              upiId={upiId}
+              setUpiId={setUpiId}
+              accountHolder={accountHolder}
+              setAccountHolder={setAccountHolder}
+              bankName={bankName}
+              setBankName={setBankName}
+              accountNumber={accountNumber}
+              setAccountNumber={setAccountNumber}
+              ifscCode={ifscCode}
+              setIfscCode={setIfscCode}
+              handleSaveBankDetails={handleSaveBankDetails}
+            />
           )}
 
-          {/* TAB 3: NOTIFICATION SETTINGS */}
           {activeSubTab === 'notifications' && (
-            <div className="space-y-8 animate-in fade-in duration-300">
-              <div>
-                <h3 className="text-[16px] font-black text-slate-800">
-                  Notification Preferences
-                </h3>
-                <p className="text-[11px] font-bold text-slate-400">
-                  Control when and how you receive alerts.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <div className="flex items-center justify-between p-4 rounded-2xl border border-slate-50 hover:bg-slate-50/20">
-                  <div className="space-y-0.5">
-                    <h4 className="text-xs font-black text-slate-800">
-                      New Booking Alerts
-                    </h4>
-                    <p className="text-[10px] font-semibold text-slate-400">
-                      Receive alert when renter requests a product booking.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={bookingAlerts}
-                    onCheckedChange={(val) =>
-                      handleNotificationToggle('bookingAlerts', val)
-                    }
-                    className="data-[state=checked]:bg-emerald-600"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-2xl border border-slate-50 hover:bg-slate-50/20">
-                  <div className="space-y-0.5">
-                    <h4 className="text-xs font-black text-slate-800">
-                      Payout Settlements
-                    </h4>
-                    <p className="text-[10px] font-semibold text-slate-400">
-                      Get notified when money settles to your bank.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={settlementAlerts}
-                    onCheckedChange={(val) =>
-                      handleNotificationToggle('settlementAlerts', val)
-                    }
-                    className="data-[state=checked]:bg-emerald-600"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-2xl border border-slate-50 hover:bg-slate-50/20">
-                  <div className="space-y-0.5">
-                    <h4 className="text-xs font-black text-slate-800">
-                      Marketing Updates
-                    </h4>
-                    <p className="text-[10px] font-semibold text-slate-400">
-                      Receive monthly platform optimization guides.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={marketingAlerts}
-                    onCheckedChange={(val) =>
-                      handleNotificationToggle('marketingAlerts', val)
-                    }
-                    className="data-[state=checked]:bg-emerald-600"
-                  />
-                </div>
-              </div>
-            </div>
+            <NotificationSettingsForm
+              bookingAlerts={bookingAlerts}
+              settlementAlerts={settlementAlerts}
+              marketingAlerts={marketingAlerts}
+              handleNotificationToggle={handleNotificationToggle}
+            />
           )}
 
-          {/* TAB 4: CLOUDINARY SETTINGS */}
           {activeSubTab === 'cloudinary' && (
-            <div className="space-y-8 animate-in fade-in duration-300">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-[16px] font-black text-slate-800">
-                    Cloudinary Storage
-                  </h3>
-                  <p className="text-[11px] font-bold text-slate-400">
-                    Connect your personal Cloudinary account. Images you upload
-                    will be stored here.
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    onClick={handleTestCloudinary}
-                    disabled={isTestingCloudinary || isLoadingCloudinary}
-                    variant="outline"
-                    className="border-slate-200 text-slate-600 hover:bg-slate-50 font-black text-[10px] uppercase tracking-wider px-4 h-11 rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1.5 shrink-0"
-                  >
-                    {isTestingCloudinary ? 'Testing...' : 'Test Connection'}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={handleSaveCloudinary}
-                    disabled={isSavingCloudinary || isLoadingCloudinary}
-                    className="bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[10px] uppercase tracking-wider px-5 h-11 rounded-xl transition-all shadow-sm active:scale-95 shrink-0"
-                  >
-                    {isSavingCloudinary ? 'Saving...' : 'Save Settings'}
-                  </Button>
-                </div>
-              </div>
-
-              {isLoadingCloudinary ? (
-                <div className="space-y-6 animate-pulse">
-                  <div className="h-10 bg-slate-100 rounded-xl w-full" />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <div className="h-3 bg-slate-100 rounded w-16" />
-                      <div className="h-12 bg-slate-50 rounded-2xl w-full" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-slate-100 rounded w-16" />
-                      <div className="h-12 bg-slate-50 rounded-2xl w-full" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-slate-100 rounded w-16" />
-                      <div className="h-12 bg-slate-50 rounded-2xl w-full" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-slate-100 rounded w-16" />
-                      <div className="h-12 bg-slate-50 rounded-2xl w-full" />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Left Column: Form config */}
-                  <div className="lg:col-span-2 space-y-6">
-                    <form onSubmit={handleSaveCloudinary} className="space-y-6">
-                      {/* Status Banner */}
-                      <div
-                        className={`p-4 rounded-2xl border flex items-start gap-2.5 ${
-                          cloudinaryHasSecret
-                            ? 'bg-emerald-50/50 border-emerald-100/50 text-emerald-800'
-                            : 'bg-amber-50/50 border-amber-100/50 text-amber-800'
-                        }`}
-                      >
-                        <AlertCircle
-                          size={16}
-                          className={`${cloudinaryHasSecret ? 'text-emerald-600' : 'text-amber-600'} shrink-0 mt-0.5`}
-                        />
-                        <div className="text-[10px] font-semibold leading-relaxed">
-                          {cloudinaryHasSecret ? (
-                            <p>
-                              <strong>Connected!</strong> Your custom Cloudinary
-                              storage is active. Images for your products,
-                              categories, and profile will be uploaded securely
-                              using your credentials.
-                            </p>
-                          ) : (
-                            <p>
-                              <strong>Not Configured:</strong> You haven't
-                              connected your custom Cloudinary credentials yet.
-                              You must set them up before you can upload any
-                              product, category, or profile images.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Cloud Name */}
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                            Cloud Name
-                          </label>
-                          <Input
-                            value={cloudinaryCloudName}
-                            onChange={(e) =>
-                              setCloudinaryCloudName(e.target.value)
-                            }
-                            placeholder="e.g. dxyz12345"
-                            className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                          />
-                        </div>
-
-                        {/* API Key */}
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                            API Key
-                          </label>
-                          <Input
-                            value={cloudinaryApiKey}
-                            onChange={(e) =>
-                              setCloudinaryApiKey(e.target.value)
-                            }
-                            placeholder="e.g. 123456789012345"
-                            className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                          />
-                        </div>
-
-                        {/* API Secret */}
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                            API Secret{' '}
-                            {cloudinaryHasSecret && (
-                              <span className="text-[9px] text-[#059669] font-black lowercase tracking-normal">
-                                (Saved)
-                              </span>
-                            )}
-                          </label>
-                          <Input
-                            type="password"
-                            value={cloudinaryApiSecret}
-                            onChange={(e) =>
-                              setCloudinaryApiSecret(e.target.value)
-                            }
-                            placeholder={
-                              cloudinaryHasSecret
-                                ? '••••••••••••••••••••••••••••'
-                                : 'Enter Cloudinary API Secret'
-                            }
-                            className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                          />
-                        </div>
-
-                        {/* Upload Preset */}
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                            Upload Preset (Optional)
-                          </label>
-                          <Input
-                            value={cloudinaryUploadPreset}
-                            onChange={(e) =>
-                              setCloudinaryUploadPreset(e.target.value)
-                            }
-                            placeholder="e.g. ml_default"
-                            className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
-                          />
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-
-                  {/* Right Column: Storage Usage Card */}
-                  <div className="space-y-6">
-                    <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[190px]">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-black text-slate-800 tracking-wide uppercase">
-                            Storage Usage
-                          </h4>
-                          <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase">
-                            Real-time
-                          </span>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-[11px] font-bold text-slate-600">
-                            <span>
-                              <strong className="text-slate-800 font-black">
-                                {formattedUsed.value} {formattedUsed.unit}
-                              </strong>{' '}
-                              / {formattedLimit.value} {formattedLimit.unit}{' '}
-                              Used
-                            </span>
-                            <span className="font-extrabold text-slate-800">
-                              {usedPercent.toFixed(0)}%
-                            </span>
-                          </div>
-
-                          {/* Progress Bar */}
-                          <div className="w-full h-2.5 bg-slate-50 border border-slate-100 rounded-full overflow-hidden">
-                            <div
-                              className="bg-emerald-650 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.3)]"
-                              style={{
-                                width: `${usedPercent}%`,
-                                backgroundColor: '#059669',
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => setIsDetailsModalOpen(true)}
-                        className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-black text-[#059669] hover:text-[#059669]/80 transition-all uppercase tracking-wider group w-full text-left"
-                      >
-                        <span>View Storage Details</span>
-                        <ChevronRight
-                          size={14}
-                          className="text-[#059669] group-hover:translate-x-0.5 transition-transform"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* STORAGE DETAILS DIALOG MODAL */}
-              <Dialog
-                open={isDetailsModalOpen}
-                onOpenChange={setIsDetailsModalOpen}
-              >
-                <DialogContent className="max-w-md p-8 border-none bg-white rounded-[2.5rem] shadow-2xl font-sans animate-in fade-in zoom-in-95 duration-200">
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-[#059669] bg-emerald-50 px-2 py-0.5 rounded">
-                        Storage Audit
-                      </span>
-                      <h3 className="text-xl font-extrabold text-slate-800">
-                        Cloudinary Resource Metrics
-                      </h3>
-                      <p className="text-[11px] font-bold text-slate-400">
-                        Real-time resource and bandwidth allocations from your
-                        connected Cloudinary bucket.
-                      </p>
-                    </div>
-
-                    <div className="space-y-4">
-                      {/* Cloud name & plan */}
-                      <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                            Active Storage Bucket
-                          </span>
-                          <p className="text-xs font-black text-slate-800">
-                            {usageData?.cloudName ||
-                              cloudinaryCloudName ||
-                              'Global Fallback'}
-                          </p>
-                        </div>
-                        <Badge className="bg-emerald-50 text-emerald-600 border-none px-2.5 py-0.5 rounded-md font-black text-[10px] uppercase">
-                          Connected
-                        </Badge>
-                      </div>
-
-                      {/* Storage Details */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                          <span>Byte Storage Allocated</span>
-                          <span className="text-slate-800">
-                            {usedPercent.toFixed(1)}% Used
-                          </span>
-                        </div>
-                        <div className="p-4 bg-white rounded-2xl border border-slate-100 space-y-1">
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-black text-slate-800">
-                              {formattedUsed.value} {formattedUsed.unit}
-                            </span>
-                            <span className="text-[10px] text-slate-400 font-bold">
-                              of {formattedLimit.value} {formattedLimit.unit}{' '}
-                              limit
-                            </span>
-                          </div>
-                          <p className="text-[9px] font-bold text-slate-400">
-                            Total size of active image resources, folders, and
-                            assets.
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Billing Universal Credits */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center justify-between text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                          <span>Universal Billing Credits</span>
-                          <span className="text-slate-800">
-                            {(usageData?.credits?.used_percent || 0).toFixed(1)}
-                            % Used
-                          </span>
-                        </div>
-                        <div className="p-4 bg-white rounded-2xl border border-slate-100 space-y-1">
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-lg font-black text-slate-800">
-                              {usageData?.credits?.usage || 0}
-                            </span>
-                            <span className="text-[10px] text-slate-400 font-bold">
-                              of {usageData?.credits?.limit || 25} Credits limit
-                            </span>
-                          </div>
-                          <p className="text-[9px] font-bold text-slate-400">
-                            Cloudinary's universal usage metrics
-                            (Transformations, Bandwidth & Storage combined).
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex">
-                      <Button
-                        type="button"
-                        onClick={() => setIsDetailsModalOpen(false)}
-                        className="w-full h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-[11px] uppercase tracking-wider shadow-lg flex items-center justify-center animate-all"
-                      >
-                        Close Metrics
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
+            <CloudinarySettingsForm
+              cloudinaryCloudName={cloudinaryCloudName}
+              setCloudinaryCloudName={setCloudinaryCloudName}
+              cloudinaryApiKey={cloudinaryApiKey}
+              setCloudinaryApiKey={setCloudinaryApiKey}
+              cloudinaryApiSecret={cloudinaryApiSecret}
+              setCloudinaryApiSecret={setCloudinaryApiSecret}
+              cloudinaryUploadPreset={cloudinaryUploadPreset}
+              setCloudinaryUploadPreset={setCloudinaryUploadPreset}
+              cloudinaryHasSecret={cloudinaryHasSecret}
+              isTestingCloudinary={isTestingCloudinary}
+              isSavingCloudinary={isSavingCloudinary}
+              isLoadingCloudinary={isLoadingCloudinary}
+              handleTestCloudinary={handleTestCloudinary}
+              handleSaveCloudinary={handleSaveCloudinary}
+              formattedUsed={formattedUsed}
+              formattedLimit={formattedLimit}
+              usedPercent={usedPercent}
+              setIsDetailsModalOpen={setIsDetailsModalOpen}
+            />
           )}
         </div>
 
@@ -1102,6 +564,17 @@ export const SettingsManagement = () => {
           </div>
         </div>
       </div>
+
+      {/* Storage Details Dialog */}
+      <StorageDetailsDialog
+        isOpen={isDetailsModalOpen}
+        onOpenChange={setIsDetailsModalOpen}
+        usageData={usageData}
+        cloudinaryCloudName={cloudinaryCloudName}
+        usedPercent={usedPercent}
+        formattedUsed={formattedUsed}
+        formattedLimit={formattedLimit}
+      />
     </div>
   )
 }

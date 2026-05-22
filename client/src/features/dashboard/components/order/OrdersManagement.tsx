@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Badge } from '#/components/ui/badge'
-import { OrderDetailsView } from './OrderDetailsView'
+import { OrderDetailsView } from './components/OrderDetailsView'
 import { toast } from 'sonner'
 import { cn } from '#/lib/utils'
 import {
@@ -207,8 +207,8 @@ export const OrdersManagement = () => {
                     alt={order.product?.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) =>
-                      (e.currentTarget.src =
-                        'https://via.placeholder.com/150?text=Product')
+                    (e.currentTarget.src =
+                      'https://via.placeholder.com/150?text=Product')
                     }
                   />
                 </div>

@@ -1,5 +1,5 @@
 import { cn } from '#/lib/utils'
-import { Eye, EyeOff, Trash2, ExternalLink } from 'lucide-react'
+import { Eye, EyeOff, Trash2, ExternalLink, Pencil } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 
@@ -8,6 +8,7 @@ interface ListingsTableProps {
   isLoading: boolean
   onToggleStatus: (id: string, isAvailable: boolean) => void
   onDelete: (product: any) => void
+  onEdit: (product: any) => void
   currentUser: any
 }
 
@@ -16,6 +17,7 @@ export const ListingsTable = ({
   isLoading,
   onToggleStatus,
   onDelete,
+  onEdit,
   currentUser,
 }: ListingsTableProps) => {
   return (
@@ -185,6 +187,15 @@ export const ListingsTable = ({
                           <ExternalLink size={14} />
                         </Button>
                       </a>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(item)}
+                        className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all"
+                        title="Edit Listing"
+                      >
+                        <Pencil size={14} />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"

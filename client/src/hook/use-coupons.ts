@@ -11,8 +11,12 @@ export interface Coupon {
   startDate: string
   endDate: string
   isActive: boolean
-  usageLimit?: number
+  usageLimit?: number | null
   usedCount: number
+  perUserLimit?: number | null
+  ownerId?: string | null
+  productId?: string | null
+  product?: { title: string } | null
   createdAt: string
 }
 
@@ -56,12 +60,19 @@ export const useApplyCoupon = () => {
     mutationFn: async ({
       code,
       totalPrice,
+      productId,
     }: {
       code: string
       totalPrice: number
+      productId?: string
     }) => {
-      const res = await apiClient.post('/coupons/apply', { code, totalPrice })
+      const res = await apiClient.post('/coupons/apply', {
+        code,
+        totalPrice,
+        productId,
+      })
       return res.data.coupon
     },
   })
 }
+

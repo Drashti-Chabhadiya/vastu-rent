@@ -22,12 +22,13 @@ import {
 
 // Sub-components
 import { ListingsTable } from './ListingsTable'
-import { AddListingDialog } from './AddListingDialog'
+import { ListingDialog } from './ListingDialog'
 import {
   useAdminCategories,
   useAdminUsers,
   useAdminProducts,
   useCreateProduct,
+  useUpdateProduct,
   useToggleProductStatus,
   useDeleteProduct,
   useCreateDeleteRequest,
@@ -49,6 +50,8 @@ export const ListingsManagement = ({
   )
   const [statusFilter, setStatusFilter] = useState('all')
   const [isAddOpen, setIsAddOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [productToEdit, setProductToEdit] = useState<any>(null)
   const [productToDelete, setProductToDelete] = useState<any>(null)
 
   // Sync initial filter if it changes
@@ -104,6 +107,7 @@ export const ListingsManagement = ({
 
   // Mutations
   const createMutation = useCreateProduct()
+  const updateMutation = useUpdateProduct()
   const toggleStatusMutation = useToggleProductStatus()
   const deleteMutation = useDeleteProduct()
   const createDeleteRequestMutation = useCreateDeleteRequest()
@@ -261,11 +265,15 @@ export const ListingsManagement = ({
           )
         }}
         onDelete={handleDelete}
+        onEdit={(item) => {
+          setProductToEdit(item)
+          setIsEditOpen(true)
+        }}
         currentUser={currentUser}
       />
 
       {/* Add Listing Dialog Component */}
-      <AddListingDialog
+      <ListingDialog
         open={isAddOpen}
         onOpenChange={setIsAddOpen}
         onSubmit={(data) => {
@@ -280,6 +288,35 @@ export const ListingsManagement = ({
           })
         }}
         isLoading={createMutation.isPending}
+        categories={categories || []}
+        users={users || []}
+        currentUser={currentUser}
+      />
+
+      {/* Edit Listing Dialog Component */}
+      <ListingDialog
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        product={productToEdit}
+        onSubmit={(data) => {
+          if (!productToEdit) return
+          updateMutation.mutate(
+            { id: productToEdit.id, data },
+            {
+              onSuccess: () => {
+                setIsEditOpen(false)
+                setProductToEdit(null)
+                toast.success('Listing updated successfully')
+              },
+              onError: (err: any) => {
+                toast.error(
+                  err.response?.data?.message || 'Failed to update listing',
+                )
+              },
+            },
+          )
+        }}
+        isLoading={updateMutation.isPending}
         categories={categories || []}
         users={users || []}
         currentUser={currentUser}

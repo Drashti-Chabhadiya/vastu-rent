@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import type { SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PackagePlus, Plus } from 'lucide-react'
+import { PackagePlus, Plus, Pencil, Save } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -29,7 +29,7 @@ interface User {
   role: string
 }
 
-interface AddListingDialogProps {
+interface ListingDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (data: ListingSchema) => void
@@ -37,9 +37,10 @@ interface AddListingDialogProps {
   categories: Category[]
   users: User[]
   currentUser?: any
+  product?: any
 }
 
-export const AddListingDialog = ({
+export const ListingDialog = ({
   open,
   onOpenChange,
   onSubmit,
@@ -47,7 +48,10 @@ export const AddListingDialog = ({
   categories,
   users,
   currentUser,
-}: AddListingDialogProps) => {
+  product,
+}: ListingDialogProps) => {
+  const isEditMode = !!product
+
   const form = useForm<ListingSchema>({
     resolver: zodResolver(listingSchema) as any,
     defaultValues: {
@@ -63,26 +67,57 @@ export const AddListingDialog = ({
     },
   })
 
-  // Reset form when dialog opens
+  // Reset form when dialog opens or product/currentUser changes
   useEffect(() => {
     if (open) {
-      form.reset({
-        title: '',
-        description: '',
-        price: 0,
-        securityDeposit: 0,
-        city: '',
-        location: '',
-        categoryId: '',
-        ownerId: currentUser?.role === 'owner' ? currentUser.id : '',
-        images: [],
-      })
+      if (product) {
+        form.reset({
+          title: product.title || '',
+          description: product.description || '',
+          price: product.price || 0,
+          securityDeposit: product.securityDeposit || 0,
+          city: product.city || '',
+          location: product.location || '',
+          categoryId: product.categoryId || '',
+          ownerId: product.ownerId || '',
+          images: product.images || [],
+          condition: product.condition || 'Good',
+          features: product.features || [],
+          deliveryOptions: product.deliveryOptions || ['Pickup'],
+          pickupReturnDetails: product.pickupReturnDetails || '',
+          tags: product.tags || [],
+          minDuration: product.minDuration || 1,
+          maxDuration: product.maxDuration || undefined,
+        })
+      } else {
+        form.reset({
+          title: '',
+          description: '',
+          price: 0,
+          securityDeposit: 0,
+          city: '',
+          location: '',
+          categoryId: '',
+          ownerId: currentUser?.role === 'owner' ? currentUser.id : '',
+          images: [],
+          condition: 'Good',
+          features: [],
+          deliveryOptions: ['Pickup'],
+          pickupReturnDetails: '',
+          tags: [],
+          minDuration: 1,
+          maxDuration: undefined,
+        })
+      }
     }
-  }, [open, currentUser, form])
+  }, [open, product, currentUser, form])
 
   const handleFormSubmit: SubmitHandler<ListingSchema> = (values) => {
     onSubmit(values)
   }
+
+  const HeaderIcon = isEditMode ? Pencil : PackagePlus
+  const SubmitIcon = isEditMode ? Save : Plus
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -91,14 +126,14 @@ export const AddListingDialog = ({
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
-                <PackagePlus className="text-white" size={24} />
+                <HeaderIcon className="text-white" size={isEditMode ? 20 : 24} />
               </div>
               <Badge className="bg-white/20 text-white border-none font-bold text-[10px] uppercase tracking-widest">
-                Marketplace Admin
+                {isEditMode ? 'Marketplace Management' : 'Marketplace Admin'}
               </Badge>
             </div>
             <DialogTitle className="text-2xl font-extrabold tracking-tight text-white">
-              Create New Listing
+              {isEditMode ? 'Edit Listing Details' : 'Create New Listing'}
             </DialogTitle>
           </DialogHeader>
         </div>
@@ -108,7 +143,6 @@ export const AddListingDialog = ({
             onSubmit={form.handleSubmit((values) => handleFormSubmit(values))}
             className="p-8 space-y-8"
           >
-            {/* The actual form fields are abstracted here for reusability */}
             <ProductForm
               form={form}
               categories={categories}
@@ -123,15 +157,21 @@ export const AddListingDialog = ({
                 onClick={() => onOpenChange(false)}
                 className="rounded-xl font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
               >
-                Discard
+                {isEditMode ? 'Cancel' : 'Discard'}
               </Button>
               <Button
                 type="submit"
                 disabled={isLoading}
                 className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
               >
-                <Plus size={18} strokeWidth={3} />
-                {isLoading ? 'Publishing...' : 'Publish to Marketplace'}
+                <SubmitIcon size={18} strokeWidth={isEditMode ? 2 : 3} />
+                {isEditMode
+                  ? isLoading
+                    ? 'Saving...'
+                    : 'Save Changes'
+                  : isLoading
+                    ? 'Publishing...'
+                    : 'Publish to Marketplace'}
               </Button>
             </DialogFooter>
           </form>
