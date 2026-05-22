@@ -12,7 +12,6 @@ const fallbackColors = [
 
 export const CategoryDonut = () => {
   const { data: categories = [], isLoading } = useCategories()
-  console.log('categories :>> ', categories)
 
   const chartData = useMemo(() => {
     if (!categories?.length) return []

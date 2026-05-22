@@ -1,8 +1,8 @@
 import { prisma } from "../../config/prisma.js";
 
 export class ProductService {
-  async getAllProducts(filters: { search?: string; categoryId?: string; status?: string; minPrice?: string; maxPrice?: string; isAvailable?: boolean; ids?: string | string[] }) {
-    const { search, categoryId, status, minPrice, maxPrice, isAvailable, ids } = filters;
+  async getAllProducts(filters: { search?: string; categoryId?: string; status?: string; minPrice?: string; maxPrice?: string; isAvailable?: boolean; ids?: string | string[]; city?: string }) {
+    const { search, categoryId, status, minPrice, maxPrice, isAvailable, ids, city } = filters;
     const where: any = {};
 
     if (ids) {
@@ -21,6 +21,10 @@ export class ProductService {
     if (categoryId) where.categoryId = categoryId;
     if (status === 'available') where.isAvailable = true;
     if (status === 'unavailable') where.isAvailable = false;
+
+    if (city) {
+      where.city = { equals: city, mode: 'insensitive' };
+    }
 
     if (minPrice || maxPrice) {
       where.price = {};

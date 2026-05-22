@@ -78,6 +78,8 @@ export const useCreateProduct = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       queryClient.invalidateQueries({ queryKey: ['recent-products'] })
+      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
     },
   })
 }

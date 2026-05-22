@@ -268,7 +268,17 @@ export const ListingsManagement = ({
       <AddListingDialog
         open={isAddOpen}
         onOpenChange={setIsAddOpen}
-        onSubmit={(data) => createMutation.mutate(data)}
+        onSubmit={(data) => {
+          createMutation.mutate(data, {
+            onSuccess: () => {
+              setIsAddOpen(false)
+              toast.success('Listing created successfully')
+            },
+            onError: (err: any) => {
+              toast.error(err.response?.data?.message || 'Failed to create listing')
+            },
+          })
+        }}
         isLoading={createMutation.isPending}
         categories={categories || []}
         users={users || []}

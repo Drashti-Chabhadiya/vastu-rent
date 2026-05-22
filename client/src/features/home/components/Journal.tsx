@@ -44,62 +44,66 @@ export function Journal() {
           </Link>
         </div>
 
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className={cn('mt-14', 'grid', 'grid-cols-1', 'gap-8', 'md:grid-cols-3')}
-        >
-          {displayStories.map((p: any) => (
-            <motion.div variants={fadeUp} key={p.id || p.title}>
-              <Link to="/journal" className={cn('group', 'block')}>
-                <div className={cn('relative', 'overflow-hidden', 'rounded-[2rem]', 'bg-background')}>
-                  <img
-                    src={p.imageUrl}
-                    alt={p.title}
-                    width={800}
-                    height={600}
-                    loading="lazy"
-                    className={cn('aspect-[4/3]', 'w-full', 'object-cover', 'transition-transform', 'duration-[1500ms]', 'ease-out', 'group-hover:scale-[1.08]')}
-                  />
-                  <div className={cn('absolute', 'inset-0', 'bg-black/0', 'transition-colors', 'duration-500', 'group-hover:bg-black/5')} />
-                  <div className={cn('absolute', 'bottom-4', 'left-4')}>
-                    <span className={cn('rounded-full', 'bg-background/95', 'px-4', 'py-1.5', 'text-[10px]', 'font-semibold', 'uppercase', 'tracking-[0.14em]', 'text-foreground', 'backdrop-blur-sm')}>
-                      {p.tag}
-                    </span>
+        {displayStories.length > 0 ? (
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className={cn('mt-14', 'grid', 'grid-cols-1', 'gap-8', 'md:grid-cols-3')}
+          >
+            {displayStories.map((p: any) => (
+              <motion.div variants={fadeUp} key={p.id || p.title}>
+                <Link to="/journal" className={cn('group', 'block')}>
+                  <div className={cn('relative', 'overflow-hidden', 'rounded-[2rem]', 'bg-background')}>
+                    <img
+                      src={p.imageUrl}
+                      alt={p.title}
+                      width={800}
+                      height={600}
+                      loading="lazy"
+                      className={cn('aspect-[4/3]', 'w-full', 'object-cover', 'transition-transform', 'duration-[1500ms]', 'ease-out', 'group-hover:scale-[1.08]')}
+                    />
+                    <div className={cn('absolute', 'inset-0', 'bg-black/0', 'transition-colors', 'duration-500', 'group-hover:bg-black/5')} />
+                    <div className={cn('absolute', 'bottom-4', 'left-4')}>
+                      <span className={cn('rounded-full', 'bg-background/95', 'px-4', 'py-1.5', 'text-[10px]', 'font-semibold', 'uppercase', 'tracking-[0.14em]', 'text-foreground', 'backdrop-blur-sm')}>
+                        {p.tag}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className={cn('mt-7', 'flex', 'items-center', 'gap-5', 'text-[10px]', 'uppercase', 'tracking-[0.2em]', 'text-muted-foreground/80')}>
-                  <span className={cn('flex', 'items-center', 'gap-1.5')}>
-                    <Calendar className={cn('h-3', 'w-3')} />
-                    {p.createdAt
-                      ? new Date(p.createdAt).toLocaleDateString('en-US', {
+                  <div className={cn('mt-7', 'flex', 'items-center', 'gap-5', 'text-[10px]', 'uppercase', 'tracking-[0.2em]', 'text-muted-foreground/80')}>
+                    <span className={cn('flex', 'items-center', 'gap-1.5')}>
+                      <Calendar className={cn('h-3', 'w-3')} />
+                      {p.createdAt
+                        ? new Date(p.createdAt).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',
                         })
-                      : p.date}
-                  </span>
-                  <span className={cn('h-px', 'w-6', 'bg-border')} />
-                  <span className={cn('flex', 'items-center', 'gap-1.5')}>
-                    <Clock className={cn('h-3', 'w-3')} />
-                    {p.readTime}
-                  </span>
-                </div>
-                <h3 className={cn('mt-4', 'font-display', 'text-[24px]', 'leading-tight', 'text-foreground', 'transition-colors', 'group-hover:text-primary')}>
-                  {p.title}
-                </h3>
-                <p className={cn('mt-3', 'line-clamp-2', 'text-[15px]', 'leading-relaxed', 'text-muted-foreground')}>
-                  {p.excerpt}
-                </p>
-                <div className={cn('mt-6', 'flex', 'items-center', 'gap-2', 'text-[12px]', 'font-semibold', 'text-foreground', 'transition-all', 'group-hover:gap-3', 'group-hover:text-primary')}>
-                  Read story <ArrowUpRight className={cn('h-3.5', 'w-3.5')} />
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+                        : p.date}
+                    </span>
+                    <span className={cn('h-px', 'w-6', 'bg-border')} />
+                    <span className={cn('flex', 'items-center', 'gap-1.5')}>
+                      <Clock className={cn('h-3', 'w-3')} />
+                      {p.readTime}
+                    </span>
+                  </div>
+                  <h3 className={cn('mt-4', 'font-display', 'text-[24px]', 'leading-tight', 'text-foreground', 'transition-colors', 'group-hover:text-primary')}>
+                    {p.title}
+                  </h3>
+                  <p className={cn('mt-3', 'line-clamp-2', 'text-[15px]', 'leading-relaxed', 'text-muted-foreground')}>
+                    {p.excerpt}
+                  </p>
+                  <div className={cn('mt-6', 'flex', 'items-center', 'gap-2', 'text-[12px]', 'font-semibold', 'text-foreground', 'transition-all', 'group-hover:gap-3', 'group-hover:text-primary')}>
+                    Read story <ArrowUpRight className={cn('h-3.5', 'w-3.5')} />
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <div className={cn('mt-14', 'grid', 'grid-cols-1', 'gap-8', 'md:grid-cols-3')} />
+        )}
       </div>
     </section>
   )
