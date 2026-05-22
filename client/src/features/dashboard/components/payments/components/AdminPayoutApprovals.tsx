@@ -48,10 +48,10 @@ export const AdminPayoutApprovals = ({
   }
 
   return (
-    <div className="bg-[#faf7f0] border-2 border-emerald-600/20 p-8 rounded-[2.5rem] shadow-sm space-y-6">
+    <div className="bg-[#faf7f0] border-2 border-dash-brand/20 p-8 rounded-[2.5rem] shadow-sm space-y-6">
       <div>
         <h3 className="text-[15px] font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-          <Zap size={16} className="text-emerald-600" />
+          <Zap size={16} className="text-dash-brand" />
           Admin Payout Approvals Portal
         </h3>
         <p className="text-[11px] font-semibold text-slate-500">
@@ -105,7 +105,7 @@ export const AdminPayoutApprovals = ({
                   setSelectedAdminPayout(payout)
                   setAdminActionType('paid')
                 }}
-                className="flex-1 h-9 rounded-xl bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[10px] uppercase cursor-pointer"
+                className="flex-1 h-9 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[10px] uppercase shadow-md shadow-dash-brand/10 transition-all active:scale-[0.98] cursor-pointer"
               >
                 Mark Paid
               </Button>
@@ -115,7 +115,7 @@ export const AdminPayoutApprovals = ({
                   setAdminActionType('rejected')
                 }}
                 variant="outline"
-                className="flex-1 h-9 rounded-xl text-red-500 border border-red-200 hover:bg-red-50 font-black text-[10px] uppercase cursor-pointer"
+                className="flex-1 h-9 rounded-full text-red-500 border border-red-200 hover:bg-red-50 font-black text-[10px] uppercase transition-all active:scale-[0.98] cursor-pointer"
               >
                 Reject
               </Button>
@@ -139,7 +139,7 @@ export const AdminPayoutApprovals = ({
           <DialogContent className="max-w-md p-8 border-none bg-white rounded-[2.5rem] shadow-2xl font-sans">
             <div className="space-y-6">
               <div className="space-y-2">
-                <span className="text-[9px] font-black uppercase tracking-widest text-[#059669] bg-emerald-50 px-2 py-0.5 rounded">
+                <span className="text-[9px] font-black uppercase tracking-widest text-dash-brand bg-dash-brand/5 px-2 py-0.5 rounded">
                   Admin Action Portal
                 </span>
                 <h3 className="text-xl font-extrabold text-slate-800">
@@ -170,7 +170,7 @@ export const AdminPayoutApprovals = ({
                   }
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
-                  className="w-full min-h-[80px] p-3 rounded-xl border border-slate-100 bg-slate-50/50 text-xs font-semibold text-slate-800 outline-none focus:border-[#059669] transition-all resize-none"
+                  className="w-full min-h-[80px] p-3 rounded-xl border border-slate-100 bg-slate-50/50 text-xs font-semibold text-slate-800 outline-none focus:border-dash-brand transition-all resize-none"
                 />
               </div>
 
@@ -182,17 +182,16 @@ export const AdminPayoutApprovals = ({
                     setAdminNotes('')
                     setAdminActionType(null)
                   }}
-                  variant="ghost"
-                  className="flex-1 h-12 rounded-xl font-black text-[11px] uppercase tracking-wider text-slate-400"
+                  className="flex-1 h-12 rounded-full font-black text-[11px] uppercase tracking-wider bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleConfirmAction}
-                  className={`flex-1 h-12 rounded-xl text-white font-black text-[11px] uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`flex-1 h-12 rounded-full text-white font-black text-[11px] uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer ${
                     adminActionType === 'rejected'
                       ? 'bg-red-500 hover:bg-red-600 shadow-red-100'
-                      : 'bg-[#059669] hover:bg-[#059669]/90 shadow-emerald-100'
+                      : 'bg-dash-brand hover:bg-dash-brand/90 shadow-dash-brand/20'
                   }`}
                   disabled={isUpdating}
                 >

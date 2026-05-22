@@ -79,7 +79,7 @@ export function CouponSidebar({
         {canCreate && (
           <Button
             onClick={onCreateClick}
-            className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-emerald-50"
+            className="w-full h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-dash-brand/20 active:scale-95 transition-all"
           >
             <Ticket size={16} className="rotate-[-10deg]" /> Add New Coupon
           </Button>

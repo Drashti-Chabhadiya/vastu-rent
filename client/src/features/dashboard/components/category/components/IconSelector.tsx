@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import * as LucideIcons from 'lucide-react'
 import { Input } from '#/components/ui/input'
+import { Button } from '#/components/ui/button'
 import { Search, X } from 'lucide-react'
 import { cn } from '#/lib/utils'
 
@@ -55,27 +56,31 @@ export const IconSelector = ({ selectedIcon, onSelect }: IconSelectorProps) => {
           className="pl-10 h-11 bg-white border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-dash-brand/20 transition-all"
         />
         {search && (
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={() => setSearch('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 h-8 w-8 rounded-full p-0 active:scale-[0.98] transition-all cursor-pointer hover:bg-gray-100/50"
           >
             <X size={16} />
-          </button>
+          </Button>
         )}
       </div>
 
       <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-[300px] overflow-y-auto p-1 custom-scrollbar">
         {filteredIcons.map((name) => (
-          <button
+          <Button
             key={name}
             type="button"
+            variant="ghost"
             onClick={() => onSelect(name)}
             title={name}
             className={cn(
-              'aspect-square flex items-center justify-center rounded-xl border transition-all hover:bg-dash-brand/5 hover:border-dash-brand/30 group',
+              'aspect-square p-0 flex items-center justify-center rounded-xl border transition-all hover:bg-dash-brand/5 hover:border-dash-brand/30 hover:text-dash-brand active:scale-[0.98] group min-w-0 min-h-0 h-auto w-auto',
               selectedIcon === name
-                ? 'bg-dash-brand/10 border-dash-brand text-dash-brand shadow-sm'
-                : 'bg-white border-gray-100 text-gray-500',
+                ? 'bg-dash-brand/10 border-dash-brand text-dash-brand shadow-sm hover:bg-dash-brand/15'
+                : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50',
             )}
           >
             <div
@@ -86,7 +91,7 @@ export const IconSelector = ({ selectedIcon, onSelect }: IconSelectorProps) => {
             >
               {renderIcon(name)}
             </div>
-          </button>
+          </Button>
         ))}
       </div>
 

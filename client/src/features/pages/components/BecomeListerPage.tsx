@@ -58,7 +58,7 @@ export function BecomeListerPage() {
               started.
             </p>
             <Link to={'/signup'}>
-              <Button className="h-16 px-12 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl text-lg flex items-center gap-3">
+              <Button size="lg" className="flex items-center gap-3">
                 Start Listing Now
                 <ArrowRight size={20} />
               </Button>
@@ -152,7 +152,7 @@ export function BecomeListerPage() {
             Your items could be earning for you right now.
           </h2>
           <Link to={'/signup'}>
-            <Button className="h-16 px-12 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl text-lg">
+            <Button size="lg">
               Get Started for Free
             </Button>
           </Link>

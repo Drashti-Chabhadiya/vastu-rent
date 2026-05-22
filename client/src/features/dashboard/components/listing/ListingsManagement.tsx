@@ -194,7 +194,7 @@ export const ListingsManagement = ({
         </div>
 
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="h-14 border-none bg-gray-50/50 rounded-2xl font-extrabold text-dash-text hover:bg-gray-100 transition-all focus:ring-0 px-6">
+          <SelectTrigger className="h-14 border-none bg-dash-bg-soft hover:bg-dash-bg-soft/80 rounded-2xl font-extrabold text-dash-text transition-all focus:ring-2 focus:ring-dash-brand/20 px-6">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
@@ -217,7 +217,7 @@ export const ListingsManagement = ({
         </Select>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="h-14 border-none bg-gray-50/50 rounded-2xl font-extrabold text-dash-text hover:bg-gray-100 transition-all focus:ring-0 px-6">
+          <SelectTrigger className="h-14 border-none bg-dash-bg-soft hover:bg-dash-bg-soft/80 rounded-2xl font-extrabold text-dash-text transition-all focus:ring-2 focus:ring-dash-brand/20 px-6">
             <SelectValue placeholder="Availability" />
           </SelectTrigger>
           <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">

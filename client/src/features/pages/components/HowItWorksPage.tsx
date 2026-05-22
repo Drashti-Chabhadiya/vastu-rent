@@ -157,14 +157,14 @@ export function HowItWorksPage() {
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to={'/'}>
-              <Button className="h-14 px-10 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl text-lg">
+              <Button size="lg">
                 Browse Items
               </Button>
             </Link>
             <Link to={'/become-lister'}>
               <Button
                 variant="outline"
-                className="h-14 px-10 border-gray-200 hover:bg-gray-50 text-gray-900 font-bold rounded-2xl text-lg"
+                size="lg"
               >
                 Learn to List
               </Button>

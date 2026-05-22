@@ -1,4 +1,5 @@
 import { useOrders } from '#/hook'
+import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 
 interface Order {
@@ -80,9 +81,12 @@ export const RecentOrders = () => {
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Orders</h3>
 
-        <button className="text-xs font-bold text-dash-brand hover:underline">
+        <Button
+          variant="link"
+          className="text-xs font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer"
+        >
           View All
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-4">

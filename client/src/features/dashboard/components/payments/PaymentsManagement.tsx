@@ -208,7 +208,7 @@ export const PaymentsManagement = () => {
             }
             setIsPayoutModalOpen(true)
           }}
-          className="bg-[#059669] hover:bg-[#059669]/90 text-white h-14 px-8 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg transition-all active:scale-95 z-10 self-start md:self-auto cursor-pointer"
+          className="bg-dash-brand hover:bg-dash-brand/90 text-white h-14 px-8 rounded-full font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-dash-brand/20 transition-all active:scale-95 z-10 self-start md:self-auto cursor-pointer"
         >
           <Plus size={16} /> Request Withdrawal
         </Button>

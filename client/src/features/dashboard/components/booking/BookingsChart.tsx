@@ -13,6 +13,7 @@ import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import { useBookingsOverTime } from '#/hook'
 import { cn } from "../../../../lib/utils";
+import { Button } from '#/components/ui/button'
 
 type Period = 'week' | 'month' | 'year'
 
@@ -34,23 +35,26 @@ export const BookingsChart = () => {
         <h3 className={cn('font-bold', 'text-dash-text')}>Bookings Overview</h3>
 
         <div className="relative">
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setOpen((v) => !v)}
-            className={cn('flex', 'items-center', 'gap-2', 'px-3', 'py-1.5', 'border', 'border-gray-200', 'rounded-lg', 'text-xs', 'font-bold', 'text-dash-text', 'cursor-pointer', 'hover:border-gray-300')}
+            className="flex items-center gap-2 px-3 py-1.5 h-auto border border-gray-200 rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-gray-300 active:scale-[0.98]"
           >
             {PERIOD_LABELS[period]}
             <ChevronDown size={14} className="text-gray-400" />
-          </button>
+          </Button>
           {open && (
-            <div className={cn('absolute', 'right-0', 'mt-1', 'bg-white', 'border', 'border-gray-100', 'rounded-xl', 'shadow-lg', 'z-10', 'overflow-hidden')}>
+            <div className={cn('absolute', 'right-0', 'mt-1', 'bg-white', 'border', 'border-gray-100', 'rounded-xl', 'shadow-lg', 'z-10', 'overflow-hidden', 'flex', 'flex-col', 'w-32')}>
               {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
-                <button
+                <Button
                   key={p}
+                  variant="ghost"
                   onClick={() => { setPeriod(p); setOpen(false) }}
-                  className={cn('block', 'w-full', 'text-left', 'px-4', 'py-2', 'text-xs', 'font-bold', 'text-dash-text', 'hover:bg-gray-50')}
+                  className={cn('w-full', 'justify-start', 'rounded-none', 'h-auto', 'px-4', 'py-2', 'text-xs', 'font-bold', 'text-dash-text', 'hover:bg-gray-50', 'cursor-pointer', 'active:scale-[0.98]')}
                 >
                   {PERIOD_LABELS[p]}
-                </button>
+                </Button>
               ))}
             </div>
           )}

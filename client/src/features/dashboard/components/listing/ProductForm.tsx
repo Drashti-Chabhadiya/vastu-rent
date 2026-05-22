@@ -46,6 +46,7 @@ interface ProductFormProps {
   categories: Category[]
   users: User[]
   currentUser?: any
+  onUploadStatusChange?: (uploading: boolean) => void
 }
 
 export const ProductForm = ({
@@ -53,6 +54,7 @@ export const ProductForm = ({
   categories,
   users,
   currentUser,
+  onUploadStatusChange,
 }: ProductFormProps) => {
   const isOwner = currentUser?.role === 'owner'
   return (
@@ -110,6 +112,7 @@ export const ProductForm = ({
                 <ImageGalleryManager
                   images={field.value as string[]}
                   onChange={field.onChange}
+                  onUploadStatusChange={onUploadStatusChange}
                 />
               </FormControl>
               <FormMessage />

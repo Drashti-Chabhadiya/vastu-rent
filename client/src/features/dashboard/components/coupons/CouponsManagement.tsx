@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronRight, Ticket, Zap, Grid } from 'lucide-react'
+import { Button } from '#/components/ui/button'
 import { useCoupons, useDeleteCoupon } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { cn } from '#/lib/utils'
@@ -139,18 +140,19 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       {isOwner && (
         <div className="flex items-center gap-2 border-b border-slate-100 pb-px">
           {(['my', 'global'] as const).map((tab) => (
-            <button
+            <Button
               key={tab}
+              variant="ghost"
               onClick={() => setActiveTab(tab)}
               className={cn(
-                'pb-3 text-xs font-black uppercase tracking-wider transition-all border-b-2 px-2',
+                'pb-3 text-xs font-black uppercase tracking-wider transition-all border-b-2 px-2 rounded-none hover:bg-transparent h-auto active:scale-[0.98] cursor-pointer',
                 activeTab === tab
-                  ? 'border-emerald-500 text-emerald-600'
+                  ? 'border-[#15803d] text-[#15803d]'
                   : 'border-transparent text-slate-400 hover:text-slate-600',
               )}
             >
               {tab === 'my' ? 'My Listings Coupons' : 'Platform Wide Coupons'}
-            </button>
+            </Button>
           ))}
         </div>
       )}

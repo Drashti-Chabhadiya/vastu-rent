@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/_authenticated/account/profile')({
   component: AccountProfileSettings,
@@ -36,9 +37,9 @@ function AccountProfileSettings() {
               Add an extra layer of security to your account.
             </p>
           </div>
-          <button className="text-primary font-bold text-sm hover:underline">
+          <Button variant="link" className="text-primary font-bold text-sm hover:underline p-0 h-auto">
             Enable
-          </button>
+          </Button>
         </div>
 
         <div className="bg-red-50/50 border border-red-100 rounded-2xl p-6 flex items-center justify-between">
@@ -48,11 +49,12 @@ function AccountProfileSettings() {
               Send a request to Super Admins to permanently purge your data.
             </p>
           </div>
-          <button className="bg-red-600 hover:bg-red-700 text-white font-bold h-10 px-6 rounded-xl transition-all">
+          <Button variant="destructive" className="bg-red-600 hover:bg-red-700 text-white font-bold h-10 px-6 rounded-xl transition-all active:scale-[0.98]">
             Request Purge
-          </button>
+          </Button>
         </div>
       </div>
     </div>
   )
 }
+

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Bell, Calendar, ChevronDown, Menu } from 'lucide-react'
+import { Button } from '#/components/ui/button'
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -48,12 +49,14 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   return (
     <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
       <div className="flex items-center gap-2 md:gap-6">
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onMenuClick}
-          className="p-2 hover:bg-gray-50 rounded-lg text-gray-500 transition-colors lg:hidden"
+          className="h-10 w-10 hover:bg-gray-50 rounded-lg text-gray-500 transition-colors lg:hidden active:scale-[0.98]"
         >
           <Menu size={22} />
-        </button>
+        </Button>
         <div className="hidden sm:block">
           <h2 className="text-lg md:text-xl font-bold text-dash-text">
             Dashboard
@@ -90,64 +93,71 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                 onClick={() => setIsDropdownOpen(false)}
               />
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-150">
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => {
                     setRangeType('7days')
                     setIsDropdownOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between ${
+                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-gray-50 ${
                     rangeType === '7days'
-                      ? 'text-dash-brand bg-emerald-50/50'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? 'text-primary bg-primary/5 hover:text-primary hover:bg-primary/5'
+                      : 'text-gray-600 hover:text-gray-700'
                   }`}
                 >
                   Last 7 Days
                   {rangeType === '7days' && (
-                    <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                   )}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
                   onClick={() => {
                     setRangeType('30days')
                     setIsDropdownOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between ${
+                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-gray-50 ${
                     rangeType === '30days'
-                      ? 'text-dash-brand bg-emerald-50/50'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? 'text-primary bg-primary/5 hover:text-primary hover:bg-primary/5'
+                      : 'text-gray-600 hover:text-gray-700'
                   }`}
                 >
                   Last 30 Days
                   {rangeType === '30days' && (
-                    <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                   )}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
                   onClick={() => {
                     setRangeType('thisMonth')
                     setIsDropdownOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between ${
+                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-gray-50 ${
                     rangeType === 'thisMonth'
-                      ? 'text-dash-brand bg-emerald-50/50'
-                      : 'text-gray-600 hover:bg-gray-50'
+                      ? 'text-primary bg-primary/5 hover:text-primary hover:bg-primary/5'
+                      : 'text-gray-600 hover:text-gray-700'
                   }`}
                 >
                   This Month
                   {rangeType === 'thisMonth' && (
-                    <span className="w-1.5 h-1.5 bg-dash-brand rounded-full" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                   )}
-                </button>
+                </Button>
               </div>
             </>
           )}
         </div>
 
         {/* Notifications */}
-        <button className="relative p-2.5 hover:bg-gray-50 rounded-xl text-gray-500 transition-all group">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative h-10 w-10 hover:bg-gray-50 rounded-xl text-gray-500 transition-all active:scale-[0.98]"
+        >
           <Bell size={20} />
           <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full"></span>
-        </button>
+        </Button>
       </div>
     </header>
   )

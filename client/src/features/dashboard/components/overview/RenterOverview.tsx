@@ -43,7 +43,7 @@ export const RenterOverview = ({
           </p>
         </div>
         <Link to="/products">
-          <Button className={cn('bg-primary', 'hover:bg-primary/95', 'text-white', 'font-bold', 'h-12', 'px-6', 'rounded-2xl', 'flex', 'items-center', 'gap-2', 'shadow-lg', 'shadow-primary/20', 'transition-all', 'active:scale-95')}>
+          <Button className={cn('bg-primary', 'hover:bg-primary/95', 'text-white', 'font-bold', 'h-12', 'px-6', 'rounded-full', 'flex', 'items-center', 'gap-2', 'shadow-lg', 'shadow-primary/20', 'transition-all', 'active:scale-95')}>
             <Compass size={18} />
             Browse Properties
           </Button>
@@ -200,7 +200,7 @@ export const RenterOverview = ({
                 You haven't rented any property yet. Browse our listings to get started!
               </p>
               <Link to="/products">
-                <Button className={cn('bg-primary', 'hover:bg-primary/95', 'text-white', 'font-bold', 'h-10', 'px-4', 'rounded-xl', 'text-xs', 'flex', 'items-center', 'gap-1')}>
+                <Button className={cn('bg-primary', 'hover:bg-primary/95', 'text-white', 'font-bold', 'h-10', 'px-4', 'rounded-full', 'text-xs', 'flex', 'items-center', 'gap-1')}>
                   Explore Properties
                   <ArrowUpRight size={14} />
                 </Button>
@@ -282,7 +282,7 @@ export const RenterOverview = ({
           </div>
 
           <Link to="/wishlist" className="mt-6">
-            <Button className={cn('w-full', 'bg-gray-50', 'hover:bg-gray-100', 'text-gray-700', 'font-bold', 'h-11', 'rounded-xl', 'border', 'border-gray-100', 'transition-all', 'flex', 'items-center', 'justify-center', 'gap-1')}>
+            <Button className={cn('w-full', 'bg-gray-50', 'hover:bg-gray-100', 'text-gray-700', 'font-bold', 'h-11', 'rounded-full', 'border', 'border-gray-100', 'transition-all', 'flex', 'items-center', 'justify-center', 'gap-1')}>
               Manage Wishlist
               <Heart size={16} />
             </Button>

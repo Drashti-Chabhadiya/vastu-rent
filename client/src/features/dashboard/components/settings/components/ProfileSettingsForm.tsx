@@ -37,7 +37,7 @@ export const ProfileSettingsForm = ({
         <Button
           type="submit"
           disabled={isSavingProfile}
-          className="bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[11px] px-6 h-11 rounded-xl transition-all shadow-sm active:scale-95"
+          className="bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[11px] px-6 h-11 rounded-full transition-all shadow-md shadow-dash-brand/10 active:scale-95 cursor-pointer"
         >
           {isSavingProfile ? 'Saving...' : 'Save Changes'}
         </Button>
@@ -68,7 +68,7 @@ export const ProfileSettingsForm = ({
           </p>
 
           <div className="flex gap-2">
-            <label className="h-9 px-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+            <label className="h-9 px-4 rounded-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all">
               <Upload size={12} /> Upload Photo
               <input
                 type="file"
@@ -82,7 +82,7 @@ export const ProfileSettingsForm = ({
                 type="button"
                 onClick={() => setProfileImage('')}
                 variant="ghost"
-                className="h-9 px-3 rounded-xl text-red-500 hover:bg-red-50 text-[10px] font-black uppercase tracking-wider"
+                className="h-9 px-3 rounded-full text-red-500 hover:bg-red-50 text-[10px] font-black uppercase tracking-wider active:scale-95 transition-all"
               >
                 Remove
               </Button>

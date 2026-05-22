@@ -8,12 +8,20 @@ import {
   Check,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
+import { Button } from '#/components/ui/button'
 import {
   useNotifications,
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
 } from '#/hook'
 import { useState } from 'react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
 
 export const NotificationsManagement = () => {
   const { data: notifications, isLoading } = useNotifications()
@@ -106,17 +114,18 @@ export const NotificationsManagement = () => {
               />
             </div>
             <div>
-              <select
-                className="h-10 border border-slate-200 rounded-xl px-3 bg-white text-xs font-bold"
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-              >
-                <option value="all">All Alerts</option>
-                <option value="unread">Unread Only</option>
-                <option value="booking">Bookings</option>
-                <option value="payment">Payments</option>
-                <option value="alert">Alerts</option>
-              </select>
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-[140px] h-10 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
+                  <SelectValue placeholder="All Alerts" />
+                </SelectTrigger>
+                <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+                  <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Alerts</SelectItem>
+                  <SelectItem value="unread" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Unread Only</SelectItem>
+                  <SelectItem value="booking" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Bookings</SelectItem>
+                  <SelectItem value="payment" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Payments</SelectItem>
+                  <SelectItem value="alert" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Alerts</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -137,9 +146,8 @@ export const NotificationsManagement = () => {
                   <div
                     key={notif.id}
                     onClick={() => !notif.isRead && handleMarkRead(notif.id)}
-                    className={`flex items-center justify-between p-4 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all cursor-pointer group ${
-                      !notif.isRead ? 'bg-slate-50/70 border-slate-100' : ''
-                    }`}
+                    className={`flex items-center justify-between p-4 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all cursor-pointer group ${!notif.isRead ? 'bg-slate-50/70 border-slate-100' : ''
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <div
@@ -196,12 +204,13 @@ export const NotificationsManagement = () => {
             </div>
 
             {unreadCount > 0 && (
-              <button
+              <Button
+                variant="link"
                 onClick={handleMarkAllRead}
-                className="w-full mt-8 text-emerald-600 text-[11px] font-black flex items-center justify-center gap-2 hover:underline"
+                className="w-full mt-8 text-[#15803d] hover:text-[#166534] text-[11px] font-extrabold flex items-center justify-center gap-2 hover:underline active:scale-[0.98] transition-all p-0 h-auto cursor-pointer"
               >
                 <Check size={14} /> Mark all as read
-              </button>
+              </Button>
             )}
           </div>
         </div>

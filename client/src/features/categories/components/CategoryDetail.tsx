@@ -5,6 +5,7 @@ import { ProductCard } from '#/components/common/ProductCard'
 import { Search, SlidersHorizontal, ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { CategoryDetailSkeleton } from '#/components/skeletons'
+import { Button } from '#/components/ui/button'
 
 export function CategoryDetail() {
   const { id } = useParams({ from: '/categories/$id' })
@@ -87,10 +88,10 @@ export function CategoryDetail() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="h-14 px-8 bg-white border border-gray-200 rounded-2xl flex items-center gap-3 font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-sm whitespace-nowrap">
+          <Button variant="outline" size="lg" className="gap-3 text-gray-700">
             <SlidersHorizontal size={20} className="text-gray-400" />
             Filter
-          </button>
+          </Button>
         </div>
         {/* Product Grid */}
         {filteredProducts?.length === 0 ? (

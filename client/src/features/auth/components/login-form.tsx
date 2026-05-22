@@ -114,9 +114,9 @@ export function LoginForm() {
       {/* Tabs */}
       <div className="flex w-full mb-8">
         <div className="flex-1 flex flex-col">
-          <button className="py-3 text-[15px] font-bold bg-primary-light text-center w-full">
+          <Button variant="ghost" className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100">
             Login
-          </button>
+          </Button>
           <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
         </div>
         <div className="flex-1 flex flex-col">
@@ -164,12 +164,13 @@ export function LoginForm() {
               <FieldLabel className="text-[13px] font-bold text-gray-900">
                 Password
               </FieldLabel>
-              <button
+              <Button
                 type="button"
-                className="text-[13px] font-bold bg-primary-light hover:underline"
+                variant="link"
+                className="text-[13px] font-bold text-primary p-0 h-auto hover:underline"
               >
                 Forgot Password?
-              </button>
+              </Button>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -184,23 +185,25 @@ export function LoginForm() {
                 className="w-full h-12 pl-11 pr-12 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                 {...register('password')}
               />
-              <button
+              <Button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                variant="ghost"
+                size="icon"
+                className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
                   <Eye
-                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-600"
+                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-650 transition-colors"
                     strokeWidth={2}
                   />
                 ) : (
                   <EyeOff
-                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-600"
+                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-650 transition-colors"
                     strokeWidth={2}
                   />
                 )}
-              </button>
+              </Button>
             </div>
             {errors.password && (
               <p className="text-xs text-red-500 mt-1 font-medium">
@@ -211,9 +214,10 @@ export function LoginForm() {
 
           {/* Remember Me */}
           <div className="flex items-center pt-1 pb-1">
-            <button
+            <Button
               type="button"
-              className="flex items-center gap-2.5"
+              variant="ghost"
+              className="flex items-center gap-2.5 p-0 h-auto hover:bg-transparent active:scale-100"
               onClick={() => setRememberMe(!rememberMe)}
             >
               <div
@@ -226,7 +230,7 @@ export function LoginForm() {
               <span className="text-[13px] font-bold text-gray-900">
                 Remember me
               </span>
-            </button>
+            </Button>
           </div>
 
           {serverError && (
@@ -261,11 +265,12 @@ export function LoginForm() {
                     </p>
                   )}
 
-                  <button
+                  <Button
                     type="button"
+                    variant="link"
                     disabled={resendLoading || resendCooldown > 0}
                     onClick={handleResend}
-                    className="mt-3 text-[13px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-3 text-[13px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 p-0 h-auto disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {resendLoading ? (
                       <span className="flex items-center gap-1">
@@ -277,7 +282,7 @@ export function LoginForm() {
                     ) : (
                       'Resend verification email'
                     )}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -287,7 +292,7 @@ export function LoginForm() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-12 rounded-xl bg-primary text-white text-[15px] font-bold hover:bg-primary/90 transition-colors"
+            className="w-full"
           >
             {isSubmitting ? 'Logging in...' : 'Login'}
           </Button>
@@ -305,7 +310,11 @@ export function LoginForm() {
 
       {/* Social Buttons */}
       <div className="grid grid-cols-3 gap-3 mb-8">
-        <button className="flex items-center justify-center h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+        >
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -329,11 +338,15 @@ export function LoginForm() {
               fill="#EA4335"
             />
           </svg>
-          <span className="text-[13px] font-bold text-gray-700 hidden sm:inline">
+          <span className="text-[13px] hidden sm:inline">
             Google
           </span>
-        </button>
-        <button className="flex items-center justify-center h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors gap-2">
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+        >
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -345,11 +358,15 @@ export function LoginForm() {
               fill="#1877F2"
             />
           </svg>
-          <span className="text-[13px] font-bold text-gray-700 hidden sm:inline">
+          <span className="text-[13px] hidden sm:inline">
             Facebook
           </span>
-        </button>
-        <button className="flex items-center justify-center h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors gap-2">
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+        >
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -361,10 +378,10 @@ export function LoginForm() {
               fill="#000000"
             />
           </svg>
-          <span className="text-[13px] font-bold text-gray-700 hidden sm:inline">
+          <span className="text-[13px] hidden sm:inline">
             Apple
           </span>
-        </button>
+        </Button>
       </div>
 
       <p className="text-center text-[12px] text-gray-500 max-w-[340px] mx-auto leading-relaxed">

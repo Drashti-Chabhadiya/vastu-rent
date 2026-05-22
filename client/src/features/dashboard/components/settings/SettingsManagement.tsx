@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Upload,
 } from 'lucide-react'
+import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
 import { authClient } from '#/lib/auth/auth-client'
 import {
@@ -383,12 +384,12 @@ export const SettingsManagement = () => {
         <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
           <span>Dashboard</span>
           <ChevronRight size={10} className="text-slate-300" />
-          <span className="text-[#059669] font-extrabold">Settings</span>
+          <span className="text-dash-brand font-extrabold">Settings</span>
         </div>
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-black text-slate-800">Settings</h1>
           <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-slate-100 shadow-sm">
-            <Calendar size={14} className="text-[#059669]" />
+            <Calendar size={14} className="text-dash-brand" />
             <span className="text-xs font-black text-slate-600 tracking-wider">
               {format(new Date(), 'MMMM yyyy')}
             </span>
@@ -400,20 +401,21 @@ export const SettingsManagement = () => {
         {/* Left Sidebar: Settings Navigation */}
         <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm h-fit space-y-1">
           {sidebarItems.map((item) => (
-            <button
+            <Button
               key={item.id}
+              variant="ghost"
               onClick={() => setActiveSubTab(item.id)}
-              className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-left group ${
+              className={`w-full flex items-center justify-start gap-4 p-4 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
                 activeSubTab === item.id
-                  ? 'bg-emerald-50 text-emerald-600'
-                  : 'text-slate-500 hover:bg-slate-50'
+                  ? 'bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light hover:text-dash-brand'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
               }`}
             >
               <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
                   activeSubTab === item.id
-                    ? 'bg-white shadow-sm'
-                    : 'bg-slate-50'
+                    ? 'bg-white shadow-sm text-dash-brand'
+                    : 'bg-slate-50 text-slate-400 group-hover:bg-white group-hover:shadow-sm'
                 }`}
               >
                 <item.icon
@@ -421,21 +423,21 @@ export const SettingsManagement = () => {
                   strokeWidth={activeSubTab === item.id ? 2.5 : 2}
                 />
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 text-left">
                 <p className="text-[11px] font-black leading-tight">
                   {item.label}
                 </p>
                 <p
                   className={`text-[9px] font-bold truncate ${
                     activeSubTab === item.id
-                      ? 'text-emerald-500'
+                      ? 'text-dash-brand'
                       : 'text-slate-400'
                   }`}
                 >
                   {item.desc}
                 </p>
               </div>
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -515,7 +517,7 @@ export const SettingsManagement = () => {
                 <span className="text-[11px] font-bold text-slate-400">
                   Account Type
                 </span>
-                <Badge className="bg-emerald-50 text-emerald-600 border-none font-black text-[9px] px-2.5 capitalize">
+                <Badge className="bg-dash-brand-light text-dash-brand border-none font-black text-[9px] px-2.5 capitalize">
                   {activeUser?.role || 'Lister'}
                 </Badge>
               </div>
@@ -525,8 +527,8 @@ export const SettingsManagement = () => {
                 </span>
                 <span className="text-[11px] font-black text-slate-700">
                   {activeUser?.createdAt
-                    ? format(new Date(activeUser.createdAt), 'dd MMM yyyy')
-                    : '01 Jan 2026'}
+                     ? format(new Date(activeUser.createdAt), 'dd MMM yyyy')
+                     : '01 Jan 2026'}
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -544,7 +546,7 @@ export const SettingsManagement = () => {
                 <span className="text-[11px] font-bold text-slate-400">
                   Email Status
                 </span>
-                <span className="text-[11px] font-black text-emerald-600 uppercase tracking-widest">
+                <span className="text-[11px] font-black text-dash-brand uppercase tracking-widest">
                   {activeUser?.emailVerified ? 'Verified' : 'Pending'}
                 </span>
               </div>
@@ -554,7 +556,7 @@ export const SettingsManagement = () => {
           {/* Secure Details Card */}
           <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
             <h3 className="text-[13px] font-black text-slate-800 flex items-center gap-2">
-              <ShieldCheck size={18} className="text-emerald-600" />
+              <ShieldCheck size={18} className="text-dash-brand" />
               Safety Guarantee
             </h3>
             <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">

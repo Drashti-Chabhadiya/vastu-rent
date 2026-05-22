@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,6 +16,7 @@ import { Badge } from '#/components/ui/badge'
 import { listingSchema } from '#/schema'
 import type { ListingSchema } from '#/schema'
 import { ProductForm } from './ProductForm'
+import { LoadingOverlay } from '#/components/ui/loader'
 
 interface Category {
   id: string
@@ -51,6 +52,7 @@ export const ListingDialog = ({
   product,
 }: ListingDialogProps) => {
   const isEditMode = !!product
+  const [isUploadingImages, setIsUploadingImages] = useState(false)
 
   const form = useForm<ListingSchema>({
     resolver: zodResolver(listingSchema) as any,
@@ -70,6 +72,7 @@ export const ListingDialog = ({
   // Reset form when dialog opens or product/currentUser changes
   useEffect(() => {
     if (open) {
+      setIsUploadingImages(false)
       if (product) {
         form.reset({
           title: product.title || '',
@@ -141,13 +144,21 @@ export const ListingDialog = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((values) => handleFormSubmit(values))}
-            className="p-8 space-y-8"
+            className="p-8 space-y-8 relative min-h-[300px]"
           >
+            {isUploadingImages && (
+              <LoadingOverlay message="Uploading listing photos..." />
+            )}
+            {isLoading && (
+              <LoadingOverlay message={isEditMode ? "Saving changes..." : "Publishing listing..."} />
+            )}
+
             <ProductForm
               form={form}
               categories={categories}
               users={users}
               currentUser={currentUser}
+              onUploadStatusChange={setIsUploadingImages}
             />
 
             <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-gray-100">
@@ -155,14 +166,14 @@ export const ListingDialog = ({
                 type="button"
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
-                className="rounded-xl font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
+                className="rounded-full font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
               >
                 {isEditMode ? 'Cancel' : 'Discard'}
               </Button>
               <Button
                 type="submit"
-                disabled={isLoading}
-                className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                disabled={isLoading || isUploadingImages}
+                className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 <SubmitIcon size={18} strokeWidth={isEditMode ? 2 : 3} />
                 {isEditMode
@@ -170,8 +181,8 @@ export const ListingDialog = ({
                     ? 'Saving...'
                     : 'Save Changes'
                   : isLoading
-                    ? 'Publishing...'
-                    : 'Publish to Marketplace'}
+                  ? 'Publishing...'
+                  : 'Publish to Marketplace'}
               </Button>
             </DialogFooter>
           </form>

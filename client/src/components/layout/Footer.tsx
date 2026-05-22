@@ -1,4 +1,5 @@
 import { Logo } from './Logo'
+import { Button } from '#/components/ui/button'
 
 export function Footer() {
   const cols = [
@@ -26,9 +27,9 @@ export function Footer() {
                 placeholder="Your email for the monthly letter"
                 className="flex-1 bg-transparent px-5 py-3 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
-              <button className="rounded-full bg-primary px-4 py-2.5 text-[12px] font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+              <Button className="rounded-full bg-primary px-4 py-2.5 h-auto text-[12px] font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-95 cursor-pointer">
                 Subscribe
-              </button>
+              </Button>
             </form>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8">

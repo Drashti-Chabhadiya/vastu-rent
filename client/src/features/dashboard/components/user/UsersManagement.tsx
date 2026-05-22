@@ -53,26 +53,26 @@ export const UsersManagement = () => {
 
         <div className="flex items-center gap-3">
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20">
+            <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
               <SelectValue placeholder="All Roles" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="user">User</SelectItem>
-              <SelectItem value="owner">Owner</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="superAdmin">Super Admin</SelectItem>
+            <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+              <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Roles</SelectItem>
+              <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">User</SelectItem>
+              <SelectItem value="owner" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Owner</SelectItem>
+              <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Admin</SelectItem>
+              <SelectItem value="superAdmin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Super Admin</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20">
+            <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="banned">Banned</SelectItem>
+            <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+              <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Status</SelectItem>
+              <SelectItem value="active" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Active</SelectItem>
+              <SelectItem value="banned" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Banned</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -164,14 +164,14 @@ export const UsersManagement = () => {
                           roleMutation.mutate({ id: user.id, role })
                         }
                       >
-                        <SelectTrigger className="h-8 w-32 bg-gray-50 border-none text-xs font-bold text-dash-text-soft">
+                        <SelectTrigger className="h-8 w-32 bg-gray-50 hover:bg-gray-100/80 border-none text-xs font-bold text-dash-text-soft transition-all rounded-lg">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="user">User</SelectItem>
-                          <SelectItem value="owner">Owner</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="superAdmin">
+                        <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+                          <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">User</SelectItem>
+                          <SelectItem value="owner" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Owner</SelectItem>
+                          <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Admin</SelectItem>
+                          <SelectItem value="superAdmin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
                             Super Admin
                           </SelectItem>
                         </SelectContent>

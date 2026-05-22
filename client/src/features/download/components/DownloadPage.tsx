@@ -1,4 +1,5 @@
 import ApkDownloadSection from '#/components/common/ApkDownloadSection'
+import { Button } from '#/components/ui/button'
 
 export function DownloadPage() {
   return (
@@ -17,12 +18,12 @@ export function DownloadPage() {
             started.
           </p>
           <div className="flex flex-wrap justify-center gap-4 font-sans">
-            <button className="px-8 py-3 bg-white hover:bg-gray-50 text-foreground border border-border rounded-2xl font-semibold shadow-soft transition-all">
+            <Button variant="outline" size="lg">
               Read Help Guide
-            </button>
-            <button className="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-2xl font-semibold shadow-xl shadow-primary/20 transition-all">
+            </Button>
+            <Button size="lg" className="shadow-lg shadow-primary/20">
               Contact Support
-            </button>
+            </Button>
           </div>
         </div>
       </section>

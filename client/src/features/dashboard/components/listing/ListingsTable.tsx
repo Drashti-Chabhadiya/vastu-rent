@@ -148,13 +148,14 @@ export const ListingsTable = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => onToggleStatus(item.id, !item.isAvailable)}
                       className={cn(
-                        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest transition-all active:scale-95',
+                        'inline-flex h-auto items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest transition-all active:scale-[0.98] cursor-pointer hover:bg-transparent',
                         item.isAvailable
-                          ? 'bg-dash-brand/10 text-dash-brand hover:bg-dash-brand/20'
-                          : 'bg-gray-100 text-gray-400 hover:bg-gray-200',
+                          ? 'bg-dash-brand/10 text-[#15803d] hover:bg-dash-brand/20 hover:text-[#15803d]'
+                          : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-500',
                       )}
                     >
                       {item.isAvailable ? (
@@ -168,7 +169,7 @@ export const ListingsTable = ({
                           <span>Hidden</span>
                         </>
                       )}
-                    </button>
+                    </Button>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -182,7 +183,7 @@ export const ListingsTable = ({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all"
+                          className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all active:scale-[0.98]"
                         >
                           <ExternalLink size={14} />
                         </Button>
@@ -191,7 +192,7 @@ export const ListingsTable = ({
                         variant="ghost"
                         size="icon"
                         onClick={() => onEdit(item)}
-                        className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all"
+                        className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all active:scale-[0.98]"
                         title="Edit Listing"
                       >
                         <Pencil size={14} />
@@ -201,7 +202,7 @@ export const ListingsTable = ({
                         size="icon"
                         onClick={() => onDelete(item)}
                         className={cn(
-                          'w-8 h-8 rounded-lg transition-all',
+                          'w-8 h-8 rounded-lg transition-all active:scale-[0.98]',
                           currentUser?.role === 'superAdmin' ||
                             item.ownerId === currentUser?.id
                             ? 'text-dash-text-soft hover:bg-red-50 hover:text-red-500'
