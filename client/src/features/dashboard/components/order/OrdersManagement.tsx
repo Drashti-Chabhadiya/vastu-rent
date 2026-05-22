@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Badge } from '#/components/ui/badge'
+import { Button } from '#/components/ui/button'
 import { OrderDetailsView } from './components/OrderDetailsView'
 import { toast } from 'sonner'
 import { cn } from '#/lib/utils'
@@ -278,7 +279,8 @@ export const OrdersManagement = () => {
 
                 {order.status === 'pending' && (
                   <div className="flex items-center gap-2">
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() =>
                         setPendingAction({
                           id: order.id,
@@ -286,12 +288,13 @@ export const OrdersManagement = () => {
                           title: order.product?.title || 'this product',
                         })
                       }
-                      className="h-12 px-5 rounded-2xl bg-[#e2f5ec] text-[#059669] hover:bg-[#059669] hover:text-white transition-all text-xs font-black flex items-center gap-1.5 active:scale-95 shadow-sm"
+                      className="h-12 px-5 rounded-2xl bg-[#e2f5ec] text-[#059669] hover:bg-[#059669] hover:text-white transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-[#059669] hover:text-white cursor-pointer"
                     >
                       <CheckCircle2 size={13} />
                       Confirm
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="ghost"
                       onClick={() =>
                         setPendingAction({
                           id: order.id,
@@ -299,20 +302,21 @@ export const OrdersManagement = () => {
                           title: order.product?.title || 'this product',
                         })
                       }
-                      className="h-12 px-5 rounded-2xl bg-red-50 text-[#ef4444] hover:bg-[#ef4444] hover:text-white transition-all text-xs font-black flex items-center gap-1.5 active:scale-95 shadow-sm"
+                      className="h-12 px-5 rounded-2xl bg-red-50 text-[#ef4444] hover:bg-[#ef4444] hover:text-white transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-[#ef4444] hover:text-white cursor-pointer"
                     >
                       <XCircle size={13} />
                       Reject
-                    </button>
+                    </Button>
                   </div>
                 )}
 
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => handleOpenDetails(order)}
-                  className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-white transition-all duration-300"
+                  className="h-12 w-12 rounded-2xl bg-gray-50 p-0 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-white transition-all active:scale-[0.98] duration-300 cursor-pointer"
                 >
                   <ChevronRight size={20} strokeWidth={3} />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -350,7 +354,7 @@ export const OrdersManagement = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-4 mt-10 font-sans">
-            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-slate-100 font-black text-[12px] text-slate-500 hover:bg-slate-50 active:scale-95 transition-all">
+            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-slate-100 font-black text-[12px] text-slate-500 hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -366,7 +370,7 @@ export const OrdersManagement = () => {
                 setPendingAction(null)
               }}
               className={cn(
-                'h-14 flex-1 rounded-2xl font-black text-[12px] text-white active:scale-95 transition-all',
+                'h-14 flex-1 rounded-2xl font-black text-[12px] text-white active:scale-[0.98] transition-all cursor-pointer',
                 pendingAction?.action === 'confirm'
                   ? 'bg-[#059669] hover:bg-[#059669]/90 shadow-lg shadow-emerald-100'
                   : 'bg-[#ef4444] hover:bg-[#ef4444]/90 shadow-lg shadow-red-100',

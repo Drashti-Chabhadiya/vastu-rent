@@ -60,7 +60,7 @@ export const CloudinarySettingsForm = ({
             onClick={handleTestCloudinary}
             disabled={isTestingCloudinary || isLoadingCloudinary}
             variant="outline"
-            className="border-slate-200 text-slate-600 hover:bg-slate-50 font-black text-[10px] uppercase tracking-wider px-4 h-11 rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1.5 shrink-0"
+            className="border-slate-200 text-slate-600 hover:bg-slate-50 font-black text-[10px] uppercase tracking-wider px-4 h-11 rounded-full transition-all shadow-sm active:scale-95 flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
             {isTestingCloudinary ? 'Testing...' : 'Test Connection'}
           </Button>
@@ -68,7 +68,7 @@ export const CloudinarySettingsForm = ({
             type="button"
             onClick={handleSaveCloudinary}
             disabled={isSavingCloudinary || isLoadingCloudinary}
-            className="bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[10px] uppercase tracking-wider px-5 h-11 rounded-xl transition-all shadow-sm active:scale-95 shrink-0"
+            className="bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[10px] uppercase tracking-wider px-5 h-11 rounded-full transition-all shadow-md shadow-dash-brand/10 active:scale-95 shrink-0 cursor-pointer"
           >
             {isSavingCloudinary ? 'Saving...' : 'Save Settings'}
           </Button>
@@ -137,7 +137,7 @@ export const CloudinarySettingsForm = ({
                     value={cloudinaryCloudName}
                     onChange={(e) => setCloudinaryCloudName(e.target.value)}
                     placeholder="e.g. dxyz12345"
-                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
+                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -150,7 +150,7 @@ export const CloudinarySettingsForm = ({
                     value={cloudinaryApiKey}
                     onChange={(e) => setCloudinaryApiKey(e.target.value)}
                     placeholder="e.g. 123456789012345"
-                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
+                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -159,7 +159,7 @@ export const CloudinarySettingsForm = ({
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
                     API Secret{' '}
                     {cloudinaryHasSecret && (
-                      <span className="text-[9px] text-[#059669] font-black lowercase tracking-normal">
+                      <span className="text-[9px] text-dash-brand font-black lowercase tracking-normal">
                         (Saved)
                       </span>
                     )}
@@ -173,7 +173,7 @@ export const CloudinarySettingsForm = ({
                         ? '••••••••••••••••••••••••••••'
                         : 'Enter Cloudinary API Secret'
                     }
-                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
+                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
 
@@ -186,7 +186,7 @@ export const CloudinarySettingsForm = ({
                     value={cloudinaryUploadPreset}
                     onChange={(e) => setCloudinaryUploadPreset(e.target.value)}
                     placeholder="e.g. ml_default"
-                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-emerald-500/20"
+                    className="h-12 bg-slate-50 border-none rounded-2xl text-[12px] font-black text-[#1e293b] px-5 focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               </div>
@@ -201,7 +201,7 @@ export const CloudinarySettingsForm = ({
                   <h4 className="text-xs font-black text-slate-800 tracking-wide uppercase">
                     Storage Usage
                   </h4>
-                  <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase">
+                  <span className="text-[10px] font-black text-dash-brand bg-dash-brand-light px-2 py-0.5 rounded uppercase">
                     Real-time
                   </span>
                 </div>
@@ -222,27 +222,28 @@ export const CloudinarySettingsForm = ({
                   {/* Progress Bar */}
                   <div className="w-full h-2.5 bg-slate-50 border border-slate-100 rounded-full overflow-hidden">
                     <div
-                      className="bg-emerald-650 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                      className="bg-primary h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(21,128,61,0.3)]"
                       style={{
                         width: `${usedPercent}%`,
-                        backgroundColor: '#059669',
+                        backgroundColor: '#15803d',
                       }}
                     />
                   </div>
                 </div>
               </div>
 
-              <button
+              <Button
                 type="button"
+                variant="ghost"
                 onClick={() => setIsDetailsModalOpen(true)}
-                className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-black text-[#059669] hover:text-[#059669]/80 transition-all uppercase tracking-wider group w-full text-left"
+                className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-black text-dash-brand hover:text-dash-brand/80 hover:bg-transparent transition-all uppercase tracking-wider group w-full text-left p-0 h-auto rounded-none cursor-pointer active:scale-[0.98]"
               >
                 <span>View Storage Details</span>
                 <ChevronRight
                   size={14}
-                  className="text-[#059669] group-hover:translate-x-0.5 transition-transform"
+                  className="text-dash-brand group-hover:translate-x-0.5 transition-transform"
                 />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

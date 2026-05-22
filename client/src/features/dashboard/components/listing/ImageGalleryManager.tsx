@@ -1,20 +1,28 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { Plus, Trash2, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
+import { Button } from '#/components/ui/button'
 import { useUploadProductImages } from '#/hook'
+import { Loader } from '#/components/ui/loader'
 
 interface ImageGalleryManagerProps {
   images: string[]
   onChange: (images: string[]) => void
+  onUploadStatusChange?: (uploading: boolean) => void
 }
 
 export const ImageGalleryManager = ({
   images,
   onChange,
+  onUploadStatusChange,
 }: ImageGalleryManagerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { mutateAsync: uploadImages, isPending: uploading } =
     useUploadProductImages()
+
+  useEffect(() => {
+    onUploadStatusChange?.(uploading)
+  }, [uploading, onUploadStatusChange])
 
   const handleUpload = async (files: FileList | null) => {
     if (!files) return
@@ -53,14 +61,15 @@ export const ImageGalleryManager = ({
     <div className="space-y-4">
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
         {/* Upload Trigger */}
-        <button
+        <Button
           type="button"
+          variant="ghost"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading || images.length >= 10}
-          className="aspect-square flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 text-dash-text-soft transition-all hover:bg-gray-50 hover:border-dash-brand/30 disabled:opacity-50 group"
+          className="aspect-square p-0 flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 text-dash-text-soft transition-all hover:bg-gray-50 hover:border-dash-brand/30 disabled:opacity-50 group min-w-0 min-h-0 h-auto w-auto active:scale-[0.98]"
         >
           {uploading ? (
-            <div className="w-6 h-6 border-2 border-dash-brand/30 border-t-dash-brand rounded-full animate-spin" />
+            <Loader variant="brand" size={24} />
           ) : (
             <>
               <Plus
@@ -70,7 +79,7 @@ export const ImageGalleryManager = ({
               <span className="text-[10px] font-bold uppercase">Add Photo</span>
             </>
           )}
-        </button>
+        </Button>
 
         {/* Previews */}
         {images.map((url, i) => (
@@ -91,40 +100,48 @@ export const ImageGalleryManager = ({
                     Cover
                   </Badge>
                 ) : (
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setMainImage(i)}
-                    className="p-1.5 rounded-full bg-white/20 text-white hover:bg-dash-brand transition-colors"
+                    className="p-0 rounded-full bg-white/20 text-white hover:bg-dash-brand h-6 w-6 active:scale-[0.98] transition-all hover:text-white"
                   >
                     <Star size={10} fill="currentColor" />
-                  </button>
+                  </Button>
                 )}
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => removeImage(i)}
-                  className="p-1.5 rounded-full bg-red-500/80 text-white hover:bg-red-600 transition-colors"
+                  className="p-0 rounded-full bg-red-500/80 text-white hover:bg-red-600 h-6 w-6 active:scale-[0.98] transition-all hover:text-white"
                 >
                   <Trash2 size={10} />
-                </button>
+                </Button>
               </div>
 
               <div className="flex items-center justify-center gap-2">
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   disabled={i === 0}
                   onClick={() => moveImage(i, 'left')}
-                  className="p-1.5 rounded-full bg-white/20 text-white hover:bg-white/40 disabled:opacity-20 transition-all active:scale-90"
+                  className="p-0 rounded-full bg-white/20 text-white hover:bg-white/40 disabled:opacity-20 transition-all active:scale-[0.98] h-7 w-7 hover:text-white"
                 >
                   <ChevronLeft size={14} />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   disabled={i === images.length - 1}
                   onClick={() => moveImage(i, 'right')}
-                  className="p-1.5 rounded-full bg-white/20 text-white hover:bg-white/40 disabled:opacity-20 transition-all active:scale-90"
+                  className="p-0 rounded-full bg-white/20 text-white hover:bg-white/40 disabled:opacity-20 transition-all active:scale-[0.98] h-7 w-7 hover:text-white"
                 >
                   <ChevronRight size={14} />
-                </button>
+                </Button>
               </div>
             </div>
 

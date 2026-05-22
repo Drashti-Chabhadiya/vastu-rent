@@ -38,12 +38,15 @@ export const CategoryRequestActionModals = ({
       {rejectingRequest && (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-gray-100 shadow-2xl relative">
-            <button
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               onClick={onRejectClose}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100/50 rounded-full h-8 w-8 active:scale-[0.98] transition-all cursor-pointer"
             >
               <X size={20} />
-            </button>
+            </Button>
 
             <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">
               Reject Proposed Category
@@ -71,14 +74,14 @@ export const CategoryRequestActionModals = ({
                   type="button"
                   variant="outline"
                   onClick={onRejectClose}
-                  className="rounded-xl h-12 px-6 font-bold cursor-pointer"
+                  className="rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-red-600 hover:bg-red-700 text-white rounded-xl h-12 px-6 font-bold cursor-pointer"
+                  className="bg-red-600 hover:bg-red-700 text-white rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
                 >
                   {isPending ? 'Rejecting...' : 'Reject Request'}
                 </Button>
@@ -92,12 +95,15 @@ export const CategoryRequestActionModals = ({
       {approvingRequest && (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-gray-100 shadow-2xl relative">
-            <button
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               onClick={onApproveClose}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100/50 rounded-full h-8 w-8 active:scale-[0.98] transition-all cursor-pointer"
             >
               <X size={20} />
-            </button>
+            </Button>
 
             <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center mb-4 text-green-600 border border-green-100">
               <Check size={28} />
@@ -120,14 +126,14 @@ export const CategoryRequestActionModals = ({
                 type="button"
                 variant="outline"
                 onClick={onApproveClose}
-                className="rounded-xl h-12 px-6 font-bold cursor-pointer"
+                className="rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
               >
                 Cancel
               </Button>
               <Button
                 onClick={onApproveConfirm}
                 disabled={isPending}
-                className="bg-green-600 hover:bg-green-700 text-white rounded-xl h-12 px-6 font-bold cursor-pointer"
+                className="bg-[#15803d] hover:bg-[#166534] text-white rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
               >
                 {isPending ? 'Approving...' : 'Confirm Approval'}
               </Button>

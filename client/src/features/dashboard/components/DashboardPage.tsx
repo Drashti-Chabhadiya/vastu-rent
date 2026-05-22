@@ -18,6 +18,7 @@ import { NotificationsManagement } from './notifications/NotificationsManagement
 import { ReportsManagement } from './reports/ReportsManagement'
 import { SettingsManagement } from './settings/SettingsManagement'
 import { StoriesManagement } from './stories/StoriesManagement'
+import { Button } from '#/components/ui/button'
 import {
   useAdminStats,
   useAdminRecentUsers,
@@ -72,12 +73,14 @@ const DashboardPage = () => {
         We're currently building this feature to enhance your marketplace
         experience. Check back soon for updates!
       </p>
-      <button
+      <Button
         onClick={() => setCurrentTab('overview')}
-        className="mt-8 px-8 py-3 bg-gray-50 hover:bg-gray-100 text-dash-text font-extrabold rounded-2xl transition-all active:scale-95 border border-gray-200 shadow-sm"
+        variant="outline"
+        size="lg"
+        className="mt-8 font-extrabold shadow-sm rounded-full"
       >
         Back to Overview
-      </button>
+      </Button>
     </div>
   )
 

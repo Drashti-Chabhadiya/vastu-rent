@@ -1,3 +1,5 @@
+import { Button } from '#/components/ui/button'
+
 interface UsersOverviewTableProps {
   users?: any[]
   isLoading: boolean
@@ -11,9 +13,12 @@ export const UsersOverviewTable = ({
     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Users</h3>
-        <button className="text-xs font-bold text-dash-brand hover:underline">
+        <Button
+          variant="link"
+          className="text-xs font-bold text-dash-brand hover:underline p-0 h-auto cursor-pointer active:scale-95 transition-all"
+        >
           View All
-        </button>
+        </Button>
       </div>
 
       <div className="overflow-x-auto">

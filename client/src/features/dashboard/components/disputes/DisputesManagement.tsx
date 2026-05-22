@@ -249,7 +249,7 @@ export const DisputesManagement = () => {
                       setResolveType('resolved')
                       setIsResolveModalOpen(true)
                     }}
-                    className="w-full h-12 rounded-xl bg-green-600 hover:bg-green-700 text-white font-black text-[11px] flex items-center justify-center gap-2"
+                    className="w-full h-12 rounded-xl bg-[#15803d] hover:bg-[#166534] text-white font-black text-[11px] flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer"
                   >
                     <CheckCircle2 size={16} /> Resolve Dispute Case
                   </Button>
@@ -259,7 +259,7 @@ export const DisputesManagement = () => {
                       setIsResolveModalOpen(true)
                     }}
                     variant="ghost"
-                    className="w-full h-12 rounded-xl text-rose-500 hover:bg-rose-50 font-black text-[11px] flex items-center justify-center gap-2 border border-rose-100"
+                    className="w-full h-12 rounded-xl text-rose-500 hover:bg-rose-50 font-black text-[11px] flex items-center justify-center gap-2 border border-rose-100 active:scale-[0.98] transition-all cursor-pointer"
                   >
                     <XCircle size={16} /> Dismiss Dispute Case
                   </Button>
@@ -297,12 +297,15 @@ export const DisputesManagement = () => {
       {isResolveModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-gray-100 shadow-2xl relative">
-            <button
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => setIsResolveModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100/50 rounded-full h-8 w-8 active:scale-[0.98] transition-all cursor-pointer"
             >
               <X size={20} />
-            </button>
+            </Button>
 
             <h3 className="text-xl font-black text-gray-900 tracking-tight mb-2">
               {resolveType === 'resolved'
@@ -331,9 +334,9 @@ export const DisputesManagement = () => {
               <Button
                 type="submit"
                 disabled={resolveMutation.isPending}
-                className={`w-full text-white rounded-xl h-12 font-bold mt-2 ${
+                className={`w-full text-white rounded-xl h-12 font-bold mt-2 active:scale-[0.98] transition-all cursor-pointer ${
                   resolveType === 'resolved'
-                    ? 'bg-green-600 hover:bg-green-700'
+                    ? 'bg-[#15803d] hover:bg-[#166534]'
                     : 'bg-red-600 hover:bg-red-700'
                 }`}
               >

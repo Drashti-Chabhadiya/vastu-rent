@@ -54,7 +54,7 @@ export const ListerOverview = ({
           </p>
         </div>
         <Link to="/products">
-          <Button className={cn('bg-primary', 'hover:bg-primary/95', 'text-white', 'font-bold', 'h-12', 'px-6', 'rounded-2xl', 'flex', 'items-center', 'gap-2', 'shadow-lg', 'shadow-primary/20', 'transition-all', 'active:scale-95')}>
+          <Button className={cn('bg-primary', 'hover:bg-primary/95', 'text-white', 'font-bold', 'h-12', 'px-6', 'rounded-full', 'flex', 'items-center', 'gap-2', 'shadow-lg', 'shadow-primary/20', 'transition-all', 'active:scale-95')}>
             <Building size={18} />
             Add New Listing
           </Button>
@@ -201,24 +201,28 @@ export const ListerOverview = ({
                       <td className={cn('py-4', 'text-right')}>
                         {order.status === 'pending' ? (
                           <div className={cn('flex', 'items-center', 'justify-end', 'gap-2')}>
-                            <button
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() =>
                                 handleStatusUpdate(order.id, 'approved')
                               }
-                              className={cn('w-8', 'h-8', 'rounded-lg', 'bg-green-50', 'text-primary', 'hover:bg-primary', 'hover:text-white', 'flex', 'items-center', 'justify-center', 'transition-all')}
+                              className={cn('w-8', 'h-8', 'rounded-lg', 'bg-green-50', 'text-primary', 'hover:bg-primary', 'hover:text-white', 'flex', 'items-center', 'justify-center', 'transition-all', 'active:scale-[0.98]')}
                               title="Approve Booking"
                             >
                               <Check size={16} />
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() =>
                                 handleStatusUpdate(order.id, 'rejected')
                               }
-                              className={cn('w-8', 'h-8', 'rounded-lg', 'bg-red-50', 'text-red-600', 'hover:bg-red-600', 'hover:text-white', 'flex', 'items-center', 'justify-center', 'transition-all')}
+                              className={cn('w-8', 'h-8', 'rounded-lg', 'bg-red-50', 'text-red-600', 'hover:bg-red-600', 'hover:text-white', 'flex', 'items-center', 'justify-center', 'transition-all', 'active:scale-[0.98]')}
                               title="Reject Booking"
                             >
                               <X size={16} />
-                            </button>
+                            </Button>
                           </div>
                         ) : (
                           <span className={cn('text-xs', 'text-gray-400', 'font-bold')}>
@@ -317,7 +321,7 @@ export const ListerOverview = ({
           </div>
 
           <Link to="/account/orders" className="mt-6">
-            <Button className={cn('w-full', 'bg-gray-50', 'hover:bg-gray-100', 'text-gray-700', 'font-bold', 'h-11', 'rounded-xl', 'border', 'border-gray-100', 'transition-all', 'flex', 'items-center', 'justify-center', 'gap-1')}>
+            <Button className={cn('w-full', 'bg-gray-50', 'hover:bg-gray-100', 'text-gray-700', 'font-bold', 'h-11', 'rounded-full', 'border', 'border-gray-100', 'transition-all', 'flex', 'items-center', 'justify-center', 'gap-1')}>
               View All Orders
               <ArrowUpRight size={16} />
             </Button>

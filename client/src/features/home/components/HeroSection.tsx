@@ -3,6 +3,7 @@ import type { Variants } from 'motion/react'
 import { ShieldCheck, Leaf, CreditCard, ArrowRight, Star } from 'lucide-react'
 import heroImg from '../../../../public/assets/hero-living.jpg'
 import featureNook from '../../../../public/assets/feature-nook.jpg'
+import { Button } from '#/components/ui/button'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -144,9 +145,9 @@ export function HeroSection() {
                 <div className="font-display text-xl text-foreground">
                   €18<span className="text-sm text-muted-foreground">/wk</span>
                 </div>
-                <button className="mt-1.5 text-[11px] uppercase tracking-[0.18em] text-primary hover:underline">
+                <Button variant="link" className="mt-1.5 text-[11px] uppercase tracking-[0.18em] text-primary hover:underline p-0 h-auto">
                   Reserve
-                </button>
+                </Button>
               </div>
             </motion.div>
           </div>

@@ -1,5 +1,12 @@
 import { Filter } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
 
 interface CalendarFiltersProps {
   selectedProduct: string
@@ -26,33 +33,35 @@ export const CalendarFilters = ({
 
       {/* Product dropdown Filter */}
       <div className="space-y-1">
-        <select
-          value={selectedProduct}
-          onChange={(e) => setSelectedProduct(e.target.value)}
-          className="h-10 rounded-xl border border-slate-100 bg-slate-50/50 px-3 text-xs font-bold text-slate-700 outline-none focus:border-slate-200 transition-all cursor-pointer"
-        >
-          <option value="all">All Products</option>
-          {uniqueProducts.map((prod: string) => (
-            <option key={prod} value={prod}>
-              {prod}
-            </option>
-          ))}
-        </select>
+        <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+          <SelectTrigger className="h-10 rounded-xl bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none px-4 text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 w-[180px] transition-all">
+            <SelectValue placeholder="All Products" />
+          </SelectTrigger>
+          <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200 max-h-[300px]">
+            <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Products</SelectItem>
+            {uniqueProducts.map((prod: string) => (
+              <SelectItem key={prod} value={prod} className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                {prod}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Status dropdown Filter */}
       <div className="space-y-1">
-        <select
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
-          className="h-10 rounded-xl border border-slate-100 bg-slate-50/50 px-3 text-xs font-bold text-slate-700 outline-none focus:border-slate-200 transition-all cursor-pointer"
-        >
-          <option value="all">All Statuses</option>
-          <option value="pending">Pending Approval</option>
-          <option value="confirmed">Confirmed / Active</option>
-          <option value="completed">Completed</option>
-          <option value="rejected">Rejected / Cancelled</option>
-        </select>
+        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+          <SelectTrigger className="h-10 rounded-xl bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none px-4 text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 w-[160px] transition-all">
+            <SelectValue placeholder="All Statuses" />
+          </SelectTrigger>
+          <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+            <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Statuses</SelectItem>
+            <SelectItem value="pending" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Pending Approval</SelectItem>
+            <SelectItem value="confirmed" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Confirmed / Active</SelectItem>
+            <SelectItem value="completed" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Completed</SelectItem>
+            <SelectItem value="rejected" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Rejected / Cancelled</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Clear Filters */}

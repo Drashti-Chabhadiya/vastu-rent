@@ -133,17 +133,19 @@ export function WishlistPage() {
                     {products.length} saved
                   </span>
                 </div>
-                <button
+                <Button
                   onClick={() => refetch()}
                   disabled={isFetching}
-                  className="flex items-center gap-2 bg-white border border-gray-100 shadow-sm px-4 py-2.5 rounded-2xl text-xs font-black text-gray-500 hover:text-gray-900 hover:border-gray-200 transition-all disabled:opacity-50"
+                  variant="outline"
+                  size="sm"
+                  className="h-10 px-4 rounded-xl text-xs text-gray-500 hover:text-gray-900 border-gray-100 hover:border-gray-200"
                 >
                   <RefreshCw
                     size={13}
                     className={isFetching ? 'animate-spin' : ''}
                   />
                   Refresh
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -166,20 +168,22 @@ export function WishlistPage() {
                 className="w-full h-11 pl-10 pr-9 rounded-2xl bg-white border border-gray-100 shadow-sm text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all"
               />
               {searchQuery && (
-                <button
+                <Button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-gray-100 hover:bg-primary/10 hover:text-primary flex items-center justify-center text-gray-400 transition-colors"
+                  variant="ghost"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 p-0 rounded-full bg-gray-100 hover:bg-primary/10 hover:text-primary flex items-center justify-center text-gray-400 transition-colors active:scale-95"
                 >
                   <X size={11} />
-                </button>
+                </Button>
               )}
             </div>
 
             {/* Sort — custom themed dropdown */}
             <div ref={sortRef} className="relative">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setIsSortOpen((v) => !v)}
-                className={`h-11 pl-3.5 pr-3.5 rounded-2xl bg-white border shadow-sm text-sm font-bold flex items-center gap-2.5 min-w-[180px] justify-between transition-all ${
+                className={`h-11 pl-3.5 pr-3.5 rounded-2xl bg-white border shadow-sm text-sm font-bold flex items-center gap-2.5 min-w-[180px] justify-between transition-all hover:bg-transparent ${
                   isSortOpen
                     ? 'border-primary/40 ring-2 ring-primary/20 text-primary'
                     : 'border-gray-100 text-gray-700 hover:border-primary/30 hover:text-primary'
@@ -206,7 +210,7 @@ export function WishlistPage() {
                     isSortOpen ? 'rotate-180 text-primary' : ''
                   }`}
                 />
-              </button>
+              </Button>
 
               {isSortOpen && (
                 <div className="absolute top-full mt-2 left-0 right-0 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden py-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
@@ -217,53 +221,56 @@ export function WishlistPage() {
                       { value: 'price-asc', label: 'Price: Low → High' },
                       { value: 'price-desc', label: 'Price: High → Low' },
                     ] as const
-                  ).map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => {
-                        setSortBy(opt.value)
-                        setIsSortOpen(false)
-                      }}
-                      className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors ${
-                        sortBy === opt.value
-                          ? 'text-primary bg-primary/5'
-                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                    >
-                      {opt.label}
-                      {sortBy === opt.value && (
-                        <Check size={13} className="text-primary shrink-0" />
-                      )}
-                    </button>
-                  ))}
+                    ).map((opt) => (
+                      <Button
+                        variant="ghost"
+                        key={opt.value}
+                        onClick={() => {
+                          setSortBy(opt.value)
+                          setIsSortOpen(false)
+                        }}
+                        className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors rounded-none justify-start ${
+                          sortBy === opt.value
+                            ? 'text-primary bg-primary/5 hover:bg-primary/5 hover:text-primary'
+                            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                        }`}
+                      >
+                        <span>{opt.label}</span>
+                        {sortBy === opt.value && (
+                          <Check size={13} className="text-primary shrink-0 ml-auto" />
+                        )}
+                      </Button>
+                    ))}
                 </div>
               )}
             </div>
 
             {/* View toggle */}
             <div className="flex items-center gap-1 bg-white border border-gray-100 shadow-sm p-1 rounded-2xl">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-xl transition-all ${
+                className={`p-2 h-auto rounded-xl transition-all ${
                   viewMode === 'grid'
-                    ? 'bg-primary text-white shadow-sm'
+                    ? 'bg-primary text-white hover:bg-primary hover:text-white shadow-sm'
                     : 'text-gray-400 hover:text-primary hover:bg-primary/5'
                 }`}
                 title="Grid view"
               >
                 <Grid3X3 size={15} />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-xl transition-all ${
+                className={`p-2 h-auto rounded-xl transition-all ${
                   viewMode === 'list'
-                    ? 'bg-primary text-white shadow-sm'
+                    ? 'bg-primary text-white hover:bg-primary hover:text-white shadow-sm'
                     : 'text-gray-400 hover:text-primary hover:bg-primary/5'
                 }`}
                 title="List view"
               >
                 <List size={15} />
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -297,31 +304,37 @@ export function WishlistPage() {
                           Remove from wishlist?
                         </p>
                         <div className="flex gap-2">
-                          <button
+                          <Button
                             onClick={() => handleRemove(product.id)}
-                            className="px-4 py-2 bg-red-500 text-white text-xs font-black rounded-xl hover:bg-red-600 transition-colors"
+                            variant="destructive"
+                            size="sm"
+                            className="h-8 px-4 text-xs"
                           >
                             Remove
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => setClearConfirmId(null)}
-                            className="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-black rounded-xl hover:bg-gray-200 transition-colors"
+                            variant="secondary"
+                            size="sm"
+                            className="h-8 px-4 text-xs"
                           >
                             Cancel
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     ) : (
-                      <button
+                      <Button
                         onClick={() => setClearConfirmId(product.id)}
-                        className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-50 hover:border-red-100 shadow-sm"
+                        variant="outline"
+                        size="icon"
+                        className="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:border-red-100 shadow-sm"
                         title="Remove from wishlist"
                       >
                         <Trash2
                           size={13}
                           className="text-gray-400 hover:text-red-500 transition-colors"
                         />
-                      </button>
+                      </Button>
                     )}
                   </div>
                 ))}
@@ -371,16 +384,18 @@ export function WishlistPage() {
                       </p>
                       <div className="flex gap-2">
                         <Link to="/products/$id" params={{ id: product.id }}>
-                          <button className="px-3 py-1.5 bg-primary text-white text-[11px] font-black rounded-xl hover:bg-primary/90 transition-colors">
+                          <Button size="sm" className="h-7 px-3 text-[11px] rounded-lg">
                             View
-                          </button>
+                          </Button>
                         </Link>
-                        <button
+                        <Button
                           onClick={() => handleRemove(product.id)}
-                          className="px-3 py-1.5 bg-red-50 text-red-500 text-[11px] font-black rounded-xl hover:bg-red-100 transition-colors"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 px-3 text-[11px] rounded-lg bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 border-none shadow-none active:scale-[0.98] transition-all"
                         >
                           Remove
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -400,12 +415,13 @@ export function WishlistPage() {
             <p className="text-sm text-gray-500 mb-4">
               Try adjusting your search terms.
             </p>
-            <button
+            <Button
+              variant="link"
               onClick={() => setSearchQuery('')}
-              className="text-sm font-bold text-primary hover:text-primary/80 hover:underline transition-colors"
+              className="text-sm font-bold text-primary hover:text-primary/80 hover:underline transition-colors p-0 h-auto"
             >
               Clear search
-            </button>
+            </Button>
           </div>
         ) : (
           // Empty state
@@ -430,7 +446,7 @@ export function WishlistPage() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Link to="/products">
-                <Button className="bg-primary hover:bg-primary/90 text-white px-8 h-12 rounded-2xl font-black flex items-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-95">
+                <Button size="lg" className="flex items-center gap-2 shadow-lg shadow-primary/20">
                   <ShoppingBag size={16} />
                   Browse Catalogue
                 </Button>
@@ -438,7 +454,8 @@ export function WishlistPage() {
               <Link to="/" hash="categories">
                 <Button
                   variant="outline"
-                  className="px-8 h-12 rounded-2xl font-black flex items-center gap-2 border-gray-200 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all"
+                  size="lg"
+                  className="flex items-center gap-2"
                 >
                   <Grid3X3 size={16} />
                   Explore Categories

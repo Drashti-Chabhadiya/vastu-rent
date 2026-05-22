@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '#/lib/utils'
+import { Button } from '#/components/ui/button'
 
 const faqs = [
   {
@@ -132,20 +133,21 @@ export function HelpPage() {
                         isOpen && 'bg-gray-50/50',
                       )}
                     >
-                      <button
+                      <Button
+                        variant="ghost"
                         onClick={() => toggleFaq(id)}
-                        className="w-full flex items-center justify-between p-6 sm:p-8 text-left hover:bg-gray-50 transition-colors"
+                        className="h-auto w-full flex items-center justify-between p-6 sm:p-8 text-left hover:bg-gray-50 transition-colors rounded-none font-normal justify-between [&_svg]:size-6"
                       >
-                        <span className="text-lg font-bold text-gray-900 pr-8">
+                        <span className="text-lg font-bold text-gray-900 pr-8 text-left whitespace-normal">
                           {faq.q}
                         </span>
                         <ChevronDown
                           className={cn(
-                            'w-6 h-6 text-gray-400 transition-transform duration-300',
+                            'w-6 h-6 text-gray-400 transition-transform duration-300 shrink-0',
                             isOpen && 'rotate-180',
                           )}
                         />
-                      </button>
+                      </Button>
                       <div
                         className={cn(
                           'overflow-hidden transition-all duration-300 ease-in-out',

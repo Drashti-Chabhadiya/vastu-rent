@@ -176,36 +176,38 @@ export const ProductInfoSection = ({
           Payment Method
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={() => setPaymentMethod('online')}
             className={cn(
-              'p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1',
+              'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'online'
-                ? 'border-brand bg-primary/5 text-primary'
-                : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200',
+                ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
+                : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200 hover:text-gray-500 hover:bg-gray-50',
             )}
           >
             <ShieldCheck size={18} />
             <span className="text-[11px] font-black uppercase tracking-wider">
               Online Pay
             </span>
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="outline"
             onClick={() => setPaymentMethod('cash')}
             className={cn(
-              'p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1',
+              'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'cash'
-                ? 'border-brand bg-primary/5 text-primary'
-                : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200',
+                ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
+                : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200 hover:text-gray-500 hover:bg-gray-50',
             )}
           >
             <MessageCircle size={18} />
             <span className="text-[11px] font-black uppercase tracking-wider">
               Cash on Pickup
             </span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -271,13 +273,14 @@ export const ProductInfoSection = ({
                         Discount Applied
                       </span>
                     </div>
-                    <button
+                    <Button
                       type="button"
+                      variant="link"
                       onClick={handleRemoveCoupon}
-                      className="text-[9px] font-black text-red-500 hover:text-red-700 uppercase tracking-wider shrink-0 transition-colors"
+                      className="text-[9px] font-black text-red-500 hover:text-red-700 uppercase tracking-wider shrink-0 transition-colors p-0 h-auto active:scale-[0.98]"
                     >
                       Remove
-                    </button>
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-1">
@@ -292,7 +295,7 @@ export const ProductInfoSection = ({
                         type="button"
                         onClick={handleApplyCoupon}
                         disabled={applyCouponIsPending || !couponCode.trim()}
-                        className="h-9 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shrink-0"
+                        className="h-9 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-black shrink-0 active:scale-[0.98]"
                       >
                         {applyCouponIsPending ? 'Applying...' : 'Apply'}
                       </Button>

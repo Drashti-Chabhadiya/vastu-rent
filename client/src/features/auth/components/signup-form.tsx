@@ -135,12 +135,14 @@ export function SignupForm() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <button
+          <Button
+            type="button"
+            variant="outline"
             onClick={() => setRegisteredEmail(null)}
-            className="w-full h-11 rounded-xl border border-gray-200 bg-white text-gray-700 text-[14px] font-bold hover:bg-gray-50 transition-colors cursor-pointer"
+            className="w-full"
           >
             Back to Sign Up
-          </button>
+          </Button>
 
           <Link
             to="/login"
@@ -187,9 +189,9 @@ export function SignupForm() {
           <div className="h-[1px] w-full bg-gray-200"></div>
         </div>
         <div className="flex-1 flex flex-col">
-          <button className="py-3 text-[15px] font-bold bg-primary-light text-center w-full">
+          <Button variant="ghost" className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100">
             Sign Up
-          </button>
+          </Button>
           <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
         </div>
       </div>
@@ -265,23 +267,25 @@ export function SignupForm() {
                 className="w-full h-12 pl-11 pr-12 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                 {...register('password')}
               />
-              <button
+              <Button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                variant="ghost"
+                size="icon"
+                className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
                   <Eye
-                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-600"
+                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-650 transition-colors"
                     strokeWidth={2}
                   />
                 ) : (
                   <EyeOff
-                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-600"
+                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-650 transition-colors"
                     strokeWidth={2}
                   />
                 )}
-              </button>
+              </Button>
             </div>
             {errors.password && (
               <p className="text-xs text-red-500 mt-1 font-medium">
@@ -325,7 +329,7 @@ export function SignupForm() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-12 rounded-xl bg-primary text-white text-[15px] font-bold hover:bg-primary/90 transition-colors mt-2"
+            className="w-full mt-2"
           >
             {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </Button>
@@ -343,7 +347,11 @@ export function SignupForm() {
 
       {/* Social Buttons */}
       <div className="grid grid-cols-3 gap-3 mb-8">
-        <button className="flex items-center justify-center h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+        >
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -367,11 +375,15 @@ export function SignupForm() {
               fill="#EA4335"
             />
           </svg>
-          <span className="text-[13px] font-bold text-gray-700 hidden sm:inline">
+          <span className="text-[13px] hidden sm:inline">
             Google
           </span>
-        </button>
-        <button className="flex items-center justify-center h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors gap-2">
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+        >
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -383,11 +395,15 @@ export function SignupForm() {
               fill="#1877F2"
             />
           </svg>
-          <span className="text-[13px] font-bold text-gray-700 hidden sm:inline">
+          <span className="text-[13px] hidden sm:inline">
             Facebook
           </span>
-        </button>
-        <button className="flex items-center justify-center h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors gap-2">
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="gap-2"
+        >
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -399,10 +415,10 @@ export function SignupForm() {
               fill="#000000"
             />
           </svg>
-          <span className="text-[13px] font-bold text-gray-700 hidden sm:inline">
+          <span className="text-[13px] hidden sm:inline">
             Apple
           </span>
-        </button>
+        </Button>
       </div>
 
       <p className="text-center text-[12px] text-gray-500 max-w-[340px] mx-auto leading-relaxed">

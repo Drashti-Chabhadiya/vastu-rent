@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useState, useEffect } from 'react'
+import { Button } from '#/components/ui/button'
 
 const ApkDownloadSection = () => {
   const [downloadUrl, setDownloadUrl] = useState('')
@@ -242,9 +243,10 @@ const ApkDownloadSection = () => {
                 <div className="pt-4 flex flex-col gap-3">
                   <div className="relative group/copy">
                     <div className="absolute inset-0 bg-primary/5 rounded-2xl blur-lg opacity-0 group-hover/copy:opacity-100 transition-opacity" />
-                    <button
+                    <Button
+                      variant="outline"
                       onClick={handleCopy}
-                      className="relative w-full flex items-center justify-between gap-3 bg-surface border border-border p-3.5 rounded-2xl transition-all hover:border-primary/30 group"
+                      className="relative w-full flex items-center justify-between gap-3 bg-surface border border-border p-3.5 h-auto rounded-2xl transition-all hover:border-primary/30 hover:bg-transparent group cursor-pointer"
                     >
                       <div className="flex items-center gap-3 overflow-hidden">
                         <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -262,7 +264,7 @@ const ApkDownloadSection = () => {
                         )}
                         {copied ? 'Copied' : 'Copy'}
                       </div>
-                    </button>
+                    </Button>
                   </div>
                   <p className="text-[10px] text-muted-foreground font-sans text-center opacity-40">
                     Share this link with your Android device

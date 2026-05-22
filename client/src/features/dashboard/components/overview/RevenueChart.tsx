@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronDown, TrendingUp } from 'lucide-react'
 import { useRevenueOverTime } from '#/hook'
+import { Button } from '#/components/ui/button'
 
 type Period = 'week' | 'month' | 'year'
 
@@ -25,23 +26,25 @@ export const RevenueChart = () => {
         <h3 className="font-bold text-dash-text">Revenue Overview</h3>
 
         <div className="relative">
-          <button
+          <Button
+            variant="outline"
             onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-gray-300"
+            className="h-auto flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-gray-300 active:scale-[0.98]"
           >
             {PERIOD_LABELS[period]}
             <ChevronDown size={14} className="text-gray-400" />
-          </button>
+          </Button>
           {open && (
-            <div className="absolute right-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-lg z-10 overflow-hidden">
+            <div className="absolute right-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-lg z-10 overflow-hidden flex flex-col w-32">
               {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
-                <button
+                <Button
                   key={p}
+                  variant="ghost"
                   onClick={() => { setPeriod(p); setOpen(false) }}
-                  className="block w-full text-left px-4 py-2 text-xs font-bold text-dash-text hover:bg-gray-50"
+                  className="w-full justify-start rounded-none h-auto px-4 py-2 text-xs font-bold text-dash-text hover:bg-gray-50 active:scale-[0.98]"
                 >
                   {PERIOD_LABELS[p]}
-                </button>
+                </Button>
               ))}
             </div>
           )}

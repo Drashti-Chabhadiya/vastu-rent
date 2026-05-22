@@ -11,6 +11,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useStory, useStories } from '#/hook/use-stories'
 import { motion } from 'motion/react'
 import { useState } from 'react'
+import { Button } from '#/components/ui/button'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -245,33 +246,38 @@ export function StoryDetail({ id }: { id: string }) {
 
         {/* top bar */}
         <div className="absolute left-0 right-0 top-0 z-10 mx-auto flex max-w-[1400px] items-center justify-between px-6 pt-6 md:px-10">
-          <button
+          <Button
+            variant="outline"
             onClick={() => navigate({ to: '/journal' })}
-            className="flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-black/60 active:scale-95"
+            className="h-auto flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-black/60 hover:text-white active:scale-[0.98]"
           >
             <ArrowLeft size={14} />
             Journal
-          </button>
+          </Button>
 
           <div className="flex gap-2.5">
-            <button
+            <Button
+              variant="outline"
+              size="icon"
               onClick={() => setIsLiked((v) => !v)}
-              className={`rounded-full border border-white/20 p-2.5 backdrop-blur-md transition-all active:scale-95 ${
+              className={`h-9 w-9 rounded-full border border-white/20 backdrop-blur-md transition-all active:scale-[0.98] ${
                 isLiked
-                  ? 'bg-red-500 text-white'
-                  : 'bg-black/40 text-white hover:bg-black/60'
+                  ? 'bg-red-500 text-white hover:bg-red-600 hover:text-white'
+                  : 'bg-black/40 text-white hover:bg-black/60 hover:text-white'
               }`}
               aria-label="Like story"
             >
               <Heart size={16} fill={isLiked ? 'currentColor' : 'none'} />
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
               onClick={handleShare}
-              className="rounded-full border border-white/20 bg-black/40 p-2.5 text-white backdrop-blur-md transition-all hover:bg-black/60 active:scale-95"
+              className="h-9 w-9 rounded-full border border-white/20 bg-black/40 text-white hover:text-white hover:bg-black/60 backdrop-blur-md transition-all active:scale-[0.98]"
               aria-label="Share story"
             >
               <Share2 size={16} />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -389,13 +395,14 @@ export function StoryDetail({ id }: { id: string }) {
             Back to Journal
           </Link>
 
-          <button
+          <Button
+            variant="outline"
             onClick={handleShare}
-            className="flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-bold transition-all hover:bg-foreground hover:text-background active:scale-95"
+            className="h-auto flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-bold transition-all hover:bg-foreground hover:text-background active:scale-[0.98]"
           >
             <Share2 size={14} />
             {copied ? 'Link copied!' : 'Share story'}
-          </button>
+          </Button>
         </div>
       </motion.div>
 
@@ -449,9 +456,9 @@ export function StoryDetail({ id }: { id: string }) {
                 placeholder="Email address"
                 className="h-13 w-full rounded-full border border-background/20 bg-background/5 px-7 text-sm text-background outline-none transition-all placeholder:text-background/40 focus:border-background sm:w-[300px]"
               />
-              <button className="h-13 w-full rounded-full bg-background px-8 text-sm font-bold text-foreground transition-all hover:opacity-90 active:scale-95 sm:w-auto">
+              <Button className="h-13 w-full rounded-full bg-background text-foreground hover:bg-background/90 hover:text-foreground active:scale-[0.98] px-8 text-sm font-bold sm:w-auto">
                 Subscribe
-              </button>
+              </Button>
             </form>
           </div>
         </div>

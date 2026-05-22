@@ -1,4 +1,5 @@
 import { cn } from '#/lib/utils'
+import { Button } from '#/components/ui/button'
 
 interface RecentListingsTableProps {
   products?: any[]
@@ -13,9 +14,12 @@ export const RecentListingsTable = ({
     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Listings</h3>
-        <button className="text-xs font-bold text-dash-brand hover:underline">
+        <Button
+          variant="link"
+          className="text-xs font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer"
+        >
           View All
-        </button>
+        </Button>
       </div>
 
       <div className="overflow-x-auto">

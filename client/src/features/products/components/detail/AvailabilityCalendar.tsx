@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { Button } from '#/components/ui/button'
 
 interface AvailabilityCalendarProps {
   calMonth: number
@@ -34,33 +35,37 @@ export const AvailabilityCalendar = ({
     <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
       <h3 className="text-base font-bold text-gray-900">Check Availability</h3>
       <div className="flex items-center justify-between">
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => {
             if (calMonth === 0) {
               setCalMonth(11)
               setCalYear((y) => y - 1)
             } else setCalMonth((m) => m - 1)
           }}
-          className="p-1 rounded-lg hover:bg-gray-100"
+          className="h-8 w-8 rounded-lg"
         >
           <ChevronLeft size={16} />
-        </button>
+        </Button>
         <p className="text-sm font-bold text-gray-900">
           {monthName} {calYear}
         </p>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => {
             if (calMonth === 11) {
               setCalMonth(0)
               setCalYear((y) => y + 1)
             } else setCalMonth((m) => m + 1)
           }}
-          className="p-1 rounded-lg hover:bg-gray-100"
+          className="h-8 w-8 rounded-lg"
         >
           <ChevronRight size={16} />
-        </button>
+        </Button>
       </div>
       <div className="grid grid-cols-7 gap-y-1 gap-x-0.5 text-center">
         {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
@@ -106,19 +111,20 @@ export const AvailabilityCalendar = ({
           const isDisabled = isPast || isBooked
 
           return (
-            <button
+            <Button
               type="button"
               key={day}
+              variant="ghost"
               onClick={() => !isDisabled && handleDayClick(day)}
               disabled={isDisabled}
               className={cn(
-                'h-7 flex items-center justify-center text-xs rounded-md transition-all relative',
+                'h-7 w-full flex items-center justify-center text-xs rounded-md transition-all relative font-medium active:scale-[0.98]',
                 isDisabled
-                  ? 'text-gray-300 cursor-not-allowed bg-gray-50/50'
+                  ? 'text-gray-300 cursor-not-allowed bg-gray-50/50 hover:bg-gray-50/50 hover:text-gray-300'
                   : isStart || isEnd
-                    ? 'bg-primary text-white font-bold'
+                    ? 'bg-primary text-white font-bold hover:bg-primary hover:text-white'
                     : inRange
-                      ? 'bg-primary/10 text-primary'
+                      ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
                       : 'text-gray-700 hover:bg-gray-100 cursor-pointer',
               )}
             >
@@ -126,7 +132,7 @@ export const AvailabilityCalendar = ({
               {isBooked && (
                 <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-red-400" />
               )}
-            </button>
+            </Button>
           )
         })}
       </div>

@@ -49,13 +49,14 @@ export const ProductTabs = ({
     <div className="border border-gray-100 rounded-2xl bg-white shadow-sm overflow-hidden">
       <div className="flex items-center gap-6 px-6 pt-2 border-b border-gray-100 bg-white">
         {tabs.map((tab) => (
-          <button
+          <Button
             key={tab.id}
+            variant="ghost"
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'py-4 text-sm font-bold transition-all relative whitespace-nowrap',
+              'py-4 px-0 h-auto rounded-none text-sm font-bold transition-all relative whitespace-nowrap hover:bg-transparent hover:text-gray-900 active:scale-[0.98]',
               activeTab === tab.id
-                ? 'text-primary'
+                ? 'text-primary hover:text-primary'
                 : 'text-gray-500 hover:text-gray-900',
             )}
           >
@@ -63,7 +64,7 @@ export const ProductTabs = ({
             {activeTab === tab.id && (
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
             )}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -227,7 +228,13 @@ export const ProductTabs = ({
               <p className="text-sm font-bold text-gray-900">Write a Review</p>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <button key={s} onClick={() => setReviewRating(s)}>
+                  <Button
+                    key={s}
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setReviewRating(s)}
+                    className="h-6 w-6 p-0 hover:bg-transparent active:scale-[0.98]"
+                  >
                     <Star
                       size={20}
                       className={
@@ -236,7 +243,7 @@ export const ProductTabs = ({
                           : 'text-gray-200'
                       }
                     />
-                  </button>
+                  </Button>
                 ))}
               </div>
               <Textarea

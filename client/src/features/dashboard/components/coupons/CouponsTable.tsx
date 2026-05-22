@@ -72,7 +72,7 @@ export function CouponsTable({
           {canManage && (
             <Button
               onClick={onCreateClick}
-              className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] flex items-center gap-2"
+              className="h-10 px-4 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[11px] flex items-center gap-2 active:scale-[0.98] transition-all shadow-md shadow-dash-brand/10"
             >
               <Plus size={14} /> Create Coupon
             </Button>
@@ -139,13 +139,14 @@ export function CouponsTable({
                         <span className="text-[11px] font-black tracking-widest uppercase">
                           {coupon.code}
                         </span>
-                        <button
+                        <Button
+                          variant="ghost"
                           onClick={() => handleCopy(coupon.code)}
-                          className="flex items-center gap-1 text-[8px] font-bold mt-1 opacity-70 hover:opacity-100"
+                          className="flex items-center gap-1 text-[8px] font-bold mt-1 opacity-70 hover:opacity-100 p-0 h-auto font-sans active:scale-[0.98] transition-all hover:bg-transparent"
                         >
                           {copiedCode === coupon.code ? 'Copied!' : 'Copy'}{' '}
                           <Copy size={8} />
-                        </button>
+                        </Button>
                       </div>
                     </td>
 
@@ -248,7 +249,7 @@ export function CouponsTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => onDelete(coupon.id)}
-                          className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl"
+                          className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl active:scale-[0.98] transition-all"
                         >
                           <Trash2 size={16} />
                         </Button>

@@ -50,16 +50,18 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
           <div className="absolute top-3 right-3 z-10">
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 toggleLike(product.id)
               }}
               className={cn(
-                'p-2.5 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm',
+                'w-10 h-10 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm border-none',
                 liked
-                  ? 'bg-red-50 text-red-500 scale-110'
+                  ? 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500 scale-110'
                   : 'bg-white/90 text-gray-600 hover:text-red-500 hover:bg-white',
               )}
             >
@@ -69,7 +71,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   liked && 'fill-current',
                 )}
               />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -102,7 +104,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-        <Button className="w-full bg-primary group-hover:bg-primary-hover text-white font-semibold rounded-xl h-11 shrink-0 transition-colors">
+        <Button className="w-full shrink-0">
           Rent Now
         </Button>
       </div>

@@ -22,6 +22,7 @@ import {
   navigationMenuTriggerStyle,
 } from '#/components/ui/navigation-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import { Button } from '#/components/ui/button'
 import {
   User,
   LogOut,
@@ -131,24 +132,30 @@ export function Navbar() {
           </NavigationMenu>
         </nav>
         <div className="flex items-center gap-2.5">
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             aria-label="Search"
-            className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
+            className="h-10 w-10 rounded-full border border-border text-foreground/70 transition-all hover:bg-accent hover:text-foreground active:scale-95 cursor-pointer"
           >
             <Search className="h-4 w-4" />
-          </button>
+          </Button>
           <Link to="/download">
-            <button
+            <Button
+              variant="outline"
+              size="icon"
               aria-label="Download App"
-              className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
+              className="h-10 w-10 rounded-full border border-border text-foreground/70 transition-all hover:bg-accent hover:text-foreground active:scale-95 cursor-pointer"
             >
               <Smartphone className="h-4 w-4" />
-            </button>
+            </Button>
           </Link>
           <Link to="/wishlist">
-            <button
+            <Button
+              variant="outline"
+              size="icon"
               aria-label="Saved"
-              className="group relative grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-colors hover:bg-accent hover:text-foreground"
+              className="group relative h-10 w-10 rounded-full border border-border text-foreground/70 transition-all hover:bg-accent hover:text-foreground active:scale-95 cursor-pointer"
             >
               <Heart className="h-4 w-4" />
               {count > 0 && (
@@ -156,14 +163,14 @@ export function Navbar() {
                   {count}
                 </span>
               )}
-            </button>
+            </Button>
           </Link>
           {isPending ? (
             <div className="h-10 w-10 animate-pulse rounded-full bg-accent/50" />
           ) : session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="relative h-10 w-10 rounded-full border border-border outline-none transition-all hover:ring-4 hover:ring-primary/10">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-border p-0 outline-none transition-all hover:ring-4 hover:ring-primary/10 hover:bg-transparent active:scale-95 cursor-pointer">
                   <Avatar className="h-full w-full">
                     <AvatarImage
                       src={session.user.image || ''}
@@ -173,7 +180,7 @@ export function Navbar() {
                       {session.user.name?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                </button>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" sideOffset={8}>
                 <DropdownMenuLabel className="font-normal">
@@ -232,10 +239,10 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <Link to="/login">
-              <button className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[13px] font-medium text-primary-foreground transition-all hover:bg-primary/90 sm:inline-flex">
+              <Button className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 h-auto text-[13px] font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-95 sm:inline-flex cursor-pointer">
                 Sign in
                 <ArrowUpRight className="h-3.5 w-3.5" />
-              </button>
+              </Button>
             </Link>
           )}
         </div>

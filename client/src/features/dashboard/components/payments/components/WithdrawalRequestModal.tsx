@@ -53,7 +53,7 @@ export const WithdrawalRequestModal = ({
       <DialogContent className="max-w-md p-8 border-none bg-white rounded-[2.5rem] shadow-2xl font-sans">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2.5">
-            <span className="text-[9px] font-black uppercase tracking-widest text-[#059669] bg-emerald-50 px-2 py-0.5 rounded">
+            <span className="text-[9px] font-black uppercase tracking-widest text-dash-brand bg-dash-brand/5 px-2 py-0.5 rounded">
               Initiate Settlement
             </span>
             <h3 className="text-xl font-extrabold text-slate-800">
@@ -79,20 +79,20 @@ export const WithdrawalRequestModal = ({
                 placeholder="e.g. 5000"
                 value={payoutAmount}
                 onChange={(e) => setPayoutAmount(e.target.value)}
-                className="w-full h-14 pl-8 pr-4 rounded-xl border border-slate-100 bg-slate-50/50 text-sm font-black text-slate-800 outline-none focus:border-[#059669] focus:bg-white transition-all"
+                className="w-full h-14 pl-8 pr-4 rounded-xl border border-slate-100 bg-slate-50/50 text-sm font-black text-slate-800 outline-none focus:border-dash-brand focus:bg-white transition-all"
                 max={withdrawableBalance}
                 required
               />
             </div>
             <span className="text-[10px] font-bold text-slate-400 block pt-1">
               Max withdrawable:{' '}
-              <strong className="text-emerald-600 font-black">
+              <strong className="text-dash-brand font-black">
                 ₹{withdrawableBalance.toLocaleString()}
               </strong>
             </span>
 
             {hasPayoutMethod ? (
-              <span className="text-[9px] font-bold text-emerald-600 block mt-2 bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100/50">
+              <span className="text-[9px] font-bold text-dash-brand block mt-2 bg-dash-brand/5 p-2.5 rounded-xl border border-dash-brand/10">
                 Direct transfer to:{' '}
                 {(session.user as any).upiId
                   ? `UPI: ${(session.user as any).upiId}`
@@ -126,14 +126,13 @@ export const WithdrawalRequestModal = ({
             <Button
               type="button"
               onClick={() => onOpenChange(false)}
-              variant="ghost"
-              className="flex-1 h-12 rounded-xl font-black text-[11px] uppercase tracking-wider text-slate-400"
+              className="flex-1 h-12 rounded-full font-black text-[11px] uppercase tracking-wider bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="flex-1 h-12 rounded-xl bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[11px] uppercase tracking-wider shadow-lg shadow-emerald-100 flex items-center justify-center gap-2"
+              className="flex-1 h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[11px] uppercase tracking-wider shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
               disabled={isPending}
             >
               {isPending ? 'Requesting...' : 'Request Payout'}

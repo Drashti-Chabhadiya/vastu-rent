@@ -25,6 +25,7 @@ import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
 import { Button } from '#/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
+import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
 
 interface NavItemProps {
   icon: React.ElementType
@@ -295,9 +296,9 @@ export const Sidebar = ({
                 Unlock advance charts, calendar sync, and featured listing
                 spots.
               </p>
-              <button className="w-full py-2 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary/95 transition-all shadow-sm active:scale-95">
+              <Button className="w-full h-9 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary/95 transition-all shadow-sm active:scale-[0.98]">
                 Upgrade Account
-              </button>
+              </Button>
             </div>
             {/* Soft background accents */}
             <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all duration-500"></div>
@@ -314,14 +315,16 @@ export const Sidebar = ({
             <div className="px-4 pt-4 pb-3 border-b border-gray-50">
               <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
-                  <img
-                    src={
-                      user?.image ||
-                      `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Vastu'}`
-                    }
-                    alt={user?.name || 'User'}
-                    className="w-10 h-10 rounded-xl object-cover border border-gray-100 bg-gray-50"
-                  />
+                  <Avatar className="w-10 h-10 rounded-xl border border-gray-100 bg-gray-50">
+                    <AvatarImage
+                      src={user?.image || ''}
+                      alt={user?.name || 'User'}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-primary/5 text-xs font-bold text-primary">
+                      {user?.name?.slice(0, 2).toUpperCase() || 'US'}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
                 </div>
                 <div className="overflow-hidden">
@@ -336,69 +339,76 @@ export const Sidebar = ({
             </div>
 
             {/* Menu items */}
-            <div className="py-1.5">
-              <button
+            <div className="py-1.5 flex flex-col w-full">
+              <Button
+                variant="ghost"
                 onClick={() => {
                   onTabChange('settings')
                   setIsProfileOpen(false)
                 }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors active:scale-[0.98]"
               >
                 <Settings size={15} className="text-gray-400" />
                 Settings
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={() => {
                   navigate({ to: '/account' })
                   setIsProfileOpen(false)
                 }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors active:scale-[0.98]"
               >
                 <User size={15} className="text-gray-400" />
                 My Account
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={() => {
                   navigate({ to: '/' })
                   setIsProfileOpen(false)
                 }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors active:scale-[0.98]"
               >
                 <ExternalLink size={15} className="text-gray-400" />
                 View Public Site
-              </button>
+              </Button>
             </div>
 
-            <div className="border-t border-gray-50 py-1.5">
-              <button
+            <div className="border-t border-gray-50 py-1.5 flex flex-col w-full">
+              <Button
+                variant="ghost"
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-semibold text-red-500 hover:bg-red-50 transition-colors"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-red-500 hover:bg-red-50 hover:text-red-650 transition-colors active:scale-[0.98]"
               >
                 <LogOut size={15} />
                 Sign out
-              </button>
+              </Button>
             </div>
           </div>
         )}
 
         {/* Trigger button */}
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setIsProfileOpen((prev) => !prev)}
           className={cn(
-            'w-full flex items-center justify-between p-2 rounded-xl cursor-pointer transition-colors group',
-            isProfileOpen ? 'bg-gray-100' : 'hover:bg-gray-50',
+            'w-full h-auto flex items-center justify-between p-2 rounded-xl cursor-pointer transition-colors group hover:bg-gray-50 active:scale-[0.98]',
+            isProfileOpen ? 'bg-gray-100 hover:bg-gray-100' : 'hover:bg-gray-50',
           )}
         >
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="relative shrink-0">
-              <img
-                src={
-                  user?.image ||
-                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Vastu'}`
-                }
-                alt={user?.name || 'User'}
-                className="w-9 h-9 rounded-xl bg-gray-50 object-cover border border-gray-100"
-              />
+              <Avatar className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-100">
+                <AvatarImage
+                  src={user?.image || ''}
+                  alt={user?.name || 'User'}
+                  className="object-cover"
+                />
+                <AvatarFallback className="bg-primary/5 text-[11px] font-bold text-primary">
+                  {user?.name?.slice(0, 2).toUpperCase() || 'US'}
+                </AvatarFallback>
+              </Avatar>
               <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
             </div>
             <div className="overflow-hidden text-left">
@@ -419,7 +429,7 @@ export const Sidebar = ({
                 : 'group-hover:text-dash-text',
             )}
           />
-        </button>
+        </Button>
       </div>
     </aside>
   )

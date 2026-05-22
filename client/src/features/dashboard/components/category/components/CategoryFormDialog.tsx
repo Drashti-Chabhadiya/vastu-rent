@@ -23,6 +23,7 @@ import {
 import { IconSelector } from './IconSelector'
 import { cn } from '#/lib/utils'
 import { useUploadProductImage } from '#/hook'
+import { LoadingOverlay } from '#/components/ui/loader'
 
 interface CategoryFormDialogProps {
   isOpen: boolean
@@ -156,8 +157,15 @@ export const CategoryFormDialog = ({
 
         <form
           onSubmit={handleSubmit}
-          className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-gray-900"
+          className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-gray-900 relative min-h-[300px]"
         >
+          {isUploading && (
+            <LoadingOverlay message="Uploading category image..." />
+          )}
+          {isPending && (
+            <LoadingOverlay message="Submitting category details..." />
+          )}
+
           <div className="space-y-2.5">
             <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
               <Tag size={14} className="text-dash-brand" />
@@ -217,13 +225,14 @@ export const CategoryFormDialog = ({
                 )}
                 {useImage ? 'Category Image' : 'Category Icon'}
               </label>
-              <button
+              <Button
                 type="button"
+                variant="link"
                 onClick={() => setUseImage(!useImage)}
-                className="text-[12px] font-bold text-dash-brand hover:underline"
+                className="text-[12px] font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all"
               >
                 {useImage ? 'Use Icon instead' : 'Upload Image instead'}
-              </button>
+              </Button>
             </div>
 
             {useImage ? (
@@ -289,15 +298,16 @@ export const CategoryFormDialog = ({
                   <div className="flex flex-col gap-4 p-4 bg-gray-50/50 rounded-2xl border border-gray-100">
                     <div className="flex flex-wrap gap-2">
                       {COLORS.map((color) => (
-                        <button
+                        <Button
                           key={color}
                           type="button"
+                          variant="ghost"
                           onClick={() => setSelectedColor(color)}
                           className={cn(
-                            'w-8 h-8 rounded-full border-2 transition-all hover:scale-110 active:scale-95 shadow-sm',
+                            'w-8 h-8 rounded-full border-2 transition-all hover:scale-110 active:scale-[0.98] shadow-sm p-0 min-w-0 min-h-0',
                             selectedColor === color
-                              ? 'border-gray-900 scale-110'
-                              : 'border-white',
+                              ? 'border-gray-900 scale-110 hover:scale-110'
+                              : 'border-white hover:bg-transparent',
                           )}
                           style={{ backgroundColor: color }}
                         />
@@ -456,14 +466,14 @@ export const CategoryFormDialog = ({
             <Button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="rounded-xl font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
+              className="rounded-full font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none active:scale-[0.98]"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isPending || isUploading}
-              className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
               {isRequest ? (
                 <>

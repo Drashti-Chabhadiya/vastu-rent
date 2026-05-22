@@ -1,5 +1,6 @@
 import { Heart, Share2, ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { Button } from '#/components/ui/button'
 
 interface ProductImageGalleryProps {
   images: string[]
@@ -32,38 +33,46 @@ export const ProductImageGallery = ({
         />
 
         {/* Image Navigation Arrows */}
-        <button
+        <Button
+          variant="outline"
+          size="icon"
           onClick={() =>
             setSelectedImage(selectedImage > 0 ? selectedImage - 1 : images.length - 1)
           }
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-900 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-white active:scale-90"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-900 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-white active:scale-[0.98]"
         >
           <ChevronLeft size={20} />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
           onClick={() =>
             setSelectedImage(selectedImage < images.length - 1 ? selectedImage + 1 : 0)
           }
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-900 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-white active:scale-90"
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-900 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-white active:scale-[0.98]"
         >
           <ChevronRight size={20} />
-        </button>
+        </Button>
 
         <div className="absolute top-4 right-4 flex gap-2">
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             onClick={toggleLike}
             className={cn(
-              'w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all active:scale-90',
+              'w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all active:scale-[0.98]',
               liked
-                ? 'bg-red-50 text-red-500'
-                : 'bg-white/90 backdrop-blur-sm text-gray-600 hover:text-red-500',
+                ? 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-500'
+                : 'bg-white/90 backdrop-blur-sm text-gray-600 hover:text-red-500 hover:bg-white',
             )}
           >
             <Heart size={18} className={liked ? 'fill-current' : ''} />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
             onClick={handleShare}
-            className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-primary shadow-lg flex items-center justify-center transition-all active:scale-90"
+            className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-primary hover:bg-white shadow-lg flex items-center justify-center transition-all active:scale-[0.98]"
             title="Copy link"
           >
             {copied ? (
@@ -71,18 +80,19 @@ export const ProductImageGallery = ({
             ) : (
               <Share2 size={16} />
             )}
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Thumbnails */}
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {images.map((img, idx) => (
-          <button
+          <Button
             key={idx}
+            variant="outline"
             onClick={() => setSelectedImage(idx)}
             className={cn(
-              'relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0',
+              'relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 p-0 hover:bg-transparent active:scale-[0.98]',
               selectedImage === idx
                 ? 'border-brand shadow-md'
                 : 'border-transparent hover:border-gray-200',
@@ -96,7 +106,7 @@ export const ProductImageGallery = ({
             {selectedImage !== idx && (
               <div className="absolute inset-0 bg-white/20" />
             )}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

@@ -72,7 +72,7 @@ export function ProfileLayout({ children, activeTab }: ProfileLayoutProps) {
             Please sign in to view your profile and manage your rentals.
           </p>
           <Link to="/login" className="block">
-            <Button className="w-full bg-primary hover:bg-primary-hover text-white h-12 rounded-xl font-bold">
+            <Button className="w-full">
               Sign In
             </Button>
           </Link>
@@ -144,13 +144,14 @@ export function ProfileLayout({ children, activeTab }: ProfileLayoutProps) {
                   )
                 })}
 
-                <button
+                <Button
                   onClick={() => authClient.signOut()}
-                  className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-600 hover:bg-red-50 transition-all font-bold text-sm mt-4"
+                  variant="ghost"
+                  className="w-full flex items-center justify-start gap-3 p-4 h-auto rounded-2xl text-red-600 hover:bg-red-50 hover:text-red-700 transition-all font-bold text-sm mt-4 border-none shadow-none"
                 >
                   <LogOut size={20} />
                   Sign Out
-                </button>
+                </Button>
               </nav>
             </div>
           </aside>

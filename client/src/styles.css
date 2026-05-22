@@ -37,6 +37,7 @@
   --color-dash-brand: var(--primary);
   --color-dash-brand-soft: var(--primary-soft);
   --color-dash-bg: var(--background);
+  --color-dash-bg-soft: var(--surface);
   --color-dash-text: var(--foreground);
   --color-dash-text-soft: oklch(0.35 0.03 250);
   --color-dash-text-muted: var(--muted-foreground);

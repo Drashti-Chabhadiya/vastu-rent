@@ -15,6 +15,7 @@ import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
 import { useState, useEffect } from 'react'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
+import { Button } from '#/components/ui/button'
 
 // ─── Menu config ─────────────────────────────────────────────────────────────
 const BASE_MENU_ITEMS = [
@@ -147,16 +148,17 @@ export function AccountLayout() {
                   )
                 })}
 
-                <button
+                <Button
+                  variant="ghost"
                   onClick={async () => {
                     await authClient.signOut()
                     window.location.href = '/'
                   }}
-                  className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-600 hover:bg-red-50 transition-all font-bold text-sm mt-4"
+                  className="w-full flex items-center justify-start gap-3 p-4 h-auto rounded-2xl text-red-600 hover:bg-red-50 hover:text-red-750 transition-all font-bold text-sm mt-4 cursor-pointer"
                 >
                   <LogOut size={20} />
                   Sign Out
-                </button>
+                </Button>
               </nav>
             </div>
           </aside>

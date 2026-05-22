@@ -12,6 +12,7 @@ import {
 import { format } from 'date-fns'
 import { Badge } from '#/components/ui/badge'
 import { cn } from '#/lib/utils'
+import { Button } from '#/components/ui/button'
 
 export const MyBookings = () => {
   const { data: rentals, isLoading } = useMyRentals()
@@ -237,9 +238,9 @@ export const MyBookings = () => {
                   </span>
                 </div>
 
-                <button className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-white transition-all duration-300">
+                <Button variant="ghost" className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-white transition-all duration-300 cursor-pointer active:scale-95">
                   <ChevronRight size={20} strokeWidth={3} />
-                </button>
+                </Button>
               </div>
             </div>
           </div>

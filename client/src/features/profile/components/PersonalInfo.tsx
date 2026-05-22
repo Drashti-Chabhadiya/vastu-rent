@@ -4,9 +4,10 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
-import { Mail, User as UserIcon, Calendar, Camera, Loader2 } from 'lucide-react'
+import { Mail, User as UserIcon, Calendar, Camera } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useUploadProfileImage } from '#/hook'
+import { Loader, LoadingOverlay } from '#/components/ui/loader'
 
 export function PersonalInfo() {
   const [isEditing, setIsEditing] = useState(false)
@@ -110,7 +111,10 @@ export function PersonalInfo() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
+        {isSaving && (
+          <LoadingOverlay message="Saving profile changes..." className="rounded-3xl" />
+        )}
         {/* Avatar Section */}
         <div className="flex flex-col items-center gap-6">
           <div className="relative group">
@@ -240,7 +244,7 @@ export function PersonalInfo() {
                 disabled={isSaving}
                 className="bg-primary hover:bg-primary-hover text-white h-12 px-8 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-brand/20"
               >
-                {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+                {isSaving && <Loader variant="white" size={16} />}
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>

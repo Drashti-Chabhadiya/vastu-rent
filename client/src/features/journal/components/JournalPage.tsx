@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
 import { Link } from '@tanstack/react-router'
 import { useStories } from '#/hook/use-stories'
+import { Button } from '#/components/ui/button'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -130,20 +131,21 @@ export function JournalPage() {
           <div className="flex items-center gap-6 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
             {['All Stories', 'Living', 'Impact', 'Hosts', 'Guides'].map(
               (filter) => (
-                <button
+                <Button
                   key={filter}
+                  variant="ghost"
                   onClick={() => {
                     setSelectedCategory(filter)
                     setVisibleCount(6) // Reset pagination on filter change
                   }}
-                  className={`text-[13px] font-medium whitespace-nowrap transition-colors hover:text-primary ${
+                  className={`text-[13px] font-medium whitespace-nowrap transition-colors hover:text-primary p-0 h-auto hover:bg-transparent ${
                     selectedCategory === filter
-                      ? 'text-primary font-bold'
+                      ? 'text-primary font-bold hover:text-primary bg-transparent'
                       : 'text-muted-foreground'
                   }`}
                 >
                   {filter}
-                </button>
+                </Button>
               ),
             )}
           </div>
@@ -255,12 +257,13 @@ export function JournalPage() {
         {/* Load More */}
         {hasMore && (
           <div className="mt-24 flex justify-center">
-            <button
+            <Button
+              variant="outline"
               onClick={() => setVisibleCount((prev) => prev + 6)}
-              className="rounded-full border border-border px-10 py-4 text-[14px] font-bold transition-all hover:bg-foreground hover:text-background active:scale-95"
+              className="rounded-full border border-border px-10 py-4 text-[14px] font-bold transition-all hover:bg-foreground hover:text-background active:scale-[0.98] h-auto"
             >
               Load more stories
-            </button>
+            </Button>
           </div>
         )}
       </section>
@@ -285,9 +288,9 @@ export function JournalPage() {
                 placeholder="Email address"
                 className="h-14 w-full rounded-full border border-background/20 bg-background/5 px-8 text-background outline-none transition-all focus:border-background sm:w-[350px]"
               />
-              <button className="h-14 w-full rounded-full bg-background px-10 text-[14px] font-bold text-foreground transition-all hover:opacity-90 active:scale-95 sm:w-auto">
+              <Button variant="outline" className="h-14 w-full rounded-full bg-background border-none hover:bg-background/90 px-10 text-[14px] font-bold text-foreground transition-all active:scale-[0.98] sm:w-auto">
                 Subscribe
-              </button>
+              </Button>
             </form>
           </div>
         </div>
@@ -295,3 +298,4 @@ export function JournalPage() {
     </div>
   )
 }
+

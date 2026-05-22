@@ -42,7 +42,7 @@ export const PayoutSettingsForm = ({
         </div>
         <Button
           type="submit"
-          className="bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[11px] px-6 h-11 rounded-xl transition-all shadow-sm active:scale-95"
+          className="bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[11px] px-6 h-11 rounded-full transition-all shadow-md shadow-dash-brand/10 active:scale-95 cursor-pointer"
         >
           Save Payout Details
         </Button>

@@ -5,10 +5,11 @@ import {
   useUpdateStory,
   useDeleteStory,
 } from '#/hook/use-stories'
-import { Plus, Edit2, Trash2, Loader2, Image as ImageIcon } from 'lucide-react'
+import { Plus, Edit2, Trash2, Image as ImageIcon } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { useUploadProductImage } from '#/hook'
+import { Loader, LoadingOverlay } from '#/components/ui/loader'
 
 export function StoriesManagement() {
   const { data: stories, isLoading } = useStories()
@@ -89,7 +90,7 @@ export function StoriesManagement() {
   if (isLoading) {
     return (
       <div className="p-8 flex justify-center">
-        <Loader2 className="animate-spin text-dash-brand" size={32} />
+        <Loader variant="brand" size={32} />
       </div>
     )
   }
@@ -107,9 +108,9 @@ export function StoriesManagement() {
         </div>
         <Button
           onClick={() => handleOpenModal()}
-          className="bg-dash-brand hover:bg-dash-brand-hover text-white gap-2"
+          className="rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-bold px-5 h-11 flex items-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-dash-brand/10"
         >
-          <Plus size={18} />
+          <Plus size={16} strokeWidth={2.5} />
           Add Story
         </Button>
       </div>
@@ -152,18 +153,22 @@ export function StoriesManagement() {
                   {story.readTime}
                 </span>
                 <div className="flex gap-2">
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleOpenModal(story)}
-                    className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-colors"
+                    className="h-9 w-9 text-blue-500 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <Edit2 size={16} />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => handleDelete(story.id)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                    className="h-9 w-9 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <Trash2 size={16} />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -178,15 +183,24 @@ export function StoriesManagement() {
               <h3 className="text-xl font-black text-gray-900">
                 {editingId ? 'Edit Story' : 'Create New Story'}
               </h3>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-900 text-2xl font-light"
+                className="text-gray-400 hover:text-gray-900 hover:bg-gray-50 h-9 w-9 rounded-full transition-all active:scale-[0.98] cursor-pointer text-xl font-light"
               >
                 &times;
-              </button>
+              </Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+            <form onSubmit={handleSubmit} className="p-6 space-y-5 relative min-h-[300px]">
+              {uploadImage.isPending && (
+                <LoadingOverlay message="Uploading cover photo..." />
+              )}
+              {(createStory.isPending || updateStory.isPending) && (
+                <LoadingOverlay message={editingId ? "Saving story..." : "Publishing story..."} />
+              )}
+
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-700">Title</label>
                 <Input
@@ -271,7 +285,7 @@ export function StoriesManagement() {
                       className="flex items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors text-sm font-bold text-gray-500"
                     >
                       {uploadImage.isPending ? (
-                        <Loader2 className="animate-spin text-dash-brand" />
+                        <Loader variant="brand" />
                       ) : (
                         'Click to Upload Image'
                       )}
@@ -280,22 +294,21 @@ export function StoriesManagement() {
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3">
+              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
                 <Button
                   type="button"
-                  variant="outline"
                   onClick={handleCloseModal}
-                  className="h-12 px-6 rounded-xl font-bold"
+                  className="rounded-full font-bold h-12 px-6 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none active:scale-[0.98] cursor-pointer"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  disabled={createStory.isPending || updateStory.isPending}
-                  className="h-12 px-8 rounded-xl font-bold bg-dash-brand hover:bg-dash-brand-hover text-white"
+                  disabled={createStory.isPending || updateStory.isPending || uploadImage.isPending}
+                  className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   {createStory.isPending || updateStory.isPending ? (
-                    <Loader2 className="animate-spin" />
+                    <Loader variant="white" />
                   ) : editingId ? (
                     'Save Changes'
                   ) : (

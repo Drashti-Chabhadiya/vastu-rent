@@ -170,9 +170,12 @@ export const ReportsManagement = () => {
                 Revenue Overview
               </h3>
               <div className="relative">
-                <button className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl text-[11px] font-black text-slate-700">
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl text-[11px] font-black text-slate-700 h-auto active:scale-[0.98] transition-all cursor-pointer hover:bg-slate-100"
+                >
                   This Week <ChevronDown size={14} />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -268,9 +271,12 @@ export const ReportsManagement = () => {
                   Top Performing Categories
                 </h3>
               </div>
-              <button className="text-[11px] font-black text-emerald-600 hover:underline">
+              <Button
+                variant="link"
+                className="text-[11px] font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer font-sans"
+              >
                 View Full Report
-              </button>
+              </Button>
             </div>
             <div className="overflow-x-auto -mx-2">
               <table className="w-full">
@@ -327,7 +333,7 @@ export const ReportsManagement = () => {
             </div>
             <Button
               variant="ghost"
-              className="w-full mt-6 h-12 bg-slate-50 rounded-2xl text-[11px] font-black text-slate-700 flex items-center justify-center gap-2"
+              className="w-full mt-6 h-12 bg-slate-50 rounded-2xl text-[11px] font-black text-slate-700 flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer"
             >
               <FileText size={16} /> View Category Report
             </Button>
@@ -342,9 +348,12 @@ export const ReportsManagement = () => {
               <h3 className="text-[15px] font-black text-[#1e293b]">
                 Reports Summary
               </h3>
-              <button className="text-[11px] font-black text-emerald-600 hover:underline">
+              <Button
+                variant="link"
+                className="text-[11px] font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer font-sans"
+              >
                 View All
-              </button>
+              </Button>
             </div>
             <div className="space-y-2">
               {[
@@ -458,16 +467,20 @@ export const ReportsManagement = () => {
                       </p>
                     </div>
                   </div>
-                  <button className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-400 hover:text-emerald-600 border border-slate-50 shadow-sm">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-400 hover:text-[#15803d] border border-slate-50 shadow-sm active:scale-[0.98] transition-all p-0 min-w-0"
+                  >
                     <Download size={14} />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
 
             <Button
               variant="outline"
-              className="w-full mt-8 h-12 rounded-2xl border-emerald-100 text-emerald-600 font-black text-[11px] flex items-center justify-center gap-2 hover:bg-emerald-50 shadow-sm transition-all"
+              className="w-full mt-8 h-12 rounded-2xl border-[#e2f5ec] text-[#15803d] font-black text-[11px] flex items-center justify-center gap-2 hover:bg-[#e2f5ec] shadow-sm transition-all active:scale-[0.98] cursor-pointer"
             >
               <Layout size={16} /> View All Reports
             </Button>

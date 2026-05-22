@@ -157,22 +157,24 @@ export const CategoryManagement = ({
     <div className="space-y-6">
       {/* Tab Switcher */}
       <div className="flex border-b border-gray-100 gap-6">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => setActiveTab('categories')}
-          className={`pb-4 text-sm font-bold tracking-tight transition-all relative cursor-pointer ${activeTab === 'categories'
-            ? 'text-dash-brand font-black'
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'categories'
+            ? 'text-primary font-black hover:text-primary'
             : 'text-gray-400 hover:text-gray-600'
             }`}
         >
           Active Categories
           {activeTab === 'categories' && (
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-dash-brand rounded-t-full" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full" />
           )}
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
           onClick={() => setActiveTab('requests')}
-          className={`pb-4 text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer ${activeTab === 'requests'
-            ? 'text-dash-brand font-black'
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'requests'
+            ? 'text-primary font-black hover:text-primary'
             : 'text-gray-400 hover:text-gray-600'
             }`}
         >
@@ -188,9 +190,9 @@ export const CategoryManagement = ({
               </span>
             )}
           {activeTab === 'requests' && (
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-dash-brand rounded-t-full" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full" />
           )}
-        </button>
+        </Button>
       </div>
 
       {activeTab === 'categories' ? (
@@ -214,7 +216,7 @@ export const CategoryManagement = ({
             {isAdmin && (
               <Button
                 onClick={handleOpenAdd}
-                className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 px-8 font-bold shadow-md shadow-dash-brand/10 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="bg-primary hover:bg-primary/90 text-white rounded-full h-12 px-8 font-bold shadow-md shadow-primary/10 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <Plus size={20} strokeWidth={2.5} />
                 Add Category
@@ -224,7 +226,7 @@ export const CategoryManagement = ({
             {isOwner && (
               <Button
                 onClick={() => setIsRequestDialogOpen(true)}
-                className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-xl h-12 px-8 font-bold shadow-md shadow-dash-brand/10 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="bg-primary hover:bg-primary/90 text-white rounded-full h-12 px-8 font-bold shadow-md shadow-primary/10 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <FolderPlus size={20} />
                 Request Category
