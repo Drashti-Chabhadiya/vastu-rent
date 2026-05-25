@@ -39,9 +39,20 @@ export interface Conversation {
 }
 
 // ─── Socket URL ───────────────────────────────────────────────────────────────
-const SOCKET_URL =
-  import.meta.env.VITE_API_BASE_URL?.replace('/api', '') ||
-  (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4000')
+const getSocketUrl = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    const url = import.meta.env.VITE_API_BASE_URL.replace('/api', '')
+    if (!url.includes('new-vastu-rent-client.vercel.app')) {
+      return url
+    }
+  }
+  if (typeof window !== 'undefined' && window.location.hostname === 'new-vastu-rent-client.vercel.app') {
+    return 'https://new-vastu-rent-server.vercel.app'
+  }
+  return typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4000'
+}
+
+const SOCKET_URL = getSocketUrl()
 
 // ─── Main hook ────────────────────────────────────────────────────────────────
 export function useChat() {

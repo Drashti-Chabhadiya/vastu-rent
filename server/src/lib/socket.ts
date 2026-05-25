@@ -14,6 +14,8 @@ export function initSocket(httpServer: any) {
     "http://127.0.0.1:3000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://new-vastu-rent-client.vercel.app",
+    "https://new-vastu-rent-client.vercel.app/",
   ];
 
   io = new SocketIOServer(httpServer, {
