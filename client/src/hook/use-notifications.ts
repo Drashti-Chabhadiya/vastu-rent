@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
 import { io, Socket } from 'socket.io-client'
+import { getSocketUrl } from '#/lib/socket-url'
 import { authClient } from '#/lib/auth/auth-client'
 import { useEffect } from 'react'
 
@@ -22,19 +23,6 @@ export const useNotifications = () => {
   useEffect(() => {
     const token = session?.session?.token
     if (!token) return
-
-    const getSocketUrl = () => {
-      if (import.meta.env.VITE_API_BASE_URL) {
-        const url = import.meta.env.VITE_API_BASE_URL.replace('/api', '')
-        if (!url.includes('new-vastu-rent-client.vercel.app')) {
-          return url
-        }
-      }
-      if (typeof window !== 'undefined' && window.location.hostname === 'new-vastu-rent-client.vercel.app') {
-        return 'https://new-vastu-rent-server.vercel.app'
-      }
-      return typeof window !== 'undefined' ? window.location.origin : 'http://localhost:4000'
-    }
 
     const SOCKET_URL = getSocketUrl()
 

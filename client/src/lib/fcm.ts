@@ -35,7 +35,35 @@ export async function registerDeviceForPush() {
     if (permission !== 'granted') return
 
     const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
-    const token = await getToken(messaging, { vapidKey })
+    
+    let serviceWorkerRegistration;
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      // Register the service worker explicitly
+      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      
+      // Wait for the service worker to become fully active/activated
+      if (!registration.active) {
+        await new Promise<void>((resolve) => {
+          const sw = registration.installing || registration.waiting
+          if (sw) {
+            sw.addEventListener('statechange', () => {
+              if (sw.state === 'activated') resolve()
+            })
+          } else {
+            resolve()
+          }
+          // Max wait of 2.5 seconds to prevent blocking indefinitely
+          setTimeout(resolve, 2500)
+        })
+      }
+      
+      serviceWorkerRegistration = registration
+    }
+
+    const token = await getToken(messaging, { 
+      vapidKey,
+      serviceWorkerRegistration
+    })
     if (!token) return
 
     // Register token with server
