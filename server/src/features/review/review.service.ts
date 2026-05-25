@@ -1,9 +1,25 @@
 import { prisma } from "../../config/prisma.js";
 
 export class ReviewService {
-  async getAllReviews(search?: string, productId?: string) {
+  async getAllReviews(search?: string, productId?: string, userId?: string, userRole?: string) {
     const where: any = {};
-    if (productId) where.productId = productId;
+    
+    // 1. If productId is provided, filter reviews by that product (public page listing details)
+    if (productId) {
+      where.productId = productId;
+    } else if (userId && userRole) {
+      // 2. If it is a dashboard reviews request (no productId), apply strict role-based filtering:
+      if (userRole === 'admin' || userRole === 'superAdmin') {
+        // Admin & SuperAdmin can see all reviews (no additional filter)
+      } else if (userRole === 'owner') {
+        // Owners can see reviews ONLY for their own listings/products
+        where.product = { ownerId: userId };
+      } else {
+        // Standard users can see all reviews they submitted
+        where.userId = userId;
+      }
+    }
+
     if (search) {
       where.OR = [
         { comment: { contains: search, mode: 'insensitive' } },
@@ -17,7 +33,15 @@ export class ReviewService {
       orderBy: { createdAt: "desc" },
       include: {
         user: { select: { id: true, name: true, email: true, image: true } },
-        product: { select: { id: true, title: true } },
+        product: {
+          select: {
+            id: true,
+            title: true,
+            location: true,
+            images: true,
+            owner: { select: { id: true, name: true, image: true } }
+          }
+        },
       },
     });
   }
@@ -27,9 +51,83 @@ export class ReviewService {
   }
 
   async createReview(data: { rating: number; comment?: string; productId: string; userId: string }) {
+    const { productId, userId } = data;
+
+    // Rule 3: Owner Cannot Review Their Own Listing
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { ownerId: true }
+    });
+
+    if (!product) {
+      throw new Error("Product listing not found");
+    }
+
+    if (product.ownerId === userId) {
+      throw new Error("Owners are not allowed to review their own listings.");
+    }
+
+    // Rule 2: One Booking = One Review (Enforce exactly one review per listing per user, but allow updates within 7 days)
+    const existingReview = await prisma.review.findFirst({
+      where: {
+        productId,
+        userId
+      }
+    });
+
+    if (existingReview) {
+      const daysDiff = (new Date().getTime() - new Date(existingReview.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+      if (daysDiff > 7) {
+        throw new Error("Reviews can only be edited within 7 days of submission.");
+      }
+
+      return prisma.review.update({
+        where: { id: existingReview.id },
+        data: {
+          rating: data.rating,
+          comment: data.comment,
+        },
+        include: { user: { select: { id: true, name: true, image: true } } },
+      });
+    }
+
+    // Rule 1: Only Completed Bookings Can Be Reviewed
+    const completedRental = await prisma.rental.findFirst({
+      where: {
+        productId,
+        renterId: userId,
+        status: { in: ['completed', 'returned'] }
+      }
+    });
+
+    if (!completedRental) {
+      throw new Error("You can only review listings after completing a booking.");
+    }
+
     return prisma.review.create({
       data,
       include: { user: { select: { id: true, name: true, image: true } } },
+    });
+  }
+
+  async replyToReview(id: string, replyText: string, userId: string) {
+    const review = await prisma.review.findUnique({
+      where: { id },
+      include: { product: true }
+    });
+    if (!review) throw new Error("Review not found");
+    if (review.product.ownerId !== userId) {
+      throw new Error("Only the listing owner can reply to this review.");
+    }
+    
+    // Append the reply to the comment
+    // Strip existing reply if any
+    const cleanComment = review.comment ? review.comment.split('\n\n[Reply:')[0] : '';
+    const newComment = `${cleanComment}\n\n[Reply: ${replyText}]`;
+    
+    return prisma.review.update({
+      where: { id },
+      data: { comment: newComment }
     });
   }
 }

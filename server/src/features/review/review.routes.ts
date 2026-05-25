@@ -15,6 +15,14 @@ export async function reviewRoutes(fastify: FastifyInstance) {
     }
   }, reviewController.createReview);
 
+  fastify.post("/:id/reply", {
+    preHandler: async (request, reply) => {
+      const session = await auth.api.getSession({ headers: request.headers as any });
+      if (!session) return reply.status(401).send({ message: "Unauthorized" });
+      (request as any).user = session.user;
+    }
+  }, reviewController.replyToReview);
+
   // Admin Only
   fastify.delete("/:id", {
     preHandler: async (request, reply) => {

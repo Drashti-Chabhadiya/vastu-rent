@@ -61,6 +61,11 @@ model User {
   stories          Story[]
   coupons          Coupon[]
 
+  // Chat relations
+  conversationsAsOne Conversation[] @relation("ParticipantOne")
+  conversationsAsTwo Conversation[] @relation("ParticipantTwo")
+  sentMessages      Message[]      @relation("SentMessages")
+
   @@map("user")
 }
 
@@ -347,6 +352,40 @@ model CloudinaryConfig {
   updatedAt    DateTime @updatedAt
 
   @@map("cloudinary_config")
+}
+
+model Conversation {
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  participantOneId String
+  participantOne   User      @relation("ParticipantOne", fields: [participantOneId], references: [id], onDelete: Cascade)
+
+  participantTwoId String
+  participantTwo   User      @relation("ParticipantTwo", fields: [participantTwoId], references: [id], onDelete: Cascade)
+
+  messages         Message[]
+
+  @@unique([participantOneId, participantTwoId])
+  @@map("conversation")
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  senderId       String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+
+  content        String
+  isRead         Boolean      @default(false)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("message")
 }
 
 

@@ -42,7 +42,7 @@ interface OrderDetailsViewProps {
 export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
   const updateStatus = useUpdateRentalStatus()
   const [pendingAction, setPendingAction] = useState<
-    'confirm' | 'reject' | null
+    'confirm' | 'reject' | 'complete' | null
   >(null)
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false)
 
@@ -210,29 +210,42 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                   </Button>
                 </>
               ) : (
-                <div className="text-center py-4 bg-slate-50 rounded-2xl border border-slate-100">
-                  <span className="text-xs font-black text-slate-500 uppercase tracking-widest block mb-1">
-                    Request Handled
-                  </span>
-                  <div className="flex items-center justify-center gap-2 text-sm font-bold text-slate-700">
-                    {(order.status === 'confirmed' ||
-                      order.status === 'active') && (
+                <div className="space-y-4">
+                  <div className="text-center py-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <span className="text-xs font-black text-slate-500 uppercase tracking-widest block mb-1">
+                      Request Handled
+                    </span>
+                    <div className="flex items-center justify-center gap-2 text-sm font-bold text-slate-700">
+                      {(order.status === 'confirmed' ||
+                        order.status === 'active') && (
+                          <span className="text-[#059669] flex items-center gap-1">
+                            <CheckCircle2 size={16} /> Confirmed
+                          </span>
+                        )}
+                      {order.status === 'completed' && (
                         <span className="text-[#059669] flex items-center gap-1">
-                          <CheckCircle2 size={16} /> Confirmed
+                          <CheckCircle2 size={16} /> Completed
                         </span>
                       )}
-                    {order.status === 'completed' && (
-                      <span className="text-[#059669] flex items-center gap-1">
-                        <CheckCircle2 size={16} /> Completed
-                      </span>
-                    )}
-                    {(order.status === 'cancelled' ||
-                      order.status === 'rejected') && (
-                        <span className="text-red-500 flex items-center gap-1">
-                          <XCircle size={16} /> Rejected / Cancelled
-                        </span>
-                      )}
+                      {(order.status === 'cancelled' ||
+                        order.status === 'rejected') && (
+                          <span className="text-red-500 flex items-center gap-1">
+                            <XCircle size={16} /> Rejected / Cancelled
+                          </span>
+                        )}
+                    </div>
                   </div>
+
+                  {(order.status === 'confirmed' || order.status === 'active') && (
+                    <Button
+                      onClick={() => setPendingAction('complete')}
+                      disabled={updateStatus.isPending}
+                      className="w-full h-14 rounded-2xl bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                    >
+                      <CheckCircle2 size={16} />
+                      Complete Rental (Returned)
+                    </Button>
+                  )}
                 </div>
               )}
 
@@ -267,7 +280,14 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
         <AlertDialogContent className="rounded-[2.5rem] border border-slate-100 p-10 max-w-md bg-white shadow-2xl font-sans">
           <AlertDialogHeader className="space-y-4">
             <AlertDialogTitle className="text-lg font-black text-[#1e293b] flex items-center gap-3">
-              {pendingAction === 'confirm' ? (
+              {pendingAction === 'complete' ? (
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-2xl bg-[#e2f5ec] flex items-center justify-center text-[#059669]">
+                    <CheckCircle2 size={20} />
+                  </div>
+                  <span>Complete Rental?</span>
+                </div>
+              ) : pendingAction === 'confirm' ? (
                 <div className="flex items-center gap-2.5">
                   <div className="w-10 h-10 rounded-2xl bg-[#e2f5ec] flex items-center justify-center text-[#059669]">
                     <CheckCircle2 size={20} />
@@ -284,7 +304,9 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
               )}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-[13px] font-semibold text-slate-500 leading-relaxed pt-2">
-              {pendingAction === 'confirm'
+              {pendingAction === 'complete'
+                ? `Are you sure you want to mark this rental booking for "${order.product?.title || 'this product'}" as Completed? The product will be marked as returned, and the renter will be allowed to submit a review.`
+                : pendingAction === 'confirm'
                 ? `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
                 : `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`}
             </AlertDialogDescription>
@@ -299,17 +321,21 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                   handleStatusUpdate('confirmed')
                 } else if (pendingAction === 'reject') {
                   handleStatusUpdate('rejected')
+                } else if (pendingAction === 'complete') {
+                  handleStatusUpdate('completed')
                 }
                 setPendingAction(null)
               }}
               className={cn(
                 'h-14 flex-1 rounded-2xl font-black text-[12px] text-white active:scale-95 transition-all',
-                pendingAction === 'confirm'
+                pendingAction === 'confirm' || pendingAction === 'complete'
                   ? 'bg-[#059669] hover:bg-[#059669]/90 shadow-lg shadow-emerald-100'
                   : 'bg-[#ef4444] hover:bg-[#ef4444]/90 shadow-lg shadow-red-100',
               )}
             >
-              {pendingAction === 'confirm'
+              {pendingAction === 'complete'
+                ? 'Complete Rental'
+                : pendingAction === 'confirm'
                 ? 'Confirm Booking'
                 : 'Reject Booking'}
             </AlertDialogAction>

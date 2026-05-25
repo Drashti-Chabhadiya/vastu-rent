@@ -22,6 +22,8 @@ import { deleteRequestRoutes } from "./features/delete-request/delete-request.ro
 import { paymentRoutes } from "./features/payment/payment.routes.js";
 import { payoutRoutes } from "./features/payout/payout.routes.js";
 import { storyRoutes } from "./features/story/story.routes.js";
+import { chatRoutes } from "./features/chat/chat.routes.js";
+
 
 export const app = Fastify({ logger: true, trustProxy: true });
 
@@ -64,6 +66,7 @@ app.register(deleteRequestRoutes, { prefix: "/api/delete-requests" });
 app.register(paymentRoutes, { prefix: "/api/payments" });
 app.register(payoutRoutes, { prefix: "/api/payouts" });
 app.register(storyRoutes, { prefix: "/api/stories" });
+app.register(chatRoutes, { prefix: "/api/chat" });
 
 // Aliases for backward compatibility with the frontend
 app.register(productRoutes, { prefix: "/api/admin/products" });

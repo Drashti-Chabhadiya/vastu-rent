@@ -184,8 +184,9 @@ export function ProductDetail({ id }: { id: string }) {
       })
       setReviewComment('')
       setReviewRating(5)
-    } catch {
-      setReviewError('Failed to submit. Please log in first.')
+    } catch (error: any) {
+      const serverMsg = error?.response?.data?.message || error?.message || 'Failed to submit. Please log in first.';
+      setReviewError(serverMsg)
     }
   }
 

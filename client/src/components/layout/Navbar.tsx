@@ -33,6 +33,7 @@ import {
   Search,
   Smartphone,
   ChevronRight,
+  ChevronDown,
   Leaf,
   Calendar,
   Percent,
@@ -72,7 +73,7 @@ export function Navbar() {
     navigate({ to: '/' })
   }
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/95 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 md:px-10">
         <Link to="/" className="transition-opacity hover:opacity-90">
           <Logo />
@@ -81,7 +82,7 @@ export function Navbar() {
           <NavigationMenu>
             <NavigationMenuList className="gap-1">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent hover:bg-transparent data-[state=open]:bg-transparent">
+                <NavigationMenuTrigger className="bg-transparent hover:bg-transparent data-[state=open]:bg-transparent text-sm font-bold text-gray-700">
                   Categories
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -128,7 +129,7 @@ export function Navbar() {
                     }}
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      'bg-transparent hover:bg-transparent focus:bg-transparent',
+                      'bg-transparent hover:bg-transparent focus:bg-transparent text-sm font-bold text-gray-700',
                     )}
                   >
                     {link.label}
@@ -143,7 +144,7 @@ export function Navbar() {
             variant="outline"
             size="icon"
             aria-label="Search"
-            className="h-10 w-10 rounded-full border border-border text-foreground/70 transition-all hover:bg-accent hover:text-foreground active:scale-95 cursor-pointer"
+            className="h-10 w-10 rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-gray-900 active:scale-95 cursor-pointer shadow-sm"
           >
             <Search className="h-4 w-4" />
           </Button>
@@ -152,7 +153,7 @@ export function Navbar() {
               variant="outline"
               size="icon"
               aria-label="Download App"
-              className="h-10 w-10 rounded-full border border-border text-foreground/70 transition-all hover:bg-accent hover:text-foreground active:scale-95 cursor-pointer"
+              className="h-10 w-10 rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-gray-900 active:scale-95 cursor-pointer shadow-sm"
             >
               <Smartphone className="h-4 w-4" />
             </Button>
@@ -162,11 +163,11 @@ export function Navbar() {
               variant="outline"
               size="icon"
               aria-label="Saved"
-              className="group relative h-10 w-10 rounded-full border border-border text-foreground/70 transition-all hover:bg-accent hover:text-foreground active:scale-95 cursor-pointer"
+              className="group relative h-10 w-10 rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-gray-900 active:scale-95 cursor-pointer shadow-sm"
             >
               <Heart className="h-4 w-4" />
               {count > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                <span className="absolute -right-1 -top-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#2d5222] text-[9px] font-black text-white shadow-sm border border-white">
                   {count}
                 </span>
               )}
@@ -177,16 +178,21 @@ export function Navbar() {
           ) : session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-border p-0 outline-none transition-all hover:ring-4 hover:ring-primary/10 hover:bg-transparent active:scale-95 cursor-pointer">
-                  <Avatar className="h-full w-full">
-                    <AvatarImage
-                      src={session.user.image || ''}
-                      alt={session.user.name}
-                    />
-                    <AvatarFallback className="bg-primary/5 text-[13px] font-medium text-primary">
-                      {session.user.name?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                <Button variant="ghost" className="relative flex items-center gap-1.5 p-0 hover:bg-transparent active:scale-95 cursor-pointer outline-none shadow-none border-none">
+                  <div className="relative h-9 w-9 rounded-full border border-slate-200">
+                    <Avatar className="h-full w-full">
+                      <AvatarImage
+                        src={session.user.image || ''}
+                        alt={session.user.name}
+                      />
+                      <AvatarFallback className="bg-[#2d5222]/5 text-[13px] font-bold text-[#2d5222]">
+                        {session.user.name?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {/* Active Online Indicator */}
+                    <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-[#2d5222] border-2 border-white rounded-full" />
+                  </div>
+                  <ChevronDown className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[340px] p-3 rounded-[24px] bg-card border border-border shadow-lift" align="end" sideOffset={8}>
@@ -295,7 +301,7 @@ export function Navbar() {
                   {session.user.role === 'owner' ||
                   session.user.role === 'admin' ||
                   session.user.role === 'superAdmin' ? (
-                    <Link to="/profile/listings">
+                    <Link to="/account/listings">
                       <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
                         <Percent className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
                         <div className="flex flex-col min-w-0">

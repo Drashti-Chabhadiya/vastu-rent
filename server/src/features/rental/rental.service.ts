@@ -111,7 +111,14 @@ export class RentalService {
     return prisma.rental.findMany({
       where: { renterId: userId },
       include: {
-        product: { include: { category: true } },
+        product: {
+          include: {
+            category: true,
+            reviews: {
+              where: { userId }
+            }
+          }
+        },
       },
       orderBy: { createdAt: "desc" },
     });
