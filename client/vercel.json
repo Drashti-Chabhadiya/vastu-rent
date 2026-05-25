@@ -18,7 +18,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://new-vastu-rent-server.vercel.app/api/:path*"
+      "destination": "https://new-vastu-rent.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
