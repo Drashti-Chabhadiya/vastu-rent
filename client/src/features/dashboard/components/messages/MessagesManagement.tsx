@@ -29,12 +29,11 @@ import {
   DialogTitle,
 } from '#/components/ui/dialog'
 import { toast } from 'sonner'
-import { useChat } from './useChat'
-import type { Conversation, Message } from './useChat'
+import { type Conversation, type Message } from '../../../../hook/use-chat'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
 import { apiClient } from '#/lib/api'
-
+import { useChat } from '#/hook'
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatMsgTime(dateStr: string) {
   const date = new Date(dateStr)
