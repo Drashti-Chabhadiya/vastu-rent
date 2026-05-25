@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, onMessage } from 'firebase/messaging'
 import { apiClient } from '#/lib/api'
-import { authClient } from './auth/auth-client'
 
 let messaging: ReturnType<typeof getMessaging> | null = null
 
@@ -21,7 +20,7 @@ export function initFirebase() {
   try {
     const app = initializeApp(firebaseConfig)
     messaging = getMessaging(app)
-    ;(window as any).__fcm_initialized = true
+      ; (window as any).__fcm_initialized = true
   } catch (err) {
     console.error('Firebase init error', err)
   }
@@ -48,7 +47,7 @@ export async function registerDeviceForPush() {
 }
 
 export function onForegroundMessage(cb: (payload: any) => void) {
-  if (!messaging) return () => {}
+  if (!messaging) return () => { }
   return onMessage(messaging, (payload) => {
     cb(payload)
   })
