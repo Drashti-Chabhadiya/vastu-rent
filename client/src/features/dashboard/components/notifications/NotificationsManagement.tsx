@@ -14,7 +14,9 @@ import {
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
 } from '#/hook'
-import { useState } from 'react'
+import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
+import { useQueryClient } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 import {
   Select,
   SelectContent,
@@ -22,17 +24,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
+import { useNavigate } from '@tanstack/react-router'
+import { authClient } from '#/lib/auth/auth-client'
 
 export const NotificationsManagement = () => {
+  const navigate = useNavigate()
+  const { data: session } = authClient.useSession()
+  const userRole = session?.user?.role || 'owner'
+
   const { data: notifications, isLoading } = useNotifications()
   const markReadMutation = useMarkNotificationRead()
   const markAllReadMutation = useMarkAllNotificationsRead()
+  const queryClient = useQueryClient()
 
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('all')
 
-  const handleMarkRead = (id: string) => {
-    markReadMutation.mutate(id)
+  const handleNotificationClick = async (notif: any) => {
+    if (!notif.isRead) {
+      await markReadMutation.mutateAsync(notif.id)
+    }
+
+    // Dynamic Role-based navigation based on notification types
+    switch (notif.type) {
+      case 'booking':
+        if (userRole === 'owner') {
+          navigate({ to: '/account/orders' })
+        } else {
+          navigate({ to: '/account/bookings' })
+        }
+        break
+      case 'payment':
+        navigate({ to: '/account/payments' })
+        break
+      case 'info':
+        navigate({ to: '/account/messages' })
+        break
+      default:
+        break
+    }
   }
 
   const handleMarkAllRead = () => {
@@ -145,7 +175,7 @@ export const NotificationsManagement = () => {
                 return (
                   <div
                     key={notif.id}
-                    onClick={() => !notif.isRead && handleMarkRead(notif.id)}
+                    onClick={() => handleNotificationClick(notif)}
                     className={`flex items-center justify-between p-4 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all cursor-pointer group ${!notif.isRead ? 'bg-slate-50/70 border-slate-100' : ''
                       }`}
                   >
@@ -217,4 +247,9 @@ export const NotificationsManagement = () => {
       </div>
     </div>
   )
+}
+
+// Handled globally in _authenticated.tsx layout wrapper
+export function NotificationsManagementWrapper() {
+  return <NotificationsManagement />
 }

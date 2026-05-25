@@ -49,14 +49,17 @@ export class DisputeController {
     });
 
     // Notify admins of a new dispute
-    await prisma.notification.create({
-      data: {
+    try {
+      const { createAndDeliverNotification } = await import('../../lib/notification.js')
+      await createAndDeliverNotification({
         userId: session.user.id,
-        title: "Dispute Opened",
+        title: 'Dispute Opened',
         message: `Dispute opened for rental ${rentalId}. Reason: ${reason}`,
-        type: "alert"
-      }
-    });
+        type: 'alert',
+      })
+    } catch (err) {
+      console.error('Failed to deliver dispute notification:', err)
+    }
 
     return { dispute };
   }
@@ -87,14 +90,17 @@ export class DisputeController {
     });
 
     // Notify the reported user & the renter
-    await prisma.notification.create({
-      data: {
+    try {
+      const { createAndDeliverNotification } = await import('../../lib/notification.js')
+      await createAndDeliverNotification({
         userId: dispute.reportedById,
-        title: "Dispute Resolution",
-        message: `Your dispute for rental ${dispute.rentalId} has been ${status}. Resolution: ${resolution || "No comments."}`,
-        type: "info"
-      }
-    });
+        title: 'Dispute Resolution',
+        message: `Your dispute for rental ${dispute.rentalId} has been ${status}. Resolution: ${resolution || 'No comments.'}`,
+        type: 'info',
+      })
+    } catch (err) {
+      console.error('Failed to deliver dispute resolution notification:', err)
+    }
 
     return { success: true, dispute: updated };
   }

@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Vastu Rent',
   webDir: 'dist',
   server: {
-    url: 'http://192.168.1.23:3000', // Your local IP + dev server port
+    url: 'https://new-vastu-rent-client.vercel.app', // Your local IP + dev server port
     cleartext: true,
   },
 }

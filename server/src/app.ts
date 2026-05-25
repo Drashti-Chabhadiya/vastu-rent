@@ -38,6 +38,7 @@ app.register(multipart, {
 
 app.register(cors, {
   origin: process.env.CLIENT_URL ?? "http://localhost:3000",
+  // origin: process.env.CLIENT_URL ?? "http://192.168.1.8:3000",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "x-better-auth-session-token", "better-auth-session-token"],

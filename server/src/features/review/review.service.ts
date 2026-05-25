@@ -104,10 +104,28 @@ export class ReviewService {
       throw new Error("You can only review listings after completing a booking.");
     }
 
-    return prisma.review.create({
+    const createdReview = await prisma.review.create({
       data,
-      include: { user: { select: { id: true, name: true, image: true } } },
+      include: { 
+        user: { select: { id: true, name: true, image: true } },
+        product: true
+      },
     });
+
+    // Notify listing owner
+    try {
+      const { createAndDeliverNotification } = await import('../../lib/notification.js');
+      await createAndDeliverNotification({
+        userId: createdReview.product.ownerId,
+        title: "New Review Received! ⭐",
+        message: `${createdReview.user.name} rated your product "${createdReview.product.title}" with ${createdReview.rating} stars.`,
+        type: "alert",
+      });
+    } catch (err) {
+      console.error("Failed to deliver review creation notification:", err);
+    }
+
+    return createdReview;
   }
 
   async replyToReview(id: string, replyText: string, userId: string) {
@@ -125,10 +143,29 @@ export class ReviewService {
     const cleanComment = review.comment ? review.comment.split('\n\n[Reply:')[0] : '';
     const newComment = `${cleanComment}\n\n[Reply: ${replyText}]`;
     
-    return prisma.review.update({
+    const updatedReview = await prisma.review.update({
       where: { id },
-      data: { comment: newComment }
+      data: { comment: newComment },
+      include: {
+        product: true,
+        user: true // The reviewer
+      }
     });
+
+    // Notify reviewer
+    try {
+      const { createAndDeliverNotification } = await import('../../lib/notification.js');
+      await createAndDeliverNotification({
+        userId: updatedReview.userId,
+        title: "New Reply to Your Review! 💬",
+        message: `The owner replied to your review on "${updatedReview.product.title}".`,
+        type: "info",
+      });
+    } catch (err) {
+      console.error("Failed to deliver review reply notification:", err);
+    }
+
+    return updatedReview;
   }
 }
 

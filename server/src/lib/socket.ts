@@ -172,6 +172,24 @@ export function initSocket(httpServer: any) {
           lastMessage: message,
         });
 
+        // Smart Notification Trigger: only notify recipient if they are not currently in the chat room
+        try {
+          const socketsInRoom = await io?.in(`conversation_${conversationId}`).fetchSockets();
+          const isOtherUserActiveInChat = socketsInRoom?.some((s) => s.data?.user?.id === otherParticipantId);
+
+          if (!isOtherUserActiveInChat) {
+            const { createAndDeliverNotification } = await import('./notification.js');
+            await createAndDeliverNotification({
+              userId: otherParticipantId,
+              title: `New message from ${user.name} 💬`,
+              message: content.trim().length > 80 ? `${content.trim().substring(0, 80)}...` : content.trim(),
+              type: "info",
+            });
+          }
+        } catch (err) {
+          console.error("Failed to deliver message notification:", err);
+        }
+
       } catch (err) {
         console.error("Error storing and broadcasting message:", err);
         socket.emit("error", { message: "Failed to send message" });

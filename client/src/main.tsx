@@ -8,6 +8,20 @@ const router = getRouter()
 
 const rootElement = document.getElementById('app')!
 
+// Register the Service Worker for FCM push notifications
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/firebase-messaging-sw.js')
+      .then((reg) => {
+        console.log('Firebase Service Worker registered successfully!', reg.scope)
+      })
+      .catch((err) => {
+        console.error('Firebase Service Worker registration failed:', err)
+      })
+  })
+}
+
 if (!rootElement.innerHTML) {
   const root = createRoot(rootElement)
   root.render(
