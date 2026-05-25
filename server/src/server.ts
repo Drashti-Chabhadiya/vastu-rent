@@ -1,3 +1,4 @@
+import url from "node:url";
 import { app } from "./app.js"; 
 import { connectPrisma } from "./config/prisma.js";
 import { initSocket } from "./lib/socket.js";
@@ -13,20 +14,26 @@ export const handler = async (event: any, context: any) => {
   return proxy(event, context);
 };
 
-if (process.env.NODE_ENV !== "production") {
-  const start = async () => {
-    try {
-      await connectPrisma();
-      await app.listen({ port: 4000, host: "0.0.0.0" });
-      // Initialize Socket.IO AFTER the server is listening so WebSocket upgrades work
-      initSocket(app.server);
-      console.log("🚀 Local server running on http://localhost:4000");
-    } catch (err) {
-      app.log.error(err);
-      process.exit(1);
-    }
-  };
-  start();
+const isDirectExecution = import.meta.url === url.pathToFileURL(process.argv[1]).href;
+
+const startServer = async () => {
+  try {
+    await connectPrisma();
+    await app.listen({
+      port: Number(process.env.PORT) || 4000,
+      host: "0.0.0.0",
+    });
+    // Initialize Socket.IO AFTER the server is listening so WebSocket upgrades work
+    initSocket(app.server);
+    console.log("🚀 Server running on http://localhost:" + (process.env.PORT || 4000));
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+};
+
+if (isDirectExecution) {
+  startServer();
 }
 
 export default async (req: any, res: any) => {
