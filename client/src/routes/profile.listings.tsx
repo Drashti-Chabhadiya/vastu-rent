@@ -1,6 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { ProfileListings } from '#/features/profile'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/profile/listings')({
-  component: ProfileListings,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/account/listings',
+    })
+  },
 })

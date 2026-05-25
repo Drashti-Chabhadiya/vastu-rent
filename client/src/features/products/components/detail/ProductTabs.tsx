@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Star,
   ShieldCheck,
@@ -10,6 +11,25 @@ import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { Textarea } from '#/components/ui/textarea'
 import { cn } from '#/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
+
+const parseCommentAndImages = (comment: string) => {
+  if (!comment) return { text: '', images: [] }
+  const match = comment.match(/\[Images:\s*([^\]]+)\]/)
+  if (match) {
+    const imagesStr = match[1]
+    const images = imagesStr.split(',').map((img: string) => img.trim()).filter(Boolean)
+    const text = comment.replace(/\[Images:\s*([^\]]+)\]/, '').trim()
+    return { text, images }
+  }
+  return { text: comment, images: [] }
+}
 
 interface ProductTabsProps {
   product: any
@@ -38,6 +58,15 @@ export const ProductTabs = ({
   handleSubmitReview,
   createReviewIsPending,
 }: ProductTabsProps) => {
+  const [sortBy, setSortBy] = useState<'latest' | 'highest'>('latest')
+
+  const sortedReviews = [...reviews].sort((a, b) => {
+    if (sortBy === 'highest') {
+      return b.rating - a.rating
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  })
+
   const tabs = [
     { id: 'description', label: 'Description' },
     { id: 'details', label: 'Details' },
@@ -187,7 +216,30 @@ export const ProductTabs = ({
               </div>
             ) : (
               <div className="space-y-4">
-                {reviews.map((r: any) => (
+                {/* Sorting Options Bar */}
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                  <span className="text-xs text-gray-400 font-bold">
+                    {reviews.length} {reviews.length === 1 ? 'Review' : 'Reviews'}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Sort by:</span>
+                    <Select value={sortBy} onValueChange={(val: any) => setSortBy(val)}>
+                      <SelectTrigger className="w-[130px] h-7 text-xs border-slate-100 hover:bg-slate-50 font-bold rounded-lg text-slate-700 focus:ring-0">
+                        <SelectValue placeholder="Sort order" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-slate-100/80 rounded-xl shadow-lg">
+                        <SelectItem value="latest" className="text-xs font-semibold text-slate-700 focus:bg-[#2d5222]/5 focus:text-[#2d5222] cursor-pointer rounded-lg">
+                          Latest
+                        </SelectItem>
+                        <SelectItem value="highest" className="text-xs font-semibold text-slate-700 focus:bg-[#2d5222]/5 focus:text-[#2d5222] cursor-pointer rounded-lg">
+                          Highest Rating
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {sortedReviews.map((r: any) => (
                   <div
                     key={r.id}
                     className="flex gap-3 pb-4 border-b border-gray-50 last:border-0"
@@ -197,9 +249,15 @@ export const ProductTabs = ({
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-bold text-gray-900">
-                          {r.user?.name || 'Anonymous'}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-bold text-gray-900">
+                            {r.user?.name || 'Anonymous'}
+                          </p>
+                          <Badge className="bg-[#f4f8f1] hover:bg-[#f4f8f1] text-[#2d5222] border border-[#e2edd8] px-2 py-0.5 rounded-md flex items-center gap-1 font-bold text-[9px] uppercase shrink-0 scale-[0.85] leading-none">
+                            <ShieldCheck size={10} className="fill-[#2d5222] text-[#f4f8f1]" />
+                            Verified Rental
+                          </Badge>
+                        </div>
                         <div className="flex">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
@@ -214,9 +272,40 @@ export const ProductTabs = ({
                           ))}
                         </div>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">{r.comment}</p>
+                      {(() => {
+                        const { text, images } = parseCommentAndImages(r.comment)
+                        return (
+                          <div className="space-y-2.5 mt-1.5">
+                            {text && <p className="text-xs text-gray-600 leading-relaxed">{text}</p>}
+                            {images.length > 0 && (
+                              <div className="flex flex-wrap gap-2.5 pt-1">
+                                {images.map((imgUrl, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-sm hover:scale-[1.03] transition-all cursor-pointer group/img shrink-0"
+                                  >
+                                    <img
+                                      src={imgUrl}
+                                      alt="Review Attachment"
+                                      className="w-full h-full object-cover transition-transform duration-300"
+                                      onClick={() => window.open(imgUrl, '_blank')}
+                                    />
+                                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-black uppercase tracking-wider">
+                                      View
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })()}
                       <p className="text-[10px] text-gray-400 mt-1">
-                        {new Date(r.createdAt).toLocaleDateString('en-IN')}
+                        {new Date(r.createdAt).toLocaleDateString('en-IN', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })}
                       </p>
                     </div>
                   </div>

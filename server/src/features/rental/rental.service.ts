@@ -15,7 +15,7 @@ export class RentalService {
     const startDate = new Date(data.startDate);
     const endDate = new Date(data.endDate);
 
-    return prisma.$transaction(async (tx) => {
+    const rental = await prisma.$transaction(async (tx) => {
       // Check if product exists and get its owner
       const product = await tx.product.findUnique({
         where: { id: data.productId }
@@ -105,13 +105,35 @@ export class RentalService {
         }
       });
     });
+
+    // Generate real-time DB notification for the product owner
+    try {
+      const { createAndDeliverNotification } = await import('../../lib/notification.js');
+      await createAndDeliverNotification({
+        userId: rental.product.ownerId,
+        title: "New Booking Request! 📦",
+        message: `You have received a new booking request from ${rental.renter.name} for "${rental.product.title}".`,
+        type: "booking",
+      });
+    } catch (err) {
+      console.error("Failed to deliver booking request notification to owner:", err);
+    }
+
+    return rental;
   }
 
   async getMyRentals(userId: string) {
     return prisma.rental.findMany({
       where: { renterId: userId },
       include: {
-        product: { include: { category: true } },
+        product: {
+          include: {
+            category: true,
+            reviews: {
+              where: { userId }
+            }
+          }
+        },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -211,27 +233,31 @@ export class RentalService {
 
     // Generate real-time DB notifications for the customer/renter
     try {
+      const { createAndDeliverNotification } = await import('../../lib/notification.js')
       if (status === "active" || status === "confirmed") {
-        await prisma.notification.create({
-          data: {
-            userId: updatedRental.renterId,
-            title: "Booking Confirmed! 🎉",
-            message: `Your booking request for "${updatedRental.product.title}" has been successfully confirmed.`,
-            type: "booking"
-          }
-        });
+        await createAndDeliverNotification({
+          userId: updatedRental.renterId,
+          title: "Booking Confirmed! 🎉",
+          message: `Your booking request for "${updatedRental.product.title}" has been successfully confirmed.`,
+          type: "booking",
+        })
       } else if (status === "cancelled" || status === "rejected") {
-        await prisma.notification.create({
-          data: {
-            userId: updatedRental.renterId,
-            title: "Booking Rejected ❌",
-            message: `Your booking request for "${updatedRental.product.title}" was rejected by the owner.`,
-            type: "alert"
-          }
-        });
+        await createAndDeliverNotification({
+          userId: updatedRental.renterId,
+          title: "Booking Rejected ❌",
+          message: `Your booking request for "${updatedRental.product.title}" was rejected by the owner.`,
+          type: "alert",
+        })
+      } else if (status === "completed" || status === "returned") {
+        await createAndDeliverNotification({
+          userId: updatedRental.renterId,
+          title: "Rental Completed! 🎉",
+          message: `Your rental period for "${updatedRental.product.title}" has ended. Please leave a review!`,
+          type: "booking",
+        })
       }
     } catch (err) {
-      console.error("Failed to save database notification for renter:", err);
+      console.error("Failed to deliver notification for renter:", err)
     }
 
     return updatedRental;

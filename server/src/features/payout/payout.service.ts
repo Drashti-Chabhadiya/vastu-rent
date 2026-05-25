@@ -164,14 +164,17 @@ export class PayoutService {
         type = "alert";
       }
 
-      await prisma.notification.create({
-        data: {
+      try {
+        const { createAndDeliverNotification } = await import('../../lib/notification.js')
+        await createAndDeliverNotification({
           userId: updatedPayout.ownerId,
           title,
           message,
-          type
-        }
-      });
+          type,
+        })
+      } catch (err) {
+        console.error('Failed to deliver payout notification:', err)
+      }
     } catch (err) {
       console.error("Failed to generate DB notification for payout:", err);
     }

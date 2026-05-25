@@ -29,8 +29,31 @@ export class PaymentController {
 
     if (isValid) {
       // Update rental status and payment status
-      await rentalService.updateRentalStatus(rentalId, "confirmed", "paid", razorpay_payment_id);
+      const rental = await rentalService.updateRentalStatus(rentalId, "confirmed", "paid", razorpay_payment_id);
       
+      // Send payment notifications in background
+      try {
+        const { createAndDeliverNotification } = await import('../../lib/notification.js');
+        
+        // 1. Notify Renter
+        await createAndDeliverNotification({
+          userId: rental.renterId,
+          title: "Payment Successful! 💳",
+          message: `Your payment of ₹${rental.totalPrice} for "${rental.product.title}" was successful.`,
+          type: "payment",
+        });
+
+        // 2. Notify Product Owner
+        await createAndDeliverNotification({
+          userId: rental.product.ownerId,
+          title: "Payment Received! 💰",
+          message: `Payment of ₹${rental.totalPrice} for your product "${rental.product.title}" has been received.`,
+          type: "payment",
+        });
+      } catch (err) {
+        console.error("Failed to deliver payment verification notifications:", err);
+      }
+
       return { success: true, message: "Payment verified successfully" };
     } else {
       return reply.status(400).send({ success: false, message: "Invalid payment signature" });

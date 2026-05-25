@@ -193,7 +193,7 @@ export function HelpPage() {
             </div>
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                <MessageCircle className="bg-primary" />
+                <MessageCircle className="text-primary" />
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
@@ -204,7 +204,7 @@ export function HelpPage() {
             </div>
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                <Phone className="bg-primary" />
+                <Phone className="text-primary" />
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">

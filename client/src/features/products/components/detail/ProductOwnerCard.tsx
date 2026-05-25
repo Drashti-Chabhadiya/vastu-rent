@@ -1,14 +1,46 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { Star, Calendar, MessageCircle, CheckCircle2 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
+import { apiClient } from '#/lib/api'
+import { authClient } from '#/lib/auth/auth-client'
+import { toast } from 'sonner'
+import { useState } from 'react'
 
 interface ProductOwnerCardProps {
   owner: any
 }
 
 export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
+  const { data: session } = authClient.useSession()
+  const navigate = useNavigate()
+  const [isStartingChat, setIsStartingChat] = useState(false)
+
   if (!owner) return null
+
+  const handleContactHost = async () => {
+    if (!session?.user) {
+      toast.error('Please sign in to contact the host.')
+      navigate({ to: '/login' })
+      return
+    }
+
+    if (session.user.id === owner.id) {
+      toast.info("This is your own listing.")
+      return
+    }
+
+    setIsStartingChat(true)
+    try {
+      await apiClient.post('/chat/conversations', { targetUserId: owner.id })
+      toast.success(`Chat started with ${owner.name}!`)
+      navigate({ to: '/account/messages' })
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Could not start conversation. Try again.')
+    } finally {
+      setIsStartingChat(false)
+    }
+  }
 
   return (
     <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-5">
@@ -57,18 +89,31 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
             : 'May 2022'}
         </div>
         <div className="flex items-center gap-2 text-gray-500 text-xs">
-          <MessageCircle size={14} className="shrink-0" /> Usually responds in a
-          few hours
+          <MessageCircle size={14} className="shrink-0" />
+          Usually responds in a few hours
         </div>
       </div>
-      <Link to="/users/$id" params={{ id: owner.id || '' }}>
+
+      <div className="flex flex-col gap-2">
+        <Link to="/users/$id" params={{ id: owner.id || '' }}>
+          <Button
+            variant="outline"
+            className="w-full h-10 rounded-xl border-gray-200 font-bold text-primary hover:bg-primary/5 hover:border-brand transition-colors"
+          >
+            View Profile
+          </Button>
+        </Link>
+
         <Button
-          variant="outline"
-          className="w-full h-10 rounded-xl border-gray-200 font-bold text-primary hover:bg-primary/5 hover:border-brand transition-colors"
+          onClick={handleContactHost}
+          disabled={isStartingChat}
+          className="w-full h-10 rounded-xl bg-[#2d5222] hover:bg-[#1d3515] text-white font-bold flex items-center justify-center gap-2 transition-colors"
         >
-          View Profile
+          <MessageCircle size={15} />
+          {isStartingChat ? 'Opening Chat...' : 'Contact Host'}
         </Button>
-      </Link>
+      </div>
     </div>
   )
 }
+

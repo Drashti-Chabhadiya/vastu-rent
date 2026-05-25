@@ -45,6 +45,44 @@ export class NotificationController {
 
     return { success: true, count: updated.count };
   }
+
+  async sendAnnouncement(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    // Restrict access to admin / superAdmin
+    if (session.user.role !== "admin" && session.user.role !== "superAdmin") {
+      return reply.status(403).send({ message: "Forbidden: Admin access required" });
+    }
+
+    const { title, message } = request.body as { title: string; message: string };
+    if (!title || !message) {
+      return reply.status(400).send({ message: "Title and message are required" });
+    }
+
+    try {
+      // Find all users in the system
+      const users = await prisma.user.findMany({ select: { id: true } });
+      const { createAndDeliverNotification } = await import('../../lib/notification.js');
+
+      // Create and deliver notifications to everyone in parallel
+      await Promise.all(
+        users.map((u) => 
+          createAndDeliverNotification({
+            userId: u.id,
+            title,
+            message,
+            type: "alert",
+          }).catch((e) => console.error(`Announcement error for user ${u.id}:`, e))
+        )
+      );
+
+      return { success: true, count: users.length };
+    } catch (err) {
+      console.error("Announcement failed:", err);
+      return reply.status(500).send({ message: "Failed to broadcast announcement" });
+    }
+  }
 }
 
 export const notificationController = new NotificationController();

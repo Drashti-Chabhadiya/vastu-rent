@@ -42,6 +42,8 @@ import { Route as AuthenticatedAccountProfileRouteImport } from './routes/_authe
 import { Route as AuthenticatedAccountPaymentsRouteImport } from './routes/_authenticated/account.payments'
 import { Route as AuthenticatedAccountOrdersRouteImport } from './routes/_authenticated/account.orders'
 import { Route as AuthenticatedAccountNotificationsRouteImport } from './routes/_authenticated/account.notifications'
+import { Route as AuthenticatedAccountMessagesRouteImport } from './routes/_authenticated/account.messages'
+import { Route as AuthenticatedAccountListingsRouteImport } from './routes/_authenticated/account.listings'
 import { Route as AuthenticatedAccountCouponsRouteImport } from './routes/_authenticated/account.coupons'
 import { Route as AuthenticatedAccountBookingsRouteImport } from './routes/_authenticated/account.bookings'
 import { Route as AuthenticatedOwnerOwnerDashboardRouteImport } from './routes/_authenticated/_owner/owner.dashboard'
@@ -216,6 +218,18 @@ const AuthenticatedAccountNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedAccountRoute,
   } as any)
+const AuthenticatedAccountMessagesRoute =
+  AuthenticatedAccountMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedAccountListingsRoute =
+  AuthenticatedAccountListingsRouteImport.update({
+    id: '/listings',
+    path: '/listings',
+    getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
 const AuthenticatedAccountCouponsRoute =
   AuthenticatedAccountCouponsRouteImport.update({
     id: '/coupons',
@@ -274,6 +288,8 @@ export interface FileRoutesByFullPath {
   '/products/': typeof ProductsIndexRoute
   '/account/bookings': typeof AuthenticatedAccountBookingsRoute
   '/account/coupons': typeof AuthenticatedAccountCouponsRoute
+  '/account/listings': typeof AuthenticatedAccountListingsRoute
+  '/account/messages': typeof AuthenticatedAccountMessagesRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/account/orders': typeof AuthenticatedAccountOrdersRoute
   '/account/payments': typeof AuthenticatedAccountPaymentsRoute
@@ -307,6 +323,8 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsIndexRoute
   '/account/bookings': typeof AuthenticatedAccountBookingsRoute
   '/account/coupons': typeof AuthenticatedAccountCouponsRoute
+  '/account/listings': typeof AuthenticatedAccountListingsRoute
+  '/account/messages': typeof AuthenticatedAccountMessagesRoute
   '/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/account/orders': typeof AuthenticatedAccountOrdersRoute
   '/account/payments': typeof AuthenticatedAccountPaymentsRoute
@@ -348,6 +366,8 @@ export interface FileRoutesById {
   '/products/': typeof ProductsIndexRoute
   '/_authenticated/account/bookings': typeof AuthenticatedAccountBookingsRoute
   '/_authenticated/account/coupons': typeof AuthenticatedAccountCouponsRoute
+  '/_authenticated/account/listings': typeof AuthenticatedAccountListingsRoute
+  '/_authenticated/account/messages': typeof AuthenticatedAccountMessagesRoute
   '/_authenticated/account/notifications': typeof AuthenticatedAccountNotificationsRoute
   '/_authenticated/account/orders': typeof AuthenticatedAccountOrdersRoute
   '/_authenticated/account/payments': typeof AuthenticatedAccountPaymentsRoute
@@ -387,6 +407,8 @@ export interface FileRouteTypes {
     | '/products/'
     | '/account/bookings'
     | '/account/coupons'
+    | '/account/listings'
+    | '/account/messages'
     | '/account/notifications'
     | '/account/orders'
     | '/account/payments'
@@ -420,6 +442,8 @@ export interface FileRouteTypes {
     | '/products'
     | '/account/bookings'
     | '/account/coupons'
+    | '/account/listings'
+    | '/account/messages'
     | '/account/notifications'
     | '/account/orders'
     | '/account/payments'
@@ -460,6 +484,8 @@ export interface FileRouteTypes {
     | '/products/'
     | '/_authenticated/account/bookings'
     | '/_authenticated/account/coupons'
+    | '/_authenticated/account/listings'
+    | '/_authenticated/account/messages'
     | '/_authenticated/account/notifications'
     | '/_authenticated/account/orders'
     | '/_authenticated/account/payments'
@@ -722,6 +748,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountNotificationsRouteImport
       parentRoute: typeof AuthenticatedAccountRoute
     }
+    '/_authenticated/account/messages': {
+      id: '/_authenticated/account/messages'
+      path: '/messages'
+      fullPath: '/account/messages'
+      preLoaderRoute: typeof AuthenticatedAccountMessagesRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/account/listings': {
+      id: '/_authenticated/account/listings'
+      path: '/listings'
+      fullPath: '/account/listings'
+      preLoaderRoute: typeof AuthenticatedAccountListingsRouteImport
+      parentRoute: typeof AuthenticatedAccountRoute
+    }
     '/_authenticated/account/coupons': {
       id: '/_authenticated/account/coupons'
       path: '/coupons'
@@ -788,6 +828,8 @@ const AuthenticatedOwnerRouteWithChildren =
 interface AuthenticatedAccountRouteChildren {
   AuthenticatedAccountBookingsRoute: typeof AuthenticatedAccountBookingsRoute
   AuthenticatedAccountCouponsRoute: typeof AuthenticatedAccountCouponsRoute
+  AuthenticatedAccountListingsRoute: typeof AuthenticatedAccountListingsRoute
+  AuthenticatedAccountMessagesRoute: typeof AuthenticatedAccountMessagesRoute
   AuthenticatedAccountNotificationsRoute: typeof AuthenticatedAccountNotificationsRoute
   AuthenticatedAccountOrdersRoute: typeof AuthenticatedAccountOrdersRoute
   AuthenticatedAccountPaymentsRoute: typeof AuthenticatedAccountPaymentsRoute
@@ -799,6 +841,8 @@ interface AuthenticatedAccountRouteChildren {
 const AuthenticatedAccountRouteChildren: AuthenticatedAccountRouteChildren = {
   AuthenticatedAccountBookingsRoute: AuthenticatedAccountBookingsRoute,
   AuthenticatedAccountCouponsRoute: AuthenticatedAccountCouponsRoute,
+  AuthenticatedAccountListingsRoute: AuthenticatedAccountListingsRoute,
+  AuthenticatedAccountMessagesRoute: AuthenticatedAccountMessagesRoute,
   AuthenticatedAccountNotificationsRoute:
     AuthenticatedAccountNotificationsRoute,
   AuthenticatedAccountOrdersRoute: AuthenticatedAccountOrdersRoute,

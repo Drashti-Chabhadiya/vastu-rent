@@ -48,15 +48,18 @@ export class CategoryRequestController {
       }
     });
 
-    // Create system notification for admins
-    await prisma.notification.create({
-      data: {
-        userId: session.user.id, // For activity logs
-        title: "New Category Request",
+    // Create system notification for admins (and persist + deliver)
+    try {
+      const { createAndDeliverNotification } = await import('../../lib/notification.js')
+      await createAndDeliverNotification({
+        userId: session.user.id,
+        title: 'New Category Request',
         message: `Owner ${session.user.name || session.user.email} requested new category "${name}"`,
-        type: "alert"
-      }
-    });
+        type: 'alert',
+      })
+    } catch (err) {
+      console.error('Failed to deliver category-request notification:', err)
+    }
 
     return { categoryRequest };
   }
@@ -94,24 +97,30 @@ export class CategoryRequestController {
       });
 
       // Notify the requesting Owner
-      await prisma.notification.create({
-        data: {
+      try {
+        const { createAndDeliverNotification } = await import('../../lib/notification.js')
+        await createAndDeliverNotification({
           userId: categoryReq.ownerId,
-          title: "Category Request Approved",
+          title: 'Category Request Approved',
           message: `Your request to add category "${categoryReq.name}" has been approved!`,
-          type: "booking"
-        }
-      });
+          type: 'booking',
+        })
+      } catch (err) {
+        console.error('Failed to deliver approval notification:', err)
+      }
     } else {
       // Notify Owner of Rejection
-      await prisma.notification.create({
-        data: {
+      try {
+        const { createAndDeliverNotification } = await import('../../lib/notification.js')
+        await createAndDeliverNotification({
           userId: categoryReq.ownerId,
-          title: "Category Request Rejected",
-          message: `Your request for "${categoryReq.name}" was rejected. Reason: ${reason || "Not specified."}`,
-          type: "alert"
-        }
-      });
+          title: 'Category Request Rejected',
+          message: `Your request for "${categoryReq.name}" was rejected. Reason: ${reason || 'Not specified.'}`,
+          type: 'alert',
+        })
+      } catch (err) {
+        console.error('Failed to deliver rejection notification:', err)
+      }
     }
 
     return { success: true, request: updated };
