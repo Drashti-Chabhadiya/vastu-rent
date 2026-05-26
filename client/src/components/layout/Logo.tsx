@@ -4,7 +4,7 @@ export function Logo() {
       <img
         src="/logo.png"
         alt="Vastu Rent Logo"
-        className="h-10 w-10 object-contain rounded-xl shrink-0"
+        className="h-10 w-10 object-contain shrink-0"
       />
       <div className="leading-tight flex flex-col justify-center">
         <div className="font-extrabold text-lg tracking-tight text-gray-900 leading-none">
