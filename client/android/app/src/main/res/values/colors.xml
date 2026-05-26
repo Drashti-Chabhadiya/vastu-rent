@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary brand color for FCM notification accent -->
+    <color name="colorPrimary">#6C47FF</color>
+    <color name="colorPrimaryDark">#4B2FD6</color>
+    <color name="colorAccent">#6C47FF</color>
+</resources>

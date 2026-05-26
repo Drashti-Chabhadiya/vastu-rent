@@ -8,6 +8,12 @@ const config: CapacitorConfig = {
     url: 'https://new-vastu-rent-client.vercel.app', // Your local IP + dev server port
     cleartext: true,
   },
+  plugins: {
+    PushNotifications: {
+      // Android: show notification even when the app is in the foreground
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
+  },
 }
 
 export default config

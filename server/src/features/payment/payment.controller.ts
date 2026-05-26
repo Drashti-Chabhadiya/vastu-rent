@@ -41,6 +41,7 @@ export class PaymentController {
           title: "Payment Successful! 💳",
           message: `Your payment of ₹${rental.totalPrice} for "${rental.product.title}" was successful.`,
           type: "payment",
+          url: `/journal`,
         });
 
         // 2. Notify Product Owner
@@ -49,6 +50,7 @@ export class PaymentController {
           title: "Payment Received! 💰",
           message: `Payment of ₹${rental.totalPrice} for your product "${rental.product.title}" has been received.`,
           type: "payment",
+          url: `/journal`,
         });
       } catch (err) {
         console.error("Failed to deliver payment verification notifications:", err);
