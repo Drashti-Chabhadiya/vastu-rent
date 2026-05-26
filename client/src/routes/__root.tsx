@@ -68,35 +68,37 @@ function NotificationListener() {
       // Play alert chime
       // playNotificationSound()
 
-      // Trigger a beautiful in-app toast alert immediately (like WhatsApp / Instagram)
-      toast.info(notif.title, {
-        description: notif.message,
-        action: {
-          label: 'View',
-          onClick: () => {
-            // Dynamic deep-link navigation
-            switch (notif.type) {
-              case 'booking':
-                if (userRole === 'owner') {
-                  navigate({ to: '/account/orders' })
-                } else {
-                  navigate({ to: '/account/bookings' })
-                }
-                break
-              case 'payment':
-                navigate({ to: '/account/payments' })
-                break
-              case 'info':
-                navigate({ to: '/account/messages' })
-                break
-              default:
-                navigate({ to: '/account/notifications' })
-                break
+      // Trigger a beautiful in-app toast alert immediately (only on web, not inside the native mobile app)
+      if (!isNative) {
+        toast.info(notif.title, {
+          description: notif.message,
+          action: {
+            label: 'View',
+            onClick: () => {
+              // Dynamic deep-link navigation
+              switch (notif.type) {
+                case 'booking':
+                  if (userRole === 'owner') {
+                    navigate({ to: '/account/orders' })
+                  } else {
+                    navigate({ to: '/account/bookings' })
+                  }
+                  break
+                case 'payment':
+                  navigate({ to: '/account/payments' })
+                  break
+                case 'info':
+                  navigate({ to: '/account/messages' })
+                  break
+                default:
+                  navigate({ to: '/account/notifications' })
+                  break
+              }
             }
-          }
-        },
-        duration: 6000,
-      })
+          },
+          duration: 6000,
+        })
+      }
 
       // Trigger native browser desktop notification if supported
       if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
