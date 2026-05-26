@@ -9,7 +9,7 @@ import { useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
 import { isNative, initNativePush } from '#/lib/push-notifications'
-import { playNotificationSound } from '#/lib/sound'
+// import { playNotificationSound } from '#/lib/sound'
 import { io } from 'socket.io-client'
 import { toast } from 'sonner'
 import { getSocketUrl } from '#/lib/socket-url'
@@ -66,7 +66,7 @@ function NotificationListener() {
       })
 
       // Play alert chime
-      playNotificationSound()
+      // playNotificationSound()
 
       // Trigger a beautiful in-app toast alert immediately (like WhatsApp / Instagram)
       toast.info(notif.title, {
@@ -138,7 +138,7 @@ function NotificationListener() {
       })
 
       // Play alert chime
-      playNotificationSound()
+      // playNotificationSound()
 
       // Trigger native browser desktop notification immediately like WhatsApp!
       if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
