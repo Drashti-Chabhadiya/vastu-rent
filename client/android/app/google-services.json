@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "302497642369",
+    "project_id": "vastu-rent",
+    "storage_bucket": "vastu-rent.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302497642369:android:98823b13faa33053d8da80",
+        "android_client_info": {
+          "package_name": "com.vasturent.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEEmVaC89JR5t1GJN7R1tWSFvxfQXIwAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
