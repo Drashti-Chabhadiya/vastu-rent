@@ -13,3 +13,6 @@ __unconfig*
 todos.json
 .tanstack-query-cache
 .tanstack
+
+# APK Build output
+public/app-release.apk
