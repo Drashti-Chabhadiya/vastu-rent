@@ -8,6 +8,7 @@ import { Toaster } from '#/components/ui/sonner'
 import { useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
+import { isNative, initNativePush } from '#/lib/push-notifications'
 import { io } from 'socket.io-client'
 import { toast } from 'sonner'
 import { getSocketUrl } from '#/lib/socket-url'
@@ -27,10 +28,18 @@ function NotificationListener() {
 
   // Register device token for push notifications on login
   useEffect(() => {
-    if (token) {
+    if (!token) return
+
+    if (isNative) {
+      initNativePush((url) => {
+        navigate({ to: url as any }).catch(() => {
+          navigate({ to: '/account/notifications' as any })
+        })
+      })
+    } else {
       registerDeviceForPush().catch(() => { })
     }
-  }, [token])
+  }, [token, navigate])
 
   // 1. Global Socket.IO Real-Time Notifications Listener
   useEffect(() => {
