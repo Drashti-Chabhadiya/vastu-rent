@@ -31,6 +31,24 @@ export async function initNativePush(onNotificationTap?: (url: string) => void) 
       return
     }
 
+    // Create the default notification channel for Android (required for Android 8+)
+    if (Capacitor.getPlatform() === 'android') {
+      try {
+        await PushNotifications.createChannel({
+          id: 'vastu_rent_default',
+          name: 'Default Notifications',
+          description: 'Default notification channel for Vastu Rent',
+          importance: 5, // IMPORTANCE_HIGH (max importance, shows banner/popup & sound)
+          visibility: 1, // VISIBILITY_PUBLIC (shows on lock screen)
+          sound: 'default',
+          vibration: true,
+        })
+        console.log('[Push] Android notification channel created')
+      } catch (channelErr) {
+        console.error('[Push] Failed to create Android notification channel:', channelErr)
+      }
+    }
+
     // 2. Register with FCM/APNs
     await PushNotifications.register()
 

@@ -61,12 +61,15 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
         notification: {
           channelId: 'vastu_rent_default',
           sound: 'default',
-          icon: 'ic_stat_icon_config_sample', // white small icon from res/drawable
           color: '#6C47FF',
           clickAction: 'OPEN_ACTIVITY_1',
         },
       },
       apns: {
+        headers: {
+          'apns-priority': '10',
+          'apns-push-type': 'alert',
+        },
         payload: {
           aps: {
             alert: {
