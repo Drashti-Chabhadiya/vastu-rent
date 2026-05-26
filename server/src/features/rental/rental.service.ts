@@ -114,6 +114,7 @@ export class RentalService {
         title: "New Booking Request! 📦",
         message: `You have received a new booking request from ${rental.renter.name} for "${rental.product.title}".`,
         type: "booking",
+        url: `/journal`,
       });
     } catch (err) {
       console.error("Failed to deliver booking request notification to owner:", err);
@@ -240,6 +241,7 @@ export class RentalService {
           title: "Booking Confirmed! 🎉",
           message: `Your booking request for "${updatedRental.product.title}" has been successfully confirmed.`,
           type: "booking",
+          url: `/journal`,
         })
       } else if (status === "cancelled" || status === "rejected") {
         await createAndDeliverNotification({
@@ -247,6 +249,7 @@ export class RentalService {
           title: "Booking Rejected ❌",
           message: `Your booking request for "${updatedRental.product.title}" was rejected by the owner.`,
           type: "alert",
+          url: `/journal`,
         })
       } else if (status === "completed" || status === "returned") {
         await createAndDeliverNotification({
@@ -254,6 +257,7 @@ export class RentalService {
           title: "Rental Completed! 🎉",
           message: `Your rental period for "${updatedRental.product.title}" has ended. Please leave a review!`,
           type: "booking",
+          url: `/journal`,
         })
       }
     } catch (err) {

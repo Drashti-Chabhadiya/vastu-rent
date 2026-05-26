@@ -1,8 +1,8 @@
 import admin from 'firebase-admin'
-// import { prisma } from './prisma.js'
-import { prisma } from "../config/prisma.js";
+import { prisma } from '../config/prisma.js'
 
 let initialized = false
+
 function initAdmin() {
   if (initialized) return
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
@@ -22,35 +22,101 @@ function initAdmin() {
   }
 }
 
-export async function sendPushToUser(userId: string, payload: admin.messaging.MessagingPayload | admin.messaging.Message) {
+export interface PushPayload {
+  title: string
+  body: string
+  /** URL path to navigate to when notification is tapped, e.g. "/notifications" */
+  url?: string
+  /** Extra arbitrary data */
+  data?: Record<string, string>
+}
+
+/**
+ * Send a push notification to all registered devices for a user.
+ * Uses FCM HTTP v1 multicast (sendEachForMulticast) — replaces deprecated sendToDevice().
+ */
+export async function sendPushToUser(userId: string, payload: PushPayload) {
   initAdmin()
   if (!initialized) return
 
   try {
-    const tokens = await prisma.deviceToken.findMany({ where: { userId } })
-    if (!tokens || tokens.length === 0) return
+    const tokenRows = await prisma.deviceToken.findMany({ where: { userId } })
+    if (!tokenRows || tokenRows.length === 0) return
 
-    const deviceTokens = tokens.map((t) => t.token)
+    const tokens = tokenRows.map((t) => t.token)
 
-    // If payload looks like MessagingPayload, use sendToDevice; otherwise send message
-    if ((payload as any).notification || (payload as any).data) {
-      const res = await admin.messaging().sendToDevice(deviceTokens, payload as admin.messaging.MessagingPayload)
-      // Handle token cleanup for invalid tokens
-      const toRemove: string[] = []
-      res.results.forEach((r, idx) => {
-        const err = r.error
-        if (err && (err.code === 'messaging/invalid-registration-token' || err.code === 'messaging/registration-token-not-registered')) {
-          toRemove.push(deviceTokens[idx])
-        }
-      })
-      if (toRemove.length) {
-        await prisma.deviceToken.deleteMany({ where: { token: { in: toRemove } } })
-      }
-    } else {
-      // generic message
-      await admin.messaging().send({ tokens: deviceTokens, ...(payload as any) })
+    const message: admin.messaging.MulticastMessage = {
+      tokens,
+      notification: {
+        title: payload.title,
+        body: payload.body,
+      },
+      data: {
+        ...(payload.data ?? {}),
+        url: payload.url ?? '/notifications',
+        click_action: 'FLUTTER_NOTIFICATION_CLICK', // required for some Android versions
+      },
+      android: {
+        priority: 'high',
+        notification: {
+          channelId: 'vastu_rent_default',
+          sound: 'default',
+          icon: 'ic_stat_icon_config_sample', // white small icon from res/drawable
+          color: '#6C47FF',
+          clickAction: 'OPEN_ACTIVITY_1',
+        },
+      },
+      apns: {
+        payload: {
+          aps: {
+            alert: {
+              title: payload.title,
+              body: payload.body,
+            },
+            sound: 'default',
+            badge: 1,
+          },
+        },
+      },
+      webpush: {
+        notification: {
+          title: payload.title,
+          body: payload.body,
+          icon: '/images/icons/icon-192.png',
+        },
+        fcmOptions: {
+          link: payload.url ?? '/notifications',
+        },
+      },
     }
+
+    const response = await admin.messaging().sendEachForMulticast(message)
+
+    // Clean up stale / invalid tokens
+    const staleTokens: string[] = []
+    response.responses.forEach((r, idx) => {
+      if (!r.success) {
+        const code = r.error?.code
+        if (
+          code === 'messaging/invalid-registration-token' ||
+          code === 'messaging/registration-token-not-registered' ||
+          code === 'messaging/invalid-argument'
+        ) {
+          staleTokens.push(tokens[idx])
+        }
+        console.warn(`FCM send failed for token[${idx}]:`, r.error?.message)
+      }
+    })
+
+    if (staleTokens.length > 0) {
+      await prisma.deviceToken.deleteMany({ where: { token: { in: staleTokens } } })
+      console.log(`Removed ${staleTokens.length} stale FCM token(s) for user ${userId}`)
+    }
+
+    console.log(
+      `FCM: sent to ${response.successCount}/${tokens.length} devices for user ${userId}`
+    )
   } catch (err) {
-    console.error('FCM send error:', err)
+    console.error('FCM sendPushToUser error:', err)
   }
 }

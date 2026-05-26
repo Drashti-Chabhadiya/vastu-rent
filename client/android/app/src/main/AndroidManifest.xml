@@ -22,6 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Deep-link intent for notification tap -->
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_1" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
 
         <provider
@@ -33,9 +39,31 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+
+        <!-- FCM default notification channel (Android 8+) -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="vastu_rent_default" />
+
+        <!-- FCM default notification icon -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+
+        <!-- FCM default notification color -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+
     </application>
 
     <!-- Permissions -->
-
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Required for Android 13+ (API 33+) to show push notifications -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Required to vibrate on notification -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
 </manifest>
