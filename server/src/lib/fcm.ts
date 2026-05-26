@@ -61,7 +61,7 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
         notification: {
           channelId: 'vastu_rent_default_v2',
           sound: 'default',
-          color: '#6C47FF',
+          color: '#0e623b',
           clickAction: 'OPEN_ACTIVITY_1',
         },
       },
