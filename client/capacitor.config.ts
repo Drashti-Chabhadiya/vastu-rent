@@ -13,6 +13,9 @@ const config: CapacitorConfig = {
       // Android: show notification even when the app is in the foreground
       presentationOptions: ['badge', 'sound', 'alert'],
     },
+    CapacitorUpdater: {
+      autoUpdate: true,
+    },
   },
 }
 

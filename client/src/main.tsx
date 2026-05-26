@@ -3,6 +3,13 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from '@tanstack/react-router'
 import { getRouter } from './router'
 import './styles.css'
+import { Capacitor } from '@capacitor/core'
+import { CapacitorUpdater } from '@capgo/capacitor-updater'
+
+// Notify CapGo that the application is loaded and ready
+if (Capacitor.isNativePlatform()) {
+  CapacitorUpdater.notifyAppReady()
+}
 
 const router = getRouter()
 
