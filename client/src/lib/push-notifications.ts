@@ -35,12 +35,11 @@ export async function initNativePush(onNotificationTap?: (url: string) => void) 
     if (Capacitor.getPlatform() === 'android') {
       try {
         await PushNotifications.createChannel({
-          id: 'vastu_rent_default',
+          id: 'vastu_rent_default_v2',
           name: 'Default Notifications',
           description: 'Default notification channel for Vastu Rent',
           importance: 5, // IMPORTANCE_HIGH (max importance, shows banner/popup & sound)
           visibility: 1, // VISIBILITY_PUBLIC (shows on lock screen)
-          sound: 'default',
           vibration: true,
         })
         console.log('[Push] Android notification channel created')

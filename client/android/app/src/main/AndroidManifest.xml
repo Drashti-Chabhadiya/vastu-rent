@@ -43,7 +43,7 @@
         <!-- FCM default notification channel (Android 8+) -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="vastu_rent_default" />
+            android:value="vastu_rent_default_v2" />
 
         <!-- FCM default notification icon -->
         <meta-data
