@@ -70,6 +70,7 @@ model User {
   cloudinaryConfig CloudinaryConfig?
   stories          Story[]
   coupons          Coupon[]
+  recentSearches   RecentSearch[]
 
   // Chat relations
   conversationsAsOne Conversation[] @relation("ParticipantOne")
@@ -408,6 +409,17 @@ model Message {
   updatedAt      DateTime     @updatedAt
 
   @@map("message")
+}
+
+model RecentSearch {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  query     String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, query])
+  @@map("recent_search")
 }
 
 

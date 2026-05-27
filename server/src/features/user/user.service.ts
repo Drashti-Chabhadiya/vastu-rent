@@ -243,6 +243,68 @@ export class UserService {
       });
     }
   }
+
+  async getRecentSearches(userId: string) {
+    return prisma.recentSearch.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    });
+  }
+
+  async saveRecentSearch(userId: string, query: string) {
+    const trimmed = query.trim();
+    if (!trimmed) return [];
+
+    // Use upsert to create or update the search query's timestamp
+    await prisma.recentSearch.upsert({
+      where: {
+        userId_query: {
+          userId,
+          query: trimmed,
+        },
+      },
+      update: {
+        createdAt: new Date(),
+      },
+      create: {
+        userId,
+        query: trimmed,
+      },
+    });
+
+    // Enforce limit of 10 recent searches per user by deleting the oldest ones
+    const searches = await prisma.recentSearch.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (searches.length > 10) {
+      const idsToDelete = searches.slice(10).map((s) => s.id);
+      await prisma.recentSearch.deleteMany({
+        where: {
+          id: { in: idsToDelete },
+        },
+      });
+    }
+
+    return this.getRecentSearches(userId);
+  }
+
+  async deleteRecentSearch(userId: string, id: string) {
+    return prisma.recentSearch.deleteMany({
+      where: {
+        id,
+        userId,
+      },
+    });
+  }
+
+  async clearRecentSearches(userId: string) {
+    return prisma.recentSearch.deleteMany({
+      where: { userId },
+    });
+  }
 }
 
 export const userService = new UserService();

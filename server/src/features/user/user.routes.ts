@@ -14,6 +14,12 @@ export async function userRoutes(fastify: FastifyInstance) {
   fastify.patch("/settings/sessions/:id", userController.renameSession);
   fastify.delete("/settings/sessions/:id", userController.revokeSession);
 
+  // User Recent Searches Routes
+  fastify.get("/settings/recent-searches", userController.getRecentSearches);
+  fastify.post("/settings/recent-searches", userController.saveRecentSearch);
+  fastify.delete("/settings/recent-searches/:id", userController.deleteRecentSearch);
+  fastify.delete("/settings/recent-searches", userController.clearRecentSearches);
+
   // Cloudinary Settings Routes
   fastify.get("/settings/cloudinary", userController.getCloudinaryConfig);
   fastify.post("/settings/cloudinary", userController.saveCloudinaryConfig);

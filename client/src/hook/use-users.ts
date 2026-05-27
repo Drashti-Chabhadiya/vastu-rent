@@ -128,3 +128,55 @@ export const useCloudinaryUsage = (options?: {
     ...options,
   })
 }
+
+// Fetch recent searches
+export const useRecentSearches = (options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ['recent-searches'],
+    queryFn: async () => {
+      const res = await apiClient.get('/users/settings/recent-searches')
+      return res.data.searches
+    },
+    ...options,
+  })
+}
+
+// Save recent search mutation
+export const useSaveRecentSearch = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (query: string) => {
+      const res = await apiClient.post('/users/settings/recent-searches', { query })
+      return res.data.searches
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recent-searches'] })
+    },
+  })
+}
+
+// Delete recent search mutation
+export const useDeleteRecentSearch = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete(`/users/settings/recent-searches/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recent-searches'] })
+    },
+  })
+}
+
+// Clear all recent searches mutation
+export const useClearRecentSearches = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async () => {
+      await apiClient.delete('/users/settings/recent-searches')
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recent-searches'] })
+    },
+  })
+}

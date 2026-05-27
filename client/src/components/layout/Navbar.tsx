@@ -370,7 +370,6 @@ export function Navbar() {
                         'rounded-full',
                         'border-2',
                         'border-slate-200',
-                        'overflow-hidden',
                       )}
                     >
                       <Avatar className={cn('h-full', 'w-full')}>
@@ -481,56 +480,57 @@ export function Navbar() {
                           >
                             {session.user.name}
                           </span>
-                          <span
+                          <p
                             className={cn(
-                              'inline-flex',
-                              'items-center',
-                              'gap-0.5',
-                              'rounded-full',
-                              'bg-green-100',
-                              'px-1.5',
-                              'py-0.5',
-                              'text-[8px]',
-                              'font-bold',
-                              'text-green-700',
+                              'text-xs',
+                              'text-slate-500',
+                              'truncate',
                             )}
                           >
-                            <svg
-                              className={cn('h-2', 'w-2')}
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                            </svg>
-                            Verified
-                          </span>
-                          <span
-                            className={cn(
-                              'inline-flex',
-                              'items-center',
-                              'gap-0.5',
-                              'rounded-full',
-                              'bg-emerald-100',
-                              'px-1.5',
-                              'py-0.5',
-                              'text-[8px]',
-                              'font-bold',
-                              'text-emerald-700',
-                            )}
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            Online
-                          </span>
+                            {session.user.email}
+                          </p>
                         </div>
-                        <p
+
+                        <span
                           className={cn(
-                            'text-xs',
-                            'text-slate-500',
-                            'truncate',
+                            'inline-flex',
+                            'items-center',
+                            'gap-0.5',
+                            'rounded-full',
+                            'bg-green-100',
+                            'px-1.5',
+                            'py-0.5',
+                            'text-[8px]',
+                            'font-bold',
+                            'text-green-700',
                           )}
                         >
-                          {session.user.email}
-                        </p>
+                          <svg
+                            className={cn('h-2', 'w-2')}
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          </svg>
+                          Verified
+                        </span>
+                        <span
+                          className={cn(
+                            'inline-flex',
+                            'items-center',
+                            'gap-0.5',
+                            'rounded-full',
+                            'bg-emerald-100',
+                            'px-1.5',
+                            'py-0.5',
+                            'text-[8px]',
+                            'font-bold',
+                            'text-emerald-700',
+                          )}
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          Online
+                        </span>
                       </div>
                       <ChevronRight
                         className={cn(

@@ -284,6 +284,61 @@ export class UserController {
       return reply.status(400).send({ message: error.message || "Failed to rename device" });
     }
   }
+
+  async getRecentSearches(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    try {
+      const searches = await userService.getRecentSearches(session.user.id);
+      return { searches };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to fetch searches" });
+    }
+  }
+
+  async saveRecentSearch(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const { query } = request.body as any;
+    if (!query) {
+      return reply.status(400).send({ message: "Query parameter is required" });
+    }
+
+    try {
+      const searches = await userService.saveRecentSearch(session.user.id, query);
+      return { success: true, searches };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to save search" });
+    }
+  }
+
+  async deleteRecentSearch(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const { id } = request.params as any;
+
+    try {
+      await userService.deleteRecentSearch(session.user.id, id);
+      return { success: true };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to delete search" });
+    }
+  }
+
+  async clearRecentSearches(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    try {
+      await userService.clearRecentSearches(session.user.id);
+      return { success: true };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to clear searches" });
+    }
+  }
 }
 
 export const userController = new UserController();
