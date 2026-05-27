@@ -5,7 +5,7 @@ export function UserProfilePageSkeleton() {
     <div className="min-h-screen bg-bg-base pt-24 pb-16">
       <div className="mx-auto max-w-[1200px] px-4 animate-pulse">
         {/* Profile Card Header Skeleton */}
-        <div className="bg-white rounded-[40px] p-8 md:p-12 border border-gray-100 mb-12 flex flex-col md:flex-row items-center md:items-start gap-8">
+        <div className="bg-card rounded-[40px] p-8 md:p-12 border border-border/30 mb-12 flex flex-col md:flex-row items-center md:items-start gap-8">
           <Skeleton className="w-32 h-32 md:w-40 md:h-40 rounded-full shrink-0" />
           <div className="flex-1 space-y-4 w-full text-center md:text-left">
             <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -36,7 +36,7 @@ export function UserProfilePageSkeleton() {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-4 border border-gray-100 flex flex-col h-full space-y-4"
+                className="bg-card rounded-2xl p-4 border border-border/30 flex flex-col h-full space-y-4"
               >
                 <Skeleton className="aspect-square w-full rounded-xl" />
                 <Skeleton className="h-4 w-3/4 rounded" />
