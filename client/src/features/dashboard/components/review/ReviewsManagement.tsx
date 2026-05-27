@@ -33,7 +33,7 @@ const StarRating = ({ rating }: { rating: number }) => {
             <Star
               key={i}
               size={15}
-              className="text-[#2d5222] fill-[#2d5222] stroke-[#2d5222] shrink-0"
+              className="text-primary fill-primary stroke-primary shrink-0"
             />
           )
         } else if (rating > i && rating < starValue) {
@@ -41,12 +41,12 @@ const StarRating = ({ rating }: { rating: number }) => {
             <div key={i} className="relative w-[15px] h-[15px] shrink-0">
               <Star
                 size={15}
-                className="text-slate-200 fill-slate-200 stroke-slate-200 absolute top-0 left-0"
+                className="text-muted-foreground/30 fill-slate-200 stroke-slate-200 absolute top-0 left-0"
               />
               <div className="absolute top-0 left-0 overflow-hidden w-[50%] h-full">
                 <Star
                   size={15}
-                  className="text-[#2d5222] fill-[#2d5222] stroke-[#2d5222] max-w-none"
+                  className="text-primary fill-primary stroke-primary max-w-none"
                 />
               </div>
             </div>
@@ -56,7 +56,7 @@ const StarRating = ({ rating }: { rating: number }) => {
             <Star
               key={i}
               size={15}
-              className="text-slate-200 fill-slate-200 stroke-slate-200 shrink-0"
+              className="text-muted-foreground/30 fill-slate-200 stroke-slate-200 shrink-0"
             />
           )
         }
@@ -281,15 +281,15 @@ export const ReviewsManagement = () => {
         {/* Header Skeleton */}
         <div className="flex justify-between items-center">
           <div className="space-y-2">
-            <div className="h-8 bg-slate-200 rounded-full w-48" />
-            <div className="h-4 bg-slate-100 rounded-full w-80" />
+            <div className="h-8 bg-muted rounded-full w-48" />
+            <div className="h-4 bg-muted/50 rounded-full w-80" />
           </div>
-          <div className="h-10 bg-slate-200 rounded-full w-24" />
+          <div className="h-10 bg-muted rounded-full w-24" />
         </div>
         {/* Tabs Skeleton */}
-        <div className="flex gap-6 border-b border-slate-100 pb-2">
+        <div className="flex gap-6 border-b border-border/30 pb-2">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-5 bg-slate-200 rounded-full w-20" />
+            <div key={i} className="h-5 bg-muted rounded-full w-20" />
           ))}
         </div>
         {/* List Skeleton */}
@@ -297,13 +297,13 @@ export const ReviewsManagement = () => {
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-6 animate-pulse"
+              className="bg-card p-6 rounded-[2rem] border border-border/30 shadow-sm flex flex-col md:flex-row gap-6 animate-pulse"
             >
-              <div className="w-32 h-32 rounded-2xl bg-slate-100 shrink-0" />
+              <div className="w-32 h-32 rounded-2xl bg-muted/50 shrink-0" />
               <div className="flex-1 space-y-3">
-                <div className="h-5 bg-slate-200 rounded-full w-48" />
-                <div className="h-4 bg-slate-150 rounded-full w-32" />
-                <div className="h-4 bg-slate-100 rounded-full w-56 mt-4" />
+                <div className="h-5 bg-muted rounded-full w-48" />
+                <div className="h-4 bg-muted-light/80 rounded-full w-32" />
+                <div className="h-4 bg-muted/50 rounded-full w-56 mt-4" />
               </div>
             </div>
           ))}
@@ -317,10 +317,10 @@ export const ReviewsManagement = () => {
       {/* Top Header Block */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+          <h1 className="text-3xl font-black text-foreground tracking-tight">
             Reviews
           </h1>
-          <p className="text-sm text-gray-400 font-bold">
+          <p className="text-sm text-muted-foreground/70 font-bold">
             Reviews you've written for your stays and hosts.
           </p>
         </div>
@@ -328,18 +328,18 @@ export const ReviewsManagement = () => {
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="rounded-xl border-slate-200 text-slate-700 font-bold h-10 px-5 flex items-center gap-2 hover:bg-slate-50/50 shadow-sm shrink-0 cursor-pointer"
+              className="rounded-xl border-border text-foreground/80 font-bold h-10 px-5 flex items-center gap-2 hover:bg-muted-light/50 shadow-sm shrink-0 cursor-pointer"
             >
-              <FilterIcon size={14} className="text-slate-500" />
+              <FilterIcon size={14} className="text-muted-foreground/85" />
               {ratingFilter === 'all' ? 'All Ratings' : `${ratingFilter} Stars`}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white border-slate-100/80 rounded-xl shadow-lg p-1 min-w-[150px]">
+          <DropdownMenuContent className="bg-card border-border/30/80 rounded-xl shadow-lg p-1 min-w-[150px]">
             <DropdownMenuItem
               onClick={() => setRatingFilter('all')}
               className={cn(
-                'text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]',
-                ratingFilter === 'all' && 'text-[#2d5222] bg-[#2d5222]/5',
+                'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary',
+                ratingFilter === 'all' && 'text-primary bg-primary/5',
               )}
             >
               All Ratings
@@ -349,8 +349,8 @@ export const ReviewsManagement = () => {
                 key={stars}
                 onClick={() => setRatingFilter(stars)}
                 className={cn(
-                  'text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222] flex items-center gap-1.5',
-                  ratingFilter === stars && 'text-[#2d5222] bg-[#2d5222]/5',
+                  'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary flex items-center gap-1.5',
+                  ratingFilter === stars && 'text-primary bg-primary/5',
                 )}
               >
                 <div className="flex items-center gap-0.5 text-yellow-400">
@@ -362,7 +362,7 @@ export const ReviewsManagement = () => {
                     />
                   ))}
                 </div>
-                <span className="font-bold text-slate-600">
+                <span className="font-bold text-muted-foreground">
                   ({stars} Stars)
                 </span>
               </DropdownMenuItem>
@@ -372,7 +372,7 @@ export const ReviewsManagement = () => {
       </div>
 
       {/* Tabs Filter Navigation */}
-      <div className="flex gap-6 border-b border-slate-100 pb-px overflow-x-auto custom-scrollbar">
+      <div className="flex gap-6 border-b border-border/30 pb-px overflow-x-auto custom-scrollbar">
         {[
           { id: 'all', label: 'All Reviews' },
           { id: 'listings', label: 'Listings' },
@@ -387,15 +387,15 @@ export const ReviewsManagement = () => {
               className={cn(
                 'pb-3 font-semibold text-sm transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
                 isActive
-                  ? 'text-[#2d5222]'
-                  : 'text-slate-400 hover:text-slate-600',
+                  ? 'text-primary'
+                  : 'text-muted-dark hover:text-muted-foreground',
               )}
             >
               <span>
                 {tab.label} ({counts[tab.id as keyof typeof counts]})
               </span>
               {isActive && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#2d5222] rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-primary rounded-full" />
               )}
             </Button>
           )
@@ -404,14 +404,14 @@ export const ReviewsManagement = () => {
 
       {/* Reviews Card List */}
       {filteredReviews.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2rem] border border-dashed border-slate-200">
-          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-            <Star className="text-slate-300 fill-slate-300" size={32} />
+        <div className="flex flex-col items-center justify-center py-20 bg-card rounded-[2rem] border border-dashed border-border">
+          <div className="w-16 h-16 bg-muted-light rounded-full flex items-center justify-center mb-4">
+            <Star className="text-muted-dark fill-slate-300" size={32} />
           </div>
-          <h3 className="text-lg font-extrabold text-gray-800">
+          <h3 className="text-lg font-extrabold text-foreground/90">
             No {activeTab} reviews
           </h3>
-          <p className="text-slate-400 text-xs mt-1.5 max-w-xs text-center font-bold">
+          <p className="text-muted-dark text-xs mt-1.5 max-w-xs text-center font-bold">
             You don't have any reviews listed under this category right now.
           </p>
         </div>
@@ -420,10 +420,10 @@ export const ReviewsManagement = () => {
           {filteredReviews.map((review: any) => (
             <div
               key={review.id}
-              className="group bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.015)] hover:shadow-[0_4px_30px_rgba(0,0,0,0.035)] transition-all duration-300 flex flex-col md:grid md:grid-cols-[auto_1fr_auto] gap-8 items-start relative"
+              className="group bg-card p-6 rounded-3xl border border-border/30 shadow-[0_4px_20px_rgba(0,0,0,0.015)] hover:shadow-[0_4px_30px_rgba(0,0,0,0.035)] transition-all duration-300 flex flex-col md:grid md:grid-cols-[auto_1fr_auto] gap-8 items-start relative"
             >
               {/* Left Side Image */}
-              <div className="w-full md:w-[240px] h-48 md:h-[160px] rounded-2xl overflow-hidden shrink-0 bg-slate-50 shadow-inner relative">
+              <div className="w-full md:w-[240px] h-48 md:h-[160px] rounded-2xl overflow-hidden shrink-0 bg-muted-light shadow-inner relative">
                 <img
                   src={review.image}
                   alt={review.title}
@@ -434,10 +434,10 @@ export const ReviewsManagement = () => {
               {/* Middle details column */}
               <div className="flex-1 min-w-0 space-y-3">
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 leading-tight">
+                  <h3 className="text-lg font-bold text-foreground leading-tight">
                     {review.title}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-1 font-medium">
+                  <p className="text-xs text-muted-foreground/85 mt-1 font-medium">
                     {review.location}
                   </p>
                 </div>
@@ -446,11 +446,11 @@ export const ReviewsManagement = () => {
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5">
                     <StarRating rating={review.rating} />
-                    <span className="text-xs font-bold text-slate-400">
+                    <span className="text-xs font-bold text-muted-dark">
                       • {review.rating.toFixed(1)}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 font-semibold">
+                  <p className="text-xs text-muted-dark font-semibold">
                     {review.dates}
                   </p>
                 </div>
@@ -463,7 +463,7 @@ export const ReviewsManagement = () => {
                   return (
                     <div className="space-y-4">
                       {text && (
-                        <p className="text-sm text-slate-600 font-normal leading-relaxed max-w-xl">
+                        <p className="text-sm text-muted-foreground font-normal leading-relaxed max-w-xl">
                           {text}
                         </p>
                       )}
@@ -474,14 +474,14 @@ export const ReviewsManagement = () => {
                           {images.map((imgUrl, idx) => (
                             <div
                               key={idx}
-                              className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-sm hover:scale-[1.03] transition-all cursor-pointer shrink-0 group/revimg"
+                              className="relative w-16 h-16 rounded-xl overflow-hidden border border-border/30 bg-muted-light shadow-sm hover:scale-[1.03] transition-all cursor-pointer shrink-0 group/revimg"
                               onClick={() => window.open(imgUrl, '_blank')}
                             >
                               <img
                                 src={imgUrl}
                                 className="w-full h-full object-cover"
                               />
-                              <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/revimg:opacity-100 transition-opacity flex items-center justify-center text-white text-[9px] font-black uppercase">
+                              <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/revimg:opacity-100 transition-opacity flex items-center justify-center text-primary-foreground text-[9px] font-black uppercase">
                                 View
                               </div>
                             </div>
@@ -491,13 +491,13 @@ export const ReviewsManagement = () => {
 
                       {/* Render Owner's Reply */}
                       {reply && (
-                        <div className="bg-[#f9faf6] border border-[#2d5222]/10 p-4 rounded-2xl max-w-xl mt-3 space-y-1 relative">
-                          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#2d5222] rounded-full animate-pulse" />
+                        <div className="bg-background border border-primary/10 p-4 rounded-2xl max-w-xl mt-3 space-y-1 relative">
+                          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-full animate-pulse" />
                           <div className="pl-3.5 space-y-1">
-                            <p className="text-[10px] text-[#2d5222] font-black uppercase tracking-wider">
+                            <p className="text-[10px] text-primary font-black uppercase tracking-wider">
                               Host Reply
                             </p>
-                            <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                            <p className="text-xs text-muted-foreground font-medium leading-relaxed">
                               {reply}
                             </p>
                           </div>
@@ -509,29 +509,29 @@ export const ReviewsManagement = () => {
               </div>
 
               {/* Right side Reviewed Host Profile & Button */}
-              <div className="flex flex-col justify-between items-stretch shrink-0 w-full md:w-[180px] min-h-[160px] pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
+              <div className="flex flex-col justify-between items-stretch shrink-0 w-full md:w-[180px] min-h-[160px] pt-4 md:pt-0 border-t md:border-t-0 border-border/30">
                 {/* Host Row */}
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-2.5">
                     {/* <img
                       src={review.host.avatar}
                       alt={review.host.name}
-                      className="w-9 h-9 rounded-full object-cover border border-slate-100 shadow-sm shrink-0"
+                      className="w-9 h-9 rounded-full object-cover border border-border/30 shadow-sm shrink-0"
                     /> */}
                     <Avatar className="w-9 h-9">
                       <AvatarImage
                         src={review.host.image || ''}
                         alt={review.host.name}
                       />
-                      <AvatarFallback className="bg-[#2d5222]/5 text-[13px] font-bold text-[#2d5222]">
+                      <AvatarFallback className="bg-primary/5 text-[13px] font-bold text-primary">
                         {review.host.name?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="text-left">
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">
+                      <p className="text-[10px] text-muted-dark font-bold uppercase tracking-wider leading-none">
                         Reviewed Host
                       </p>
-                      <p className="text-xs font-bold text-gray-900 mt-1 leading-none">
+                      <p className="text-xs font-bold text-foreground mt-1 leading-none">
                         {review.host.name}
                       </p>
                     </div>
@@ -543,7 +543,7 @@ export const ReviewsManagement = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="rounded-full text-slate-400 hover:text-slate-600 h-8 w-8 flex items-center justify-center cursor-pointer shrink-0"
+                        className="rounded-full text-muted-dark hover:text-muted-foreground h-8 w-8 flex items-center justify-center cursor-pointer shrink-0"
                         onClick={() =>
                           setOpenDropdownId(
                             openDropdownId === review.id ? null : review.id,
@@ -559,14 +559,14 @@ export const ReviewsManagement = () => {
                             className="fixed inset-0 z-40"
                             onClick={() => setOpenDropdownId(null)}
                           />
-                          <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg border border-slate-100 p-1 z-50 min-w-[120px] animate-in fade-in slide-in-from-top-1 duration-150">
+                          <div className="absolute right-0 top-8 bg-card rounded-xl shadow-lg border border-border/30 p-1 z-50 min-w-[120px] animate-in fade-in slide-in-from-top-1 duration-150">
                             <Button
                               variant="ghost"
                               onClick={() => {
                                 setOpenDropdownId(null)
                                 handleDelete(review.id)
                               }}
-                              className="w-full text-left px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors justify-start h-auto"
+                              className="w-full text-left px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-danger hover:text-destructive rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors justify-start h-auto"
                             >
                               <Trash2 size={13} />
                               Delete Review
@@ -588,12 +588,12 @@ export const ReviewsManagement = () => {
                   >
                     <Button
                       variant="outline"
-                      className="rounded-xl border-slate-200 text-[#2d5222] font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 hover:bg-slate-50/50 shadow-sm active:scale-95 cursor-pointer w-full"
+                      className="rounded-xl border-border text-primary font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 hover:bg-muted-light/50 shadow-sm active:scale-95 cursor-pointer w-full"
                     >
                       View Listing
                       <ChevronRight
                         size={14}
-                        className="text-[#2d5222] stroke-[2.5]"
+                        className="text-primary stroke-[2.5]"
                       />
                     </Button>
                   </a>
@@ -601,10 +601,10 @@ export const ReviewsManagement = () => {
                   <Button
                     variant="outline"
                     disabled
-                    className="rounded-xl border-slate-200 text-slate-400 font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 opacity-50 w-full mt-3 md:mt-0"
+                    className="rounded-xl border-border text-muted-dark font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 opacity-50 w-full mt-3 md:mt-0"
                   >
                     View Listing
-                    <ChevronRight size={14} className="text-slate-300" />
+                    <ChevronRight size={14} className="text-muted-dark" />
                   </Button>
                 )}
 
@@ -617,13 +617,13 @@ export const ReviewsManagement = () => {
                           placeholder="Write your response as the host..."
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full p-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-[#2d5222]/50 font-medium min-h-[60px] resize-none"
+                          className="w-full p-2 border border-border rounded-xl text-xs outline-none focus:border-primary/50 font-medium min-h-[60px] resize-none"
                         />
                         <div className="flex gap-2">
                           <Button
                             onClick={() => handleReplySubmit(review.id)}
                             disabled={isSubmittingReply}
-                            className="rounded-lg bg-[#2d5222] hover:bg-[#1e3816] text-white font-bold text-[10px] h-7 px-3 flex-1 flex items-center justify-center cursor-pointer shadow-sm"
+                            className="rounded-lg bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-[10px] h-7 px-3 flex-1 flex items-center justify-center cursor-pointer shadow-sm"
                           >
                             {isSubmittingReply ? '...' : 'Submit'}
                           </Button>
@@ -633,7 +633,7 @@ export const ReviewsManagement = () => {
                               setReplyingReviewId(null)
                               setReplyText('')
                             }}
-                            className="rounded-lg bg-slate-50 text-slate-500 font-bold text-[10px] h-7 px-3 flex-1 flex items-center justify-center cursor-pointer border border-slate-200/50"
+                            className="rounded-lg bg-muted-light text-muted-foreground/85 font-bold text-[10px] h-7 px-3 flex-1 flex items-center justify-center cursor-pointer border border-border/50"
                           >
                             Cancel
                           </Button>
@@ -649,7 +649,7 @@ export const ReviewsManagement = () => {
                           )
                           setReplyText(parsed.reply)
                         }}
-                        className="rounded-xl border-slate-200 text-[#2d5222] font-semibold text-xs px-4 h-9 flex items-center justify-center gap-1.5 hover:bg-slate-50/50 shadow-sm w-full"
+                        className="rounded-xl border-border text-primary font-semibold text-xs px-4 h-9 flex items-center justify-center gap-1.5 hover:bg-muted-light/50 shadow-sm w-full"
                       >
                         {(() => {
                           const parsed = parseCommentImagesAndReply(
@@ -665,7 +665,7 @@ export const ReviewsManagement = () => {
                 )}
 
                 {/* Posted Date */}
-                <span className="text-[11px] text-slate-400 font-semibold text-left mt-2 md:mt-0">
+                <span className="text-[11px] text-muted-dark font-semibold text-left mt-2 md:mt-0">
                   Posted on {review.postedDate}
                 </span>
               </div>
@@ -675,12 +675,12 @@ export const ReviewsManagement = () => {
       )}
 
       {/* That's All Confirmation Footer */}
-      <div className="flex flex-col items-center justify-center py-6 border-t border-slate-100 mt-8">
-        <div className="text-[#2d5222] font-black text-xs flex items-center gap-1.5">
+      <div className="flex flex-col items-center justify-center py-6 border-t border-border/30 mt-8">
+        <div className="text-primary font-black text-xs flex items-center gap-1.5">
           <Leaf size={14} fill="currentColor" className="stroke-[2.5]" />
           That's all your reviews!
         </div>
-        <p className="text-slate-400 text-[10px] font-bold text-center mt-1">
+        <p className="text-muted-dark text-[10px] font-bold text-center mt-1">
           Keep sharing your experience and help our community.
         </p>
       </div>

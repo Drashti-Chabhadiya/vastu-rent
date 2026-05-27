@@ -22,7 +22,7 @@ export const RevenueChart = () => {
     bars.length > 0 ? Math.max(...bars.map((b) => b.revenue), 1) : 1
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-bold text-dash-text">Revenue Overview</h3>
 
@@ -30,13 +30,13 @@ export const RevenueChart = () => {
           <Button
             variant="outline"
             onClick={() => setOpen((v) => !v)}
-            className="h-auto flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-gray-300 active:scale-[0.98]"
+            className="h-auto flex items-center gap-2 px-3 py-1.5 border border-border rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-border/120 active:scale-[0.98]"
           >
             {PERIOD_LABELS[period]}
-            <ChevronDown size={14} className="text-gray-400" />
+            <ChevronDown size={14} className="text-muted-foreground/70" />
           </Button>
           {open && (
-            <div className="absolute right-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-lg z-10 overflow-hidden flex flex-col w-32">
+            <div className="absolute right-0 mt-1 bg-card border border-border/30 rounded-xl shadow-lg z-10 overflow-hidden flex flex-col w-32">
               {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
                 <Button
                   key={p}
@@ -45,7 +45,7 @@ export const RevenueChart = () => {
                     setPeriod(p)
                     setOpen(false)
                   }}
-                  className="w-full justify-start rounded-none h-auto px-4 py-2 text-xs font-bold text-dash-text hover:bg-gray-50 active:scale-[0.98]"
+                  className="w-full justify-start rounded-none h-auto px-4 py-2 text-xs font-bold text-dash-text hover:bg-muted-light active:scale-[0.98]"
                 >
                   {PERIOD_LABELS[p]}
                 </Button>
@@ -62,7 +62,7 @@ export const RevenueChart = () => {
           </p>
           <div className="flex items-center gap-2">
             {isLoading ? (
-              <div className="h-8 w-36 bg-gray-100 rounded-lg animate-pulse" />
+              <div className="h-8 w-36 bg-muted/50 rounded-lg animate-pulse" />
             ) : (
               <>
                 <h4 className="text-2xl font-bold text-dash-text">
@@ -81,9 +81,9 @@ export const RevenueChart = () => {
       </div>
 
       {isLoading ? (
-        <div className="h-48 w-full bg-gray-50 rounded-2xl animate-pulse" />
+        <div className="h-48 w-full bg-muted-light rounded-2xl animate-pulse" />
       ) : bars.length === 0 ? (
-        <div className="h-48 flex items-center justify-center text-sm text-gray-400 font-medium">
+        <div className="h-48 flex items-center justify-center text-sm text-muted-foreground/70 font-medium">
           No revenue data for this period
         </div>
       ) : (
@@ -106,7 +106,7 @@ export const RevenueChart = () => {
                     height: `${Math.max((bar.revenue / maxRevenue) * 100, 2)}%`,
                   }}
                 >
-                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-foreground/90 text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     ₹{bar.revenue.toLocaleString('en-IN')}
                   </div>
                 </div>

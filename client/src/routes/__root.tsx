@@ -186,7 +186,7 @@ function RootDocument() {
   const isOwnerPage = routerState.location.pathname.startsWith('/owner')
 
   return (
-    <div className={cn('bg-white', 'font-sans', 'antialiased')}>
+    <div className={cn('bg-card', 'font-sans', 'antialiased')}>
       <QueryClientProvider client={queryClient}>
         <NotificationListener />
         {!isAuthPage && !isAdminPage && !isOwnerPage && <Navbar />}

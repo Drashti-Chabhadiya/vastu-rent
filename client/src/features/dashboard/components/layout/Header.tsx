@@ -75,11 +75,11 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
       case 'booking':
         return 'bg-emerald-50 text-emerald-600'
       case 'payment':
-        return 'bg-amber-50 text-amber-500'
+        return 'bg-warning text-warning-foreground'
       case 'alert':
-        return 'bg-rose-50 text-rose-500'
+        return 'bg-danger text-danger-foreground'
       default:
-        return 'bg-slate-50 text-slate-500'
+        return 'bg-muted-light text-muted-foreground/85'
     }
   }
 
@@ -144,13 +144,13 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   }
 
   return (
-    <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
+    <header className="h-20 bg-card border-b border-border/30 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
       <div className="flex items-center gap-2 md:gap-6">
         <Button
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
-          className="h-10 w-10 hover:bg-gray-50 rounded-lg text-gray-500 transition-colors lg:hidden active:scale-[0.98]"
+          className="h-10 w-10 hover:bg-muted-light rounded-lg text-muted-foreground/85 transition-colors lg:hidden active:scale-[0.98]"
         >
           <Menu size={22} />
         </Button>
@@ -169,18 +169,18 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         <div className="relative">
           <div
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="hidden lg:flex items-center gap-3 px-4 py-2 bg-white border border-gray-200 rounded-xl hover:border-gray-300 cursor-pointer transition-all active:scale-[0.98]"
+            className="hidden lg:flex items-center gap-3 px-4 py-2 bg-card border border-border rounded-xl hover:border-border/120 cursor-pointer transition-all active:scale-[0.98]"
           >
             <Calendar size={18} className="text-dash-brand" />
             <div className="flex flex-col items-start leading-none gap-0.5">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-wider">
                 {getLabel()}
               </span>
-              <span className="text-xs font-bold text-[#1e293b]">
+              <span className="text-xs font-bold text-foreground">
                 {getFormattedRange()}
               </span>
             </div>
-            <ChevronDown size={14} className="text-gray-400 ml-1" />
+            <ChevronDown size={14} className="text-muted-foreground/70 ml-1" />
           </div>
 
           {isDropdownOpen && (
@@ -189,17 +189,17 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                 className="fixed inset-0 z-10"
                 onClick={() => setIsDropdownOpen(false)}
               />
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="absolute right-0 mt-2 w-48 bg-card border border-border/30 rounded-2xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-150">
                 <Button
                   variant="ghost"
                   onClick={() => {
                     setRangeType('7days')
                     setIsDropdownOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-gray-50 ${
+                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-muted-light ${
                     rangeType === '7days'
                       ? 'text-primary bg-primary/5 hover:text-primary hover:bg-primary/5'
-                      : 'text-gray-600 hover:text-gray-700'
+                      : 'text-muted-foreground hover:text-foreground/80'
                   }`}
                 >
                   Last 7 Days
@@ -213,10 +213,10 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                     setRangeType('30days')
                     setIsDropdownOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-gray-50 ${
+                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-muted-light ${
                     rangeType === '30days'
                       ? 'text-primary bg-primary/5 hover:text-primary hover:bg-primary/5'
-                      : 'text-gray-600 hover:text-gray-700'
+                      : 'text-muted-foreground hover:text-foreground/80'
                   }`}
                 >
                   Last 30 Days
@@ -230,10 +230,10 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                     setRangeType('thisMonth')
                     setIsDropdownOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-gray-50 ${
+                  className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-muted-light ${
                     rangeType === 'thisMonth'
                       ? 'text-primary bg-primary/5 hover:text-primary hover:bg-primary/5'
-                      : 'text-gray-600 hover:text-gray-700'
+                      : 'text-muted-foreground hover:text-foreground/80'
                   }`}
                 >
                   This Month
@@ -252,27 +252,27 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="relative h-10 w-10 hover:bg-gray-50 rounded-xl text-gray-500 transition-all active:scale-[0.98] cursor-pointer"
+              className="relative h-10 w-10 hover:bg-muted-light rounded-xl text-muted-foreground/85 transition-all active:scale-[0.98] cursor-pointer"
             >
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 border-2 border-white rounded-full text-white text-[9px] font-black flex items-center justify-center animate-in zoom-in duration-200">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive border-2 border-card rounded-full text-destructive-foreground text-[9px] font-black flex items-center justify-center animate-in zoom-in duration-200">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 p-0 rounded-2xl bg-white border border-slate-100 shadow-2xl z-50 overflow-hidden mr-4">
+          <PopoverContent className="w-80 p-0 rounded-2xl bg-card border border-border/30 shadow-2xl z-50 overflow-hidden mr-4">
             {/* Popover Header */}
-            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/20">
-              <span className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <Bell size={13} className="text-[#2d5222]" /> Platform Alerts
+            <div className="px-5 py-4 border-b border-border/30 flex items-center justify-between bg-muted-light/20">
+              <span className="text-xs font-black text-foreground/90 uppercase tracking-wider flex items-center gap-1.5">
+                <Bell size={13} className="text-primary" /> Platform Alerts
               </span>
               {unreadCount > 0 && (
                 <Button
                   variant="ghost"
                   onClick={() => markAllReadMutation.mutate()}
-                  className="text-[10px] font-extrabold text-[#2d5222] hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
+                  className="text-[10px] font-extrabold text-primary hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
                   disabled={markAllReadMutation.isPending}
                 >
                   {markAllReadMutation.isPending
@@ -283,15 +283,15 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             </div>
 
             {/* Popover List */}
-            <div className="max-h-72 overflow-y-auto divide-y divide-slate-50/70 scrollbar-thin">
+            <div className="max-h-72 overflow-y-auto divide-y divide-border/30/70 scrollbar-thin">
               {isLoadingNotifications ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-5 h-5 animate-spin text-[#2d5222]" />
+                  <Loader2 className="w-5 h-5 animate-spin text-primary" />
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 gap-1.5 text-center px-4">
-                  <Bell size={22} className="text-slate-200" />
-                  <p className="text-[10px] font-bold text-slate-400">
+                  <Bell size={22} className="text-muted-foreground/30" />
+                  <p className="text-[10px] font-bold text-muted-dark">
                     All caught up! No alerts.
                   </p>
                 </div>
@@ -304,8 +304,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                       key={notif.id}
                       onClick={() => handleNotificationClick(notif)}
                       className={cn(
-                        'p-4 flex gap-3.5 items-start cursor-pointer hover:bg-slate-50/60 transition-colors',
-                        !notif.isRead && 'bg-slate-50/30 font-semibold',
+                        'p-4 flex gap-3.5 items-start cursor-pointer hover:bg-muted-light/60 transition-colors',
+                        !notif.isRead && 'bg-muted-light/30 font-semibold',
                       )}
                     >
                       <div
@@ -317,18 +317,18 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                         <Icon size={14} strokeWidth={2.5} />
                       </div>
                       <div className="flex-1 min-w-0 leading-tight">
-                        <p className="text-[11px] font-black text-slate-800 truncate">
+                        <p className="text-[11px] font-black text-foreground/90 truncate">
                           {notif.title}
                         </p>
-                        <p className="text-[9px] font-bold text-slate-400 mt-0.5 leading-relaxed line-clamp-2">
+                        <p className="text-[9px] font-bold text-muted-dark mt-0.5 leading-relaxed line-clamp-2">
                           {notif.message}
                         </p>
-                        <span className="text-[8px] font-black text-slate-300 block mt-1 uppercase tracking-wider">
+                        <span className="text-[8px] font-black text-muted-dark block mt-1 uppercase tracking-wider">
                           {formatMsgTime(notif.createdAt)}
                         </span>
                       </div>
                       {!notif.isRead && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-info-foreground mt-1.5 shrink-0" />
                       )}
                     </div>
                   )
@@ -337,11 +337,11 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             </div>
 
             {/* Popover Footer */}
-            <div className="border-t border-slate-50 p-3 bg-slate-50/10 text-center">
+            <div className="border-t border-border/30 p-3 bg-muted-light/10 text-center">
               <Button
                 variant="ghost"
                 onClick={() => navigate({ to: '/account/notifications' })}
-                className="text-[10px] font-black text-[#2d5222] hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
+                className="text-[10px] font-black text-primary hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
               >
                 View all notifications ({notifications.length})
               </Button>

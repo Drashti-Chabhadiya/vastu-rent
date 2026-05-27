@@ -12,12 +12,12 @@ export const OrderProductDetailsCard = ({
   calculateDuration,
 }: OrderProductDetailsCardProps) => {
   return (
-    <div className="bg-white p-10 rounded-[2rem] border border-slate-100 shadow-sm">
-      <h3 className="text-[14px] font-black text-[#1e293b] mb-8">
+    <div className="bg-card p-10 rounded-[2rem] border border-border/30 shadow-sm">
+      <h3 className="text-[14px] font-black text-foreground mb-8">
         Product Details
       </h3>
       <div className="flex gap-8">
-        <div className="w-28 h-28 rounded-2xl overflow-hidden shadow-sm border border-slate-50">
+        <div className="w-28 h-28 rounded-2xl overflow-hidden shadow-sm border border-border/30">
           <img
             src={order.product?.images?.[0]}
             className="w-full h-full object-cover"
@@ -26,17 +26,17 @@ export const OrderProductDetailsCard = ({
         </div>
         <div className="flex-1 flex flex-col justify-center gap-1.5">
           <div className="flex items-center">
-            <span className="text-[9px] font-black uppercase tracking-widest text-[#059669] bg-[#e2f5ec] px-3 py-1 rounded-lg">
+            <span className="text-[9px] font-black uppercase tracking-widest text-primary bg-primary-soft px-3 py-1 rounded-lg">
               {order.product?.category?.name || 'HOME DECOR'}
             </span>
           </div>
-          <h4 className="text-xl font-black text-[#1e293b]">
+          <h4 className="text-xl font-black text-foreground">
             {order.product?.title}
           </h4>
-          <div className="flex items-center gap-0.5 text-[#059669] font-black text-lg">
+          <div className="flex items-center gap-0.5 text-primary font-black text-lg">
             <IndianRupee size={16} strokeWidth={3} />
             {order.product?.price.toLocaleString()}
-            <span className="text-slate-400 text-[11px] font-bold ml-1">
+            <span className="text-muted-dark text-[11px] font-bold ml-1">
               / day
             </span>
           </div>
@@ -45,7 +45,7 @@ export const OrderProductDetailsCard = ({
           <span className="text-[9px] font-black text-[#334155] uppercase tracking-widest">
             Rental Period
           </span>
-          <span className="text-[14px] font-black text-[#1e293b]">
+          <span className="text-[14px] font-black text-foreground">
             {format(new Date(order.startDate), 'dd MMM yyyy')} -{' '}
             {format(new Date(order.endDate), 'dd MMM yyyy')}
           </span>

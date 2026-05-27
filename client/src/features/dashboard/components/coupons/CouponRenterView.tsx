@@ -22,7 +22,7 @@ export function CouponRenterView({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-slate-400 gap-3">
+      <div className="flex flex-col items-center justify-center py-20 text-muted-dark gap-3">
         <div className="w-8 h-8 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin" />
         <p className="text-xs font-black tracking-widest uppercase">
           Fetching available deals...
@@ -33,12 +33,12 @@ export function CouponRenterView({
 
   if (coupons.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 bg-white border border-slate-100 rounded-[2rem] p-8 shadow-sm">
-        <Ticket className="text-slate-300 w-16 h-16 mb-4 rotate-[-10deg]" />
-        <h3 className="text-lg font-black text-slate-800">
+      <div className="flex flex-col items-center justify-center py-16 bg-card border border-border/30 rounded-[2rem] p-8 shadow-sm">
+        <Ticket className="text-muted-dark w-16 h-16 mb-4 rotate-[-10deg]" />
+        <h3 className="text-lg font-black text-foreground/90">
           No Coupons Available
         </h3>
-        <p className="text-xs text-slate-400 mt-1 max-w-xs text-center font-bold">
+        <p className="text-xs text-muted-dark mt-1 max-w-xs text-center font-bold">
           Check back later for active platform-wide and listing-restricted
           deals.
         </p>

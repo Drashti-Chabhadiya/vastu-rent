@@ -31,11 +31,11 @@ export const BookingsChart = () => {
   return (
     <div
       className={cn(
-        'bg-white',
+        'bg-card',
         'p-6',
         'rounded-2xl',
         'border',
-        'border-gray-100',
+        'border-border/30',
         'shadow-sm',
         'h-full',
       )}
@@ -49,10 +49,10 @@ export const BookingsChart = () => {
             variant="outline"
             size="sm"
             onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-2 px-3 py-1.5 h-auto border border-gray-200 rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-gray-300 active:scale-[0.98]"
+            className="flex items-center gap-2 px-3 py-1.5 h-auto border border-border rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-border/120 active:scale-[0.98]"
           >
             {PERIOD_LABELS[period]}
-            <ChevronDown size={14} className="text-gray-400" />
+            <ChevronDown size={14} className="text-muted-foreground/70" />
           </Button>
           {open && (
             <div
@@ -60,9 +60,9 @@ export const BookingsChart = () => {
                 'absolute',
                 'right-0',
                 'mt-1',
-                'bg-white',
+                'bg-card',
                 'border',
-                'border-gray-100',
+                'border-border/30',
                 'rounded-xl',
                 'shadow-lg',
                 'z-10',
@@ -90,7 +90,7 @@ export const BookingsChart = () => {
                     'text-xs',
                     'font-bold',
                     'text-dash-text',
-                    'hover:bg-gray-50',
+                    'hover:bg-muted-light',
                     'cursor-pointer',
                     'active:scale-[0.98]',
                   )}
@@ -113,7 +113,7 @@ export const BookingsChart = () => {
               className={cn(
                 'w-full',
                 'h-48',
-                'bg-gray-50',
+                'bg-muted-light',
                 'rounded-2xl',
                 'animate-pulse',
               )}
@@ -127,7 +127,7 @@ export const BookingsChart = () => {
               'items-center',
               'justify-center',
               'text-sm',
-              'text-gray-400',
+              'text-muted-foreground/70',
               'font-medium',
             )}
           >

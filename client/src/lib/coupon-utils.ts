@@ -19,7 +19,7 @@ export function getScenarioLabel(
 
 export const scenarioColorMap: Record<string, string> = {
   violet: 'text-violet-700 bg-violet-50 border-violet-100',
-  amber: 'text-amber-700 bg-amber-50 border-amber-100',
-  rose: 'text-rose-700 bg-rose-50 border-rose-100',
+  amber: 'text-warning-foreground bg-warning border-amber-100',
+  rose: 'text-danger-foreground bg-danger border-danger/30',
   emerald: 'text-emerald-700 bg-emerald-50 border-emerald-100',
 }

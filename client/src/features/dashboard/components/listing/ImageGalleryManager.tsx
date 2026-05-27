@@ -66,7 +66,7 @@ export const ImageGalleryManager = ({
           variant="ghost"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading || images.length >= 10}
-          className="aspect-square p-0 flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 text-dash-text-soft transition-all hover:bg-gray-50 hover:border-dash-brand/30 disabled:opacity-50 group min-w-0 min-h-0 h-auto w-auto active:scale-[0.98]"
+          className="aspect-square p-0 flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-muted-light/50 text-dash-text-soft transition-all hover:bg-muted-light hover:border-dash-brand/30 disabled:opacity-50 group min-w-0 min-h-0 h-auto w-auto active:scale-[0.98]"
         >
           {uploading ? (
             <Loader variant="brand" size={24} />
@@ -85,7 +85,7 @@ export const ImageGalleryManager = ({
         {images.map((url, i) => (
           <div
             key={url}
-            className="relative aspect-square overflow-hidden rounded-2xl border border-gray-100 group shadow-sm bg-white"
+            className="relative aspect-square overflow-hidden rounded-2xl border border-border/30 group shadow-sm bg-card"
           >
             <img
               src={url}
@@ -96,7 +96,7 @@ export const ImageGalleryManager = ({
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
               <div className="flex items-center justify-between">
                 {i === 0 ? (
-                  <Badge className="bg-dash-success text-white border-none font-bold text-[8px] uppercase px-1.5 py-0 h-4">
+                  <Badge className="bg-dash-success text-primary-foreground border-none font-bold text-[8px] uppercase px-1.5 py-0 h-4">
                     Cover
                   </Badge>
                 ) : (
@@ -105,7 +105,7 @@ export const ImageGalleryManager = ({
                     variant="ghost"
                     size="icon"
                     onClick={() => setMainImage(i)}
-                    className="p-0 rounded-full bg-white/20 text-white hover:bg-dash-brand h-6 w-6 active:scale-[0.98] transition-all hover:text-white"
+                    className="p-0 rounded-full bg-card/20 text-primary-foreground hover:bg-dash-brand h-6 w-6 active:scale-[0.98] transition-all hover:text-primary-foreground"
                   >
                     <Star size={10} fill="currentColor" />
                   </Button>
@@ -115,7 +115,7 @@ export const ImageGalleryManager = ({
                   variant="ghost"
                   size="icon"
                   onClick={() => removeImage(i)}
-                  className="p-0 rounded-full bg-red-500/80 text-white hover:bg-red-600 h-6 w-6 active:scale-[0.98] transition-all hover:text-white"
+                  className="p-0 rounded-full bg-destructive/80 text-destructive-foreground hover:bg-destructive/90 h-6 w-6 active:scale-[0.98] transition-all hover:text-destructive-foreground"
                 >
                   <Trash2 size={10} />
                 </Button>
@@ -128,7 +128,7 @@ export const ImageGalleryManager = ({
                   size="icon"
                   disabled={i === 0}
                   onClick={() => moveImage(i, 'left')}
-                  className="p-0 rounded-full bg-white/20 text-white hover:bg-white/40 disabled:opacity-20 transition-all active:scale-[0.98] h-7 w-7 hover:text-white"
+                  className="p-0 rounded-full bg-card/20 text-primary-foreground hover:bg-primary-soft/40 disabled:opacity-20 transition-all active:scale-[0.98] h-7 w-7 hover:text-primary-foreground"
                 >
                   <ChevronLeft size={14} />
                 </Button>
@@ -138,14 +138,14 @@ export const ImageGalleryManager = ({
                   size="icon"
                   disabled={i === images.length - 1}
                   onClick={() => moveImage(i, 'right')}
-                  className="p-0 rounded-full bg-white/20 text-white hover:bg-white/40 disabled:opacity-20 transition-all active:scale-[0.98] h-7 w-7 hover:text-white"
+                  className="p-0 rounded-full bg-card/20 text-primary-foreground hover:bg-primary-soft/40 disabled:opacity-20 transition-all active:scale-[0.98] h-7 w-7 hover:text-primary-foreground"
                 >
                   <ChevronRight size={14} />
                 </Button>
               </div>
             </div>
 
-            <div className="absolute left-2 bottom-2 w-5 h-5 rounded-full bg-black/60 backdrop-blur-sm text-[10px] font-bold text-white flex items-center justify-center group-hover:opacity-0 transition-opacity">
+            <div className="absolute left-2 bottom-2 w-5 h-5 rounded-full bg-black/60 backdrop-blur-sm text-[10px] font-bold text-primary-foreground flex items-center justify-center group-hover:opacity-0 transition-opacity">
               {i + 1}
             </div>
           </div>

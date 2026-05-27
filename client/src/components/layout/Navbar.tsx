@@ -93,10 +93,10 @@ export function Navbar() {
           'top-0',
           'z-40',
           'border-b',
-          'border-slate-100/50',
-          'bg-white/80',
+          'border-border/30/50',
+          'bg-card/80',
           'backdrop-blur-lg',
-          'supports-backdrop-filter:bg-white/60',
+          'supports-backdrop-filter:bg-card/60',
         )}
       >
         <div
@@ -129,11 +129,11 @@ export function Navbar() {
                   <NavigationMenuTrigger
                     className={cn(
                       'bg-transparent',
-                      'hover:bg-slate-50',
-                      'data-[state=open]:bg-slate-50',
+                      'hover:bg-muted-light',
+                      'data-[state=open]:bg-muted-light',
                       'text-sm',
                       'font-semibold',
-                      'text-slate-700',
+                      'text-foreground/80',
                       'transition-colors',
                     )}
                   >
@@ -178,7 +178,7 @@ export function Navbar() {
                                   'text-sm',
                                   'font-semibold',
                                   'leading-none',
-                                  'text-slate-900',
+                                  'text-foreground',
                                 )}
                               >
                                 {category.name}
@@ -188,7 +188,7 @@ export function Navbar() {
                                   'line-clamp-2',
                                   'text-sm',
                                   'leading-snug',
-                                  'text-slate-500',
+                                  'text-muted-foreground/85',
                                 )}
                               >
                                 Explore items in {category.name}
@@ -198,7 +198,7 @@ export function Navbar() {
                         </li>
                       ))}
                       {!categories?.length && (
-                        <div className={cn('p-4', 'text-sm', 'text-slate-500')}>
+                        <div className={cn('p-4', 'text-sm', 'text-muted-foreground/85')}>
                           Loading categories...
                         </div>
                       )}
@@ -221,7 +221,7 @@ export function Navbar() {
                       }}
                       className={cn(
                         navigationMenuTriggerStyle(),
-                        'bg-transparent hover:bg-slate-50 focus:bg-slate-50 text-sm font-semibold text-slate-700 transition-colors',
+                        'bg-transparent hover:bg-muted-light focus:bg-muted-light text-sm font-semibold text-foreground/80 transition-colors',
                       )}
                     >
                       {link.label}
@@ -239,15 +239,15 @@ export function Navbar() {
               onClick={() => setIsSearchOpen(true)}
               variant="ghost"
               className={cn(
-                'hidden lg:flex items-center gap-2 h-9 rounded-full bg-slate-100 hover:bg-slate-200 transition-all px-4',
-                'text-slate-500 hover:text-slate-700 border border-transparent hover:border-slate-200',
+                'hidden lg:flex items-center gap-2 h-9 rounded-full bg-muted/50 hover:bg-muted transition-all px-4',
+                'text-muted-foreground/85 hover:text-foreground/80 border border-transparent hover:border-border',
               )}
               aria-label="Search (⌘K)"
               title="Search (⌘K)"
             >
               <Search className="h-4 w-4 shrink-0" />
               <span className="text-sm font-medium">Search...</span>
-              <kbd className="ml-1 pointer-events-none hidden select-none items-center gap-0.5 rounded border border-slate-300 bg-white px-1.5 py-0.5 font-sans text-[10px] font-bold text-slate-500 opacity-100 sm:flex">
+              <kbd className="ml-1 pointer-events-none hidden select-none items-center gap-0.5 rounded border border-border/120 bg-card px-1.5 py-0.5 font-sans text-[10px] font-bold text-muted-foreground/85 opacity-100 sm:flex">
                 ⌘K
               </kbd>
             </Button>
@@ -257,8 +257,8 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               className={cn(
-                'flex lg:hidden h-10 w-10 rounded-full text-slate-600',
-                'hover:bg-slate-100 hover:text-slate-900 transition-all active:scale-95',
+                'flex lg:hidden h-10 w-10 rounded-full text-muted-foreground',
+                'hover:bg-muted/50 hover:text-foreground transition-all active:scale-95',
               )}
               aria-label="Search"
             >
@@ -274,9 +274,9 @@ export function Navbar() {
                   'h-10',
                   'w-10',
                   'rounded-full',
-                  'text-slate-600',
-                  'hover:bg-slate-100',
-                  'hover:text-slate-900',
+                  'text-muted-foreground',
+                  'hover:bg-muted/50',
+                  'hover:text-foreground',
                   'transition-all',
                   'active:scale-95',
                 )}
@@ -297,9 +297,9 @@ export function Navbar() {
                   'h-10',
                   'w-10',
                   'rounded-full',
-                  'text-slate-600',
-                  'hover:bg-slate-100',
-                  'hover:text-slate-900',
+                  'text-muted-foreground',
+                  'hover:bg-muted/50',
+                  'hover:text-foreground',
                   'transition-all',
                   'active:scale-95',
                 )}
@@ -321,10 +321,10 @@ export function Navbar() {
                       'bg-primary',
                       'text-[10px]',
                       'font-bold',
-                      'text-white',
+                      'text-primary-foreground',
                       'shadow-lg',
                       'border',
-                      'border-white',
+                      'border-card',
                     )}
                   >
                     {count > 99 ? '99+' : count}
@@ -341,7 +341,7 @@ export function Navbar() {
                   'w-10',
                   'animate-pulse',
                   'rounded-full',
-                  'bg-slate-200',
+                  'bg-muted',
                 )}
               />
             ) : session?.user ? (
@@ -357,7 +357,7 @@ export function Navbar() {
                       'p-0.5',
                       'pr-1.5',
                       'h-auto',
-                      'hover:bg-slate-100',
+                      'hover:bg-muted/50',
                       'transition-all',
                       'active:scale-95',
                     )}
@@ -369,7 +369,7 @@ export function Navbar() {
                         'w-9',
                         'rounded-full',
                         'border-2',
-                        'border-slate-200',
+                        'border-border',
                       )}
                     >
                       <Avatar className={cn('h-full', 'w-full')}>
@@ -396,9 +396,9 @@ export function Navbar() {
                           'h-3',
                           'w-3',
                           'rounded-full',
-                          'bg-green-500',
+                          'bg-primary',
                           'border-2',
-                          'border-white',
+                          'border-card',
                           'shadow-sm',
                         )}
                       >
@@ -411,7 +411,7 @@ export function Navbar() {
                         'sm:block',
                         'h-4',
                         'w-4',
-                        'text-slate-400',
+                        'text-muted-dark',
                         'transition-transform',
                         'group-data-[state=open]:rotate-180',
                       )}
@@ -423,9 +423,9 @@ export function Navbar() {
                     'w-64',
                     'p-3',
                     'rounded-2xl',
-                    'bg-white',
+                    'bg-card',
                     'border',
-                    'border-slate-200',
+                    'border-border',
                     'shadow-lg',
                   )}
                   align="end"
@@ -442,7 +442,7 @@ export function Navbar() {
                         'p-2',
                         'rounded-xl',
                         'transition-colors',
-                        'hover:bg-slate-50',
+                        'hover:bg-muted-light',
                       )}
                     >
                       <Avatar
@@ -450,7 +450,7 @@ export function Navbar() {
                           'h-12',
                           'w-12',
                           'border',
-                          'border-slate-200',
+                          'border-border',
                         )}
                       >
                         <AvatarImage
@@ -480,7 +480,7 @@ export function Navbar() {
                           <span
                             className={cn(
                               'font-bold',
-                              'text-slate-900',
+                              'text-foreground',
                               'text-sm',
                               'truncate',
                             )}
@@ -490,7 +490,7 @@ export function Navbar() {
                           <p
                             className={cn(
                               'text-xs',
-                              'text-slate-500',
+                              'text-muted-foreground/85',
                               'truncate',
                             )}
                           >
@@ -504,12 +504,12 @@ export function Navbar() {
                             'items-center',
                             'gap-0.5',
                             'rounded-full',
-                            'bg-green-100',
+                            'bg-primary-soft/80',
                             'px-1.5',
                             'py-0.5',
                             'text-[8px]',
                             'font-bold',
-                            'text-green-700',
+                            'text-primary-hover',
                           )}
                         >
                           <svg
@@ -543,7 +543,7 @@ export function Navbar() {
                         className={cn(
                           'h-4',
                           'w-4',
-                          'text-slate-400',
+                          'text-muted-dark',
                           'shrink-0',
                         )}
                       />
@@ -558,7 +558,7 @@ export function Navbar() {
                         'to-emerald-50',
                         'p-3',
                         'border',
-                        'border-green-100',
+                        'border-primary-border',
                       )}
                     >
                       <div className={cn('flex', 'items-center', 'gap-2.5')}>
@@ -571,8 +571,8 @@ export function Navbar() {
                             'items-center',
                             'justify-center',
                             'rounded-full',
-                            'bg-green-100',
-                            'text-green-700',
+                            'bg-primary-soft/80',
+                            'text-primary-hover',
                           )}
                         >
                           <Leaf className={cn('h-4', 'w-4')} />
@@ -587,7 +587,7 @@ export function Navbar() {
                           >
                             Green Member
                           </p>
-                          <p className={cn('text-[11px]', 'text-green-700')}>
+                          <p className={cn('text-[11px]', 'text-primary-hover')}>
                             You're saving the planet! 🌍
                           </p>
                         </div>
@@ -612,18 +612,18 @@ export function Navbar() {
                           'transition-colors',
                         )}
                       >
-                        <User className={cn('h-4', 'w-4', 'text-slate-500')} />
+                        <User className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
                         <div>
                           <p
                             className={cn(
                               'text-sm',
                               'font-medium',
-                              'text-slate-900',
+                              'text-foreground',
                             )}
                           >
                             My Profile
                           </p>
-                          <p className={cn('text-xs', 'text-slate-500')}>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
                             Manage your profile
                           </p>
                         </div>
@@ -644,19 +644,19 @@ export function Navbar() {
                         )}
                       >
                         <Calendar
-                          className={cn('h-4', 'w-4', 'text-slate-500')}
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
                         />
                         <div>
                           <p
                             className={cn(
                               'text-sm',
                               'font-medium',
-                              'text-slate-900',
+                              'text-foreground',
                             )}
                           >
                             My Bookings
                           </p>
-                          <p className={cn('text-xs', 'text-slate-500')}>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
                             View your bookings
                           </p>
                         </div>
@@ -680,19 +680,19 @@ export function Navbar() {
                           )}
                         >
                           <Percent
-                            className={cn('h-4', 'w-4', 'text-slate-500')}
+                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
                           />
                           <div>
                             <p
                               className={cn(
                                 'text-sm',
                                 'font-medium',
-                                'text-slate-900',
+                                'text-foreground',
                               )}
                             >
                               My Listings
                             </p>
-                            <p className={cn('text-xs', 'text-slate-500')}>
+                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
                               Manage your items
                             </p>
                           </div>
@@ -717,19 +717,19 @@ export function Navbar() {
                           )}
                         >
                           <LayoutDashboard
-                            className={cn('h-4', 'w-4', 'text-slate-500')}
+                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
                           />
                           <div>
                             <p
                               className={cn(
                                 'text-sm',
                                 'font-medium',
-                                'text-slate-900',
+                                'text-foreground',
                               )}
                             >
                               Dashboard
                             </p>
-                            <p className={cn('text-xs', 'text-slate-500')}>
+                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
                               View statistics
                             </p>
                           </div>
@@ -753,19 +753,19 @@ export function Navbar() {
                           )}
                         >
                           <LayoutDashboard
-                            className={cn('h-4', 'w-4', 'text-slate-500')}
+                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
                           />
                           <div>
                             <p
                               className={cn(
                                 'text-sm',
                                 'font-medium',
-                                'text-slate-900',
+                                'text-foreground',
                               )}
                             >
                               Admin
                             </p>
-                            <p className={cn('text-xs', 'text-slate-500')}>
+                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
                               System management
                             </p>
                           </div>
@@ -787,18 +787,18 @@ export function Navbar() {
                           'sm:hidden',
                         )}
                       >
-                        <Heart className={cn('h-4', 'w-4', 'text-slate-500')} />
+                        <Heart className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
                         <div>
                           <p
                             className={cn(
                               'text-sm',
                               'font-medium',
-                              'text-slate-900',
+                              'text-foreground',
                             )}
                           >
                             Wishlist
                           </p>
-                          <p className={cn('text-xs', 'text-slate-500')}>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
                             Saved items
                           </p>
                         </div>
@@ -818,18 +818,18 @@ export function Navbar() {
                           'transition-colors',
                         )}
                       >
-                        <Star className={cn('h-4', 'w-4', 'text-slate-500')} />
+                        <Star className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
                         <div>
                           <p
                             className={cn(
                               'text-sm',
                               'font-medium',
-                              'text-slate-900',
+                              'text-foreground',
                             )}
                           >
                             Reviews
                           </p>
-                          <p className={cn('text-xs', 'text-slate-500')}>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
                             Your feedback
                           </p>
                         </div>
@@ -850,19 +850,19 @@ export function Navbar() {
                         )}
                       >
                         <MessageSquare
-                          className={cn('h-4', 'w-4', 'text-slate-500')}
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
                         />
                         <div>
                           <p
                             className={cn(
                               'text-sm',
                               'font-medium',
-                              'text-slate-900',
+                              'text-foreground',
                             )}
                           >
                             Messages
                           </p>
-                          <p className={cn('text-xs', 'text-slate-500')}>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
                             Conversations
                           </p>
                         </div>
@@ -887,19 +887,19 @@ export function Navbar() {
                         )}
                       >
                         <Settings
-                          className={cn('h-4', 'w-4', 'text-slate-500')}
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
                         />
                         <div>
                           <p
                             className={cn(
                               'text-sm',
                               'font-medium',
-                              'text-slate-900',
+                              'text-foreground',
                             )}
                           >
                             Settings
                           </p>
-                          <p className={cn('text-xs', 'text-slate-500')}>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
                             Preferences
                           </p>
                         </div>
@@ -920,19 +920,19 @@ export function Navbar() {
                         )}
                       >
                         <HelpCircle
-                          className={cn('h-4', 'w-4', 'text-slate-500')}
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
                         />
                         <div>
                           <p
                             className={cn(
                               'text-sm',
                               'font-medium',
-                              'text-slate-900',
+                              'text-foreground',
                             )}
                           >
                             Help & Support
                           </p>
-                          <p className={cn('text-xs', 'text-slate-500')}>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
                             Get assistance
                           </p>
                         </div>
@@ -951,9 +951,9 @@ export function Navbar() {
                       'py-2',
                       'rounded-lg',
                       'cursor-pointer',
-                      'text-red-600',
-                      'hover:text-red-700',
-                      'hover:bg-red-50',
+                      'text-destructive',
+                      'hover:text-destructive',
+                      'hover:bg-danger',
                       'transition-colors',
                     )}
                     onClick={handleSignOut}
@@ -975,9 +975,9 @@ export function Navbar() {
                     'h-auto',
                     'text-sm',
                     'font-semibold',
-                    'text-white',
+                    'text-primary-foreground',
                     'transition-all',
-                    'hover:bg-primary/90',
+                    'hover:bg-primary-hover',
                     'active:scale-95',
                   )}
                 >

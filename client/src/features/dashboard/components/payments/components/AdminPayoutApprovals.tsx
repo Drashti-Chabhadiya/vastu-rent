@@ -46,13 +46,13 @@ export const AdminPayoutApprovals = ({
   }
 
   return (
-    <div className="bg-[#faf7f0] border-2 border-dash-brand/20 p-8 rounded-[2.5rem] shadow-sm space-y-6">
+    <div className="bg-background border-2 border-dash-brand/20 p-8 rounded-[2.5rem] shadow-sm space-y-6">
       <div>
-        <h3 className="text-[15px] font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+        <h3 className="text-[15px] font-extrabold text-foreground/90 uppercase tracking-wider flex items-center gap-2">
           <Zap size={16} className="text-dash-brand" />
           Admin Payout Approvals Portal
         </h3>
-        <p className="text-[11px] font-semibold text-slate-500">
+        <p className="text-[11px] font-semibold text-muted-foreground/85">
           Review, approve or reject payout requests from listing listers.
         </p>
       </div>
@@ -60,11 +60,11 @@ export const AdminPayoutApprovals = ({
         {activePayouts.map((payout: any) => (
           <div
             key={payout.id}
-            className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between gap-4"
+            className="bg-card p-5 rounded-2xl border border-border/30 shadow-sm flex flex-col justify-between gap-4"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-muted/50 overflow-hidden flex-shrink-0">
                   {payout.owner?.image ? (
                     <img
                       src={payout.owner.image}
@@ -72,17 +72,17 @@ export const AdminPayoutApprovals = ({
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center font-bold text-slate-500 bg-slate-200 uppercase text-sm">
+                    <div className="w-full h-full flex items-center justify-center font-bold text-muted-foreground/85 bg-muted uppercase text-sm">
                       {payout.owner?.name?.slice(0, 2) || 'OW'}
                     </div>
                   )}
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-black text-slate-800">
+                  <h4 className="text-xs font-black text-foreground/90">
                     {payout.owner?.name}
                   </h4>
                   <p
-                    className="text-[10px] text-slate-400 font-bold truncate max-w-[120px]"
+                    className="text-[10px] text-muted-dark font-bold truncate max-w-[120px]"
                     title={payout.owner?.email}
                   >
                     {payout.owner?.email}
@@ -90,10 +90,10 @@ export const AdminPayoutApprovals = ({
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-xs font-black text-[#1e293b] block">
+                <span className="text-xs font-black text-foreground block">
                   ₹{payout.amount.toLocaleString()}
                 </span>
-                <span className="text-[8px] font-bold text-slate-400 block">
+                <span className="text-[8px] font-bold text-muted-dark block">
                   {format(new Date(payout.createdAt), 'dd MMM yyyy')}
                 </span>
               </div>
@@ -106,7 +106,7 @@ export const AdminPayoutApprovals = ({
                   setSelectedAdminPayout(payout)
                   setAdminActionType('paid')
                 }}
-                className="flex-1 h-9 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[10px] uppercase shadow-md shadow-dash-brand/10 transition-all active:scale-[0.98] cursor-pointer"
+                className="flex-1 h-9 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[10px] uppercase shadow-md shadow-dash-brand/10 transition-all active:scale-[0.98] cursor-pointer"
               >
                 Mark Paid
               </Button>
@@ -116,7 +116,7 @@ export const AdminPayoutApprovals = ({
                   setAdminActionType('rejected')
                 }}
                 variant="outline"
-                className="flex-1 h-9 rounded-full text-red-500 border border-red-200 hover:bg-red-50 font-black text-[10px] uppercase transition-all active:scale-[0.98] cursor-pointer"
+                className="flex-1 h-9 rounded-full text-destructive border border-danger/50 hover:bg-danger font-black text-[10px] uppercase transition-all active:scale-[0.98] cursor-pointer"
               >
                 Reject
               </Button>
@@ -137,18 +137,18 @@ export const AdminPayoutApprovals = ({
         }}
       >
         {selectedAdminPayout && (
-          <DialogContent className="max-w-md p-8 border-none bg-white rounded-[2.5rem] shadow-2xl font-sans">
+          <DialogContent className="max-w-md p-8 border-none bg-card rounded-[2.5rem] shadow-2xl font-sans">
             <div className="space-y-6">
               <div className="space-y-2">
                 <span className="text-[9px] font-black uppercase tracking-widest text-dash-brand bg-dash-brand/5 px-2 py-0.5 rounded">
                   Admin Action Portal
                 </span>
-                <h3 className="text-xl font-extrabold text-slate-800">
+                <h3 className="text-xl font-extrabold text-foreground/90">
                   {adminActionType === 'rejected'
                     ? 'Reject Payout Request'
                     : 'Approve & Mark as Paid'}
                 </h3>
-                <p className="text-[11px] font-bold text-slate-400">
+                <p className="text-[11px] font-bold text-muted-dark">
                   Request by <strong>{selectedAdminPayout.owner?.name}</strong>{' '}
                   for{' '}
                   <strong>
@@ -160,7 +160,7 @@ export const AdminPayoutApprovals = ({
 
               {/* Action Notes Input */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
                   Notes / Reason / Transaction ID
                 </label>
                 <textarea
@@ -171,7 +171,7 @@ export const AdminPayoutApprovals = ({
                   }
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
-                  className="w-full min-h-[80px] p-3 rounded-xl border border-slate-100 bg-slate-50/50 text-xs font-semibold text-slate-800 outline-none focus:border-dash-brand transition-all resize-none"
+                  className="w-full min-h-[80px] p-3 rounded-xl border border-border/30 bg-muted-light/50 text-xs font-semibold text-foreground/90 outline-none focus:border-dash-brand transition-all resize-none"
                 />
               </div>
 
@@ -183,15 +183,15 @@ export const AdminPayoutApprovals = ({
                     setAdminNotes('')
                     setAdminActionType(null)
                   }}
-                  className="flex-1 h-12 rounded-full font-black text-[11px] uppercase tracking-wider bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
+                  className="flex-1 h-12 rounded-full font-black text-[11px] uppercase tracking-wider bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleConfirmAction}
-                  className={`flex-1 h-12 rounded-full text-white font-black text-[11px] uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer ${
+                  className={`flex-1 h-12 rounded-full text-primary-foreground font-black text-[11px] uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer ${
                     adminActionType === 'rejected'
-                      ? 'bg-red-500 hover:bg-red-600 shadow-red-100'
+                      ? 'bg-destructive hover:bg-destructive/90 shadow-destructive/5'
                       : 'bg-dash-brand hover:bg-dash-brand/90 shadow-dash-brand/20'
                   }`}
                   disabled={isUpdating}

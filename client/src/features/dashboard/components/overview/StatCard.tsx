@@ -52,7 +52,7 @@ export const StatCard = ({
   sparklineData,
 }: StatCardProps) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
         <div className={cn('p-3 rounded-2xl', iconBg)}>
           <Icon className={iconColor} size={24} />

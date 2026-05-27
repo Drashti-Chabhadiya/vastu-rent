@@ -59,7 +59,7 @@ export const AdminOverview = ({
           change={statsLoading ? '...' : formatChange(usersChange)}
           isPositive={usersChange >= 0}
           icon={Users}
-          iconBg="bg-green-50"
+          iconBg="bg-primary-soft"
           iconColor="bg-primary-light"
           sparklineData={[30, 40, 35, 50, 45, 60, 55]}
         />
@@ -87,7 +87,7 @@ export const AdminOverview = ({
           change={statsLoading ? '...' : formatChange(bookingsChange)}
           isPositive={bookingsChange >= 0}
           icon={ShoppingBag}
-          iconBg="bg-green-50"
+          iconBg="bg-primary-soft"
           iconColor="bg-primary-light"
           sparklineData={[20, 35, 30, 45, 40, 50, 45]}
         />

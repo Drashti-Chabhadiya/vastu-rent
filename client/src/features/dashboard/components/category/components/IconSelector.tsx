@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import * as LucideIcons from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -46,14 +46,14 @@ export const IconSelector = ({ selectedIcon, onSelect }: IconSelectorProps) => {
     <div className="space-y-4">
       <div className="relative">
         <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/70 z-10"
           size={16}
         />
         <Input
           placeholder="Search icons..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-10 h-11 bg-white border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-dash-brand/20 transition-all"
+          className="pl-10 h-11 bg-card border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-2 focus-visible:ring-dash-brand/20 transition-all"
         />
         {search && (
           <Button
@@ -61,7 +61,7 @@ export const IconSelector = ({ selectedIcon, onSelect }: IconSelectorProps) => {
             variant="ghost"
             size="icon"
             onClick={() => setSearch('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 h-8 w-8 rounded-full p-0 active:scale-[0.98] transition-all cursor-pointer hover:bg-gray-100/50"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/70 hover:text-muted-foreground h-8 w-8 rounded-full p-0 active:scale-[0.98] transition-all cursor-pointer hover:bg-muted/50/50"
           >
             <X size={16} />
           </Button>
@@ -80,7 +80,7 @@ export const IconSelector = ({ selectedIcon, onSelect }: IconSelectorProps) => {
               'aspect-square p-0 flex items-center justify-center rounded-xl border transition-all hover:bg-dash-brand/5 hover:border-dash-brand/30 hover:text-dash-brand active:scale-[0.98] group min-w-0 min-h-0 h-auto w-auto',
               selectedIcon === name
                 ? 'bg-dash-brand/10 border-dash-brand text-dash-brand shadow-sm hover:bg-dash-brand/15'
-                : 'bg-white border-gray-100 text-gray-500 hover:bg-gray-50',
+                : 'bg-card border-border/30 text-muted-foreground/85 hover:bg-muted-light',
             )}
           >
             <div
@@ -96,7 +96,7 @@ export const IconSelector = ({ selectedIcon, onSelect }: IconSelectorProps) => {
       </div>
 
       {filteredIcons.length === 0 && (
-        <div className="text-center py-8 text-gray-400 text-sm">
+        <div className="text-center py-8 text-muted-foreground/70 text-sm">
           No icons found for "{search}"
         </div>
       )}

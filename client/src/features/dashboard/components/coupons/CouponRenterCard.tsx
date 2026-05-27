@@ -27,7 +27,7 @@ export function CouponRenterCard({
   return (
     <div
       onClick={() => onCopy(coupon.code)}
-      className="bg-white rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300 cursor-pointer p-6 flex flex-col justify-between min-h-[200px] hover:border-emerald-200"
+      className="bg-card rounded-[2rem] border border-border/30 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300 cursor-pointer p-6 flex flex-col justify-between min-h-[200px] hover:border-emerald-200"
     >
       {/* Background accent */}
       <div className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 bg-emerald-500/5 group-hover:scale-125 transition-all duration-300" />
@@ -39,7 +39,7 @@ export function CouponRenterCard({
           </div>
           <div className="flex items-center gap-1.5 flex-wrap">
             {coupon.minBooking && (
-              <span className="text-[10px] text-slate-400 font-bold bg-slate-50 px-2 py-0.5 rounded">
+              <span className="text-[10px] text-muted-dark font-bold bg-muted-light px-2 py-0.5 rounded">
                 Min. ₹{coupon.minBooking.toLocaleString()}
               </span>
             )}
@@ -59,14 +59,14 @@ export function CouponRenterCard({
         </h4>
 
         {coupon.maxDiscount && (
-          <p className="text-[10px] font-bold text-slate-400 mt-0.5">
+          <p className="text-[10px] font-bold text-muted-dark mt-0.5">
             Save up to ₹{coupon.maxDiscount.toLocaleString()}
           </p>
         )}
 
         {coupon.product?.title && (
-          <div className="flex items-center gap-1 text-[10px] font-bold text-slate-500 mt-2">
-            <Building size={11} className="text-slate-400" />
+          <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground/85 mt-2">
+            <Building size={11} className="text-muted-dark" />
             <span className="truncate max-w-[180px]">
               Valid on: {coupon.product.title}
             </span>
@@ -74,7 +74,7 @@ export function CouponRenterCard({
         )}
 
         {slotsLeft !== null && (
-          <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600 mt-1.5">
+          <div className="flex items-center gap-1 text-[10px] font-bold text-warning-foreground mt-1.5">
             <Users size={11} />
             <span>
               {slotsLeft} slot{slotsLeft !== 1 ? 's' : ''} remaining
@@ -84,11 +84,11 @@ export function CouponRenterCard({
       </div>
 
       {/* Copy strip */}
-      <div className="mt-4 pt-4 border-t border-dashed border-slate-100 flex items-center justify-between">
-        <div className="bg-emerald-500 text-white font-black text-[11px] px-3.5 py-1.5 rounded-xl tracking-widest uppercase shadow-sm group-hover:bg-emerald-600 transition-colors">
+      <div className="mt-4 pt-4 border-t border-dashed border-border/30 flex items-center justify-between">
+        <div className="bg-emerald-500 text-primary-foreground font-black text-[11px] px-3.5 py-1.5 rounded-xl tracking-widest uppercase shadow-sm group-hover:bg-emerald-600 transition-colors">
           {coupon.code}
         </div>
-        <span className="text-[9px] font-bold text-slate-400 flex items-center gap-1 group-hover:text-emerald-600 transition-colors uppercase tracking-wider">
+        <span className="text-[9px] font-bold text-muted-dark flex items-center gap-1 group-hover:text-emerald-600 transition-colors uppercase tracking-wider">
           {copiedCode === coupon.code ? (
             <>
               <CheckCircle2

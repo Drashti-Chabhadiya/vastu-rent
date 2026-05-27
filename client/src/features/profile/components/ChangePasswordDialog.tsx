@@ -38,17 +38,17 @@ export function ChangePasswordDialog({
 
   // Password strength logic
   const getPasswordStrength = (password: string) => {
-    if (!password) return { score: 0, label: 'None', color: 'bg-gray-200' }
+    if (!password) return { score: 0, label: 'None', color: 'bg-muted' }
     let score = 0
     if (password.length >= 8) score += 1
     if (/[A-Z]/.test(password)) score += 1
     if (/[0-9]/.test(password)) score += 1
     if (/[^A-Za-z0-9]/.test(password)) score += 1
 
-    if (score <= 1) return { score: 25, label: 'Weak', color: 'bg-red-500' }
+    if (score <= 1) return { score: 25, label: 'Weak', color: 'bg-destructive' }
     if (score === 2) return { score: 50, label: 'Fair', color: 'bg-orange-500' }
     if (score === 3) return { score: 75, label: 'Good', color: 'bg-yellow-500' }
-    return { score: 100, label: 'Strong', color: 'bg-green-500' }
+    return { score: 100, label: 'Strong', color: 'bg-primary' }
   }
 
   const handleChangePasswordSubmit = async (e: React.FormEvent) => {
@@ -100,13 +100,13 @@ export function ChangePasswordDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[420px] rounded-[32px] border-none bg-white/90 backdrop-blur-md p-6 shadow-2xl animate-scale-in">
+      <DialogContent className="sm:max-w-[420px] rounded-[32px] border-none bg-card/90 backdrop-blur-md p-6 shadow-2xl animate-scale-in">
         <DialogHeader className="text-left">
-          <DialogTitle className="text-xl font-black text-gray-900 font-display flex items-center gap-2">
+          <DialogTitle className="text-xl font-black text-foreground font-display flex items-center gap-2">
             <KeyRound className="h-5 w-5 text-primary" />
             Change Password
           </DialogTitle>
-          <DialogDescription className="text-xs text-gray-500 font-medium">
+          <DialogDescription className="text-xs text-muted-foreground/85 font-medium">
             Update your account password to ensure your listings and payouts
             remain secure.
           </DialogDescription>
@@ -114,7 +114,7 @@ export function ChangePasswordDialog({
 
         <form onSubmit={handleChangePasswordSubmit} className="space-y-4 mt-2">
           {changePasswordError && (
-            <div className="bg-red-50 text-red-600 text-xs font-bold p-3 rounded-xl flex items-center gap-1.5 animate-fade-in border border-red-100">
+            <div className="bg-danger text-destructive text-xs font-bold p-3 rounded-xl flex items-center gap-1.5 animate-fade-in border border-danger/30">
               <ShieldAlert size={14} className="shrink-0" />
               <span>{changePasswordError}</span>
             </div>
@@ -122,7 +122,7 @@ export function ChangePasswordDialog({
 
           {/* Current Password */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-gray-400">
+            <Label className="text-xs font-bold text-muted-foreground/70">
               Current Password
             </Label>
             <div className="relative">
@@ -131,14 +131,14 @@ export function ChangePasswordDialog({
                 placeholder="Enter current password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="h-11 rounded-xl border-gray-200 bg-gray-50/30 text-gray-900 font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
+                className="h-11 rounded-xl border-border bg-muted-light/30 text-foreground font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-400 hover:text-gray-600 hover:bg-transparent"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground/70 hover:text-muted-foreground hover:bg-transparent"
               >
                 {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </Button>
@@ -147,7 +147,7 @@ export function ChangePasswordDialog({
 
           {/* New Password */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-gray-400">
+            <Label className="text-xs font-bold text-muted-foreground/70">
               New Password
             </Label>
             <div className="relative">
@@ -156,14 +156,14 @@ export function ChangePasswordDialog({
                 placeholder="At least 8 characters"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="h-11 rounded-xl border-gray-200 bg-gray-50/30 text-gray-900 font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
+                className="h-11 rounded-xl border-border bg-muted-light/30 text-foreground font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-400 hover:text-gray-600 hover:bg-transparent"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground/70 hover:text-muted-foreground hover:bg-transparent"
               >
                 {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </Button>
@@ -173,23 +173,23 @@ export function ChangePasswordDialog({
             {newPassword && (
               <div className="space-y-1 mt-1.5 animate-fade-in">
                 <div className="flex justify-between items-center text-[10px] font-bold">
-                  <span className="text-gray-400">Password Strength</span>
+                  <span className="text-muted-foreground/70">Password Strength</span>
                   <span
                     className={cn(
                       getPasswordStrength(newPassword).label === 'Weak' &&
-                        'text-red-500',
+                        'text-destructive',
                       getPasswordStrength(newPassword).label === 'Fair' &&
                         'text-orange-500',
                       getPasswordStrength(newPassword).label === 'Good' &&
                         'text-yellow-500',
                       getPasswordStrength(newPassword).label === 'Strong' &&
-                        'text-green-600',
+                        'text-primary',
                     )}
                   >
                     {getPasswordStrength(newPassword).label}
                   </span>
                 </div>
-                <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
                   <div
                     className={cn(
                       'h-full transition-all duration-500 rounded-full',
@@ -206,7 +206,7 @@ export function ChangePasswordDialog({
 
           {/* Confirm New Password */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-gray-400">
+            <Label className="text-xs font-bold text-muted-foreground/70">
               Confirm New Password
             </Label>
             <div className="relative">
@@ -215,14 +215,14 @@ export function ChangePasswordDialog({
                 placeholder="Repeat new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="h-11 rounded-xl border-gray-200 bg-gray-50/30 text-gray-900 font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
+                className="h-11 rounded-xl border-border bg-muted-light/30 text-foreground font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-400 hover:text-gray-600 hover:bg-transparent"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground/70 hover:text-muted-foreground hover:bg-transparent"
               >
                 {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </Button>
@@ -234,14 +234,14 @@ export function ChangePasswordDialog({
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="flex-1 rounded-xl h-11 font-bold border-gray-200 text-gray-700 hover:bg-gray-50 shadow-none cursor-pointer"
+              className="flex-1 rounded-xl h-11 font-bold border-border text-foreground/80 hover:bg-muted-light shadow-none cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isChangingPassword}
-              className="flex-1 rounded-xl h-11 font-bold bg-[#2d5222] hover:bg-[#203a18] text-white flex items-center justify-center gap-1.5 shadow-lg shadow-[#2d5222]/10 cursor-pointer border-none"
+              className="flex-1 rounded-xl h-11 font-bold bg-primary hover:bg-primary-hover text-primary-foreground flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 cursor-pointer border-none"
             >
               {isChangingPassword ? <Loader variant="white" size={14} /> : null}
               {isChangingPassword ? 'Updating...' : 'Save Password'}

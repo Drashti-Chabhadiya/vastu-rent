@@ -18,7 +18,6 @@ import { NotificationsManagement } from './notifications/NotificationsManagement
 import { ReportsManagement } from './reports/ReportsManagement'
 import { SettingsManagement } from './settings/SettingsManagement'
 import { StoriesManagement } from './stories/StoriesManagement'
-import { Button } from '#/components/ui/button'
 import {
   useAdminStats,
   useAdminRecentUsers,
@@ -53,36 +52,6 @@ const DashboardPage = () => {
   }
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
-
-  const PlaceholderView = ({
-    title,
-    icon: Icon,
-  }: {
-    title: string
-    icon: any
-  }) => (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white rounded-[2.5rem] border border-gray-100 shadow-sm animate-in fade-in zoom-in-95 duration-500">
-      <div className="w-24 h-24 bg-dash-brand/5 rounded-full flex items-center justify-center mb-6 relative">
-        <Icon className="text-dash-brand" size={48} />
-        <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 border-4 border-white rounded-full animate-bounce"></div>
-      </div>
-      <h3 className="text-2xl font-black text-dash-text mb-2 tracking-tight">
-        {title}
-      </h3>
-      <p className="text-dash-text-soft font-bold max-w-sm text-center px-6 leading-relaxed">
-        We're currently building this feature to enhance your marketplace
-        experience. Check back soon for updates!
-      </p>
-      <Button
-        onClick={() => setCurrentTab('overview')}
-        variant="outline"
-        size="lg"
-        className="mt-8 font-extrabold shadow-sm rounded-full"
-      >
-        Back to Overview
-      </Button>
-    </div>
-  )
 
   return (
     <div className="min-h-screen bg-dash-bg flex overflow-x-hidden">

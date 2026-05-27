@@ -67,22 +67,22 @@ export const ProductInfoSection = ({
       {/* Header Info */}
       <div className="space-y-4">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight">
             {product.title || product.name}
           </h1>
-          <Badge className="bg-green-50 text-green-700 border border-green-100 px-2 py-0.5 rounded-md flex items-center gap-1 font-bold text-[10px] uppercase shrink-0">
+          <Badge className="bg-primary-soft text-primary-hover border border-primary-border px-2 py-0.5 rounded-md flex items-center gap-1 font-bold text-[10px] uppercase shrink-0">
             <CheckCircle2 size={10} /> Verified
           </Badge>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <span className="font-bold text-gray-900 text-sm">
+            <span className="font-bold text-foreground text-sm">
               {product.rating || '4.6'}
             </span>
             <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
           </div>
-          <span className="text-gray-500 text-sm font-medium cursor-pointer">
+          <span className="text-muted-foreground/85 text-sm font-medium cursor-pointer">
             ({product.reviewsCount || '0'} Reviews)
           </span>
         </div>
@@ -91,31 +91,31 @@ export const ProductInfoSection = ({
           <span className="text-3xl font-black text-primary">
             ₹{product.price.toLocaleString()}
           </span>
-          <span className="text-sm font-bold text-gray-500">/day</span>
+          <span className="text-sm font-bold text-muted-foreground/85">/day</span>
           {product.securityDeposit > 0 && (
-            <span className="ml-3 text-xs font-medium text-gray-400">
+            <span className="ml-3 text-xs font-medium text-muted-foreground/70">
               + ₹{product.securityDeposit.toLocaleString()} deposit
             </span>
           )}
         </div>
 
-        <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
           {product.description}
         </p>
       </div>
 
-      <hr className="border-gray-100" />
+      <hr className="border-border/30" />
 
       {/* Product Information Table */}
       <div className="space-y-4">
-        <h3 className="text-sm font-bold text-gray-900">Product Information</h3>
+        <h3 className="text-sm font-bold text-foreground">Product Information</h3>
         <div className="grid grid-cols-1 gap-y-3">
           {productInfo.map((info) => (
             <div key={info.label} className="grid grid-cols-3">
-              <span className="col-span-1 text-sm text-gray-500">
+              <span className="col-span-1 text-sm text-muted-foreground/85">
                 {info.label}
               </span>
-              <span className="col-span-2 text-sm font-medium text-gray-900">
+              <span className="col-span-2 text-sm font-medium text-foreground">
                 {info.value}
               </span>
             </div>
@@ -123,7 +123,7 @@ export const ProductInfoSection = ({
         </div>
       </div>
 
-      <hr className="border-gray-100" />
+      <hr className="border-border/30" />
 
       {/* Trust Features */}
       <div className="flex flex-wrap items-center gap-y-4 gap-x-6">
@@ -145,29 +145,29 @@ export const ProductInfoSection = ({
           },
         ].map((feature, i) => (
           <div key={i} className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-primary shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-primary-soft flex items-center justify-center text-primary shrink-0">
               {feature.icon}
             </div>
             <div>
-              <p className="text-[11px] font-bold text-gray-900 leading-tight">
+              <p className="text-[11px] font-bold text-foreground leading-tight">
                 {feature.title}
               </p>
-              <p className="text-[10px] text-gray-500">{feature.desc}</p>
+              <p className="text-[10px] text-muted-foreground/85">{feature.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Save More Banner */}
-      <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-primary shrink-0 shadow-sm">
+      <div className="p-4 rounded-xl bg-primary-soft border border-primary-border flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-primary shrink-0 shadow-sm">
           <AlertCircle size={16} />
         </div>
         <div>
-          <p className="text-sm font-bold text-gray-900 leading-tight">
+          <p className="text-sm font-bold text-foreground leading-tight">
             Save more with longer rentals!
           </p>
-          <p className="text-xs text-gray-600 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             Rent for a week or more and get up to 20% off.
           </p>
         </div>
@@ -176,7 +176,7 @@ export const ProductInfoSection = ({
       {/* Action Buttons */}
       {/* Payment Method Selection */}
       <div className="space-y-3">
-        <div className="text-[13px] font-bold text-gray-900 flex items-center gap-2">
+        <div className="text-[13px] font-bold text-foreground flex items-center gap-2">
           <IndianRupee size={14} className="text-primary" />
           Payment Method
         </div>
@@ -189,7 +189,7 @@ export const ProductInfoSection = ({
               'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'online'
                 ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
-                : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200 hover:text-gray-500 hover:bg-gray-50',
+                : 'border-border/30 bg-muted-light text-muted-foreground/85 hover:border-border hover:text-muted-foreground/85 hover:bg-muted-light',
             )}
           >
             <ShieldCheck size={18} />
@@ -205,7 +205,7 @@ export const ProductInfoSection = ({
               'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'cash'
                 ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
-                : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200 hover:text-gray-500 hover:bg-gray-50',
+                : 'border-border/30 bg-muted-light text-muted-foreground/85 hover:border-border hover:text-muted-foreground/85 hover:bg-muted-light',
             )}
           >
             <MessageCircle size={18} />
@@ -220,7 +220,7 @@ export const ProductInfoSection = ({
         <Button
           onClick={handleRentNow}
           disabled={createRentalIsPending || isPaying}
-          className="flex-1 h-12 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
+          className="flex-1 h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
         >
           {createRentalIsPending || isPaying ? (
             <Loader2 size={16} className="animate-spin mr-2" />
@@ -234,7 +234,7 @@ export const ProductInfoSection = ({
         </Button>
         <Button
           variant="outline"
-          className="flex-1 h-12 rounded-xl border-gray-200 font-bold text-gray-700 hover:bg-gray-50 active:scale-[0.98] transition-all gap-2"
+          className="flex-1 h-12 rounded-xl border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all gap-2"
           onClick={() =>
             window.open(
               `mailto:${product.owner?.email || ''}?subject=Inquiry about ${product.title || product.name}`,
@@ -247,7 +247,7 @@ export const ProductInfoSection = ({
 
       {startDate && (
         <div className="p-4 rounded-xl bg-primary/5 border border-brand/10 space-y-3 shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-700">
+          <div className="flex items-center justify-between text-xs text-foreground/80">
             <span className="font-bold">Dates:</span>
             <span>
               {startDate.toLocaleDateString('en-IN')}{' '}
@@ -258,7 +258,7 @@ export const ProductInfoSection = ({
           </div>
           {endDate && (
             <>
-              <div className="flex items-center justify-between text-xs text-gray-700">
+              <div className="flex items-center justify-between text-xs text-foreground/80">
                 <span className="font-bold">
                   Rental Fee ({rentalDays} days):
                 </span>
@@ -267,7 +267,7 @@ export const ProductInfoSection = ({
 
               {/* Coupon Row */}
               <div className="pt-2 border-t border-brand/5 space-y-1.5">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                <div className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-wider block">
                   Marketplace Promo Code
                 </div>
                 {appliedCoupon ? (
@@ -284,7 +284,7 @@ export const ProductInfoSection = ({
                       type="button"
                       variant="link"
                       onClick={handleRemoveCoupon}
-                      className="text-[9px] font-black text-red-500 hover:text-red-700 uppercase tracking-wider shrink-0 transition-colors p-0 h-auto active:scale-[0.98]"
+                      className="text-[9px] font-black text-destructive hover:text-destructive uppercase tracking-wider shrink-0 transition-colors p-0 h-auto active:scale-[0.98]"
                     >
                       Remove
                     </Button>
@@ -298,19 +298,19 @@ export const ProductInfoSection = ({
                         onChange={(e) =>
                           setCouponCode(e.target.value.toUpperCase())
                         }
-                        className="h-9 rounded-xl bg-white border-gray-200 text-xs font-bold placeholder:text-gray-300"
+                        className="h-9 rounded-xl bg-card border-border text-xs font-bold placeholder:text-muted-dark"
                       />
                       <Button
                         type="button"
                         onClick={handleApplyCoupon}
                         disabled={applyCouponIsPending || !couponCode.trim()}
-                        className="h-9 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-black shrink-0 active:scale-[0.98]"
+                        className="h-9 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-black shrink-0 active:scale-[0.98]"
                       >
                         {applyCouponIsPending ? 'Applying...' : 'Apply'}
                       </Button>
                     </div>
                     {couponError && (
-                      <p className="text-[10px] font-bold text-red-500 flex items-center gap-1 pl-1">
+                      <p className="text-[10px] font-bold text-destructive flex items-center gap-1 pl-1">
                         <AlertCircle size={10} /> {couponError}
                       </p>
                     )}
@@ -325,13 +325,13 @@ export const ProductInfoSection = ({
                 </div>
               )}
 
-              <div className="flex items-center justify-between text-xs text-gray-700">
+              <div className="flex items-center justify-between text-xs text-foreground/80">
                 <span className="font-bold">
                   Security Deposit (Refundable):
                 </span>
                 <span>₹{(product.securityDeposit || 0).toLocaleString()}</span>
               </div>
-              <div className="pt-2 border-t border-brand/10 flex items-center justify-between text-sm text-gray-900 font-black">
+              <div className="pt-2 border-t border-brand/10 flex items-center justify-between text-sm text-foreground font-black">
                 <span>Total Payable:</span>
                 <span className="text-primary">
                   ₹{finalPayable.toLocaleString()}

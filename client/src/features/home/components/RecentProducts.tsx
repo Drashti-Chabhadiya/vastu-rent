@@ -18,7 +18,7 @@ export function RecentProducts() {
     : []
 
   return (
-    <section className="bg-background py-20 overflow-hidden border-t border-slate-100/50">
+    <section className="bg-background py-20 overflow-hidden border-t border-border/30/50">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative">
         {/* Glow effect */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />
@@ -31,10 +31,10 @@ export function RecentProducts() {
                 Just Added
               </span>
             </div>
-            <h2 className="text-3xl font-black text-gray-900 leading-tight">
+            <h2 className="text-3xl font-black text-foreground leading-tight">
               Recent Additions
             </h2>
-            <p className="text-gray-500 font-medium mt-1">
+            <p className="text-muted-foreground/85 font-medium mt-1">
               Be the first to rent these brand new listings.
             </p>
           </div>
@@ -58,11 +58,11 @@ export function RecentProducts() {
                 <ProductCard key={product.id} product={product} />
               ))
             ) : (
-              <div className="col-span-full py-16 bg-gray-50 rounded-3xl text-center border border-dashed border-gray-200">
-                <p className="text-gray-500 font-bold">
+              <div className="col-span-full py-16 bg-muted-light rounded-3xl text-center border border-dashed border-border">
+                <p className="text-muted-foreground/85 font-bold">
                   No newly added items found.
                 </p>
-                <p className="text-gray-400 text-sm mt-1">
+                <p className="text-muted-foreground/70 text-sm mt-1">
                   Check back later for fresh listings!
                 </p>
               </div>

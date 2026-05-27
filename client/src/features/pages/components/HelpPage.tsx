@@ -54,18 +54,18 @@ export function HelpPage() {
       {/* Search Header */}
       <section className="bg-primary py-20 px-4">
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-8">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-primary-foreground mb-8">
             How can we help you today?
           </h1>
           <div className="relative max-w-2xl mx-auto group">
             <Search
-              className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:bg-primary transition-colors"
+              className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:bg-primary transition-colors"
               size={24}
             />
             <input
               type="text"
               placeholder="Search for answers..."
-              className="w-full h-16 pl-16 pr-8 bg-white rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-lg shadow-xl"
+              className="w-full h-16 pl-16 pr-8 bg-card rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-lg shadow-xl"
             />
           </div>
         </div>
@@ -76,12 +76,12 @@ export function HelpPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
-              icon: <HelpCircle className="text-blue-500" />,
+              icon: <HelpCircle className="text-info-foreground" />,
               title: 'Getting Started',
               count: '12 articles',
             },
             {
-              icon: <FileText className="text-green-500" />,
+              icon: <FileText className="text-primary" />,
               title: 'Account & Billing',
               count: '8 articles',
             },
@@ -91,20 +91,20 @@ export function HelpPage() {
               count: '15 articles',
             },
             {
-              icon: <Shield className="text-red-500" />,
+              icon: <Shield className="text-destructive" />,
               title: 'Safety & Security',
               count: '10 articles',
             },
           ].map((item, i) => (
             <div
               key={i}
-              className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all cursor-pointer group"
+              className="bg-card p-6 rounded-3xl shadow-sm border border-border/30 hover:shadow-lg transition-all cursor-pointer group"
             >
-              <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-muted-light flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 {item.icon}
               </div>
-              <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
-              <p className="text-sm text-gray-500">{item.count}</p>
+              <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
+              <p className="text-sm text-muted-foreground/85">{item.count}</p>
             </div>
           ))}
         </div>
@@ -112,16 +112,16 @@ export function HelpPage() {
 
       {/* FAQ Section */}
       <section className="mx-auto max-w-4xl px-4 mb-20">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8 px-2">
+        <h2 className="text-2xl font-bold text-foreground mb-8 px-2">
           Frequently Asked Questions
         </h2>
         <div className="space-y-12">
           {faqs.map((cat, catIdx) => (
             <div key={catIdx}>
-              <h3 className="text-lg font-bold text-gray-400 uppercase tracking-widest mb-6 px-2">
+              <h3 className="text-lg font-bold text-muted-foreground/70 uppercase tracking-widest mb-6 px-2">
                 {cat.category}
               </h3>
-              <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
+              <div className="bg-card rounded-[32px] border border-border/30 shadow-sm overflow-hidden">
                 {cat.questions.map((faq, faqIdx) => {
                   const id = `${cat.category}-${faqIdx}`
                   const isOpen = openIndex === id
@@ -129,21 +129,21 @@ export function HelpPage() {
                     <div
                       key={faqIdx}
                       className={cn(
-                        'border-b border-gray-50 last:border-0',
-                        isOpen && 'bg-gray-50/50',
+                        'border-b border-border/30 last:border-0',
+                        isOpen && 'bg-muted-light/50',
                       )}
                     >
                       <Button
                         variant="ghost"
                         onClick={() => toggleFaq(id)}
-                        className="h-auto w-full flex items-center justify-between p-6 sm:p-8 text-left hover:bg-gray-50 transition-colors rounded-none font-normal justify-between [&_svg]:size-6"
+                        className="h-auto w-full flex items-center justify-between p-6 sm:p-8 text-left hover:bg-muted-light transition-colors rounded-none font-normal justify-between [&_svg]:size-6"
                       >
-                        <span className="text-lg font-bold text-gray-900 pr-8 text-left whitespace-normal">
+                        <span className="text-lg font-bold text-foreground pr-8 text-left whitespace-normal">
                           {faq.q}
                         </span>
                         <ChevronDown
                           className={cn(
-                            'w-6 h-6 text-gray-400 transition-transform duration-300 shrink-0',
+                            'w-6 h-6 text-muted-foreground/70 transition-transform duration-300 shrink-0',
                             isOpen && 'rotate-180',
                           )}
                         />
@@ -154,7 +154,7 @@ export function HelpPage() {
                           isOpen ? 'max-h-96' : 'max-h-0',
                         )}
                       >
-                        <div className="px-6 sm:px-8 pb-8 text-gray-600 leading-relaxed">
+                        <div className="px-6 sm:px-8 pb-8 text-muted-foreground leading-relaxed">
                           {faq.a}
                         </div>
                       </div>
@@ -170,47 +170,47 @@ export function HelpPage() {
       {/* Contact Support */}
       <section className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="bg-primary/5 border border-brand/10 rounded-[40px] p-10 sm:p-16 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
             Still need help?
           </h2>
-          <p className="text-gray-600 mb-12 max-w-xl mx-auto">
+          <p className="text-muted-foreground mb-12 max-w-xl mx-auto">
             Our support team is available 24/7 to help you with any questions or
             issues you might have.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <Mail className="text-primary" />
               </div>
               <div className="text-left">
-                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
+                <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   Email us
                 </p>
-                <p className="font-bold text-gray-900">
+                <p className="font-bold text-foreground">
                   support@vastu-rent.com
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <MessageCircle className="text-primary" />
               </div>
               <div className="text-left">
-                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
+                <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   Live Chat
                 </p>
-                <p className="font-bold text-gray-900">Start a conversation</p>
+                <p className="font-bold text-foreground">Start a conversation</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+              <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <Phone className="text-primary" />
               </div>
               <div className="text-left">
-                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
+                <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   Call us
                 </p>
-                <p className="font-bold text-gray-900">+91 79 4000 0000</p>
+                <p className="font-bold text-foreground">+91 79 4000 0000</p>
               </div>
             </div>
           </div>

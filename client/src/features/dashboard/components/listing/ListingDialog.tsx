@@ -124,21 +124,21 @@ export const ListingDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border-none shadow-2xl bg-white p-0 custom-scrollbar text-dash-text">
-        <div className="bg-gradient-to-br from-[#166534] to-[#2f6a4a] p-8 text-white">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border-none shadow-2xl bg-card p-0 custom-scrollbar text-dash-text">
+        <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-primary-foreground">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
+              <div className="w-10 h-10 rounded-xl bg-card/20 backdrop-blur-md flex items-center justify-center shadow-inner">
                 <HeaderIcon
-                  className="text-white"
+                  className="text-primary-foreground"
                   size={isEditMode ? 20 : 24}
                 />
               </div>
-              <Badge className="bg-white/20 text-white border-none font-bold text-[10px] uppercase tracking-widest">
+              <Badge className="bg-card/20 text-primary-foreground border-none font-bold text-[10px] uppercase tracking-widest">
                 {isEditMode ? 'Marketplace Management' : 'Marketplace Admin'}
               </Badge>
             </div>
-            <DialogTitle className="text-2xl font-extrabold tracking-tight text-white">
+            <DialogTitle className="text-2xl font-extrabold tracking-tight text-primary-foreground">
               {isEditMode ? 'Edit Listing Details' : 'Create New Listing'}
             </DialogTitle>
           </DialogHeader>
@@ -168,19 +168,19 @@ export const ListingDialog = ({
               onUploadStatusChange={setIsUploadingImages}
             />
 
-            <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-gray-100">
+            <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-border/30">
               <Button
                 type="button"
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
-                className="rounded-full font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none"
+                className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
               >
                 {isEditMode ? 'Cancel' : 'Discard'}
               </Button>
               <Button
                 type="submit"
                 disabled={isLoading || isUploadingImages}
-                className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 <SubmitIcon size={18} strokeWidth={isEditMode ? 2 : 3} />
                 {isEditMode

@@ -25,7 +25,7 @@ export function UserProfilePage() {
   if (!profile) {
     return (
       <div className="min-h-screen bg-bg-base flex items-center justify-center">
-        <p className="text-gray-500 font-bold">User profile not found</p>
+        <p className="text-muted-foreground/85 font-bold">User profile not found</p>
       </div>
     )
   }
@@ -34,12 +34,12 @@ export function UserProfilePage() {
     <div className="min-h-screen bg-bg-base pt-24 pb-16">
       <div className="mx-auto max-w-[1200px] px-4">
         {/* Profile Header */}
-        <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-gray-100 mb-12 relative overflow-hidden">
+        <div className="bg-card rounded-[40px] p-8 md:p-12 shadow-sm border border-border/30 mb-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
 
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
             <div className="relative">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-100 overflow-hidden border-4 border-white shadow-lg">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-muted/50 overflow-hidden border-4 border-card shadow-lg">
                 {profile.image ? (
                   <img
                     src={profile.image}
@@ -47,17 +47,17 @@ export function UserProfilePage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-primary text-white text-4xl font-black">
+                  <div className="w-full h-full flex items-center justify-center bg-primary text-primary-foreground text-4xl font-black">
                     {profile.name?.[0] || 'U'}
                   </div>
                 )}
               </div>
               {/* Online/active green dot */}
               <span
-                className="absolute bottom-3 right-3 w-5 h-5 bg-green-500 border-[3px] border-white rounded-full shadow-md"
+                className="absolute bottom-3 right-3 w-5 h-5 bg-primary border-[3px] border-card rounded-full shadow-md"
                 title="Online"
               />
-              <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-green-500 text-white border-2 border-white px-2 py-1 rounded-lg whitespace-nowrap">
+              <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground border-2 border-card px-2 py-1 rounded-lg whitespace-nowrap">
                 <CheckCircle2 size={12} className="mr-1" />
                 Verified
               </Badge>
@@ -65,13 +65,13 @@ export function UserProfilePage() {
 
             <div className="flex-1 text-center md:text-left">
               <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+                <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
                   {profile.name}
                 </h1>
                 <div className="flex items-center justify-center md:justify-start gap-3">
                   <Badge
                     variant="outline"
-                    className="rounded-xl px-3 py-1 font-bold text-gray-600 border-gray-200"
+                    className="rounded-xl px-3 py-1 font-bold text-muted-foreground border-border"
                   >
                     {profile.listingsCount} Listings
                   </Badge>
@@ -90,7 +90,7 @@ export function UserProfilePage() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap justify-center md:justify-start gap-y-3 gap-x-6 mb-8 text-gray-500 font-medium">
+              <div className="flex flex-wrap justify-center md:justify-start gap-y-3 gap-x-6 mb-8 text-muted-foreground/85 font-medium">
                 <div className="flex items-center gap-2">
                   <MapPin size={18} className="text-primary" />
                   <span>Ahmedabad, Gujarat</span>
@@ -112,12 +112,12 @@ export function UserProfilePage() {
               </div>
 
               <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                <Button className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-white font-bold shadow-lg shadow-brand/20 transition-all active:scale-95">
+                <Button className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-lg shadow-brand/20 transition-all active:scale-95">
                   Message Owner
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-12 px-6 rounded-2xl border-gray-200 font-bold text-gray-700 gap-2 hover:bg-gray-50"
+                  className="h-12 px-6 rounded-2xl border-border font-bold text-foreground/80 gap-2 hover:bg-muted-light"
                 >
                   <Share2 size={18} />
                   Share Profile
@@ -130,11 +130,11 @@ export function UserProfilePage() {
         {/* User Listings */}
         <div>
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+            <h2 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-3">
               <Package className="text-primary" />
               Active Listings
             </h2>
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
+            <p className="text-sm font-bold text-muted-foreground/70 uppercase tracking-widest">
               Total {profile.listingsCount} Items
             </p>
           </div>
@@ -145,12 +145,12 @@ export function UserProfilePage() {
                 <ProductCard key={item.id} product={item} />
               ))
             ) : (
-              <div className="col-span-full py-20 bg-white rounded-3xl border border-dashed border-gray-200 text-center">
-                <Package size={48} className="mx-auto text-gray-200 mb-4" />
-                <h3 className="text-lg font-bold text-gray-900">
+              <div className="col-span-full py-20 bg-card rounded-3xl border border-dashed border-border text-center">
+                <Package size={48} className="mx-auto text-muted-foreground/30 mb-4" />
+                <h3 className="text-lg font-bold text-foreground">
                   No active listings
                 </h3>
-                <p className="text-gray-500">
+                <p className="text-muted-foreground/85">
                   This user hasn't listed any items for rent yet.
                 </p>
               </div>

@@ -49,9 +49,9 @@ export const OrderPaymentDetailsCard = ({
   ]
 
   return (
-    <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-card rounded-[2rem] border border-border/30 shadow-sm overflow-hidden">
       <div className="p-10 pb-2">
-        <h3 className="text-[14px] font-black text-[#1e293b] mb-8 uppercase tracking-widest">
+        <h3 className="text-[14px] font-black text-foreground mb-8 uppercase tracking-widest">
           Payment Details
         </h3>
       </div>
@@ -59,9 +59,9 @@ export const OrderPaymentDetailsCard = ({
         {paymentItems.map((item, i) => (
           <div
             key={i}
-            className="flex items-center justify-between py-4 border-b border-slate-50"
+            className="flex items-center justify-between py-4 border-b border-border/30"
           >
-            <span className="text-[12px] font-bold text-slate-500">
+            <span className="text-[12px] font-bold text-muted-foreground/85">
               {item.label}
             </span>
             {item.isBadge ? (
@@ -69,14 +69,14 @@ export const OrderPaymentDetailsCard = ({
                 className={cn(
                   'text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full',
                   item.value === 'PAID'
-                    ? 'bg-green-50 text-green-600'
+                    ? 'bg-primary-soft text-primary'
                     : 'bg-[#fffbeb] text-[#d97706]',
                 )}
               >
                 {item.value}
               </span>
             ) : (
-              <span className="text-[12px] font-black text-[#1e293b]">
+              <span className="text-[12px] font-black text-foreground">
                 {item.value}
               </span>
             )}
@@ -84,10 +84,10 @@ export const OrderPaymentDetailsCard = ({
         ))}
       </div>
       <div className="bg-[#f8fafc] px-10 py-8 flex items-center justify-between mt-4">
-        <span className="text-[14px] font-black text-[#1e293b]">
+        <span className="text-[14px] font-black text-foreground">
           Total Paid (Gross Income)
         </span>
-        <span className="text-xl font-black text-[#059669]">
+        <span className="text-xl font-black text-primary">
           ₹{order.totalPrice.toLocaleString()}
         </span>
       </div>

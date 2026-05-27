@@ -56,18 +56,18 @@ function Row({
     <div
       className={cn(
         'flex items-center justify-between py-4',
-        !last && 'border-b border-gray-50',
+        !last && 'border-b border-border/30',
       )}
     >
       <div className={cn('min-w-0', 'pr-6')}>
-        <p className={cn('text-sm', 'font-semibold', 'text-gray-900')}>
+        <p className={cn('text-sm', 'font-semibold', 'text-foreground')}>
           {label}
         </p>
         {desc && (
           <p
             className={cn(
               'text-[12px]',
-              'text-gray-400',
+              'text-muted-foreground/70',
               'font-medium',
               'mt-0.5',
             )}
@@ -227,7 +227,7 @@ export function SettingsPage() {
           className={cn(
             'text-2xl',
             'font-extrabold',
-            'text-gray-900',
+            'text-foreground',
             'tracking-tight',
             'leading-none',
           )}
@@ -235,7 +235,7 @@ export function SettingsPage() {
           Settings
         </h1>
         <p
-          className={cn('text-[13px]', 'text-gray-500', 'mt-2', 'font-medium')}
+          className={cn('text-[13px]', 'text-muted-foreground/85', 'mt-2', 'font-medium')}
         >
           Manage your account preferences and security.
         </p>
@@ -245,10 +245,10 @@ export function SettingsPage() {
       <div
         className={cn(
           'flex',
-          'bg-white',
+          'bg-card',
           'rounded-2xl',
           'border',
-          'border-gray-100',
+          'border-border/30',
           'shadow-sm',
           'overflow-hidden',
           'min-h-[600px]',
@@ -260,7 +260,7 @@ export function SettingsPage() {
             'w-[210px]',
             'shrink-0',
             'border-r',
-            'border-gray-100',
+            'border-border/30',
             'py-3',
             'flex',
             'flex-col',
@@ -278,16 +278,16 @@ export function SettingsPage() {
                   'flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-left w-full cursor-pointer transition-colors border-l-2 rounded-none justify-start h-auto',
                   active &&
                     !isDel &&
-                    'text-[#2d5222] bg-[#F4F8F1]/70 border-[#2d5222] hover:bg-[#F4F8F1]/70 hover:text-[#2d5222]',
+                    'text-primary bg-primary-soft/70 border-primary hover:bg-primary-soft/70 hover:text-primary',
                   active &&
                     isDel &&
-                    'text-red-500 bg-red-50/60 border-red-400 hover:bg-red-50/60 hover:text-red-500',
+                    'text-destructive bg-danger/60 border-destructive/40 hover:bg-danger/60 hover:text-destructive',
                   !active &&
                     !isDel &&
-                    'text-slate-500 hover:text-gray-800 hover:bg-slate-50 border-transparent',
+                    'text-muted-foreground/85 hover:text-foreground/90 hover:bg-muted-light border-transparent',
                   !active &&
                     isDel &&
-                    'text-red-400 hover:text-red-500 hover:bg-red-50 border-transparent',
+                    'text-destructive/80 hover:text-destructive hover:bg-danger border-transparent',
                 )}
               >
                 <Icon size={15} className="shrink-0" />
@@ -304,14 +304,14 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-gray-900')}
+                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
                 >
                   Profile Information
                 </h2>
                 <p
                   className={cn(
                     'text-[12px]',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                     'font-medium',
                     'mt-0.5',
                   )}
@@ -332,7 +332,7 @@ export function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-name"
-                    className={cn('text-xs', 'font-semibold', 'text-gray-500')}
+                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
                   >
                     Full Name
                   </Label>
@@ -343,18 +343,18 @@ export function SettingsPage() {
                     className={cn(
                       'h-10',
                       'rounded-xl',
-                      'border-gray-200',
+                      'border-border',
                       'text-sm',
                       'font-medium',
                       'focus-visible:ring-1',
-                      'focus-visible:ring-[#2d5222]/30',
+                      'focus-visible:ring-primary/30',
                     )}
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-email"
-                    className={cn('text-xs', 'font-semibold', 'text-gray-500')}
+                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
                   >
                     Email Address
                   </Label>
@@ -365,8 +365,8 @@ export function SettingsPage() {
                     className={cn(
                       'h-10',
                       'rounded-xl',
-                      'border-gray-200',
-                      'bg-gray-50',
+                      'border-border',
+                      'bg-muted-light',
                       'text-sm',
                       'font-medium',
                       'disabled:opacity-100',
@@ -377,7 +377,7 @@ export function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-phone"
-                    className={cn('text-xs', 'font-semibold', 'text-gray-500')}
+                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
                   >
                     Phone Number
                   </Label>
@@ -388,18 +388,18 @@ export function SettingsPage() {
                     className={cn(
                       'h-10',
                       'rounded-xl',
-                      'border-gray-200',
+                      'border-border',
                       'text-sm',
                       'font-medium',
                       'focus-visible:ring-1',
-                      'focus-visible:ring-[#2d5222]/30',
+                      'focus-visible:ring-primary/30',
                     )}
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-loc"
-                    className={cn('text-xs', 'font-semibold', 'text-gray-500')}
+                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
                   >
                     Location
                   </Label>
@@ -410,18 +410,18 @@ export function SettingsPage() {
                     className={cn(
                       'h-10',
                       'rounded-xl',
-                      'border-gray-200',
+                      'border-border',
                       'text-sm',
                       'font-medium',
                       'focus-visible:ring-1',
-                      'focus-visible:ring-[#2d5222]/30',
+                      'focus-visible:ring-primary/30',
                     )}
                   />
                 </div>
                 <div className={cn('space-y-1.5', 'sm:col-span-2')}>
                   <Label
                     htmlFor="s-bio"
-                    className={cn('text-xs', 'font-semibold', 'text-gray-500')}
+                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
                   >
                     Bio
                   </Label>
@@ -435,12 +435,12 @@ export function SettingsPage() {
                       placeholder="Tell others a little about yourself..."
                       className={cn(
                         'rounded-xl',
-                        'border-gray-200',
+                        'border-border',
                         'text-sm',
                         'font-medium',
                         'resize-none',
                         'focus-visible:ring-1',
-                        'focus-visible:ring-[#2d5222]/30',
+                        'focus-visible:ring-primary/30',
                         'pb-7',
                       )}
                     />
@@ -450,7 +450,7 @@ export function SettingsPage() {
                         'bottom-2.5',
                         'right-3',
                         'text-[10px]',
-                        'text-gray-400',
+                        'text-muted-foreground/70',
                         'font-medium',
                         'pointer-events-none',
                       )}
@@ -464,7 +464,7 @@ export function SettingsPage() {
               {/* Profile photo */}
               <div className="space-y-2">
                 <Label
-                  className={cn('text-xs', 'font-semibold', 'text-gray-500')}
+                  className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
                 >
                   Profile Photo
                 </Label>
@@ -476,9 +476,9 @@ export function SettingsPage() {
                     'gap-4',
                     'p-4',
                     'border',
-                    'border-gray-100',
+                    'border-border/30',
                     'rounded-xl',
-                    'bg-gray-50/40',
+                    'bg-muted-light/40',
                   )}
                 >
                   <div className={cn('flex', 'items-center', 'gap-4')}>
@@ -488,11 +488,11 @@ export function SettingsPage() {
                         'w-14',
                         'h-14',
                         'rounded-full',
-                        'bg-[#2d5222]/10',
+                        'bg-primary/10',
                         'flex',
                         'items-center',
                         'justify-center',
-                        'text-[#2d5222]',
+                        'text-primary',
                         'text-xl',
                         'font-black',
                         'overflow-hidden',
@@ -525,13 +525,13 @@ export function SettingsPage() {
                           'rounded-full',
                         )}
                       >
-                        <Camera size={16} className="text-white" />
+                        <Camera size={16} className="text-primary-foreground" />
                       </div>
                     </div>
                     <p
                       className={cn(
                         'text-[12px]',
-                        'text-gray-400',
+                        'text-muted-foreground/70',
                         'font-medium',
                       )}
                     >
@@ -546,11 +546,11 @@ export function SettingsPage() {
                       'h-9',
                       'px-4',
                       'rounded-xl',
-                      'border-gray-200',
+                      'border-border',
                       'text-[12px]',
                       'font-semibold',
-                      'text-gray-700',
-                      'hover:bg-gray-50',
+                      'text-foreground/80',
+                      'hover:bg-muted-light',
                       'shadow-none',
                       'cursor-pointer',
                       'flex',
@@ -583,9 +583,9 @@ export function SettingsPage() {
                   'h-10',
                   'px-8',
                   'rounded-xl',
-                  'bg-[#2d5222]',
-                  'hover:bg-[#1e3a17]',
-                  'text-white',
+                  'bg-primary',
+                  'hover:bg-primary-hover',
+                  'text-primary-foreground',
                   'text-sm',
                   'font-bold',
                   'shadow-sm',
@@ -607,14 +607,14 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-gray-900')}
+                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
                 >
                   Account &amp; Security
                 </h2>
                 <p
                   className={cn(
                     'text-[12px]',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                     'font-medium',
                     'mt-0.5',
                   )}
@@ -622,7 +622,7 @@ export function SettingsPage() {
                   Manage your password and keep your account secure.
                 </p>
               </div>
-              <div className={cn('divide-y', 'divide-gray-50')}>
+              <div className={cn('divide-y', 'divide-border/30')}>
                 <Row label="Password" desc="••••••••••••••••">
                   <Button
                     variant="ghost"
@@ -633,8 +633,8 @@ export function SettingsPage() {
                       'gap-1',
                       'text-[12px]',
                       'font-semibold',
-                      'text-gray-500',
-                      'hover:text-gray-800',
+                      'text-muted-foreground/85',
+                      'hover:text-foreground/90',
                       'cursor-pointer',
                       'bg-transparent',
                       'hover:bg-transparent',
@@ -677,8 +677,8 @@ export function SettingsPage() {
                       'gap-1',
                       'text-[12px]',
                       'font-semibold',
-                      'text-gray-500',
-                      'hover:text-gray-800',
+                      'text-muted-foreground/85',
+                      'hover:text-foreground/90',
                       'cursor-pointer',
                       'bg-transparent',
                       'hover:bg-transparent',
@@ -704,8 +704,8 @@ export function SettingsPage() {
                       'gap-1',
                       'text-[12px]',
                       'font-semibold',
-                      'text-gray-500',
-                      'hover:text-gray-800',
+                      'text-muted-foreground/85',
+                      'hover:text-foreground/90',
                       'cursor-pointer',
                       'bg-transparent',
                       'hover:bg-transparent',
@@ -726,14 +726,14 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-gray-900')}
+                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
                 >
                   Notifications
                 </h2>
                 <p
                   className={cn(
                     'text-[12px]',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                     'font-medium',
                     'mt-0.5',
                   )}
@@ -741,7 +741,7 @@ export function SettingsPage() {
                   Choose how and when you want to be notified.
                 </p>
               </div>
-              <div className={cn('divide-y', 'divide-gray-50')}>
+              <div className={cn('divide-y', 'divide-border/30')}>
                 <Row
                   label="Email Notifications"
                   desc="Booking updates, approvals and receipts."
@@ -788,14 +788,14 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-gray-900')}
+                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
                 >
                   Payment Methods
                 </h2>
                 <p
                   className={cn(
                     'text-[12px]',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                     'font-medium',
                     'mt-0.5',
                   )}
@@ -813,7 +813,7 @@ export function SettingsPage() {
                   'gap-3',
                   'border',
                   'border-dashed',
-                  'border-gray-200',
+                  'border-border',
                   'rounded-xl',
                 )}
               >
@@ -822,19 +822,19 @@ export function SettingsPage() {
                     'w-12',
                     'h-12',
                     'rounded-xl',
-                    'bg-slate-50',
+                    'bg-muted-light',
                     'flex',
                     'items-center',
                     'justify-center',
                   )}
                 >
-                  <CreditCard size={20} className="text-slate-300" />
+                  <CreditCard size={20} className="text-muted-dark" />
                 </div>
                 <p
                   className={cn(
                     'text-[12px]',
                     'font-semibold',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                   )}
                 >
                   No payment methods added yet.
@@ -847,7 +847,7 @@ export function SettingsPage() {
                     'h-9',
                     'px-5',
                     'rounded-xl',
-                    'border-gray-200',
+                    'border-border',
                     'text-[12px]',
                     'font-semibold',
                     'shadow-none',
@@ -865,14 +865,14 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-gray-900')}
+                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
                 >
                   Privacy
                 </h2>
                 <p
                   className={cn(
                     'text-[12px]',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                     'font-medium',
                     'mt-0.5',
                   )}
@@ -880,7 +880,7 @@ export function SettingsPage() {
                   Control your data and privacy settings.
                 </p>
               </div>
-              <div className={cn('divide-y', 'divide-gray-50')}>
+              <div className={cn('divide-y', 'divide-border/30')}>
                 <Row
                   label="Show profile to other users"
                   desc="Let renters and hosts see your public profile."
@@ -918,14 +918,14 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-gray-900')}
+                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
                 >
                   Connected Accounts
                 </h2>
                 <p
                   className={cn(
                     'text-[12px]',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                     'font-medium',
                     'mt-0.5',
                   )}
@@ -933,7 +933,7 @@ export function SettingsPage() {
                   Link your social accounts for faster sign-in.
                 </p>
               </div>
-              <div className={cn('divide-y', 'divide-gray-50')}>
+              <div className={cn('divide-y', 'divide-border/30')}>
                 {[
                   {
                     name: 'Google',
@@ -970,8 +970,8 @@ export function SettingsPage() {
                         className={cn(
                           'h-8 px-4 rounded-xl text-[12px] font-semibold shadow-none cursor-pointer',
                           linked
-                            ? 'border-red-200 text-red-500 hover:bg-red-50'
-                            : 'border-gray-200 text-gray-600 hover:bg-gray-50',
+                            ? 'border-danger/50 text-destructive hover:bg-danger'
+                            : 'border-border text-muted-foreground hover:bg-muted-light',
                         )}
                       >
                         {linked ? 'Disconnect' : 'Connect'}
@@ -988,14 +988,14 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-gray-900')}
+                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
                 >
                   Delete Account
                 </h2>
                 <p
                   className={cn(
                     'text-[12px]',
-                    'text-gray-400',
+                    'text-muted-foreground/70',
                     'font-medium',
                     'mt-0.5',
                   )}
@@ -1007,9 +1007,9 @@ export function SettingsPage() {
               {/* Warning card */}
               <div
                 className={cn(
-                  'bg-red-50/60',
+                  'bg-danger/60',
                   'border',
-                  'border-red-100',
+                  'border-danger/30',
                   'rounded-xl',
                   'p-5',
                   'flex',
@@ -1022,7 +1022,7 @@ export function SettingsPage() {
                     'w-9',
                     'h-9',
                     'rounded-xl',
-                    'bg-red-100',
+                    'bg-danger',
                     'flex',
                     'items-center',
                     'justify-center',
@@ -1030,16 +1030,16 @@ export function SettingsPage() {
                     'mt-0.5',
                   )}
                 >
-                  <AlertTriangle size={16} className="text-red-500" />
+                  <AlertTriangle size={16} className="text-destructive" />
                 </div>
                 <div>
-                  <p className={cn('text-sm', 'font-bold', 'text-red-700')}>
+                  <p className={cn('text-sm', 'font-bold', 'text-destructive')}>
                     This action is irreversible
                   </p>
                   <p
                     className={cn(
                       'text-[12px]',
-                      'text-red-500',
+                      'text-destructive',
                       'font-medium',
                       'mt-1',
                       'leading-relaxed',
@@ -1055,9 +1055,9 @@ export function SettingsPage() {
               {/* What will be deleted */}
               <div
                 className={cn(
-                  'bg-white',
+                  'bg-card',
                   'border',
-                  'border-gray-100',
+                  'border-border/30',
                   'rounded-xl',
                   'p-5',
                   'space-y-2',
@@ -1067,7 +1067,7 @@ export function SettingsPage() {
                   className={cn(
                     'text-xs',
                     'font-bold',
-                    'text-gray-700',
+                    'text-foreground/80',
                     'mb-3',
                   )}
                 >
@@ -1087,7 +1087,7 @@ export function SettingsPage() {
                       'items-center',
                       'gap-2',
                       'text-[12px]',
-                      'text-gray-500',
+                      'text-muted-foreground/85',
                       'font-medium',
                     )}
                   >
@@ -1096,7 +1096,7 @@ export function SettingsPage() {
                         'w-1.5',
                         'h-1.5',
                         'rounded-full',
-                        'bg-red-400',
+                        'bg-destructive/80',
                         'shrink-0',
                       )}
                     />
@@ -1108,13 +1108,13 @@ export function SettingsPage() {
               {/* Confirmation input */}
               <div className="space-y-2">
                 <Label
-                  className={cn('text-xs', 'font-semibold', 'text-gray-600')}
+                  className={cn('text-xs', 'font-semibold', 'text-muted-foreground')}
                 >
                   Type{' '}
                   <span
                     className={cn(
                       'font-black',
-                      'text-red-600',
+                      'text-destructive',
                       'tracking-widest',
                     )}
                   >
@@ -1129,7 +1129,7 @@ export function SettingsPage() {
                   className={cn(
                     'h-10',
                     'rounded-xl',
-                    'border-gray-200',
+                    'border-border',
                     'text-sm',
                     'font-medium',
                     'focus-visible:ring-1',
@@ -1146,9 +1146,9 @@ export function SettingsPage() {
                   'h-10',
                   'px-6',
                   'rounded-xl',
-                  'bg-red-600',
-                  'hover:bg-red-700',
-                  'text-white',
+                  'bg-destructive/90',
+                  'hover:bg-destructive/90',
+                  'text-primary-foreground',
                   'text-sm',
                   'font-bold',
                   'cursor-pointer',

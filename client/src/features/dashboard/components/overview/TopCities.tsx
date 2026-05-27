@@ -9,11 +9,11 @@ export const TopCities = () => {
   return (
     <div
       className={cn(
-        'bg-white',
+        'bg-card',
         'p-6',
         'rounded-2xl',
         'border',
-        'border-gray-100',
+        'border-border/30',
         'shadow-sm',
         'h-full',
       )}
@@ -37,11 +37,11 @@ export const TopCities = () => {
               key={i}
               className={cn('flex', 'items-center', 'gap-3', 'animate-pulse')}
             >
-              <div className={cn('h-3', 'w-20', 'bg-gray-100', 'rounded')} />
+              <div className={cn('h-3', 'w-20', 'bg-muted/50', 'rounded')} />
               <div
-                className={cn('flex-1', 'h-1.5', 'bg-gray-100', 'rounded-full')}
+                className={cn('flex-1', 'h-1.5', 'bg-muted/50', 'rounded-full')}
               />
-              <div className={cn('h-3', 'w-10', 'bg-gray-100', 'rounded')} />
+              <div className={cn('h-3', 'w-10', 'bg-muted/50', 'rounded')} />
             </div>
           ))}
         </div>
@@ -56,11 +56,11 @@ export const TopCities = () => {
             'text-center',
           )}
         >
-          <MapPin size={36} className={cn('text-gray-200', 'mb-3')} />
-          <p className={cn('text-sm', 'font-bold', 'text-gray-400')}>
+          <MapPin size={36} className={cn('text-muted-foreground/30', 'mb-3')} />
+          <p className={cn('text-sm', 'font-bold', 'text-muted-foreground/70')}>
             No city data yet
           </p>
-          <p className={cn('text-xs', 'text-gray-300', 'mt-1')}>
+          <p className={cn('text-xs', 'text-muted-dark', 'mt-1')}>
             Cities will appear once listings are added with location info.
           </p>
         </div>
@@ -86,7 +86,7 @@ export const TopCities = () => {
                 className={cn(
                   'flex-1',
                   'h-1.5',
-                  'bg-gray-100',
+                  'bg-muted/50',
                   'rounded-full',
                   'overflow-hidden',
                   'mx-4',

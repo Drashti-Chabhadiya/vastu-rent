@@ -105,9 +105,9 @@ const ApkDownloadSection = () => {
                 download={APK_CONFIG.FILENAME}
                 whileHover={{ scale: 1.02, y: -4 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 sm:flex-none group relative inline-flex items-center justify-center gap-4 px-10 py-6 bg-primary text-white rounded-[2rem] font-bold text-xl shadow-2xl shadow-primary/30 transition-all hover:shadow-primary/50 font-sans"
+                className="flex-1 sm:flex-none group relative inline-flex items-center justify-center gap-4 px-10 py-6 bg-primary text-primary-foreground rounded-[2rem] font-bold text-xl shadow-2xl shadow-primary/30 transition-all hover:shadow-primary/50 font-sans"
               >
-                <div className="p-2 bg-white/20 rounded-xl group-hover:rotate-12 transition-transform">
+                <div className="p-2 bg-card/20 rounded-xl group-hover:rotate-12 transition-transform">
                   <Download className="w-6 h-6" />
                 </div>
                 <div className="flex flex-col items-start leading-tight">
@@ -120,7 +120,7 @@ const ApkDownloadSection = () => {
 
               <div className="flex flex-col gap-2 font-sans">
                 <div className="flex items-center gap-2 text-primary font-bold">
-                  <ShieldCheck className="w-5 h-5 text-green-500" />
+                  <ShieldCheck className="w-5 h-5 text-primary" />
                   <span>100% Safe & Virus Free</span>
                 </div>
                 <div className="text-muted-foreground text-sm flex items-center gap-3">
@@ -138,7 +138,7 @@ const ApkDownloadSection = () => {
               {installSteps.map((step, i) => (
                 <div
                   key={i}
-                  className="flex flex-col gap-4 p-4 rounded-3xl hover:bg-white/50 transition-colors"
+                  className="flex flex-col gap-4 p-4 rounded-3xl hover:bg-card/50 transition-colors"
                 >
                   <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center text-primary border border-primary/10">
                     {step.icon}
@@ -164,7 +164,7 @@ const ApkDownloadSection = () => {
             className="lg:col-span-5 relative"
           >
             {/* The QR Card */}
-            <div className="relative z-10 bg-white border border-border p-10 rounded-[3.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)]">
+            <div className="relative z-10 bg-card border border-border p-10 rounded-[3.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)]">
               {/* Dev/Localhost Warning */}
               <AnimatePresence>
                 {isLocalhost && (
@@ -172,12 +172,12 @@ const ApkDownloadSection = () => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="mb-8 p-5 bg-amber-50 border border-amber-200 rounded-3xl overflow-hidden"
+                    className="mb-8 p-5 bg-warning/30 border border-warning-foreground/20 rounded-3xl overflow-hidden"
                   >
                     <div className="flex gap-4">
-                      <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0" />
+                      <AlertTriangle className="w-6 h-6 text-warning-foreground flex-shrink-0" />
                       <div className="space-y-3 w-full">
-                        <p className="text-xs font-bold text-amber-800 font-sans leading-relaxed">
+                        <p className="text-xs font-bold text-warning-foreground font-sans leading-relaxed">
                           Localhost detected! To scan with your phone, enter
                           your PC's local IP address below.
                         </p>
@@ -187,7 +187,7 @@ const ApkDownloadSection = () => {
                             placeholder="e.g. 192.168.1.23"
                             value={customIp}
                             onChange={(e) => setCustomIp(e.target.value)}
-                            className="flex-1 px-4 py-2 bg-white border border-amber-300 rounded-xl text-xs font-sans focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            className="flex-1 px-4 py-2 bg-card border border-warning-foreground/30 rounded-xl text-xs font-sans focus:outline-none focus:ring-2 focus:ring-warning"
                           />
                         </div>
                       </div>
@@ -201,9 +201,9 @@ const ApkDownloadSection = () => {
                 <div className="relative w-full aspect-square max-w-[300px] mx-auto group">
                   {/* Decorative Frame */}
                   <div className="absolute inset-0 bg-primary/5 rounded-[3rem] rotate-3 transition-transform group-hover:rotate-0" />
-                  <div className="relative z-10 w-full h-full bg-white rounded-[3rem] p-8 shadow-soft border border-border/50 flex items-center justify-center overflow-hidden">
+                  <div className="relative z-10 w-full h-full bg-card rounded-[3rem] p-8 shadow-soft border border-border/50 flex items-center justify-center overflow-hidden">
                     {!qrLoaded && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white z-20">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-card z-20">
                         <RefreshCw className="w-10 h-10 text-primary animate-spin" />
                         <span className="text-xs font-sans text-muted-foreground">
                           Generating QR...
@@ -231,10 +231,10 @@ const ApkDownloadSection = () => {
 
                 {/* Status Badges */}
                 <div className="flex flex-wrap justify-center gap-3 pt-4 border-t border-border/50">
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 text-[10px] font-bold rounded-full border border-green-100 uppercase tracking-wider">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-soft text-primary-hover text-[10px] font-bold rounded-full border border-primary-border uppercase tracking-wider">
                     <CheckCircle2 className="w-3 h-3" /> Secure Link
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-full border border-blue-100 uppercase tracking-wider">
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-info text-info-foreground text-[10px] font-bold rounded-full border border-info-foreground/20 uppercase tracking-wider">
                     <Globe className="w-3 h-3" /> Global Access
                   </div>
                 </div>
@@ -256,7 +256,7 @@ const ApkDownloadSection = () => {
                           {downloadUrl}
                         </span>
                       </div>
-                      <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary rounded-xl text-[10px] font-bold uppercase transition-colors group-hover:bg-primary group-hover:text-white">
+                      <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary rounded-xl text-[10px] font-bold uppercase transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                         {copied ? (
                           <Check className="w-3 h-3" />
                         ) : (

@@ -106,10 +106,10 @@ function VerifyEmailPage() {
                   strokeWidth={1.5}
                 />
               </div>
-              <h1 className="text-[28px] font-bold text-gray-900 mb-2 font-display">
+              <h1 className="text-[28px] font-bold text-foreground mb-2 font-display">
                 Verifying Email
               </h1>
-              <p className="text-gray-500 text-[15px] font-medium max-w-[320px] mx-auto">
+              <p className="text-muted-foreground/85 text-[15px] font-medium max-w-[320px] mx-auto">
                 Please wait a moment while we verify your email address and
                 activate your account.
               </p>
@@ -122,7 +122,7 @@ function VerifyEmailPage() {
                 <h1 className="text-[32px] font-bold text-text-dark tracking-tight font-display">
                   Email Verified!
                 </h1>
-                <p className="mt-2 text-[15px] text-gray-500 font-medium">
+                <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
                   Your account is active and ready to go.
                 </p>
               </div>
@@ -135,17 +135,17 @@ function VerifyEmailPage() {
                   />
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-foreground mb-2">
                   Verification Successful
                 </h3>
-                <p className="text-[14px] text-gray-600 max-w-[340px] leading-relaxed mb-6">
+                <p className="text-[14px] text-muted-foreground max-w-[340px] leading-relaxed mb-6">
                   Thank you! Your email address has been successfully verified.
                   You can now log in and start renting.
                 </p>
 
                 <Link
                   to="/login"
-                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-white text-[15px] font-bold transition-colors flex items-center justify-center cursor-pointer"
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-[15px] font-bold transition-colors flex items-center justify-center cursor-pointer"
                 >
                   Go to Login
                 </Link>
@@ -159,23 +159,23 @@ function VerifyEmailPage() {
                 <h1 className="text-[32px] font-bold text-text-dark tracking-tight font-display">
                   Verification Failed
                 </h1>
-                <p className="mt-2 text-[15px] text-gray-500 font-medium">
+                <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
                   The link is invalid or has expired.
                 </p>
               </div>
 
-              <div className="bg-amber-50/50 border border-amber-200/50 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
-                <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mb-5">
+              <div className="bg-warning/30 border border-warning-foreground/20 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
+                <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mb-5">
                   <AlertTriangle
-                    className="h-8 w-8 text-amber-600"
+                    className="h-8 w-8 text-warning-foreground"
                     strokeWidth={1.5}
                   />
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-foreground mb-2">
                   Invalid or Expired Link
                 </h3>
-                <p className="text-[14px] text-gray-600 max-w-[340px] leading-relaxed mb-6">
+                <p className="text-[14px] text-muted-foreground max-w-[340px] leading-relaxed mb-6">
                   This email verification link is invalid, has expired, or has
                   already been used. Enter your email below to request a new
                   link.
@@ -188,7 +188,7 @@ function VerifyEmailPage() {
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <Mail
-                        className="h-[18px] w-[18px] text-gray-400"
+                        className="h-[18px] w-[18px] text-muted-foreground/70"
                         strokeWidth={2}
                       />
                     </div>
@@ -198,7 +198,7 @@ function VerifyEmailPage() {
                       placeholder="Enter your email address"
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
-                      className="w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                      className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                     />
                   </div>
 
@@ -209,7 +209,7 @@ function VerifyEmailPage() {
                   )}
 
                   {resendError && (
-                    <p className="text-sm text-red-500 font-semibold bg-red-50 px-3 py-1.5 rounded-lg text-center">
+                    <p className="text-sm text-destructive font-semibold bg-danger px-3 py-1.5 rounded-lg text-center">
                       {resendError}
                     </p>
                   )}
@@ -217,11 +217,11 @@ function VerifyEmailPage() {
                   <Button
                     type="submit"
                     disabled={resendLoading || resendCooldown > 0}
-                    className="w-full h-12 rounded-xl bg-primary text-white text-[15px] font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-12 rounded-xl bg-primary text-primary-foreground text-[15px] font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {resendLoading ? (
                       <span className="flex items-center gap-1.5">
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        <span className="w-4 h-4 border-2 border-card border-t-transparent rounded-full animate-spin"></span>
                         Sending...
                       </span>
                     ) : resendCooldown > 0 ? (
@@ -236,14 +236,14 @@ function VerifyEmailPage() {
               <div className="flex flex-col gap-3">
                 <Link
                   to="/signup"
-                  className="w-full h-11 rounded-xl border border-gray-200 bg-white text-gray-700 text-[14px] font-bold hover:bg-gray-50 transition-colors flex items-center justify-center cursor-pointer"
+                  className="w-full h-11 rounded-xl border border-border bg-card text-foreground/80 text-[14px] font-bold hover:bg-muted-light transition-colors flex items-center justify-center cursor-pointer"
                 >
                   Back to Sign Up
                 </Link>
 
                 <Link
                   to="/login"
-                  className="w-full h-11 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-[14px] font-bold transition-colors flex items-center justify-center cursor-pointer"
+                  className="w-full h-11 rounded-xl bg-muted/50 hover:bg-muted text-foreground/90 text-[14px] font-bold transition-colors flex items-center justify-center cursor-pointer"
                 >
                   Go to Login
                 </Link>

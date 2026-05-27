@@ -89,7 +89,7 @@ function UserAvatar({
           className={cn(
             dim,
             radius,
-            'bg-[#2d5222]/10 flex items-center justify-center font-black text-[#2d5222]',
+            'bg-primary/10 flex items-center justify-center font-black text-primary',
           )}
         >
           {getInitials(name)}
@@ -99,8 +99,8 @@ function UserAvatar({
         <div
           className={cn(
             dotSize,
-            'absolute -bottom-0.5 -right-0.5 rounded-full border-white',
-            isOnline ? 'bg-emerald-500' : 'bg-slate-300',
+            'absolute -bottom-0.5 -right-0.5 rounded-full border-card',
+            isOnline ? 'bg-emerald-500' : 'bg-muted-dark/20',
           )}
         />
       )}
@@ -116,9 +116,9 @@ function TypingBubble() {
           'p-3.5',
           'rounded-2xl',
           'rounded-tl-none',
-          'bg-white',
+          'bg-card',
           'border',
-          'border-slate-100',
+          'border-border/30',
           'shadow-sm',
         )}
       >
@@ -127,7 +127,7 @@ function TypingBubble() {
             className={cn(
               'w-1.5',
               'h-1.5',
-              'bg-slate-400',
+              'bg-muted-dark',
               'rounded-full',
               'animate-bounce',
               '[animation-delay:0ms]',
@@ -137,7 +137,7 @@ function TypingBubble() {
             className={cn(
               'w-1.5',
               'h-1.5',
-              'bg-slate-400',
+              'bg-muted-dark',
               'rounded-full',
               'animate-bounce',
               '[animation-delay:150ms]',
@@ -147,7 +147,7 @@ function TypingBubble() {
             className={cn(
               'w-1.5',
               'h-1.5',
-              'bg-slate-400',
+              'bg-muted-dark',
               'rounded-full',
               'animate-bounce',
               '[animation-delay:300ms]',
@@ -179,7 +179,7 @@ function EmptyState() {
           'w-16',
           'h-16',
           'rounded-2xl',
-          'bg-[#2d5222]/10',
+          'bg-primary/10',
           'flex',
           'items-center',
           'justify-center',
@@ -187,18 +187,18 @@ function EmptyState() {
       >
         <MessageSquare
           size={28}
-          className="text-[#2d5222]"
+          className="text-primary"
           fill="currentColor"
         />
       </div>
       <div>
-        <h3 className={cn('text-[13px]', 'font-black', 'text-gray-900')}>
+        <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
           Select a conversation
         </h3>
         <p
           className={cn(
             'text-[11px]',
-            'text-slate-400',
+            'text-muted-dark',
             'font-bold',
             'mt-1',
             'leading-relaxed',
@@ -219,7 +219,6 @@ export const MessagesManagement = () => {
     isLoadingConversations,
     activeConversationId,
     switchConversation,
-    openConversationWith,
     messages,
     isLoadingMessages,
     sendMessage,
@@ -394,11 +393,11 @@ export const MessagesManagement = () => {
               'w-10',
               'h-10',
               'rounded-xl',
-              'bg-[#2d5222]/10',
+              'bg-primary/10',
               'flex',
               'items-center',
               'justify-center',
-              'text-[#2d5222]',
+              'text-primary',
               'shrink-0',
             )}
           >
@@ -406,7 +405,7 @@ export const MessagesManagement = () => {
           </div>
           <div>
             <div className={cn('flex', 'items-center', 'gap-2')}>
-              <h1 className={cn('text-xl', 'font-black', 'text-gray-900')}>
+              <h1 className={cn('text-xl', 'font-black', 'text-foreground')}>
                 Messages
               </h1>
               {/* Socket connection badge */}
@@ -415,7 +414,7 @@ export const MessagesManagement = () => {
                   'flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black',
                   isConnected
                     ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-slate-100 text-slate-400',
+                    : 'bg-muted/50 text-muted-dark',
                 )}
               >
                 {isConnected ? (
@@ -432,7 +431,7 @@ export const MessagesManagement = () => {
             <p
               className={cn(
                 'text-[11px]',
-                'text-gray-400',
+                'text-muted-foreground/70',
                 'font-bold',
                 'leading-normal',
               )}
@@ -445,9 +444,9 @@ export const MessagesManagement = () => {
           variant="outline"
           onClick={() => setShowNewChat(true)}
           className={cn(
-            'border-[#2d5222]',
-            'text-[#2d5222]',
-            'hover:bg-[#F4F8F1]',
+            'border-primary',
+            'text-primary',
+            'hover:bg-primary-soft',
             'rounded-xl',
             'text-xs',
             'font-bold',
@@ -475,7 +474,7 @@ export const MessagesManagement = () => {
             'rounded-3xl',
             'p-0',
             'overflow-hidden',
-            'border-slate-100',
+            'border-border/30',
             'shadow-2xl',
           )}
         >
@@ -485,20 +484,20 @@ export const MessagesManagement = () => {
               'pt-6',
               'pb-4',
               'border-b',
-              'border-slate-100',
+              'border-border/30',
             )}
           >
             <DialogTitle
               className={cn(
                 'text-[15px]',
                 'font-black',
-                'text-gray-900',
+                'text-foreground',
                 'flex',
                 'items-center',
                 'gap-2',
               )}
             >
-              <UserPlus size={18} className="text-[#2d5222]" />
+              <UserPlus size={18} className="text-primary" />
               Start New Conversation
             </DialogTitle>
           </DialogHeader>
@@ -512,7 +511,7 @@ export const MessagesManagement = () => {
                   'absolute',
                   'left-3',
                   'top-[13px]',
-                  'text-slate-400',
+                  'text-muted-dark',
                 )}
               />
               <Input
@@ -523,13 +522,13 @@ export const MessagesManagement = () => {
                 className={cn(
                   'h-10',
                   'pl-9',
-                  'bg-slate-50',
+                  'bg-muted-light',
                   'border-none',
                   'rounded-xl',
                   'text-[11px]',
                   'font-bold',
                   'focus-visible:ring-1',
-                  'focus-visible:ring-[#2d5222]/20',
+                  'focus-visible:ring-primary/20',
                 )}
               />
             </div>
@@ -553,7 +552,7 @@ export const MessagesManagement = () => {
               >
                 <Loader2
                   size={18}
-                  className={cn('animate-spin', 'text-[#2d5222]')}
+                  className={cn('animate-spin', 'text-primary')}
                 />
               </div>
             ) : userResults.length === 0 ? (
@@ -567,8 +566,8 @@ export const MessagesManagement = () => {
                   'gap-2',
                 )}
               >
-                <MessageSquare size={24} className="text-slate-200" />
-                <p className={cn('text-[11px]', 'font-bold', 'text-slate-400')}>
+                <MessageSquare size={24} className="text-muted-foreground/30" />
+                <p className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}>
                   {userSearch
                     ? 'No users found'
                     : 'Start typing to search users'}
@@ -588,7 +587,7 @@ export const MessagesManagement = () => {
                     'gap-3',
                     'p-3',
                     'rounded-2xl',
-                    'hover:bg-slate-50',
+                    'hover:bg-muted-light',
                     'transition-colors',
                     'cursor-pointer',
                     'justify-start',
@@ -607,7 +606,7 @@ export const MessagesManagement = () => {
                       className={cn(
                         'text-[12px]',
                         'font-black',
-                        'text-gray-900',
+                        'text-foreground',
                         'truncate',
                       )}
                     >
@@ -617,7 +616,7 @@ export const MessagesManagement = () => {
                       className={cn(
                         'text-[9px]',
                         'font-bold',
-                        'text-slate-400',
+                        'text-muted-dark',
                         'capitalize',
                       )}
                     >
@@ -629,7 +628,7 @@ export const MessagesManagement = () => {
                       size={14}
                       className={cn(
                         'animate-spin',
-                        'text-[#2d5222]',
+                        'text-primary',
                         'shrink-0',
                       )}
                     />
@@ -638,8 +637,8 @@ export const MessagesManagement = () => {
                       className={cn(
                         'text-[9px]',
                         'font-black',
-                        'text-[#2d5222]',
-                        'bg-[#F4F8F1]',
+                        'text-primary',
+                        'bg-primary-soft',
                         'px-2',
                         'py-1',
                         'rounded-lg',
@@ -670,7 +669,7 @@ export const MessagesManagement = () => {
         {/* ── LEFT COLUMN: Conversations List ── */}
         <div
           className={cn(
-            'w-full lg:w-[380px] shrink-0 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden',
+            'w-full lg:w-[380px] shrink-0 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden',
             showMobileChat ? 'hidden lg:flex' : 'flex',
           )}
         >
@@ -684,7 +683,7 @@ export const MessagesManagement = () => {
                     'absolute',
                     'left-3',
                     'top-[13px]',
-                    'text-slate-400',
+                    'text-muted-dark',
                   )}
                 />
                 <Input
@@ -695,13 +694,13 @@ export const MessagesManagement = () => {
                     'h-10',
                     'pl-9',
                     'pr-4',
-                    'bg-slate-50',
+                    'bg-muted-light',
                     'border-none',
                     'rounded-xl',
                     'text-[11px]',
                     'font-bold',
                     'focus-visible:ring-1',
-                    'focus-visible:ring-[#2d5222]/20',
+                    'focus-visible:ring-primary/20',
                   )}
                 />
               </div>
@@ -711,10 +710,10 @@ export const MessagesManagement = () => {
                 className={cn(
                   'w-10',
                   'h-10',
-                  'bg-slate-50',
-                  'hover:bg-slate-100',
+                  'bg-muted-light',
+                  'hover:bg-muted/50',
                   'rounded-xl',
-                  'text-slate-500',
+                  'text-muted-foreground/85',
                   'transition-colors',
                   'cursor-pointer',
                   'shrink-0',
@@ -730,7 +729,7 @@ export const MessagesManagement = () => {
                 'flex',
                 'gap-5',
                 'border-b',
-                'border-slate-100',
+                'border-border/30',
                 'overflow-x-auto',
                 'scrollbar-none',
               )}
@@ -762,8 +761,8 @@ export const MessagesManagement = () => {
                       className={cn(
                         'relative pb-3 text-[11px] font-extrabold capitalize tracking-wider whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5 rounded-none h-auto px-0 hover:bg-transparent',
                         activeSubTab === tab
-                          ? 'text-[#2d5222]'
-                          : 'text-slate-400 hover:text-slate-600',
+                          ? 'text-primary'
+                          : 'text-muted-dark hover:text-muted-foreground',
                       )}
                     >
                       {tab}
@@ -772,8 +771,8 @@ export const MessagesManagement = () => {
                           className={cn(
                             'w-4',
                             'h-4',
-                            'bg-[#2d5222]',
-                            'text-white',
+                            'bg-primary',
+                            'text-primary-foreground',
                             'text-[9px]',
                             'font-black',
                             'rounded-full',
@@ -793,7 +792,7 @@ export const MessagesManagement = () => {
                             'left-0',
                             'right-0',
                             'h-[2px]',
-                            'bg-[#2d5222]',
+                            'bg-primary',
                             'rounded-full',
                           )}
                         />
@@ -821,7 +820,7 @@ export const MessagesManagement = () => {
               >
                 <Loader2
                   size={20}
-                  className={cn('animate-spin', 'text-[#2d5222]')}
+                  className={cn('animate-spin', 'text-primary')}
                 />
               </div>
             ) : filteredConversations.length === 0 ? (
@@ -836,12 +835,12 @@ export const MessagesManagement = () => {
                   'py-10',
                 )}
               >
-                <MessageSquare size={32} className="text-slate-200" />
+                <MessageSquare size={32} className="text-muted-foreground/30" />
                 <p
                   className={cn(
                     'text-[11px]',
                     'font-bold',
-                    'text-slate-400',
+                    'text-muted-dark',
                     'text-center',
                   )}
                 >
@@ -864,8 +863,8 @@ export const MessagesManagement = () => {
                     className={cn(
                       'flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all',
                       isSelected
-                        ? 'bg-[#F4F8F1] border border-[#e2edd8]/60 shadow-sm'
-                        : 'hover:bg-slate-50/60 border border-transparent',
+                        ? 'bg-primary-soft border border-primary-border/60 shadow-sm'
+                        : 'hover:bg-muted-light/60 border border-transparent',
                     )}
                   >
                     <UserAvatar
@@ -885,8 +884,8 @@ export const MessagesManagement = () => {
                           className={cn(
                             'text-[12px] truncate',
                             conv.unreadCount > 0
-                              ? 'font-black text-gray-900'
-                              : 'font-bold text-gray-800',
+                              ? 'font-black text-foreground'
+                              : 'font-bold text-foreground/90',
                           )}
                         >
                           {conv.otherParticipant.name}
@@ -895,7 +894,7 @@ export const MessagesManagement = () => {
                           className={cn(
                             'text-[9px]',
                             'font-bold',
-                            'text-slate-400',
+                            'text-muted-dark',
                             'shrink-0',
                             'ml-2',
                           )}
@@ -909,8 +908,8 @@ export const MessagesManagement = () => {
                         className={cn(
                           'text-[10px] truncate mt-0.5',
                           conv.unreadCount > 0
-                            ? 'text-gray-900 font-extrabold'
-                            : 'text-slate-400 font-medium',
+                            ? 'text-foreground font-extrabold'
+                            : 'text-muted-dark font-medium',
                         )}
                       >
                         {conv.lastMessage
@@ -928,8 +927,8 @@ export const MessagesManagement = () => {
                             className={cn(
                               'w-5',
                               'h-5',
-                              'bg-[#2d5222]',
-                              'text-white',
+                              'bg-primary',
+                              'text-primary-foreground',
                               'text-[9px]',
                               'font-black',
                               'rounded-full',
@@ -945,7 +944,7 @@ export const MessagesManagement = () => {
                             className={cn(
                               'w-2.5',
                               'h-2.5',
-                              'bg-[#2d5222]',
+                              'bg-primary',
                               'rounded-full',
                             )}
                           />
@@ -962,7 +961,7 @@ export const MessagesManagement = () => {
           <div
             className={cn(
               'border-t',
-              'border-slate-100',
+              'border-border/30',
               'px-5',
               'py-4',
               'shrink-0',
@@ -971,7 +970,7 @@ export const MessagesManagement = () => {
             <p
               className={cn(
                 'text-[10px]',
-                'text-slate-400',
+                'text-muted-dark',
                 'font-semibold',
                 'mb-1',
               )}
@@ -981,7 +980,7 @@ export const MessagesManagement = () => {
             <Button
               variant="ghost"
               className={cn(
-                'text-[#2d5222]',
+                'text-primary',
                 'text-[10px]',
                 'font-black',
                 'flex',
@@ -1002,7 +1001,7 @@ export const MessagesManagement = () => {
         {/* ── RIGHT COLUMN: Active Chat ── */}
         <div
           className={cn(
-            'flex-1 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden',
+            'flex-1 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden',
             !showMobileChat ? 'hidden lg:flex' : 'flex',
           )}
         >
@@ -1016,12 +1015,12 @@ export const MessagesManagement = () => {
                   'px-6',
                   'py-4',
                   'border-b',
-                  'border-slate-50/70',
+                  'border-border/30/70',
                   'flex',
                   'items-center',
                   'justify-between',
                   'shrink-0',
-                  'bg-white/80',
+                  'bg-card/80',
                   'backdrop-blur-sm',
                 )}
               >
@@ -1035,10 +1034,10 @@ export const MessagesManagement = () => {
                       'lg:hidden',
                       'h-8',
                       'w-8',
-                      'bg-slate-50',
-                      'hover:bg-slate-100',
+                      'bg-muted-light',
+                      'hover:bg-muted/50',
                       'rounded-lg',
-                      'text-slate-600',
+                      'text-muted-foreground',
                       'cursor-pointer',
                       'transition-colors',
                     )}
@@ -1060,7 +1059,7 @@ export const MessagesManagement = () => {
                       className={cn(
                         'text-[13px]',
                         'font-black',
-                        'text-gray-900',
+                        'text-foreground',
                       )}
                     >
                       {activeConversation.otherParticipant.name}
@@ -1079,14 +1078,14 @@ export const MessagesManagement = () => {
                           checkOnline(activeConversation.otherParticipant.id) ||
                             activeConversation.otherParticipant.isOnline
                             ? 'bg-emerald-500'
-                            : 'bg-slate-300',
+                            : 'bg-muted-dark/20',
                         )}
                       />
                       <span
                         className={cn(
                           'text-[9px]',
                           'font-bold',
-                          'text-slate-400',
+                          'text-muted-dark',
                         )}
                       >
                         {checkOnline(activeConversation.otherParticipant.id) ||
@@ -1099,7 +1098,7 @@ export const MessagesManagement = () => {
                           className={cn(
                             'text-[9px]',
                             'font-black',
-                            'text-[#2d5222]',
+                            'text-primary',
                             'animate-pulse',
                             'ml-1',
                           )}
@@ -1123,10 +1122,10 @@ export const MessagesManagement = () => {
                     className={cn(
                       'w-9',
                       'h-9',
-                      'hover:bg-slate-50',
+                      'hover:bg-muted-light',
                       'rounded-xl',
-                      'text-slate-400',
-                      'hover:text-slate-600',
+                      'text-muted-dark',
+                      'hover:text-muted-foreground',
                       'cursor-pointer',
                       'transition-colors',
                     )}
@@ -1144,10 +1143,10 @@ export const MessagesManagement = () => {
                     className={cn(
                       'w-9',
                       'h-9',
-                      'hover:bg-slate-50',
+                      'hover:bg-muted-light',
                       'rounded-xl',
-                      'text-slate-400',
-                      'hover:text-slate-600',
+                      'text-muted-dark',
+                      'hover:text-muted-foreground',
                       'cursor-pointer',
                       'transition-colors',
                     )}
@@ -1163,10 +1162,10 @@ export const MessagesManagement = () => {
                     className={cn(
                       'w-9',
                       'h-9',
-                      'hover:bg-slate-50',
+                      'hover:bg-muted-light',
                       'rounded-xl',
-                      'text-slate-400',
-                      'hover:text-slate-600',
+                      'text-muted-dark',
+                      'hover:text-muted-foreground',
                       'cursor-pointer',
                       'transition-colors',
                     )}
@@ -1185,7 +1184,7 @@ export const MessagesManagement = () => {
                   'px-5',
                   'py-5',
                   'space-y-5',
-                  'bg-slate-50/20',
+                  'bg-muted-light/20',
                   'scrollbar-thin',
                 )}
               >
@@ -1208,13 +1207,13 @@ export const MessagesManagement = () => {
                     >
                       <Loader2
                         size={24}
-                        className={cn('animate-spin', 'text-[#2d5222]')}
+                        className={cn('animate-spin', 'text-primary')}
                       />
                       <p
                         className={cn(
                           'text-[11px]',
                           'font-bold',
-                          'text-slate-400',
+                          'text-muted-dark',
                         )}
                       >
                         Loading messages...
@@ -1237,19 +1236,19 @@ export const MessagesManagement = () => {
                         'w-12',
                         'h-12',
                         'rounded-2xl',
-                        'bg-slate-100',
+                        'bg-muted/50',
                         'flex',
                         'items-center',
                         'justify-center',
                       )}
                     >
-                      <MessageSquare size={20} className="text-slate-400" />
+                      <MessageSquare size={20} className="text-muted-dark" />
                     </div>
                     <p
                       className={cn(
                         'text-[11px]',
                         'font-bold',
-                        'text-slate-400',
+                        'text-muted-dark',
                         'text-center',
                       )}
                     >
@@ -1265,11 +1264,11 @@ export const MessagesManagement = () => {
                           className={cn(
                             'px-3',
                             'py-1',
-                            'bg-slate-100',
+                            'bg-muted/50',
                             'rounded-full',
                             'text-[9px]',
                             'font-black',
-                            'text-slate-400',
+                            'text-muted-dark',
                             'uppercase',
                             'tracking-widest',
                           )}
@@ -1337,8 +1336,8 @@ export const MessagesManagement = () => {
                                   className={cn(
                                     'px-4 py-3 text-[11px] font-semibold leading-relaxed shadow-sm',
                                     isMe
-                                      ? 'bg-[#EBF3E6] text-[#2d5222] rounded-2xl rounded-tr-sm'
-                                      : 'bg-white text-gray-700 border border-slate-100 rounded-2xl rounded-tl-sm',
+                                      ? 'bg-primary-soft/40 text-primary rounded-2xl rounded-tr-sm'
+                                      : 'bg-card text-foreground/80 border border-border/30 rounded-2xl rounded-tl-sm',
                                   )}
                                 >
                                   {msg.content}
@@ -1356,7 +1355,7 @@ export const MessagesManagement = () => {
                                   className={cn(
                                     'text-[8px]',
                                     'font-bold',
-                                    'text-slate-400',
+                                    'text-muted-dark',
                                   )}
                                 >
                                   {formatMsgTime(msg.createdAt)}
@@ -1371,7 +1370,7 @@ export const MessagesManagement = () => {
                                   ) : (
                                     <Check
                                       size={11}
-                                      className="text-slate-400"
+                                      className="text-muted-dark"
                                       strokeWidth={2.5}
                                     />
                                   ))}
@@ -1393,8 +1392,8 @@ export const MessagesManagement = () => {
                 className={cn(
                   'p-4',
                   'border-t',
-                  'border-slate-50',
-                  'bg-white',
+                  'border-border/30',
+                  'bg-card',
                   'flex',
                   'items-center',
                   'gap-3',
@@ -1410,10 +1409,10 @@ export const MessagesManagement = () => {
                   className={cn(
                     'w-10',
                     'h-10',
-                    'bg-slate-50',
-                    'hover:bg-slate-100',
+                    'bg-muted-light',
+                    'hover:bg-muted/50',
                     'rounded-xl',
-                    'text-slate-500',
+                    'text-muted-foreground/85',
                     'transition-colors',
                     'cursor-pointer',
                     'shrink-0',
@@ -1434,13 +1433,13 @@ export const MessagesManagement = () => {
                     className={cn(
                       'h-10',
                       'pr-10',
-                      'bg-slate-50',
+                      'bg-muted-light',
                       'border-none',
                       'rounded-xl',
                       'text-[11px]',
                       'font-bold',
                       'focus-visible:ring-1',
-                      'focus-visible:ring-[#2d5222]/20',
+                      'focus-visible:ring-primary/20',
                       'disabled:opacity-50',
                     )}
                   />
@@ -1454,8 +1453,8 @@ export const MessagesManagement = () => {
                       'top-[7px]',
                       'h-7',
                       'w-7',
-                      'text-slate-400',
-                      'hover:text-slate-600',
+                      'text-muted-dark',
+                      'hover:text-muted-foreground',
                       'hover:bg-transparent',
                       'cursor-pointer',
                       'transition-colors',
@@ -1470,10 +1469,10 @@ export const MessagesManagement = () => {
                   onClick={handleSend}
                   disabled={!inputText.trim() || !isConnected}
                   className={cn(
-                    'w-10 h-10 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-md active:scale-95 shrink-0',
+                    'w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground cursor-pointer transition-all shadow-md active:scale-95 shrink-0',
                     inputText.trim() && isConnected
-                      ? 'bg-[#2d5222] hover:bg-[#1d3515]'
-                      : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none',
+                      ? 'bg-primary hover:bg-primary-hover'
+                      : 'bg-muted text-muted-dark cursor-not-allowed shadow-none',
                   )}
                 >
                   <Send size={14} className="ml-0.5" />

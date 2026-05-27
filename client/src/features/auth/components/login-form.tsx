@@ -45,7 +45,7 @@ export function LoginForm() {
     setIsUnverified(false)
     setResendError(null)
 
-    const { data, error } = await authClient.signIn.email({
+    const { error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
       callbackURL: '/',
@@ -93,7 +93,7 @@ export function LoginForm() {
     <div className="w-full relative">
       {/* Top Right "New here? Sign up" */}
       <div className="absolute -top-6 right-0 sm:-top-16 flex items-center gap-1.5 text-sm font-medium">
-        <span className="text-gray-500">New here?</span>
+        <span className="text-muted-foreground/85">New here?</span>
         <Link
           to="/signup"
           className="text-primary font-bold hover:bg-primary-light transition-colors"
@@ -106,7 +106,7 @@ export function LoginForm() {
         <h1 className="text-[32px] font-bold text-text-dark tracking-tight">
           Welcome Back!
         </h1>
-        <p className="mt-2 text-[15px] text-gray-500 font-medium">
+        <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
           Login to your account and continue renting.
         </p>
       </div>
@@ -125,11 +125,11 @@ export function LoginForm() {
         <div className="flex-1 flex flex-col">
           <Link
             to="/signup"
-            className="py-3 text-[15px] font-semibold text-gray-400 text-center w-full hover:text-gray-600"
+            className="py-3 text-[15px] font-semibold text-muted-foreground/70 text-center w-full hover:text-muted-foreground"
           >
             Sign Up
           </Link>
-          <div className="h-[1px] w-full bg-gray-200"></div>
+          <div className="h-[1px] w-full bg-muted"></div>
         </div>
       </div>
 
@@ -137,25 +137,25 @@ export function LoginForm() {
         <div className="space-y-5">
           {/* Email Field */}
           <Field>
-            <FieldLabel className="text-[13px] font-bold text-gray-900 mb-1.5">
+            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
               Email Address
             </FieldLabel>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Mail
-                  className="h-[18px] w-[18px] text-gray-400"
+                  className="h-[18px] w-[18px] text-muted-foreground/70"
                   strokeWidth={2}
                 />
               </div>
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                 {...register('email')}
               />
             </div>
             {errors.email && (
-              <p className="text-xs text-red-500 mt-1 font-medium">
+              <p className="text-xs text-destructive mt-1 font-medium">
                 {errors.email.message}
               </p>
             )}
@@ -164,7 +164,7 @@ export function LoginForm() {
           {/* Password Field */}
           <Field>
             <div className="flex items-center justify-between mb-1.5">
-              <FieldLabel className="text-[13px] font-bold text-gray-900">
+              <FieldLabel className="text-[13px] font-bold text-foreground">
                 Password
               </FieldLabel>
               <Button
@@ -178,14 +178,14 @@ export function LoginForm() {
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Lock
-                  className="h-[18px] w-[18px] text-gray-400"
+                  className="h-[18px] w-[18px] text-muted-foreground/70"
                   strokeWidth={2}
                 />
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
-                className="w-full h-12 pl-11 pr-12 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                 {...register('password')}
               />
               <Button
@@ -197,19 +197,19 @@ export function LoginForm() {
               >
                 {showPassword ? (
                   <Eye
-                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-650 transition-colors"
+                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
                     strokeWidth={2}
                   />
                 ) : (
                   <EyeOff
-                    className="h-[18px] w-[18px] text-gray-400 hover:text-gray-650 transition-colors"
+                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
                     strokeWidth={2}
                   />
                 )}
               </Button>
             </div>
             {errors.password && (
-              <p className="text-xs text-red-500 mt-1 font-medium">
+              <p className="text-xs text-destructive mt-1 font-medium">
                 {errors.password.message}
               </p>
             )}
@@ -224,28 +224,28 @@ export function LoginForm() {
               onClick={() => setRememberMe(!rememberMe)}
             >
               <div
-                className={`w-4 h-4 rounded-[4px] flex items-center justify-center border transition-colors ${rememberMe ? 'bg-primary border-primary' : 'bg-white border-gray-300'}`}
+                className={`w-4 h-4 rounded-[4px] flex items-center justify-center border transition-colors ${rememberMe ? 'bg-primary border-primary' : 'bg-card border-border/120'}`}
               >
                 {rememberMe && (
-                  <Check className="h-3 w-3 text-white" strokeWidth={3} />
+                  <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
                 )}
               </div>
-              <span className="text-[13px] font-bold text-gray-900">
+              <span className="text-[13px] font-bold text-foreground">
                 Remember me
               </span>
             </Button>
           </div>
 
           {serverError && (
-            <p className="text-center text-sm text-red-500 font-medium">
+            <p className="text-center text-sm text-destructive font-medium">
               {serverError}
             </p>
           )}
 
           {isUnverified && (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center sm:text-left animate-in fade-in duration-300">
+            <div className="bg-warning/30 border border-warning-foreground/20 rounded-xl p-4 text-center sm:text-left animate-in fade-in duration-300">
               <div className="flex gap-2.5 items-start">
-                <div className="text-amber-500 mt-0.5 shrink-0">
+                <div className="text-warning-foreground mt-0.5 shrink-0">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -261,13 +261,13 @@ export function LoginForm() {
                   </svg>
                 </div>
                 <div className="flex-1 text-left">
-                  <h4 className="text-[14px] font-bold text-amber-800 font-sans">
+                  <h4 className="text-[14px] font-bold text-warning-foreground font-sans">
                     Verification Required
                   </h4>
-                  <p className="mt-1 text-[13px] text-amber-700 leading-relaxed font-medium">
+                  <p className="mt-1 text-[13px] text-warning-foreground/90 leading-relaxed font-medium">
                     Your email is not verified yet. Please check your inbox for
                     the verification link sent to{' '}
-                    <strong className="text-gray-900 break-all">
+                    <strong className="text-foreground break-all">
                       {unverifiedEmail}
                     </strong>
                     .
@@ -279,7 +279,7 @@ export function LoginForm() {
                     </p>
                   )}
                   {resendError && (
-                    <p className="mt-2 text-xs text-red-500 font-semibold bg-red-50 px-2 py-1 rounded inline-block">
+                    <p className="mt-2 text-xs text-destructive font-semibold bg-danger px-2 py-1 rounded inline-block">
                       {resendError}
                     </p>
                   )}
@@ -316,11 +316,11 @@ export function LoginForm() {
 
       {/* Or continue with */}
       <div className="mt-8 mb-6 flex items-center">
-        <div className="h-[1px] flex-1 bg-gray-200"></div>
-        <span className="px-4 text-[13px] font-medium text-gray-400">
+        <div className="h-[1px] flex-1 bg-muted"></div>
+        <span className="px-4 text-[13px] font-medium text-muted-foreground/70">
           or continue with
         </span>
-        <div className="h-[1px] flex-1 bg-gray-200"></div>
+        <div className="h-[1px] flex-1 bg-muted"></div>
       </div>
 
       {/* Social Buttons */}
@@ -381,7 +381,7 @@ export function LoginForm() {
         </Button>
       </div>
 
-      <p className="text-center text-[12px] text-gray-500 max-w-[340px] mx-auto leading-relaxed">
+      <p className="text-center text-[12px] text-muted-foreground/85 max-w-[340px] mx-auto leading-relaxed">
         By continuing, you agree to our{' '}
         <a href="#" className="font-bold bg-primary-light hover:underline">
           Terms & Conditions

@@ -152,14 +152,14 @@ export const CategoryManagement = ({
   return (
     <div className="space-y-6">
       {/* Tab Switcher */}
-      <div className="flex border-b border-gray-100 gap-6">
+      <div className="flex border-b border-border/30 gap-6">
         <Button
           variant="ghost"
           onClick={() => setActiveTab('categories')}
           className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${
             activeTab === 'categories'
               ? 'text-primary font-black hover:text-primary'
-              : 'text-gray-400 hover:text-gray-600'
+              : 'text-muted-foreground/70 hover:text-muted-foreground'
           }`}
         >
           Active Categories
@@ -173,14 +173,14 @@ export const CategoryManagement = ({
           className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${
             activeTab === 'requests'
               ? 'text-primary font-black hover:text-primary'
-              : 'text-gray-400 hover:text-gray-600'
+              : 'text-muted-foreground/70 hover:text-muted-foreground'
           }`}
         >
           Category Requests
           {ownerRequests &&
             ownerRequests.filter((r: any) => r.status === 'pending').length >
               0 && (
-              <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
+              <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
                 {
                   ownerRequests.filter((r: any) => r.status === 'pending')
                     .length
@@ -196,16 +196,16 @@ export const CategoryManagement = ({
       {activeTab === 'categories' ? (
         <>
           {/* Categories List Controls */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card p-6 rounded-xl border border-border/30 shadow-sm">
             <div className="relative flex-1 max-w-md">
               <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/70 z-10"
                 size={18}
               />
               <Input
                 type="text"
                 placeholder="Search categories..."
-                className="pl-11 h-12 bg-gray-50/50 border-transparent rounded-xl text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all"
+                className="pl-11 h-12 bg-muted-light/50 border-transparent rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -214,7 +214,7 @@ export const CategoryManagement = ({
             {isAdmin && (
               <Button
                 onClick={handleOpenAdd}
-                className="bg-primary hover:bg-primary/90 text-white rounded-full h-12 px-8 font-bold shadow-md shadow-primary/10 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <Plus size={20} strokeWidth={2.5} />
                 Add Category
@@ -224,7 +224,7 @@ export const CategoryManagement = ({
             {isOwner && (
               <Button
                 onClick={() => setIsRequestDialogOpen(true)}
-                className="bg-primary hover:bg-primary/90 text-white rounded-full h-12 px-8 font-bold shadow-md shadow-primary/10 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <FolderPlus size={20} />
                 Request Category
@@ -238,15 +238,15 @@ export const CategoryManagement = ({
               Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-32 bg-white rounded-xl border border-gray-100 animate-pulse"
+                  className="h-32 bg-card rounded-xl border border-border/30 animate-pulse"
                 />
               ))
             ) : filteredCategories?.length === 0 ? (
-              <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
-                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FolderPlus className="text-gray-300" size={32} />
+              <div className="col-span-full py-20 text-center bg-card rounded-xl border border-dashed border-border">
+                <div className="w-16 h-16 bg-muted-light rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FolderPlus className="text-muted-dark" size={32} />
                 </div>
-                <p className="text-gray-500 font-bold">No categories found.</p>
+                <p className="text-muted-foreground/85 font-bold">No categories found.</p>
               </div>
             ) : (
               filteredCategories?.map((category: any) => (

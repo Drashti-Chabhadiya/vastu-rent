@@ -67,14 +67,14 @@ export const ListerOverview = ({
             className={cn(
               'text-3xl',
               'font-black',
-              'text-gray-900',
+              'text-foreground',
               'tracking-tight',
               'mb-1',
             )}
           >
             Lister Dashboard
           </h1>
-          <p className={cn('text-sm', 'text-gray-500', 'font-medium')}>
+          <p className={cn('text-sm', 'text-muted-foreground/85', 'font-medium')}>
             Manage your rental properties, accept booking requests, and track
             payouts.
           </p>
@@ -84,7 +84,7 @@ export const ListerOverview = ({
             className={cn(
               'bg-primary',
               'hover:bg-primary/95',
-              'text-white',
+              'text-primary-foreground',
               'font-bold',
               'h-12',
               'px-6',
@@ -120,7 +120,7 @@ export const ListerOverview = ({
           change={`${myListings?.length ? 'Active' : 'No active listings'}`}
           isPositive={true}
           icon={Building}
-          iconBg="bg-green-50"
+          iconBg="bg-primary-soft"
           iconColor="bg-primary-light"
           sparklineData={[10, 15, 12, 18, 20, 24, myListings?.length || 0]}
         />
@@ -142,7 +142,7 @@ export const ListerOverview = ({
           change={`${pendingOrders.length} Pending Approval`}
           isPositive={pendingOrders.length > 0}
           icon={ShoppingBag}
-          iconBg="bg-green-50"
+          iconBg="bg-primary-soft"
           iconColor="bg-primary-light"
           sparklineData={[5, 8, 7, 10, 9, 12, listerOrders?.length || 0]}
         />
@@ -172,10 +172,10 @@ export const ListerOverview = ({
         <div
           className={cn(
             'xl:col-span-2',
-            'bg-white',
+            'bg-card',
             'rounded-[2rem]',
             'border',
-            'border-gray-100',
+            'border-border/30',
             'shadow-sm',
             'p-6',
           )}
@@ -184,18 +184,18 @@ export const ListerOverview = ({
             className={cn('flex', 'items-center', 'justify-between', 'mb-6')}
           >
             <div>
-              <h3 className={cn('text-xl', 'font-black', 'text-gray-900')}>
+              <h3 className={cn('text-xl', 'font-black', 'text-foreground')}>
                 Recent Booking Requests
               </h3>
-              <p className={cn('text-xs', 'text-gray-500', 'font-medium')}>
+              <p className={cn('text-xs', 'text-muted-foreground/85', 'font-medium')}>
                 Review and process booking requests from tenants.
               </p>
             </div>
             {pendingOrders.length > 0 && (
               <span
                 className={cn(
-                  'bg-red-50',
-                  'text-red-600',
+                  'bg-danger',
+                  'text-destructive',
                   'px-3.5',
                   'py-1',
                   'rounded-xl',
@@ -216,7 +216,7 @@ export const ListerOverview = ({
                   key={i}
                   className={cn(
                     'h-16',
-                    'bg-gray-50',
+                    'bg-muted-light',
                     'rounded-2xl',
                     'animate-pulse',
                   )}
@@ -230,10 +230,10 @@ export const ListerOverview = ({
                   <tr
                     className={cn(
                       'border-b',
-                      'border-gray-50',
+                      'border-border/30',
                       'text-xs',
                       'font-bold',
-                      'text-gray-400',
+                      'text-muted-foreground/70',
                       'uppercase',
                       'tracking-wider',
                     )}
@@ -251,16 +251,16 @@ export const ListerOverview = ({
                 <tbody
                   className={cn(
                     'divide-y',
-                    'divide-gray-50',
+                    'divide-border/30',
                     'text-sm',
                     'font-medium',
-                    'text-gray-700',
+                    'text-foreground/80',
                   )}
                 >
                   {listerOrders.map((order: any) => (
                     <tr
                       key={order.id}
-                      className={cn('hover:bg-gray-50/50', 'transition-colors')}
+                      className={cn('hover:bg-muted-light/50', 'transition-colors')}
                     >
                       <td className="py-4">
                         <div className={cn('flex', 'items-center', 'gap-3')}>
@@ -282,13 +282,13 @@ export const ListerOverview = ({
                             {order.user?.name?.[0] || 'U'}
                           </div>
                           <div>
-                            <p className={cn('font-bold', 'text-gray-900')}>
+                            <p className={cn('font-bold', 'text-foreground')}>
                               {order.user?.name || 'Renter'}
                             </p>
                             <p
                               className={cn(
                                 'text-[10px]',
-                                'text-gray-400',
+                                'text-muted-foreground/70',
                                 'font-medium',
                               )}
                             >
@@ -301,7 +301,7 @@ export const ListerOverview = ({
                         className={cn(
                           'py-4',
                           'font-bold',
-                          'text-gray-900',
+                          'text-foreground',
                           'truncate',
                           'max-w-[150px]',
                         )}
@@ -313,13 +313,13 @@ export const ListerOverview = ({
                           'py-4',
                           'text-xs',
                           'font-semibold',
-                          'text-gray-500',
+                          'text-muted-foreground/85',
                         )}
                       >
                         {new Date(order.startDate).toLocaleDateString()} -{' '}
                         {new Date(order.endDate).toLocaleDateString()}
                       </td>
-                      <td className={cn('py-4', 'font-black', 'text-gray-900')}>
+                      <td className={cn('py-4', 'font-black', 'text-foreground')}>
                         ₹ {order.totalPrice?.toLocaleString()}
                       </td>
                       <td className="py-4">
@@ -327,12 +327,12 @@ export const ListerOverview = ({
                           className={cn(
                             'px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider',
                             order.status === 'pending'
-                              ? 'bg-amber-50 text-amber-600'
+                              ? 'bg-warning text-warning-foreground'
                               : order.status === 'approved'
-                                ? 'bg-green-50 text-primary'
+                                ? 'bg-primary-soft text-primary'
                                 : order.status === 'completed'
                                   ? 'bg-emerald-50 text-emerald-600'
-                                  : 'bg-gray-100 text-gray-600',
+                                  : 'bg-muted/50 text-muted-foreground',
                           )}
                         >
                           {order.status}
@@ -358,10 +358,10 @@ export const ListerOverview = ({
                                 'w-8',
                                 'h-8',
                                 'rounded-lg',
-                                'bg-green-50',
+                                'bg-primary-soft',
                                 'text-primary',
                                 'hover:bg-primary',
-                                'hover:text-white',
+                                'hover:text-primary-foreground',
                                 'flex',
                                 'items-center',
                                 'justify-center',
@@ -382,10 +382,10 @@ export const ListerOverview = ({
                                 'w-8',
                                 'h-8',
                                 'rounded-lg',
-                                'bg-red-50',
-                                'text-red-600',
-                                'hover:bg-red-600',
-                                'hover:text-white',
+                                'bg-danger',
+                                'text-destructive',
+                                'hover:bg-destructive/90',
+                                'hover:text-primary-foreground',
                                 'flex',
                                 'items-center',
                                 'justify-center',
@@ -401,7 +401,7 @@ export const ListerOverview = ({
                           <span
                             className={cn(
                               'text-xs',
-                              'text-gray-400',
+                              'text-muted-foreground/70',
                               'font-bold',
                             )}
                           >
@@ -427,12 +427,12 @@ export const ListerOverview = ({
             >
               <ShoppingBag
                 size={48}
-                className={cn('text-gray-300', 'mb-4', 'animate-bounce')}
+                className={cn('text-muted-dark', 'mb-4', 'animate-bounce')}
               />
-              <h4 className={cn('font-bold', 'text-gray-900', 'mb-1')}>
+              <h4 className={cn('font-bold', 'text-foreground', 'mb-1')}>
                 No bookings received yet
               </h4>
-              <p className={cn('text-xs', 'text-gray-500', 'max-w-xs')}>
+              <p className={cn('text-xs', 'text-muted-foreground/85', 'max-w-xs')}>
                 Publish your properties in the marketplace to get booking
                 requests!
               </p>
@@ -443,10 +443,10 @@ export const ListerOverview = ({
         {/* Quick List Overview */}
         <div
           className={cn(
-            'bg-white',
+            'bg-card',
             'rounded-[2rem]',
             'border',
-            'border-gray-100',
+            'border-border/30',
             'shadow-sm',
             'p-6',
             'flex',
@@ -456,12 +456,12 @@ export const ListerOverview = ({
         >
           <div>
             <h3
-              className={cn('text-xl', 'font-black', 'text-gray-900', 'mb-1')}
+              className={cn('text-xl', 'font-black', 'text-foreground', 'mb-1')}
             >
               My Active Listings
             </h3>
             <p
-              className={cn('text-xs', 'text-gray-500', 'font-medium', 'mb-6')}
+              className={cn('text-xs', 'text-muted-foreground/85', 'font-medium', 'mb-6')}
             >
               Overview of your published marketplace rentals.
             </p>
@@ -473,7 +473,7 @@ export const ListerOverview = ({
                     key={i}
                     className={cn(
                       'h-12',
-                      'bg-gray-50',
+                      'bg-muted-light',
                       'rounded-xl',
                       'animate-pulse',
                     )}
@@ -492,8 +492,8 @@ export const ListerOverview = ({
                       'p-3',
                       'rounded-2xl',
                       'border',
-                      'border-gray-50',
-                      'hover:bg-gray-50/50',
+                      'border-border/30',
+                      'hover:bg-muted-light/50',
                       'transition-colors',
                     )}
                   >
@@ -516,7 +516,7 @@ export const ListerOverview = ({
                           'h-11',
                           'rounded-xl',
                           'object-cover',
-                          'bg-gray-100',
+                          'bg-muted/50',
                           'shrink-0',
                         )}
                       />
@@ -525,7 +525,7 @@ export const ListerOverview = ({
                           className={cn(
                             'font-bold',
                             'text-sm',
-                            'text-gray-900',
+                            'text-foreground',
                             'truncate',
                           )}
                         >
@@ -534,7 +534,7 @@ export const ListerOverview = ({
                         <p
                           className={cn(
                             'text-xs',
-                            'text-gray-400',
+                            'text-muted-foreground/70',
                             'font-bold',
                           )}
                         >
@@ -546,8 +546,8 @@ export const ListerOverview = ({
                       className={cn(
                         'w-2.5 h-2.5 rounded-full shrink-0',
                         listing.isAvailable
-                          ? 'bg-green-500 shadow-sm shadow-green-500/20'
-                          : 'bg-gray-300',
+                          ? 'bg-primary shadow-sm shadow-green-500/20'
+                          : 'bg-muted-dark/20',
                       )}
                     />
                   </div>
@@ -555,11 +555,11 @@ export const ListerOverview = ({
               </div>
             ) : (
               <div className={cn('text-center', 'py-12')}>
-                <Building size={48} className={cn('text-gray-300', 'mb-4')} />
-                <h4 className={cn('font-bold', 'text-gray-900', 'mb-1')}>
+                <Building size={48} className={cn('text-muted-dark', 'mb-4')} />
+                <h4 className={cn('font-bold', 'text-foreground', 'mb-1')}>
                   No listings found
                 </h4>
-                <p className={cn('text-xs', 'text-gray-500')}>
+                <p className={cn('text-xs', 'text-muted-foreground/85')}>
                   Add your first property now.
                 </p>
               </div>
@@ -570,14 +570,14 @@ export const ListerOverview = ({
             <Button
               className={cn(
                 'w-full',
-                'bg-gray-50',
-                'hover:bg-gray-100',
-                'text-gray-700',
+                'bg-muted-light',
+                'hover:bg-muted/50',
+                'text-foreground/80',
                 'font-bold',
                 'h-11',
                 'rounded-full',
                 'border',
-                'border-gray-100',
+                'border-border/30',
                 'transition-all',
                 'flex',
                 'items-center',

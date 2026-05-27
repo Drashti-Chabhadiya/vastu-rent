@@ -20,7 +20,7 @@ export const CategoryCard = ({
   const renderCategoryIcon = () => {
     if (category.image) {
       return (
-        <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
+        <div className="w-12 h-12 rounded-xl overflow-hidden border border-border/30 shadow-sm flex-shrink-0">
           <img
             src={category.image}
             alt={category.name}
@@ -36,7 +36,7 @@ export const CategoryCard = ({
 
     const iconName = category.icon || 'Folder'
     const IconComponent = (LucideIcons as any)[iconName]
-    const iconColor = category.color || '#166534'
+    const iconColor = category.color || 'var(--color-primary)'
 
     return (
       <div
@@ -52,33 +52,33 @@ export const CategoryCard = ({
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-dash-brand/20 transition-all group relative overflow-hidden">
+    <div className="bg-card p-6 rounded-xl border border-border/30 shadow-sm hover:shadow-xl hover:border-dash-brand/20 transition-all group relative overflow-hidden">
       <div
         className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-150 opacity-[0.03]"
-        style={{ backgroundColor: category.color || '#166534' }}
+        style={{ backgroundColor: category.color || 'var(--color-primary)' }}
       />
 
       <div className="flex items-start justify-between relative z-10">
         <div className="space-y-4">
           {renderCategoryIcon()}
           <div>
-            <h3 className="text-lg font-extrabold text-gray-900 group-hover:text-dash-brand transition-colors">
+            <h3 className="text-lg font-extrabold text-foreground group-hover:text-dash-brand transition-colors">
               {category.name}
             </h3>
             <div className="flex items-center gap-2 mt-2">
               <div
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
                 style={{
-                  backgroundColor: `${category.color || '#166534'}15`,
+                  backgroundColor: `${category.color || 'var(--color-primary)'}15`,
                 }}
               >
                 <Layers
                   size={12}
-                  style={{ color: category.color || '#166534' }}
+                  style={{ color: category.color || 'var(--color-primary)' }}
                 />
                 <span
                   className="text-[11px] font-extrabold uppercase tracking-wider"
-                  style={{ color: category.color || '#166534' }}
+                  style={{ color: category.color || 'var(--color-primary)' }}
                 >
                   {category._count?.products || 0} Items
                 </span>
@@ -93,7 +93,7 @@ export const CategoryCard = ({
               variant="ghost"
               size="icon"
               onClick={() => onOpenEdit(category)}
-              className="h-9 w-9 text-gray-400 hover:text-dash-brand hover:bg-dash-brand/10 rounded-xl cursor-pointer"
+              className="h-9 w-9 text-muted-foreground/70 hover:text-dash-brand hover:bg-dash-brand/10 rounded-xl cursor-pointer"
             >
               <Edit2 size={18} />
             </Button>
@@ -101,7 +101,7 @@ export const CategoryCard = ({
               variant="ghost"
               size="icon"
               onClick={() => onOpenDelete(category)}
-              className="h-9 w-9 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl cursor-pointer"
+              className="h-9 w-9 text-muted-foreground/70 hover:text-destructive hover:bg-danger rounded-xl cursor-pointer"
             >
               <Trash2 size={18} />
             </Button>
@@ -111,14 +111,14 @@ export const CategoryCard = ({
 
       <div
         onClick={() => onManageCategory?.(category.id)}
-        className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between cursor-pointer group/manage"
+        className="mt-6 pt-4 border-t border-border/30 flex items-center justify-between cursor-pointer group/manage"
       >
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover/manage:text-dash-brand transition-colors">
+        <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest group-hover/manage:text-dash-brand transition-colors">
           Manage Collection
         </span>
         <ArrowRight
           size={16}
-          className="text-gray-300 group-hover/manage:text-dash-brand group-hover/manage:translate-x-1 transition-all"
+          className="text-muted-dark group-hover/manage:text-dash-brand group-hover/manage:translate-x-1 transition-all"
         />
       </div>
     </div>

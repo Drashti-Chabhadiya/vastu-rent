@@ -53,14 +53,14 @@ export const RenterOverview = ({
             className={cn(
               'text-3xl',
               'font-black',
-              'text-gray-900',
+              'text-foreground',
               'tracking-tight',
               'mb-1',
             )}
           >
             Renter Portal
           </h1>
-          <p className={cn('text-sm', 'text-gray-500', 'font-medium')}>
+          <p className={cn('text-sm', 'text-muted-foreground/85', 'font-medium')}>
             Track your active rentals, saved properties, and booking schedules.
           </p>
         </div>
@@ -69,7 +69,7 @@ export const RenterOverview = ({
             className={cn(
               'bg-primary',
               'hover:bg-primary/95',
-              'text-white',
+              'text-primary-foreground',
               'font-bold',
               'h-12',
               'px-6',
@@ -105,7 +105,7 @@ export const RenterOverview = ({
           change={`${myRentals?.length || 0} Total Orders`}
           isPositive={activeRentals.length > 0}
           icon={CalendarDays}
-          iconBg="bg-green-50"
+          iconBg="bg-primary-soft"
           iconColor="bg-primary-light"
           sparklineData={[1, 0, 2, 1, 3, 2, activeRentals.length]}
         />
@@ -127,7 +127,7 @@ export const RenterOverview = ({
           change="Favorites Bookmarked"
           isPositive={true}
           icon={Heart}
-          iconBg="bg-green-50"
+          iconBg="bg-primary-soft"
           iconColor="bg-primary-light"
           sparklineData={[2, 4, 3, 5, 4, 6, likedProducts?.length || 0]}
         />
@@ -149,19 +149,19 @@ export const RenterOverview = ({
         <div
           className={cn(
             'xl:col-span-2',
-            'bg-white',
+            'bg-card',
             'rounded-[2rem]',
             'border',
-            'border-gray-100',
+            'border-border/30',
             'shadow-sm',
             'p-6',
           )}
         >
           <div className="mb-6">
-            <h3 className={cn('text-xl', 'font-black', 'text-gray-900')}>
+            <h3 className={cn('text-xl', 'font-black', 'text-foreground')}>
               Active Rented Properties
             </h3>
-            <p className={cn('text-xs', 'text-gray-500', 'font-medium')}>
+            <p className={cn('text-xs', 'text-muted-foreground/85', 'font-medium')}>
               Timeline of your approved rentals currently active or upcoming.
             </p>
           </div>
@@ -173,7 +173,7 @@ export const RenterOverview = ({
                   key={i}
                   className={cn(
                     'h-16',
-                    'bg-gray-50',
+                    'bg-muted-light',
                     'rounded-2xl',
                     'animate-pulse',
                   )}
@@ -187,10 +187,10 @@ export const RenterOverview = ({
                   <tr
                     className={cn(
                       'border-b',
-                      'border-gray-50',
+                      'border-border/30',
                       'text-xs',
                       'font-bold',
-                      'text-gray-400',
+                      'text-muted-foreground/70',
                       'uppercase',
                       'tracking-wider',
                     )}
@@ -209,16 +209,16 @@ export const RenterOverview = ({
                 <tbody
                   className={cn(
                     'divide-y',
-                    'divide-gray-50',
+                    'divide-border/30',
                     'text-sm',
                     'font-medium',
-                    'text-gray-700',
+                    'text-foreground/80',
                   )}
                 >
                   {myRentals.map((rental: any) => (
                     <tr
                       key={rental.id}
-                      className={cn('hover:bg-gray-50/50', 'transition-colors')}
+                      className={cn('hover:bg-muted-light/50', 'transition-colors')}
                     >
                       <td className="py-4">
                         <div className={cn('flex', 'items-center', 'gap-3')}>
@@ -233,17 +233,17 @@ export const RenterOverview = ({
                               'h-10',
                               'rounded-xl',
                               'object-cover',
-                              'bg-gray-100',
+                              'bg-muted/50',
                             )}
                           />
                           <div>
-                            <p className={cn('font-bold', 'text-gray-900')}>
+                            <p className={cn('font-bold', 'text-foreground')}>
                               {rental.product?.title}
                             </p>
                             <p
                               className={cn(
                                 'text-[10px]',
-                                'text-gray-400',
+                                'text-muted-foreground/70',
                                 'font-medium',
                               )}
                             >
@@ -252,7 +252,7 @@ export const RenterOverview = ({
                           </div>
                         </div>
                       </td>
-                      <td className={cn('py-4', 'font-bold', 'text-gray-900')}>
+                      <td className={cn('py-4', 'font-bold', 'text-foreground')}>
                         {rental.product?.owner?.name || 'Owner lister'}
                       </td>
                       <td
@@ -260,13 +260,13 @@ export const RenterOverview = ({
                           'py-4',
                           'text-xs',
                           'font-semibold',
-                          'text-gray-500',
+                          'text-muted-foreground/85',
                         )}
                       >
                         {new Date(rental.startDate).toLocaleDateString()} -{' '}
                         {new Date(rental.endDate).toLocaleDateString()}
                       </td>
-                      <td className={cn('py-4', 'font-black', 'text-gray-900')}>
+                      <td className={cn('py-4', 'font-black', 'text-foreground')}>
                         ₹ {rental.totalPrice?.toLocaleString()}
                       </td>
                       <td className={cn('py-4', 'text-right')}>
@@ -274,12 +274,12 @@ export const RenterOverview = ({
                           className={cn(
                             'px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider',
                             rental.status === 'pending'
-                              ? 'bg-amber-50 text-amber-600'
+                              ? 'bg-warning text-warning-foreground'
                               : rental.status === 'approved'
-                                ? 'bg-green-50 text-primary'
+                                ? 'bg-primary-soft text-primary'
                                 : rental.status === 'completed'
                                   ? 'bg-emerald-50 text-emerald-600'
-                                  : 'bg-gray-100 text-gray-600',
+                                  : 'bg-muted/50 text-muted-foreground',
                           )}
                         >
                           {rental.status}
@@ -301,18 +301,18 @@ export const RenterOverview = ({
                 'text-center',
                 'border',
                 'border-dashed',
-                'border-gray-100',
+                'border-border/30',
                 'rounded-3xl',
               )}
             >
               <CalendarDays
                 size={48}
-                className={cn('text-gray-300', 'mb-4', 'animate-pulse')}
+                className={cn('text-muted-dark', 'mb-4', 'animate-pulse')}
               />
-              <h4 className={cn('font-bold', 'text-gray-900', 'mb-1')}>
+              <h4 className={cn('font-bold', 'text-foreground', 'mb-1')}>
                 No active rentals yet
               </h4>
-              <p className={cn('text-xs', 'text-gray-500', 'max-w-xs', 'mb-4')}>
+              <p className={cn('text-xs', 'text-muted-foreground/85', 'max-w-xs', 'mb-4')}>
                 You haven't rented any property yet. Browse our listings to get
                 started!
               </p>
@@ -321,7 +321,7 @@ export const RenterOverview = ({
                   className={cn(
                     'bg-primary',
                     'hover:bg-primary/95',
-                    'text-white',
+                    'text-primary-foreground',
                     'font-bold',
                     'h-10',
                     'px-4',
@@ -343,10 +343,10 @@ export const RenterOverview = ({
         {/* Liked Wishlist quick items */}
         <div
           className={cn(
-            'bg-white',
+            'bg-card',
             'rounded-[2rem]',
             'border',
-            'border-gray-100',
+            'border-border/30',
             'shadow-sm',
             'p-6',
             'flex',
@@ -356,12 +356,12 @@ export const RenterOverview = ({
         >
           <div>
             <h3
-              className={cn('text-xl', 'font-black', 'text-gray-900', 'mb-1')}
+              className={cn('text-xl', 'font-black', 'text-foreground', 'mb-1')}
             >
               Saved Favorites
             </h3>
             <p
-              className={cn('text-xs', 'text-gray-500', 'font-medium', 'mb-6')}
+              className={cn('text-xs', 'text-muted-foreground/85', 'font-medium', 'mb-6')}
             >
               List of properties bookmarked for later consideration.
             </p>
@@ -373,7 +373,7 @@ export const RenterOverview = ({
                     key={i}
                     className={cn(
                       'h-12',
-                      'bg-gray-50',
+                      'bg-muted-light',
                       'rounded-xl',
                       'animate-pulse',
                     )}
@@ -392,8 +392,8 @@ export const RenterOverview = ({
                       'p-3',
                       'rounded-2xl',
                       'border',
-                      'border-gray-50',
-                      'hover:bg-gray-50/50',
+                      'border-border/30',
+                      'hover:bg-muted-light/50',
                       'transition-colors',
                     )}
                   >
@@ -416,7 +416,7 @@ export const RenterOverview = ({
                           'h-11',
                           'rounded-xl',
                           'object-cover',
-                          'bg-gray-100',
+                          'bg-muted/50',
                           'shrink-0',
                         )}
                       />
@@ -425,7 +425,7 @@ export const RenterOverview = ({
                           className={cn(
                             'font-bold',
                             'text-sm',
-                            'text-gray-900',
+                            'text-foreground',
                             'truncate',
                           )}
                         >
@@ -434,7 +434,7 @@ export const RenterOverview = ({
                         <p
                           className={cn(
                             'text-xs',
-                            'text-gray-400',
+                            'text-muted-foreground/70',
                             'font-bold',
                           )}
                         >
@@ -466,11 +466,11 @@ export const RenterOverview = ({
               </div>
             ) : (
               <div className={cn('text-center', 'py-12')}>
-                <Heart size={48} className={cn('text-gray-300', 'mb-4')} />
-                <h4 className={cn('font-bold', 'text-gray-900', 'mb-1')}>
+                <Heart size={48} className={cn('text-muted-dark', 'mb-4')} />
+                <h4 className={cn('font-bold', 'text-foreground', 'mb-1')}>
                   Wishlist is empty
                 </h4>
-                <p className={cn('text-xs', 'text-gray-500')}>
+                <p className={cn('text-xs', 'text-muted-foreground/85')}>
                   Your liked listings will show up here.
                 </p>
               </div>
@@ -481,14 +481,14 @@ export const RenterOverview = ({
             <Button
               className={cn(
                 'w-full',
-                'bg-gray-50',
-                'hover:bg-gray-100',
-                'text-gray-700',
+                'bg-muted-light',
+                'hover:bg-muted/50',
+                'text-foreground/80',
                 'font-bold',
                 'h-11',
                 'rounded-full',
                 'border',
-                'border-gray-100',
+                'border-border/30',
                 'transition-all',
                 'flex',
                 'items-center',

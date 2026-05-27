@@ -72,47 +72,47 @@ export const OrdersManagement = () => {
       <div className="space-y-6 animate-pulse">
         {/* Header */}
         <div className="space-y-2.5">
-          <div className="h-7 bg-gray-200 rounded-lg w-48" />
-          <div className="h-4 bg-gray-100 rounded-md w-96" />
+          <div className="h-7 bg-muted rounded-lg w-48" />
+          <div className="h-4 bg-muted/50 rounded-md w-96" />
         </div>
         {/* Orders list */}
         <div className="grid gap-4">
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col lg:flex-row gap-8"
+              className="bg-card p-6 rounded-[2rem] border border-border/30 shadow-sm flex flex-col lg:flex-row gap-8"
             >
               {/* Product Info */}
               <div className="flex gap-4 flex-1">
-                <div className="w-20 h-20 rounded-2xl bg-gray-100 shrink-0" />
+                <div className="w-20 h-20 rounded-2xl bg-muted/50 shrink-0" />
                 <div className="flex flex-col justify-center gap-2">
                   <div className="flex gap-2">
-                    <div className="h-5 bg-gray-150 rounded w-16" />
-                    <div className="h-5 bg-gray-150 rounded w-16" />
+                    <div className="h-5 bg-muted/40 rounded w-16" />
+                    <div className="h-5 bg-muted/40 rounded w-16" />
                   </div>
-                  <div className="h-5 bg-gray-200 rounded w-48" />
+                  <div className="h-5 bg-muted rounded w-48" />
                 </div>
               </div>
               {/* Renter Info */}
-              <div className="flex items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100 flex-1">
-                <div className="w-10 h-10 rounded-xl bg-gray-150 shrink-0" />
+              <div className="flex items-center gap-4 bg-muted-light/50 p-4 rounded-2xl border border-border/30 flex-1">
+                <div className="w-10 h-10 rounded-xl bg-muted/40 shrink-0" />
                 <div className="space-y-1.5 flex-1">
-                  <div className="h-2.5 bg-gray-200 rounded w-12" />
-                  <div className="h-3.5 bg-gray-200 rounded w-24" />
-                  <div className="h-2.5 bg-gray-150 rounded w-32" />
+                  <div className="h-2.5 bg-muted rounded w-12" />
+                  <div className="h-3.5 bg-muted rounded w-24" />
+                  <div className="h-2.5 bg-muted/40 rounded w-32" />
                 </div>
               </div>
               {/* Date & Price */}
               <div className="flex items-center gap-8 lg:gap-12 min-w-fit">
                 <div className="space-y-1.5">
-                  <div className="h-3 bg-gray-200 rounded w-16" />
-                  <div className="h-4 bg-gray-200 rounded w-28" />
+                  <div className="h-3 bg-muted rounded w-16" />
+                  <div className="h-4 bg-muted rounded w-28" />
                 </div>
                 <div className="space-y-1.5 items-end flex flex-col">
-                  <div className="h-3 bg-gray-200 rounded w-12" />
-                  <div className="h-5 bg-gray-200 rounded w-20" />
+                  <div className="h-3 bg-muted rounded w-12" />
+                  <div className="h-5 bg-muted rounded w-20" />
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-gray-100" />
+                <div className="w-12 h-12 rounded-2xl bg-muted/50" />
               </div>
             </div>
           ))}
@@ -123,9 +123,9 @@ export const OrdersManagement = () => {
 
   if (!orders || orders.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2rem] border border-dashed border-gray-200">
-        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-          <ShoppingCart className="text-gray-300" size={40} />
+      <div className="flex flex-col items-center justify-center py-20 bg-card rounded-[2rem] border border-dashed border-border">
+        <div className="w-20 h-20 bg-muted-light rounded-full flex items-center justify-center mb-4">
+          <ShoppingCart className="text-muted-dark" size={40} />
         </div>
         <h3 className="text-xl font-bold text-dash-text">No Orders Found</h3>
         <p className="text-dash-text-soft mt-2 max-w-xs text-center font-medium">
@@ -139,31 +139,31 @@ export const OrdersManagement = () => {
     switch (status) {
       case 'confirmed':
         return (
-          <Badge className="bg-[#e2f5ec] text-[#059669] border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
+          <Badge className="bg-primary-soft text-primary border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
             <CheckCircle2 size={12} /> Confirmed
           </Badge>
         )
       case 'active':
         return (
-          <Badge className="bg-blue-50 text-blue-600 border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
+          <Badge className="bg-info text-info-foreground border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
             <Clock size={12} /> Active
           </Badge>
         )
       case 'completed':
         return (
-          <Badge className="bg-green-50 text-green-600 border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
+          <Badge className="bg-primary-soft text-primary border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
             <CheckCircle2 size={12} /> Completed
           </Badge>
         )
       case 'rejected':
         return (
-          <Badge className="bg-red-50 text-red-600 border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
+          <Badge className="bg-danger text-destructive border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
             <XCircle size={12} /> Rejected
           </Badge>
         )
       case 'cancelled':
         return (
-          <Badge className="bg-red-50 text-red-600 border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
+          <Badge className="bg-danger text-destructive border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
             <XCircle size={12} /> Cancelled
           </Badge>
         )
@@ -194,12 +194,12 @@ export const OrdersManagement = () => {
         {orders.map((order: any) => (
           <div
             key={order.id}
-            className="group bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl hover:border-dash-brand/20 transition-all duration-300"
+            className="group bg-card p-6 rounded-[2rem] border border-border/30 shadow-sm hover:shadow-xl hover:border-dash-brand/20 transition-all duration-300"
           >
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Product Info */}
               <div className="flex gap-4 flex-1">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-inner flex-shrink-0 bg-gray-100">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-inner flex-shrink-0 bg-muted/50">
                   <img
                     src={
                       order.product?.images?.[0] ||
@@ -227,7 +227,7 @@ export const OrdersManagement = () => {
               </div>
 
               {/* Renter Info */}
-              <div className="flex items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100 flex-1">
+              <div className="flex items-center gap-4 bg-muted-light/50 p-4 rounded-2xl border border-border/30 flex-1">
                 <div className="w-10 h-10 rounded-xl bg-dash-brand/10 flex items-center justify-center text-dash-brand overflow-hidden">
                   {order.renter.image ? (
                     <img
@@ -288,7 +288,7 @@ export const OrdersManagement = () => {
                           title: order.product?.title || 'this product',
                         })
                       }
-                      className="h-12 px-5 rounded-2xl bg-[#e2f5ec] text-[#059669] hover:bg-[#059669] hover:text-white transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-[#059669] hover:text-white cursor-pointer"
+                      className="h-12 px-5 rounded-2xl bg-primary-soft text-primary hover:bg-primary hover:text-primary-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-primary hover:text-primary-foreground cursor-pointer"
                     >
                       <CheckCircle2 size={13} />
                       Confirm
@@ -302,7 +302,7 @@ export const OrdersManagement = () => {
                           title: order.product?.title || 'this product',
                         })
                       }
-                      className="h-12 px-5 rounded-2xl bg-red-50 text-[#ef4444] hover:bg-[#ef4444] hover:text-white transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-[#ef4444] hover:text-white cursor-pointer"
+                      className="h-12 px-5 rounded-2xl bg-danger text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-destructive hover:text-destructive-foreground cursor-pointer"
                     >
                       <XCircle size={13} />
                       Reject
@@ -313,7 +313,7 @@ export const OrdersManagement = () => {
                 <Button
                   variant="ghost"
                   onClick={() => handleOpenDetails(order)}
-                  className="h-12 w-12 rounded-2xl bg-gray-50 p-0 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-white transition-all active:scale-[0.98] duration-300 cursor-pointer"
+                  className="h-12 w-12 rounded-2xl bg-muted-light p-0 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-primary-foreground transition-all active:scale-[0.98] duration-300 cursor-pointer"
                 >
                   <ChevronRight size={20} strokeWidth={3} />
                 </Button>
@@ -328,33 +328,33 @@ export const OrdersManagement = () => {
         open={pendingAction !== null}
         onOpenChange={(open) => !open && setPendingAction(null)}
       >
-        <AlertDialogContent className="rounded-[2.5rem] border border-slate-100 p-10 max-w-md bg-white shadow-2xl font-sans">
+        <AlertDialogContent className="rounded-[2.5rem] border border-border/30 p-10 max-w-md bg-card shadow-2xl font-sans">
           <AlertDialogHeader className="space-y-4">
-            <AlertDialogTitle className="text-lg font-black text-[#1e293b] flex items-center gap-3">
+            <AlertDialogTitle className="text-lg font-black text-foreground flex items-center gap-3">
               {pendingAction?.action === 'confirm' ? (
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-[#e2f5ec] flex items-center justify-center text-[#059669]">
+                  <div className="w-10 h-10 rounded-2xl bg-primary-soft flex items-center justify-center text-primary">
                     <CheckCircle2 size={20} />
                   </div>
                   <span>Confirm Booking?</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center text-[#ef4444]">
+                  <div className="w-10 h-10 rounded-2xl bg-danger flex items-center justify-center text-destructive">
                     <XCircle size={20} />
                   </div>
                   <span>Reject Booking?</span>
                 </div>
               )}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[13px] font-semibold text-slate-500 leading-relaxed pt-2">
+            <AlertDialogDescription className="text-[13px] font-semibold text-muted-foreground/85 leading-relaxed pt-2">
               {pendingAction?.action === 'confirm'
                 ? `Are you sure you want to accept this rental booking request for "${pendingAction.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
                 : `Are you sure you want to reject this rental booking request for "${pendingAction?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-4 mt-10 font-sans">
-            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-slate-100 font-black text-[12px] text-slate-500 hover:bg-slate-50 active:scale-[0.98] transition-all cursor-pointer">
+            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-border/30 font-black text-[12px] text-muted-foreground/85 hover:bg-muted-light active:scale-[0.98] transition-all cursor-pointer">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -370,10 +370,10 @@ export const OrdersManagement = () => {
                 setPendingAction(null)
               }}
               className={cn(
-                'h-14 flex-1 rounded-2xl font-black text-[12px] text-white active:scale-[0.98] transition-all cursor-pointer',
+                'h-14 flex-1 rounded-2xl font-black text-[12px] text-primary-foreground active:scale-[0.98] transition-all cursor-pointer',
                 pendingAction?.action === 'confirm'
-                  ? 'bg-[#059669] hover:bg-[#059669]/90 shadow-lg shadow-emerald-100'
-                  : 'bg-[#ef4444] hover:bg-[#ef4444]/90 shadow-lg shadow-red-100',
+                  ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10'
+                  : 'bg-destructive hover:bg-destructive/90 shadow-lg shadow-destructive/5',
               )}
             >
               {pendingAction?.action === 'confirm'

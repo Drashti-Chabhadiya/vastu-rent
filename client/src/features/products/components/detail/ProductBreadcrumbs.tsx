@@ -7,7 +7,7 @@ interface ProductBreadcrumbsProps {
 
 export const ProductBreadcrumbs = ({ title }: ProductBreadcrumbsProps) => {
   return (
-    <nav className="flex items-center gap-2 text-xs font-bold text-gray-400 mb-6 uppercase tracking-wider">
+    <nav className="flex items-center gap-2 text-xs font-bold text-muted-foreground/70 mb-6 uppercase tracking-wider">
       <Link to="/" className="hover:text-primary transition-colors">
         Home
       </Link>
@@ -16,7 +16,7 @@ export const ProductBreadcrumbs = ({ title }: ProductBreadcrumbsProps) => {
         Marketplace
       </Link>
       <ChevronRight size={12} className="opacity-50" />
-      <span className="text-gray-900 truncate">{title}</span>
+      <span className="text-foreground truncate">{title}</span>
     </nav>
   )
 }

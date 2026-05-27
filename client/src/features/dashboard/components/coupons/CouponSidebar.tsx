@@ -66,20 +66,20 @@ export function CouponSidebar({
   return (
     <div className="space-y-6">
       {/* Create CTA */}
-      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+      <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 bg-emerald-500/5 transition-transform group-hover:scale-150" />
         <Zap className="text-emerald-600 mb-4" size={32} />
-        <h3 className="text-[15px] font-black text-[#1e293b] mb-2 uppercase tracking-widest">
+        <h3 className="text-[15px] font-black text-foreground mb-2 uppercase tracking-widest">
           Voucher Campaigns
         </h3>
-        <p className="text-[11px] font-bold text-slate-400 mb-6 leading-relaxed">
+        <p className="text-[11px] font-bold text-muted-dark mb-6 leading-relaxed">
           Launch targeted discount campaigns with flexible limits — per user,
           global FCFS, or combined.
         </p>
         {canCreate && (
           <Button
             onClick={onCreateClick}
-            className="w-full h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-dash-brand/20 active:scale-95 transition-all"
+            className="w-full h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-dash-brand/20 active:scale-95 transition-all"
           >
             <Ticket size={16} className="rotate-[-10deg]" /> Add New Coupon
           </Button>
@@ -87,11 +87,11 @@ export function CouponSidebar({
       </div>
 
       {/* Scenario Reference */}
-      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-        <h3 className="text-[15px] font-black text-[#1e293b] mb-1 uppercase tracking-widest">
+      <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
+        <h3 className="text-[15px] font-black text-foreground mb-1 uppercase tracking-widest">
           Limit Scenarios
         </h3>
-        <p className="text-[10px] font-bold text-slate-400 mb-5">
+        <p className="text-[10px] font-bold text-muted-dark mb-5">
           Mix Global Limit + Per-User Limit for any combination.
         </p>
         <div className="space-y-3">
@@ -105,7 +105,7 @@ export function CouponSidebar({
                   scenarioColorMap[s.color],
                 )}
               >
-                <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-white/60">
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-card/60">
                   <Icon size={12} />
                 </div>
                 <div>
@@ -124,8 +124,8 @@ export function CouponSidebar({
       </div>
 
       {/* Campaign Rules */}
-      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-        <h3 className="text-[15px] font-black text-[#1e293b] mb-5 uppercase tracking-widest">
+      <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
+        <h3 className="text-[15px] font-black text-foreground mb-5 uppercase tracking-widest">
           Campaign Rules
         </h3>
         <div className="space-y-4">
@@ -134,7 +134,7 @@ export function CouponSidebar({
               <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0">
                 <CheckCircle2 size={12} />
               </div>
-              <p className="text-[11px] font-bold text-slate-500">{rule}</p>
+              <p className="text-[11px] font-bold text-muted-foreground/85">{rule}</p>
             </div>
           ))}
         </div>

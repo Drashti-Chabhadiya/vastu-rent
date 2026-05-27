@@ -11,7 +11,7 @@ export function PopularItems() {
     <section className="bg-background py-16 overflow-hidden">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Popular Items Near You
           </h2>
           <Link
@@ -37,7 +37,7 @@ export function PopularItems() {
                 ))
             ) : (
               <div className="col-span-full py-12 text-center">
-                <p className="text-gray-500 font-medium">
+                <p className="text-muted-foreground/85 font-medium">
                   No popular items found in your area.
                 </p>
               </div>

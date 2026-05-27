@@ -23,12 +23,12 @@ export const DeleteConfirmDialog = ({
   const defaultDescription = (
     <>
       Are you sure you want to delete{' '}
-      <span className="text-slate-800 font-black">
+      <span className="text-foreground/90 font-black">
         "{itemName || 'this item'}"
       </span>
       ?
       <br />
-      <span className="text-slate-400 text-xs font-bold mt-4 block bg-slate-50 py-2.5 px-4 rounded-xl border border-slate-100">
+      <span className="text-muted-dark text-xs font-bold mt-4 block bg-muted-light py-2.5 px-4 rounded-xl border border-border/30">
         This action is permanent and cannot be reversed.
       </span>
     </>

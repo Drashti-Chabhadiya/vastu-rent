@@ -73,33 +73,33 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-[#f8fafc] -m-8 p-10 min-h-screen">
       {/* Breadcrumbs & Header */}
       <div className="flex flex-col gap-1 mb-4">
-        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
+        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
           <span
             className="cursor-pointer hover:text-dash-brand"
             onClick={onBack}
           >
             Dashboard
           </span>
-          <ChevronRight size={10} className="text-slate-300" />
+          <ChevronRight size={10} className="text-muted-dark" />
           <span
             className="cursor-pointer hover:text-dash-brand"
             onClick={onBack}
           >
             Orders
           </span>
-          <ChevronRight size={10} className="text-slate-300" />
+          <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold">Order Details</span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black text-[#1e293b]">Order Details</h1>
-          <div className="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-100 shadow-sm">
-            <div className="flex items-center gap-2 px-4 py-1.5 border-r border-slate-50">
+          <h1 className="text-xl font-black text-foreground">Order Details</h1>
+          <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border/30 shadow-sm">
+            <div className="flex items-center gap-2 px-4 py-1.5 border-r border-border/30">
               <Calendar size={14} className="text-dash-brand" />
-              <span className="text-[11px] font-bold text-slate-600">
+              <span className="text-[11px] font-bold text-muted-foreground">
                 {format(new Date(order.startDate), 'dd MMM')} -{' '}
                 {format(new Date(order.endDate), 'dd MMM yyyy')}
               </span>
-              <ChevronRight size={12} className="rotate-90 text-slate-300" />
+              <ChevronRight size={12} className="rotate-90 text-muted-dark" />
             </div>
             <div className="p-1.5 px-2">
               <div className="w-6 h-6 rounded-lg bg-dash-brand/5 flex items-center justify-center text-dash-brand">
@@ -111,13 +111,13 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
       </div>
 
       {/* Top Stats Bar */}
-      <div className="bg-white px-10 py-8 rounded-[2rem] border border-slate-100 shadow-sm flex flex-wrap items-center justify-between gap-8">
+      <div className="bg-card px-10 py-8 rounded-[2rem] border border-border/30 shadow-sm flex flex-wrap items-center justify-between gap-8">
         <div className="space-y-1.5">
-          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
+          <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
             Order ID
           </span>
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-black text-[#1e293b]">
+            <h2 className="text-lg font-black text-foreground">
               #ORD-{new Date(order.createdAt).getFullYear()}-
               {order.id.slice(-6).toUpperCase()}
             </h2>
@@ -126,22 +126,22 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
         </div>
 
         <div className="space-y-1.5">
-          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
+          <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
             Order Placed On
           </span>
           <div className="flex items-center gap-2.5">
-            <Calendar size={16} className="text-slate-400" />
-            <span className="text-[13px] font-extrabold text-[#1e293b]">
+            <Calendar size={16} className="text-muted-dark" />
+            <span className="text-[13px] font-extrabold text-foreground">
               {format(new Date(order.createdAt), 'dd MMM yyyy, hh:mm a')}
             </span>
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
+          <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
             Total Income
           </span>
-          <div className="flex items-center gap-1 text-2xl font-black text-[#059669]">
+          <div className="flex items-center gap-1 text-2xl font-black text-primary">
             <IndianRupee size={20} strokeWidth={3} />
             {order.totalPrice.toLocaleString()}
           </div>
@@ -150,9 +150,9 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
         <Button
           onClick={() => setIsInvoiceOpen(true)}
           variant="outline"
-          className="h-12 px-6 rounded-xl border-slate-100 bg-white font-black text-[12px] text-slate-700 flex items-center gap-2 hover:bg-slate-50 shadow-sm"
+          className="h-12 px-6 rounded-xl border-border/30 bg-card font-black text-[12px] text-foreground/80 flex items-center gap-2 hover:bg-muted-light shadow-sm"
         >
-          View Invoice <FileText size={16} className="text-slate-400" />
+          View Invoice <FileText size={16} className="text-muted-dark" />
         </Button>
       </div>
 
@@ -178,8 +178,8 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
           <OrderTimelineCard order={order} />
 
           {/* Order Actions */}
-          <div className="bg-white p-10 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
-            <h3 className="text-[14px] font-black text-[#1e293b] mb-4 uppercase tracking-widest text-center lg:text-left">
+          <div className="bg-card p-10 rounded-[2rem] border border-border/30 shadow-sm space-y-6">
+            <h3 className="text-[14px] font-black text-foreground mb-4 uppercase tracking-widest text-center lg:text-left">
               Order Actions
             </h3>
             <div className="flex flex-col gap-4">
@@ -188,11 +188,11 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                   <Button
                     onClick={() => setPendingAction('confirm')}
                     disabled={updateStatus.isPending}
-                    className="h-14 rounded-2xl bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                    className="h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                   >
                     {updateStatus.isPending ? (
                       <>
-                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span className="w-4 h-4 border-2 border-card border-t-transparent rounded-full animate-spin" />
                         <span>Accepting...</span>
                       </>
                     ) : (
@@ -206,7 +206,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                     onClick={() => setPendingAction('reject')}
                     disabled={updateStatus.isPending}
                     variant="ghost"
-                    className="h-14 rounded-2xl bg-white hover:bg-red-50 text-[#ef4444] border border-[#ef4444]/30 font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                    className="h-14 rounded-2xl bg-card hover:bg-danger text-destructive border border-[#ef4444]/30 font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                   >
                     <XCircle size={16} />
                     Reject Request
@@ -214,25 +214,25 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                 </>
               ) : (
                 <div className="space-y-4">
-                  <div className="text-center py-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <span className="text-xs font-black text-slate-500 uppercase tracking-widest block mb-1">
+                  <div className="text-center py-4 bg-muted-light rounded-2xl border border-border/30">
+                    <span className="text-xs font-black text-muted-foreground/85 uppercase tracking-widest block mb-1">
                       Request Handled
                     </span>
-                    <div className="flex items-center justify-center gap-2 text-sm font-bold text-slate-700">
+                    <div className="flex items-center justify-center gap-2 text-sm font-bold text-foreground/80">
                       {(order.status === 'confirmed' ||
                         order.status === 'active') && (
-                        <span className="text-[#059669] flex items-center gap-1">
+                        <span className="text-primary flex items-center gap-1">
                           <CheckCircle2 size={16} /> Confirmed
                         </span>
                       )}
                       {order.status === 'completed' && (
-                        <span className="text-[#059669] flex items-center gap-1">
+                        <span className="text-primary flex items-center gap-1">
                           <CheckCircle2 size={16} /> Completed
                         </span>
                       )}
                       {(order.status === 'cancelled' ||
                         order.status === 'rejected') && (
-                        <span className="text-red-500 flex items-center gap-1">
+                        <span className="text-destructive flex items-center gap-1">
                           <XCircle size={16} /> Rejected / Cancelled
                         </span>
                       )}
@@ -244,7 +244,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                     <Button
                       onClick={() => setPendingAction('complete')}
                       disabled={updateStatus.isPending}
-                      className="w-full h-14 rounded-2xl bg-[#059669] hover:bg-[#059669]/90 text-white font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                      className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                     >
                       <CheckCircle2 size={16} />
                       Complete Rental (Returned)
@@ -255,9 +255,9 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
 
               <Button
                 variant="outline"
-                className="h-14 rounded-2xl border border-slate-100 font-black text-[12px] text-[#1e293b] flex items-center justify-center gap-3 hover:bg-slate-50 transition-all shadow-sm"
+                className="h-14 rounded-2xl border border-border/30 font-black text-[12px] text-foreground flex items-center justify-center gap-3 hover:bg-muted-light transition-all shadow-sm"
               >
-                <MessageSquare size={18} className="text-slate-400" /> Contact
+                <MessageSquare size={18} className="text-muted-dark" /> Contact
                 Customer
               </Button>
             </div>
@@ -266,9 +266,9 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
               <Button
                 onClick={onBack}
                 variant="ghost"
-                className="text-slate-400 font-black text-[11px] hover:bg-transparent flex items-center gap-2 tracking-[0.15em]"
+                className="text-muted-dark font-black text-[11px] hover:bg-transparent flex items-center gap-2 tracking-[0.15em]"
               >
-                <ArrowLeft size={14} className="text-slate-300" /> BACK TO
+                <ArrowLeft size={14} className="text-muted-dark" /> BACK TO
                 ORDERS
               </Button>
             </div>
@@ -281,33 +281,33 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
         open={pendingAction !== null}
         onOpenChange={(open) => !open && setPendingAction(null)}
       >
-        <AlertDialogContent className="rounded-[2.5rem] border border-slate-100 p-10 max-w-md bg-white shadow-2xl font-sans">
+        <AlertDialogContent className="rounded-[2.5rem] border border-border/30 p-10 max-w-md bg-card shadow-2xl font-sans">
           <AlertDialogHeader className="space-y-4">
-            <AlertDialogTitle className="text-lg font-black text-[#1e293b] flex items-center gap-3">
+            <AlertDialogTitle className="text-lg font-black text-foreground flex items-center gap-3">
               {pendingAction === 'complete' ? (
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-[#e2f5ec] flex items-center justify-center text-[#059669]">
+                  <div className="w-10 h-10 rounded-2xl bg-primary-soft flex items-center justify-center text-primary">
                     <CheckCircle2 size={20} />
                   </div>
                   <span>Complete Rental?</span>
                 </div>
               ) : pendingAction === 'confirm' ? (
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-[#e2f5ec] flex items-center justify-center text-[#059669]">
+                  <div className="w-10 h-10 rounded-2xl bg-primary-soft flex items-center justify-center text-primary">
                     <CheckCircle2 size={20} />
                   </div>
                   <span>Confirm Booking?</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center text-[#ef4444]">
+                  <div className="w-10 h-10 rounded-2xl bg-danger flex items-center justify-center text-destructive">
                     <XCircle size={20} />
                   </div>
                   <span>Reject Booking?</span>
                 </div>
               )}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-[13px] font-semibold text-slate-500 leading-relaxed pt-2">
+            <AlertDialogDescription className="text-[13px] font-semibold text-muted-foreground/85 leading-relaxed pt-2">
               {pendingAction === 'complete'
                 ? `Are you sure you want to mark this rental booking for "${order.product?.title || 'this product'}" as Completed? The product will be marked as returned, and the renter will be allowed to submit a review.`
                 : pendingAction === 'confirm'
@@ -316,7 +316,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-4 mt-10 font-sans">
-            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-slate-100 font-black text-[12px] text-slate-500 hover:bg-slate-50 active:scale-95 transition-all">
+            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-border/30 font-black text-[12px] text-muted-foreground/85 hover:bg-muted-light active:scale-95 transition-all">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -331,10 +331,10 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                 setPendingAction(null)
               }}
               className={cn(
-                'h-14 flex-1 rounded-2xl font-black text-[12px] text-white active:scale-95 transition-all',
+                'h-14 flex-1 rounded-2xl font-black text-[12px] text-primary-foreground active:scale-95 transition-all',
                 pendingAction === 'confirm' || pendingAction === 'complete'
-                  ? 'bg-[#059669] hover:bg-[#059669]/90 shadow-lg shadow-emerald-100'
-                  : 'bg-[#ef4444] hover:bg-[#ef4444]/90 shadow-lg shadow-red-100',
+                  ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10'
+                  : 'bg-destructive hover:bg-destructive/90 shadow-lg shadow-destructive/5',
               )}
             >
               {pendingAction === 'complete'

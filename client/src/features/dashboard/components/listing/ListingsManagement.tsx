@@ -171,7 +171,7 @@ export const ListingsManagement = ({
         </div>
         <Button
           onClick={() => setIsAddOpen(true)}
-          className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-2xl px-6 h-14 font-extrabold shadow-lg shadow-dash-brand/20 transition-all active:scale-95 flex items-center gap-2"
+          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-2xl px-6 h-14 font-extrabold shadow-lg shadow-dash-brand/20 transition-all active:scale-95 flex items-center gap-2"
         >
           <Plus size={20} strokeWidth={3} />
           Create Listing
@@ -179,7 +179,7 @@ export const ListingsManagement = ({
       </div>
 
       {/* Filters Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2 bg-white rounded-[2rem] shadow-sm border border-gray-100">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2 bg-card rounded-[2rem] shadow-sm border border-border/30">
         <div className="md:col-span-2 relative">
           <Search
             className="absolute left-5 top-1/2 -translate-y-1/2 text-dash-text-soft opacity-40"
@@ -197,7 +197,7 @@ export const ListingsManagement = ({
           <SelectTrigger className="h-14 border-none bg-dash-bg-soft hover:bg-dash-bg-soft/80 rounded-2xl font-extrabold text-dash-text transition-all focus:ring-2 focus:ring-dash-brand/20 px-6">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
-          <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
+          <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
             <SelectItem
               value="all"
               className="rounded-xl font-bold py-3 px-4 focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer text-dash-text-soft"
@@ -220,7 +220,7 @@ export const ListingsManagement = ({
           <SelectTrigger className="h-14 border-none bg-dash-bg-soft hover:bg-dash-bg-soft/80 rounded-2xl font-extrabold text-dash-text transition-all focus:ring-2 focus:ring-dash-brand/20 px-6">
             <SelectValue placeholder="Availability" />
           </SelectTrigger>
-          <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
+          <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
             <SelectItem
               value="all"
               className="rounded-xl font-bold py-3 px-4 focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer text-dash-text-soft"
@@ -329,7 +329,7 @@ export const ListingsManagement = ({
         open={!!productToDelete}
         onOpenChange={(open) => !open && setProductToDelete(null)}
       >
-        <AlertDialogContent className="bg-white rounded-[2rem] border border-gray-100 shadow-2xl p-8 max-w-md animate-in fade-in zoom-in-95 duration-200">
+        <AlertDialogContent className="bg-card rounded-[2rem] border border-border/30 shadow-2xl p-8 max-w-md animate-in fade-in zoom-in-95 duration-200">
           <AlertDialogHeader className="space-y-3 text-left">
             <AlertDialogTitle className="text-xl font-black text-dash-text flex items-center gap-2.5">
               {productToDelete &&
@@ -347,7 +347,7 @@ export const ListingsManagement = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="mt-6 flex gap-3">
-            <AlertDialogCancel className="h-12 rounded-xl font-black text-dash-text-soft hover:bg-gray-100 transition-all border-none bg-gray-50/50">
+            <AlertDialogCancel className="h-12 rounded-xl font-black text-dash-text-soft hover:bg-muted/50 transition-all border-none bg-muted-light/50">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -359,12 +359,12 @@ export const ListingsManagement = ({
                 deleteMutation.isPending ||
                 createDeleteRequestMutation.isPending
               }
-              className="h-12 bg-red-500 hover:bg-red-600 text-white rounded-xl font-black transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2"
+              className="h-12 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-xl font-black transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2"
             >
               {deleteMutation.isPending ||
               createDeleteRequestMutation.isPending ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-card border-t-transparent rounded-full animate-spin" />
                   <span>Processing...</span>
                 </>
               ) : (

@@ -5,7 +5,7 @@ export function CategoryDetailSkeleton() {
   return (
     <div className="min-h-screen bg-background">
       {/* Category Header Skeleton */}
-      <div className="bg-white border-b border-gray-100 pb-12 pt-8 animate-pulse">
+      <div className="bg-card border-b border-border/30 pb-12 pt-8 animate-pulse">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           {/* Back Button Skeleton */}
           <div className="flex items-center gap-2 mb-8">

@@ -96,13 +96,13 @@ export const MyBookings = () => {
         <div className={cn('flex', 'justify-between', 'items-center')}>
           <div className="space-y-2">
             <div
-              className={cn('h-8', 'bg-slate-200', 'rounded-full', 'w-48')}
+              className={cn('h-8', 'bg-muted', 'rounded-full', 'w-48')}
             />
             <div
-              className={cn('h-4', 'bg-slate-100', 'rounded-full', 'w-80')}
+              className={cn('h-4', 'bg-muted/50', 'rounded-full', 'w-80')}
             />
           </div>
-          <div className={cn('h-10', 'bg-slate-200', 'rounded-full', 'w-24')} />
+          <div className={cn('h-10', 'bg-muted', 'rounded-full', 'w-24')} />
         </div>
         {/* Tabs Skeleton */}
         <div
@@ -110,14 +110,14 @@ export const MyBookings = () => {
             'flex',
             'gap-6',
             'border-b',
-            'border-slate-100',
+            'border-border/30',
             'pb-2',
           )}
         >
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className={cn('h-5', 'bg-slate-200', 'rounded-full', 'w-20')}
+              className={cn('h-5', 'bg-muted', 'rounded-full', 'w-20')}
             />
           ))}
         </div>
@@ -127,11 +127,11 @@ export const MyBookings = () => {
             <div
               key={i}
               className={cn(
-                'bg-white',
+                'bg-card',
                 'p-6',
                 'rounded-[2.5rem]',
                 'border',
-                'border-slate-100',
+                'border-border/30',
                 'shadow-sm',
                 'flex',
                 'flex-col',
@@ -144,21 +144,21 @@ export const MyBookings = () => {
                   'w-32',
                   'h-32',
                   'rounded-2xl',
-                  'bg-slate-100',
+                  'bg-muted/50',
                   'shrink-0',
                 )}
               />
               <div className={cn('flex-1', 'space-y-3')}>
                 <div
-                  className={cn('h-5', 'bg-slate-200', 'rounded-full', 'w-48')}
+                  className={cn('h-5', 'bg-muted', 'rounded-full', 'w-48')}
                 />
                 <div
-                  className={cn('h-4', 'bg-slate-150', 'rounded-full', 'w-32')}
+                  className={cn('h-4', 'bg-muted-light/80', 'rounded-full', 'w-32')}
                 />
                 <div
                   className={cn(
                     'h-4',
-                    'bg-slate-100',
+                    'bg-muted/50',
                     'rounded-full',
                     'w-56',
                     'mt-4',
@@ -176,15 +176,15 @@ export const MyBookings = () => {
                 )}
               >
                 <div
-                  className={cn('h-4', 'bg-slate-200', 'rounded-full', 'w-24')}
+                  className={cn('h-4', 'bg-muted', 'rounded-full', 'w-24')}
                 />
                 <div
-                  className={cn('h-5', 'bg-slate-200', 'rounded-full', 'w-32')}
+                  className={cn('h-5', 'bg-muted', 'rounded-full', 'w-32')}
                 />
                 <div
                   className={cn(
                     'h-9',
-                    'bg-slate-150',
+                    'bg-muted-light/80',
                     'rounded-full',
                     'w-28',
                     'mt-2',
@@ -246,9 +246,9 @@ export const MyBookings = () => {
         return (
           <Badge
             className={cn(
-              'bg-[#fef3c7]',
-              'hover:bg-[#fef3c7]',
-              'text-[#d97706]',
+              'bg-warning/25',
+              'hover:bg-warning/25',
+              'text-warning-foreground',
               'border-none',
               'px-3.5',
               'py-1',
@@ -257,7 +257,7 @@ export const MyBookings = () => {
               'text-xs',
               'shrink-0',
               'shadow-sm',
-              'shadow-amber-500/5',
+              'shadow-warning-foreground/5',
             )}
           >
             Upcoming
@@ -267,9 +267,9 @@ export const MyBookings = () => {
         return (
           <Badge
             className={cn(
-              'bg-[#e0e7ff]',
-              'hover:bg-[#e0e7ff]',
-              'text-[#4f46e5]',
+              'bg-info/25',
+              'hover:bg-info/25',
+              'text-info-foreground',
               'border-none',
               'px-3.5',
               'py-1',
@@ -287,9 +287,9 @@ export const MyBookings = () => {
         return (
           <Badge
             className={cn(
-              'bg-[#dcfce7]',
-              'hover:bg-[#dcfce7]',
-              'text-[#15803d]',
+              'bg-primary-soft',
+              'hover:bg-primary-soft',
+              'text-primary',
               'border-none',
               'px-3.5',
               'py-1',
@@ -307,9 +307,9 @@ export const MyBookings = () => {
         return (
           <Badge
             className={cn(
-              'bg-[#fee2e2]',
-              'hover:bg-[#fee2e2]',
-              'text-[#b91c1c]',
+              'bg-danger',
+              'hover:bg-danger',
+              'text-danger-foreground',
               'border-none',
               'px-3.5',
               'py-1',
@@ -344,13 +344,13 @@ export const MyBookings = () => {
             className={cn(
               'text-3xl',
               'font-black',
-              'text-gray-900',
+              'text-foreground',
               'tracking-tight',
             )}
           >
             My Bookings
           </h1>
-          <p className={cn('text-sm', 'text-gray-400', 'font-bold')}>
+          <p className={cn('text-sm', 'text-muted-foreground/70', 'font-bold')}>
             Manage your upcoming and past bookings.
           </p>
         </div>
@@ -360,21 +360,21 @@ export const MyBookings = () => {
               variant="outline"
               className={cn(
                 'rounded-full',
-                'border-slate-200',
-                'text-slate-700',
+                'border-border',
+                'text-foreground/80',
                 'font-bold',
                 'h-10',
                 'px-5',
                 'flex',
                 'items-center',
                 'gap-2',
-                'hover:bg-slate-50/50',
+                'hover:bg-muted-light/50',
                 'shadow-sm',
                 'shrink-0',
                 'cursor-pointer',
               )}
             >
-              <SlidersHorizontal size={14} className="text-slate-400" />
+              <SlidersHorizontal size={14} className="text-muted-dark" />
               {paymentFilter === 'all'
                 ? 'Filter'
                 : paymentFilter === 'paid'
@@ -384,8 +384,8 @@ export const MyBookings = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className={cn(
-              'bg-white',
-              'border-slate-100/80',
+              'bg-card',
+              'border-border/30/80',
               'rounded-xl',
               'shadow-lg',
               'p-1',
@@ -395,8 +395,8 @@ export const MyBookings = () => {
             <DropdownMenuItem
               onClick={() => setPaymentFilter('all')}
               className={cn(
-                'text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]',
-                paymentFilter === 'all' && 'text-[#2d5222] bg-[#2d5222]/5',
+                'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary',
+                paymentFilter === 'all' && 'text-primary bg-primary/5',
               )}
             >
               All Payments
@@ -404,8 +404,8 @@ export const MyBookings = () => {
             <DropdownMenuItem
               onClick={() => setPaymentFilter('paid')}
               className={cn(
-                'text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]',
-                paymentFilter === 'paid' && 'text-[#2d5222] bg-[#2d5222]/5',
+                'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary',
+                paymentFilter === 'paid' && 'text-primary bg-primary/5',
               )}
             >
               Paid Bookings
@@ -413,8 +413,8 @@ export const MyBookings = () => {
             <DropdownMenuItem
               onClick={() => setPaymentFilter('pending')}
               className={cn(
-                'text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]',
-                paymentFilter === 'pending' && 'text-[#2d5222] bg-[#2d5222]/5',
+                'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary',
+                paymentFilter === 'pending' && 'text-primary bg-primary/5',
               )}
             >
               Pending Payment
@@ -429,7 +429,7 @@ export const MyBookings = () => {
           'flex',
           'gap-6',
           'border-b',
-          'border-slate-100',
+          'border-border/30',
           'pb-px',
           'overflow-x-auto',
           'custom-scrollbar',
@@ -446,8 +446,8 @@ export const MyBookings = () => {
                 className={cn(
                   'pb-3 font-extrabold text-[13px] capitalize transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
                   isActive
-                    ? 'text-[#2d5222]'
-                    : 'text-slate-400 hover:text-slate-600',
+                    ? 'text-primary'
+                    : 'text-muted-dark hover:text-muted-foreground',
                 )}
               >
                 <span>
@@ -461,7 +461,7 @@ export const MyBookings = () => {
                       'left-0',
                       'right-0',
                       'h-0.5',
-                      'bg-[#2d5222]',
+                      'bg-primary',
                       'rounded-full',
                     )}
                   />
@@ -481,18 +481,18 @@ export const MyBookings = () => {
             'items-center',
             'justify-center',
             'py-20',
-            'bg-white',
+            'bg-card',
             'rounded-[2.5rem]',
             'border',
             'border-dashed',
-            'border-slate-200',
+            'border-border',
           )}
         >
           <div
             className={cn(
               'w-16',
               'h-16',
-              'bg-slate-50',
+              'bg-muted-light',
               'rounded-full',
               'flex',
               'items-center',
@@ -500,14 +500,14 @@ export const MyBookings = () => {
               'mb-4',
             )}
           >
-            <Calendar className="text-slate-300" size={32} />
+            <Calendar className="text-muted-dark" size={32} />
           </div>
-          <h3 className={cn('text-lg', 'font-extrabold', 'text-gray-800')}>
+          <h3 className={cn('text-lg', 'font-extrabold', 'text-foreground/90')}>
             No {activeTab} bookings
           </h3>
           <p
             className={cn(
-              'text-slate-400',
+              'text-muted-dark',
               'text-xs',
               'mt-1.5',
               'max-w-xs',
@@ -534,11 +534,11 @@ export const MyBookings = () => {
                 key={rental.id}
                 className={cn(
                   'group',
-                  'bg-white',
+                  'bg-card',
                   'p-6',
                   'rounded-[2.5rem]',
                   'border',
-                  'border-slate-100',
+                  'border-border/30',
                   'shadow-sm',
                   'hover:shadow-md',
                   'transition-all',
@@ -560,7 +560,7 @@ export const MyBookings = () => {
                     'rounded-2xl',
                     'overflow-hidden',
                     'shrink-0',
-                    'bg-slate-50',
+                    'bg-muted-light',
                     'shadow-inner',
                   )}
                 >
@@ -588,7 +588,7 @@ export const MyBookings = () => {
                       className={cn(
                         'text-[17px]',
                         'font-black',
-                        'text-gray-900',
+                        'text-foreground',
                         'leading-tight',
                       )}
                     >
@@ -601,11 +601,11 @@ export const MyBookings = () => {
                         'gap-1',
                         'text-[11px]',
                         'font-bold',
-                        'text-slate-400',
+                        'text-muted-dark',
                         'mt-1',
                       )}
                     >
-                      <MapPin size={12} className="text-[#2d5222]" />
+                      <MapPin size={12} className="text-primary" />
                       <span>
                         {rental.product?.location ||
                           rental.product?.city ||
@@ -622,14 +622,14 @@ export const MyBookings = () => {
                         'gap-2',
                         'text-xs',
                         'font-bold',
-                        'text-slate-500',
+                        'text-muted-foreground/85',
                       )}
                     >
-                      <Calendar size={13} className="text-slate-400" />
+                      <Calendar size={13} className="text-muted-dark" />
                       <span>
                         {format(new Date(rental.startDate), 'dd MMMM')} –{' '}
                         {format(new Date(rental.endDate), 'dd MMMM, yyyy')}{' '}
-                        <span className="text-slate-400">
+                        <span className="text-muted-dark">
                           ({nights} {nights === 1 ? 'Night' : 'Nights'})
                         </span>
                       </span>
@@ -641,10 +641,10 @@ export const MyBookings = () => {
                         'gap-2',
                         'text-xs',
                         'font-bold',
-                        'text-slate-500',
+                        'text-muted-foreground/85',
                       )}
                     >
-                      <Users size={13} className="text-slate-400" />
+                      <Users size={13} className="text-muted-dark" />
                       <span>
                         {rental.product?.category?.name || 'Vastu Rental'}
                       </span>
@@ -666,7 +666,7 @@ export const MyBookings = () => {
                     'md:text-right',
                     'border-t',
                     'md:border-t-0',
-                    'border-slate-50',
+                    'border-border/30',
                     'pt-4',
                     'md:pt-0',
                     'w-full',
@@ -677,14 +677,14 @@ export const MyBookings = () => {
                     <p
                       className={cn(
                         'text-[10px]',
-                        'text-slate-400',
+                        'text-muted-dark',
                         'font-extrabold',
                         'uppercase',
                         'tracking-wider',
                       )}
                     >
                       Booking ID:{' '}
-                      <span className={cn('font-mono', 'text-slate-500')}>
+                      <span className={cn('font-mono', 'text-muted-foreground/85')}>
                         #BK{rental.id.slice(-6).toUpperCase()}
                       </span>
                     </p>
@@ -696,18 +696,18 @@ export const MyBookings = () => {
                         'gap-1.5',
                         'text-xs',
                         'font-bold',
-                        'text-slate-500',
+                        'text-muted-foreground/85',
                         'mt-1',
                       )}
                     >
-                      <span className={cn('text-slate-400', 'font-extrabold')}>
+                      <span className={cn('text-muted-dark', 'font-extrabold')}>
                         Total Amount
                       </span>
                       <span
                         className={cn(
                           'text-base',
                           'font-black',
-                          'text-gray-900',
+                          'text-foreground',
                           'flex',
                           'items-center',
                         )}
@@ -748,7 +748,7 @@ export const MyBookings = () => {
                               className={cn(
                                 'bg-[#f0f9eb]',
                                 'hover:bg-[#f0f9eb]',
-                                'text-[#2d5222]',
+                                'text-primary',
                                 'border-none',
                                 'px-3.5',
                                 'py-1.5',
@@ -764,7 +764,7 @@ export const MyBookings = () => {
                             >
                               <CheckCircle2
                                 size={12}
-                                className="text-[#2d5222]"
+                                className="text-primary"
                               />
                               Review Submitted
                             </Badge>
@@ -798,7 +798,7 @@ export const MyBookings = () => {
                                       'rounded-full',
                                       'bg-[#f4f7f4]',
                                       'hover:bg-[#eaf0ea]',
-                                      'text-[#2d5222]',
+                                      'text-primary',
                                       'font-black',
                                       'text-[11px]',
                                       'px-3.5',
@@ -807,7 +807,7 @@ export const MyBookings = () => {
                                       'items-center',
                                       'justify-center',
                                       'border',
-                                      'border-[#2d5222]/15',
+                                      'border-primary/15',
                                       'active:scale-95',
                                       'transition-all',
                                       'cursor-pointer',
@@ -831,9 +831,9 @@ export const MyBookings = () => {
                             }}
                             className={cn(
                               'rounded-full',
-                              'bg-[#2d5222]',
-                              'hover:bg-[#1e3816]',
-                              'text-white',
+                              'bg-primary',
+                              'hover:bg-primary-hover',
+                              'text-primary-foreground',
                               'font-extrabold',
                               'text-xs',
                               'px-4',
@@ -860,8 +860,8 @@ export const MyBookings = () => {
                       }}
                       className={cn(
                         'rounded-full',
-                        'border-slate-200',
-                        'text-[#2d5222]',
+                        'border-border',
+                        'text-primary',
                         'font-black',
                         'text-xs',
                         'px-4',
@@ -869,7 +869,7 @@ export const MyBookings = () => {
                         'flex',
                         'items-center',
                         'gap-1',
-                        'hover:bg-slate-50/50',
+                        'hover:bg-muted-light/50',
                         'shadow-sm',
                         'active:scale-95',
                         'cursor-pointer',
@@ -878,7 +878,7 @@ export const MyBookings = () => {
                       View Details
                       <ChevronRight
                         size={14}
-                        className={cn('text-[#2d5222]', 'stroke-[3]')}
+                        className={cn('text-primary', 'stroke-[3]')}
                       />
                     </Button>
                   </div>
@@ -892,10 +892,10 @@ export const MyBookings = () => {
       {/* Need Help Booking Banner */}
       <div
         className={cn(
-          'bg-[#fdfcf9]',
+          'bg-background',
           'rounded-[2.5rem]',
           'border',
-          'border-slate-100',
+          'border-border/30',
           'p-6',
           'flex',
           'flex-col',
@@ -913,25 +913,25 @@ export const MyBookings = () => {
               'w-12',
               'h-12',
               'rounded-full',
-              'bg-[#f4f8f1]',
+              'bg-primary-soft',
               'flex',
               'items-center',
               'justify-center',
-              'text-[#2d5222]',
+              'text-primary',
               'shrink-0',
               'border',
-              'border-[#e2edd8]',
+              'border-primary-border',
             )}
           >
             <HelpCircle size={22} className="stroke-[2.5]" />
           </div>
           <div>
-            <h4 className={cn('font-extrabold', 'text-gray-900', 'text-sm')}>
+            <h4 className={cn('font-extrabold', 'text-foreground', 'text-sm')}>
               Need help with your booking?
             </h4>
             <p
               className={cn(
-                'text-slate-400',
+                'text-muted-dark',
                 'text-xs',
                 'font-semibold',
                 'mt-0.5',
@@ -945,22 +945,22 @@ export const MyBookings = () => {
           variant="outline"
           className={cn(
             'rounded-full',
-            'border-slate-200',
-            'text-slate-700',
+            'border-border',
+            'text-foreground/80',
             'font-black',
             'px-6',
             'h-10',
             'flex',
             'items-center',
             'gap-1.5',
-            'hover:bg-slate-50',
+            'hover:bg-muted-light',
             'shadow-sm',
             'cursor-pointer',
           )}
         >
           <MessageSquare
             size={15}
-            className={cn('text-slate-400', 'shrink-0')}
+            className={cn('text-muted-dark', 'shrink-0')}
           />
           Contact Support
         </Button>
@@ -973,7 +973,7 @@ export const MyBookings = () => {
             'max-w-xl',
             'p-0',
             'border-none',
-            'bg-slate-50',
+            'bg-muted-light',
             'rounded-[2.5rem]',
             'shadow-2xl',
             'font-sans',
@@ -981,7 +981,7 @@ export const MyBookings = () => {
           )}
         >
           {/* Top Product Banner card */}
-          <div className={cn('relative', 'h-44', 'bg-slate-900')}>
+          <div className={cn('relative', 'h-44', 'bg-foreground')}>
             {selectedDetailsRental?.product?.images?.[0] && (
               <img
                 src={selectedDetailsRental.product.images[0]}
@@ -1017,13 +1017,13 @@ export const MyBookings = () => {
                     'font-black',
                     'uppercase',
                     'tracking-widest',
-                    'text-[#2d5222]',
-                    'bg-[#f4f8f1]',
+                    'text-primary',
+                    'bg-primary-soft',
                     'px-2',
                     'py-1',
                     'rounded-md',
                     'border',
-                    'border-[#e2edd8]',
+                    'border-primary-border',
                   )}
                 >
                   {selectedDetailsRental?.product?.category?.name ||
@@ -1033,7 +1033,7 @@ export const MyBookings = () => {
                   className={cn(
                     'text-xl',
                     'font-extrabold',
-                    'text-white',
+                    'text-primary-foreground',
                     'leading-tight',
                     'font-display',
                     'mt-2.5',
@@ -1059,11 +1059,11 @@ export const MyBookings = () => {
             <div className={cn('grid', 'grid-cols-2', 'gap-4')}>
               <div
                 className={cn(
-                  'bg-white',
+                  'bg-card',
                   'p-4',
                   'rounded-2xl',
                   'border',
-                  'border-slate-100/80',
+                  'border-border/30/80',
                   'space-y-1',
                 )}
               >
@@ -1071,7 +1071,7 @@ export const MyBookings = () => {
                   className={cn(
                     'text-[8px]',
                     'font-black',
-                    'text-slate-400',
+                    'text-muted-dark',
                     'uppercase',
                     'tracking-widest',
                     'block',
@@ -1083,14 +1083,14 @@ export const MyBookings = () => {
                   className={cn(
                     'text-xs',
                     'font-bold',
-                    'text-slate-800',
+                    'text-foreground/90',
                     'flex',
                     'items-center',
                     'gap-1.5',
                     'pt-0.5',
                   )}
                 >
-                  <Users size={12} className="text-slate-400" />
+                  <Users size={12} className="text-muted-dark" />
                   <span>
                     {selectedDetailsRental?.product?.owner?.name ||
                       'Vastu Host'}
@@ -1100,7 +1100,7 @@ export const MyBookings = () => {
                   className={cn(
                     'text-[10px]',
                     'font-medium',
-                    'text-slate-400',
+                    'text-muted-dark',
                     'block',
                     'truncate',
                   )}
@@ -1111,11 +1111,11 @@ export const MyBookings = () => {
 
               <div
                 className={cn(
-                  'bg-white',
+                  'bg-card',
                   'p-4',
                   'rounded-2xl',
                   'border',
-                  'border-slate-100/80',
+                  'border-border/30/80',
                   'space-y-1',
                 )}
               >
@@ -1123,7 +1123,7 @@ export const MyBookings = () => {
                   className={cn(
                     'text-[8px]',
                     'font-black',
-                    'text-slate-400',
+                    'text-muted-dark',
                     'uppercase',
                     'tracking-widest',
                     'block',
@@ -1142,7 +1142,7 @@ export const MyBookings = () => {
                     'text-[10px]',
                     'font-extrabold',
                     'uppercase',
-                    'text-slate-400',
+                    'text-muted-dark',
                     'block',
                     'tracking-tight',
                     'pt-1',
@@ -1165,7 +1165,7 @@ export const MyBookings = () => {
                     'p-4.5',
                     'rounded-2xl',
                     'border',
-                    'border-[#e2edd8]',
+                    'border-primary-border',
                     'space-y-2',
                   )}
                 >
@@ -1173,7 +1173,7 @@ export const MyBookings = () => {
                     className={cn(
                       'text-[8px]',
                       'font-black',
-                      'text-[#2d5222]',
+                      'text-primary',
                       'uppercase',
                       'tracking-widest',
                       'block',
@@ -1186,7 +1186,7 @@ export const MyBookings = () => {
                   >
                     <div>
                       <p
-                        className={cn('text-xs', 'font-bold', 'text-slate-700')}
+                        className={cn('text-xs', 'font-bold', 'text-foreground/80')}
                       >
                         {selectedDetailsRental.status === 'pending' ||
                         selectedDetailsRental.status === 'confirmed'
@@ -1196,7 +1196,7 @@ export const MyBookings = () => {
                       <p
                         className={cn(
                           'text-[10px]',
-                          'text-slate-400',
+                          'text-muted-dark',
                           'font-medium',
                           'mt-0.5',
                         )}
@@ -1206,16 +1206,16 @@ export const MyBookings = () => {
                     </div>
                     <div
                       className={cn(
-                        'bg-[#2d5222]/5',
+                        'bg-primary/5',
                         'border',
-                        'border-[#2d5222]/20',
+                        'border-primary/20',
                         'px-3.5',
                         'py-1.5',
                         'rounded-xl',
                         'font-mono',
                         'font-black',
                         'text-sm',
-                        'text-[#2d5222]',
+                        'text-primary',
                       )}
                     >
                       {selectedDetailsRental.status === 'pending' ||
@@ -1230,11 +1230,11 @@ export const MyBookings = () => {
             {/* Booking dates and rental duration info */}
             <div
               className={cn(
-                'bg-white',
+                'bg-card',
                 'p-4.5',
                 'rounded-2xl',
                 'border',
-                'border-slate-100/80',
+                'border-border/30/80',
                 'space-y-3',
               )}
             >
@@ -1242,7 +1242,7 @@ export const MyBookings = () => {
                 className={cn(
                   'text-[8px]',
                   'font-black',
-                  'text-slate-400',
+                  'text-muted-dark',
                   'uppercase',
                   'tracking-widest',
                   'block',
@@ -1257,12 +1257,12 @@ export const MyBookings = () => {
                   'justify-between',
                   'text-xs',
                   'font-bold',
-                  'text-slate-700',
+                  'text-foreground/80',
                 )}
               >
                 <div className={cn('flex', 'flex-col')}>
                   <span
-                    className={cn('text-[9px]', 'text-slate-400', 'uppercase')}
+                    className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
                   >
                     From
                   </span>
@@ -1276,11 +1276,11 @@ export const MyBookings = () => {
                 </div>
                 <ChevronRight
                   size={14}
-                  className={cn('text-slate-300', 'mt-2')}
+                  className={cn('text-muted-dark', 'mt-2')}
                 />
                 <div className={cn('flex', 'flex-col', 'text-right')}>
                   <span
-                    className={cn('text-[9px]', 'text-slate-400', 'uppercase')}
+                    className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
                   >
                     To
                   </span>
@@ -1296,18 +1296,18 @@ export const MyBookings = () => {
               <div
                 className={cn(
                   'border-t',
-                  'border-slate-50',
+                  'border-border/30',
                   'pt-2.5',
                   'flex',
                   'items-center',
                   'justify-between',
                   'text-[11px]',
                   'font-bold',
-                  'text-slate-500',
+                  'text-muted-foreground/85',
                 )}
               >
                 <span>Total Duration</span>
-                <span className={cn('text-[#2d5222]', 'font-black')}>
+                <span className={cn('text-primary', 'font-black')}>
                   {selectedDetailsRental?.startDate &&
                     selectedDetailsRental?.endDate &&
                     Math.max(
@@ -1326,22 +1326,22 @@ export const MyBookings = () => {
             {/* Financial breakdown */}
             <div
               className={cn(
-                'bg-white',
+                'bg-card',
                 'p-4.5',
                 'rounded-2xl',
                 'border',
-                'border-slate-100/80',
+                'border-border/30/80',
                 'space-y-2',
                 'text-xs',
                 'font-semibold',
-                'text-slate-500',
+                'text-muted-foreground/85',
               )}
             >
               <span
                 className={cn(
                   'text-[8px]',
                   'font-black',
-                  'text-slate-400',
+                  'text-muted-dark',
                   'uppercase',
                   'tracking-widest',
                   'block',
@@ -1352,19 +1352,19 @@ export const MyBookings = () => {
               </span>
               <div className={cn('flex', 'justify-between')}>
                 <span>Daily Rent Rate</span>
-                <span className={cn('text-slate-800', 'font-bold')}>
+                <span className={cn('text-foreground/90', 'font-bold')}>
                   ₹{selectedDetailsRental?.product?.price?.toLocaleString()}
                 </span>
               </div>
               <div className={cn('flex', 'justify-between')}>
                 <span>Rental Fee</span>
-                <span className={cn('text-slate-800', 'font-bold')}>
+                <span className={cn('text-foreground/90', 'font-bold')}>
                   ₹{selectedDetailsRental?.rentalFee?.toLocaleString()}
                 </span>
               </div>
               <div className={cn('flex', 'justify-between')}>
                 <span>Refundable Security Deposit</span>
-                <span className={cn('text-slate-800', 'font-bold')}>
+                <span className={cn('text-foreground/90', 'font-bold')}>
                   ₹
                   {selectedDetailsRental?.depositAmount?.toLocaleString() ||
                     '₹0'}
@@ -1398,9 +1398,9 @@ export const MyBookings = () => {
                   'justify-between',
                   'text-[13px]',
                   'font-black',
-                  'text-[#2d5222]',
+                  'text-primary',
                   'border-t',
-                  'border-slate-50',
+                  'border-border/30',
                   'pt-2.5',
                 )}
               >
@@ -1416,14 +1416,14 @@ export const MyBookings = () => {
                   'justify-between',
                   'items-center',
                   'text-[10px]',
-                  'text-slate-400',
+                  'text-muted-dark',
                   'font-bold',
                   'pt-1.5',
                 )}
               >
                 <span>
                   Payment Mode:{' '}
-                  <span className={cn('text-slate-500', 'uppercase')}>
+                  <span className={cn('text-muted-foreground/85', 'uppercase')}>
                     {selectedDetailsRental?.paymentMethod === 'cash'
                       ? 'Cash/COD'
                       : 'Online Payment'}
@@ -1436,7 +1436,7 @@ export const MyBookings = () => {
                       'uppercase',
                       selectedDetailsRental?.paymentStatus === 'paid'
                         ? 'text-emerald-600'
-                        : 'text-amber-600',
+                        : 'text-warning-foreground',
                     )}
                   >
                     {selectedDetailsRental?.paymentStatus || 'Pending'}
@@ -1451,9 +1451,9 @@ export const MyBookings = () => {
                 'w-full',
                 'h-11',
                 'rounded-2xl',
-                'bg-[#2d5222]',
-                'hover:bg-[#1e3816]',
-                'text-white',
+                'bg-primary',
+                'hover:bg-primary-hover',
+                'text-primary-foreground',
                 'font-extrabold',
                 'text-xs',
                 'shadow-sm',
@@ -1473,17 +1473,17 @@ export const MyBookings = () => {
         <DialogContent
           className={cn(
             'sm:max-w-[480px]',
-            'bg-white',
+            'bg-card',
             'rounded-3xl',
             'p-6',
             'border',
-            'border-slate-100',
+            'border-border/30',
             'shadow-xl',
           )}
         >
           <DialogHeader>
             <DialogTitle
-              className={cn('text-xl', 'font-bold', 'text-gray-900')}
+              className={cn('text-xl', 'font-bold', 'text-foreground')}
             >
               Write a Review for {selectedRental?.product?.title}
             </DialogTitle>
@@ -1493,7 +1493,7 @@ export const MyBookings = () => {
             {/* Rating Stars Input */}
             <div className="space-y-2">
               <label
-                className={cn('text-sm', 'font-semibold', 'text-gray-700')}
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Rating
               </label>
@@ -1519,8 +1519,8 @@ export const MyBookings = () => {
                       className={cn(
                         'stroke-[2]',
                         star <= rating
-                          ? 'text-[#2d5222] fill-[#2d5222]'
-                          : 'text-slate-200 fill-transparent',
+                          ? 'text-primary fill-primary'
+                          : 'text-muted-foreground/30 fill-transparent',
                       )}
                     />
                   </Button>
@@ -1529,7 +1529,7 @@ export const MyBookings = () => {
                   className={cn(
                     'text-sm',
                     'font-bold',
-                    'text-slate-400',
+                    'text-muted-dark',
                     'ml-2',
                   )}
                 >
@@ -1541,7 +1541,7 @@ export const MyBookings = () => {
             {/* Review Comment Input */}
             <div className="space-y-2">
               <label
-                className={cn('text-sm', 'font-semibold', 'text-gray-700')}
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Comment
               </label>
@@ -1551,10 +1551,10 @@ export const MyBookings = () => {
                 onChange={(e) => setComment(e.target.value)}
                 className={cn(
                   'rounded-xl',
-                  'border-slate-200',
+                  'border-border',
                   'min-h-[100px]',
                   'text-sm',
-                  'focus-visible:ring-[#2d5222]',
+                  'focus-visible:ring-primary',
                 )}
               />
             </div>
@@ -1562,7 +1562,7 @@ export const MyBookings = () => {
             {/* Review Images Option (Optional) */}
             <div className="space-y-2">
               <label
-                className={cn('text-sm', 'font-semibold', 'text-gray-700')}
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Review Images (Optional)
               </label>
@@ -1577,8 +1577,8 @@ export const MyBookings = () => {
                       'rounded-xl',
                       'overflow-hidden',
                       'border',
-                      'border-slate-100',
-                      'bg-slate-50',
+                      'border-border/30',
+                      'bg-muted-light',
                     )}
                   >
                     <img
@@ -1617,7 +1617,7 @@ export const MyBookings = () => {
                 {uploadedImages.length < 3 && (
                   <label
                     className={cn(
-                      'w-16 h-16 rounded-xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 hover:text-[#2d5222] hover:border-[#2d5222] transition-colors cursor-pointer text-[10px] font-bold gap-1',
+                      'w-16 h-16 rounded-xl border border-dashed border-border/120 flex flex-col items-center justify-center text-muted-dark hover:text-primary hover:border-primary transition-colors cursor-pointer text-[10px] font-bold gap-1',
                       isUploading && 'opacity-50 pointer-events-none',
                     )}
                   >
@@ -1662,7 +1662,7 @@ export const MyBookings = () => {
             <Button
               variant="outline"
               onClick={() => setIsReviewDialogOpen(false)}
-              className={cn('rounded-xl', 'border-slate-200', 'font-semibold')}
+              className={cn('rounded-xl', 'border-border', 'font-semibold')}
             >
               Cancel
             </Button>
@@ -1686,9 +1686,9 @@ export const MyBookings = () => {
               disabled={reviewMutation.isPending}
               className={cn(
                 'rounded-xl',
-                'bg-[#2d5222]',
-                'hover:bg-[#1e3816]',
-                'text-white',
+                'bg-primary',
+                'hover:bg-primary-hover',
+                'text-primary-foreground',
                 'font-semibold',
               )}
             >

@@ -225,10 +225,10 @@ export function PersonalInfo() {
     <div className="font-sans">
       {/* Page Title Header */}
       <div className="mb-6 p-1">
-        <h1 className="text-2xl font-extrabold text-gray-900 font-display tracking-tight leading-none">
+        <h1 className="text-2xl font-extrabold text-foreground font-display tracking-tight leading-none">
           My Profile
         </h1>
-        <p className="text-[13px] text-gray-500 mt-2 font-medium">
+        <p className="text-[13px] text-muted-foreground/85 mt-2 font-medium">
           Manage your personal information and account preferences.
         </p>
       </div>
@@ -242,12 +242,12 @@ export function PersonalInfo() {
         )}
 
         {/* ─── Profile & Personal Info Row Card ─── */}
-        <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8">
+        <div className="bg-card rounded-[32px] border border-border/30 shadow-sm p-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left User Summary Column */}
-            <div className="lg:border-r lg:border-gray-100 lg:pr-8 flex flex-col items-center text-center">
+            <div className="lg:border-r lg:border-border/30 lg:pr-8 flex flex-col items-center text-center">
               <div className="relative group">
-                <div className="w-32 h-32 rounded-full bg-primary/5 border border-gray-100 shadow-sm flex items-center justify-center text-4xl font-extrabold text-primary overflow-hidden relative">
+                <div className="w-32 h-32 rounded-full bg-primary/5 border border-border/30 shadow-sm flex items-center justify-center text-4xl font-extrabold text-primary overflow-hidden relative">
                   {imagePreview ? (
                     <img
                       src={imagePreview}
@@ -266,7 +266,7 @@ export function PersonalInfo() {
                   {isEditing && (
                     <div
                       onClick={handleImageClick}
-                      className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center text-primary-foreground cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Camera size={24} className="mb-1 animate-scale-in" />
                       <span className="text-[9px] font-bold uppercase tracking-widest text-center">
@@ -278,9 +278,9 @@ export function PersonalInfo() {
                 {/* Pencil Edit Overlay Button on Bottom-Right */}
                 <div
                   onClick={handleImageClick}
-                  className="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center cursor-pointer text-primary hover:scale-105 active:scale-95 transition-all"
+                  className="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-card border border-border shadow-sm flex items-center justify-center cursor-pointer text-primary hover:scale-105 active:scale-95 transition-all"
                 >
-                  <Pencil size={12} className="text-[#3d702d]" />
+                  <Pencil size={12} className="text-primary" />
                 </div>
                 <input
                   type="file"
@@ -291,10 +291,10 @@ export function PersonalInfo() {
                 />
               </div>
 
-              <h4 className="font-extrabold text-gray-900 text-xl mt-4 font-display">
+              <h4 className="font-extrabold text-foreground text-xl mt-4 font-display">
                 {session.user.name}
               </h4>
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#F4F8F1] text-[#2d5222] text-[10px] font-bold px-3 py-1 mt-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary-soft text-primary text-[10px] font-bold px-3 py-1 mt-2">
                 <svg
                   className="h-3 w-3 text-primary shrink-0"
                   fill="none"
@@ -313,16 +313,16 @@ export function PersonalInfo() {
 
               {/* Dynamic Contact Details */}
               <div className="mt-8 space-y-4 text-left w-full max-w-[240px]">
-                <div className="flex items-center gap-3 text-xs text-gray-600 font-semibold">
-                  <Mail size={16} className="text-gray-400 shrink-0" />
+                <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
+                  <Mail size={16} className="text-muted-foreground/70 shrink-0" />
                   <span className="truncate">{session.user.email}</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-gray-600 font-semibold">
-                  <Phone size={16} className="text-gray-400 shrink-0" />
+                <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
+                  <Phone size={16} className="text-muted-foreground/70 shrink-0" />
                   <span>{phone}</span>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-gray-600 font-semibold">
-                  <Calendar size={16} className="text-gray-400 shrink-0" />
+                <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
+                  <Calendar size={16} className="text-muted-foreground/70 shrink-0" />
                   <span>Member since {joinDate}</span>
                 </div>
               </div>
@@ -331,7 +331,7 @@ export function PersonalInfo() {
             {/* Right Personal Information Form Column */}
             <div className="lg:col-span-2 lg:pl-4">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="font-extrabold text-gray-900 text-base font-display">
+                <h3 className="font-extrabold text-foreground text-base font-display">
                   Personal Information
                 </h3>
                 <Button
@@ -341,15 +341,15 @@ export function PersonalInfo() {
                   className={cn(
                     'h-9 rounded-xl text-xs font-bold transition-all border shrink-0 shadow-none cursor-pointer',
                     isEditing
-                      ? 'border-red-200 text-red-600 bg-red-50 hover:bg-red-100/70 hover:text-red-750'
-                      : 'border-[#2d5222] text-[#2d5222] hover:bg-[#2d5222]/5',
+                      ? 'border-danger/50 text-destructive bg-danger hover:bg-danger/70 hover:text-destructive'
+                      : 'border-primary text-primary hover:bg-primary/5',
                   )}
                 >
                   {isEditing ? (
-                    <>Cancel</>
+                    'Cancel'
                   ) : (
                     <>
-                      <Pencil size={12} className="mr-1 text-[#2d5222]" />
+                      <Pencil size={12} className="mr-1 text-primary" />
                       Edit Profile
                     </>
                   )}
@@ -362,7 +362,7 @@ export function PersonalInfo() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="fullName"
-                    className="text-xs font-bold text-gray-400"
+                    className="text-xs font-bold text-muted-foreground/70"
                   >
                     Full Name
                   </Label>
@@ -372,10 +372,10 @@ export function PersonalInfo() {
                     onChange={(e) => setName(e.target.value)}
                     disabled={!isEditing}
                     className={cn(
-                      'h-11 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
+                      'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
                       isEditing
-                        ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
+                        ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                        : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
                     )}
                   />
                 </div>
@@ -384,7 +384,7 @@ export function PersonalInfo() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="gender"
-                    className="text-xs font-bold text-gray-400"
+                    className="text-xs font-bold text-muted-foreground/70"
                   >
                     Gender
                   </Label>
@@ -396,10 +396,10 @@ export function PersonalInfo() {
                     <SelectTrigger
                       id="gender"
                       className={cn(
-                        'w-full h-11 px-4 rounded-xl border border-gray-200 font-semibold text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-gray-50/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-gray-400',
+                        'w-full h-11 px-4 rounded-xl border border-border font-semibold text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-muted-light/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-muted-foreground/70',
                         isEditing
-                          ? 'bg-white border-primary ring-2 ring-primary/5'
-                          : 'bg-gray-50/50 [&>span]:opacity-100',
+                          ? 'bg-card border-primary ring-2 ring-primary/5'
+                          : 'bg-muted-light/50 [&>span]:opacity-100',
                       )}
                     >
                       <SelectValue placeholder="Select Gender" />
@@ -416,7 +416,7 @@ export function PersonalInfo() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="email"
-                    className="text-xs font-bold text-gray-400"
+                    className="text-xs font-bold text-muted-foreground/70"
                   >
                     Email Address
                   </Label>
@@ -424,7 +424,7 @@ export function PersonalInfo() {
                     id="email"
                     value={session.user.email}
                     disabled
-                    className="h-11 rounded-xl border-gray-200 bg-gray-50/50 text-gray-900 font-semibold text-sm disabled:opacity-100 disabled:cursor-default"
+                    className="h-11 rounded-xl border-border bg-muted-light/50 text-foreground font-semibold text-sm disabled:opacity-100 disabled:cursor-default"
                   />
                 </div>
 
@@ -432,7 +432,7 @@ export function PersonalInfo() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="location"
-                    className="text-xs font-bold text-gray-400"
+                    className="text-xs font-bold text-muted-foreground/70"
                   >
                     Location
                   </Label>
@@ -442,10 +442,10 @@ export function PersonalInfo() {
                     onChange={(e) => setLocation(e.target.value)}
                     disabled={!isEditing}
                     className={cn(
-                      'h-11 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
+                      'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
                       isEditing
-                        ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
+                        ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                        : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
                     )}
                   />
                 </div>
@@ -454,7 +454,7 @@ export function PersonalInfo() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="phone"
-                    className="text-xs font-bold text-gray-400"
+                    className="text-xs font-bold text-muted-foreground/70"
                   >
                     Phone Number
                   </Label>
@@ -464,10 +464,10 @@ export function PersonalInfo() {
                     onChange={(e) => setPhone(e.target.value)}
                     disabled={!isEditing}
                     className={cn(
-                      'h-11 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
+                      'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
                       isEditing
-                        ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
+                        ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                        : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
                     )}
                   />
                 </div>
@@ -476,7 +476,7 @@ export function PersonalInfo() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="language"
-                    className="text-xs font-bold text-gray-400"
+                    className="text-xs font-bold text-muted-foreground/70"
                   >
                     Preferred Language
                   </Label>
@@ -488,10 +488,10 @@ export function PersonalInfo() {
                     <SelectTrigger
                       id="language"
                       className={cn(
-                        'w-full h-11 px-4 rounded-xl border border-gray-200 font-semibold text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-gray-50/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-gray-400',
+                        'w-full h-11 px-4 rounded-xl border border-border font-semibold text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-muted-light/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-muted-foreground/70',
                         isEditing
-                          ? 'bg-white border-primary ring-2 ring-primary/5'
-                          : 'bg-gray-50/50 [&>span]:opacity-100',
+                          ? 'bg-card border-primary ring-2 ring-primary/5'
+                          : 'bg-muted-light/50 [&>span]:opacity-100',
                       )}
                     >
                       <SelectValue placeholder="Select Language" />
@@ -509,7 +509,7 @@ export function PersonalInfo() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="dob"
-                    className="text-xs font-bold text-gray-400"
+                    className="text-xs font-bold text-muted-foreground/70"
                   >
                     Date of Birth
                   </Label>
@@ -520,15 +520,15 @@ export function PersonalInfo() {
                       onChange={(e) => setDob(e.target.value)}
                       disabled={!isEditing}
                       className={cn(
-                        'h-11 pr-10 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
+                        'h-11 pr-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
                         isEditing
-                          ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                          : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
+                          ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                          : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
                       )}
                     />
                     <Calendar
                       size={16}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/70 pointer-events-none"
                     />
                   </div>
                 </div>
@@ -536,11 +536,11 @@ export function PersonalInfo() {
 
               {/* Action Save Button */}
               {isEditing && (
-                <div className="mt-8 pt-6 border-t border-gray-100 flex gap-4">
+                <div className="mt-8 pt-6 border-t border-border/30 flex gap-4">
                   <Button
                     onClick={handleSaveChanges}
                     disabled={isSaving}
-                    className="bg-primary hover:bg-primary/95 text-white h-11 px-8 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 cursor-pointer"
+                    className="bg-primary hover:bg-primary/95 text-primary-foreground h-11 px-8 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 cursor-pointer"
                   >
                     {isSaving && <Loader variant="white" size={16} />}
                     {isSaving ? 'Saving...' : 'Save Changes'}
@@ -554,22 +554,22 @@ export function PersonalInfo() {
         {/* ─── Cards Row: Account Security & Preferences ─── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Card 1: Account Security */}
-          <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8">
-            <h3 className="font-extrabold text-gray-900 text-base font-display">
+          <div className="bg-card rounded-[32px] border border-border/30 shadow-sm p-8">
+            <h3 className="font-extrabold text-foreground text-base font-display">
               Account Security
             </h3>
-            <p className="text-xs text-gray-500 mt-1 font-medium leading-none">
+            <p className="text-xs text-muted-foreground/85 mt-1 font-medium leading-none">
               Manage your password and account security settings.
             </p>
 
             <div className="mt-6 space-y-4">
               {/* Password */}
-              <div className="flex items-center justify-between py-2 border-b border-gray-50">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-foreground">
                     Password
                   </span>
-                  <span className="text-xs text-gray-400 font-semibold mt-0.5 tracking-wider">
+                  <span className="text-xs text-muted-foreground/70 font-semibold mt-0.5 tracking-wider">
                     ••••••••••••
                   </span>
                 </div>
@@ -577,24 +577,24 @@ export function PersonalInfo() {
                   variant="outline"
                   size="sm"
                   onClick={() => setIsPasswordModalOpen(true)}
-                  className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
+                  className="h-8 rounded-lg px-4 text-xs font-bold text-foreground/80 shadow-none border-border hover:bg-muted-light cursor-pointer"
                 >
                   Change
                 </Button>
               </div>
 
               {/* Two-Factor Authentication */}
-              <div className="flex items-center justify-between py-2 border-b border-gray-50">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-foreground">
                     Two-Factor Authentication
                   </span>
                   <span
                     className={cn(
                       'text-[10px] font-bold px-2 py-0.5 rounded-full w-fit mt-1.5 leading-none border transition-colors',
                       twoFactorEnabled
-                        ? 'text-[#2d5222] bg-[#F4F8F1] border-[#e6efe1]'
-                        : 'text-gray-500 bg-gray-100 border-gray-200',
+                        ? 'text-primary bg-primary-soft border-primary-border'
+                        : 'text-muted-foreground/85 bg-muted/50 border-border',
                     )}
                   >
                     {twoFactorEnabled ? 'Enabled' : 'Disabled'}
@@ -606,19 +606,19 @@ export function PersonalInfo() {
                   onClick={() => {
                     setIs2faModalOpen(true)
                   }}
-                  className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
+                  className="h-8 rounded-lg px-4 text-xs font-bold text-foreground/80 shadow-none border-border hover:bg-muted-light cursor-pointer"
                 >
                   Manage
                 </Button>
               </div>
 
               {/* Login Sessions */}
-              <div className="flex items-center justify-between py-2 border-b border-gray-50">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-foreground">
                     Login Sessions
                   </span>
-                  <span className="text-xs text-gray-400 font-medium mt-0.5">
+                  <span className="text-xs text-muted-foreground/70 font-medium mt-0.5">
                     Manage your active sessions
                   </span>
                 </div>
@@ -626,7 +626,7 @@ export function PersonalInfo() {
                   variant="outline"
                   size="sm"
                   onClick={() => setIsSessionsModalOpen(true)}
-                  className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
+                  className="h-8 rounded-lg px-4 text-xs font-bold text-foreground/80 shadow-none border-border hover:bg-muted-light cursor-pointer"
                 >
                   View
                 </Button>
@@ -635,10 +635,10 @@ export function PersonalInfo() {
               {/* Devices */}
               <div className="flex items-center justify-between py-2">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-foreground">
                     Devices
                   </span>
-                  <span className="text-xs text-gray-400 font-medium mt-0.5">
+                  <span className="text-xs text-muted-foreground/70 font-medium mt-0.5">
                     Manage your trusted devices
                   </span>
                 </div>
@@ -646,7 +646,7 @@ export function PersonalInfo() {
                   variant="outline"
                   size="sm"
                   onClick={() => setIsDevicesModalOpen(true)}
-                  className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
+                  className="h-8 rounded-lg px-4 text-xs font-bold text-foreground/80 shadow-none border-border hover:bg-muted-light cursor-pointer"
                 >
                   View
                 </Button>
@@ -655,22 +655,22 @@ export function PersonalInfo() {
           </div>
 
           {/* Card 2: Preferences */}
-          <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-8">
-            <h3 className="font-extrabold text-gray-900 text-base font-display">
+          <div className="bg-card rounded-[32px] border border-border/30 shadow-sm p-8">
+            <h3 className="font-extrabold text-foreground text-base font-display">
               Preferences
             </h3>
-            <p className="text-xs text-gray-500 mt-1 font-medium leading-none">
+            <p className="text-xs text-muted-foreground/85 mt-1 font-medium leading-none">
               Customize your experience on Vastu.
             </p>
 
             <div className="mt-6 space-y-4">
               {/* Email Notifications */}
-              <div className="flex items-center justify-between py-2 border-b border-gray-50">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-foreground">
                     Email Notifications
                   </span>
-                  <span className="text-xs text-gray-400 font-medium mt-0.5">
+                  <span className="text-xs text-muted-foreground/70 font-medium mt-0.5">
                     Stay updated with important updates
                   </span>
                 </div>
@@ -683,12 +683,12 @@ export function PersonalInfo() {
               </div>
 
               {/* SMS Notifications */}
-              <div className="flex items-center justify-between py-2 border-b border-gray-50">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-foreground">
                     SMS Notifications
                   </span>
-                  <span className="text-xs text-gray-400 font-medium mt-0.5">
+                  <span className="text-xs text-muted-foreground/70 font-medium mt-0.5">
                     Receive text messages for bookings
                   </span>
                 </div>
@@ -701,12 +701,12 @@ export function PersonalInfo() {
               </div>
 
               {/* Marketing Emails */}
-              <div className="flex items-center justify-between py-2 border-b border-gray-50">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-foreground">
                     Marketing Emails
                   </span>
-                  <span className="text-xs text-gray-400 font-medium mt-0.5">
+                  <span className="text-xs text-muted-foreground/70 font-medium mt-0.5">
                     Receive offers and promotions
                   </span>
                 </div>
@@ -720,11 +720,11 @@ export function PersonalInfo() {
 
               {/* Currency */}
               <div className="flex items-center justify-between py-2">
-                <span className="text-sm font-bold text-gray-900">
+                <span className="text-sm font-bold text-foreground">
                   Currency
                 </span>
                 <Select value={currency} onValueChange={handleCurrencyChange}>
-                  <SelectTrigger className="w-28 h-9 px-3 rounded-xl border border-gray-200 text-xs font-semibold text-gray-900 bg-white focus:outline-none cursor-pointer shadow-none">
+                  <SelectTrigger className="w-28 h-9 px-3 rounded-xl border border-border text-xs font-semibold text-foreground bg-card focus:outline-none cursor-pointer shadow-none">
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -739,26 +739,26 @@ export function PersonalInfo() {
         </div>
 
         {/* ─── Bottom Row: Green Member Banner ─── */}
-        <div className="bg-[#F4F8F1] rounded-[32px] border border-[#e6efe1] p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4.5">
+        <div className="bg-primary-soft rounded-[32px] border border-primary-border p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4.5">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#e6efe1] text-primary">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-border text-primary">
               <Leaf className="h-6 w-6" />
             </div>
             <div className="flex flex-col text-left">
-              <span className="text-sm font-extrabold text-[#2d5222] font-display">
+              <span className="text-sm font-extrabold text-primary font-display">
                 Green Member
               </span>
-              <span className="text-xs text-gray-500 font-bold leading-none mt-1">
+              <span className="text-xs text-muted-foreground/85 font-bold leading-none mt-1">
                 You're saving the planet!
               </span>
-              <span className="text-[11px] text-gray-400 font-semibold mt-1">
+              <span className="text-[11px] text-muted-foreground/70 font-semibold mt-1">
                 Thank you for being a part of our sustainable community.
               </span>
             </div>
           </div>
           <Link
             to="/about"
-            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#2d5222] hover:underline shrink-0 cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-primary hover:underline shrink-0 cursor-pointer"
           >
             <span>View Impact</span>
             <ChevronRight size={14} className="mt-0.5" />

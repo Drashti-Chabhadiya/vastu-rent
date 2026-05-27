@@ -41,25 +41,25 @@ function LogoutDialog({
         onClick={onCancel}
       />
       {/* Modal */}
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative bg-card rounded-3xl shadow-2xl w-full max-w-sm p-8 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200">
         {/* Icon */}
-        <div className="w-16 h-16 rounded-full bg-[#F4F8F1] flex items-center justify-center mb-5">
-          <LogOut size={28} className="text-[#2d5222]" strokeWidth={2} />
+        <div className="w-16 h-16 rounded-full bg-primary-soft flex items-center justify-center mb-5">
+          <LogOut size={28} className="text-primary" strokeWidth={2} />
         </div>
 
-        <h2 className="text-xl font-extrabold text-gray-900 mb-2">Log out</h2>
-        <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-7">
+        <h2 className="text-xl font-extrabold text-foreground mb-2">Log out</h2>
+        <p className="text-[13px] text-muted-foreground/85 font-medium leading-relaxed mb-7">
           Are you sure you want to log out of your Vastu account?
         </p>
 
         <Button
           onClick={onConfirm}
           disabled={loading}
-          className="w-full h-11 rounded-xl bg-[#2d5222] hover:bg-[#1e3a17] text-white text-sm font-bold mb-3 transition-colors cursor-pointer disabled:opacity-60 flex items-center justify-center gap-2"
+          className="w-full h-11 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-sm font-bold mb-3 transition-colors cursor-pointer disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
-              <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-card/40 border-t-white rounded-full animate-spin" />
               Logging out...
             </>
           ) : (
@@ -71,7 +71,7 @@ function LogoutDialog({
           variant="outline"
           onClick={onCancel}
           disabled={loading}
-          className="w-full h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-sm font-semibold text-gray-700 transition-colors cursor-pointer disabled:opacity-60"
+          className="w-full h-11 rounded-xl border border-border bg-card hover:bg-muted-light text-sm font-semibold text-foreground/80 transition-colors cursor-pointer disabled:opacity-60"
         >
           Cancel
         </Button>
@@ -164,31 +164,31 @@ export function AccountLayout() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
             {/* Sidebar */}
-            <aside className="w-full lg:w-[190px] shrink-0 bg-white rounded-2xl border border-slate-100 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden">
+            <aside className="w-full lg:w-[190px] shrink-0 bg-card rounded-2xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden">
               <div>
                 {/* User Profile Card */}
-                <div className="flex flex-col items-center gap-2 pt-5 pb-4 px-2 mb-2 border-b border-slate-50">
+                <div className="flex flex-col items-center gap-2 pt-5 pb-4 px-2 mb-2 border-b border-border/30">
                   <div className="relative">
-                    <Avatar className="w-14 h-14 border-2 border-slate-100 shadow-sm">
+                    <Avatar className="w-14 h-14 border-2 border-border/30 shadow-sm">
                       <AvatarImage
                         src={session?.user?.image || ''}
                         alt={session?.user?.name}
                       />
-                      <AvatarFallback className="bg-[#F4F8F1] text-[#2d5222] font-black text-base">
+                      <AvatarFallback className="bg-primary-soft text-primary font-black text-base">
                         {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     {/* Active green dot */}
                     <span
-                      className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm"
+                      className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-primary border-2 border-card rounded-full shadow-sm"
                       title="Active"
                     />
                   </div>
                   <div className="text-center min-w-0">
-                    <p className="text-[12px] font-black text-gray-900 truncate max-w-[140px]">
+                    <p className="text-[12px] font-black text-foreground truncate max-w-[140px]">
                       {session?.user?.name || 'User'}
                     </p>
-                    <p className="text-[10px] font-semibold text-slate-400 truncate max-w-[140px]">
+                    <p className="text-[10px] font-semibold text-muted-dark truncate max-w-[140px]">
                       {session?.user?.email || ''}
                     </p>
                   </div>
@@ -204,8 +204,8 @@ export function AccountLayout() {
                         className={cn(
                           'flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 group cursor-pointer text-[13px] font-semibold',
                           isActive
-                            ? 'bg-[#F4F8F1] text-[#2d5222]'
-                            : 'text-[#64748b] hover:bg-slate-50 hover:text-gray-900',
+                            ? 'bg-primary-soft text-primary'
+                            : 'text-muted-foreground hover:bg-muted-light hover:text-foreground',
                         )}
                       >
                         <Icon
@@ -213,8 +213,8 @@ export function AccountLayout() {
                           className={cn(
                             'transition-colors shrink-0',
                             isActive
-                              ? 'text-[#2d5222]'
-                              : 'text-[#94a3b8] group-hover:text-gray-700',
+                              ? 'text-primary'
+                              : 'text-muted-dark group-hover:text-foreground/80',
                           )}
                         />
                         <span>{item.label}</span>
@@ -226,29 +226,29 @@ export function AccountLayout() {
                   <Button
                     variant="ghost"
                     onClick={() => setLogoutOpen(true)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600 transition-all font-semibold text-[13px] mt-1 cursor-pointer justify-start h-auto"
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-destructive hover:bg-danger hover:text-destructive transition-all font-semibold text-[13px] mt-1 cursor-pointer justify-start h-auto"
                   >
-                    <LogOut size={16} className="shrink-0 text-red-400" />
+                    <LogOut size={16} className="shrink-0 text-destructive/80" />
                     <span>Log out</span>
                   </Button>
                 </nav>
               </div>
 
               {/* Green Member Banner */}
-              <div className="bg-[#f4f8f1] rounded-xl p-3 flex gap-2 items-start border border-[#e2edd8] mt-4 mx-1">
-                <div className="w-7 h-7 rounded-full bg-[#e2edd8] flex items-center justify-center text-[#2d5222] shrink-0 mt-0.5">
+              <div className="bg-primary-soft rounded-xl p-3 flex gap-2 items-start border border-primary-border mt-4 mx-1">
+                <div className="w-7 h-7 rounded-full bg-primary-border flex items-center justify-center text-primary shrink-0 mt-0.5">
                   <Leaf size={13} fill="currentColor" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h4 className="font-extrabold text-[#2d5222] text-[11px]">
+                  <h4 className="font-extrabold text-primary text-[11px]">
                     Green Member
                   </h4>
-                  <p className="text-[10px] text-[#5c7a52] font-semibold leading-normal mt-0.5">
+                  <p className="text-[10px] text-primary/80 font-semibold leading-normal mt-0.5">
                     You're saving the planet!
                   </p>
                   <Link
                     to="/help"
-                    className="text-[#2d5222] text-[10px] font-black flex items-center gap-0.5 mt-2 hover:underline"
+                    className="text-primary text-[10px] font-black flex items-center gap-0.5 mt-2 hover:underline"
                   >
                     View Impact <ChevronRight size={9} strokeWidth={3} />
                   </Link>
@@ -267,7 +267,7 @@ export function AccountLayout() {
               activeTab === 'settings' ? (
                 <Outlet />
               ) : (
-                <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px] p-8">
+                <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">
                   <Outlet />
                 </div>
               )}

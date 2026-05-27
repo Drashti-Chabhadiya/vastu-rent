@@ -249,7 +249,7 @@ export function StoryDetail({ id }: { id: string }) {
           <Button
             variant="outline"
             onClick={() => navigate({ to: '/journal' })}
-            className="h-auto flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-black/60 hover:text-white active:scale-[0.98]"
+            className="h-auto flex items-center gap-2 rounded-full border border-card/20 bg-black/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-primary-foreground backdrop-blur-md transition-all hover:bg-black/60 hover:text-primary-foreground active:scale-[0.98]"
           >
             <ArrowLeft size={14} />
             Journal
@@ -260,10 +260,10 @@ export function StoryDetail({ id }: { id: string }) {
               variant="outline"
               size="icon"
               onClick={() => setIsLiked((v) => !v)}
-              className={`h-9 w-9 rounded-full border border-white/20 backdrop-blur-md transition-all active:scale-[0.98] ${
+              className={`h-9 w-9 rounded-full border border-card/20 backdrop-blur-md transition-all active:scale-[0.98] ${
                 isLiked
-                  ? 'bg-red-500 text-white hover:bg-red-600 hover:text-white'
-                  : 'bg-black/40 text-white hover:bg-black/60 hover:text-white'
+                  ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:text-destructive-foreground'
+                  : 'bg-black/40 text-primary-foreground hover:bg-black/60 hover:text-primary-foreground'
               }`}
               aria-label="Like story"
             >
@@ -273,7 +273,7 @@ export function StoryDetail({ id }: { id: string }) {
               variant="outline"
               size="icon"
               onClick={handleShare}
-              className="h-9 w-9 rounded-full border border-white/20 bg-black/40 text-white hover:text-white hover:bg-black/60 backdrop-blur-md transition-all active:scale-[0.98]"
+              className="h-9 w-9 rounded-full border border-card/20 bg-black/40 text-primary-foreground hover:text-primary-foreground hover:bg-black/60 backdrop-blur-md transition-all active:scale-[0.98]"
               aria-label="Share story"
             >
               <Share2 size={16} />
@@ -288,27 +288,27 @@ export function StoryDetail({ id }: { id: string }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: EASE }}
           >
-            <span className="rounded-full bg-primary px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white">
+            <span className="rounded-full bg-primary px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-primary-foreground">
               {story.tag}
             </span>
 
-            <h1 className="mt-5 max-w-4xl font-display text-[clamp(2rem,5vw,3.75rem)] leading-[1.06] tracking-tight text-white">
+            <h1 className="mt-5 max-w-4xl font-display text-[clamp(2rem,5vw,3.75rem)] leading-[1.06] tracking-tight text-primary-foreground">
               {story.title}
             </h1>
 
-            <div className="mt-6 flex flex-wrap items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">
+            <div className="mt-6 flex flex-wrap items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/75">
               <span className="flex items-center gap-2">
                 <Calendar size={13} />
                 {formatDate(story.createdAt)}
               </span>
-              <span className="h-1 w-1 rounded-full bg-white/30" />
+              <span className="h-1 w-1 rounded-full bg-card/30" />
               <span className="flex items-center gap-2">
                 <Clock size={13} />
                 {story.readTime} read
               </span>
               {story.author?.name && (
                 <>
-                  <span className="h-1 w-1 rounded-full bg-white/30" />
+                  <span className="h-1 w-1 rounded-full bg-card/30" />
                   <span className="flex items-center gap-2">
                     <User size={13} />
                     {story.author.name}

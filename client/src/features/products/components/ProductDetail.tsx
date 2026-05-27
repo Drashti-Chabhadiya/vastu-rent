@@ -263,7 +263,7 @@ export function ProductDetail({ id }: { id: string }) {
           email: '',
         },
         theme: {
-          color: '#166534',
+          color: 'var(--color-primary)',
         },
         modal: {
           ondismiss: () => setIsPaying(false),
@@ -287,14 +287,14 @@ export function ProductDetail({ id }: { id: string }) {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
-        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
-          <AlertCircle className="w-10 h-10 text-red-500" />
+      <div className="min-h-screen bg-card flex flex-col items-center justify-center p-4">
+        <div className="w-20 h-20 bg-danger rounded-full flex items-center justify-center mb-6">
+          <AlertCircle className="w-10 h-10 text-destructive" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-foreground mb-2">
           Product Not Found
         </h2>
-        <p className="text-gray-500 mb-8 text-center max-w-md">
+        <p className="text-muted-foreground/85 mb-8 text-center max-w-md">
           The product you are looking for might have been removed or the link is
           incorrect.
         </p>
@@ -433,7 +433,7 @@ export function ProductDetail({ id }: { id: string }) {
             {similarProducts && similarProducts.length > 0 && (
               <div className="mt-10">
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-foreground">
                     Similar Items
                   </h3>
                   <Link

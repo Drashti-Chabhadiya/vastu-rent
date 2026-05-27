@@ -45,15 +45,15 @@ function getIcon(type: string) {
 function getIconColors(type: string) {
   switch (type) {
     case 'booking':
-      return 'bg-[#F4F8F1] text-[#2d5222]'
+      return 'bg-primary-soft text-primary'
     case 'payment':
-      return 'bg-amber-50 text-amber-600'
+      return 'bg-warning text-warning-foreground'
     case 'alert':
-      return 'bg-rose-50 text-rose-500'
+      return 'bg-danger text-danger-foreground'
     case 'info':
-      return 'bg-sky-50 text-sky-500'
+      return 'bg-info text-info-foreground'
     default:
-      return 'bg-slate-50 text-slate-500'
+      return 'bg-muted-light text-muted-dark'
   }
 }
 
@@ -152,7 +152,7 @@ export const NotificationsManagement = () => {
       )}
     >
       {/* Section heading */}
-      <h2 className={cn('text-lg', 'font-black', 'text-gray-900')}>
+      <h2 className={cn('text-lg', 'font-black', 'text-foreground')}>
         Live System Alerts &amp; Notifications
       </h2>
 
@@ -162,10 +162,10 @@ export const NotificationsManagement = () => {
         <div
           className={cn(
             'lg:col-span-2',
-            'bg-white',
+            'bg-card',
             'rounded-2xl',
             'border',
-            'border-slate-100',
+            'border-border/30',
             'shadow-sm',
             'overflow-hidden',
           )}
@@ -178,7 +178,7 @@ export const NotificationsManagement = () => {
               'gap-3',
               'p-5',
               'border-b',
-              'border-slate-50',
+              'border-border/30',
             )}
           >
             <div className={cn('relative', 'flex-1')}>
@@ -188,7 +188,7 @@ export const NotificationsManagement = () => {
                   'absolute',
                   'left-3',
                   'top-[11px]',
-                  'text-slate-400',
+                  'text-muted-dark',
                 )}
               />
               <Input
@@ -199,13 +199,13 @@ export const NotificationsManagement = () => {
                   'h-9',
                   'pl-9',
                   'pr-4',
-                  'bg-slate-50',
+                  'bg-muted-light',
                   'border-none',
                   'rounded-xl',
                   'text-[11px]',
                   'font-semibold',
                   'focus-visible:ring-1',
-                  'focus-visible:ring-[#2d5222]/20',
+                  'focus-visible:ring-primary/20',
                 )}
               />
             </div>
@@ -214,14 +214,14 @@ export const NotificationsManagement = () => {
                 className={cn(
                   'w-[130px]',
                   'h-9',
-                  'bg-slate-50',
+                  'bg-muted-light',
                   'border-none',
                   'rounded-xl',
                   'text-[11px]',
                   'font-semibold',
-                  'text-slate-600',
+                  'text-muted-foreground',
                   'focus:ring-1',
-                  'focus:ring-[#2d5222]/20',
+                  'focus:ring-primary/20',
                   'shadow-none',
                   'cursor-pointer',
                 )}
@@ -231,7 +231,7 @@ export const NotificationsManagement = () => {
               <SelectContent
                 className={cn(
                   'rounded-xl',
-                  'border-slate-100',
+                  'border-border/30',
                   'shadow-lg',
                   'p-1',
                 )}
@@ -296,7 +296,7 @@ export const NotificationsManagement = () => {
           </div>
 
           {/* List */}
-          <div className={cn('divide-y', 'divide-slate-50')}>
+          <div className={cn('divide-y', 'divide-border/30')}>
             {isLoading ? (
               <div
                 className={cn(
@@ -313,7 +313,7 @@ export const NotificationsManagement = () => {
                     'w-10',
                     'h-10',
                     'rounded-xl',
-                    'bg-[#F4F8F1]',
+                    'bg-primary-soft',
                     'flex',
                     'items-center',
                     'justify-center',
@@ -321,14 +321,14 @@ export const NotificationsManagement = () => {
                 >
                   <Bell
                     size={18}
-                    className={cn('text-[#2d5222]', 'animate-pulse')}
+                    className={cn('text-primary', 'animate-pulse')}
                   />
                 </div>
                 <p
                   className={cn(
                     'text-[11px]',
                     'font-semibold',
-                    'text-slate-400',
+                    'text-muted-dark',
                   )}
                 >
                   Loading notifications...
@@ -350,19 +350,19 @@ export const NotificationsManagement = () => {
                     'w-10',
                     'h-10',
                     'rounded-xl',
-                    'bg-slate-50',
+                    'bg-muted-light',
                     'flex',
                     'items-center',
                     'justify-center',
                   )}
                 >
-                  <Bell size={18} className="text-slate-300" />
+                  <Bell size={18} className="text-muted-dark" />
                 </div>
                 <p
                   className={cn(
                     'text-[11px]',
                     'font-semibold',
-                    'text-slate-400',
+                    'text-muted-dark',
                   )}
                 >
                   No notifications found.
@@ -377,8 +377,8 @@ export const NotificationsManagement = () => {
                     key={notif.id}
                     onClick={() => handleNotificationClick(notif)}
                     className={cn(
-                      'flex items-center justify-between px-5 py-4 cursor-pointer transition-colors hover:bg-slate-50/60 group',
-                      !notif.isRead && 'bg-[#F4F8F1]/40',
+                      'flex items-center justify-between px-5 py-4 cursor-pointer transition-colors hover:bg-muted-light/60 group',
+                      !notif.isRead && 'bg-primary-soft/40',
                     )}
                   >
                     <div
@@ -388,7 +388,7 @@ export const NotificationsManagement = () => {
                       <div
                         className={cn(
                           'w-1.5 h-1.5 rounded-full shrink-0',
-                          !notif.isRead ? 'bg-[#2d5222]' : 'bg-transparent',
+                          !notif.isRead ? 'bg-primary' : 'bg-transparent',
                         )}
                       />
 
@@ -406,8 +406,8 @@ export const NotificationsManagement = () => {
                           className={cn(
                             'text-[12px] truncate',
                             !notif.isRead
-                              ? 'font-black text-gray-900'
-                              : 'font-semibold text-gray-700',
+                              ? 'font-black text-foreground'
+                              : 'font-semibold text-foreground/80',
                           )}
                         >
                           {notif.title}
@@ -416,7 +416,7 @@ export const NotificationsManagement = () => {
                           className={cn(
                             'text-[10px]',
                             'font-medium',
-                            'text-slate-400',
+                            'text-muted-dark',
                             'mt-0.5',
                             'truncate',
                           )}
@@ -430,7 +430,7 @@ export const NotificationsManagement = () => {
                       className={cn(
                         'text-[10px]',
                         'font-semibold',
-                        'text-slate-300',
+                        'text-muted-dark',
                         'shrink-0',
                         'ml-4',
                       )}
@@ -454,23 +454,23 @@ export const NotificationsManagement = () => {
                 'px-5',
                 'py-3',
                 'border-t',
-                'border-slate-50',
+                'border-border/30',
                 'gap-2',
               )}
             >
               <p
-                className={cn('text-[10px]', 'font-semibold', 'text-slate-400')}
+                className={cn('text-[10px]', 'font-semibold', 'text-muted-dark')}
               >
                 Showing{' '}
-                <span className={cn('font-black', 'text-gray-700')}>
+                <span className={cn('font-black', 'text-foreground/80')}>
                   {startIndex + 1}
                 </span>{' '}
                 to{' '}
-                <span className={cn('font-black', 'text-gray-700')}>
+                <span className={cn('font-black', 'text-foreground/80')}>
                   {Math.min(endIndex, totalItems)}
                 </span>{' '}
                 of{' '}
-                <span className={cn('font-black', 'text-gray-700')}>
+                <span className={cn('font-black', 'text-foreground/80')}>
                   {totalItems}
                 </span>{' '}
                 notifications
@@ -487,9 +487,9 @@ export const NotificationsManagement = () => {
                     'rounded-lg',
                     'text-[10px]',
                     'font-semibold',
-                    'border-slate-200',
-                    'text-slate-600',
-                    'hover:bg-slate-50',
+                    'border-border',
+                    'text-muted-foreground',
+                    'hover:bg-muted-light',
                     'shadow-none',
                     'cursor-pointer',
                     'disabled:opacity-40',
@@ -509,7 +509,7 @@ export const NotificationsManagement = () => {
                         'items-center',
                         'justify-center',
                         'text-[10px]',
-                        'text-slate-400',
+                        'text-muted-dark',
                       )}
                     >
                       …
@@ -523,8 +523,8 @@ export const NotificationsManagement = () => {
                       className={cn(
                         'w-7 h-7 rounded-lg text-[10px] font-semibold transition-all cursor-pointer p-0',
                         currentPage === page
-                          ? 'bg-[#2d5222] text-white shadow-sm hover:bg-[#2d5222] hover:text-white'
-                          : 'border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white',
+                          ? 'bg-primary text-primary-foreground shadow-sm hover:bg-primary hover:text-primary-foreground'
+                          : 'border border-border text-muted-foreground hover:bg-muted-light bg-card',
                       )}
                     >
                       {page}
@@ -545,9 +545,9 @@ export const NotificationsManagement = () => {
                     'rounded-lg',
                     'text-[10px]',
                     'font-semibold',
-                    'border-slate-200',
-                    'text-slate-600',
-                    'hover:bg-slate-50',
+                    'border-border',
+                    'text-muted-foreground',
+                    'hover:bg-muted-light',
                     'shadow-none',
                     'cursor-pointer',
                     'disabled:opacity-40',
@@ -564,10 +564,10 @@ export const NotificationsManagement = () => {
         <div className="space-y-4">
           <div
             className={cn(
-              'bg-white',
+              'bg-card',
               'rounded-2xl',
               'border',
-              'border-slate-100',
+              'border-border/30',
               'shadow-sm',
               'p-6',
             )}
@@ -576,7 +576,7 @@ export const NotificationsManagement = () => {
               className={cn(
                 'text-[11px]',
                 'font-black',
-                'text-gray-900',
+                'text-foreground',
                 'uppercase',
                 'tracking-widest',
                 'mb-0.5',
@@ -588,7 +588,7 @@ export const NotificationsManagement = () => {
               className={cn(
                 'text-[10px]',
                 'font-semibold',
-                'text-slate-400',
+                'text-muted-dark',
                 'mb-5',
               )}
             >
@@ -603,7 +603,7 @@ export const NotificationsManagement = () => {
                 'justify-between',
                 'py-3',
                 'border-b',
-                'border-slate-50',
+                'border-border/30',
               )}
             >
               <div className={cn('flex', 'items-center', 'gap-2.5')}>
@@ -624,7 +624,7 @@ export const NotificationsManagement = () => {
                   className={cn(
                     'text-[11px]',
                     'font-semibold',
-                    'text-slate-600',
+                    'text-muted-foreground',
                   )}
                 >
                   Unread count
@@ -634,8 +634,8 @@ export const NotificationsManagement = () => {
                 className={cn(
                   'text-[11px] font-black px-2 py-0.5 rounded-full',
                   unreadCount > 0
-                    ? 'bg-[#F4F8F1] text-[#2d5222]'
-                    : 'bg-slate-50 text-slate-400',
+                    ? 'bg-primary-soft text-primary'
+                    : 'bg-muted-light text-muted-dark',
                 )}
               >
                 {unreadCount}
@@ -657,7 +657,7 @@ export const NotificationsManagement = () => {
                   'gap-1.5',
                   'text-[11px]',
                   'font-black',
-                  'text-[#2d5222]',
+                  'text-primary',
                   'hover:underline',
                   'cursor-pointer',
                   'hover:bg-transparent',

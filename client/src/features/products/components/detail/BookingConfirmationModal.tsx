@@ -23,15 +23,15 @@ export const BookingConfirmationModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center space-y-5">
-        <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
-          <CheckCircle2 className="w-8 h-8 text-green-500" />
+      <div className="bg-card rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center space-y-5">
+        <div className="w-16 h-16 bg-primary-soft rounded-full flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-8 h-8 text-primary" />
         </div>
         <div>
-          <h3 className="text-xl font-black text-gray-900">
+          <h3 className="text-xl font-black text-foreground">
             Booking Confirmed!
           </h3>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-muted-foreground/85 mt-2">
             {productTitle} booked from {startDate?.toLocaleDateString('en-IN')}{' '}
             to {endDate?.toLocaleDateString('en-IN')}.
           </p>
@@ -48,7 +48,7 @@ export const BookingConfirmationModal = ({
             Close
           </Button>
           <Link to="/account/bookings" className="flex-1">
-            <Button className="w-full rounded-xl bg-primary text-white font-bold">
+            <Button className="w-full rounded-xl bg-primary text-primary-foreground font-bold">
               My Bookings
             </Button>
           </Link>

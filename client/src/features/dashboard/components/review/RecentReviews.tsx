@@ -7,7 +7,7 @@ export const RecentReviews = () => {
   const { data: reviews = [], isLoading } = useAdminRecentReviews()
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Reviews</h3>
         <Link
@@ -22,19 +22,19 @@ export const RecentReviews = () => {
         <div className="space-y-6">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex items-start gap-3 animate-pulse">
-              <div className="w-10 h-10 rounded-full bg-gray-100 shrink-0" />
+              <div className="w-10 h-10 rounded-full bg-muted/50 shrink-0" />
               <div className="flex-1 space-y-2">
-                <div className="h-3 w-32 bg-gray-100 rounded" />
-                <div className="h-2 w-full bg-gray-50 rounded" />
+                <div className="h-3 w-32 bg-muted/50 rounded" />
+                <div className="h-2 w-full bg-muted-light rounded" />
               </div>
             </div>
           ))}
         </div>
       ) : reviews.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 text-center">
-          <Star size={36} className="text-gray-200 mb-3" />
-          <p className="text-sm font-bold text-gray-400">No reviews yet</p>
-          <p className="text-xs text-gray-300 mt-1">
+          <Star size={36} className="text-muted-foreground/30 mb-3" />
+          <p className="text-sm font-bold text-muted-foreground/70">No reviews yet</p>
+          <p className="text-xs text-muted-dark mt-1">
             Reviews will appear here once tenants start rating listings.
           </p>
         </div>
@@ -46,7 +46,7 @@ export const RecentReviews = () => {
               className="flex items-start justify-between gap-4 group"
             >
               <div className="flex gap-3">
-                <Avatar className="w-10 h-10 shrink-0 border border-gray-100">
+                <Avatar className="w-10 h-10 shrink-0 border border-border/30">
                   <AvatarImage
                     src={review.user?.image || ''}
                     alt={review.user?.name || 'User'}
@@ -69,7 +69,7 @@ export const RecentReviews = () => {
                           className={
                             i < review.rating
                               ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-200'
+                              : 'text-muted-foreground/30'
                           }
                         />
                       ))}
@@ -83,14 +83,14 @@ export const RecentReviews = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 min-w-[140px] border-l border-gray-100 pl-4 shrink-0">
+              <div className="flex items-center gap-2 min-w-[140px] border-l border-border/30 pl-4 shrink-0">
                 <img
                   src={
                     review.product?.images?.[0] ||
                     'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
                   }
                   alt={review.product?.title}
-                  className="w-8 h-8 rounded-md object-cover bg-gray-100"
+                  className="w-8 h-8 rounded-md object-cover bg-muted/50"
                 />
                 <div className="overflow-hidden">
                   <p className="text-[10px] font-bold text-dash-text truncate">

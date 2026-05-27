@@ -163,13 +163,13 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px] rounded-[32px] border-none bg-white/90 backdrop-blur-md p-6 shadow-2xl animate-scale-in">
+      <DialogContent className="sm:max-w-[480px] rounded-[32px] border-none bg-card/90 backdrop-blur-md p-6 shadow-2xl animate-scale-in">
         <DialogHeader className="text-left">
-          <DialogTitle className="text-xl font-black text-gray-900 font-display flex items-center gap-2">
+          <DialogTitle className="text-xl font-black text-foreground font-display flex items-center gap-2">
             <Laptop className="h-5 w-5 text-primary" />
             Trusted Devices
           </DialogTitle>
-          <DialogDescription className="text-xs text-gray-500 font-medium">
+          <DialogDescription className="text-xs text-muted-foreground/85 font-medium">
             These devices bypass secondary prompts and are fully authorized to
             access your Vastu rental data.
           </DialogDescription>
@@ -179,12 +179,12 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-10 space-y-2">
               <Loader size={24} variant="default" />
-              <span className="text-xs font-bold text-gray-400">
+              <span className="text-xs font-bold text-muted-foreground/70">
                 Loading trusted devices...
               </span>
             </div>
           ) : sessions.length === 0 ? (
-            <div className="text-center py-10 text-xs font-bold text-gray-400">
+            <div className="text-center py-10 text-xs font-bold text-muted-foreground/70">
               No trusted devices found.
             </div>
           ) : (
@@ -210,10 +210,10 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
               return (
                 <div
                   key={sessionItem.id}
-                  className="flex items-center justify-between p-4 rounded-2xl border bg-white border-gray-100 shadow-sm"
+                  className="flex items-center justify-between p-4 rounded-2xl border bg-card border-border/30 shadow-sm"
                 >
                   <div className="flex gap-3 items-center flex-1 min-w-0 pr-2 text-left">
-                    <div className="h-10 w-10 rounded-xl bg-gray-50 border border-gray-150 text-gray-500 flex items-center justify-center shrink-0">
+                    <div className="h-10 w-10 rounded-xl bg-muted-light border border-border/40 text-muted-foreground/85 flex items-center justify-center shrink-0">
                       {isPhone ? (
                         <Smartphone size={18} />
                       ) : (
@@ -231,7 +231,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                               setEditingDeviceName(e.target.value)
                             }
                             disabled={renameMutation.isPending}
-                            className="h-8 rounded-lg text-xs font-bold border-[#2d5222] focus:ring-1 focus:ring-[#2d5222]/20"
+                            className="h-8 rounded-lg text-xs font-bold border-primary focus:ring-1 focus:ring-primary/20"
                             autoFocus
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') handleSaveRenameDevice()
@@ -242,7 +242,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                             size="sm"
                             onClick={handleSaveRenameDevice}
                             disabled={renameMutation.isPending}
-                            className="h-8 bg-[#2d5222] text-white text-[10px] font-black rounded-lg px-2 shadow-none cursor-pointer border-none flex items-center gap-1"
+                            className="h-8 bg-primary text-primary-foreground text-[10px] font-black rounded-lg px-2 shadow-none cursor-pointer border-none flex items-center gap-1"
                           >
                             {renameMutation.isPending ? (
                               <Loader variant="white" size={10} />
@@ -253,7 +253,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5">
-                          <h4 className="text-xs font-extrabold text-gray-900 truncate">
+                          <h4 className="text-xs font-extrabold text-foreground truncate">
                             {displayName}
                           </h4>
                           <Button
@@ -265,13 +265,13 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                                 displayName,
                               )
                             }
-                            className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors p-0 border-none bg-transparent cursor-pointer"
+                            className="h-5 w-5 text-muted-foreground/70 hover:text-muted-foreground transition-colors p-0 border-none bg-transparent cursor-pointer"
                           >
                             <Pencil size={10} />
                           </Button>
                         </div>
                       )}
-                      <p className="text-[10px] text-gray-400 font-semibold mt-0.5">
+                      <p className="text-[10px] text-muted-foreground/70 font-semibold mt-0.5">
                         Trusted since {formattedDate}{' '}
                         {isCurrent && ' • Current Device'}
                       </p>
@@ -284,7 +284,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                       size="sm"
                       disabled={removingId === sessionItem.id}
                       onClick={() => handleRemoveDevice(sessionItem.id)}
-                      className="h-8 w-8 p-0 rounded-lg text-red-400 hover:text-red-650 hover:bg-red-50 cursor-pointer shadow-none shrink-0 flex items-center justify-center"
+                      className="h-8 w-8 p-0 rounded-lg text-destructive/80 hover:text-destructive hover:bg-danger cursor-pointer shadow-none shrink-0 flex items-center justify-center"
                     >
                       {removingId === sessionItem.id ? (
                         <Loader variant="default" size={12} />
@@ -299,10 +299,10 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
           )}
         </div>
 
-        <div className="pt-3 border-t border-gray-100 flex justify-end">
+        <div className="pt-3 border-t border-border/30 flex justify-end">
           <Button
             onClick={() => onOpenChange(false)}
-            className="rounded-xl h-10 px-6 font-bold bg-[#2d5222] hover:bg-[#203a18] text-white border-none cursor-pointer"
+            className="rounded-xl h-10 px-6 font-bold bg-primary hover:bg-primary-hover text-primary-foreground border-none cursor-pointer"
           >
             Done
           </Button>

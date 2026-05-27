@@ -32,8 +32,8 @@ export function ProductCard({ product }: ProductCardProps) {
       params={{ id: product.id }}
       className="block group h-full"
     >
-      <div className="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-gray-100 group-hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
-        <div className="relative w-full h-[220px] rounded-xl bg-gray-100 mb-4 overflow-hidden shrink-0 flex items-center justify-center">
+      <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 group-hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
+        <div className="relative w-full h-[220px] rounded-xl bg-muted/50 mb-4 overflow-hidden shrink-0 flex items-center justify-center">
           {!imageError ? (
             <img
               src={mainImage}
@@ -42,7 +42,7 @@ export function ProductCard({ product }: ProductCardProps) {
               onError={() => setImageError(true)}
             />
           ) : (
-            <div className="flex flex-col items-center justify-center text-gray-300 gap-2">
+            <div className="flex flex-col items-center justify-center text-muted-dark gap-2">
               <Package size={48} className="opacity-20" />
               <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
                 No Image
@@ -61,8 +61,8 @@ export function ProductCard({ product }: ProductCardProps) {
               className={cn(
                 'w-10 h-10 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm border-none',
                 liked
-                  ? 'bg-red-50 text-red-500 hover:bg-red-50 hover:text-red-500 scale-110'
-                  : 'bg-white/90 text-gray-600 hover:text-red-500 hover:bg-white',
+                  ? 'bg-danger text-destructive hover:bg-danger hover:text-destructive scale-110'
+                  : 'bg-card/90 text-muted-foreground hover:text-destructive hover:bg-card',
               )}
             >
               <Heart
@@ -75,7 +75,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
+        <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
           {product.title || product.name}
         </h3>
 
@@ -84,20 +84,20 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="text-lg font-bold text-primary-light">
               ₹{product.price.toLocaleString()}
             </span>
-            <span className="text-xs font-medium text-gray-500">/day</span>
+            <span className="text-xs font-medium text-muted-foreground/85">/day</span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-            <span className="text-xs font-bold text-gray-700">
+            <span className="text-xs font-bold text-foreground/80">
               {product.rating || '5.0'}
             </span>
-            <span className="text-xs font-medium text-gray-400">
+            <span className="text-xs font-medium text-muted-foreground/70">
               ({product.reviewsCount || '0'})
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 text-gray-500 mb-4">
+        <div className="flex items-center gap-1.5 text-muted-foreground/85 mb-4">
           <MapPin className="w-3.5 h-3.5 shrink-0" />
           <span className="text-xs font-medium truncate">
             {product.location || 'Ahmedabad'}
