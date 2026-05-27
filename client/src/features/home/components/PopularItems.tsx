@@ -8,7 +8,7 @@ export function PopularItems() {
   const { data: products, isLoading } = useProducts({ status: 'active' })
 
   return (
-    <section className="bg-bg-base py-16 overflow-hidden">
+    <section className="bg-background py-16 overflow-hidden">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-gray-900">

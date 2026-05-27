@@ -154,7 +154,7 @@ export function ProfileLayout() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-[#f5f3ee] flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-slate-100">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <User className="w-10 h-10 text-primary" />
@@ -175,7 +175,7 @@ export function ProfileLayout() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#f5f3ee] pt-16 pb-12 font-sans">
+      <div className="min-h-screen bg-background pt-16 pb-12 font-sans">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
             {/* Sidebar */}

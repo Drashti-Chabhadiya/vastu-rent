@@ -65,14 +65,14 @@ export function Categories() {
 
   const latestCategories = categories
     ? [...categories]
-        .sort((a: any, b: any) => b.id.localeCompare(a.id))
-        .slice(0, 4)
+      .sort((a: any, b: any) => b.id.localeCompare(a.id))
+      .slice(0, 4)
     : []
 
   return (
     <section
       id="categories"
-      className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32"
+      className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32 bg-background"
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-xl">

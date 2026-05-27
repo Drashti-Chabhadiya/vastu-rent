@@ -56,7 +56,7 @@ const features = [
 
 export function FeaturesBar() {
   return (
-    <section className="bg-white border-t border-b border-gray-100 py-6">
+    <section className="bg-background border-t border-b border-slate-100 py-6">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-center sm:justify-between gap-6 sm:gap-4 md:gap-6">
           {features.map((feature, index) => (

@@ -18,7 +18,7 @@ export function RecentProducts() {
     : []
 
   return (
-    <section className="bg-white py-20 overflow-hidden border-t border-gray-100">
+    <section className="bg-background py-20 overflow-hidden border-t border-slate-100/50">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative">
         {/* Glow effect */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />

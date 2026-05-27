@@ -50,7 +50,7 @@ export function HelpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-background pb-20">
       {/* Search Header */}
       <section className="bg-primary py-20 px-4">
         <div className="mx-auto max-w-4xl text-center">

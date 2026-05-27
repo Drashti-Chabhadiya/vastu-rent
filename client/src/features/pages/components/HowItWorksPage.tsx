@@ -54,7 +54,7 @@ const benefits = [
 
 export function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-background pb-20">
       {/* Hero Section */}
       <section className="bg-white py-20 border-b border-gray-100">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 text-center">

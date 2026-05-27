@@ -11,7 +11,7 @@ export function BrowseByCategory() {
   const displayCategories = categories?.slice(0, 8) || []
 
   return (
-    <section className="bg-white py-12 sm:py-16">
+    <section className="bg-background py-12 sm:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
           <h2 className="text-2xl font-bold text-gray-900">
@@ -57,7 +57,7 @@ export function BrowseByCategory() {
                 to={'/categories'}
                 className="flex flex-col items-center gap-3 sm:gap-4 cursor-pointer group"
               >
-                <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] rounded-2xl sm:rounded-3xl bg-gray-100 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-md">
+                <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] rounded-2xl sm:rounded-3xl bg-[#F4F8F1] flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-md border border-[#e2edd8]/40">
                   <Grid3x3 className="w-6 h-6 sm:w-8 sm:h-8 text-gray-800" />
                 </div>
                 <span className="text-[11px] sm:text-xs font-semibold text-gray-800 text-center">

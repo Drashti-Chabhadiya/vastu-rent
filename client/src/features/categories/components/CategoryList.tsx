@@ -7,7 +7,7 @@ export function CategoryList() {
   const { data: categories, isLoading } = useCategories()
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-background py-12">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">

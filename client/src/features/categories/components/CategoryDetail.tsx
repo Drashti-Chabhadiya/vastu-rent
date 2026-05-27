@@ -27,7 +27,7 @@ export function CategoryDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Category Header */}
       <div className="bg-white border-b border-gray-100 pb-12 pt-8">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
