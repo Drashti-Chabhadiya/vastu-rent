@@ -8,11 +8,11 @@ export const getApkDownloadUrl = (customIp?: string) => {
   if (customIp && customIp.trim() !== '') {
     // Ensure the IP doesn't already have http/port
     const cleanIp = customIp.replace(/^https?:\/\//, '').split(':')[0]
-    return `http://${cleanIp}:3000/app-release.apk`
+    return `http://${cleanIp}:3000/vastu-rent.apk`
   }
 
   // 2. Get environment variables
-  const apkPath = import.meta.env.VITE_APK_PATH || '/app-release.apk'
+  const apkPath = import.meta.env.VITE_APK_PATH || '/vastu-rent.apk'
 
   // If VITE_APK_PATH is a fully-qualified URL, use it directly (e.g. customized in .env)
   if (apkPath.startsWith('http://') || apkPath.startsWith('https://')) {
@@ -30,7 +30,7 @@ export const getApkDownloadUrl = (customIp?: string) => {
 
   // In production (non-localhost), default to the secure GitHub release APK link
   if (!isLocal) {
-    return 'https://github.com/Drashti-Chabhadiya/new-vastu-rent/releases/download/v1.0.0/app-release.apk'
+    return 'https://github.com/Drashti-Chabhadiya/new-vastu-rent/releases/download/v1.0.0/vastu-rent.apk'
   }
 
   // Fallback to current origin for local dev testing
@@ -41,5 +41,5 @@ export const APK_CONFIG = {
   VERSION: 'v1.0.0',
   SIZE: '29.2 MB',
   MIN_ANDROID: '8.0+',
-  FILENAME: 'app-release.apk',
+  FILENAME: 'vastu-rent.apk',
 }
