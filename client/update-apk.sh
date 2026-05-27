@@ -3,8 +3,8 @@
 # Configuration
 PROJECT_ROOT=$(pwd)
 APK_DEBUG="android/app/build/outputs/apk/debug/app-debug.apk"
-APK_RELEASE="android/app/build/outputs/apk/release/app-release.apk"
-DEST="public/app-release.apk"
+APK_RELEASE="android/app/build/outputs/apk/release/vastu-rent.apk"
+DEST="public/vastu-rent.apk"
 
 echo "🚀 Starting APK Synchronization..."
 

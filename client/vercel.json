@@ -2,7 +2,7 @@
   "ignoreCommand": "git diff HEAD^ HEAD --quiet -- .",
   "headers": [
     {
-      "source": "/app-release.apk",
+      "source": "/vastu-rent.apk",
       "headers": [
         {
           "key": "Content-Type",
