@@ -91,7 +91,10 @@ export function CouponRenterCard({
         <span className="text-[9px] font-bold text-slate-400 flex items-center gap-1 group-hover:text-emerald-600 transition-colors uppercase tracking-wider">
           {copiedCode === coupon.code ? (
             <>
-              <CheckCircle2 size={11} className="text-emerald-500 animate-bounce" />{' '}
+              <CheckCircle2
+                size={11}
+                className="text-emerald-500 animate-bounce"
+              />{' '}
               Copied!
             </>
           ) : (

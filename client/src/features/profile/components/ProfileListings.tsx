@@ -47,7 +47,9 @@ export function ProfileListings() {
   const updateMutation = useUpdateProduct()
   const { data: categories } = useAdminCategories()
 
-  const [activeTab, setActiveTab] = useState<'all' | 'active' | 'inactive' | 'draft'>('all')
+  const [activeTab, setActiveTab] = useState<
+    'all' | 'active' | 'inactive' | 'draft'
+  >('all')
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
 
   // Filter States
@@ -150,33 +152,56 @@ export function ProfileListings() {
   }
 
   // Filter listings based on active tab & dynamic filter settings
-  const filteredListings = listings?.filter((item: any) => {
-    // Filter by tab selection (all / active / inactive)
-    if (activeTab === 'active' && !item.isAvailable) return false
-    if (activeTab === 'inactive' && item.isAvailable) return false
-    if (activeTab === 'draft') return false
+  const filteredListings =
+    listings?.filter((item: any) => {
+      // Filter by tab selection (all / active / inactive)
+      if (activeTab === 'active' && !item.isAvailable) return false
+      if (activeTab === 'inactive' && item.isAvailable) return false
+      if (activeTab === 'draft') return false
 
-    // Filter by search string
-    const matchesSearch = !search.trim() || 
-      item.title?.toLowerCase().includes(search.toLowerCase()) || 
-      item.description?.toLowerCase().includes(search.toLowerCase())
-    
-    // Filter by category selection
-    const matchesCategory = categoryFilter === 'all' || item.categoryId === categoryFilter
+      // Filter by search string
+      const matchesSearch =
+        !search.trim() ||
+        item.title?.toLowerCase().includes(search.toLowerCase()) ||
+        item.description?.toLowerCase().includes(search.toLowerCase())
 
-    // Filter by custom status selection
-    const matchesStatus = statusFilter === 'all' ||
-      (statusFilter === 'available' ? item.isAvailable === true : item.isAvailable === false)
+      // Filter by category selection
+      const matchesCategory =
+        categoryFilter === 'all' || item.categoryId === categoryFilter
 
-    return matchesSearch && matchesCategory && matchesStatus
-  }) || []
+      // Filter by custom status selection
+      const matchesStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'available'
+          ? item.isAvailable === true
+          : item.isAvailable === false)
+
+      return matchesSearch && matchesCategory && matchesStatus
+    }) || []
 
   // Mocked/Dynamically aggregated total performance stats matching the designs
-  const totalViews = listings?.reduce((sum: number, item: any) => sum + (item.views || 103), 0) || 413
-  const totalBookings = listings?.reduce((sum: number, item: any) => sum + (item.bookingsCount || 20), 0) || 80
-  const totalEarnings = listings?.reduce((sum: number, item: any) => sum + ((item.bookingsCount || 20) * item.price), 0) || 55640
+  const totalViews =
+    listings?.reduce(
+      (sum: number, item: any) => sum + (item.views || 103),
+      0,
+    ) || 413
+  const totalBookings =
+    listings?.reduce(
+      (sum: number, item: any) => sum + (item.bookingsCount || 20),
+      0,
+    ) || 80
+  const totalEarnings =
+    listings?.reduce(
+      (sum: number, item: any) => sum + (item.bookingsCount || 20) * item.price,
+      0,
+    ) || 55640
   const avgRatingValue = listings?.length
-    ? (listings.reduce((sum: number, item: any) => sum + (parseFloat(item.rating) || 4.8), 0) / listings.length).toFixed(1)
+    ? (
+        listings.reduce(
+          (sum: number, item: any) => sum + (parseFloat(item.rating) || 4.8),
+          0,
+        ) / listings.length
+      ).toFixed(1)
     : '4.8'
 
   return (
@@ -192,7 +217,7 @@ export function ProfileListings() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button 
+          <Button
             onClick={() => setIsAddOpen(true)}
             className="bg-[#2d5222] hover:bg-[#203a18] text-white font-black text-xs px-5 h-10 rounded-full flex items-center gap-1.5 active:scale-95 shadow-sm cursor-pointer border-none shadow-[#2d5222]/15"
           >
@@ -204,7 +229,9 @@ export function ProfileListings() {
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
               'rounded-full border-slate-200 font-black h-10 px-5 flex items-center gap-2 shadow-sm shrink-0 transition-colors',
-              showFilters ? 'bg-slate-100 text-[#2d5222] border-slate-300' : 'text-slate-700 hover:bg-slate-50'
+              showFilters
+                ? 'bg-slate-100 text-[#2d5222] border-slate-300'
+                : 'text-slate-700 hover:bg-slate-50',
             )}
           >
             <SlidersHorizontal size={14} className="text-slate-400" />
@@ -217,7 +244,10 @@ export function ProfileListings() {
       {showFilters && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-slate-50/50 rounded-3xl border border-slate-100 animate-in slide-in-from-top-3 duration-200">
           <div className="relative">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search
+              size={16}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            />
             <Input
               placeholder="Search listings..."
               value={search}
@@ -231,11 +261,18 @@ export function ProfileListings() {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent className="bg-white rounded-2xl shadow-xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-              <SelectItem value="all" className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600">
+              <SelectItem
+                value="all"
+                className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600"
+              >
                 All Categories
               </SelectItem>
               {categories?.map((cat: any) => (
-                <SelectItem key={cat.id} value={cat.id} className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600">
+                <SelectItem
+                  key={cat.id}
+                  value={cat.id}
+                  className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600"
+                >
                   {cat.name}
                 </SelectItem>
               ))}
@@ -247,13 +284,22 @@ export function ProfileListings() {
               <SelectValue placeholder="Availability" />
             </SelectTrigger>
             <SelectContent className="bg-white rounded-2xl shadow-xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-              <SelectItem value="all" className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600">
+              <SelectItem
+                value="all"
+                className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600"
+              >
                 Any Availability
               </SelectItem>
-              <SelectItem value="available" className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600">
+              <SelectItem
+                value="available"
+                className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600"
+              >
                 Active Listings
               </SelectItem>
-              <SelectItem value="unavailable" className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600">
+              <SelectItem
+                value="unavailable"
+                className="rounded-xl font-bold py-2.5 px-3 focus:bg-slate-50 cursor-pointer text-xs text-slate-600"
+              >
                 Inactive Listings
               </SelectItem>
             </SelectContent>
@@ -263,12 +309,14 @@ export function ProfileListings() {
 
       {/* Tabs Filter Navigation */}
       <div className="flex gap-6 border-b border-slate-100 pb-px overflow-x-auto custom-scrollbar">
-        {([
-          { id: 'all', label: 'All Listings' },
-          { id: 'active', label: 'Active' },
-          { id: 'inactive', label: 'Inactive' },
-          { id: 'draft', label: 'Draft' },
-        ] as const).map((tab) => {
+        {(
+          [
+            { id: 'all', label: 'All Listings' },
+            { id: 'active', label: 'Active' },
+            { id: 'inactive', label: 'Inactive' },
+            { id: 'draft', label: 'Draft' },
+          ] as const
+        ).map((tab) => {
           const isActive = activeTab === tab.id
           return (
             <button
@@ -305,7 +353,7 @@ export function ProfileListings() {
             Start earning by listing your unused items today. It's quick, easy,
             and secure.
           </p>
-          <Button 
+          <Button
             onClick={() => setIsAddOpen(true)}
             className="bg-[#2d5222] hover:bg-[#203a18] text-white font-black text-xs px-6 h-10 rounded-full active:scale-95 transition-all mt-5 border-none shadow-sm cursor-pointer"
           >
@@ -323,8 +371,7 @@ export function ProfileListings() {
               <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 bg-slate-50 shadow-inner relative">
                 <img
                   src={
-                    item.images?.[0] ||
-                    'https://placehold.co/128?text=Vastu'
+                    item.images?.[0] || 'https://placehold.co/128?text=Vastu'
                   }
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -361,12 +408,17 @@ export function ProfileListings() {
                     <span>{item.views || 120} Views</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Calendar size={13} className="text-slate-400 stroke-[2.5]" />
+                    <Calendar
+                      size={13}
+                      className="text-slate-400 stroke-[2.5]"
+                    />
                     <span>{item.bookingsCount || 24} Bookings</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Star size={13} className="text-slate-400 stroke-[2.5]" />
-                    <span>{parseFloat(item.rating || '4.8').toFixed(1)} Rating</span>
+                    <span>
+                      {parseFloat(item.rating || '4.8').toFixed(1)} Rating
+                    </span>
                   </div>
                 </div>
               </div>
@@ -378,7 +430,9 @@ export function ProfileListings() {
                     <IndianRupee size={15} className="stroke-[3] mt-0.5" />
                     {item.price}
                   </span>
-                  <span className="text-slate-400 text-[10px] font-bold">/ day</span>
+                  <span className="text-slate-400 text-[10px] font-bold">
+                    / day
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2.5 w-full md:w-auto mt-4 md:mt-0 relative">
@@ -399,7 +453,11 @@ export function ProfileListings() {
                       variant="ghost"
                       size="icon"
                       className="rounded-full border border-slate-200 text-slate-400 hover:text-slate-600 h-9 w-9 flex items-center justify-center shadow-sm cursor-pointer"
-                      onClick={() => setOpenDropdownId(openDropdownId === item.id ? null : item.id)}
+                      onClick={() =>
+                        setOpenDropdownId(
+                          openDropdownId === item.id ? null : item.id,
+                        )
+                      }
                     >
                       <MoreVertical size={16} />
                     </Button>
@@ -415,10 +473,16 @@ export function ProfileListings() {
                           <button
                             onClick={() => {
                               setOpenDropdownId(null)
-                              if (confirm('Are you sure you want to delete this listing?')) {
+                              if (
+                                confirm(
+                                  'Are you sure you want to delete this listing?',
+                                )
+                              ) {
                                 deleteProduct.mutate(item.id, {
                                   onSuccess: () => {
-                                    toast.success('Listing deleted successfully')
+                                    toast.success(
+                                      'Listing deleted successfully',
+                                    )
                                   },
                                 })
                               }
@@ -446,10 +510,15 @@ export function ProfileListings() {
             <Eye size={18} className="stroke-[2.5]" />
           </div>
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Views</p>
-            <h4 className="text-xl font-black text-gray-900 mt-0.5">{totalViews}</h4>
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Total Views
+            </p>
+            <h4 className="text-xl font-black text-gray-900 mt-0.5">
+              {totalViews}
+            </h4>
             <p className="text-[9px] font-extrabold text-green-600 flex items-center gap-0.5 mt-0.5">
-              <TrendingUp size={10} className="stroke-[2.5]" /> +12% vs last month
+              <TrendingUp size={10} className="stroke-[2.5]" /> +12% vs last
+              month
             </p>
           </div>
         </div>
@@ -459,10 +528,15 @@ export function ProfileListings() {
             <Calendar size={18} className="stroke-[2.5]" />
           </div>
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Bookings</p>
-            <h4 className="text-xl font-black text-gray-900 mt-0.5">{totalBookings}</h4>
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Total Bookings
+            </p>
+            <h4 className="text-xl font-black text-gray-900 mt-0.5">
+              {totalBookings}
+            </h4>
             <p className="text-[9px] font-extrabold text-green-600 flex items-center gap-0.5 mt-0.5">
-              <TrendingUp size={10} className="stroke-[2.5]" /> +8% vs last month
+              <TrendingUp size={10} className="stroke-[2.5]" /> +8% vs last
+              month
             </p>
           </div>
         </div>
@@ -472,13 +546,16 @@ export function ProfileListings() {
             <Coins size={18} className="stroke-[2.5]" />
           </div>
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Total Earnings</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Total Earnings
+            </p>
             <h4 className="text-xl font-black text-gray-900 mt-0.5 flex items-center">
               <IndianRupee size={15} className="stroke-[3]" />
               {totalEarnings.toLocaleString()}
             </h4>
             <p className="text-[9px] font-extrabold text-green-600 flex items-center gap-0.5 mt-0.5">
-              <TrendingUp size={10} className="stroke-[2.5]" /> +18% vs last month
+              <TrendingUp size={10} className="stroke-[2.5]" /> +18% vs last
+              month
             </p>
           </div>
         </div>
@@ -488,8 +565,12 @@ export function ProfileListings() {
             <Star size={18} className="stroke-[2.5]" fill="currentColor" />
           </div>
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Average Rating</p>
-            <h4 className="text-xl font-black text-gray-900 mt-0.5">{avgRatingValue}</h4>
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Average Rating
+            </p>
+            <h4 className="text-xl font-black text-gray-900 mt-0.5">
+              {avgRatingValue}
+            </h4>
             <p className="text-[9px] font-extrabold text-slate-400 flex items-center gap-0.5 mt-0.5">
               Excellent performance
             </p>
@@ -508,7 +589,9 @@ export function ProfileListings() {
               toast.success('Listing created successfully!')
             },
             onError: (err: any) => {
-              toast.error(err.response?.data?.message || 'Failed to create listing')
+              toast.error(
+                err.response?.data?.message || 'Failed to create listing',
+              )
             },
           })
         }}
@@ -537,7 +620,9 @@ export function ProfileListings() {
                 toast.success('Listing updated successfully!')
               },
               onError: (err: any) => {
-                toast.error(err.response?.data?.message || 'Failed to update listing')
+                toast.error(
+                  err.response?.data?.message || 'Failed to update listing',
+                )
               },
             },
           )

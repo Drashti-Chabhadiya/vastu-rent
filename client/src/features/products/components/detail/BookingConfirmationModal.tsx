@@ -32,9 +32,8 @@ export const BookingConfirmationModal = ({
             Booking Confirmed!
           </h3>
           <p className="text-sm text-gray-500 mt-2">
-            {productTitle} booked from{' '}
-            {startDate?.toLocaleDateString('en-IN')} to{' '}
-            {endDate?.toLocaleDateString('en-IN')}.
+            {productTitle} booked from {startDate?.toLocaleDateString('en-IN')}{' '}
+            to {endDate?.toLocaleDateString('en-IN')}.
           </p>
           <p className="text-lg font-black text-primary mt-3">
             ₹{totalPrice.toLocaleString()} total

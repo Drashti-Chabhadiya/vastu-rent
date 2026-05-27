@@ -30,8 +30,12 @@ export const useNotificationStore = create<State>((set, get) => ({
   hasMore: true,
   set: (items) => set({ items }),
   add: (n) => set((s) => ({ items: [n, ...s.items] })),
-  markReadLocal: (id) => set((s) => ({ items: s.items.map((it) => (it.id === id ? { ...it, isRead: true } : it)) })),
-  markAllReadLocal: () => set((s) => ({ items: s.items.map((it) => ({ ...it, isRead: true })) })),
+  markReadLocal: (id) =>
+    set((s) => ({
+      items: s.items.map((it) => (it.id === id ? { ...it, isRead: true } : it)),
+    })),
+  markAllReadLocal: () =>
+    set((s) => ({ items: s.items.map((it) => ({ ...it, isRead: true })) })),
   fetchMore: async () => {
     const s = get()
     if (!s.hasMore || s.isLoading) return
@@ -39,7 +43,11 @@ export const useNotificationStore = create<State>((set, get) => ({
     try {
       const res = await apiClient.get(`/notifications?page=${s.page + 1}`)
       const data = res.data.notifications || []
-      set({ items: [...s.items, ...data], page: s.page + 1, hasMore: data.length > 0 })
+      set({
+        items: [...s.items, ...data],
+        page: s.page + 1,
+        hasMore: data.length > 0,
+      })
     } catch (err) {
       console.error('Failed to fetch notifications page', err)
     } finally {

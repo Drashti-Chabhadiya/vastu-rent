@@ -33,8 +33,8 @@ export const StorageDetailsDialog = ({
               Cloudinary Resource Metrics
             </h3>
             <p className="text-[11px] font-bold text-slate-400">
-              Real-time resource and bandwidth allocations from your
-              connected Cloudinary bucket.
+              Real-time resource and bandwidth allocations from your connected
+              Cloudinary bucket.
             </p>
           </div>
 

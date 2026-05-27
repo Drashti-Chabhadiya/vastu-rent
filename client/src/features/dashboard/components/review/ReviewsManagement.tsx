@@ -79,11 +79,24 @@ const formatStayDates = (createdAtStr: string) => {
   const endDate = new Date(createdDate.getTime())
   endDate.setDate(endDate.getDate() - 2)
 
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+
   const startDay = startDate.getDate().toString()
   const startMonth = months[startDate.getMonth()]
-  
+
   const endDay = endDate.getDate().toString()
   const endMonth = months[endDate.getMonth()]
   const endYear = endDate.getFullYear()
@@ -96,7 +109,20 @@ const formatPostedDate = (createdAtStr: string) => {
   const date = new Date(createdAtStr)
   if (isNaN(date.getTime())) return '29 May 2024'
 
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
   const day = date.getDate()
   const month = months[date.getMonth()]
   const year = date.getFullYear()
@@ -106,31 +132,36 @@ const formatPostedDate = (createdAtStr: string) => {
 
 const parseCommentImagesAndReply = (comment: string) => {
   if (!comment) return { text: '', images: [], reply: '' }
-  
+
   let images: string[] = []
   const imagesMatch = comment.match(/\[Images:\s*([^\]]+)\]/)
   if (imagesMatch) {
     const imagesStr = imagesMatch[1]
-    images = imagesStr.split(',').map((img: string) => img.trim()).filter(Boolean)
+    images = imagesStr
+      .split(',')
+      .map((img: string) => img.trim())
+      .filter(Boolean)
   }
-  
+
   let reply = ''
   const replyMatch = comment.match(/\[Reply:\s*([^\]]+)\]/)
   if (replyMatch) {
     reply = replyMatch[1].trim()
   }
-  
-  let text = comment
+
+  const text = comment
     .replace(/\[Images:\s*([^\]]+)\]/, '')
     .replace(/\[Reply:\s*([^\]]+)\]/, '')
     .trim()
-    
+
   return { text, images, reply }
 }
 
 export const ReviewsManagement = () => {
   const [search] = useState('')
-  const [activeTab, setActiveTab] = useState<'all' | 'listings' | 'hosts'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'listings' | 'hosts'>(
+    'all',
+  )
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
   const [role, setRole] = useState<string | null>(null)
 
@@ -138,7 +169,7 @@ export const ReviewsManagement = () => {
   const [replyText, setReplyText] = useState('')
   const [isSubmittingReply, setIsSubmittingReply] = useState(false)
   const [ratingFilter, setRatingFilter] = useState<number | 'all'>('all')
-  
+
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -162,7 +193,10 @@ export const ReviewsManagement = () => {
       setReplyText('')
       queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
     } catch (err: any) {
-      const errMsg = err?.response?.data?.message || err?.message || 'Failed to submit reply.'
+      const errMsg =
+        err?.response?.data?.message ||
+        err?.message ||
+        'Failed to submit reply.'
       toast.error(errMsg)
     } finally {
       setIsSubmittingReply(false)
@@ -171,27 +205,31 @@ export const ReviewsManagement = () => {
 
   const { data: serverReviews, isLoading } = useAdminReviews({ search })
 
-  console.log("serverReviews", serverReviews)
+  console.log('serverReviews', serverReviews)
   const deleteMutation = useDeleteReview()
 
   // Map server reviews to uniform UI cards structure from the API response
   const reviews = serverReviews
     ? serverReviews.map((r: any) => ({
-      id: r.id,
-      productId: r.product?.id,
-      title: r.product?.title || 'Rental Item',
-      location: r.product?.location || 'India',
-      rating: r.rating || 5,
-      dates: formatStayDates(r.createdAt),
-      comment: r.comment || 'Perfect rental experience!',
-      host: {
-        name: r.product?.owner?.name || 'Vastu Host',
-        avatar: r.product?.owner?.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-      },
-      postedDate: formatPostedDate(r.createdAt),
-      type: r.product ? 'listings' : 'hosts',
-      image: r.product?.images?.[0] || 'https://images.unsplash.com/photo-1545241047-6083a3684587',
-    }))
+        id: r.id,
+        productId: r.product?.id,
+        title: r.product?.title || 'Rental Item',
+        location: r.product?.location || 'India',
+        rating: r.rating || 5,
+        dates: formatStayDates(r.createdAt),
+        comment: r.comment || 'Perfect rental experience!',
+        host: {
+          name: r.product?.owner?.name || 'Vastu Host',
+          avatar:
+            r.product?.owner?.image ||
+            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+        },
+        postedDate: formatPostedDate(r.createdAt),
+        type: r.product ? 'listings' : 'hosts',
+        image:
+          r.product?.images?.[0] ||
+          'https://images.unsplash.com/photo-1545241047-6083a3684587',
+      }))
     : []
 
   // Local Search filtering
@@ -216,10 +254,11 @@ export const ReviewsManagement = () => {
     // 1. Tab filter
     if (activeTab === 'listings' && r.type !== 'listings') return false
     if (activeTab === 'hosts' && r.type !== 'hosts') return false
-    
+
     // 2. Rating filter
-    if (ratingFilter !== 'all' && Math.round(r.rating) !== ratingFilter) return false
-    
+    if (ratingFilter !== 'all' && Math.round(r.rating) !== ratingFilter)
+      return false
+
     return true
   })
 
@@ -299,8 +338,8 @@ export const ReviewsManagement = () => {
             <DropdownMenuItem
               onClick={() => setRatingFilter('all')}
               className={cn(
-                "text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]",
-                ratingFilter === 'all' && "text-[#2d5222] bg-[#2d5222]/5"
+                'text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]',
+                ratingFilter === 'all' && 'text-[#2d5222] bg-[#2d5222]/5',
               )}
             >
               All Ratings
@@ -310,16 +349,22 @@ export const ReviewsManagement = () => {
                 key={stars}
                 onClick={() => setRatingFilter(stars)}
                 className={cn(
-                  "text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222] flex items-center gap-1.5",
-                  ratingFilter === stars && "text-[#2d5222] bg-[#2d5222]/5"
+                  'text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222] flex items-center gap-1.5',
+                  ratingFilter === stars && 'text-[#2d5222] bg-[#2d5222]/5',
                 )}
               >
                 <div className="flex items-center gap-0.5 text-yellow-400">
                   {Array.from({ length: stars }).map((_, i) => (
-                    <Star key={i} size={10} className="fill-yellow-400 text-yellow-400" />
+                    <Star
+                      key={i}
+                      size={10}
+                      className="fill-yellow-400 text-yellow-400"
+                    />
                   ))}
                 </div>
-                <span className="font-bold text-slate-600">({stars} Stars)</span>
+                <span className="font-bold text-slate-600">
+                  ({stars} Stars)
+                </span>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -362,7 +407,9 @@ export const ReviewsManagement = () => {
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
             <Star className="text-slate-300 fill-slate-300" size={32} />
           </div>
-          <h3 className="text-lg font-extrabold text-gray-800">No {activeTab} reviews</h3>
+          <h3 className="text-lg font-extrabold text-gray-800">
+            No {activeTab} reviews
+          </h3>
           <p className="text-slate-400 text-xs mt-1.5 max-w-xs text-center font-bold">
             You don't have any reviews listed under this category right now.
           </p>
@@ -409,7 +456,9 @@ export const ReviewsManagement = () => {
 
                 {/* Review Message & Parsed Attachments & Reply */}
                 {(() => {
-                  const { text, images, reply } = parseCommentImagesAndReply(review.comment)
+                  const { text, images, reply } = parseCommentImagesAndReply(
+                    review.comment,
+                  )
                   return (
                     <div className="space-y-4">
                       {text && (
@@ -417,7 +466,7 @@ export const ReviewsManagement = () => {
                           {text}
                         </p>
                       )}
-                      
+
                       {/* Attachments */}
                       {images.length > 0 && (
                         <div className="flex flex-wrap gap-2 pt-1">
@@ -427,7 +476,10 @@ export const ReviewsManagement = () => {
                               className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-sm hover:scale-[1.03] transition-all cursor-pointer shrink-0 group/revimg"
                               onClick={() => window.open(imgUrl, '_blank')}
                             >
-                              <img src={imgUrl} className="w-full h-full object-cover" />
+                              <img
+                                src={imgUrl}
+                                className="w-full h-full object-cover"
+                              />
                               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/revimg:opacity-100 transition-opacity flex items-center justify-center text-white text-[9px] font-black uppercase">
                                 View
                               </div>
@@ -491,7 +543,11 @@ export const ReviewsManagement = () => {
                         variant="ghost"
                         size="icon"
                         className="rounded-full text-slate-400 hover:text-slate-600 h-8 w-8 flex items-center justify-center cursor-pointer shrink-0"
-                        onClick={() => setOpenDropdownId(openDropdownId === review.id ? null : review.id)}
+                        onClick={() =>
+                          setOpenDropdownId(
+                            openDropdownId === review.id ? null : review.id,
+                          )
+                        }
                       >
                         <MoreVertical size={16} />
                       </Button>
@@ -533,7 +589,10 @@ export const ReviewsManagement = () => {
                       className="rounded-xl border-slate-200 text-[#2d5222] font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 hover:bg-slate-50/50 shadow-sm active:scale-95 cursor-pointer w-full"
                     >
                       View Listing
-                      <ChevronRight size={14} className="text-[#2d5222] stroke-[2.5]" />
+                      <ChevronRight
+                        size={14}
+                        className="text-[#2d5222] stroke-[2.5]"
+                      />
                     </Button>
                   </a>
                 ) : (
@@ -583,14 +642,20 @@ export const ReviewsManagement = () => {
                         variant="outline"
                         onClick={() => {
                           setReplyingReviewId(review.id)
-                          const parsed = parseCommentImagesAndReply(review.comment)
+                          const parsed = parseCommentImagesAndReply(
+                            review.comment,
+                          )
                           setReplyText(parsed.reply)
                         }}
                         className="rounded-xl border-slate-200 text-[#2d5222] font-semibold text-xs px-4 h-9 flex items-center justify-center gap-1.5 hover:bg-slate-50/50 shadow-sm w-full"
                       >
                         {(() => {
-                          const parsed = parseCommentImagesAndReply(review.comment)
-                          return parsed.reply ? 'Edit Host Reply' : 'Reply to Review'
+                          const parsed = parseCommentImagesAndReply(
+                            review.comment,
+                          )
+                          return parsed.reply
+                            ? 'Edit Host Reply'
+                            : 'Reply to Review'
                         })()}
                       </Button>
                     )}
@@ -620,4 +685,3 @@ export const ReviewsManagement = () => {
     </div>
   )
 }
-

@@ -78,22 +78,29 @@ export function PersonalInfo() {
       const u = session.user as any
       setName(u.name || '')
       if (u.gender !== undefined && u.gender !== null) setGender(u.gender)
-      if (u.location !== undefined && u.location !== null) setLocation(u.location)
+      if (u.location !== undefined && u.location !== null)
+        setLocation(u.location)
       if (u.phone !== undefined && u.phone !== null) setPhone(u.phone)
-      if (u.language !== undefined && u.language !== null) setLanguage(u.language)
+      if (u.language !== undefined && u.language !== null)
+        setLanguage(u.language)
       if (u.dob !== undefined && u.dob !== null) setDob(u.dob)
-      if (u.currency !== undefined && u.currency !== null) setCurrency(u.currency)
-      if (u.bookingAlerts !== undefined && u.bookingAlerts !== null) setEmailNotifications(u.bookingAlerts)
-      if (u.settlementAlerts !== undefined && u.settlementAlerts !== null) setSmsNotifications(u.settlementAlerts)
-      if (u.marketingAlerts !== undefined && u.marketingAlerts !== null) setMarketingEmails(u.marketingAlerts)
-      if (u.twoFactorEnabled !== undefined && u.twoFactorEnabled !== null) setTwoFactorEnabled(u.twoFactorEnabled)
+      if (u.currency !== undefined && u.currency !== null)
+        setCurrency(u.currency)
+      if (u.bookingAlerts !== undefined && u.bookingAlerts !== null)
+        setEmailNotifications(u.bookingAlerts)
+      if (u.settlementAlerts !== undefined && u.settlementAlerts !== null)
+        setSmsNotifications(u.settlementAlerts)
+      if (u.marketingAlerts !== undefined && u.marketingAlerts !== null)
+        setMarketingEmails(u.marketingAlerts)
+      if (u.twoFactorEnabled !== undefined && u.twoFactorEnabled !== null)
+        setTwoFactorEnabled(u.twoFactorEnabled)
     }
   }, [session])
 
   // Instant Auto-Save preferences handler
   const handleTogglePreference = async (
     key: 'email' | 'sms' | 'marketing',
-    newValue: boolean
+    newValue: boolean,
   ) => {
     if (key === 'email') setEmailNotifications(newValue)
     if (key === 'sms') setSmsNotifications(newValue)
@@ -209,9 +216,9 @@ export function PersonalInfo() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      year: 'numeric',
-    })
+        month: 'short',
+        year: 'numeric',
+      })
     : 'Jan 2024'
 
   return (
@@ -335,7 +342,7 @@ export function PersonalInfo() {
                     'h-9 rounded-xl text-xs font-bold transition-all border shrink-0 shadow-none cursor-pointer',
                     isEditing
                       ? 'border-red-200 text-red-600 bg-red-50 hover:bg-red-100/70 hover:text-red-750'
-                      : 'border-[#2d5222] text-[#2d5222] hover:bg-[#2d5222]/5'
+                      : 'border-[#2d5222] text-[#2d5222] hover:bg-[#2d5222]/5',
                   )}
                 >
                   {isEditing ? (
@@ -368,7 +375,7 @@ export function PersonalInfo() {
                       'h-11 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
                       isEditing
                         ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default'
+                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
                     )}
                   />
                 </div>
@@ -390,7 +397,9 @@ export function PersonalInfo() {
                       id="gender"
                       className={cn(
                         'w-full h-11 px-4 rounded-xl border border-gray-200 font-semibold text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-gray-50/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-gray-400',
-                        isEditing ? 'bg-white border-primary ring-2 ring-primary/5' : 'bg-gray-50/50 [&>span]:opacity-100'
+                        isEditing
+                          ? 'bg-white border-primary ring-2 ring-primary/5'
+                          : 'bg-gray-50/50 [&>span]:opacity-100',
                       )}
                     >
                       <SelectValue placeholder="Select Gender" />
@@ -436,7 +445,7 @@ export function PersonalInfo() {
                       'h-11 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
                       isEditing
                         ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default'
+                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
                     )}
                   />
                 </div>
@@ -458,7 +467,7 @@ export function PersonalInfo() {
                       'h-11 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
                       isEditing
                         ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default'
+                        : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
                     )}
                   />
                 </div>
@@ -480,7 +489,9 @@ export function PersonalInfo() {
                       id="language"
                       className={cn(
                         'w-full h-11 px-4 rounded-xl border border-gray-200 font-semibold text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-gray-50/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-gray-400',
-                        isEditing ? 'bg-white border-primary ring-2 ring-primary/5' : 'bg-gray-50/50 [&>span]:opacity-100'
+                        isEditing
+                          ? 'bg-white border-primary ring-2 ring-primary/5'
+                          : 'bg-gray-50/50 [&>span]:opacity-100',
                       )}
                     >
                       <SelectValue placeholder="Select Language" />
@@ -512,7 +523,7 @@ export function PersonalInfo() {
                         'h-11 pr-10 rounded-xl border-gray-200 font-semibold text-sm transition-all focus:ring-primary/20',
                         isEditing
                           ? 'bg-white text-gray-900 border-primary ring-2 ring-primary/5'
-                          : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default'
+                          : 'bg-gray-50/50 text-gray-900 disabled:opacity-100 disabled:cursor-default',
                       )}
                     />
                     <Calendar
@@ -578,12 +589,14 @@ export function PersonalInfo() {
                   <span className="text-sm font-bold text-gray-900">
                     Two-Factor Authentication
                   </span>
-                  <span className={cn(
-                    "text-[10px] font-bold px-2 py-0.5 rounded-full w-fit mt-1.5 leading-none border transition-colors",
-                    twoFactorEnabled
-                      ? "text-[#2d5222] bg-[#F4F8F1] border-[#e6efe1]"
-                      : "text-gray-500 bg-gray-100 border-gray-200"
-                  )}>
+                  <span
+                    className={cn(
+                      'text-[10px] font-bold px-2 py-0.5 rounded-full w-fit mt-1.5 leading-none border transition-colors',
+                      twoFactorEnabled
+                        ? 'text-[#2d5222] bg-[#F4F8F1] border-[#e6efe1]'
+                        : 'text-gray-500 bg-gray-100 border-gray-200',
+                    )}
+                  >
                     {twoFactorEnabled ? 'Enabled' : 'Disabled'}
                   </span>
                 </div>
@@ -663,7 +676,9 @@ export function PersonalInfo() {
                 </div>
                 <Switch
                   checked={emailNotifications}
-                  onCheckedChange={(checked) => handleTogglePreference('email', checked)}
+                  onCheckedChange={(checked) =>
+                    handleTogglePreference('email', checked)
+                  }
                 />
               </div>
 
@@ -679,7 +694,9 @@ export function PersonalInfo() {
                 </div>
                 <Switch
                   checked={smsNotifications}
-                  onCheckedChange={(checked) => handleTogglePreference('sms', checked)}
+                  onCheckedChange={(checked) =>
+                    handleTogglePreference('sms', checked)
+                  }
                 />
               </div>
 
@@ -695,20 +712,19 @@ export function PersonalInfo() {
                 </div>
                 <Switch
                   checked={marketingEmails}
-                  onCheckedChange={(checked) => handleTogglePreference('marketing', checked)}
+                  onCheckedChange={(checked) =>
+                    handleTogglePreference('marketing', checked)
+                  }
                 />
               </div>
 
               {/* Currency */}
               <div className="flex items-center justify-between py-2">
-                <span className="text-sm font-bold text-gray-900">Currency</span>
-                <Select
-                  value={currency}
-                  onValueChange={handleCurrencyChange}
-                >
-                  <SelectTrigger
-                    className="w-28 h-9 px-3 rounded-xl border border-gray-200 text-xs font-semibold text-gray-900 bg-white focus:outline-none cursor-pointer shadow-none"
-                  >
+                <span className="text-sm font-bold text-gray-900">
+                  Currency
+                </span>
+                <Select value={currency} onValueChange={handleCurrencyChange}>
+                  <SelectTrigger className="w-28 h-9 px-3 rounded-xl border border-gray-200 text-xs font-semibold text-gray-900 bg-white focus:outline-none cursor-pointer shadow-none">
                     <SelectValue placeholder="Select Currency" />
                   </SelectTrigger>
                   <SelectContent>

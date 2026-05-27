@@ -193,12 +193,19 @@ export function StoriesManagement() {
               </Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-5 relative min-h-[300px]">
+            <form
+              onSubmit={handleSubmit}
+              className="p-6 space-y-5 relative min-h-[300px]"
+            >
               {uploadImage.isPending && (
                 <LoadingOverlay message="Uploading cover photo..." />
               )}
               {(createStory.isPending || updateStory.isPending) && (
-                <LoadingOverlay message={editingId ? "Saving story..." : "Publishing story..."} />
+                <LoadingOverlay
+                  message={
+                    editingId ? 'Saving story...' : 'Publishing story...'
+                  }
+                />
               )}
 
               <div className="space-y-2">
@@ -304,7 +311,11 @@ export function StoriesManagement() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={createStory.isPending || updateStory.isPending || uploadImage.isPending}
+                  disabled={
+                    createStory.isPending ||
+                    updateStory.isPending ||
+                    uploadImage.isPending
+                  }
                   className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   {createStory.isPending || updateStory.isPending ? (

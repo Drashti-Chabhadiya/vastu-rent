@@ -91,9 +91,7 @@ export function CouponsTable({
               <th className="text-left px-4 py-3">Min. Booking</th>
               <th className="text-left px-4 py-3">Expiry</th>
               <th className="text-left px-4 py-3">Redeemed</th>
-              {canManage && (
-                <th className="px-4 py-3 text-right">Actions</th>
-              )}
+              {canManage && <th className="px-4 py-3 text-right">Actions</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
@@ -122,10 +120,7 @@ export function CouponsTable({
                   coupon.perUserLimit,
                 )
                 const pct = coupon.usageLimit
-                  ? Math.min(
-                      (coupon.usedCount / coupon.usageLimit) * 100,
-                      100,
-                    )
+                  ? Math.min((coupon.usedCount / coupon.usageLimit) * 100, 100)
                   : 10
 
                 return (

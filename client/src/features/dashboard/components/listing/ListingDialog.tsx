@@ -129,7 +129,10 @@ export const ListingDialog = ({
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
-                <HeaderIcon className="text-white" size={isEditMode ? 20 : 24} />
+                <HeaderIcon
+                  className="text-white"
+                  size={isEditMode ? 20 : 24}
+                />
               </div>
               <Badge className="bg-white/20 text-white border-none font-bold text-[10px] uppercase tracking-widest">
                 {isEditMode ? 'Marketplace Management' : 'Marketplace Admin'}
@@ -150,7 +153,11 @@ export const ListingDialog = ({
               <LoadingOverlay message="Uploading listing photos..." />
             )}
             {isLoading && (
-              <LoadingOverlay message={isEditMode ? "Saving changes..." : "Publishing listing..."} />
+              <LoadingOverlay
+                message={
+                  isEditMode ? 'Saving changes...' : 'Publishing listing...'
+                }
+              />
             )}
 
             <ProductForm
@@ -181,8 +188,8 @@ export const ListingDialog = ({
                     ? 'Saving...'
                     : 'Save Changes'
                   : isLoading
-                  ? 'Publishing...'
-                  : 'Publish to Marketplace'}
+                    ? 'Publishing...'
+                    : 'Publish to Marketplace'}
               </Button>
             </DialogFooter>
           </form>

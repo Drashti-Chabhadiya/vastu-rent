@@ -69,7 +69,7 @@ export const PaymentsManagement = () => {
     payoutId: string,
     actionType: 'approved' | 'rejected' | 'paid',
     notes: string,
-    onSuccess: () => void
+    onSuccess: () => void,
   ) => {
     updatePayoutStatus.mutate(
       {

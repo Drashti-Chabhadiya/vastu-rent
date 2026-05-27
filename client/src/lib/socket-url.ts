@@ -14,7 +14,11 @@ export function getSocketUrl(): string {
   // 3. Fallback automatically to local development server if on local network/localhost
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.')) {
+    if (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname.startsWith('192.168.')
+    ) {
       return `http://${hostname}:4000`
     }
   }

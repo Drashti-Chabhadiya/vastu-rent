@@ -152,9 +152,7 @@ export function BecomeListerPage() {
             Your items could be earning for you right now.
           </h2>
           <Link to={'/signup'}>
-            <Button size="lg">
-              Get Started for Free
-            </Button>
+            <Button size="lg">Get Started for Free</Button>
           </Link>
           <p className="mt-6 text-gray-500">
             No hidden fees. No listing costs. Just earnings.

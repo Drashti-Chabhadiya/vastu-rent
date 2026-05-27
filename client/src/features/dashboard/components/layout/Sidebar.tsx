@@ -364,7 +364,9 @@ export const Sidebar = ({
           onClick={() => setIsProfileOpen((prev) => !prev)}
           className={cn(
             'w-full h-auto flex items-center justify-between p-2 rounded-xl cursor-pointer transition-colors group hover:bg-gray-50 active:scale-[0.98]',
-            isProfileOpen ? 'bg-gray-100 hover:bg-gray-100' : 'hover:bg-gray-50',
+            isProfileOpen
+              ? 'bg-gray-100 hover:bg-gray-100'
+              : 'hover:bg-gray-50',
           )}
         >
           <div className="flex items-center gap-3 overflow-hidden">

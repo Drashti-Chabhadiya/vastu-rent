@@ -12,7 +12,7 @@ import {
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import { useBookingsOverTime } from '#/hook'
-import { cn } from "../../../../lib/utils";
+import { cn } from '../../../../lib/utils'
 import { Button } from '#/components/ui/button'
 
 type Period = 'week' | 'month' | 'year'
@@ -29,7 +29,17 @@ export const BookingsChart = () => {
   const { data = [], isLoading } = useBookingsOverTime(period)
 
   return (
-    <div className={cn('bg-white', 'p-6', 'rounded-2xl', 'border', 'border-gray-100', 'shadow-sm', 'h-full')}>
+    <div
+      className={cn(
+        'bg-white',
+        'p-6',
+        'rounded-2xl',
+        'border',
+        'border-gray-100',
+        'shadow-sm',
+        'h-full',
+      )}
+    >
       {/* Header */}
       <div className={cn('flex', 'items-center', 'justify-between', 'mb-8')}>
         <h3 className={cn('font-bold', 'text-dash-text')}>Bookings Overview</h3>
@@ -45,13 +55,45 @@ export const BookingsChart = () => {
             <ChevronDown size={14} className="text-gray-400" />
           </Button>
           {open && (
-            <div className={cn('absolute', 'right-0', 'mt-1', 'bg-white', 'border', 'border-gray-100', 'rounded-xl', 'shadow-lg', 'z-10', 'overflow-hidden', 'flex', 'flex-col', 'w-32')}>
+            <div
+              className={cn(
+                'absolute',
+                'right-0',
+                'mt-1',
+                'bg-white',
+                'border',
+                'border-gray-100',
+                'rounded-xl',
+                'shadow-lg',
+                'z-10',
+                'overflow-hidden',
+                'flex',
+                'flex-col',
+                'w-32',
+              )}
+            >
               {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
                 <Button
                   key={p}
                   variant="ghost"
-                  onClick={() => { setPeriod(p); setOpen(false) }}
-                  className={cn('w-full', 'justify-start', 'rounded-none', 'h-auto', 'px-4', 'py-2', 'text-xs', 'font-bold', 'text-dash-text', 'hover:bg-gray-50', 'cursor-pointer', 'active:scale-[0.98]')}
+                  onClick={() => {
+                    setPeriod(p)
+                    setOpen(false)
+                  }}
+                  className={cn(
+                    'w-full',
+                    'justify-start',
+                    'rounded-none',
+                    'h-auto',
+                    'px-4',
+                    'py-2',
+                    'text-xs',
+                    'font-bold',
+                    'text-dash-text',
+                    'hover:bg-gray-50',
+                    'cursor-pointer',
+                    'active:scale-[0.98]',
+                  )}
                 >
                   {PERIOD_LABELS[p]}
                 </Button>
@@ -64,27 +106,75 @@ export const BookingsChart = () => {
       {/* Chart */}
       <div className={cn('h-72', 'w-full')}>
         {isLoading ? (
-          <div className={cn('h-full', 'flex', 'items-center', 'justify-center')}>
-            <div className={cn('w-full', 'h-48', 'bg-gray-50', 'rounded-2xl', 'animate-pulse')} />
+          <div
+            className={cn('h-full', 'flex', 'items-center', 'justify-center')}
+          >
+            <div
+              className={cn(
+                'w-full',
+                'h-48',
+                'bg-gray-50',
+                'rounded-2xl',
+                'animate-pulse',
+              )}
+            />
           </div>
         ) : data.length === 0 ? (
-          <div className={cn('h-full', 'flex', 'items-center', 'justify-center', 'text-sm', 'text-gray-400', 'font-medium')}>
+          <div
+            className={cn(
+              'h-full',
+              'flex',
+              'items-center',
+              'justify-center',
+              'text-sm',
+              'text-gray-400',
+              'font-medium',
+            )}
+          >
             No booking data for this period
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
-                <linearGradient id="bookingGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-brand-light)" stopOpacity={0.2} />
-                  <stop offset="100%" stopColor="var(--color-brand-light)" stopOpacity={0} />
+                <linearGradient
+                  id="bookingGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="var(--color-brand-light)"
+                    stopOpacity={0.2}
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor="var(--color-brand-light)"
+                    stopOpacity={0}
+                  />
                 </linearGradient>
               </defs>
 
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#f1f5f9"
+              />
 
-              <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
-              <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11 }} allowDecimals={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tick={{ fontSize: 11 }}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tick={{ fontSize: 11 }}
+                allowDecimals={false}
+              />
               <Tooltip formatter={(v: any) => [`${v} bookings`, 'Bookings']} />
 
               <Area

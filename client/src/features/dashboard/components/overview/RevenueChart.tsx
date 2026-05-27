@@ -18,7 +18,8 @@ export const RevenueChart = () => {
 
   const bars = result?.data ?? []
   const totalRevenue = result?.totalRevenue ?? 0
-  const maxRevenue = bars.length > 0 ? Math.max(...bars.map((b) => b.revenue), 1) : 1
+  const maxRevenue =
+    bars.length > 0 ? Math.max(...bars.map((b) => b.revenue), 1) : 1
 
   return (
     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
@@ -40,7 +41,10 @@ export const RevenueChart = () => {
                 <Button
                   key={p}
                   variant="ghost"
-                  onClick={() => { setPeriod(p); setOpen(false) }}
+                  onClick={() => {
+                    setPeriod(p)
+                    setOpen(false)
+                  }}
                   className="w-full justify-start rounded-none h-auto px-4 py-2 text-xs font-bold text-dash-text hover:bg-gray-50 active:scale-[0.98]"
                 >
                   {PERIOD_LABELS[p]}
@@ -53,7 +57,9 @@ export const RevenueChart = () => {
 
       <div className="flex items-center justify-between mb-8">
         <div>
-          <p className="text-[10px] font-bold text-dash-text-muted uppercase">Total Revenue</p>
+          <p className="text-[10px] font-bold text-dash-text-muted uppercase">
+            Total Revenue
+          </p>
           <div className="flex items-center gap-2">
             {isLoading ? (
               <div className="h-8 w-36 bg-gray-100 rounded-lg animate-pulse" />
@@ -85,9 +91,9 @@ export const RevenueChart = () => {
           <div className="relative h-48 w-full flex items-end justify-between gap-1">
             <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-dash-text-muted font-bold">
               <span>₹{Math.round(maxRevenue / 1000)}k</span>
-              <span>₹{Math.round(maxRevenue * 0.75 / 1000)}k</span>
-              <span>₹{Math.round(maxRevenue * 0.5 / 1000)}k</span>
-              <span>₹{Math.round(maxRevenue * 0.25 / 1000)}k</span>
+              <span>₹{Math.round((maxRevenue * 0.75) / 1000)}k</span>
+              <span>₹{Math.round((maxRevenue * 0.5) / 1000)}k</span>
+              <span>₹{Math.round((maxRevenue * 0.25) / 1000)}k</span>
               <span>0</span>
             </div>
 
@@ -96,7 +102,9 @@ export const RevenueChart = () => {
                 <div
                   key={i}
                   className="flex-1 bg-dash-brand rounded-t-sm transition-all duration-500 hover:bg-primary-light group relative"
-                  style={{ height: `${Math.max((bar.revenue / maxRevenue) * 100, 2)}%` }}
+                  style={{
+                    height: `${Math.max((bar.revenue / maxRevenue) * 100, 2)}%`,
+                  }}
                 >
                   <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     ₹{bar.revenue.toLocaleString('en-IN')}
@@ -109,9 +117,13 @@ export const RevenueChart = () => {
           <div className="ml-8 mt-2 flex justify-between text-[10px] text-dash-text-muted font-bold overflow-hidden">
             {bars.length <= 8
               ? bars.map((b) => <span key={b.date}>{b.date}</span>)
-              : [bars[0], bars[Math.floor(bars.length / 4)], bars[Math.floor(bars.length / 2)], bars[Math.floor(bars.length * 3 / 4)], bars[bars.length - 1]].map((b) => (
-                  <span key={b.date}>{b.date}</span>
-                ))}
+              : [
+                  bars[0],
+                  bars[Math.floor(bars.length / 4)],
+                  bars[Math.floor(bars.length / 2)],
+                  bars[Math.floor((bars.length * 3) / 4)],
+                  bars[bars.length - 1],
+                ].map((b) => <span key={b.date}>{b.date}</span>)}
           </div>
         </>
       )}

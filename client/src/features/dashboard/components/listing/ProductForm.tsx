@@ -226,7 +226,6 @@ export const ProductForm = ({
           )}
         />
 
-
         <FormField<ListingSchema>
           control={form.control}
           name="categoryId"

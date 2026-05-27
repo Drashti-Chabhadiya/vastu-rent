@@ -71,7 +71,7 @@ export const RentalsCalendar = () => {
   // Extract unique products list for filtration
   const uniqueProducts = Array.from(
     new Set(orders?.map((o: any) => o.product?.title).filter(Boolean) || []),
-  ) as string[]
+  )
 
   // Filter orders based on owner filters
   const filteredOrders = (orders || []).filter((order: any) => {
@@ -213,7 +213,7 @@ export const RentalsCalendar = () => {
                   'border-b border-r border-slate-100 p-2 min-h-[90px] flex flex-col justify-between group transition-colors hover:bg-slate-50/50',
                   !isSelectedMonth && 'bg-slate-50/20 opacity-40',
                   isToday &&
-                  'bg-[#faf7f0]/40 border-l-2 border-l-[#059669] lg:border-l-0',
+                    'bg-[#faf7f0]/40 border-l-2 border-l-[#059669] lg:border-l-0',
                 )}
               >
                 {/* Date Number indicator */}

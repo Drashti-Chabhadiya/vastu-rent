@@ -37,7 +37,7 @@
 //     // Start and stop oscillators
 //     osc1.start(now)
 //     osc1.stop(now + 0.5)
-    
+
 //     osc2.start(now + 0.06)
 //     osc2.stop(now + 0.5)
 //   } catch (err) {

@@ -157,15 +157,10 @@ export function HowItWorksPage() {
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to={'/'}>
-              <Button size="lg">
-                Browse Items
-              </Button>
+              <Button size="lg">Browse Items</Button>
             </Link>
             <Link to={'/become-lister'}>
-              <Button
-                variant="outline"
-                size="lg"
-              >
+              <Button variant="outline" size="lg">
                 Learn to List
               </Button>
             </Link>

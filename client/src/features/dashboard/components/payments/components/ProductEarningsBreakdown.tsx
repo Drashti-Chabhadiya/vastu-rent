@@ -43,7 +43,10 @@ export const ProductEarningsBreakdown = ({
                   )}
                 </div>
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-black text-slate-800 truncate max-w-xs" title={item.title}>
+                  <h4
+                    className="text-xs font-black text-slate-800 truncate max-w-xs"
+                    title={item.title}
+                  >
                     {item.title}
                   </h4>
                   <p className="text-[9px] font-bold text-slate-400">

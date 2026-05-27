@@ -61,7 +61,11 @@ export function ProductDetail({ id }: { id: string }) {
 
   // Coupon state
   const [couponCode, setCouponCode] = useState('')
-  const [appliedCoupon, setAppliedCoupon] = useState<{ id: string; code: string; discountAmount: number } | null>(null)
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    id: string
+    code: string
+    discountAmount: number
+  } | null>(null)
   const [couponError, setCouponError] = useState('')
   const applyCoupon = useApplyCoupon()
 
@@ -85,9 +89,7 @@ export function ProductDetail({ id }: { id: string }) {
       setCouponError('')
     } catch (err: any) {
       setAppliedCoupon(null)
-      setCouponError(
-        err.response?.data?.message || 'Failed to apply coupon.'
-      )
+      setCouponError(err.response?.data?.message || 'Failed to apply coupon.')
     }
   }
 
@@ -185,7 +187,10 @@ export function ProductDetail({ id }: { id: string }) {
       setReviewComment('')
       setReviewRating(5)
     } catch (error: any) {
-      const serverMsg = error?.response?.data?.message || error?.message || 'Failed to submit. Please log in first.';
+      const serverMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to submit. Please log in first.'
       setReviewError(serverMsg)
     }
   }
@@ -458,7 +463,10 @@ export function ProductDetail({ id }: { id: string }) {
         productTitle={product.title || product.name}
         startDate={startDate}
         endDate={endDate}
-        totalPrice={Math.max(0, totalPrice - (appliedCoupon?.discountAmount || 0)) + (product.securityDeposit || 0)}
+        totalPrice={
+          Math.max(0, totalPrice - (appliedCoupon?.discountAmount || 0)) +
+          (product.securityDeposit || 0)
+        }
       />
     </div>
   )

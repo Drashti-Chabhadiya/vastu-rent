@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
-import {
-  Laptop,
-  Smartphone,
-  History,
-  MapPin,
-} from 'lucide-react'
+import { Laptop, Smartphone, History, MapPin } from 'lucide-react'
 import { Loader } from '#/components/ui/loader'
 import { toast } from 'sonner'
 import {
@@ -67,7 +62,10 @@ function parseUserAgent(userAgent: string | null) {
   // Browser detection
   if (/chrome|crios/i.test(userAgent) && !/edge|opr|opera/i.test(userAgent)) {
     browser = 'Chrome'
-  } else if (/safari/i.test(userAgent) && !/chrome|crios|android/i.test(userAgent)) {
+  } else if (
+    /safari/i.test(userAgent) &&
+    !/chrome|crios|android/i.test(userAgent)
+  ) {
     browser = 'Safari'
   } else if (/firefox|fxios/i.test(userAgent)) {
     browser = 'Firefox'
@@ -130,7 +128,7 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
     },
     onSettled: () => {
       setRevokingId(null)
-    }
+    },
   })
 
   const currentSessionId = session?.session?.id
@@ -144,7 +142,8 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
             Active Login Sessions
           </DialogTitle>
           <DialogDescription className="text-xs text-gray-500 font-medium">
-            Review and manage your current login sessions across other browsers and mobile devices.
+            Review and manage your current login sessions across other browsers
+            and mobile devices.
           </DialogDescription>
         </DialogHeader>
 
@@ -152,7 +151,9 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-10 space-y-2">
               <Loader size={24} variant="default" />
-              <span className="text-xs font-bold text-gray-400">Loading active sessions...</span>
+              <span className="text-xs font-bold text-gray-400">
+                Loading active sessions...
+              </span>
             </div>
           ) : sessions.length === 0 ? (
             <div className="text-center py-10 text-xs font-bold text-gray-400">
@@ -160,7 +161,9 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
             </div>
           ) : (
             sessions.map((sessionItem: any) => {
-              const { device, browser, os } = parseUserAgent(sessionItem.userAgent)
+              const { device, browser, os } = parseUserAgent(
+                sessionItem.userAgent,
+              )
               const isActiveNow = sessionItem.id === currentSessionId
 
               return (
@@ -170,7 +173,7 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
                     'flex items-start justify-between p-4 rounded-2xl border transition-all duration-300',
                     isActiveNow
                       ? 'bg-[#F4F8F1]/40 border-[#e6efe1]'
-                      : 'bg-white border-gray-100 shadow-sm'
+                      : 'bg-white border-gray-100 shadow-sm',
                   )}
                 >
                   <div className="flex gap-3 items-start text-left">
@@ -179,10 +182,14 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
                         'h-10 w-10 rounded-xl flex items-center justify-center shrink-0 border',
                         isActiveNow
                           ? 'bg-[#e6efe1] border-[#d8e8cd] text-primary'
-                          : 'bg-gray-50 border-gray-150 text-gray-500'
+                          : 'bg-gray-50 border-gray-150 text-gray-500',
                       )}
                     >
-                      {device.includes('iPhone') || device.includes('iPad') || device.includes('Phone') || os === 'iOS' || os === 'Android' ? (
+                      {device.includes('iPhone') ||
+                      device.includes('iPad') ||
+                      device.includes('Phone') ||
+                      os === 'iOS' ||
+                      os === 'Android' ? (
                         <Smartphone size={18} />
                       ) : (
                         <Laptop size={18} />
@@ -190,7 +197,9 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
                     </div>
                     <div>
                       <div className="flex items-center gap-2.5">
-                        <h4 className="text-xs font-extrabold text-gray-900">{device}</h4>
+                        <h4 className="text-xs font-extrabold text-gray-900">
+                          {device}
+                        </h4>
                         {isActiveNow && (
                           <span className="bg-[#ecfdf5] text-[#059669] px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider">
                             Current
@@ -202,7 +211,11 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
                       </p>
                       <p className="text-[10px] text-gray-500 font-semibold mt-0.5 flex items-center gap-1">
                         <MapPin size={10} className="text-gray-400" />
-                        IP: {sessionItem.ipAddress || 'Unknown IP'} <span className="divider-dot" /> {isActiveNow ? 'Active now' : getLastActive(sessionItem.updatedAt)}
+                        IP: {sessionItem.ipAddress || 'Unknown IP'}{' '}
+                        <span className="divider-dot" />{' '}
+                        {isActiveNow
+                          ? 'Active now'
+                          : getLastActive(sessionItem.updatedAt)}
                       </p>
                     </div>
                   </div>

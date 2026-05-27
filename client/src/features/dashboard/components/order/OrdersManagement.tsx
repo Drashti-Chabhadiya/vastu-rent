@@ -208,8 +208,8 @@ export const OrdersManagement = () => {
                     alt={order.product?.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) =>
-                    (e.currentTarget.src =
-                      'https://via.placeholder.com/150?text=Product')
+                      (e.currentTarget.src =
+                        'https://via.placeholder.com/150?text=Product')
                     }
                   />
                 </div>

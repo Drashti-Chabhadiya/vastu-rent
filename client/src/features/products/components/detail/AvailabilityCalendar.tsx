@@ -81,11 +81,7 @@ export const AvailabilityCalendar = ({
           const date = new Date(calYear, calMonth, day)
           const isPast =
             date <
-            new Date(
-              today.getFullYear(),
-              today.getMonth(),
-              today.getDate(),
-            )
+            new Date(today.getFullYear(), today.getMonth(), today.getDate())
 
           // Check if this date is within any existing rental range
           const isBooked = productRentals.some((r: any) => {

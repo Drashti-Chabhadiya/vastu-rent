@@ -8,7 +8,10 @@ interface CouponRenterViewProps {
   isLoading: boolean
 }
 
-export function CouponRenterView({ coupons, isLoading }: CouponRenterViewProps) {
+export function CouponRenterView({
+  coupons,
+  isLoading,
+}: CouponRenterViewProps) {
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
   const handleCopy = (code: string) => {
@@ -32,9 +35,12 @@ export function CouponRenterView({ coupons, isLoading }: CouponRenterViewProps) 
     return (
       <div className="flex flex-col items-center justify-center py-16 bg-white border border-slate-100 rounded-[2rem] p-8 shadow-sm">
         <Ticket className="text-slate-300 w-16 h-16 mb-4 rotate-[-10deg]" />
-        <h3 className="text-lg font-black text-slate-800">No Coupons Available</h3>
+        <h3 className="text-lg font-black text-slate-800">
+          No Coupons Available
+        </h3>
         <p className="text-xs text-slate-400 mt-1 max-w-xs text-center font-bold">
-          Check back later for active platform-wide and listing-restricted deals.
+          Check back later for active platform-wide and listing-restricted
+          deals.
         </p>
       </div>
     )

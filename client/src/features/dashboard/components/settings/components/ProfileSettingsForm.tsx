@@ -60,9 +60,7 @@ export const ProfileSettingsForm = ({
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-xs font-black text-slate-800">
-            Profile Photo
-          </h4>
+          <h4 className="text-xs font-black text-slate-800">Profile Photo</h4>
           <p className="text-[10px] font-semibold text-slate-400">
             Upload high-res JPG, PNG (Max 5MB)
           </p>

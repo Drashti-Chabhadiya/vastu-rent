@@ -13,7 +13,9 @@ let pushInitialized = false
  *
  * On web, falls back to the existing Firebase Web SDK in fcm.ts.
  */
-export async function initNativePush(onNotificationTap?: (url: string) => void) {
+export async function initNativePush(
+  onNotificationTap?: (url: string) => void,
+) {
   if (!isNative) return // web handled by fcm.ts
   if (pushInitialized) return
   pushInitialized = true
@@ -44,7 +46,10 @@ export async function initNativePush(onNotificationTap?: (url: string) => void) 
         })
         console.log('[Push] Android notification channel created')
       } catch (channelErr) {
-        console.error('[Push] Failed to create Android notification channel:', channelErr)
+        console.error(
+          '[Push] Failed to create Android notification channel:',
+          channelErr,
+        )
       }
     }
 
@@ -72,21 +77,32 @@ export async function initNativePush(onNotificationTap?: (url: string) => void) 
     })
 
     // 5. Foreground notification received — log it (UI is handled via socket/react-query)
-    PushNotifications.addListener('pushNotificationReceived', (notification) => {
-      console.log('[Push] Foreground notification received:', notification.title)
-      // Note: The notification toast in foreground is shown by the socket.io listener in use-notifications.ts
-      // On Android, a heads-up notification WILL still appear in the system bar even in foreground
-    })
+    PushNotifications.addListener(
+      'pushNotificationReceived',
+      (notification) => {
+        console.log(
+          '[Push] Foreground notification received:',
+          notification.title,
+        )
+        // Note: The notification toast in foreground is shown by the socket.io listener in use-notifications.ts
+        // On Android, a heads-up notification WILL still appear in the system bar even in foreground
+      },
+    )
 
     // 6. User tapped a notification — deep-link to the correct screen
-    PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-      console.log('[Push] Notification tapped:', action)
-      const data = action.notification.data as Record<string, string> | undefined
-      const url = data?.url ?? '/notifications'
-      if (onNotificationTap) {
-        onNotificationTap(url)
-      }
-    })
+    PushNotifications.addListener(
+      'pushNotificationActionPerformed',
+      (action) => {
+        console.log('[Push] Notification tapped:', action)
+        const data = action.notification.data as
+          | Record<string, string>
+          | undefined
+        const url = data?.url ?? '/notifications'
+        if (onNotificationTap) {
+          onNotificationTap(url)
+        }
+      },
+    )
 
     console.log('[Push] Native push notifications initialized')
   } catch (err) {
@@ -118,8 +134,12 @@ export async function unregisterDeviceToken() {
     // Get current token — we do this by re-triggering registration briefly
     // The cleanest approach is storing the token in memory
     // We'll handle this via the stored token approach below
-    const { notifications } = await PushNotifications.getDeliveredNotifications()
-    console.log('[Push] Clearing delivered notifications:', notifications.length)
+    const { notifications } =
+      await PushNotifications.getDeliveredNotifications()
+    console.log(
+      '[Push] Clearing delivered notifications:',
+      notifications.length,
+    )
     await PushNotifications.removeAllDeliveredNotifications()
   } catch (_) {
     // ignore

@@ -39,7 +39,16 @@ export const AdminOverview = ({
   return (
     <div className={cn('space-y-6', 'md:space-y-8')}>
       {/* Top Stats Row */}
-      <div className={cn('grid', 'grid-cols-1', 'sm:grid-cols-2', 'xl:grid-cols-4', 'gap-4', 'md:gap-6')}>
+      <div
+        className={cn(
+          'grid',
+          'grid-cols-1',
+          'sm:grid-cols-2',
+          'xl:grid-cols-4',
+          'gap-4',
+          'md:gap-6',
+        )}
+      >
         <StatCard
           title="Total Users"
           value={
@@ -99,7 +108,15 @@ export const AdminOverview = ({
       </div>
 
       {/* Second Row: Bookings, Categories, Recent Orders */}
-      <div className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3', 'gap-6')}>
+      <div
+        className={cn(
+          'grid',
+          'grid-cols-1',
+          'md:grid-cols-2',
+          'xl:grid-cols-3',
+          'gap-6',
+        )}
+      >
         <div className={cn('md:col-span-1', 'xl:col-span-1')}>
           <BookingsChart />
         </div>
@@ -112,7 +129,15 @@ export const AdminOverview = ({
       </div>
 
       {/* Third Row: Users Overview, Revenue Overview, Top Cities */}
-      <div className={cn('grid', 'grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-3', 'gap-6')}>
+      <div
+        className={cn(
+          'grid',
+          'grid-cols-1',
+          'md:grid-cols-2',
+          'xl:grid-cols-3',
+          'gap-6',
+        )}
+      >
         <div className={cn('md:col-span-full', 'xl:col-span-1')}>
           <UsersOverviewTable users={recentUsers} isLoading={usersLoading} />
         </div>

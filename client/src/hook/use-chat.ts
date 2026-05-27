@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { io, Socket } from 'socket.io-client'
+import type { Socket } from 'socket.io-client';
+import { io } from 'socket.io-client'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
 import { authClient } from '#/lib/auth/auth-client'
+
+import { getSocketUrl } from '#/lib/socket-url'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface ChatUser {
@@ -38,8 +41,6 @@ export interface Conversation {
   } | null
 }
 
-import { getSocketUrl } from '#/lib/socket-url'
-
 // ─── Socket URL ───────────────────────────────────────────────────────────────
 const SOCKET_URL = getSocketUrl()
 
@@ -53,9 +54,13 @@ export function useChat() {
   const socketRef = useRef<Socket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const activeConversationIdRef = useRef<string | null>(null)
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
+  const [activeConversationId, setActiveConversationId] = useState<
+    string | null
+  >(null)
   const [messages, setMessages] = useState<Message[]>([])
-  const [typingUsers, setTypingUsers] = useState<Map<string, boolean>>(new Map())
+  const [typingUsers, setTypingUsers] = useState<Map<string, boolean>>(
+    new Map(),
+  )
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set())
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
 
@@ -139,22 +144,39 @@ export function useChat() {
     })
 
     // Online/Offline presence updates
-    socket.on('user_status', ({ userId: uid, status }: { userId: string; status: 'online' | 'offline' }) => {
-      setOnlineUsers((prev) => {
-        const updated = new Set(prev)
-        if (status === 'online') updated.add(uid)
-        else updated.delete(uid)
-        return updated
-      })
+    socket.on(
+      'user_status',
+      ({
+        userId: uid,
+        status,
+      }: {
+        userId: string
+        status: 'online' | 'offline'
+      }) => {
+        setOnlineUsers((prev) => {
+          const updated = new Set(prev)
+          if (status === 'online') updated.add(uid)
+          else updated.delete(uid)
+          return updated
+        })
 
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) =>
-          conv.otherParticipant.id === uid
-            ? { ...conv, otherParticipant: { ...conv.otherParticipant, isOnline: status === 'online' } }
-            : conv,
-        ) || [],
-      )
-    })
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.otherParticipant.id === uid
+                ? {
+                    ...conv,
+                    otherParticipant: {
+                      ...conv.otherParticipant,
+                      isOnline: status === 'online',
+                    },
+                  }
+                : conv,
+            ) || [],
+        )
+      },
+    )
 
     // Real-time new message from socket
     socket.on('new_message', (msg: Message) => {
@@ -169,28 +191,30 @@ export function useChat() {
 
       // Update conversations list sidebar
       queryClient.setQueryData<Conversation[]>(['conversations'], (old) => {
-        const updated = old?.map((conv) => {
-          if (conv.id !== msg.conversationId) return conv
-          const isActiveConv = msg.conversationId === currentConvId
-          return {
-            ...conv,
-            updatedAt: msg.createdAt,
-            lastMessage: {
-              id: msg.id,
-              content: msg.content,
-              senderId: msg.senderId,
-              isRead: msg.isRead,
-              createdAt: msg.createdAt,
-            },
-            unreadCount: isActiveConv
-              ? 0
-              : conv.unreadCount + (msg.senderId !== userId ? 1 : 0),
-          }
-        }) || []
+        const updated =
+          old?.map((conv) => {
+            if (conv.id !== msg.conversationId) return conv
+            const isActiveConv = msg.conversationId === currentConvId
+            return {
+              ...conv,
+              updatedAt: msg.createdAt,
+              lastMessage: {
+                id: msg.id,
+                content: msg.content,
+                senderId: msg.senderId,
+                isRead: msg.isRead,
+                createdAt: msg.createdAt,
+              },
+              unreadCount: isActiveConv
+                ? 0
+                : conv.unreadCount + (msg.senderId !== userId ? 1 : 0),
+            }
+          }) || []
 
         // Keep sorted by most recent
         return [...updated].sort(
-          (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
         )
       })
     })
@@ -201,31 +225,44 @@ export function useChat() {
     })
 
     // Typing events
-    socket.on('typing', ({ conversationId, userId: typingUid, isTyping }: any) => {
-      if (typingUid === userId) return
-      setTypingUsers((prev) => {
-        const updated = new Map(prev)
-        if (isTyping) updated.set(conversationId, true)
-        else updated.delete(conversationId)
-        return updated
-      })
-    })
+    socket.on(
+      'typing',
+      ({ conversationId, userId: typingUid, isTyping }: any) => {
+        if (typingUid === userId) return
+        setTypingUsers((prev) => {
+          const updated = new Map(prev)
+          if (isTyping) updated.set(conversationId, true)
+          else updated.delete(conversationId)
+          return updated
+        })
+      },
+    )
 
     // Read receipts
-    socket.on('messages_read', ({ conversationId }: { conversationId: string }) => {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.conversationId === conversationId && m.senderId === userId ? { ...m, isRead: true } : m,
-        ),
-      )
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) =>
-          conv.id === conversationId && conv.lastMessage
-            ? { ...conv, lastMessage: { ...conv.lastMessage, isRead: true } }
-            : conv,
-        ) || [],
-      )
-    })
+    socket.on(
+      'messages_read',
+      ({ conversationId }: { conversationId: string }) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.conversationId === conversationId && m.senderId === userId
+              ? { ...m, isRead: true }
+              : m,
+          ),
+        )
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.id === conversationId && conv.lastMessage
+                ? {
+                    ...conv,
+                    lastMessage: { ...conv.lastMessage, isRead: true },
+                  }
+                : conv,
+            ) || [],
+        )
+      },
+    )
 
     return () => {
       socket.disconnect()
@@ -248,7 +285,8 @@ export function useChat() {
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [token, queryClient])
 
   // ── Online status polling — sync every 30s as fallback ───────────────────
@@ -279,7 +317,9 @@ export function useChat() {
 
       // Load message history via REST
       try {
-        const res = await apiClient.get(`/chat/conversations/${conversationId}/messages`)
+        const res = await apiClient.get(
+          `/chat/conversations/${conversationId}/messages`,
+        )
         setMessages(res.data)
       } catch (err) {
         console.error('Failed to load messages:', err)
@@ -288,26 +328,27 @@ export function useChat() {
       }
 
       // Clear unread badge immediately
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) => (conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv)) || [],
+      queryClient.setQueryData<Conversation[]>(
+        ['conversations'],
+        (old) =>
+          old?.map((conv) =>
+            conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv,
+          ) || [],
       )
     },
     [queryClient],
   )
 
   // ── Send a message ─────────────────────────────────────────────────────────
-  const sendMessage = useCallback(
-    (content: string) => {
-      const convId = activeConversationIdRef.current
-      if (!convId || !content.trim() || !socketRef.current?.connected) return
+  const sendMessage = useCallback((content: string) => {
+    const convId = activeConversationIdRef.current
+    if (!convId || !content.trim() || !socketRef.current?.connected) return
 
-      socketRef.current.emit('send_message', {
-        conversationId: convId,
-        content: content.trim(),
-      })
-    },
-    [],
-  )
+    socketRef.current.emit('send_message', {
+      conversationId: convId,
+      content: content.trim(),
+    })
+  }, [])
 
   // ── Typing indicator emitter ───────────────────────────────────────────────
   const emitTyping = useCallback((isTyping: boolean) => {

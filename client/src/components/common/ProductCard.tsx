@@ -104,9 +104,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-        <Button className="w-full shrink-0">
-          Rent Now
-        </Button>
+        <Button className="w-full shrink-0">Rent Now</Button>
       </div>
     </Link>
   )

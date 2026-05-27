@@ -10,7 +10,8 @@ export const Route = createFileRoute('/_authenticated/account/notifications')({
           My Notifications
         </h1>
         <p className="text-[13px] text-gray-500 mt-2 font-medium">
-          Stay updated on your booking status, approval updates, and marketplace reviews.
+          Stay updated on your booking status, approval updates, and marketplace
+          reviews.
         </p>
       </div>
 

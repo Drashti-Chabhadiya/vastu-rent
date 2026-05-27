@@ -5,7 +5,9 @@ interface OrderPaymentDetailsCardProps {
   order: any
 }
 
-export const OrderPaymentDetailsCard = ({ order }: OrderPaymentDetailsCardProps) => {
+export const OrderPaymentDetailsCard = ({
+  order,
+}: OrderPaymentDetailsCardProps) => {
   if (!order) return null
 
   const paymentItems = [

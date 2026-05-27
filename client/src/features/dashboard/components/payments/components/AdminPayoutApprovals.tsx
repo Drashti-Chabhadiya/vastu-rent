@@ -10,7 +10,7 @@ interface AdminPayoutApprovalsProps {
     payoutId: string,
     actionType: 'approved' | 'rejected' | 'paid',
     notes: string,
-    onSuccess: () => void
+    onSuccess: () => void,
   ) => void
   isUpdating: boolean
 }
@@ -20,31 +20,29 @@ export const AdminPayoutApprovals = ({
   onAdminAction,
   isUpdating,
 }: AdminPayoutApprovalsProps) => {
-  const [selectedAdminPayout, setSelectedAdminPayout] = useState<any | null>(null)
+  const [selectedAdminPayout, setSelectedAdminPayout] = useState<any | null>(
+    null,
+  )
   const [adminNotes, setAdminNotes] = useState('')
   const [adminActionType, setAdminActionType] = useState<
     'approved' | 'rejected' | 'paid' | null
   >(null)
 
-  const activePayouts = allAdminPayouts?.filter(
-    (p: any) => p.status === 'pending' || p.status === 'approved',
-  ) || []
+  const activePayouts =
+    allAdminPayouts?.filter(
+      (p: any) => p.status === 'pending' || p.status === 'approved',
+    ) || []
 
   if (activePayouts.length === 0) return null
 
   const handleConfirmAction = () => {
     if (!selectedAdminPayout || !adminActionType) return
 
-    onAdminAction(
-      selectedAdminPayout.id,
-      adminActionType,
-      adminNotes,
-      () => {
-        setSelectedAdminPayout(null)
-        setAdminNotes('')
-        setAdminActionType(null)
-      }
-    )
+    onAdminAction(selectedAdminPayout.id, adminActionType, adminNotes, () => {
+      setSelectedAdminPayout(null)
+      setAdminNotes('')
+      setAdminActionType(null)
+    })
   }
 
   return (
@@ -83,7 +81,10 @@ export const AdminPayoutApprovals = ({
                   <h4 className="text-xs font-black text-slate-800">
                     {payout.owner?.name}
                   </h4>
-                  <p className="text-[10px] text-slate-400 font-bold truncate max-w-[120px]" title={payout.owner?.email}>
+                  <p
+                    className="text-[10px] text-slate-400 font-bold truncate max-w-[120px]"
+                    title={payout.owner?.email}
+                  >
                     {payout.owner?.email}
                   </p>
                 </div>

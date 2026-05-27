@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
-import {
-  Laptop,
-  Smartphone,
-  Pencil,
-  Trash2,
-} from 'lucide-react'
+import { Laptop, Smartphone, Pencil, Trash2 } from 'lucide-react'
 import { Loader } from '#/components/ui/loader'
 import { toast } from 'sonner'
 import {
@@ -66,7 +61,10 @@ function parseUserAgent(userAgent: string | null) {
   // Browser detection
   if (/chrome|crios/i.test(userAgent) && !/edge|opr|opera/i.test(userAgent)) {
     browser = 'Chrome'
-  } else if (/safari/i.test(userAgent) && !/chrome|crios|android/i.test(userAgent)) {
+  } else if (
+    /safari/i.test(userAgent) &&
+    !/chrome|crios|android/i.test(userAgent)
+  ) {
     browser = 'Safari'
   } else if (/firefox|fxios/i.test(userAgent)) {
     browser = 'Firefox'
@@ -107,7 +105,9 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
   // Rename device mutation
   const renameMutation = useMutation({
     mutationFn: async ({ id, name }: { id: string; name: string }) => {
-      await apiClient.patch(`/users/settings/sessions/${id}`, { deviceName: name })
+      await apiClient.patch(`/users/settings/sessions/${id}`, {
+        deviceName: name,
+      })
     },
     onSuccess: () => {
       toast.success('Device renamed successfully!')
@@ -117,7 +117,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
     },
     onError: () => {
       toast.error('Failed to rename device.')
-    }
+    },
   })
 
   // Untrust / Revoke device session mutation
@@ -135,11 +135,13 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
     },
     onSettled: () => {
       setRemovingId(null)
-    }
+    },
   })
 
   const handleRemoveDevice = (deviceId: string) => {
-    if (confirm('Remove this device from trusted list? This will sign it out.')) {
+    if (
+      confirm('Remove this device from trusted list? This will sign it out.')
+    ) {
       removeMutation.mutate(deviceId)
     }
   }
@@ -151,7 +153,10 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
 
   const handleSaveRenameDevice = () => {
     if (!editingDeviceName.trim() || !editingDeviceId) return
-    renameMutation.mutate({ id: editingDeviceId, name: editingDeviceName.trim() })
+    renameMutation.mutate({
+      id: editingDeviceId,
+      name: editingDeviceName.trim(),
+    })
   }
 
   const currentSessionId = session?.session?.id
@@ -165,7 +170,8 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
             Trusted Devices
           </DialogTitle>
           <DialogDescription className="text-xs text-gray-500 font-medium">
-            These devices bypass secondary prompts and are fully authorized to access your Vastu rental data.
+            These devices bypass secondary prompts and are fully authorized to
+            access your Vastu rental data.
           </DialogDescription>
         </DialogHeader>
 
@@ -173,7 +179,9 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-10 space-y-2">
               <Loader size={24} variant="default" />
-              <span className="text-xs font-bold text-gray-400">Loading trusted devices...</span>
+              <span className="text-xs font-bold text-gray-400">
+                Loading trusted devices...
+              </span>
             </div>
           ) : sessions.length === 0 ? (
             <div className="text-center py-10 text-xs font-bold text-gray-400">
@@ -184,12 +192,19 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
               const { device, os } = parseUserAgent(sessionItem.userAgent)
               const displayName = sessionItem.deviceName || device
               const isCurrent = sessionItem.id === currentSessionId
-              const isPhone = device.includes('iPhone') || device.includes('iPad') || device.includes('Phone') || os === 'iOS' || os === 'Android'
+              const isPhone =
+                device.includes('iPhone') ||
+                device.includes('iPad') ||
+                device.includes('Phone') ||
+                os === 'iOS' ||
+                os === 'Android'
 
-              const formattedDate = new Date(sessionItem.createdAt).toLocaleDateString('en-US', {
+              const formattedDate = new Date(
+                sessionItem.createdAt,
+              ).toLocaleDateString('en-US', {
                 day: 'numeric',
                 month: 'short',
-                year: 'numeric'
+                year: 'numeric',
               })
 
               return (
@@ -199,7 +214,11 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                 >
                   <div className="flex gap-3 items-center flex-1 min-w-0 pr-2 text-left">
                     <div className="h-10 w-10 rounded-xl bg-gray-50 border border-gray-150 text-gray-500 flex items-center justify-center shrink-0">
-                      {isPhone ? <Smartphone size={18} /> : <Laptop size={18} />}
+                      {isPhone ? (
+                        <Smartphone size={18} />
+                      ) : (
+                        <Laptop size={18} />
+                      )}
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -208,7 +227,9 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                           <Input
                             type="text"
                             value={editingDeviceName}
-                            onChange={(e) => setEditingDeviceName(e.target.value)}
+                            onChange={(e) =>
+                              setEditingDeviceName(e.target.value)
+                            }
                             disabled={renameMutation.isPending}
                             className="h-8 rounded-lg text-xs font-bold border-[#2d5222] focus:ring-1 focus:ring-[#2d5222]/20"
                             autoFocus
@@ -223,14 +244,25 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                             disabled={renameMutation.isPending}
                             className="h-8 bg-[#2d5222] text-white text-[10px] font-black rounded-lg px-2 shadow-none cursor-pointer border-none flex items-center gap-1"
                           >
-                            {renameMutation.isPending ? <Loader variant="white" size={10} /> : 'Save'}
+                            {renameMutation.isPending ? (
+                              <Loader variant="white" size={10} />
+                            ) : (
+                              'Save'
+                            )}
                           </Button>
                         </div>
                       ) : (
                         <div className="flex items-center gap-1.5">
-                          <h4 className="text-xs font-extrabold text-gray-900 truncate">{displayName}</h4>
+                          <h4 className="text-xs font-extrabold text-gray-900 truncate">
+                            {displayName}
+                          </h4>
                           <button
-                            onClick={() => handleStartRenameDevice(sessionItem.id, displayName)}
+                            onClick={() =>
+                              handleStartRenameDevice(
+                                sessionItem.id,
+                                displayName,
+                              )
+                            }
                             className="text-gray-400 hover:text-gray-600 transition-colors p-0.5 border-none bg-transparent cursor-pointer"
                           >
                             <Pencil size={10} />
@@ -238,7 +270,8 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                         </div>
                       )}
                       <p className="text-[10px] text-gray-400 font-semibold mt-0.5">
-                        Trusted since {formattedDate} {isCurrent && ' • Current Device'}
+                        Trusted since {formattedDate}{' '}
+                        {isCurrent && ' • Current Device'}
                       </p>
                     </div>
                   </div>

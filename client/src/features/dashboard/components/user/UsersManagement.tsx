@@ -57,11 +57,36 @@ export const UsersManagement = () => {
               <SelectValue placeholder="All Roles" />
             </SelectTrigger>
             <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-              <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Roles</SelectItem>
-              <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">User</SelectItem>
-              <SelectItem value="owner" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Owner</SelectItem>
-              <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Admin</SelectItem>
-              <SelectItem value="superAdmin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Super Admin</SelectItem>
+              <SelectItem
+                value="all"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                All Roles
+              </SelectItem>
+              <SelectItem
+                value="user"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                User
+              </SelectItem>
+              <SelectItem
+                value="owner"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Owner
+              </SelectItem>
+              <SelectItem
+                value="admin"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Admin
+              </SelectItem>
+              <SelectItem
+                value="superAdmin"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Super Admin
+              </SelectItem>
             </SelectContent>
           </Select>
 
@@ -70,9 +95,24 @@ export const UsersManagement = () => {
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-              <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Status</SelectItem>
-              <SelectItem value="active" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Active</SelectItem>
-              <SelectItem value="banned" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Banned</SelectItem>
+              <SelectItem
+                value="all"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                All Status
+              </SelectItem>
+              <SelectItem
+                value="active"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Active
+              </SelectItem>
+              <SelectItem
+                value="banned"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Banned
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -168,10 +208,28 @@ export const UsersManagement = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-                          <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">User</SelectItem>
-                          <SelectItem value="owner" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Owner</SelectItem>
-                          <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Admin</SelectItem>
-                          <SelectItem value="superAdmin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                          <SelectItem
+                            value="user"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
+                            User
+                          </SelectItem>
+                          <SelectItem
+                            value="owner"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
+                            Owner
+                          </SelectItem>
+                          <SelectItem
+                            value="admin"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
+                            Admin
+                          </SelectItem>
+                          <SelectItem
+                            value="superAdmin"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
                             Super Admin
                           </SelectItem>
                         </SelectContent>

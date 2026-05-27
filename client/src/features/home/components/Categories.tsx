@@ -64,7 +64,9 @@ export function Categories() {
   const { data: categories, isLoading } = useCategories()
 
   const latestCategories = categories
-    ? [...categories].sort((a: any, b: any) => b.id.localeCompare(a.id)).slice(0, 4)
+    ? [...categories]
+        .sort((a: any, b: any) => b.id.localeCompare(a.id))
+        .slice(0, 4)
     : []
 
   return (
@@ -83,8 +85,8 @@ export function Categories() {
         </div>
         <div className="flex flex-col gap-4 max-w-sm">
           <p className="text-[15px] leading-relaxed text-muted-foreground">
-            Browse a slow-edited selection across home, work and play — every item
-            kept in condition by neighbors who care.
+            Browse a slow-edited selection across home, work and play — every
+            item kept in condition by neighbors who care.
           </p>
           <Link
             to="/categories"

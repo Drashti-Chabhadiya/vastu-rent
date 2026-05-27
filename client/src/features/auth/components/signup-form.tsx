@@ -96,11 +96,15 @@ export function SignupForm() {
             <Mail className="h-8 w-8 text-primary" strokeWidth={1.5} />
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Check your inbox</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-2">
+            Check your inbox
+          </h3>
           <p className="text-[14px] text-gray-600 max-w-[340px] leading-relaxed mb-4">
             A confirmation link was sent to{' '}
-            <strong className="text-gray-900 break-all">{registeredEmail}</strong>.
-            Please click the link to activate your account.
+            <strong className="text-gray-900 break-all">
+              {registeredEmail}
+            </strong>
+            . Please click the link to activate your account.
           </p>
 
           {resendSuccess && (
@@ -189,7 +193,10 @@ export function SignupForm() {
           <div className="h-[1px] w-full bg-gray-200"></div>
         </div>
         <div className="flex-1 flex flex-col">
-          <Button variant="ghost" className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100">
+          <Button
+            variant="ghost"
+            className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100"
+          >
             Sign Up
           </Button>
           <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
@@ -326,11 +333,7 @@ export function SignupForm() {
             </p>
           )}
 
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full mt-2"
-          >
+          <Button type="submit" disabled={isSubmitting} className="w-full mt-2">
             {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </Button>
         </div>
@@ -347,11 +350,7 @@ export function SignupForm() {
 
       {/* Social Buttons */}
       <div className="grid grid-cols-3 gap-3 mb-8">
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2"
-        >
+        <Button type="button" variant="outline" className="gap-2">
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -375,15 +374,9 @@ export function SignupForm() {
               fill="#EA4335"
             />
           </svg>
-          <span className="text-[13px] hidden sm:inline">
-            Google
-          </span>
+          <span className="text-[13px] hidden sm:inline">Google</span>
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2"
-        >
+        <Button type="button" variant="outline" className="gap-2">
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -395,15 +388,9 @@ export function SignupForm() {
               fill="#1877F2"
             />
           </svg>
-          <span className="text-[13px] hidden sm:inline">
-            Facebook
-          </span>
+          <span className="text-[13px] hidden sm:inline">Facebook</span>
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2"
-        >
+        <Button type="button" variant="outline" className="gap-2">
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -415,9 +402,7 @@ export function SignupForm() {
               fill="#000000"
             />
           </svg>
-          <span className="text-[13px] hidden sm:inline">
-            Apple
-          </span>
+          <span className="text-[13px] hidden sm:inline">Apple</span>
         </Button>
       </div>
 

@@ -1,9 +1,5 @@
 import { useState } from 'react'
-import {
-  Plus,
-  Search,
-  FolderPlus,
-} from 'lucide-react'
+import { Plus, Search, FolderPlus } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import {
@@ -160,10 +156,11 @@ export const CategoryManagement = ({
         <Button
           variant="ghost"
           onClick={() => setActiveTab('categories')}
-          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'categories'
-            ? 'text-primary font-black hover:text-primary'
-            : 'text-gray-400 hover:text-gray-600'
-            }`}
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${
+            activeTab === 'categories'
+              ? 'text-primary font-black hover:text-primary'
+              : 'text-gray-400 hover:text-gray-600'
+          }`}
         >
           Active Categories
           {activeTab === 'categories' && (
@@ -173,15 +170,16 @@ export const CategoryManagement = ({
         <Button
           variant="ghost"
           onClick={() => setActiveTab('requests')}
-          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'requests'
-            ? 'text-primary font-black hover:text-primary'
-            : 'text-gray-400 hover:text-gray-600'
-            }`}
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${
+            activeTab === 'requests'
+              ? 'text-primary font-black hover:text-primary'
+              : 'text-gray-400 hover:text-gray-600'
+          }`}
         >
           Category Requests
           {ownerRequests &&
             ownerRequests.filter((r: any) => r.status === 'pending').length >
-            0 && (
+              0 && (
               <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
                 {
                   ownerRequests.filter((r: any) => r.status === 'pending')

@@ -195,24 +195,26 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           </div>
 
           {/* Search Footer */}
-          {searchQuery.trim() && filteredProducts && filteredProducts.length > 0 && (
-            <div className="border-t border-slate-100 bg-slate-50 p-4 sm:p-6">
-              <button
-                onClick={() => {
-                  navigate({
-                    to: '/products',
-                    search: { search: searchQuery },
-                  })
-                  onOpenChange(false)
-                  setSearchQuery('')
-                }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-95"
-              >
-                View All Results ({filteredProducts.length})
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-          )}
+          {searchQuery.trim() &&
+            filteredProducts &&
+            filteredProducts.length > 0 && (
+              <div className="border-t border-slate-100 bg-slate-50 p-4 sm:p-6">
+                <button
+                  onClick={() => {
+                    navigate({
+                      to: '/products',
+                      search: { search: searchQuery },
+                    })
+                    onOpenChange(false)
+                    setSearchQuery('')
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-95"
+                >
+                  View All Results ({filteredProducts.length})
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
         </div>
       </DialogContent>
     </Dialog>

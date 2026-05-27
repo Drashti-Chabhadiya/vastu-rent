@@ -1,7 +1,16 @@
-import { Outlet, createRootRoute, useRouterState, useNavigate } from '@tanstack/react-router'
+import {
+  Outlet,
+  createRootRoute,
+  useRouterState,
+  useNavigate,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query'
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
 import { Footer, Navbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
@@ -38,7 +47,7 @@ function NotificationListener() {
         })
       })
     } else {
-      registerDeviceForPush().catch(() => { })
+      registerDeviceForPush().catch(() => {})
     }
   }, [token, navigate])
 
@@ -94,14 +103,18 @@ function NotificationListener() {
                   navigate({ to: '/account/notifications' })
                   break
               }
-            }
+            },
           },
           duration: 6000,
         })
       }
 
       // Trigger native browser desktop notification if supported
-      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      if (
+        typeof window !== 'undefined' &&
+        'Notification' in window &&
+        Notification.permission === 'granted'
+      ) {
         try {
           new Notification(notif.title, {
             body: notif.message,
@@ -143,7 +156,11 @@ function NotificationListener() {
       // playNotificationSound()
 
       // Trigger native browser desktop notification immediately like WhatsApp!
-      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      if (
+        typeof window !== 'undefined' &&
+        'Notification' in window &&
+        Notification.permission === 'granted'
+      ) {
         try {
           new Notification(notif.title, {
             body: notif.message,

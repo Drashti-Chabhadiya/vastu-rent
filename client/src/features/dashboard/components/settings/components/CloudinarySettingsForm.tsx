@@ -51,7 +51,8 @@ export const CloudinarySettingsForm = ({
             Cloudinary Storage
           </h3>
           <p className="text-[11px] font-bold text-slate-400">
-            Connect your personal Cloudinary account. Images you upload will be stored here.
+            Connect your personal Cloudinary account. Images you upload will be
+            stored here.
           </p>
         </div>
         <div className="flex gap-2">
@@ -117,11 +118,16 @@ export const CloudinarySettingsForm = ({
                 <div className="text-[10px] font-semibold leading-relaxed">
                   {cloudinaryHasSecret ? (
                     <p>
-                      <strong>Connected!</strong> Your custom Cloudinary storage is active. Images for your products, categories, and profile will be uploaded securely using your credentials.
+                      <strong>Connected!</strong> Your custom Cloudinary storage
+                      is active. Images for your products, categories, and
+                      profile will be uploaded securely using your credentials.
                     </p>
                   ) : (
                     <p>
-                      <strong>Not Configured:</strong> You haven't connected your custom Cloudinary credentials yet. You must set them up before you can upload any product, category, or profile images.
+                      <strong>Not Configured:</strong> You haven't connected
+                      your custom Cloudinary credentials yet. You must set them
+                      up before you can upload any product, category, or profile
+                      images.
                     </p>
                   )}
                 </div>

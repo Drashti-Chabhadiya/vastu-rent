@@ -21,7 +21,10 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     navigator.serviceWorker
       .register('/firebase-messaging-sw.js')
       .then((reg) => {
-        console.log('Firebase Service Worker registered successfully!', reg.scope)
+        console.log(
+          'Firebase Service Worker registered successfully!',
+          reg.scope,
+        )
       })
       .catch((err) => {
         console.error('Firebase Service Worker registration failed:', err)

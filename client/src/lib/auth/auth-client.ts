@@ -27,16 +27,16 @@ export const authClient = createAuthClient({
   plugins: [adminClient()],
   user: {
     additionalFields: {
-      gender: { type: "string", required: false },
-      location: { type: "string", required: false },
-      phone: { type: "string", required: false },
-      language: { type: "string", required: false },
-      dob: { type: "string", required: false },
-      currency: { type: "string", required: false },
-      twoFactorEnabled: { type: "boolean", required: false },
-      bookingAlerts: { type: "boolean", required: false },
-      settlementAlerts: { type: "boolean", required: false },
-      marketingAlerts: { type: "boolean", required: false },
-    }
-  }
+      gender: { type: 'string', required: false },
+      location: { type: 'string', required: false },
+      phone: { type: 'string', required: false },
+      language: { type: 'string', required: false },
+      dob: { type: 'string', required: false },
+      currency: { type: 'string', required: false },
+      twoFactorEnabled: { type: 'boolean', required: false },
+      bookingAlerts: { type: 'boolean', required: false },
+      settlementAlerts: { type: 'boolean', required: false },
+      marketingAlerts: { type: 'boolean', required: false },
+    },
+  },
 })

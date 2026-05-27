@@ -105,28 +105,61 @@ export function AccountLayout() {
   const isLister = role === 'owner' || role === 'admin' || role === 'superAdmin'
 
   const menuItems = [
-    { id: 'personal',       label: 'My Profile',      icon: User,         href: '/account' },
-    { id: 'bookings',       label: 'My Bookings',     icon: Calendar,     href: '/account/bookings' },
+    { id: 'personal', label: 'My Profile', icon: User, href: '/account' },
+    {
+      id: 'bookings',
+      label: 'My Bookings',
+      icon: Calendar,
+      href: '/account/bookings',
+    },
     isLister
-      ? { id: 'listings',   label: 'My Listings',     icon: Percent,      href: '/account/listings' }
-      : { id: 'listings',   label: 'Become a Host',   icon: Percent,      href: '/become-lister' },
-    { id: 'wishlist',       label: 'Wishlist',        icon: Heart,        href: '/wishlist' },
-    { id: 'reviews',        label: 'Reviews',         icon: Star,         href: '/account/reviews' },
-    { id: 'messages',       label: 'Messages',        icon: MessageSquare,href: '/account/messages' },
-    { id: 'notifications',  label: 'Notifications',   icon: Bell,         href: '/account/notifications' },
-    { id: 'settings',       label: 'Settings',        icon: Settings,     href: '/account/profile' },
-    { id: 'help',           label: 'Help & Support',  icon: HelpCircle,   href: '/help' },
+      ? {
+          id: 'listings',
+          label: 'My Listings',
+          icon: Percent,
+          href: '/account/listings',
+        }
+      : {
+          id: 'listings',
+          label: 'Become a Host',
+          icon: Percent,
+          href: '/become-lister',
+        },
+    { id: 'wishlist', label: 'Wishlist', icon: Heart, href: '/wishlist' },
+    { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
+    {
+      id: 'messages',
+      label: 'Messages',
+      icon: MessageSquare,
+      href: '/account/messages',
+    },
+    {
+      id: 'notifications',
+      label: 'Notifications',
+      icon: Bell,
+      href: '/account/notifications',
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: Settings,
+      href: '/account/profile',
+    },
+    { id: 'help', label: 'Help & Support', icon: HelpCircle, href: '/help' },
   ]
 
   const activeTab =
-    menuItems.find((item) => pathname === item.href || (item.href === '/account' && pathname === '/account/'))?.id || 'personal'
+    menuItems.find(
+      (item) =>
+        pathname === item.href ||
+        (item.href === '/account' && pathname === '/account/'),
+    )?.id || 'personal'
 
   return (
     <>
       <div className="min-h-screen bg-[#f5f3ee] pt-16 pb-12 font-sans">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
-
             {/* Sidebar */}
             <aside className="w-full lg:w-[190px] shrink-0 bg-white rounded-2xl border border-slate-100 py-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px]">
               <div>
@@ -149,7 +182,9 @@ export function AccountLayout() {
                           size={16}
                           className={cn(
                             'transition-colors shrink-0',
-                            isActive ? 'text-[#2d5222]' : 'text-[#94a3b8] group-hover:text-gray-700',
+                            isActive
+                              ? 'text-[#2d5222]'
+                              : 'text-[#94a3b8] group-hover:text-gray-700',
                           )}
                         />
                         <span>{item.label}</span>
@@ -174,11 +209,16 @@ export function AccountLayout() {
                   <Leaf size={13} fill="currentColor" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h4 className="font-extrabold text-[#2d5222] text-[11px]">Green Member</h4>
+                  <h4 className="font-extrabold text-[#2d5222] text-[11px]">
+                    Green Member
+                  </h4>
                   <p className="text-[10px] text-[#5c7a52] font-semibold leading-normal mt-0.5">
                     You're saving the planet!
                   </p>
-                  <Link to="/help" className="text-[#2d5222] text-[10px] font-black flex items-center gap-0.5 mt-2 hover:underline">
+                  <Link
+                    to="/help"
+                    className="text-[#2d5222] text-[10px] font-black flex items-center gap-0.5 mt-2 hover:underline"
+                  >
                     View Impact <ChevronRight size={9} strokeWidth={3} />
                   </Link>
                 </div>
@@ -187,7 +227,13 @@ export function AccountLayout() {
 
             {/* Main Content */}
             <main className="flex-1 min-w-0 w-full">
-              {activeTab === 'personal' || activeTab === 'bookings' || activeTab === 'listings' || activeTab === 'reviews' || activeTab === 'messages' || activeTab === 'notifications' || activeTab === 'settings' ? (
+              {activeTab === 'personal' ||
+              activeTab === 'bookings' ||
+              activeTab === 'listings' ||
+              activeTab === 'reviews' ||
+              activeTab === 'messages' ||
+              activeTab === 'notifications' ||
+              activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px] p-8">
@@ -195,7 +241,6 @@ export function AccountLayout() {
                 </div>
               )}
             </main>
-
           </div>
         </div>
       </div>

@@ -145,7 +145,10 @@ export function HeroSection() {
                 <div className="font-display text-xl text-foreground">
                   €18<span className="text-sm text-muted-foreground">/wk</span>
                 </div>
-                <Button variant="link" className="mt-1.5 text-[11px] uppercase tracking-[0.18em] text-primary hover:underline p-0 h-auto">
+                <Button
+                  variant="link"
+                  className="mt-1.5 text-[11px] uppercase tracking-[0.18em] text-primary hover:underline p-0 h-auto"
+                >
                   Reserve
                 </Button>
               </div>

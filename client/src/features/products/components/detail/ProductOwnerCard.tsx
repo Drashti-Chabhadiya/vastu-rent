@@ -26,7 +26,7 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
     }
 
     if (session.user.id === owner.id) {
-      toast.info("This is your own listing.")
+      toast.info('This is your own listing.')
       return
     }
 
@@ -36,7 +36,10 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
       toast.success(`Chat started with ${owner.name}!`)
       navigate({ to: '/account/messages' })
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'Could not start conversation. Try again.')
+      toast.error(
+        err?.response?.data?.message ||
+          'Could not start conversation. Try again.',
+      )
     } finally {
       setIsStartingChat(false)
     }
@@ -116,4 +119,3 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
     </div>
   )
 }
-

@@ -289,7 +289,7 @@ const SidebarTrigger = React.forwardRef<
       size="icon"
       className={cn(
         'h-10 w-10 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all active:scale-95',
-        className
+        className,
       )}
       onClick={(event) => {
         onClick?.(event)
@@ -392,7 +392,10 @@ const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn('flex flex-col gap-2 border-t border-slate-200 p-4 mt-auto', className)}
+      className={cn(
+        'flex flex-col gap-2 border-t border-slate-200 p-4 mt-auto',
+        className,
+      )}
       {...props}
     />
   )

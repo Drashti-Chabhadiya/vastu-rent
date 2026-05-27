@@ -22,7 +22,9 @@ export const Route = createFileRoute('/verify-email')({
 function VerifyEmailPage() {
   const { token } = Route.useSearch()
 
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
+    'loading',
+  )
   const [emailInput, setEmailInput] = useState('')
   const [resendLoading, setResendLoading] = useState(false)
   const [resendSuccess, setResendSuccess] = useState(false)
@@ -99,13 +101,17 @@ function VerifyEmailPage() {
           {status === 'loading' && (
             <div className="text-center py-12 animate-in fade-in duration-300">
               <div className="flex justify-center mb-6">
-                <Loader2 className="h-12 w-12 text-primary animate-spin" strokeWidth={1.5} />
+                <Loader2
+                  className="h-12 w-12 text-primary animate-spin"
+                  strokeWidth={1.5}
+                />
               </div>
               <h1 className="text-[28px] font-bold text-gray-900 mb-2 font-display">
                 Verifying Email
               </h1>
               <p className="text-gray-500 text-[15px] font-medium max-w-[320px] mx-auto">
-                Please wait a moment while we verify your email address and activate your account.
+                Please wait a moment while we verify your email address and
+                activate your account.
               </p>
             </div>
           )}
@@ -123,12 +129,18 @@ function VerifyEmailPage() {
 
               <div className="bg-primary-soft/50 border border-primary/20 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-5 animate-bounce">
-                  <CheckCircle2 className="h-9 w-9 text-primary" strokeWidth={2} />
+                  <CheckCircle2
+                    className="h-9 w-9 text-primary"
+                    strokeWidth={2}
+                  />
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Verification Successful</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Verification Successful
+                </h3>
                 <p className="text-[14px] text-gray-600 max-w-[340px] leading-relaxed mb-6">
-                  Thank you! Your email address has been successfully verified. You can now log in and start renting.
+                  Thank you! Your email address has been successfully verified.
+                  You can now log in and start renting.
                 </p>
 
                 <Link
@@ -154,18 +166,31 @@ function VerifyEmailPage() {
 
               <div className="bg-amber-50/50 border border-amber-200/50 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
                 <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mb-5">
-                  <AlertTriangle className="h-8 w-8 text-amber-600" strokeWidth={1.5} />
+                  <AlertTriangle
+                    className="h-8 w-8 text-amber-600"
+                    strokeWidth={1.5}
+                  />
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Invalid or Expired Link</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Invalid or Expired Link
+                </h3>
                 <p className="text-[14px] text-gray-600 max-w-[340px] leading-relaxed mb-6">
-                  This email verification link is invalid, has expired, or has already been used. Enter your email below to request a new link.
+                  This email verification link is invalid, has expired, or has
+                  already been used. Enter your email below to request a new
+                  link.
                 </p>
 
-                <form onSubmit={handleResend} className="w-full text-left space-y-4">
+                <form
+                  onSubmit={handleResend}
+                  className="w-full text-left space-y-4"
+                >
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Mail className="h-[18px] w-[18px] text-gray-400" strokeWidth={2} />
+                      <Mail
+                        className="h-[18px] w-[18px] text-gray-400"
+                        strokeWidth={2}
+                      />
                     </div>
                     <input
                       type="email"

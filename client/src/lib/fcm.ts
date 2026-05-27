@@ -20,7 +20,7 @@ export function initFirebase() {
   try {
     const app = initializeApp(firebaseConfig)
     messaging = getMessaging(app)
-      ; (window as any).__fcm_initialized = true
+    ;(window as any).__fcm_initialized = true
   } catch (err) {
     console.error('Firebase init error', err)
   }
@@ -35,12 +35,14 @@ export async function registerDeviceForPush() {
     if (permission !== 'granted') return
 
     const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
-    
-    let serviceWorkerRegistration;
+
+    let serviceWorkerRegistration
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       // Register the service worker explicitly
-      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
-      
+      const registration = await navigator.serviceWorker.register(
+        '/firebase-messaging-sw.js',
+      )
+
       // Wait for the service worker to become fully active/activated
       if (!registration.active) {
         await new Promise<void>((resolve) => {
@@ -56,18 +58,21 @@ export async function registerDeviceForPush() {
           setTimeout(resolve, 2500)
         })
       }
-      
+
       serviceWorkerRegistration = registration
     }
 
-    const token = await getToken(messaging, { 
+    const token = await getToken(messaging, {
       vapidKey,
-      serviceWorkerRegistration
+      serviceWorkerRegistration,
     })
     if (!token) return
 
     // Register token with server
-    await apiClient.post('/notifications/device/register', { token, platform: 'web' })
+    await apiClient.post('/notifications/device/register', {
+      token,
+      platform: 'web',
+    })
     return token
   } catch (err) {
     console.error('Failed to register for push', err)
@@ -75,7 +80,7 @@ export async function registerDeviceForPush() {
 }
 
 export function onForegroundMessage(cb: (payload: any) => void) {
-  if (!messaging) return () => { }
+  if (!messaging) return () => {}
   return onMessage(messaging, (payload) => {
     cb(payload)
   })

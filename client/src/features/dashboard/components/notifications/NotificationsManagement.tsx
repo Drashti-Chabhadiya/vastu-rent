@@ -30,21 +30,31 @@ import { authClient } from '#/lib/auth/auth-client'
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function getIcon(type: string) {
   switch (type) {
-    case 'booking': return ShoppingCart
-    case 'payment': return CreditCard
-    case 'alert':   return AlertCircle
-    case 'info':    return Info
-    default:        return Bell
+    case 'booking':
+      return ShoppingCart
+    case 'payment':
+      return CreditCard
+    case 'alert':
+      return AlertCircle
+    case 'info':
+      return Info
+    default:
+      return Bell
   }
 }
 
 function getIconColors(type: string) {
   switch (type) {
-    case 'booking': return 'bg-[#F4F8F1] text-[#2d5222]'
-    case 'payment': return 'bg-amber-50 text-amber-600'
-    case 'alert':   return 'bg-rose-50 text-rose-500'
-    case 'info':    return 'bg-sky-50 text-sky-500'
-    default:        return 'bg-slate-50 text-slate-500'
+    case 'booking':
+      return 'bg-[#F4F8F1] text-[#2d5222]'
+    case 'payment':
+      return 'bg-amber-50 text-amber-600'
+    case 'alert':
+      return 'bg-rose-50 text-rose-500'
+    case 'info':
+      return 'bg-sky-50 text-sky-500'
+    default:
+      return 'bg-slate-50 text-slate-500'
   }
 }
 
@@ -81,7 +91,9 @@ export const NotificationsManagement = () => {
     }
     switch (notif.type) {
       case 'booking':
-        navigate({ to: userRole === 'owner' ? '/account/orders' : '/account/bookings' })
+        navigate({
+          to: userRole === 'owner' ? '/account/orders' : '/account/bookings',
+        })
         break
       case 'payment':
         navigate({ to: '/account/payments' })
@@ -131,7 +143,15 @@ export const NotificationsManagement = () => {
   }
 
   return (
-    <div className={cn('space-y-5', 'animate-in', 'fade-in', 'slide-in-from-bottom-4', 'duration-500')}>
+    <div
+      className={cn(
+        'space-y-5',
+        'animate-in',
+        'fade-in',
+        'slide-in-from-bottom-4',
+        'duration-500',
+      )}
+    >
       {/* Section heading */}
       <h2 className={cn('text-lg', 'font-black', 'text-gray-900')}>
         Live System Alerts &amp; Notifications
@@ -139,31 +159,139 @@ export const NotificationsManagement = () => {
 
       {/* Two-column grid */}
       <div className={cn('grid', 'grid-cols-1', 'lg:grid-cols-3', 'gap-5')}>
-
         {/* ── Left: Notifications list ── */}
-        <div className={cn('lg:col-span-2', 'bg-white', 'rounded-2xl', 'border', 'border-slate-100', 'shadow-sm', 'overflow-hidden')}>
-
+        <div
+          className={cn(
+            'lg:col-span-2',
+            'bg-white',
+            'rounded-2xl',
+            'border',
+            'border-slate-100',
+            'shadow-sm',
+            'overflow-hidden',
+          )}
+        >
           {/* Search + filter bar */}
-          <div className={cn('flex', 'items-center', 'gap-3', 'p-5', 'border-b', 'border-slate-50')}>
+          <div
+            className={cn(
+              'flex',
+              'items-center',
+              'gap-3',
+              'p-5',
+              'border-b',
+              'border-slate-50',
+            )}
+          >
             <div className={cn('relative', 'flex-1')}>
-              <Search size={13} className={cn('absolute', 'left-3', 'top-[11px]', 'text-slate-400')} />
+              <Search
+                size={13}
+                className={cn(
+                  'absolute',
+                  'left-3',
+                  'top-[11px]',
+                  'text-slate-400',
+                )}
+              />
               <Input
                 placeholder="Search notifications..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className={cn('h-9', 'pl-9', 'pr-4', 'bg-slate-50', 'border-none', 'rounded-xl', 'text-[11px]', 'font-semibold', 'focus-visible:ring-1', 'focus-visible:ring-[#2d5222]/20')}
+                className={cn(
+                  'h-9',
+                  'pl-9',
+                  'pr-4',
+                  'bg-slate-50',
+                  'border-none',
+                  'rounded-xl',
+                  'text-[11px]',
+                  'font-semibold',
+                  'focus-visible:ring-1',
+                  'focus-visible:ring-[#2d5222]/20',
+                )}
               />
             </div>
             <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className={cn('w-[130px]', 'h-9', 'bg-slate-50', 'border-none', 'rounded-xl', 'text-[11px]', 'font-semibold', 'text-slate-600', 'focus:ring-1', 'focus:ring-[#2d5222]/20', 'shadow-none', 'cursor-pointer')}>
+              <SelectTrigger
+                className={cn(
+                  'w-[130px]',
+                  'h-9',
+                  'bg-slate-50',
+                  'border-none',
+                  'rounded-xl',
+                  'text-[11px]',
+                  'font-semibold',
+                  'text-slate-600',
+                  'focus:ring-1',
+                  'focus:ring-[#2d5222]/20',
+                  'shadow-none',
+                  'cursor-pointer',
+                )}
+              >
                 <SelectValue placeholder="All Alerts" />
               </SelectTrigger>
-              <SelectContent className={cn('rounded-xl', 'border-slate-100', 'shadow-lg', 'p-1')}>
-                <SelectItem value="all"     className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>All Alerts</SelectItem>
-                <SelectItem value="unread"  className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Unread Only</SelectItem>
-                <SelectItem value="booking" className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Bookings</SelectItem>
-                <SelectItem value="payment" className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Payments</SelectItem>
-                <SelectItem value="alert"   className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Alerts</SelectItem>
+              <SelectContent
+                className={cn(
+                  'rounded-xl',
+                  'border-slate-100',
+                  'shadow-lg',
+                  'p-1',
+                )}
+              >
+                <SelectItem
+                  value="all"
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'rounded-lg',
+                    'cursor-pointer',
+                  )}
+                >
+                  All Alerts
+                </SelectItem>
+                <SelectItem
+                  value="unread"
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'rounded-lg',
+                    'cursor-pointer',
+                  )}
+                >
+                  Unread Only
+                </SelectItem>
+                <SelectItem
+                  value="booking"
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'rounded-lg',
+                    'cursor-pointer',
+                  )}
+                >
+                  Bookings
+                </SelectItem>
+                <SelectItem
+                  value="payment"
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'rounded-lg',
+                    'cursor-pointer',
+                  )}
+                >
+                  Payments
+                </SelectItem>
+                <SelectItem
+                  value="alert"
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'rounded-lg',
+                    'cursor-pointer',
+                  )}
+                >
+                  Alerts
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -171,18 +299,75 @@ export const NotificationsManagement = () => {
           {/* List */}
           <div className={cn('divide-y', 'divide-slate-50')}>
             {isLoading ? (
-              <div className={cn('flex', 'flex-col', 'items-center', 'justify-center', 'py-16', 'gap-3')}>
-                <div className={cn('w-10', 'h-10', 'rounded-xl', 'bg-[#F4F8F1]', 'flex', 'items-center', 'justify-center')}>
-                  <Bell size={18} className={cn('text-[#2d5222]', 'animate-pulse')} />
+              <div
+                className={cn(
+                  'flex',
+                  'flex-col',
+                  'items-center',
+                  'justify-center',
+                  'py-16',
+                  'gap-3',
+                )}
+              >
+                <div
+                  className={cn(
+                    'w-10',
+                    'h-10',
+                    'rounded-xl',
+                    'bg-[#F4F8F1]',
+                    'flex',
+                    'items-center',
+                    'justify-center',
+                  )}
+                >
+                  <Bell
+                    size={18}
+                    className={cn('text-[#2d5222]', 'animate-pulse')}
+                  />
                 </div>
-                <p className={cn('text-[11px]', 'font-semibold', 'text-slate-400')}>Loading notifications...</p>
+                <p
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'text-slate-400',
+                  )}
+                >
+                  Loading notifications...
+                </p>
               </div>
             ) : paginatedNotifs.length === 0 ? (
-              <div className={cn('flex', 'flex-col', 'items-center', 'justify-center', 'py-16', 'gap-3')}>
-                <div className={cn('w-10', 'h-10', 'rounded-xl', 'bg-slate-50', 'flex', 'items-center', 'justify-center')}>
+              <div
+                className={cn(
+                  'flex',
+                  'flex-col',
+                  'items-center',
+                  'justify-center',
+                  'py-16',
+                  'gap-3',
+                )}
+              >
+                <div
+                  className={cn(
+                    'w-10',
+                    'h-10',
+                    'rounded-xl',
+                    'bg-slate-50',
+                    'flex',
+                    'items-center',
+                    'justify-center',
+                  )}
+                >
                   <Bell size={18} className="text-slate-300" />
                 </div>
-                <p className={cn('text-[11px]', 'font-semibold', 'text-slate-400')}>No notifications found.</p>
+                <p
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'text-slate-400',
+                  )}
+                >
+                  No notifications found.
+                </p>
               </div>
             ) : (
               paginatedNotifs.map((notif) => {
@@ -197,31 +382,60 @@ export const NotificationsManagement = () => {
                       !notif.isRead && 'bg-[#F4F8F1]/40',
                     )}
                   >
-                    <div className={cn('flex', 'items-center', 'gap-3', 'min-w-0')}>
+                    <div
+                      className={cn('flex', 'items-center', 'gap-3', 'min-w-0')}
+                    >
                       {/* Unread dot */}
-                      <div className={cn(
-                        'w-1.5 h-1.5 rounded-full shrink-0',
-                        !notif.isRead ? 'bg-[#2d5222]' : 'bg-transparent',
-                      )} />
+                      <div
+                        className={cn(
+                          'w-1.5 h-1.5 rounded-full shrink-0',
+                          !notif.isRead ? 'bg-[#2d5222]' : 'bg-transparent',
+                        )}
+                      />
 
-                      <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center shrink-0', colorCls)}>
+                      <div
+                        className={cn(
+                          'w-9 h-9 rounded-xl flex items-center justify-center shrink-0',
+                          colorCls,
+                        )}
+                      >
                         <Icon size={16} strokeWidth={2.5} />
                       </div>
 
                       <div className="min-w-0">
-                        <p className={cn(
-                          'text-[12px] truncate',
-                          !notif.isRead ? 'font-black text-gray-900' : 'font-semibold text-gray-700',
-                        )}>
+                        <p
+                          className={cn(
+                            'text-[12px] truncate',
+                            !notif.isRead
+                              ? 'font-black text-gray-900'
+                              : 'font-semibold text-gray-700',
+                          )}
+                        >
                           {notif.title}
                         </p>
-                        <p className={cn('text-[10px]', 'font-medium', 'text-slate-400', 'mt-0.5', 'truncate')}>
+                        <p
+                          className={cn(
+                            'text-[10px]',
+                            'font-medium',
+                            'text-slate-400',
+                            'mt-0.5',
+                            'truncate',
+                          )}
+                        >
                           {notif.message}
                         </p>
                       </div>
                     </div>
 
-                    <span className={cn('text-[10px]', 'font-semibold', 'text-slate-300', 'shrink-0', 'ml-4')}>
+                    <span
+                      className={cn(
+                        'text-[10px]',
+                        'font-semibold',
+                        'text-slate-300',
+                        'shrink-0',
+                        'ml-4',
+                      )}
+                    >
                       {formatDate(notif.createdAt)}
                     </span>
                   </div>
@@ -232,15 +446,36 @@ export const NotificationsManagement = () => {
 
           {/* Pagination */}
           {totalItems > itemsPerPage && (
-            <div className={cn('flex', 'flex-col', 'sm:flex-row', 'items-center', 'justify-between', 'px-5', 'py-4', 'border-t', 'border-slate-50', 'gap-3')}>
-              <p className={cn('text-[10px]', 'font-semibold', 'text-slate-400')}>
+            <div
+              className={cn(
+                'flex',
+                'flex-col',
+                'sm:flex-row',
+                'items-center',
+                'justify-between',
+                'px-5',
+                'py-4',
+                'border-t',
+                'border-slate-50',
+                'gap-3',
+              )}
+            >
+              <p
+                className={cn('text-[10px]', 'font-semibold', 'text-slate-400')}
+              >
                 Showing{' '}
-                <span className={cn('font-black', 'text-gray-700')}>{startIndex + 1}</span>
-                {' '}to{' '}
-                <span className={cn('font-black', 'text-gray-700')}>{Math.min(endIndex, totalItems)}</span>
-                {' '}of{' '}
-                <span className={cn('font-black', 'text-gray-700')}>{totalItems}</span>
-                {' '}notifications
+                <span className={cn('font-black', 'text-gray-700')}>
+                  {startIndex + 1}
+                </span>{' '}
+                to{' '}
+                <span className={cn('font-black', 'text-gray-700')}>
+                  {Math.min(endIndex, totalItems)}
+                </span>{' '}
+                of{' '}
+                <span className={cn('font-black', 'text-gray-700')}>
+                  {totalItems}
+                </span>{' '}
+                notifications
               </p>
               <div className={cn('flex', 'items-center', 'gap-1.5')}>
                 <Button
@@ -248,14 +483,37 @@ export const NotificationsManagement = () => {
                   size="sm"
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                  className={cn('h-7', 'px-3', 'rounded-lg', 'text-[10px]', 'font-semibold', 'border-slate-200', 'text-slate-600', 'hover:bg-slate-50', 'shadow-none', 'cursor-pointer', 'disabled:opacity-40')}
+                  className={cn(
+                    'h-7',
+                    'px-3',
+                    'rounded-lg',
+                    'text-[10px]',
+                    'font-semibold',
+                    'border-slate-200',
+                    'text-slate-600',
+                    'hover:bg-slate-50',
+                    'shadow-none',
+                    'cursor-pointer',
+                    'disabled:opacity-40',
+                  )}
                 >
                   Previous
                 </Button>
 
                 {getPageNumbers().map((page, idx) =>
                   page === '...' ? (
-                    <span key={`e-${idx}`} className={cn('w-7', 'h-7', 'flex', 'items-center', 'justify-center', 'text-[10px]', 'text-slate-400')}>
+                    <span
+                      key={`e-${idx}`}
+                      className={cn(
+                        'w-7',
+                        'h-7',
+                        'flex',
+                        'items-center',
+                        'justify-center',
+                        'text-[10px]',
+                        'text-slate-400',
+                      )}
+                    >
                       …
                     </span>
                   ) : (
@@ -278,8 +536,22 @@ export const NotificationsManagement = () => {
                   variant="outline"
                   size="sm"
                   disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                  className={cn('h-7', 'px-3', 'rounded-lg', 'text-[10px]', 'font-semibold', 'border-slate-200', 'text-slate-600', 'hover:bg-slate-50', 'shadow-none', 'cursor-pointer', 'disabled:opacity-40')}
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(p + 1, totalPages))
+                  }
+                  className={cn(
+                    'h-7',
+                    'px-3',
+                    'rounded-lg',
+                    'text-[10px]',
+                    'font-semibold',
+                    'border-slate-200',
+                    'text-slate-600',
+                    'hover:bg-slate-50',
+                    'shadow-none',
+                    'cursor-pointer',
+                    'disabled:opacity-40',
+                  )}
                 >
                   Next
                 </Button>
@@ -290,28 +562,82 @@ export const NotificationsManagement = () => {
 
         {/* ── Right: Summary card ── */}
         <div className="space-y-4">
-          <div className={cn('bg-white', 'rounded-2xl', 'border', 'border-slate-100', 'shadow-sm', 'p-6')}>
-            <h3 className={cn('text-[11px]', 'font-black', 'text-gray-900', 'uppercase', 'tracking-widest', 'mb-0.5')}>
+          <div
+            className={cn(
+              'bg-white',
+              'rounded-2xl',
+              'border',
+              'border-slate-100',
+              'shadow-sm',
+              'p-6',
+            )}
+          >
+            <h3
+              className={cn(
+                'text-[11px]',
+                'font-black',
+                'text-gray-900',
+                'uppercase',
+                'tracking-widest',
+                'mb-0.5',
+              )}
+            >
               Notification Summary
             </h3>
-            <p className={cn('text-[10px]', 'font-semibold', 'text-slate-400', 'mb-5')}>
+            <p
+              className={cn(
+                'text-[10px]',
+                'font-semibold',
+                'text-slate-400',
+                'mb-5',
+              )}
+            >
               System summary stats.
             </p>
 
             {/* Unread count row */}
-            <div className={cn('flex', 'items-center', 'justify-between', 'py-3', 'border-b', 'border-slate-50')}>
+            <div
+              className={cn(
+                'flex',
+                'items-center',
+                'justify-between',
+                'py-3',
+                'border-b',
+                'border-slate-50',
+              )}
+            >
               <div className={cn('flex', 'items-center', 'gap-2.5')}>
-                <div className={cn('w-7', 'h-7', 'rounded-lg', 'bg-sky-50', 'flex', 'items-center', 'justify-center')}>
+                <div
+                  className={cn(
+                    'w-7',
+                    'h-7',
+                    'rounded-lg',
+                    'bg-sky-50',
+                    'flex',
+                    'items-center',
+                    'justify-center',
+                  )}
+                >
                   <Bell size={13} className="text-sky-500" />
                 </div>
-                <span className={cn('text-[11px]', 'font-semibold', 'text-slate-600')}>Unread count</span>
+                <span
+                  className={cn(
+                    'text-[11px]',
+                    'font-semibold',
+                    'text-slate-600',
+                  )}
+                >
+                  Unread count
+                </span>
               </div>
-              <span className={cn(
-                'text-[11px] font-black px-2 py-0.5 rounded-full',
-                unreadCount > 0
-                  ? 'bg-[#F4F8F1] text-[#2d5222]'
-                  : 'bg-slate-50 text-slate-400',
-              )}>
+              <span
+                className={cn(
+                  'text-[11px] font-black px-2 py-0.5 rounded-full',
+                  unreadCount > 0
+                    ? 'bg-[#F4F8F1] text-[#2d5222]'
+                    : 'bg-slate-50 text-slate-400',
+                )}
+              >
                 {unreadCount}
               </span>
             </div>
@@ -321,7 +647,22 @@ export const NotificationsManagement = () => {
               <button
                 onClick={() => markAllReadMutation.mutate()}
                 disabled={markAllReadMutation.isPending}
-                className={cn('w-full', 'mt-4', 'flex', 'items-center', 'justify-center', 'gap-1.5', 'text-[11px]', 'font-black', 'text-[#2d5222]', 'hover:underline', 'cursor-pointer', 'bg-transparent', 'border-none', 'disabled:opacity-50')}
+                className={cn(
+                  'w-full',
+                  'mt-4',
+                  'flex',
+                  'items-center',
+                  'justify-center',
+                  'gap-1.5',
+                  'text-[11px]',
+                  'font-black',
+                  'text-[#2d5222]',
+                  'hover:underline',
+                  'cursor-pointer',
+                  'bg-transparent',
+                  'border-none',
+                  'disabled:opacity-50',
+                )}
               >
                 <CheckCheck size={13} />
                 Mark all as read
@@ -329,7 +670,6 @@ export const NotificationsManagement = () => {
             )}
           </div>
         </div>
-
       </div>
     </div>
   )

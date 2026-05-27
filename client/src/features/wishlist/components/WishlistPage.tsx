@@ -221,26 +221,29 @@ export function WishlistPage() {
                       { value: 'price-asc', label: 'Price: Low → High' },
                       { value: 'price-desc', label: 'Price: High → Low' },
                     ] as const
-                    ).map((opt) => (
-                      <Button
-                        variant="ghost"
-                        key={opt.value}
-                        onClick={() => {
-                          setSortBy(opt.value)
-                          setIsSortOpen(false)
-                        }}
-                        className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors rounded-none justify-start ${
-                          sortBy === opt.value
-                            ? 'text-primary bg-primary/5 hover:bg-primary/5 hover:text-primary'
-                            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                        }`}
-                      >
-                        <span>{opt.label}</span>
-                        {sortBy === opt.value && (
-                          <Check size={13} className="text-primary shrink-0 ml-auto" />
-                        )}
-                      </Button>
-                    ))}
+                  ).map((opt) => (
+                    <Button
+                      variant="ghost"
+                      key={opt.value}
+                      onClick={() => {
+                        setSortBy(opt.value)
+                        setIsSortOpen(false)
+                      }}
+                      className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors rounded-none justify-start ${
+                        sortBy === opt.value
+                          ? 'text-primary bg-primary/5 hover:bg-primary/5 hover:text-primary'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                    >
+                      <span>{opt.label}</span>
+                      {sortBy === opt.value && (
+                        <Check
+                          size={13}
+                          className="text-primary shrink-0 ml-auto"
+                        />
+                      )}
+                    </Button>
+                  ))}
                 </div>
               )}
             </div>
@@ -384,7 +387,10 @@ export function WishlistPage() {
                       </p>
                       <div className="flex gap-2">
                         <Link to="/products/$id" params={{ id: product.id }}>
-                          <Button size="sm" className="h-7 px-3 text-[11px] rounded-lg">
+                          <Button
+                            size="sm"
+                            className="h-7 px-3 text-[11px] rounded-lg"
+                          >
                             View
                           </Button>
                         </Link>
@@ -446,7 +452,10 @@ export function WishlistPage() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Link to="/products">
-                <Button size="lg" className="flex items-center gap-2 shadow-lg shadow-primary/20">
+                <Button
+                  size="lg"
+                  className="flex items-center gap-2 shadow-lg shadow-primary/20"
+                >
                   <ShoppingBag size={16} />
                   Browse Catalogue
                 </Button>

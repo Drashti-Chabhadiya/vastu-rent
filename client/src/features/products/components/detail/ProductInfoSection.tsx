@@ -25,7 +25,7 @@ interface ProductInfoSectionProps {
   endDate: Date | null
   rentalDays: number
   totalPrice: number
-  
+
   // Coupon Props
   couponCode: string
   setCouponCode: (code: string) => void
@@ -57,7 +57,10 @@ export const ProductInfoSection = ({
   applyCouponIsPending,
 }: ProductInfoSectionProps) => {
   const discountAmount = appliedCoupon?.discountAmount || 0
-  const finalPayable = Math.max(0, totalPrice - discountAmount + (product.securityDeposit || 0))
+  const finalPayable = Math.max(
+    0,
+    totalPrice - discountAmount + (product.securityDeposit || 0),
+  )
 
   return (
     <div className="space-y-6">
@@ -109,7 +112,9 @@ export const ProductInfoSection = ({
         <div className="grid grid-cols-1 gap-y-3">
           {productInfo.map((info) => (
             <div key={info.label} className="grid grid-cols-3">
-              <span className="col-span-1 text-sm text-gray-500">{info.label}</span>
+              <span className="col-span-1 text-sm text-gray-500">
+                {info.label}
+              </span>
               <span className="col-span-2 text-sm font-medium text-gray-900">
                 {info.value}
               </span>
@@ -254,7 +259,9 @@ export const ProductInfoSection = ({
           {endDate && (
             <>
               <div className="flex items-center justify-between text-xs text-gray-700">
-                <span className="font-bold">Rental Fee ({rentalDays} days):</span>
+                <span className="font-bold">
+                  Rental Fee ({rentalDays} days):
+                </span>
                 <span>₹{totalPrice.toLocaleString()}</span>
               </div>
 
@@ -288,7 +295,9 @@ export const ProductInfoSection = ({
                       <Input
                         placeholder="Enter code (e.g. MONSOON30)"
                         value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        onChange={(e) =>
+                          setCouponCode(e.target.value.toUpperCase())
+                        }
                         className="h-9 rounded-xl bg-white border-gray-200 text-xs font-bold placeholder:text-gray-300"
                       />
                       <Button
@@ -317,7 +326,9 @@ export const ProductInfoSection = ({
               )}
 
               <div className="flex items-center justify-between text-xs text-gray-700">
-                <span className="font-bold">Security Deposit (Refundable):</span>
+                <span className="font-bold">
+                  Security Deposit (Refundable):
+                </span>
                 <span>₹{(product.securityDeposit || 0).toLocaleString()}</span>
               </div>
               <div className="pt-2 border-t border-brand/10 flex items-center justify-between text-sm text-gray-900 font-black">

@@ -283,7 +283,9 @@ export const ListingsManagement = ({
               toast.success('Listing created successfully')
             },
             onError: (err: any) => {
-              toast.error(err.response?.data?.message || 'Failed to create listing')
+              toast.error(
+                err.response?.data?.message || 'Failed to create listing',
+              )
             },
           })
         }}

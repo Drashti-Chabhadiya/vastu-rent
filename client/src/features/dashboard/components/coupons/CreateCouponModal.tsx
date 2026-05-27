@@ -151,7 +151,8 @@ export function CreateCouponModal({
               Create Coupon
             </DialogTitle>
             <p className="text-white/70 text-sm font-medium mt-1">
-              Configure discount rules, limits, and scope for your voucher campaign.
+              Configure discount rules, limits, and scope for your voucher
+              campaign.
             </p>
           </DialogHeader>
         </div>
@@ -176,7 +177,9 @@ export function CreateCouponModal({
               <p className="text-[10px] font-extrabold uppercase tracking-wider opacity-85">
                 Scenario Preview
               </p>
-              <p className="text-[13px] font-bold mt-0.5">{previewScenario.label}</p>
+              <p className="text-[13px] font-bold mt-0.5">
+                {previewScenario.label}
+              </p>
             </div>
           </div>
 
@@ -207,8 +210,18 @@ export function CreateCouponModal({
                   <SelectValue placeholder="Discount Type" />
                 </SelectTrigger>
                 <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-                  <SelectItem value="percentage" className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Percentage (%)</SelectItem>
-                  <SelectItem value="fixed" className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Fixed Flat (₹)</SelectItem>
+                  <SelectItem
+                    value="percentage"
+                    className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                  >
+                    Percentage (%)
+                  </SelectItem>
+                  <SelectItem
+                    value="fixed"
+                    className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                  >
+                    Fixed Flat (₹)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -240,9 +253,18 @@ export function CreateCouponModal({
                   <SelectValue placeholder="All My Listings" />
                 </SelectTrigger>
                 <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200 max-h-[200px]">
-                  <SelectItem value="all" className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All My Listings</SelectItem>
+                  <SelectItem
+                    value="all"
+                    className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                  >
+                    All My Listings
+                  </SelectItem>
                   {myListings.map((p: any) => (
-                    <SelectItem key={p.id} value={p.id} className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                    <SelectItem
+                      key={p.id}
+                      value={p.id}
+                      className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                    >
                       {p.title || p.name}
                     </SelectItem>
                   ))}

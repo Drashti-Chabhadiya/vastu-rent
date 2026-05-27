@@ -50,9 +50,18 @@ export const RevenueTransactionsTable = ({
               <SelectValue placeholder="All Products" />
             </SelectTrigger>
             <SelectContent className="bg-white rounded-lg shadow-2xl border-none p-1 animate-in fade-in zoom-in-95 duration-200 max-h-[200px]">
-              <SelectItem value="all" className="text-[10px] font-bold text-dash-text-soft rounded-md focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Products</SelectItem>
+              <SelectItem
+                value="all"
+                className="text-[10px] font-bold text-dash-text-soft rounded-md focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                All Products
+              </SelectItem>
               {uniqueProducts.map((p: any) => (
-                <SelectItem key={p} value={p} className="text-[10px] font-bold text-dash-text-soft rounded-md focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                <SelectItem
+                  key={p}
+                  value={p}
+                  className="text-[10px] font-bold text-dash-text-soft rounded-md focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                >
                   {p}
                 </SelectItem>
               ))}
@@ -96,10 +105,7 @@ export const RevenueTransactionsTable = ({
                     {trans.product?.title}
                   </p>
                   <p className="text-[9px] font-bold text-slate-400">
-                    {format(
-                      new Date(trans.createdAt),
-                      'dd MMM yyyy, hh:mm a',
-                    )}
+                    {format(new Date(trans.createdAt), 'dd MMM yyyy, hh:mm a')}
                   </p>
                 </div>
               </div>

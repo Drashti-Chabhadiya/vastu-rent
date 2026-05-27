@@ -26,8 +26,8 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
           order.status === 'cancelled' || order.status === 'rejected'
             ? 'This booking request was rejected.'
             : order.status === 'confirmed' ||
-              order.status === 'active' ||
-              order.status === 'completed'
+                order.status === 'active' ||
+                order.status === 'completed'
               ? 'Booking confirmed and active.'
               : 'Waiting for owner approval & confirmation.',
         date:
@@ -54,8 +54,8 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
           order.status === 'cancelled' || order.status === 'rejected'
             ? 'bg-red-500'
             : order.status === 'confirmed' ||
-              order.status === 'active' ||
-              order.status === 'completed'
+                order.status === 'active' ||
+                order.status === 'completed'
               ? 'bg-[#059669]'
               : 'bg-[#f59e0b]',
       },
@@ -89,10 +89,7 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
           const isPending = step.status === 'pending'
 
           return (
-            <div
-              key={i}
-              className={cn('relative', isUpcoming && 'opacity-30')}
-            >
+            <div key={i} className={cn('relative', isUpcoming && 'opacity-30')}>
               <div
                 className={cn(
                   'absolute -left-12 w-10 h-10 rounded-full flex items-center justify-center text-white z-10 shadow-lg',

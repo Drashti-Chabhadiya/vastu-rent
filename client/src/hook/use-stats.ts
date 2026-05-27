@@ -41,7 +41,10 @@ export const useRevenueOverTime = (
       const res = await apiClient.get('/admin/stats/revenue-over-time', {
         params: { period },
       })
-      return res.data as { data: { date: string; revenue: number }[]; totalRevenue: number }
+      return res.data as {
+        data: { date: string; revenue: number }[]
+        totalRevenue: number
+      }
     },
     ...options,
   })
@@ -53,7 +56,11 @@ export const useTopCities = (options?: { enabled?: boolean }) => {
     queryKey: ['top-cities'],
     queryFn: async () => {
       const res = await apiClient.get('/admin/stats/top-cities')
-      return res.data.cities as { name: string; count: string; percentage: number }[]
+      return res.data.cities as {
+        name: string
+        count: string
+        percentage: number
+      }[]
     },
     ...options,
   })

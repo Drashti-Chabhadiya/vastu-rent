@@ -95,19 +95,18 @@ export const SettingsManagement = () => {
 
   // Memoize derived storage stats so they only recompute when usageData changes,
   // not on every parent render (which was causing the blink).
-  const { formattedUsed, formattedLimit, usedPercent } =
-    useMemo(() => {
-      const stats = usageData?.storage || {
-        usage: 0,
-        limit: 10485760000,
-        used_percent: 0,
-      }
-      return {
-        formattedUsed: formatBytes(stats.usage),
-        formattedLimit: formatBytes(stats.limit),
-        usedPercent: Math.min(100, Math.max(0, stats.used_percent)),
-      }
-    }, [usageData])
+  const { formattedUsed, formattedLimit, usedPercent } = useMemo(() => {
+    const stats = usageData?.storage || {
+      usage: 0,
+      limit: 10485760000,
+      used_percent: 0,
+    }
+    return {
+      formattedUsed: formatBytes(stats.usage),
+      formattedLimit: formatBytes(stats.limit),
+      usedPercent: Math.min(100, Math.max(0, stats.used_percent)),
+    }
+  }, [usageData])
 
   // Load Cloudinary config when active tab is selected
   useEffect(() => {
@@ -527,8 +526,8 @@ export const SettingsManagement = () => {
                 </span>
                 <span className="text-[11px] font-black text-slate-700">
                   {activeUser?.createdAt
-                     ? format(new Date(activeUser.createdAt), 'dd MMM yyyy')
-                     : '01 Jan 2026'}
+                    ? format(new Date(activeUser.createdAt), 'dd MMM yyyy')
+                    : '01 Jan 2026'}
                 </span>
               </div>
               <div className="flex items-center justify-between">

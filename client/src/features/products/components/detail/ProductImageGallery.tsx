@@ -37,7 +37,9 @@ export const ProductImageGallery = ({
           variant="outline"
           size="icon"
           onClick={() =>
-            setSelectedImage(selectedImage > 0 ? selectedImage - 1 : images.length - 1)
+            setSelectedImage(
+              selectedImage > 0 ? selectedImage - 1 : images.length - 1,
+            )
           }
           className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-900 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-white active:scale-[0.98]"
         >
@@ -47,7 +49,9 @@ export const ProductImageGallery = ({
           variant="outline"
           size="icon"
           onClick={() =>
-            setSelectedImage(selectedImage < images.length - 1 ? selectedImage + 1 : 0)
+            setSelectedImage(
+              selectedImage < images.length - 1 ? selectedImage + 1 : 0,
+            )
           }
           className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-gray-900 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-white active:scale-[0.98]"
         >

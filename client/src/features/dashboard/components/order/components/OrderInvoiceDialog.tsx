@@ -199,7 +199,11 @@ export const OrderInvoiceDialog = ({
                     </div>
                   </td>
                   <td className="p-4 text-center">
-                    ₹{(order.product?.price || order.totalPrice).toLocaleString()} / day
+                    ₹
+                    {(
+                      order.product?.price || order.totalPrice
+                    ).toLocaleString()}{' '}
+                    / day
                   </td>
                   <td className="p-4 text-center">
                     {calculateDuration(order.startDate, order.endDate)} Days

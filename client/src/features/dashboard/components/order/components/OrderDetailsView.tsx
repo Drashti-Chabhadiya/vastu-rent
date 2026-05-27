@@ -160,7 +160,10 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* Product Details Section */}
-          <OrderProductDetailsCard order={order} calculateDuration={calculateDuration} />
+          <OrderProductDetailsCard
+            order={order}
+            calculateDuration={calculateDuration}
+          />
 
           {/* Customer Details Section */}
           <OrderCustomerDetailsCard order={order} />
@@ -218,10 +221,10 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                     <div className="flex items-center justify-center gap-2 text-sm font-bold text-slate-700">
                       {(order.status === 'confirmed' ||
                         order.status === 'active') && (
-                          <span className="text-[#059669] flex items-center gap-1">
-                            <CheckCircle2 size={16} /> Confirmed
-                          </span>
-                        )}
+                        <span className="text-[#059669] flex items-center gap-1">
+                          <CheckCircle2 size={16} /> Confirmed
+                        </span>
+                      )}
                       {order.status === 'completed' && (
                         <span className="text-[#059669] flex items-center gap-1">
                           <CheckCircle2 size={16} /> Completed
@@ -229,14 +232,15 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                       )}
                       {(order.status === 'cancelled' ||
                         order.status === 'rejected') && (
-                          <span className="text-red-500 flex items-center gap-1">
-                            <XCircle size={16} /> Rejected / Cancelled
-                          </span>
-                        )}
+                        <span className="text-red-500 flex items-center gap-1">
+                          <XCircle size={16} /> Rejected / Cancelled
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  {(order.status === 'confirmed' || order.status === 'active') && (
+                  {(order.status === 'confirmed' ||
+                    order.status === 'active') && (
                     <Button
                       onClick={() => setPendingAction('complete')}
                       disabled={updateStatus.isPending}
@@ -307,8 +311,8 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
               {pendingAction === 'complete'
                 ? `Are you sure you want to mark this rental booking for "${order.product?.title || 'this product'}" as Completed? The product will be marked as returned, and the renter will be allowed to submit a review.`
                 : pendingAction === 'confirm'
-                ? `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
-                : `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`}
+                  ? `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
+                  : `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-4 mt-10 font-sans">
@@ -336,8 +340,8 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
               {pendingAction === 'complete'
                 ? 'Complete Rental'
                 : pendingAction === 'confirm'
-                ? 'Confirm Booking'
-                : 'Reject Booking'}
+                  ? 'Confirm Booking'
+                  : 'Reject Booking'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

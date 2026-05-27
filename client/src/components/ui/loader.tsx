@@ -21,7 +21,7 @@ export const Loader = ({
         variant === 'brand' && 'text-dash-brand',
         variant === 'white' && 'text-white',
         variant === 'success' && 'text-dash-success',
-        className
+        className,
       )}
     />
   )
@@ -40,7 +40,7 @@ export const LoadingOverlay = ({
     <div
       className={cn(
         'absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[2px] rounded-xl transition-all animate-in fade-in duration-200',
-        className
+        className,
       )}
     >
       <div className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-white shadow-xl border border-gray-100">

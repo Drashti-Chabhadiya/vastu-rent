@@ -69,9 +69,8 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
     {
       label: 'Active Coupons',
       value:
-        coupons?.filter(
-          (c) => c.isActive && new Date(c.endDate) >= new Date(),
-        ).length || 0,
+        coupons?.filter((c) => c.isActive && new Date(c.endDate) >= new Date())
+          .length || 0,
       icon: Ticket,
       color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },

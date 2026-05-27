@@ -1,5 +1,12 @@
 import * as LucideIcons from 'lucide-react'
-import { Folder, FileText, Check, X, AlertCircle, FolderPlus } from 'lucide-react'
+import {
+  Folder,
+  FileText,
+  Check,
+  X,
+  AlertCircle,
+  FolderPlus,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 
 interface CategoryRequestListProps {
@@ -24,9 +31,7 @@ export const CategoryRequestList = ({
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden animate-in fade-in duration-300">
       <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-        <h3 className="font-bold text-gray-900">
-          Category Request Pipeline
-        </h3>
+        <h3 className="font-bold text-gray-900">Category Request Pipeline</h3>
         {isOwner && onRequestCreate && (
           <Button
             onClick={onRequestCreate}
@@ -53,8 +58,7 @@ export const CategoryRequestList = ({
           </div>
         ) : (
           requests.map((req: any) => {
-            const Icon =
-              (LucideIcons as any)[req.icon || 'Folder'] || Folder
+            const Icon = (LucideIcons as any)[req.icon || 'Folder'] || Folder
             return (
               <div
                 key={req.id}
@@ -96,10 +100,8 @@ export const CategoryRequestList = ({
                     <h4 className="font-bold text-gray-900">{req.name}</h4>
                     <p className="text-xs text-gray-400 mt-1">
                       Requested by{' '}
-                      {req.owner?.name ||
-                        req.owner?.email ||
-                        'Unknown Owner'}{' '}
-                      • {new Date(req.createdAt).toLocaleDateString()}
+                      {req.owner?.name || req.owner?.email || 'Unknown Owner'} •{' '}
+                      {new Date(req.createdAt).toLocaleDateString()}
                     </p>
                     {req.description && (
                       <p className="text-xs text-gray-600 mt-2 bg-gray-50/80 px-3 py-1.5 rounded-xl border border-gray-100/50 w-full max-w-lg">

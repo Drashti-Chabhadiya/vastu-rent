@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { Bell, Calendar, ChevronDown, Menu, ShoppingCart, CreditCard, AlertCircle, Loader2 } from 'lucide-react'
+import {
+  Bell,
+  Calendar,
+  ChevronDown,
+  Menu,
+  ShoppingCart,
+  CreditCard,
+  AlertCircle,
+  Loader2,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
 import {
@@ -7,7 +16,11 @@ import {
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
 } from '#/hook'
-import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '#/components/ui/popover'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
 import { authClient } from '#/lib/auth/auth-client'
@@ -32,7 +45,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   const { data: session } = authClient.useSession()
   const userRole = session?.user?.role || 'owner'
 
-  const { data: notifications = [], isLoading: isLoadingNotifications } = useNotifications()
+  const { data: notifications = [], isLoading: isLoadingNotifications } =
+    useNotifications()
   const markReadMutation = useMarkNotificationRead()
   const markAllReadMutation = useMarkAllNotificationsRead()
 
@@ -260,7 +274,9 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                   className="text-[10px] font-extrabold text-[#2d5222] hover:underline cursor-pointer border-none bg-transparent"
                   disabled={markAllReadMutation.isPending}
                 >
-                  {markAllReadMutation.isPending ? 'Marking...' : 'Mark all read'}
+                  {markAllReadMutation.isPending
+                    ? 'Marking...'
+                    : 'Mark all read'}
                 </button>
               )}
             </div>
@@ -274,7 +290,9 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
               ) : notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 gap-1.5 text-center px-4">
                   <Bell size={22} className="text-slate-200" />
-                  <p className="text-[10px] font-bold text-slate-400">All caught up! No alerts.</p>
+                  <p className="text-[10px] font-bold text-slate-400">
+                    All caught up! No alerts.
+                  </p>
                 </div>
               ) : (
                 notifications.slice(0, 5).map((notif) => {
@@ -285,17 +303,28 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                       key={notif.id}
                       onClick={() => handleNotificationClick(notif)}
                       className={cn(
-                        "p-4 flex gap-3.5 items-start cursor-pointer hover:bg-slate-50/60 transition-colors",
-                        !notif.isRead && "bg-slate-50/30 font-semibold"
+                        'p-4 flex gap-3.5 items-start cursor-pointer hover:bg-slate-50/60 transition-colors',
+                        !notif.isRead && 'bg-slate-50/30 font-semibold',
                       )}
                     >
-                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm", colorCls)}>
+                      <div
+                        className={cn(
+                          'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm',
+                          colorCls,
+                        )}
+                      >
                         <Icon size={14} strokeWidth={2.5} />
                       </div>
                       <div className="flex-1 min-w-0 leading-tight">
-                        <p className="text-[11px] font-black text-slate-800 truncate">{notif.title}</p>
-                        <p className="text-[9px] font-bold text-slate-400 mt-0.5 leading-relaxed line-clamp-2">{notif.message}</p>
-                        <span className="text-[8px] font-black text-slate-300 block mt-1 uppercase tracking-wider">{formatMsgTime(notif.createdAt)}</span>
+                        <p className="text-[11px] font-black text-slate-800 truncate">
+                          {notif.title}
+                        </p>
+                        <p className="text-[9px] font-bold text-slate-400 mt-0.5 leading-relaxed line-clamp-2">
+                          {notif.message}
+                        </p>
+                        <span className="text-[8px] font-black text-slate-300 block mt-1 uppercase tracking-wider">
+                          {formatMsgTime(notif.createdAt)}
+                        </span>
                       </div>
                       {!notif.isRead && (
                         <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />

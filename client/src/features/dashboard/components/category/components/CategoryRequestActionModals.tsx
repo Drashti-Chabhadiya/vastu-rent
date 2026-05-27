@@ -6,11 +6,11 @@ interface CategoryRequestActionModalsProps {
   rejectingRequest: any
   onRejectClose: () => void
   onRejectConfirm: (reason: string) => void
-  
+
   approvingRequest: any
   onApproveClose: () => void
   onApproveConfirm: () => void
-  
+
   isPending: boolean
 }
 

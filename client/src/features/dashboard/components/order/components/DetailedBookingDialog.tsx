@@ -35,7 +35,9 @@ export const DetailedBookingDialog = ({
   onStatusUpdate,
   isPendingStatusUpdate,
 }: DetailedBookingDialogProps) => {
-  const [pendingAction, setPendingAction] = useState<'confirm' | 'reject' | null>(null)
+  const [pendingAction, setPendingAction] = useState<
+    'confirm' | 'reject' | null
+  >(null)
 
   if (!order) return null
 
@@ -114,7 +116,10 @@ export const DetailedBookingDialog = ({
                   <UserIcon size={12} className="text-slate-400" />
                   <span>{order.renter?.name}</span>
                 </div>
-                <span className="text-[10px] font-medium text-slate-400 block truncate" title={order.renter?.email}>
+                <span
+                  className="text-[10px] font-medium text-slate-400 block truncate"
+                  title={order.renter?.email}
+                >
                   {order.renter?.email}
                 </span>
               </div>
@@ -127,10 +132,7 @@ export const DetailedBookingDialog = ({
                   {getStatusBadge(order.status)}
                 </div>
                 <span className="text-[10px] font-black uppercase text-slate-400 block tracking-tight pt-1">
-                  Via{' '}
-                  {order.paymentMethod === 'cash'
-                    ? 'Cash / CoD'
-                    : 'Online'}
+                  Via {order.paymentMethod === 'cash' ? 'Cash / CoD' : 'Online'}
                 </span>
               </div>
             </div>
@@ -154,9 +156,7 @@ export const DetailedBookingDialog = ({
                   <span className="text-[9px] text-slate-400 uppercase">
                     To
                   </span>
-                  <span>
-                    {format(new Date(order.endDate), 'dd MMM yyyy')}
-                  </span>
+                  <span>{format(new Date(order.endDate), 'dd MMM yyyy')}</span>
                 </div>
               </div>
               <div className="border-t border-slate-100 pt-2 flex items-center justify-between text-[11px] font-bold text-slate-500">

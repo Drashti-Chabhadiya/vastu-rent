@@ -38,9 +38,18 @@ export const CalendarFilters = ({
             <SelectValue placeholder="All Products" />
           </SelectTrigger>
           <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200 max-h-[300px]">
-            <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Products</SelectItem>
+            <SelectItem
+              value="all"
+              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+            >
+              All Products
+            </SelectItem>
             {uniqueProducts.map((prod: string) => (
-              <SelectItem key={prod} value={prod} className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+              <SelectItem
+                key={prod}
+                value={prod}
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
                 {prod}
               </SelectItem>
             ))}
@@ -55,11 +64,36 @@ export const CalendarFilters = ({
             <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
           <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-            <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Statuses</SelectItem>
-            <SelectItem value="pending" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Pending Approval</SelectItem>
-            <SelectItem value="confirmed" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Confirmed / Active</SelectItem>
-            <SelectItem value="completed" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Completed</SelectItem>
-            <SelectItem value="rejected" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Rejected / Cancelled</SelectItem>
+            <SelectItem
+              value="all"
+              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+            >
+              All Statuses
+            </SelectItem>
+            <SelectItem
+              value="pending"
+              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+            >
+              Pending Approval
+            </SelectItem>
+            <SelectItem
+              value="confirmed"
+              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+            >
+              Confirmed / Active
+            </SelectItem>
+            <SelectItem
+              value="completed"
+              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+            >
+              Completed
+            </SelectItem>
+            <SelectItem
+              value="rejected"
+              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+            >
+              Rejected / Cancelled
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>

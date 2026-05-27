@@ -4,12 +4,7 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
-import {
-  KeyRound,
-  ShieldAlert,
-  Eye,
-  EyeOff,
-} from 'lucide-react'
+import { KeyRound, ShieldAlert, Eye, EyeOff } from 'lucide-react'
 import { Loader } from '#/components/ui/loader'
 import { toast } from 'sonner'
 import {
@@ -26,7 +21,10 @@ interface ChangePasswordDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialogProps) {
+export function ChangePasswordDialog({
+  open,
+  onOpenChange,
+}: ChangePasswordDialogProps) {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -34,7 +32,9 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isChangingPassword, setIsChangingPassword] = useState(false)
-  const [changePasswordError, setChangePasswordError] = useState<string | null>(null)
+  const [changePasswordError, setChangePasswordError] = useState<string | null>(
+    null,
+  )
 
   // Password strength logic
   const getPasswordStrength = (password: string) => {
@@ -77,7 +77,10 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
       })
 
       if (error) {
-        setChangePasswordError(error.message || 'Failed to change password. Please verify current password.')
+        setChangePasswordError(
+          error.message ||
+            'Failed to change password. Please verify current password.',
+        )
         setIsChangingPassword(false)
         return
       }
@@ -104,7 +107,8 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
             Change Password
           </DialogTitle>
           <DialogDescription className="text-xs text-gray-500 font-medium">
-            Update your account password to ensure your listings and payouts remain secure.
+            Update your account password to ensure your listings and payouts
+            remain secure.
           </DialogDescription>
         </DialogHeader>
 
@@ -118,7 +122,9 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
 
           {/* Current Password */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-gray-400">Current Password</Label>
+            <Label className="text-xs font-bold text-gray-400">
+              Current Password
+            </Label>
             <div className="relative">
               <Input
                 type={showCurrentPassword ? 'text' : 'password'}
@@ -139,7 +145,9 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
 
           {/* New Password */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-gray-400">New Password</Label>
+            <Label className="text-xs font-bold text-gray-400">
+              New Password
+            </Label>
             <div className="relative">
               <Input
                 type={showNewPassword ? 'text' : 'password'}
@@ -164,10 +172,14 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
                   <span className="text-gray-400">Password Strength</span>
                   <span
                     className={cn(
-                      getPasswordStrength(newPassword).label === 'Weak' && 'text-red-500',
-                      getPasswordStrength(newPassword).label === 'Fair' && 'text-orange-500',
-                      getPasswordStrength(newPassword).label === 'Good' && 'text-yellow-500',
-                      getPasswordStrength(newPassword).label === 'Strong' && 'text-green-600'
+                      getPasswordStrength(newPassword).label === 'Weak' &&
+                        'text-red-500',
+                      getPasswordStrength(newPassword).label === 'Fair' &&
+                        'text-orange-500',
+                      getPasswordStrength(newPassword).label === 'Good' &&
+                        'text-yellow-500',
+                      getPasswordStrength(newPassword).label === 'Strong' &&
+                        'text-green-600',
                     )}
                   >
                     {getPasswordStrength(newPassword).label}
@@ -177,9 +189,11 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
                   <div
                     className={cn(
                       'h-full transition-all duration-500 rounded-full',
-                      getPasswordStrength(newPassword).color
+                      getPasswordStrength(newPassword).color,
                     )}
-                    style={{ width: `${getPasswordStrength(newPassword).score}%` }}
+                    style={{
+                      width: `${getPasswordStrength(newPassword).score}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -188,7 +202,9 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
 
           {/* Confirm New Password */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-gray-400">Confirm New Password</Label>
+            <Label className="text-xs font-bold text-gray-400">
+              Confirm New Password
+            </Label>
             <div className="relative">
               <Input
                 type={showConfirmPassword ? 'text' : 'password'}

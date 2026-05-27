@@ -114,7 +114,10 @@ export function LoginForm() {
       {/* Tabs */}
       <div className="flex w-full mb-8">
         <div className="flex-1 flex flex-col">
-          <Button variant="ghost" className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100">
+          <Button
+            variant="ghost"
+            className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100"
+          >
             Login
           </Button>
           <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
@@ -243,17 +246,33 @@ export function LoginForm() {
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center sm:text-left animate-in fade-in duration-300">
               <div className="flex gap-2.5 items-start">
                 <div className="text-amber-500 mt-0.5 shrink-0">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
                   </svg>
                 </div>
                 <div className="flex-1 text-left">
-                  <h4 className="text-[14px] font-bold text-amber-800 font-sans">Verification Required</h4>
+                  <h4 className="text-[14px] font-bold text-amber-800 font-sans">
+                    Verification Required
+                  </h4>
                   <p className="mt-1 text-[13px] text-amber-700 leading-relaxed font-medium">
-                    Your email is not verified yet. Please check your inbox for the verification link sent to{' '}
-                    <strong className="text-gray-900 break-all">{unverifiedEmail}</strong>.
+                    Your email is not verified yet. Please check your inbox for
+                    the verification link sent to{' '}
+                    <strong className="text-gray-900 break-all">
+                      {unverifiedEmail}
+                    </strong>
+                    .
                   </p>
-                  
+
                   {resendSuccess && (
                     <p className="mt-2 text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded inline-block animate-in fade-in duration-200">
                       Verification link resent successfully!
@@ -289,11 +308,7 @@ export function LoginForm() {
           )}
 
           {/* Login Button */}
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full"
-          >
+          <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting ? 'Logging in...' : 'Login'}
           </Button>
         </div>
@@ -310,11 +325,7 @@ export function LoginForm() {
 
       {/* Social Buttons */}
       <div className="grid grid-cols-3 gap-3 mb-8">
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2"
-        >
+        <Button type="button" variant="outline" className="gap-2">
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -338,15 +349,9 @@ export function LoginForm() {
               fill="#EA4335"
             />
           </svg>
-          <span className="text-[13px] hidden sm:inline">
-            Google
-          </span>
+          <span className="text-[13px] hidden sm:inline">Google</span>
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2"
-        >
+        <Button type="button" variant="outline" className="gap-2">
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -358,15 +363,9 @@ export function LoginForm() {
               fill="#1877F2"
             />
           </svg>
-          <span className="text-[13px] hidden sm:inline">
-            Facebook
-          </span>
+          <span className="text-[13px] hidden sm:inline">Facebook</span>
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="gap-2"
-        >
+        <Button type="button" variant="outline" className="gap-2">
           <svg
             viewBox="0 0 24 24"
             width="18"
@@ -378,9 +377,7 @@ export function LoginForm() {
               fill="#000000"
             />
           </svg>
-          <span className="text-[13px] hidden sm:inline">
-            Apple
-          </span>
+          <span className="text-[13px] hidden sm:inline">Apple</span>
         </Button>
       </div>
 
