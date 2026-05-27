@@ -1,49 +1,88 @@
 import { Skeleton } from '#/components/ui/skeleton'
 
-export function UserProfilePageSkeleton() {
+export function ProductDetailSkeleton() {
   return (
     <div className="min-h-screen bg-bg-base pt-24 pb-16">
-      <div className="mx-auto max-w-[1200px] px-4 animate-pulse">
-        {/* Profile Card Header Skeleton */}
-        <div className="bg-card rounded-[40px] p-8 md:p-12 border border-border/30 mb-12 flex flex-col md:flex-row items-center md:items-start gap-8">
-          <Skeleton className="w-32 h-32 md:w-40 md:h-40 rounded-full shrink-0" />
-          <div className="flex-1 space-y-4 w-full text-center md:text-left">
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
-              <Skeleton className="h-10 w-48 mx-auto md:mx-0 rounded-lg" />
-              <div className="flex gap-2 justify-center md:justify-start">
-                <Skeleton className="h-6 w-24 rounded-full" />
-                <Skeleton className="h-6 w-20 rounded-full" />
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4">
-              <Skeleton className="h-5 w-36 rounded" />
-              <Skeleton className="h-5 w-40 rounded" />
-            </div>
-            <div className="flex justify-center md:justify-start gap-4 pt-2">
-              <Skeleton className="h-12 w-36 rounded-2xl" />
-              <Skeleton className="h-12 w-36 rounded-2xl" />
-            </div>
-          </div>
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb Skeleton */}
+        <div className="flex items-center gap-2 mb-6">
+          <Skeleton className="h-3 w-12 rounded" />
+          <Skeleton className="h-3 w-3 rounded" />
+          <Skeleton className="h-3 w-20 rounded" />
+          <Skeleton className="h-3 w-3 rounded" />
+          <Skeleton className="h-3 w-40 rounded" />
         </div>
 
-        {/* Listings Section Skeleton */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-8 w-48 rounded" />
-            <Skeleton className="h-4 w-28 rounded" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="bg-card rounded-2xl p-4 border border-border/30 flex flex-col h-full space-y-4"
-              >
-                <Skeleton className="aspect-square w-full rounded-xl" />
-                <Skeleton className="h-4 w-3/4 rounded" />
-                <Skeleton className="h-4 w-1/2 rounded" />
-                <Skeleton className="h-11 w-full rounded-xl mt-auto" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 animate-pulse">
+          {/* Left Column: Images and Tabs (5 cols) */}
+          <div className="lg:col-span-5 space-y-8">
+            <div className="space-y-4">
+              <Skeleton className="aspect-[4/3] w-full rounded-2xl" />
+              <div className="flex gap-3">
+                <Skeleton className="w-20 h-20 rounded-xl" />
+                <Skeleton className="w-20 h-20 rounded-xl" />
+                <Skeleton className="w-20 h-20 rounded-xl" />
               </div>
-            ))}
+            </div>
+            {/* Tabs Skeleton */}
+            <div className="h-60 w-full rounded-2xl bg-white border border-gray-100 p-6 space-y-4">
+              <div className="flex gap-6 pb-2 border-b border-gray-100">
+                <Skeleton className="h-5 w-20 rounded" />
+                <Skeleton className="h-5 w-16 rounded" />
+                <Skeleton className="h-5 w-24 rounded" />
+              </div>
+              <Skeleton className="h-4 w-full rounded" />
+              <Skeleton className="h-4 w-5/6 rounded" />
+              <Skeleton className="h-4 w-4/5 rounded" />
+            </div>
+          </div>
+
+          {/* Right Column: Details (7 cols) */}
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+              {/* Product Info Section */}
+              <div className="xl:col-span-7 space-y-6">
+                <div className="space-y-4">
+                  <Skeleton className="h-10 w-3/4 rounded-lg" />
+                  <Skeleton className="h-4 w-28 rounded" />
+                  <Skeleton className="h-8 w-40 rounded" />
+                  <Skeleton className="h-20 w-full rounded-xl" />
+                </div>
+
+                <hr className="border-gray-100" />
+
+                <div className="space-y-3">
+                  <Skeleton className="h-5 w-32 rounded" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full rounded" />
+                    <Skeleton className="h-4 w-5/6 rounded" />
+                    <Skeleton className="h-4 w-4/6 rounded" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sidebar Section */}
+              <div className="xl:col-span-5 space-y-6">
+                {/* Owner Card Skeleton */}
+                <div className="bg-white rounded-2xl p-6 border border-gray-100 space-y-4">
+                  <Skeleton className="h-5 w-24 rounded" />
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="w-12 h-12 rounded-full" />
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-4 w-24 rounded" />
+                      <Skeleton className="h-3 w-32 rounded" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-10 w-full rounded-xl" />
+                </div>
+
+                {/* Calendar Skeleton */}
+                <div className="bg-white rounded-2xl p-6 border border-gray-100 space-y-4">
+                  <Skeleton className="h-5 w-36 rounded" />
+                  <Skeleton className="h-48 w-full rounded-xl" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
