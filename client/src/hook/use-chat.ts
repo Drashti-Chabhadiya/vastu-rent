@@ -47,8 +47,8 @@ const SOCKET_URL = getSocketUrl()
 // ─── Main hook ────────────────────────────────────────────────────────────────
 export function useChat() {
   const { data: session } = authClient.useSession()
-  const userId = session?.user?.id
-  const token = session?.session?.token
+  const userId = session?.user.id
+  const token = session?.session.token
   const queryClient = useQueryClient()
 
   const socketRef = useRef<Socket | null>(null)

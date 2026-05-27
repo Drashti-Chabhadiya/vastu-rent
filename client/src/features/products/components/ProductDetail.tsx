@@ -186,10 +186,10 @@ export function ProductDetail({ id }: { id: string }) {
       })
       setReviewComment('')
       setReviewRating(5)
-    } catch (error: any) {
+    } catch (err: any) {
       const serverMsg =
-        error?.response?.data?.message ||
-        error?.message ||
+        err?.response?.data?.message ||
+        err?.message ||
         'Failed to submit. Please log in first.'
       setReviewError(serverMsg)
     }

@@ -57,18 +57,15 @@ export const MyBookings = () => {
 
   const queryClient = useQueryClient()
   const reviewMutation = useMutation({
-    mutationFn: async ({
-      productId,
-      rating,
-      comment,
-    }: {
+    mutationFn: async (params: {
       productId: string
       rating: number
       comment: string
     }) => {
+      const { productId, rating: reviewRating, comment: reviewComment } = params
       const res = await apiClient.post('/reviews', {
-        rating,
-        comment,
+        rating: reviewRating,
+        comment: reviewComment,
         productId,
       })
       return res.data.review

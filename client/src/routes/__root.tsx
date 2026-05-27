@@ -30,11 +30,11 @@ export const Route = createRootRoute({
 })
 
 function NotificationListener() {
-  const queryClient = useQueryClient()
+  const rqClient = useQueryClient()
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
-  const token = session?.session?.token
-  const userRole = session?.user?.role || 'owner'
+  const token = session?.session.token
+  const userRole = session?.user.role || 'owner'
 
   // Register device token for push notifications on login
   useEffect(() => {
@@ -68,7 +68,7 @@ function NotificationListener() {
 
     socket.on('notification', (notif: any) => {
       // Update react-query cache instantly
-      queryClient.setQueryData(['notifications'], (old: any) => {
+      rqClient.setQueryData(['notifications'], (old: any) => {
         if (!old) return [notif]
         if (old.some((n: any) => n.id === notif.id)) return old
         return [notif, ...old]
@@ -129,7 +129,7 @@ function NotificationListener() {
     return () => {
       socket.disconnect()
     }
-  }, [token, queryClient, userRole, navigate])
+  }, [token, rqClient, userRole, navigate])
 
   // 2. Global Foreground FCM message listener
   useEffect(() => {
@@ -146,11 +146,11 @@ function NotificationListener() {
       }
 
       // Update react-query notifications cache
-      queryClient.setQueryData(['notifications'], (old: any) => {
-        if (!old) return [notif]
-        if (old.some((n: any) => n.id === notif.id)) return old
-        return [notif, ...old]
-      })
+      rqClient.setQueryData(['notifications'], (old: any) => {
+          if (!old) return [notif]
+          if (old.some((n: any) => n.id === notif.id)) return old
+          return [notif, ...old]
+        })
 
       // Play alert chime
       // playNotificationSound()
@@ -172,7 +172,7 @@ function NotificationListener() {
       }
     })
     return () => off && off()
-  }, [queryClient, token])
+  }, [rqClient, token])
 
   return null
 }

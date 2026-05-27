@@ -938,12 +938,12 @@ export function SettingsPage() {
                     icon: '⚫',
                     hint: 'Sign in with your Apple ID',
                   },
-                ].map(({ name, icon, hint }, i, arr) => {
-                  const linked = name === 'Google'
+                ].map(({ name: accountName, icon, hint }, i, arr) => {
+                  const linked = accountName === 'Google'
                   return (
                     <Row
-                      key={name}
-                      label={`${icon} ${name}`}
+                      key={accountName}
+                      label={`${icon} ${accountName}`}
                       desc={linked ? 'Connected' : hint}
                       last={i === arr.length - 1}
                     >
@@ -952,7 +952,7 @@ export function SettingsPage() {
                         size="sm"
                         onClick={() =>
                           toast.info(
-                            `${linked ? 'Disconnect' : 'Connect'} ${name} coming soon.`,
+                            `${linked ? 'Disconnect' : 'Connect'} ${accountName} coming soon.`,
                           )
                         }
                         className={cn(

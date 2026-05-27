@@ -131,7 +131,7 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
     },
   })
 
-  const currentSessionId = session?.session?.id
+  const currentSessionId = session?.session.id
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

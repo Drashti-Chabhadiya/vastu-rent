@@ -776,7 +776,7 @@ export function PersonalInfo() {
         onOpenChange={setIs2faModalOpen}
         twoFactorEnabled={twoFactorEnabled}
         setTwoFactorEnabled={handleToggleTwoFactor}
-        userEmail={session?.user?.email}
+        userEmail={session.user.email}
       />
       <SessionsDialog
         open={isSessionsModalOpen}
