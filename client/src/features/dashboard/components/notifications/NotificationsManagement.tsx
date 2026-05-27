@@ -5,7 +5,8 @@ import {
   ShoppingCart,
   CreditCard,
   AlertCircle,
-  Check,
+  CheckCheck,
+  Info,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -26,6 +27,36 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function getIcon(type: string) {
+  switch (type) {
+    case 'booking': return ShoppingCart
+    case 'payment': return CreditCard
+    case 'alert':   return AlertCircle
+    case 'info':    return Info
+    default:        return Bell
+  }
+}
+
+function getIconColors(type: string) {
+  switch (type) {
+    case 'booking': return 'bg-[#F4F8F1] text-[#2d5222]'
+    case 'payment': return 'bg-amber-50 text-amber-600'
+    case 'alert':   return 'bg-rose-50 text-rose-500'
+    case 'info':    return 'bg-sky-50 text-sky-500'
+    default:        return 'bg-slate-50 text-slate-500'
+  }
+}
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 export const NotificationsManagement = () => {
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
@@ -38,7 +69,7 @@ export const NotificationsManagement = () => {
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 8
+  const itemsPerPage = 5
 
   useEffect(() => {
     setCurrentPage(1)
@@ -48,15 +79,9 @@ export const NotificationsManagement = () => {
     if (!notif.isRead) {
       await markReadMutation.mutateAsync(notif.id)
     }
-
-    // Dynamic Role-based navigation based on notification types
     switch (notif.type) {
       case 'booking':
-        if (userRole === 'owner') {
-          navigate({ to: '/account/orders' })
-        } else {
-          navigate({ to: '/account/bookings' })
-        }
+        navigate({ to: userRole === 'owner' ? '/account/orders' : '/account/bookings' })
         break
       case 'payment':
         navigate({ to: '/account/payments' })
@@ -66,36 +91,6 @@ export const NotificationsManagement = () => {
         break
       default:
         break
-    }
-  }
-
-  const handleMarkAllRead = () => {
-    markAllReadMutation.mutate()
-  }
-
-  const getIcon = (type: string) => {
-    switch (type) {
-      case 'booking':
-        return ShoppingCart
-      case 'payment':
-        return CreditCard
-      case 'alert':
-        return AlertCircle
-      default:
-        return Bell
-    }
-  }
-
-  const getColorClasses = (type: string) => {
-    switch (type) {
-      case 'booking':
-        return 'bg-emerald-50 text-emerald-600'
-      case 'payment':
-        return 'bg-amber-50 text-amber-500'
-      case 'alert':
-        return 'bg-rose-50 text-rose-500'
-      default:
-        return 'bg-slate-50 text-slate-500'
     }
   }
 
@@ -115,263 +110,231 @@ export const NotificationsManagement = () => {
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const paginatedNotifs = filteredNotifs?.slice(startIndex, endIndex) || []
+  const unreadCount = notifications?.filter((n) => !n.isRead).length || 0
 
   const getPageNumbers = () => {
     const pages: (number | string)[] = []
-    const maxVisible = 5
-
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i)
-      }
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i)
     } else {
       pages.push(1)
-
-      if (currentPage > 3) {
-        pages.push('...')
-      }
-
+      if (currentPage > 3) pages.push('...')
       const start = Math.max(2, currentPage - 1)
       const end = Math.min(totalPages - 1, currentPage + 1)
-
       for (let i = start; i <= end; i++) {
-        if (i > 1 && i < totalPages) {
-          pages.push(i)
-        }
+        if (i > 1 && i < totalPages) pages.push(i)
       }
-
-      if (currentPage < totalPages - 2) {
-        pages.push('...')
-      }
-
+      if (currentPage < totalPages - 2) pages.push('...')
       pages.push(totalPages)
     }
-
     return pages
   }
 
-  const unreadCount = notifications?.filter((n) => !n.isRead).length || 0
-
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Breadcrumbs */}
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
-          <span>Dashboard</span>
-          <ChevronRight size={10} className="text-slate-300" />
-          <span className="text-dash-brand font-extrabold uppercase tracking-widest">
-            Notifications
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black text-[#1e293b]">
-            Live System Alerts & Notifications
-          </h1>
-        </div>
-      </div>
+    <div className={cn('space-y-5', 'animate-in', 'fade-in', 'slide-in-from-bottom-4', 'duration-500')}>
+      {/* Section heading */}
+      <h2 className={cn('text-lg', 'font-black', 'text-gray-900')}>
+        Live System Alerts &amp; Notifications
+      </h2>
 
-      {/* Main Grid: Content & Settings Sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Notifications List */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="relative flex-1">
-              <Search
-                size={14}
-                className="absolute left-3 top-3 text-slate-400"
-              />
+      {/* Two-column grid */}
+      <div className={cn('grid', 'grid-cols-1', 'lg:grid-cols-3', 'gap-5')}>
+
+        {/* ── Left: Notifications list ── */}
+        <div className={cn('lg:col-span-2', 'bg-white', 'rounded-2xl', 'border', 'border-slate-100', 'shadow-sm', 'overflow-hidden')}>
+
+          {/* Search + filter bar */}
+          <div className={cn('flex', 'items-center', 'gap-3', 'p-5', 'border-b', 'border-slate-50')}>
+            <div className={cn('relative', 'flex-1')}>
+              <Search size={13} className={cn('absolute', 'left-3', 'top-[11px]', 'text-slate-400')} />
               <Input
                 placeholder="Search notifications..."
-                className="h-10 pl-9 pr-4 bg-slate-50 border-none rounded-xl text-[11px] font-bold focus:ring-0"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                className={cn('h-9', 'pl-9', 'pr-4', 'bg-slate-50', 'border-none', 'rounded-xl', 'text-[11px]', 'font-semibold', 'focus-visible:ring-1', 'focus-visible:ring-[#2d5222]/20')}
               />
             </div>
-            <div>
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-[140px] h-10 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
-                  <SelectValue placeholder="All Alerts" />
-                </SelectTrigger>
-                <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-                  <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Alerts</SelectItem>
-                  <SelectItem value="unread" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Unread Only</SelectItem>
-                  <SelectItem value="booking" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Bookings</SelectItem>
-                  <SelectItem value="payment" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Payments</SelectItem>
-                  <SelectItem value="alert" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Alerts</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className={cn('w-[130px]', 'h-9', 'bg-slate-50', 'border-none', 'rounded-xl', 'text-[11px]', 'font-semibold', 'text-slate-600', 'focus:ring-1', 'focus:ring-[#2d5222]/20', 'shadow-none', 'cursor-pointer')}>
+                <SelectValue placeholder="All Alerts" />
+              </SelectTrigger>
+              <SelectContent className={cn('rounded-xl', 'border-slate-100', 'shadow-lg', 'p-1')}>
+                <SelectItem value="all"     className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>All Alerts</SelectItem>
+                <SelectItem value="unread"  className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Unread Only</SelectItem>
+                <SelectItem value="booking" className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Bookings</SelectItem>
+                <SelectItem value="payment" className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Payments</SelectItem>
+                <SelectItem value="alert"   className={cn('text-[11px]', 'font-semibold', 'rounded-lg', 'cursor-pointer')}>Alerts</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="max-h-[520px] overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+          {/* List */}
+          <div className={cn('divide-y', 'divide-slate-50')}>
             {isLoading ? (
-              <div className="text-center py-10 text-xs text-slate-400">
-                Loading alerts...
+              <div className={cn('flex', 'flex-col', 'items-center', 'justify-center', 'py-16', 'gap-3')}>
+                <div className={cn('w-10', 'h-10', 'rounded-xl', 'bg-[#F4F8F1]', 'flex', 'items-center', 'justify-center')}>
+                  <Bell size={18} className={cn('text-[#2d5222]', 'animate-pulse')} />
+                </div>
+                <p className={cn('text-[11px]', 'font-semibold', 'text-slate-400')}>Loading notifications...</p>
               </div>
             ) : paginatedNotifs.length === 0 ? (
-              <div className="text-center py-10 text-xs text-slate-400">
-                No alerts matching your criteria.
+              <div className={cn('flex', 'flex-col', 'items-center', 'justify-center', 'py-16', 'gap-3')}>
+                <div className={cn('w-10', 'h-10', 'rounded-xl', 'bg-slate-50', 'flex', 'items-center', 'justify-center')}>
+                  <Bell size={18} className="text-slate-300" />
+                </div>
+                <p className={cn('text-[11px]', 'font-semibold', 'text-slate-400')}>No notifications found.</p>
               </div>
             ) : (
               paginatedNotifs.map((notif) => {
                 const Icon = getIcon(notif.type)
-                const colorCls = getColorClasses(notif.type)
+                const colorCls = getIconColors(notif.type)
                 return (
                   <div
                     key={notif.id}
                     onClick={() => handleNotificationClick(notif)}
                     className={cn(
-                      "flex items-center justify-between p-4 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all cursor-pointer group active:scale-[0.99]",
-                      !notif.isRead ? 'bg-slate-50/70 border-slate-100' : ''
+                      'flex items-center justify-between px-5 py-4 cursor-pointer transition-colors hover:bg-slate-50/60 group',
+                      !notif.isRead && 'bg-[#F4F8F1]/40',
                     )}
                   >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${colorCls}`}
-                      >
-                        <Icon size={18} strokeWidth={2.5} />
+                    <div className={cn('flex', 'items-center', 'gap-3', 'min-w-0')}>
+                      {/* Unread dot */}
+                      <div className={cn(
+                        'w-1.5 h-1.5 rounded-full shrink-0',
+                        !notif.isRead ? 'bg-[#2d5222]' : 'bg-transparent',
+                      )} />
+
+                      <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center shrink-0', colorCls)}>
+                        <Icon size={16} strokeWidth={2.5} />
                       </div>
-                      <div>
-                        <p className="text-[12px] font-black text-[#1e293b]">
+
+                      <div className="min-w-0">
+                        <p className={cn(
+                          'text-[12px] truncate',
+                          !notif.isRead ? 'font-black text-gray-900' : 'font-semibold text-gray-700',
+                        )}>
                           {notif.title}
                         </p>
-                        <p className="text-[10px] font-bold text-slate-400 mt-0.5 leading-relaxed">
+                        <p className={cn('text-[10px]', 'font-medium', 'text-slate-400', 'mt-0.5', 'truncate')}>
                           {notif.message}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-[10px] font-black text-slate-300">
-                        {new Date(notif.createdAt).toLocaleDateString()}
-                      </span>
-                      <div
-                        className={`w-2 h-2 rounded-full ${!notif.isRead ? 'bg-blue-500' : 'bg-transparent'}`}
-                      />
-                    </div>
+
+                    <span className={cn('text-[10px]', 'font-semibold', 'text-slate-300', 'shrink-0', 'ml-4')}>
+                      {formatDate(notif.createdAt)}
+                    </span>
                   </div>
                 )
               })
             )}
           </div>
 
+          {/* Pagination */}
           {totalItems > itemsPerPage && (
-            <div className="flex flex-col xl:flex-row items-center justify-between pt-6 border-t border-slate-100 mt-6 gap-4 animate-in fade-in duration-300">
-              <p className="text-[11px] font-bold text-slate-400 text-center xl:text-left">
-                Showing <span className="font-extrabold text-[#1e293b]">{startIndex + 1}</span> to{' '}
-                <span className="font-extrabold text-[#1e293b]">
-                  {Math.min(endIndex, totalItems)}
-                </span>{' '}
-                of <span className="font-extrabold text-[#1e293b]">{totalItems}</span> notifications
+            <div className={cn('flex', 'flex-col', 'sm:flex-row', 'items-center', 'justify-between', 'px-5', 'py-4', 'border-t', 'border-slate-50', 'gap-3')}>
+              <p className={cn('text-[10px]', 'font-semibold', 'text-slate-400')}>
+                Showing{' '}
+                <span className={cn('font-black', 'text-gray-700')}>{startIndex + 1}</span>
+                {' '}to{' '}
+                <span className={cn('font-black', 'text-gray-700')}>{Math.min(endIndex, totalItems)}</span>
+                {' '}of{' '}
+                <span className={cn('font-black', 'text-gray-700')}>{totalItems}</span>
+                {' '}notifications
               </p>
-              <div className="flex items-center gap-2 flex-wrap justify-center">
+              <div className={cn('flex', 'items-center', 'gap-1.5')}>
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  className="h-8 rounded-lg px-3 text-[10px] font-black border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none shadow-none"
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  className={cn('h-7', 'px-3', 'rounded-lg', 'text-[10px]', 'font-semibold', 'border-slate-200', 'text-slate-600', 'hover:bg-slate-50', 'shadow-none', 'cursor-pointer', 'disabled:opacity-40')}
                 >
                   Previous
                 </Button>
-                <div className="flex items-center gap-1">
-                  {getPageNumbers().map((page, idx) => {
-                    if (page === '...') {
-                      return (
-                        <span
-                          key={`ellipsis-${idx}`}
-                          className="w-8 h-8 flex items-center justify-center text-[10px] font-black text-slate-400 select-none"
-                        >
-                          ...
-                        </span>
-                      )
-                    }
-                    return (
-                      <button
-                        key={`page-${page}`}
-                        onClick={() => setCurrentPage(page as number)}
-                        className={cn(
-                          "w-8 h-8 rounded-lg text-[10px] font-black transition-all active:scale-95 cursor-pointer",
-                          currentPage === page
-                            ? "bg-dash-brand text-white shadow-md shadow-dash-brand/20 border-none font-bold"
-                            : "border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white"
-                        )}
-                      >
-                        {page}
-                      </button>
-                    )
-                  })}
-                </div>
+
+                {getPageNumbers().map((page, idx) =>
+                  page === '...' ? (
+                    <span key={`e-${idx}`} className={cn('w-7', 'h-7', 'flex', 'items-center', 'justify-center', 'text-[10px]', 'text-slate-400')}>
+                      …
+                    </span>
+                  ) : (
+                    <button
+                      key={`p-${page}`}
+                      onClick={() => setCurrentPage(page as number)}
+                      className={cn(
+                        'w-7 h-7 rounded-lg text-[10px] font-semibold transition-all cursor-pointer',
+                        currentPage === page
+                          ? 'bg-[#2d5222] text-white shadow-sm'
+                          : 'border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white',
+                      )}
+                    >
+                      {page}
+                    </button>
+                  ),
+                )}
+
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  className="h-8 rounded-lg px-3 text-[10px] font-black border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none shadow-none"
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  className={cn('h-7', 'px-3', 'rounded-lg', 'text-[10px]', 'font-semibold', 'border-slate-200', 'text-slate-600', 'hover:bg-slate-50', 'shadow-none', 'cursor-pointer', 'disabled:opacity-40')}
                 >
                   Next
                 </Button>
               </div>
             </div>
           )}
-
-          <style>{`
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 5px !important;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-              background: transparent !important;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-              background: #cbd5e1 !important;
-              border-radius: 9999px !important;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-              background: #94a3b8 !important;
-            }
-          `}</style>
         </div>
 
-        {/* Right Column: Settings & Summary */}
-        <div className="space-y-6">
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            <h3 className="text-[15px] font-black text-[#1e293b] mb-1 uppercase tracking-widest">
+        {/* ── Right: Summary card ── */}
+        <div className="space-y-4">
+          <div className={cn('bg-white', 'rounded-2xl', 'border', 'border-slate-100', 'shadow-sm', 'p-6')}>
+            <h3 className={cn('text-[11px]', 'font-black', 'text-gray-900', 'uppercase', 'tracking-widest', 'mb-0.5')}>
               Notification Summary
             </h3>
-            <p className="text-[11px] font-bold text-slate-400 mb-8">
+            <p className={cn('text-[10px]', 'font-semibold', 'text-slate-400', 'mb-5')}>
               System summary stats.
             </p>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Bell size={14} className="text-blue-500" />
-                  <span className="text-[11px] font-black text-slate-500">
-                    Unread count
-                  </span>
+            {/* Unread count row */}
+            <div className={cn('flex', 'items-center', 'justify-between', 'py-3', 'border-b', 'border-slate-50')}>
+              <div className={cn('flex', 'items-center', 'gap-2.5')}>
+                <div className={cn('w-7', 'h-7', 'rounded-lg', 'bg-sky-50', 'flex', 'items-center', 'justify-center')}>
+                  <Bell size={13} className="text-sky-500" />
                 </div>
-                <span className="text-[11px] font-black text-[#1e293b]">
-                  {unreadCount}
-                </span>
+                <span className={cn('text-[11px]', 'font-semibold', 'text-slate-600')}>Unread count</span>
               </div>
+              <span className={cn(
+                'text-[11px] font-black px-2 py-0.5 rounded-full',
+                unreadCount > 0
+                  ? 'bg-[#F4F8F1] text-[#2d5222]'
+                  : 'bg-slate-50 text-slate-400',
+              )}>
+                {unreadCount}
+              </span>
             </div>
 
+            {/* Mark all read */}
             {unreadCount > 0 && (
-              <Button
-                variant="link"
-                onClick={handleMarkAllRead}
-                className="w-full mt-8 text-[#15803d] hover:text-[#166534] text-[11px] font-extrabold flex items-center justify-center gap-2 hover:underline active:scale-[0.98] transition-all p-0 h-auto cursor-pointer"
+              <button
+                onClick={() => markAllReadMutation.mutate()}
+                disabled={markAllReadMutation.isPending}
+                className={cn('w-full', 'mt-4', 'flex', 'items-center', 'justify-center', 'gap-1.5', 'text-[11px]', 'font-black', 'text-[#2d5222]', 'hover:underline', 'cursor-pointer', 'bg-transparent', 'border-none', 'disabled:opacity-50')}
               >
-                <Check size={14} /> Mark all as read
-              </Button>
+                <CheckCheck size={13} />
+                Mark all as read
+              </button>
             )}
           </div>
         </div>
+
       </div>
     </div>
   )
 }
 
-// Handled globally in _authenticated.tsx layout wrapper
 export function NotificationsManagementWrapper() {
   return <NotificationsManagement />
 }

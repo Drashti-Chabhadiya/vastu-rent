@@ -100,6 +100,7 @@ export const useUpdateUserSettings = () => {
       language?: string
       dob?: string
       currency?: string
+      bio?: string
       twoFactorEnabled?: boolean
     }) => {
       const res = await apiClient.patch('/users/settings', data)

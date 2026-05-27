@@ -1,6 +1,6 @@
 export function AccountLayoutSkeleton() {
   return (
-    <div className="min-h-screen bg-[#faf7f0] pt-24 pb-12 font-sans">
+    <div className="min-h-screen bg-[#f5f3ee] pt-16 pb-12 font-sans">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar skeleton */}
