@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import type { Socket } from 'socket.io-client';
+import type { Socket } from 'socket.io-client'
 import { io } from 'socket.io-client'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'

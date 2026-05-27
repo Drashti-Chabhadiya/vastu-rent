@@ -469,7 +469,14 @@ export function Navbar() {
                         </AvatarFallback>
                       </Avatar>
                       <div className={cn('flex-1', 'min-w-0')}>
-                        <div className={cn('flex', 'items-center', 'gap-1.5', 'flex-wrap')}>
+                        <div
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-1.5',
+                            'flex-wrap',
+                          )}
+                        >
                           <span
                             className={cn(
                               'font-bold',
@@ -659,112 +666,112 @@ export function Navbar() {
                     {(session.user.role === 'owner' ||
                       session.user.role === 'admin' ||
                       session.user.role === 'superAdmin') && (
-                        <Link to="/account/listings">
-                          <DropdownMenuItem
-                            className={cn(
-                              'flex',
-                              'items-center',
-                              'gap-3',
-                              'px-3',
-                              'py-2',
-                              'rounded-lg',
-                              'cursor-pointer',
-                              'transition-colors',
-                            )}
-                          >
-                            <Percent
-                              className={cn('h-4', 'w-4', 'text-slate-500')}
-                            />
-                            <div>
-                              <p
-                                className={cn(
-                                  'text-sm',
-                                  'font-medium',
-                                  'text-slate-900',
-                                )}
-                              >
-                                My Listings
-                              </p>
-                              <p className={cn('text-xs', 'text-slate-500')}>
-                                Manage your items
-                              </p>
-                            </div>
-                          </DropdownMenuItem>
-                        </Link>
-                      )}
+                      <Link to="/account/listings">
+                        <DropdownMenuItem
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-3',
+                            'px-3',
+                            'py-2',
+                            'rounded-lg',
+                            'cursor-pointer',
+                            'transition-colors',
+                          )}
+                        >
+                          <Percent
+                            className={cn('h-4', 'w-4', 'text-slate-500')}
+                          />
+                          <div>
+                            <p
+                              className={cn(
+                                'text-sm',
+                                'font-medium',
+                                'text-slate-900',
+                              )}
+                            >
+                              My Listings
+                            </p>
+                            <p className={cn('text-xs', 'text-slate-500')}>
+                              Manage your items
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
 
                     {(session.user.role === 'owner' ||
                       session.user.role === 'admin' ||
                       session.user.role === 'superAdmin') && (
-                        <Link to="/owner/dashboard">
-                          <DropdownMenuItem
-                            className={cn(
-                              'flex',
-                              'items-center',
-                              'gap-3',
-                              'px-3',
-                              'py-2',
-                              'rounded-lg',
-                              'cursor-pointer',
-                              'transition-colors',
-                            )}
-                          >
-                            <LayoutDashboard
-                              className={cn('h-4', 'w-4', 'text-slate-500')}
-                            />
-                            <div>
-                              <p
-                                className={cn(
-                                  'text-sm',
-                                  'font-medium',
-                                  'text-slate-900',
-                                )}
-                              >
-                                Dashboard
-                              </p>
-                              <p className={cn('text-xs', 'text-slate-500')}>
-                                View statistics
-                              </p>
-                            </div>
-                          </DropdownMenuItem>
-                        </Link>
-                      )}
+                      <Link to="/owner/dashboard">
+                        <DropdownMenuItem
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-3',
+                            'px-3',
+                            'py-2',
+                            'rounded-lg',
+                            'cursor-pointer',
+                            'transition-colors',
+                          )}
+                        >
+                          <LayoutDashboard
+                            className={cn('h-4', 'w-4', 'text-slate-500')}
+                          />
+                          <div>
+                            <p
+                              className={cn(
+                                'text-sm',
+                                'font-medium',
+                                'text-slate-900',
+                              )}
+                            >
+                              Dashboard
+                            </p>
+                            <p className={cn('text-xs', 'text-slate-500')}>
+                              View statistics
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
 
                     {(session.user.role === 'admin' ||
                       session.user.role === 'superAdmin') && (
-                        <Link to="/admin/dashboard">
-                          <DropdownMenuItem
-                            className={cn(
-                              'flex',
-                              'items-center',
-                              'gap-3',
-                              'px-3',
-                              'py-2',
-                              'rounded-lg',
-                              'cursor-pointer',
-                              'transition-colors',
-                            )}
-                          >
-                            <LayoutDashboard
-                              className={cn('h-4', 'w-4', 'text-slate-500')}
-                            />
-                            <div>
-                              <p
-                                className={cn(
-                                  'text-sm',
-                                  'font-medium',
-                                  'text-slate-900',
-                                )}
-                              >
-                                Admin
-                              </p>
-                              <p className={cn('text-xs', 'text-slate-500')}>
-                                System management
-                              </p>
-                            </div>
-                          </DropdownMenuItem>
-                        </Link>
-                      )}
+                      <Link to="/admin/dashboard">
+                        <DropdownMenuItem
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-3',
+                            'px-3',
+                            'py-2',
+                            'rounded-lg',
+                            'cursor-pointer',
+                            'transition-colors',
+                          )}
+                        >
+                          <LayoutDashboard
+                            className={cn('h-4', 'w-4', 'text-slate-500')}
+                          />
+                          <div>
+                            <p
+                              className={cn(
+                                'text-sm',
+                                'font-medium',
+                                'text-slate-900',
+                              )}
+                            >
+                              Admin
+                            </p>
+                            <p className={cn('text-xs', 'text-slate-500')}>
+                              System management
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
 
                     <Link to="/wishlist">
                       <DropdownMenuItem

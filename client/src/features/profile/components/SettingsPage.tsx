@@ -279,7 +279,9 @@ export function SettingsPage() {
                   active &&
                     !isDel &&
                     'text-[#2d5222] bg-[#F4F8F1]/70 border-[#2d5222] hover:bg-[#F4F8F1]/70 hover:text-[#2d5222]',
-                  active && isDel && 'text-red-500 bg-red-50/60 border-red-400 hover:bg-red-50/60 hover:text-red-500',
+                  active &&
+                    isDel &&
+                    'text-red-500 bg-red-50/60 border-red-400 hover:bg-red-50/60 hover:text-red-500',
                   !active &&
                     !isDel &&
                     'text-slate-500 hover:text-gray-800 hover:bg-slate-50 border-transparent',

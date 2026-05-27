@@ -45,8 +45,7 @@ export const WithdrawalRequestModal = ({
   }
 
   const hasPayoutMethod =
-    session?.user &&
-    ((session.user).upiId || (session.user).bankName)
+    session?.user && (session.user.upiId || session.user.bankName)
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -94,9 +93,9 @@ export const WithdrawalRequestModal = ({
             {hasPayoutMethod ? (
               <span className="text-[9px] font-bold text-dash-brand block mt-2 bg-dash-brand/5 p-2.5 rounded-xl border border-dash-brand/10">
                 Direct transfer to:{' '}
-                {(session.user).upiId
-                  ? `UPI: ${(session.user).upiId}`
-                  : `${(session.user).bankName} (A/C: *${(session.user).accountNumber?.slice(-4)})`}
+                {session.user.upiId
+                  ? `UPI: ${session.user.upiId}`
+                  : `${session.user.bankName} (A/C: *${session.user.accountNumber?.slice(-4)})`}
               </span>
             ) : (
               <span className="text-[9px] font-bold text-amber-600 block mt-2 bg-amber-50/50 p-2.5 rounded-xl border border-amber-100/50">

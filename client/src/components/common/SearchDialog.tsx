@@ -137,7 +137,10 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                             onClick={() => {
                               setSearchQuery(item.query)
                               saveSearchMutation.mutate(item.query)
-                              navigate({ to: '/products', search: { search: item.query } })
+                              navigate({
+                                to: '/products',
+                                search: { search: item.query },
+                              })
                               onOpenChange(false)
                               setSearchQuery('')
                             }}
@@ -158,7 +161,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     </div>
                   ) : (
                     <p className="text-[11px] text-slate-400 font-bold">
-                      Your search history is empty. Try searching for "Furniture" or "Books".
+                      Your search history is empty. Try searching for
+                      "Furniture" or "Books".
                     </p>
                   )}
                 </div>
@@ -200,7 +204,9 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             ) : isLoading ? (
               <div className="flex flex-col items-center justify-center py-16 gap-3">
                 <Loader2 className="h-6 w-6 animate-spin text-[#2d5222]" />
-                <span className="text-xs text-slate-400 font-bold">Searching catalogue...</span>
+                <span className="text-xs text-slate-400 font-bold">
+                  Searching catalogue...
+                </span>
               </div>
             ) : filteredProducts && filteredProducts.length > 0 ? (
               <div className="divide-y divide-slate-50">
@@ -231,7 +237,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                         {product.title || product.name}
                       </p>
                       <p className="truncate text-[10px] text-slate-400 font-bold mt-0.5 max-w-[440px]">
-                        {product.description || 'Premium rental product listed in Vastu.'}
+                        {product.description ||
+                          'Premium rental product listed in Vastu.'}
                       </p>
                     </div>
                     <ArrowRight className="h-3.5 w-3.5 shrink-0 text-slate-400 group-hover:text-[#2d5222] transition-all group-hover:translate-x-0.5" />
@@ -247,7 +254,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                   No matching products found
                 </h3>
                 <p className="text-[10px] text-slate-400 font-bold max-w-xs px-4">
-                  We couldn't find anything matching your search terms. Try searching for general terms like "Furniture" or "Books".
+                  We couldn't find anything matching your search terms. Try
+                  searching for general terms like "Furniture" or "Books".
                 </p>
               </div>
             )}

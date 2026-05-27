@@ -28,7 +28,10 @@ import {
   DialogTitle,
 } from '#/components/ui/dialog'
 import { toast } from 'sonner'
-import type {Conversation, Message as BaseMessage} from '../../../../hook/use-chat';
+import type {
+  Conversation,
+  Message as BaseMessage,
+} from '../../../../hook/use-chat'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
 import { apiClient } from '#/lib/api'
@@ -1307,27 +1310,26 @@ export const MessagesManagement = () => {
 
                             <div className={cn('flex', 'flex-col', 'gap-1')}>
                               {/* Image grid (if message has images) */}
-                              {(msg).images &&
-                                (msg).images.length > 0 && (
-                                  <div
-                                    className={cn(
-                                      'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm',
-                                      (msg).images.length === 1
-                                        ? 'grid-cols-1'
-                                        : 'grid-cols-3',
-                                      isMe ? 'rounded-tr-sm' : 'rounded-tl-sm',
-                                    )}
-                                  >
-                                    {(msg).images.map((src, i) => (
-                                      <img
-                                        key={i}
-                                        src={src}
-                                        alt={`attachment-${i}`}
-                                        className="w-full h-24 object-cover"
-                                      />
-                                    ))}
-                                  </div>
-                                )}
+                              {msg.images && msg.images.length > 0 && (
+                                <div
+                                  className={cn(
+                                    'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm',
+                                    msg.images.length === 1
+                                      ? 'grid-cols-1'
+                                      : 'grid-cols-3',
+                                    isMe ? 'rounded-tr-sm' : 'rounded-tl-sm',
+                                  )}
+                                >
+                                  {msg.images.map((src, i) => (
+                                    <img
+                                      key={i}
+                                      src={src}
+                                      alt={`attachment-${i}`}
+                                      className="w-full h-24 object-cover"
+                                    />
+                                  ))}
+                                </div>
+                              )}
 
                               {/* Bubble */}
                               {msg.content && (

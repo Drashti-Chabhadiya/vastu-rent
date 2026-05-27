@@ -1,5 +1,5 @@
-import { defineConfig, loadEnv  } from 'vite'
-import type {Plugin} from 'vite';
+import { defineConfig, loadEnv } from 'vite'
+import type { Plugin } from 'vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import viteReact from '@vitejs/plugin-react'

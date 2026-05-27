@@ -147,10 +147,10 @@ function NotificationListener() {
 
       // Update react-query notifications cache
       rqClient.setQueryData(['notifications'], (old: any) => {
-          if (!old) return [notif]
-          if (old.some((n: any) => n.id === notif.id)) return old
-          return [notif, ...old]
-        })
+        if (!old) return [notif]
+        if (old.some((n: any) => n.id === notif.id)) return old
+        return [notif, ...old]
+      })
 
       // Play alert chime
       // playNotificationSound()

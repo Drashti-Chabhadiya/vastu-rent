@@ -146,7 +146,9 @@ export const useSaveRecentSearch = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (query: string) => {
-      const res = await apiClient.post('/users/settings/recent-searches', { query })
+      const res = await apiClient.post('/users/settings/recent-searches', {
+        query,
+      })
       return res.data.searches
     },
     onSuccess: () => {

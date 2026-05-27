@@ -117,17 +117,17 @@ export function AccountLayout() {
     },
     isLister
       ? {
-        id: 'listings',
-        label: 'My Listings',
-        icon: Percent,
-        href: '/account/listings',
-      }
+          id: 'listings',
+          label: 'My Listings',
+          icon: Percent,
+          href: '/account/listings',
+        }
       : {
-        id: 'listings',
-        label: 'Become a Host',
-        icon: Percent,
-        href: '/become-lister',
-      },
+          id: 'listings',
+          label: 'Become a Host',
+          icon: Percent,
+          href: '/become-lister',
+        },
     { id: 'wishlist', label: 'Wishlist', icon: Heart, href: '/wishlist' },
     { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
     {
@@ -170,17 +170,27 @@ export function AccountLayout() {
                 <div className="flex flex-col items-center gap-2 pt-5 pb-4 px-2 mb-2 border-b border-slate-50">
                   <div className="relative">
                     <Avatar className="w-14 h-14 border-2 border-slate-100 shadow-sm">
-                      <AvatarImage src={session?.user?.image || ''} alt={session?.user?.name} />
+                      <AvatarImage
+                        src={session?.user?.image || ''}
+                        alt={session?.user?.name}
+                      />
                       <AvatarFallback className="bg-[#F4F8F1] text-[#2d5222] font-black text-base">
                         {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     {/* Active green dot */}
-                    <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm" title="Active" />
+                    <span
+                      className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm"
+                      title="Active"
+                    />
                   </div>
                   <div className="text-center min-w-0">
-                    <p className="text-[12px] font-black text-gray-900 truncate max-w-[140px]">{session?.user?.name || 'User'}</p>
-                    <p className="text-[10px] font-semibold text-slate-400 truncate max-w-[140px]">{session?.user?.email || ''}</p>
+                    <p className="text-[12px] font-black text-gray-900 truncate max-w-[140px]">
+                      {session?.user?.name || 'User'}
+                    </p>
+                    <p className="text-[10px] font-semibold text-slate-400 truncate max-w-[140px]">
+                      {session?.user?.email || ''}
+                    </p>
                   </div>
                 </div>
                 <nav className="space-y-0">
@@ -249,12 +259,12 @@ export function AccountLayout() {
             {/* Main Content */}
             <main className="flex-1 min-w-0 w-full">
               {activeTab === 'personal' ||
-                activeTab === 'bookings' ||
-                activeTab === 'listings' ||
-                activeTab === 'reviews' ||
-                activeTab === 'messages' ||
-                activeTab === 'notifications' ||
-                activeTab === 'settings' ? (
+              activeTab === 'bookings' ||
+              activeTab === 'listings' ||
+              activeTab === 'reviews' ||
+              activeTab === 'messages' ||
+              activeTab === 'notifications' ||
+              activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden min-h-[600px] p-8">
