@@ -11,10 +11,10 @@ export function BrowseByCategory() {
   const displayCategories = categories?.slice(0, 8) || []
 
   return (
-    <section className="bg-white py-12 sm:py-16">
+    <section className="bg-background py-12 sm:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-foreground">
             Browse by Categories
           </h2>
           <Link
@@ -46,7 +46,7 @@ export function BrowseByCategory() {
                     size="xl"
                     className="group-hover:-translate-y-2 group-hover:shadow-md"
                   />
-                  <span className="text-[11px] sm:text-xs font-semibold text-gray-800 text-center">
+                  <span className="text-[11px] sm:text-xs font-semibold text-foreground/90 text-center">
                     {category.name}
                   </span>
                 </Link>
@@ -57,10 +57,10 @@ export function BrowseByCategory() {
                 to={'/categories'}
                 className="flex flex-col items-center gap-3 sm:gap-4 cursor-pointer group"
               >
-                <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] rounded-2xl sm:rounded-3xl bg-gray-100 flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-md">
-                  <Grid3x3 className="w-6 h-6 sm:w-8 sm:h-8 text-gray-800" />
+                <div className="w-20 h-20 sm:w-[100px] sm:h-[100px] rounded-2xl sm:rounded-3xl bg-primary-soft flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-md border border-primary-border/40">
+                  <Grid3x3 className="w-6 h-6 sm:w-8 sm:h-8 text-foreground/90" />
                 </div>
-                <span className="text-[11px] sm:text-xs font-semibold text-gray-800 text-center">
+                <span className="text-[11px] sm:text-xs font-semibold text-foreground/90 text-center">
                   More
                 </span>
               </Link>

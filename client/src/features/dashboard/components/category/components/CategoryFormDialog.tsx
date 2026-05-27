@@ -51,7 +51,7 @@ export const CategoryFormDialog = ({
   const [requestReason, setRequestReason] = useState('')
 
   const COLORS = [
-    '#166534',
+    'var(--color-primary)',
     '#15803d',
     '#1e40af',
     '#1d4ed8',
@@ -74,7 +74,7 @@ export const CategoryFormDialog = ({
       if (editingCategory) {
         setCategoryName(editingCategory.name)
         setSelectedIcon(editingCategory.icon || 'Folder')
-        setSelectedColor(editingCategory.color || '#166534')
+        setSelectedColor(editingCategory.color || 'var(--color-primary)')
         setCategoryImage(editingCategory.image || '')
         setUseImage(!!editingCategory.image)
         setDescription(editingCategory.description || '')
@@ -82,7 +82,7 @@ export const CategoryFormDialog = ({
       } else {
         setCategoryName('')
         setSelectedIcon('Folder')
-        setSelectedColor('#166534')
+        setSelectedColor('var(--color-primary)')
         setCategoryImage('')
         setUseImage(false)
         setDescription('')
@@ -121,7 +121,7 @@ export const CategoryFormDialog = ({
       payload.color = null
     } else {
       payload.icon = selectedIcon || 'Folder'
-      payload.color = selectedColor || '#166534'
+      payload.color = selectedColor || 'var(--color-primary)'
       payload.image = null
     }
 
@@ -135,8 +135,8 @@ export const CategoryFormDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl rounded-2xl border-none shadow-2xl p-0 overflow-hidden bg-white">
-        <div className="bg-gradient-to-br from-[#166534] to-[#2f6a4a] p-8 text-white relative">
+      <DialogContent className="sm:max-w-2xl rounded-2xl border-none shadow-2xl p-0 overflow-hidden bg-card">
+        <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-primary-foreground relative">
           <DialogHeader>
             <DialogTitle className="text-2xl font-extrabold tracking-tight">
               {isRequest
@@ -145,7 +145,7 @@ export const CategoryFormDialog = ({
                   ? 'Update Category'
                   : 'New Category'}
             </DialogTitle>
-            <p className="text-white/70 text-sm font-medium mt-1">
+            <p className="text-primary-foreground/70 text-sm font-medium mt-1">
               {isRequest
                 ? 'Propose a new collection. Admins will review and approve your suggestion.'
                 : editingCategory
@@ -157,7 +157,7 @@ export const CategoryFormDialog = ({
 
         <form
           onSubmit={handleSubmit}
-          className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-gray-900 relative min-h-[300px]"
+          className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-foreground relative min-h-[300px]"
         >
           {isUploading && (
             <LoadingOverlay message="Uploading category image..." />
@@ -167,7 +167,7 @@ export const CategoryFormDialog = ({
           )}
 
           <div className="space-y-2.5">
-            <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+            <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
               <Tag size={14} className="text-dash-brand" />
               Category Name
             </label>
@@ -175,7 +175,7 @@ export const CategoryFormDialog = ({
               placeholder="e.g. Electronics, Furniture..."
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
-              className="h-12 bg-white border-gray-200 rounded-xl text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+              className="h-12 bg-card border-border rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
               autoFocus
             />
           </div>
@@ -183,7 +183,7 @@ export const CategoryFormDialog = ({
           {isRequest && (
             <>
               <div className="space-y-2.5">
-                <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+                <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                   <LucideIcons.FileText size={14} className="text-dash-brand" />
                   Description
                 </label>
@@ -192,12 +192,12 @@ export const CategoryFormDialog = ({
                   placeholder="Briefly describe what items belong in this category..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full min-h-[80px] bg-white border border-gray-200 rounded-xl p-3 text-[15px] text-gray-900 placeholder:text-gray-400 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
+                  className="w-full min-h-[80px] bg-card border border-border rounded-xl p-3 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
                 />
               </div>
 
               <div className="space-y-2.5">
-                <label className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+                <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                   <LucideIcons.HelpCircle
                     size={14}
                     className="text-dash-brand"
@@ -209,7 +209,7 @@ export const CategoryFormDialog = ({
                   placeholder="Why is this category needed? (e.g., I have 10 cameras to list)"
                   value={requestReason}
                   onChange={(e) => setRequestReason(e.target.value)}
-                  className="w-full min-h-[80px] bg-white border border-gray-200 rounded-xl p-3 text-[15px] text-gray-900 placeholder:text-gray-400 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
+                  className="w-full min-h-[80px] bg-card border border-border rounded-xl p-3 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
                 />
               </div>
             </>
@@ -217,7 +217,7 @@ export const CategoryFormDialog = ({
 
           <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
-              <label className="text-[13px] font-bold text-gray-900 flex items-center gap-2">
+              <label className="text-[13px] font-bold text-foreground flex items-center gap-2">
                 {useImage ? (
                   <ImageIcon size={14} className="text-dash-brand" />
                 ) : (
@@ -229,7 +229,7 @@ export const CategoryFormDialog = ({
                 type="button"
                 variant="link"
                 onClick={() => setUseImage(!useImage)}
-                className="text-[12px] font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all"
+                className="text-[12px] font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all"
               >
                 {useImage ? 'Use Icon instead' : 'Upload Image instead'}
               </Button>
@@ -239,7 +239,7 @@ export const CategoryFormDialog = ({
               <div className="space-y-4">
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="aspect-video rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-dash-brand/30 hover:bg-gray-100 transition-all overflow-hidden relative group"
+                  className="aspect-video rounded-2xl border-2 border-dashed border-border bg-muted-light flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-dash-brand/30 hover:bg-muted/50 transition-all overflow-hidden relative group"
                 >
                   {categoryImage ? (
                     <>
@@ -249,19 +249,19 @@ export const CategoryFormDialog = ({
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Upload className="text-white" size={24} />
+                        <Upload className="text-primary-foreground" size={24} />
                       </div>
                     </>
                   ) : (
                     <>
-                      <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-                        <Upload className="text-gray-400" size={20} />
+                      <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
+                        <Upload className="text-muted-foreground/70" size={20} />
                       </div>
-                      <div className="text-center text-gray-900">
+                      <div className="text-center text-foreground">
                         <p className="text-sm font-bold">
                           Click to upload image
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground/85 mt-1">
                           PNG, JPG or SVG (max. 2MB)
                         </p>
                       </div>
@@ -281,21 +281,21 @@ export const CategoryFormDialog = ({
                 {/* Color Picker */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between px-1">
-                    <span className="text-[12px] font-bold text-gray-500">
+                    <span className="text-[12px] font-bold text-muted-foreground/85">
                       Brand Color & Shades
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-gray-400 uppercase">
+                      <span className="text-[10px] font-bold text-muted-foreground/70 uppercase">
                         {selectedColor}
                       </span>
                       <div
-                        className="w-4 h-4 rounded-full border border-gray-200"
+                        className="w-4 h-4 rounded-full border border-border"
                         style={{ backgroundColor: selectedColor }}
                       />
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-4 p-4 bg-gray-50/50 rounded-2xl border border-gray-100">
+                  <div className="flex flex-col gap-4 p-4 bg-muted-light/50 rounded-2xl border border-border/30">
                     <div className="flex flex-wrap gap-2">
                       {COLORS.map((color) => (
                         <Button
@@ -306,8 +306,8 @@ export const CategoryFormDialog = ({
                           className={cn(
                             'w-8 h-8 rounded-full border-2 transition-all hover:scale-110 active:scale-[0.98] shadow-sm p-0 min-w-0 min-h-0',
                             selectedColor === color
-                              ? 'border-gray-900 scale-110 hover:scale-110'
-                              : 'border-white hover:bg-transparent',
+                              ? 'border-foreground scale-110 hover:scale-110'
+                              : 'border-card hover:bg-transparent',
                           )}
                           style={{ backgroundColor: color }}
                         />
@@ -318,9 +318,9 @@ export const CategoryFormDialog = ({
                           type="color"
                           value={selectedColor}
                           onChange={(e) => setSelectedColor(e.target.value)}
-                          className="w-8 h-8 rounded-full border-2 border-white p-0 overflow-hidden cursor-pointer shadow-sm transition-all hover:scale-110"
+                          className="w-8 h-8 rounded-full border-2 border-card p-0 overflow-hidden cursor-pointer shadow-sm transition-all hover:scale-110"
                         />
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-primary-foreground text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                           Custom Shade
                         </div>
                       </div>
@@ -332,7 +332,7 @@ export const CategoryFormDialog = ({
                         value={selectedColor}
                         onChange={(e) => setSelectedColor(e.target.value)}
                         placeholder="#000000"
-                        className="h-10 bg-white border-gray-200 rounded-xl text-xs font-mono uppercase text-center w-28 text-gray-900"
+                        className="h-10 bg-card border-border rounded-xl text-xs font-mono uppercase text-center w-28 text-foreground"
                       />
                       <div className="flex-1 h-2 rounded-full overflow-hidden flex">
                         {/* Visual shade representation */}
@@ -353,7 +353,7 @@ export const CategoryFormDialog = ({
 
                 {/* Icon Selector */}
                 <div className="space-y-3">
-                  <span className="text-[12px] font-bold text-gray-500 ml-1">
+                  <span className="text-[12px] font-bold text-muted-foreground/85 ml-1">
                     Select Icon
                   </span>
                   <IconSelector
@@ -366,14 +366,14 @@ export const CategoryFormDialog = ({
           </div>
 
           {/* Live Preview Section */}
-          <div className="pt-6 border-t border-gray-100">
-            <label className="text-[13px] font-bold text-gray-900 mb-4 block flex items-center gap-2">
+          <div className="pt-6 border-t border-border/30">
+            <label className="text-[13px] font-bold text-foreground mb-4 block flex items-center gap-2">
               <Check size={14} className="text-dash-brand" />
               Card Preview
             </label>
 
             <div className="max-w-xs mx-auto">
-              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm relative overflow-hidden group">
+              <div className="bg-card p-6 rounded-xl border border-border/30 shadow-sm relative overflow-hidden group">
                 {/* Background Accent */}
                 {!useImage && (
                   <div
@@ -385,7 +385,7 @@ export const CategoryFormDialog = ({
                 <div className="flex items-start justify-between relative z-10">
                   <div className="space-y-4">
                     {useImage ? (
-                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-100">
+                      <div className="w-12 h-12 rounded-xl overflow-hidden border border-border/30">
                         {categoryImage ? (
                           <img
                             src={categoryImage}
@@ -393,7 +393,7 @@ export const CategoryFormDialog = ({
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300">
+                          <div className="w-full h-full bg-muted/50 flex items-center justify-center text-muted-dark">
                             <ImageIcon size={20} />
                           </div>
                         )}
@@ -420,7 +420,7 @@ export const CategoryFormDialog = ({
                     )}
 
                     <div>
-                      <h3 className="text-lg font-extrabold text-gray-900">
+                      <h3 className="text-lg font-extrabold text-foreground">
                         {categoryName || 'Category Name'}
                       </h3>
                       <div className="flex items-center gap-2 mt-2">
@@ -452,28 +452,28 @@ export const CategoryFormDialog = ({
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <div className="mt-6 pt-4 border-t border-border/30 flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">
                     Manage Collection
                   </span>
-                  <ArrowRight size={16} className="text-gray-300" />
+                  <ArrowRight size={16} className="text-muted-dark" />
                 </div>
               </div>
             </div>
           </div>
 
-          <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-gray-100">
+          <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-border/30">
             <Button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="rounded-full font-bold h-12 flex-1 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none active:scale-[0.98]"
+              className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none active:scale-[0.98]"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isPending || isUploading}
-              className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-primary/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
               {isRequest ? (
                 <>

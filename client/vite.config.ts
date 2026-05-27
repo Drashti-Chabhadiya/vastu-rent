@@ -1,4 +1,5 @@
-import { defineConfig, loadEnv, type Plugin } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
+import type { Plugin } from 'vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import viteReact from '@vitejs/plugin-react'
@@ -11,7 +12,10 @@ import path from 'node:path'
 // unavailable. This plugin replaces %VITE_FIREBASE_*% tokens in the SW template
 // with real values from .env at build time (and serves them in dev too).
 function firebaseSwPlugin(env: Record<string, string>): Plugin[] {
-  const swTemplatePath = path.resolve(__dirname, 'public/firebase-messaging-sw.js')
+  const swTemplatePath = path.resolve(
+    __dirname,
+    'public/firebase-messaging-sw.js',
+  )
 
   function processTemplate(): string {
     let content = fs.readFileSync(swTemplatePath, 'utf-8')
@@ -93,4 +97,3 @@ const config = defineConfig(({ mode }) => {
 })
 
 export default config
-

@@ -11,12 +11,12 @@ export const RecentListingsTable = ({
   isLoading,
 }: RecentListingsTableProps) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Listings</h3>
         <Button
           variant="link"
-          className="text-xs font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer"
+          className="text-xs font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer"
         >
           View All
         </Button>
@@ -25,7 +25,7 @@ export const RecentListingsTable = ({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="text-left border-b border-gray-50">
+            <tr className="text-left border-b border-border/30">
               <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
                 Listing
               </th>
@@ -46,7 +46,7 @@ export const RecentListingsTable = ({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-border/30">
             {isLoading ? (
               <tr>
                 <td
@@ -69,7 +69,7 @@ export const RecentListingsTable = ({
               products.map((item) => (
                 <tr
                   key={item.id}
-                  className="group hover:bg-gray-50 transition-colors"
+                  className="group hover:bg-muted-light transition-colors"
                 >
                   <td className="py-3">
                     <div className="flex items-center gap-3">
@@ -100,7 +100,7 @@ export const RecentListingsTable = ({
                       className={cn(
                         'px-2 py-1 rounded-md text-[10px] font-bold',
                         item.isAvailable
-                          ? 'bg-green-50 text-green-600'
+                          ? 'bg-primary-soft text-primary'
                           : 'bg-orange-50 text-orange-600',
                       )}
                     >

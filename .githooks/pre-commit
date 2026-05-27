@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+echo "Running client lint check..."
+cd "$ROOT_DIR/client"
+npm run lint

@@ -44,6 +44,15 @@ model User {
   bookingAlerts    Boolean @default(true)
   settlementAlerts Boolean @default(true)
   marketingAlerts  Boolean @default(false)
+
+  // Custom Profile Details & Preferences
+  gender            String?
+  location          String?
+  phone             String?
+  language          String?
+  dob               String?
+  currency          String?   @default("INR")
+  twoFactorEnabled  Boolean   @default(false)
   
   // Relations
   sessions      Session[]
@@ -61,6 +70,7 @@ model User {
   cloudinaryConfig CloudinaryConfig?
   stories          Story[]
   coupons          Coupon[]
+  recentSearches   RecentSearch[]
 
   // Chat relations
   conversationsAsOne Conversation[] @relation("ParticipantOne")
@@ -95,6 +105,7 @@ model Session {
   
   ipAddress String?
   userAgent String?
+  deviceName String?
   
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -398,6 +409,17 @@ model Message {
   updatedAt      DateTime     @updatedAt
 
   @@map("message")
+}
+
+model RecentSearch {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  query     String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, query])
+  @@map("recent_search")
 }
 
 

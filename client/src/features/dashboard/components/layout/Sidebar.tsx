@@ -49,7 +49,7 @@ const NavItem = ({
       'flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200 group active:scale-[0.98]',
       active
         ? 'bg-dash-brand-soft text-dash-brand shadow-sm'
-        : 'text-dash-text-soft hover:bg-gray-50 hover:text-dash-text',
+        : 'text-dash-text-soft hover:bg-muted-light hover:text-dash-text',
     )}
   >
     <div className="flex items-center gap-3">
@@ -82,11 +82,11 @@ const SidebarSkeleton = () => (
     {Array.from({ length: 6 }).map((_, i) => (
       <div
         key={i}
-        className="flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50/70 border border-gray-50/30 animate-pulse"
+        className="flex items-center justify-between px-4 py-3 rounded-xl bg-muted-light/70 border border-border/30/30 animate-pulse"
       >
         <div className="flex items-center gap-3 w-full">
-          <div className="w-5 h-5 rounded bg-gray-200 shrink-0" />
-          <div className="h-4 bg-gray-200 rounded w-28" />
+          <div className="w-5 h-5 rounded bg-muted shrink-0" />
+          <div className="h-4 bg-muted rounded w-28" />
         </div>
       </div>
     ))}
@@ -208,7 +208,7 @@ export const Sidebar = ({
   return (
     <aside
       className={cn(
-        'w-64 h-screen bg-white border-r border-gray-100 flex flex-col fixed left-0 top-0 z-[60] transition-transform duration-300',
+        'w-64 h-screen bg-card border-r border-border/30 flex flex-col fixed left-0 top-0 z-[60] transition-transform duration-300',
         'lg:translate-x-0',
         isOpen
           ? 'translate-x-0 shadow-2xl animate-in slide-in-from-left duration-300'
@@ -217,30 +217,12 @@ export const Sidebar = ({
     >
       {/* Logo & Close Button */}
       <div className="p-6 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <Logo />
-          <div>
-            <h1 className="text-lg font-black text-dash-text tracking-tight leading-none">
-              vastu-rent
-            </h1>
-            <p className="text-[9px] text-primary/70 font-black tracking-widest mt-1 uppercase">
-              {role === 'superAdmin'
-                ? 'Super Admin'
-                : role === 'admin'
-                  ? 'Admin'
-                  : role === 'owner'
-                    ? 'Owner'
-                    : 'User'}{' '}
-              Portal
-            </p>
-          </div>
-        </div>
-
+        <Logo />
         <Button
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="lg:hidden text-gray-400 hover:text-gray-600 rounded-xl w-8 h-8 hover:bg-gray-50"
+          className="lg:hidden text-muted-foreground/70 hover:text-muted-foreground rounded-xl w-8 h-8 hover:bg-muted-light"
         >
           <X size={18} />
         </Button>
@@ -280,11 +262,11 @@ export const Sidebar = ({
                   Go Premium
                 </span>
               </div>
-              <p className="text-[11px] text-gray-600 font-medium mb-3 leading-relaxed">
+              <p className="text-[11px] text-muted-foreground font-medium mb-3 leading-relaxed">
                 Unlock advance charts, calendar sync, and featured listing
                 spots.
               </p>
-              <Button className="w-full h-9 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary/95 transition-all shadow-sm active:scale-[0.98]">
+              <Button className="w-full h-9 bg-primary text-primary-foreground text-xs font-bold rounded-xl hover:bg-primary/95 transition-all shadow-sm active:scale-[0.98]">
                 Upgrade Account
               </Button>
             </div>
@@ -295,15 +277,15 @@ export const Sidebar = ({
       )}
 
       {/* User Profile Section — interactive dropdown, professional standard */}
-      <div ref={profileRef} className="p-4 border-t border-gray-100 relative">
+      <div ref={profileRef} className="p-4 border-t border-border/30 relative">
         {/* Profile Dropdown Panel */}
         {isProfileOpen && (
-          <div className="absolute bottom-full left-3 right-3 mb-2 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="absolute bottom-full left-3 right-3 mb-2 bg-card border border-border/30 rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
             {/* User info header */}
-            <div className="px-4 pt-4 pb-3 border-b border-gray-50">
+            <div className="px-4 pt-4 pb-3 border-b border-border/30">
               <div className="flex items-center gap-3">
                 <div className="relative shrink-0">
-                  <Avatar className="w-10 h-10 rounded-xl border border-gray-100 bg-gray-50">
+                  <Avatar className="w-10 h-10 rounded-xl border border-border/30 bg-muted-light">
                     <AvatarImage
                       src={user?.image || ''}
                       alt={user?.name || 'User'}
@@ -313,7 +295,7 @@ export const Sidebar = ({
                       {user?.name?.slice(0, 2).toUpperCase() || 'US'}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
+                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-card rounded-full" />
                 </div>
                 <div className="overflow-hidden">
                   <p className="text-sm font-black text-dash-text truncate">
@@ -334,9 +316,9 @@ export const Sidebar = ({
                   onTabChange('settings')
                   setIsProfileOpen(false)
                 }}
-                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors active:scale-[0.98]"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-muted-foreground hover:bg-muted-light hover:text-dash-text transition-colors active:scale-[0.98]"
               >
-                <Settings size={15} className="text-gray-400" />
+                <Settings size={15} className="text-muted-foreground/70" />
                 Settings
               </Button>
               <Button
@@ -345,9 +327,9 @@ export const Sidebar = ({
                   navigate({ to: '/account' })
                   setIsProfileOpen(false)
                 }}
-                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors active:scale-[0.98]"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-muted-foreground hover:bg-muted-light hover:text-dash-text transition-colors active:scale-[0.98]"
               >
-                <User size={15} className="text-gray-400" />
+                <User size={15} className="text-muted-foreground/70" />
                 My Account
               </Button>
               <Button
@@ -356,18 +338,18 @@ export const Sidebar = ({
                   navigate({ to: '/' })
                   setIsProfileOpen(false)
                 }}
-                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 hover:text-dash-text transition-colors active:scale-[0.98]"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-muted-foreground hover:bg-muted-light hover:text-dash-text transition-colors active:scale-[0.98]"
               >
-                <ExternalLink size={15} className="text-gray-400" />
+                <ExternalLink size={15} className="text-muted-foreground/70" />
                 View Public Site
               </Button>
             </div>
 
-            <div className="border-t border-gray-50 py-1.5 flex flex-col w-full">
+            <div className="border-t border-border/30 py-1.5 flex flex-col w-full">
               <Button
                 variant="ghost"
                 onClick={handleSignOut}
-                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-red-500 hover:bg-red-50 hover:text-red-650 transition-colors active:scale-[0.98]"
+                className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-destructive hover:bg-danger hover:text-destructive transition-colors active:scale-[0.98]"
               >
                 <LogOut size={15} />
                 Sign out
@@ -381,13 +363,15 @@ export const Sidebar = ({
           variant="ghost"
           onClick={() => setIsProfileOpen((prev) => !prev)}
           className={cn(
-            'w-full h-auto flex items-center justify-between p-2 rounded-xl cursor-pointer transition-colors group hover:bg-gray-50 active:scale-[0.98]',
-            isProfileOpen ? 'bg-gray-100 hover:bg-gray-100' : 'hover:bg-gray-50',
+            'w-full h-auto flex items-center justify-between p-2 rounded-xl cursor-pointer transition-colors group hover:bg-muted-light active:scale-[0.98]',
+            isProfileOpen
+              ? 'bg-muted/50 hover:bg-muted/50'
+              : 'hover:bg-muted-light',
           )}
         >
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="relative shrink-0">
-              <Avatar className="w-9 h-9 rounded-xl bg-gray-50 border border-gray-100">
+              <Avatar className="w-9 h-9 rounded-xl bg-muted-light border border-border/30">
                 <AvatarImage
                   src={user?.image || ''}
                   alt={user?.name || 'User'}
@@ -397,7 +381,7 @@ export const Sidebar = ({
                   {user?.name?.slice(0, 2).toUpperCase() || 'US'}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-card rounded-full" />
             </div>
             <div className="overflow-hidden text-left">
               <p className="text-sm font-black text-dash-text truncate group-hover:text-primary transition-colors">

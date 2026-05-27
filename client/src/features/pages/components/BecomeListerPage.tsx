@@ -6,13 +6,13 @@ import { Link } from '@tanstack/react-router'
 
 const features = [
   {
-    icon: <Coins className="w-8 h-8 text-green-600" />,
+    icon: <Coins className="w-8 h-8 text-primary" />,
     title: 'Earn Extra Income',
     description:
       'Turn your idle items into a steady stream of passive income without any extra effort.',
   },
   {
-    icon: <Camera className="w-8 h-8 text-blue-600" />,
+    icon: <Camera className="w-8 h-8 text-info-foreground" />,
     title: 'Easy Listing',
     description:
       'Upload photos, set your price, and list your item in less than 2 minutes.',
@@ -33,9 +33,9 @@ const features = [
 
 export function BecomeListerPage() {
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-card pb-20">
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center overflow-hidden bg-gray-900 text-white">
+      <section className="relative h-[600px] flex items-center overflow-hidden bg-foreground text-primary-foreground">
         <div className="absolute inset-0 opacity-40">
           <img
             src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=1600&q=80"
@@ -45,14 +45,14 @@ export function BecomeListerPage() {
         </div>
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-2xl">
-            <Badge className="mb-6 bg-primary hover:bg-primary-hover text-white px-4 py-1.5 rounded-full font-bold text-sm">
+            <Badge className="mb-6 bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-1.5 rounded-full font-bold text-sm">
               JOIN 5,000+ OWNERS
             </Badge>
             <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-8 leading-tight">
               Turn Your Things Into{' '}
               <span className="text-primary">Earnings</span>
             </h1>
-            <p className="text-xl text-gray-300 mb-10 leading-relaxed">
+            <p className="text-xl text-muted-dark mb-10 leading-relaxed">
               Don't let your items gather dust. List them on Vastu-Rent and
               start earning money today. It's safe, easy, and free to get
               started.
@@ -68,13 +68,13 @@ export function BecomeListerPage() {
       </section>
 
       {/* Why List Section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-background">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               Why list on Vastu-Rent?
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               We provide the tools and security you need to share your items
               with confidence.
             </p>
@@ -84,7 +84,7 @@ export function BecomeListerPage() {
             {features.map((feature, i) => (
               <Card
                 key={i}
-                className="bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl p-6 group"
+                className="bg-card border border-border/30 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl p-6 group"
               >
                 <CardHeader className="p-0 mb-6">
                   <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center transition-transform group-hover:scale-110">
@@ -92,10 +92,10 @@ export function BecomeListerPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <CardTitle className="text-xl font-bold text-gray-900 mb-3">
+                  <CardTitle className="text-xl font-bold text-foreground mb-3">
                     {feature.title}
                   </CardTitle>
-                  <p className="text-gray-600 leading-relaxed text-sm">
+                  <p className="text-muted-foreground leading-relaxed text-sm">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -109,7 +109,7 @@ export function BecomeListerPage() {
       <section className="py-24">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="bg-primary/5 rounded-[40px] overflow-hidden flex flex-col lg:flex-row border border-brand/10">
-            <div className="lg:w-1/2 bg-gray-100">
+            <div className="lg:w-1/2 bg-muted/50">
               <img
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"
                 alt="Happy Owner"
@@ -129,14 +129,14 @@ export function BecomeListerPage() {
                   />
                 ))}
               </div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-8 italic leading-snug">
+              <h3 className="text-3xl font-bold text-foreground mb-8 italic leading-snug">
                 "Listing my professional camera equipment on Vastu-Rent has been
                 a game-changer. I've earned over ₹45,000 in just three months,
                 and every renter has been respectful and professional."
               </h3>
               <div>
                 <p className="text-xl font-bold text-primary">Rahul Sharma</p>
-                <p className="text-gray-500">
+                <p className="text-muted-foreground/85">
                   Professional Photographer, Ahmedabad
                 </p>
               </div>
@@ -148,15 +148,13 @@ export function BecomeListerPage() {
       {/* Final CTA */}
       <section className="py-24 text-center">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-8">
+          <h2 className="text-4xl font-bold text-foreground mb-8">
             Your items could be earning for you right now.
           </h2>
           <Link to={'/signup'}>
-            <Button size="lg">
-              Get Started for Free
-            </Button>
+            <Button size="lg">Get Started for Free</Button>
           </Link>
-          <p className="mt-6 text-gray-500">
+          <p className="mt-6 text-muted-foreground/85">
             No hidden fees. No listing costs. Just earnings.
           </p>
         </div>

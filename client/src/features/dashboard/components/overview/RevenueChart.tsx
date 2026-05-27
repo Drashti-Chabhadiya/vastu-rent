@@ -18,10 +18,11 @@ export const RevenueChart = () => {
 
   const bars = result?.data ?? []
   const totalRevenue = result?.totalRevenue ?? 0
-  const maxRevenue = bars.length > 0 ? Math.max(...bars.map((b) => b.revenue), 1) : 1
+  const maxRevenue =
+    bars.length > 0 ? Math.max(...bars.map((b) => b.revenue), 1) : 1
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-bold text-dash-text">Revenue Overview</h3>
 
@@ -29,19 +30,22 @@ export const RevenueChart = () => {
           <Button
             variant="outline"
             onClick={() => setOpen((v) => !v)}
-            className="h-auto flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-gray-300 active:scale-[0.98]"
+            className="h-auto flex items-center gap-2 px-3 py-1.5 border border-border rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-border/120 active:scale-[0.98]"
           >
             {PERIOD_LABELS[period]}
-            <ChevronDown size={14} className="text-gray-400" />
+            <ChevronDown size={14} className="text-muted-foreground/70" />
           </Button>
           {open && (
-            <div className="absolute right-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-lg z-10 overflow-hidden flex flex-col w-32">
+            <div className="absolute right-0 mt-1 bg-card border border-border/30 rounded-xl shadow-lg z-10 overflow-hidden flex flex-col w-32">
               {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
                 <Button
                   key={p}
                   variant="ghost"
-                  onClick={() => { setPeriod(p); setOpen(false) }}
-                  className="w-full justify-start rounded-none h-auto px-4 py-2 text-xs font-bold text-dash-text hover:bg-gray-50 active:scale-[0.98]"
+                  onClick={() => {
+                    setPeriod(p)
+                    setOpen(false)
+                  }}
+                  className="w-full justify-start rounded-none h-auto px-4 py-2 text-xs font-bold text-dash-text hover:bg-muted-light active:scale-[0.98]"
                 >
                   {PERIOD_LABELS[p]}
                 </Button>
@@ -53,10 +57,12 @@ export const RevenueChart = () => {
 
       <div className="flex items-center justify-between mb-8">
         <div>
-          <p className="text-[10px] font-bold text-dash-text-muted uppercase">Total Revenue</p>
+          <p className="text-[10px] font-bold text-dash-text-muted uppercase">
+            Total Revenue
+          </p>
           <div className="flex items-center gap-2">
             {isLoading ? (
-              <div className="h-8 w-36 bg-gray-100 rounded-lg animate-pulse" />
+              <div className="h-8 w-36 bg-muted/50 rounded-lg animate-pulse" />
             ) : (
               <>
                 <h4 className="text-2xl font-bold text-dash-text">
@@ -75,9 +81,9 @@ export const RevenueChart = () => {
       </div>
 
       {isLoading ? (
-        <div className="h-48 w-full bg-gray-50 rounded-2xl animate-pulse" />
+        <div className="h-48 w-full bg-muted-light rounded-2xl animate-pulse" />
       ) : bars.length === 0 ? (
-        <div className="h-48 flex items-center justify-center text-sm text-gray-400 font-medium">
+        <div className="h-48 flex items-center justify-center text-sm text-muted-foreground/70 font-medium">
           No revenue data for this period
         </div>
       ) : (
@@ -85,9 +91,9 @@ export const RevenueChart = () => {
           <div className="relative h-48 w-full flex items-end justify-between gap-1">
             <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-dash-text-muted font-bold">
               <span>₹{Math.round(maxRevenue / 1000)}k</span>
-              <span>₹{Math.round(maxRevenue * 0.75 / 1000)}k</span>
-              <span>₹{Math.round(maxRevenue * 0.5 / 1000)}k</span>
-              <span>₹{Math.round(maxRevenue * 0.25 / 1000)}k</span>
+              <span>₹{Math.round((maxRevenue * 0.75) / 1000)}k</span>
+              <span>₹{Math.round((maxRevenue * 0.5) / 1000)}k</span>
+              <span>₹{Math.round((maxRevenue * 0.25) / 1000)}k</span>
               <span>0</span>
             </div>
 
@@ -96,9 +102,11 @@ export const RevenueChart = () => {
                 <div
                   key={i}
                   className="flex-1 bg-dash-brand rounded-t-sm transition-all duration-500 hover:bg-primary-light group relative"
-                  style={{ height: `${Math.max((bar.revenue / maxRevenue) * 100, 2)}%` }}
+                  style={{
+                    height: `${Math.max((bar.revenue / maxRevenue) * 100, 2)}%`,
+                  }}
                 >
-                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                  <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-foreground/90 text-primary-foreground text-[9px] font-bold px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     ₹{bar.revenue.toLocaleString('en-IN')}
                   </div>
                 </div>
@@ -109,9 +117,13 @@ export const RevenueChart = () => {
           <div className="ml-8 mt-2 flex justify-between text-[10px] text-dash-text-muted font-bold overflow-hidden">
             {bars.length <= 8
               ? bars.map((b) => <span key={b.date}>{b.date}</span>)
-              : [bars[0], bars[Math.floor(bars.length / 4)], bars[Math.floor(bars.length / 2)], bars[Math.floor(bars.length * 3 / 4)], bars[bars.length - 1]].map((b) => (
-                  <span key={b.date}>{b.date}</span>
-                ))}
+              : [
+                  bars[0],
+                  bars[Math.floor(bars.length / 4)],
+                  bars[Math.floor(bars.length / 2)],
+                  bars[Math.floor((bars.length * 3) / 4)],
+                  bars[bars.length - 1],
+                ].map((b) => <span key={b.date}>{b.date}</span>)}
           </div>
         </>
       )}

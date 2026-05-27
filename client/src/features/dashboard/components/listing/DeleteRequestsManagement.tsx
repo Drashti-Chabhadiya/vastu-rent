@@ -36,7 +36,7 @@ export const DeleteRequestsManagement = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="space-y-1">
         <h1 className="text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
-          <Trash2 className="text-red-500" size={32} />
+          <Trash2 className="text-destructive" size={32} />
           Deletion Requests
         </h1>
         <p className="text-dash-text-soft font-medium text-sm ml-1">
@@ -44,11 +44,11 @@ export const DeleteRequestsManagement = () => {
         </p>
       </div>
 
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full">
             <thead>
-              <tr className="text-left border-b border-gray-50 bg-gray-50/50">
+              <tr className="text-left border-b border-border/30 bg-muted-light/50">
                 <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
                   Product
                 </th>
@@ -66,7 +66,7 @@ export const DeleteRequestsManagement = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border/30">
               {isLoading ? (
                 <tr>
                   <td
@@ -89,11 +89,11 @@ export const DeleteRequestsManagement = () => {
                 requests?.map((req: any) => (
                   <tr
                     key={req.id}
-                    className="group hover:bg-gray-50/80 transition-all"
+                    className="group hover:bg-muted-light/80 transition-all"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-dash-text-soft">
+                        <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center text-dash-text-soft">
                           <Package size={20} />
                         </div>
                         <div className="flex flex-col">
@@ -141,8 +141,8 @@ export const DeleteRequestsManagement = () => {
                           req.status === 'pending'
                             ? 'bg-orange-50 text-orange-500 border-orange-200'
                             : req.status === 'approved'
-                              ? 'bg-green-50 text-green-500 border-green-200'
-                              : 'bg-red-50 text-red-500 border-red-200'
+                              ? 'bg-primary-soft text-primary border-primary-border/80'
+                              : 'bg-danger text-destructive border-danger/50'
                         }
                       `}
                       >
@@ -156,7 +156,7 @@ export const DeleteRequestsManagement = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleProcess(req.id, 'approved')}
-                            className="h-8 rounded-lg border-green-200 text-green-600 hover:bg-green-50 hover:text-green-700 font-bold text-[10px] uppercase tracking-widest gap-1.5"
+                            className="h-8 rounded-lg border-primary-border/80 text-primary hover:bg-primary-soft hover:text-primary-hover font-bold text-[10px] uppercase tracking-widest gap-1.5"
                           >
                             <CheckCircle2 size={12} strokeWidth={3} />
                             Approve
@@ -165,7 +165,7 @@ export const DeleteRequestsManagement = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => handleProcess(req.id, 'rejected')}
-                            className="h-8 rounded-lg border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-bold text-[10px] uppercase tracking-widest gap-1.5"
+                            className="h-8 rounded-lg border-danger/50 text-destructive hover:bg-danger hover:text-destructive font-bold text-[10px] uppercase tracking-widest gap-1.5"
                           >
                             <XCircle size={12} strokeWidth={3} />
                             Reject

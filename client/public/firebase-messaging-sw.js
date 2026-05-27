@@ -4,8 +4,12 @@
  * Handles background push notifications for the WEB version of the app.
  * Native Android/iOS notifications are handled by @capacitor/push-notifications.
  */
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js')
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js')
+importScripts(
+  'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
+)
+importScripts(
+  'https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js',
+)
 
 // ─── Firebase Config ──────────────────────────────────────────────────────────
 // ⚠️  Do NOT hardcode values here.
@@ -76,6 +80,6 @@ self.addEventListener('notificationclick', function (event) {
         if (clients.openWindow) {
           return clients.openWindow(urlToOpen)
         }
-      })
+      }),
   )
 })

@@ -3,14 +3,18 @@ import { NotificationsManagement } from '#/features/dashboard'
 
 export const Route = createFileRoute('/_authenticated/account/notifications')({
   component: () => (
-    <div className="p-4 md:p-6">
-      <h1 className="text-2xl font-black text-gray-900 mb-2">
-        My Notifications
-      </h1>
-      <p className="text-sm text-gray-500 mb-8">
-        Stay updated on your booking status, approval updates, and marketplace
-        reviews.
-      </p>
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Page header */}
+      <div className="mb-5 px-1">
+        <h1 className="text-2xl font-extrabold text-foreground tracking-tight leading-none">
+          My Notifications
+        </h1>
+        <p className="text-[13px] text-muted-foreground/85 mt-2 font-medium">
+          Stay updated on your booking status, approval updates, and marketplace
+          reviews.
+        </p>
+      </div>
+
       <NotificationsManagement />
     </div>
   ),

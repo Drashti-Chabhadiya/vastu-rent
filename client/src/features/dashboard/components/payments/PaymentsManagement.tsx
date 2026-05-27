@@ -69,7 +69,7 @@ export const PaymentsManagement = () => {
     payoutId: string,
     actionType: 'approved' | 'rejected' | 'paid',
     notes: string,
-    onSuccess: () => void
+    onSuccess: () => void,
   ) => {
     updatePayoutStatus.mutate(
       {
@@ -97,10 +97,10 @@ export const PaymentsManagement = () => {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="space-y-2">
-          <div className="h-3 bg-gray-150 rounded-md w-32" />
-          <div className="h-6 bg-gray-200 rounded-lg w-48" />
+          <div className="h-3 bg-muted/40 rounded-md w-32" />
+          <div className="h-6 bg-muted rounded-lg w-48" />
         </div>
-        <div className="h-[400px] bg-white border border-slate-100 rounded-[2rem] shadow-sm" />
+        <div className="h-[400px] bg-card border border-border/30 rounded-[2rem] shadow-sm" />
       </div>
     )
   }
@@ -135,13 +135,13 @@ export const PaymentsManagement = () => {
         )
       case 'rejected':
         return (
-          <Badge className="bg-red-50 text-red-600 border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
+          <Badge className="bg-danger text-destructive border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
             <XCircle size={10} /> Rejected
           </Badge>
         )
       default:
         return (
-          <Badge className="bg-amber-50 text-amber-600 border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
+          <Badge className="bg-warning text-warning-foreground border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
             <Clock size={10} /> Pending
           </Badge>
         )
@@ -153,23 +153,23 @@ export const PaymentsManagement = () => {
       {/* Breadcrumbs / Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <div className="flex items-center gap-1.5 text-[10px] font-black text-muted-dark uppercase tracking-widest">
             <span>Dashboard</span>
-            <ChevronRight size={10} className="text-slate-300" />
+            <ChevronRight size={10} className="text-muted-dark" />
             <span className="text-emerald-600 font-extrabold">
               Earnings & Payouts
             </span>
           </div>
-          <h2 className="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+          <h2 className="text-2xl font-extrabold text-foreground/90 flex items-center gap-2">
             <IndianRupee className="text-emerald-600" size={26} />
             Earnings & Payouts
           </h2>
         </div>
 
         {/* Date Month Selector */}
-        <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-slate-100 shadow-sm self-start md:self-auto">
+        <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm self-start md:self-auto">
           <Calendar size={14} className="text-emerald-600" />
-          <span className="text-xs font-black text-slate-600 tracking-wider">
+          <span className="text-xs font-black text-muted-foreground tracking-wider">
             {format(new Date(), 'MMMM yyyy')}
           </span>
         </div>
@@ -179,22 +179,22 @@ export const PaymentsManagement = () => {
       <EarningStatsCards stats={stats} />
 
       {/* WITHDRAWABLE BALANCE HEADER & TRIGGER BUTTON */}
-      <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 opacity-10 translate-x-1/4 -translate-y-1/4 text-white">
+      <div className="bg-foreground p-8 rounded-[2.5rem] text-primary-foreground flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 opacity-10 translate-x-1/4 -translate-y-1/4 text-primary-foreground">
           <Zap size={250} strokeWidth={1} />
         </div>
         <div className="space-y-2 relative z-10">
-          <span className="text-[9px] font-black uppercase tracking-widest text-[#059669] bg-emerald-500/20 px-2 py-0.5 rounded">
+          <span className="text-[9px] font-black uppercase tracking-widest text-primary bg-emerald-500/20 px-2 py-0.5 rounded">
             Settlement Wallet
           </span>
-          <h3 className="text-sm font-semibold text-slate-400">
+          <h3 className="text-sm font-semibold text-muted-dark">
             Available Withdrawable Balance
           </h3>
           <div className="flex items-baseline gap-1">
             <span className="text-3xl font-black">
               ₹{stats.withdrawableBalance.toLocaleString()}
             </span>
-            <span className="text-[10px] text-slate-400 font-bold">
+            <span className="text-[10px] text-muted-dark font-bold">
               Net Earnings - Pending payouts
             </span>
           </div>
@@ -208,7 +208,7 @@ export const PaymentsManagement = () => {
             }
             setIsPayoutModalOpen(true)
           }}
-          className="bg-dash-brand hover:bg-dash-brand/90 text-white h-14 px-8 rounded-full font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-dash-brand/20 transition-all active:scale-95 z-10 self-start md:self-auto cursor-pointer"
+          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground h-14 px-8 rounded-full font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-dash-brand/20 transition-all active:scale-95 z-10 self-start md:self-auto cursor-pointer"
         >
           <Plus size={16} /> Request Withdrawal
         </Button>
@@ -237,23 +237,23 @@ export const PaymentsManagement = () => {
         {/* Right Column: Payout History Requests */}
         <div className="space-y-8">
           {/* Payout Requests History list */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-6">
             <div>
-              <h3 className="text-[15px] font-black text-slate-800">
+              <h3 className="text-[15px] font-black text-foreground/90">
                 Payout Settlement History
               </h3>
-              <p className="text-[11px] font-bold text-slate-400 mt-0.5">
+              <p className="text-[11px] font-bold text-muted-dark mt-0.5">
                 Track your payout withdrawal request updates.
               </p>
             </div>
 
             <div className="space-y-4">
               {payoutRequests.length === 0 ? (
-                <div className="text-center py-10 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                <div className="text-center py-10 bg-muted-light rounded-2xl border border-border/30 flex flex-col items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center text-muted-dark">
                     <Clock size={16} />
                   </div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <span className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
                     No payout requests placed
                   </span>
                 </div>
@@ -261,15 +261,15 @@ export const PaymentsManagement = () => {
                 payoutRequests.map((req: any) => (
                   <div
                     key={req.id}
-                    className="p-4 rounded-2xl border border-slate-50 space-y-2"
+                    className="p-4 rounded-2xl border border-border/30 space-y-2"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-black text-slate-800">
+                      <span className="text-xs font-black text-foreground/90">
                         ₹{req.amount.toLocaleString()}
                       </span>
                       <div>{getPayoutStatusBadge(req.status)}</div>
                     </div>
-                    <div className="flex items-center justify-between text-[9px] font-bold text-slate-400">
+                    <div className="flex items-center justify-between text-[9px] font-bold text-muted-dark">
                       <span>
                         {format(
                           new Date(req.createdAt),
@@ -278,7 +278,7 @@ export const PaymentsManagement = () => {
                       </span>
                       {req.notes && (
                         <span
-                          className="text-red-500 max-w-[150px] truncate"
+                          className="text-destructive max-w-[150px] truncate"
                           title={req.notes}
                         >
                           Notes: {req.notes}
@@ -292,17 +292,17 @@ export const PaymentsManagement = () => {
           </div>
 
           {/* Secure details safety card */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
-            <h3 className="text-[15px] font-black text-slate-800 flex items-center gap-2">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4">
+            <h3 className="text-[15px] font-black text-foreground/90 flex items-center gap-2">
               <ShieldCheck size={18} className="text-emerald-600" />
               Safety Settlement Guarantee
             </h3>
-            <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
+            <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
               Platform settlements are subject to a standard 10% commission.
               Payout requests are verified by auditing dispute histories and
               cleared within 24-48 hours.
             </p>
-            <div className="border-t border-slate-50 pt-4 flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <div className="border-t border-border/30 pt-4 flex items-center gap-2 text-[10px] font-black text-muted-dark uppercase tracking-widest">
               <Lock size={12} className="text-emerald-600" /> BANK-LEVEL SSL
               ENCRYPTED
             </div>

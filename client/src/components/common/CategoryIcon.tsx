@@ -21,7 +21,7 @@ export function CategoryIcon({
 }: CategoryIconProps) {
   const [imageError, setImageError] = useState(false)
   const IconComponent = (LucideIcons as any)[category.icon || 'Folder']
-  const iconColor = category.color || '#166534'
+  const iconColor = category.color || 'var(--color-primary)'
 
   const sizeClasses = {
     sm: 'w-7 h-7 rounded-lg',

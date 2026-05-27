@@ -15,7 +15,7 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
         date: order.createdAt,
         status: 'completed',
         icon: CheckCircle2,
-        color: 'bg-[#059669]',
+        color: 'bg-primary',
       },
       {
         title:
@@ -26,8 +26,8 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
           order.status === 'cancelled' || order.status === 'rejected'
             ? 'This booking request was rejected.'
             : order.status === 'confirmed' ||
-              order.status === 'active' ||
-              order.status === 'completed'
+                order.status === 'active' ||
+                order.status === 'completed'
               ? 'Booking confirmed and active.'
               : 'Waiting for owner approval & confirmation.',
         date:
@@ -52,11 +52,11 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
             : CheckCircle2,
         color:
           order.status === 'cancelled' || order.status === 'rejected'
-            ? 'bg-red-500'
+            ? 'bg-destructive'
             : order.status === 'confirmed' ||
-              order.status === 'active' ||
-              order.status === 'completed'
-              ? 'bg-[#059669]'
+                order.status === 'active' ||
+                order.status === 'completed'
+              ? 'bg-primary'
               : 'bg-[#f59e0b]',
       },
       {
@@ -68,20 +68,20 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
             : null,
         status: order.status === 'completed' ? 'completed' : 'upcoming',
         icon: CheckCircle2,
-        color: order.status === 'completed' ? 'bg-[#059669]' : 'bg-slate-100',
+        color: order.status === 'completed' ? 'bg-primary' : 'bg-muted/50',
       },
     ]
     return steps
   }
 
   return (
-    <div className="bg-white p-10 rounded-[2rem] border border-slate-100 shadow-sm">
-      <h3 className="text-[14px] font-black text-[#1e293b] mb-10 uppercase tracking-widest">
+    <div className="bg-card p-10 rounded-[2rem] border border-border/30 shadow-sm">
+      <h3 className="text-[14px] font-black text-foreground mb-10 uppercase tracking-widest">
         Order Timeline
       </h3>
       <div className="relative space-y-12 pl-12">
         {/* Timeline Dashed Line */}
-        <div className="absolute left-5 top-2 bottom-2 w-0 border-l border-dashed border-slate-200"></div>
+        <div className="absolute left-5 top-2 bottom-2 w-0 border-l border-dashed border-border"></div>
 
         {getTimelineSteps().map((step, i) => {
           const Icon = step.icon
@@ -89,38 +89,35 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
           const isPending = step.status === 'pending'
 
           return (
-            <div
-              key={i}
-              className={cn('relative', isUpcoming && 'opacity-30')}
-            >
+            <div key={i} className={cn('relative', isUpcoming && 'opacity-30')}>
               <div
                 className={cn(
-                  'absolute -left-12 w-10 h-10 rounded-full flex items-center justify-center text-white z-10 shadow-lg',
+                  'absolute -left-12 w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground z-10 shadow-lg',
                   step.color,
                   isUpcoming &&
-                    'border border-slate-100 text-slate-300 shadow-none bg-slate-50',
+                    'border border-border/30 text-muted-dark shadow-none bg-muted-light',
                   isPending && 'shadow-amber-100',
                 )}
               >
                 <Icon
                   size={18}
-                  className={isUpcoming ? 'text-slate-300' : 'text-white'}
+                  className={isUpcoming ? 'text-muted-dark' : 'text-primary-foreground'}
                 />
               </div>
               <div className="space-y-1">
-                <p className="text-[14px] font-black text-[#1e293b]">
+                <p className="text-[14px] font-black text-foreground">
                   {step.title}
                 </p>
                 {step.date ? (
-                  <p className="text-[11px] font-bold text-slate-400">
+                  <p className="text-[11px] font-bold text-muted-dark">
                     {format(new Date(step.date), 'dd MMM yyyy, hh:mm a')}
                   </p>
                 ) : (
-                  <p className="text-[11px] font-bold text-slate-400">
+                  <p className="text-[11px] font-bold text-muted-dark">
                     {isUpcoming ? 'Upcoming Stage' : 'Pending Approval'}
                   </p>
                 )}
-                <p className="text-[11px] font-medium text-slate-500">
+                <p className="text-[11px] font-medium text-muted-foreground/85">
                   {step.description}
                 </p>
               </div>

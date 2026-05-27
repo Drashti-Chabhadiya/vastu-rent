@@ -60,18 +60,22 @@ export const RentalsCalendar = () => {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="space-y-2.5">
-          <div className="h-7 bg-gray-200 rounded-lg w-48" />
-          <div className="h-4 bg-gray-100 rounded-md w-96" />
+          <div className="h-7 bg-muted rounded-lg w-48" />
+          <div className="h-4 bg-muted/50 rounded-md w-96" />
         </div>
-        <div className="h-[500px] bg-white border border-slate-100 rounded-[2rem] shadow-sm" />
+        <div className="h-[500px] bg-card border border-border/30 rounded-[2rem] shadow-sm" />
       </div>
     )
   }
 
   // Extract unique products list for filtration
-  const uniqueProducts = Array.from(
-    new Set(orders?.map((o: any) => o.product?.title).filter(Boolean) || []),
-  ) as string[]
+  const uniqueProducts: string[] = Array.from(
+    new Set(
+      (orders ?? [])
+        .map((o: any) => o.product?.title)
+        .filter((title: any): title is string => Boolean(title)),
+    ),
+  )
 
   // Filter orders based on owner filters
   const filteredOrders = (orders || []).filter((order: any) => {
@@ -127,14 +131,14 @@ export const RentalsCalendar = () => {
     switch (status) {
       case 'confirmed':
       case 'active':
-        return 'bg-emerald-500 border-emerald-600 text-white'
+        return 'bg-emerald-500 border-emerald-600 text-primary-foreground'
       case 'completed':
-        return 'bg-blue-500 border-blue-600 text-white'
+        return 'bg-info-foreground border-info-foreground text-primary-foreground'
       case 'rejected':
       case 'cancelled':
-        return 'bg-red-500 border-red-600 text-white'
+        return 'bg-destructive border-destructive/80 text-destructive-foreground'
       default:
-        return 'bg-amber-500 border-amber-600 text-white'
+        return 'bg-warning-foreground border-amber-600 text-primary-foreground'
     }
   }
 
@@ -144,7 +148,7 @@ export const RentalsCalendar = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <h2 className="text-2xl font-extrabold text-dash-text flex items-center gap-3">
-            <CalendarIcon className="text-[#059669]" size={28} />
+            <CalendarIcon className="text-primary" size={28} />
             Rentals Calendar
           </h2>
           <p className="text-dash-text-soft text-sm font-medium">
@@ -154,7 +158,7 @@ export const RentalsCalendar = () => {
         </div>
 
         {/* Date Month Selector */}
-        <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-slate-100 shadow-sm self-start md:self-auto">
+        <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm self-start md:self-auto">
           <Button
             variant="ghost"
             size="icon"
@@ -163,7 +167,7 @@ export const RentalsCalendar = () => {
           >
             <ChevronLeft size={16} />
           </Button>
-          <span className="text-sm font-extrabold text-slate-800 min-w-[100px] text-center font-display uppercase tracking-wider font-sans">
+          <span className="text-sm font-extrabold text-foreground/90 min-w-[100px] text-center font-display uppercase tracking-wider font-sans">
             {format(currentMonth, 'MMMM yyyy')}
           </span>
           <Button
@@ -187,9 +191,9 @@ export const RentalsCalendar = () => {
       />
 
       {/* CALENDAR VIEW GRID */}
-      <div className="bg-white border border-slate-100 rounded-[2rem] shadow-sm overflow-hidden font-sans">
+      <div className="bg-card border border-border/30 rounded-[2rem] shadow-sm overflow-hidden font-sans">
         {/* Days of the Week headers */}
-        <div className="grid grid-cols-7 border-b border-slate-100 bg-slate-50/50 text-center py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+        <div className="grid grid-cols-7 border-b border-border/30 bg-muted-light/50 text-center py-4 text-[10px] font-black text-muted-dark uppercase tracking-widest">
           <div>Sun</div>
           <div>Mon</div>
           <div>Tue</div>
@@ -210,10 +214,10 @@ export const RentalsCalendar = () => {
               <div
                 key={idx}
                 className={cn(
-                  'border-b border-r border-slate-100 p-2 min-h-[90px] flex flex-col justify-between group transition-colors hover:bg-slate-50/50',
-                  !isSelectedMonth && 'bg-slate-50/20 opacity-40',
+                  'border-b border-r border-border/30 p-2 min-h-[90px] flex flex-col justify-between group transition-colors hover:bg-muted-light/50',
+                  !isSelectedMonth && 'bg-muted-light/20 opacity-40',
                   isToday &&
-                  'bg-[#faf7f0]/40 border-l-2 border-l-[#059669] lg:border-l-0',
+                  'bg-background/40 border-l-2 border-l-primary lg:border-l-0',
                 )}
               >
                 {/* Date Number indicator */}
@@ -222,17 +226,17 @@ export const RentalsCalendar = () => {
                     className={cn(
                       'text-xs font-black rounded-lg w-6 h-6 flex items-center justify-center',
                       isToday
-                        ? 'bg-[#059669] text-white shadow-sm'
+                        ? 'bg-primary text-primary-foreground shadow-sm'
                         : isSelectedMonth
-                          ? 'text-slate-800'
-                          : 'text-slate-400',
+                          ? 'text-foreground/90'
+                          : 'text-muted-dark',
                     )}
                   >
                     {format(day, 'd')}
                   </span>
 
                   {bookings.length > 0 && (
-                    <span className="text-[8px] font-black uppercase text-slate-400 shrink-0 bg-slate-100 px-1.5 py-0.5 rounded">
+                    <span className="text-[8px] font-black uppercase text-muted-dark shrink-0 bg-muted/50 px-1.5 py-0.5 rounded">
                       {bookings.length}{' '}
                       {bookings.length === 1 ? 'Book' : 'Books'}
                     </span>
@@ -255,7 +259,7 @@ export const RentalsCalendar = () => {
                     </div>
                   ))}
                   {bookings.length > 3 && (
-                    <div className="text-[8px] font-bold text-slate-400 text-center uppercase tracking-tighter">
+                    <div className="text-[8px] font-bold text-muted-dark text-center uppercase tracking-tighter">
                       + {bookings.length - 3} more
                     </div>
                   )}
@@ -267,15 +271,15 @@ export const RentalsCalendar = () => {
       </div>
 
       {/* DOUBLE-BOOKING date occupancy protection alert banner */}
-      <div className="bg-slate-50 p-5 rounded-[2rem] border border-slate-100 flex items-start gap-4">
-        <div className="p-3 bg-white rounded-2xl shadow-sm text-[#059669] shrink-0 border border-slate-100">
+      <div className="bg-muted-light p-5 rounded-[2rem] border border-border/30 flex items-start gap-4">
+        <div className="p-3 bg-card rounded-2xl shadow-sm text-primary shrink-0 border border-border/30">
           <Info size={20} />
         </div>
         <div className="space-y-1">
-          <h4 className="text-sm font-black text-slate-800 uppercase tracking-wider">
+          <h4 className="text-sm font-black text-foreground/90 uppercase tracking-wider">
             Reserved occupancy validation
           </h4>
-          <p className="text-xs font-semibold text-slate-500 leading-relaxed max-w-2xl">
+          <p className="text-xs font-semibold text-muted-foreground/85 leading-relaxed max-w-2xl">
             Confirming a Cash or razorpay booking automatically blocks the
             specific listing dates from being reserved by other renters.
             Rejected/Cancelled requests immediately free the dates.

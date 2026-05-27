@@ -23,6 +23,8 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-soft: var(--primary-soft);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-border: var(--primary-border);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -33,6 +35,15 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ink: var(--ink);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-muted-light: var(--muted-light);
+  --color-muted-dark: var(--muted-dark);
 
   --color-dash-brand: var(--primary);
   --color-dash-brand-soft: var(--primary-soft);
@@ -69,6 +80,8 @@
   --primary: oklch(0.42 0.11 152); /* forest green */
   --primary-foreground: oklch(0.98 0.012 95);
   --primary-soft: oklch(0.93 0.04 150); /* sage tint */
+  --primary-hover: oklch(0.25 0.07 152); /* dark forest green hover #1e3a17 */
+  --primary-border: oklch(0.94 0.03 152); /* soft sage border #e6efe1 */
 
   --secondary: oklch(0.95 0.018 95);
   --secondary-foreground: oklch(0.22 0.04 250);
@@ -81,6 +94,19 @@
 
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
+
+  /* Alert / Status semantic colors */
+  --warning: oklch(0.962 0.032 80); /* amber-50 equivalent */
+  --warning-foreground: oklch(0.5 0.1 75); /* amber-600 equivalent */
+
+  --danger: oklch(0.96 0.02 20); /* rose-50 equivalent */
+  --danger-foreground: oklch(0.55 0.15 20); /* rose-500 equivalent */
+
+  --info: oklch(0.96 0.02 240); /* sky-50 equivalent */
+  --info-foreground: oklch(0.55 0.12 240); /* sky-500 equivalent */
+
+  --muted-light: oklch(0.96 0.01 250); /* slate-50 equivalent */
+  --muted-dark: oklch(0.71 0.02 250); /* slate-400 equivalent */
 
   --border: oklch(0.9 0.014 95);
   --input: oklch(0.9 0.014 95);
@@ -218,5 +244,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-primary);
 }
-
-

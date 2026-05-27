@@ -11,10 +11,22 @@ export default [
       'sort-imports': 'off',
       '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/require-await': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'off',
+      '@typescript-eslint/no-unnecessary-optional-chain': 'off',
       'pnpm/json-enforce-catalog': 'off',
     },
   },
   {
-    ignores: ['eslint.config.js', 'prettier.config.js'],
+    ignores: [
+      'eslint.config.js',
+      'prettier.config.js',
+      // Ignore generated/platform assets that aren't part of the TS project
+      'android/**',
+      'ios/**',
+      'public/**',
+      'android/**/public/**',
+      'ios/**/public/**',
+      'android/app/src/main/assets/**',
+    ],
   },
 ]

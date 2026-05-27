@@ -26,16 +26,16 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
       value: stats.monthlyEarnings,
       description: 'This current month',
       icon: Calendar,
-      bgClass: 'bg-blue-50 text-blue-600',
-      descClass: 'text-blue-500 font-medium',
+      bgClass: 'bg-info text-info-foreground',
+      descClass: 'text-info-foreground font-medium',
     },
     {
       title: 'Commission (10%)',
       value: stats.platformCommission,
       description: 'Platform charge',
       icon: Coins,
-      bgClass: 'bg-amber-50 text-amber-600',
-      descClass: 'text-amber-500',
+      bgClass: 'bg-warning text-warning-foreground',
+      descClass: 'text-warning-foreground',
     },
     {
       title: 'Withdrawn Paid',
@@ -54,19 +54,23 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
         return (
           <div
             key={i}
-            className="bg-white p-6 rounded-3xl border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex items-center gap-4"
+            className="bg-card p-6 rounded-3xl border border-border/30 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex items-center gap-4"
           >
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${card.bgClass}`}>
+            <div
+              className={`w-12 h-12 rounded-2xl flex items-center justify-center ${card.bgClass}`}
+            >
               <Icon size={22} strokeWidth={2.5} />
             </div>
             <div className="space-y-0.5">
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
+              <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
                 {card.title}
               </span>
-              <h3 className="text-xl font-black text-slate-800">
+              <h3 className="text-xl font-black text-foreground/90">
                 ₹{card.value.toLocaleString()}
               </h3>
-              <span className={`text-[9px] font-bold text-slate-400 block ${card.descClass || ''}`}>
+              <span
+                className={`text-[9px] font-bold text-muted-dark block ${card.descClass || ''}`}
+              >
                 {card.description}
               </span>
             </div>

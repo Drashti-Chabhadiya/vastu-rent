@@ -108,7 +108,7 @@ export function StoriesManagement() {
         </div>
         <Button
           onClick={() => handleOpenModal()}
-          className="rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-bold px-5 h-11 flex items-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-dash-brand/10"
+          className="rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-bold px-5 h-11 flex items-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-dash-brand/10"
         >
           <Plus size={16} strokeWidth={2.5} />
           Add Story
@@ -119,9 +119,9 @@ export function StoriesManagement() {
         {stories?.map((story: any) => (
           <div
             key={story.id}
-            className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm group"
+            className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm group"
           >
-            <div className="relative h-48 bg-gray-100">
+            <div className="relative h-48 bg-muted/50">
               {story.imageUrl ? (
                 <img
                   src={story.imageUrl}
@@ -130,26 +130,26 @@ export function StoriesManagement() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <ImageIcon className="text-gray-400" size={32} />
+                  <ImageIcon className="text-muted-foreground/70" size={32} />
                 </div>
               )}
               <div className="absolute top-4 left-4">
-                <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full">
+                <span className="bg-card/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full">
                   {story.tag}
                 </span>
               </div>
             </div>
 
             <div className="p-5">
-              <h3 className="font-bold text-lg text-gray-900 leading-tight mb-2 line-clamp-2">
+              <h3 className="font-bold text-lg text-foreground leading-tight mb-2 line-clamp-2">
                 {story.title}
               </h3>
-              <p className="text-gray-500 text-sm line-clamp-2 mb-4">
+              <p className="text-muted-foreground/85 text-sm line-clamp-2 mb-4">
                 {story.excerpt}
               </p>
 
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                <span className="text-xs font-bold text-gray-400 uppercase">
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/30">
+                <span className="text-xs font-bold text-muted-foreground/70 uppercase">
                   {story.readTime}
                 </span>
                 <div className="flex gap-2">
@@ -157,7 +157,7 @@ export function StoriesManagement() {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleOpenModal(story)}
-                    className="h-9 w-9 text-blue-500 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                    className="h-9 w-9 text-info-foreground hover:bg-info hover:text-info-foreground rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <Edit2 size={16} />
                   </Button>
@@ -165,7 +165,7 @@ export function StoriesManagement() {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDelete(story.id)}
-                    className="h-9 w-9 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                    className="h-9 w-9 text-destructive hover:bg-danger hover:text-destructive rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -178,31 +178,38 @@ export function StoriesManagement() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white z-10">
-              <h3 className="text-xl font-black text-gray-900">
+          <div className="bg-card rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="p-6 border-b border-border/30 flex justify-between items-center sticky top-0 bg-card z-10">
+              <h3 className="text-xl font-black text-foreground">
                 {editingId ? 'Edit Story' : 'Create New Story'}
               </h3>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleCloseModal}
-                className="text-gray-400 hover:text-gray-900 hover:bg-gray-50 h-9 w-9 rounded-full transition-all active:scale-[0.98] cursor-pointer text-xl font-light"
+                className="text-muted-foreground/70 hover:text-foreground hover:bg-muted-light h-9 w-9 rounded-full transition-all active:scale-[0.98] cursor-pointer text-xl font-light"
               >
                 &times;
               </Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-5 relative min-h-[300px]">
+            <form
+              onSubmit={handleSubmit}
+              className="p-6 space-y-5 relative min-h-[300px]"
+            >
               {uploadImage.isPending && (
                 <LoadingOverlay message="Uploading cover photo..." />
               )}
               {(createStory.isPending || updateStory.isPending) && (
-                <LoadingOverlay message={editingId ? "Saving story..." : "Publishing story..."} />
+                <LoadingOverlay
+                  message={
+                    editingId ? 'Saving story...' : 'Publishing story...'
+                  }
+                />
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">Title</label>
+                <label className="text-sm font-bold text-foreground/80">Title</label>
                 <Input
                   required
                   value={formData.title}
@@ -215,7 +222,7 @@ export function StoriesManagement() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
+                <label className="text-sm font-bold text-foreground/80">
                   Excerpt / Short Description
                 </label>
                 <textarea
@@ -225,13 +232,13 @@ export function StoriesManagement() {
                     setFormData({ ...formData, excerpt: e.target.value })
                   }
                   placeholder="A brief summary of the story..."
-                  className="w-full h-24 p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-dash-brand focus:border-transparent transition-all resize-none"
+                  className="w-full h-24 p-3 border border-border rounded-xl outline-none focus:ring-2 focus:ring-dash-brand focus:border-transparent transition-all resize-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">
+                  <label className="text-sm font-bold text-foreground/80">
                     Category Tag
                   </label>
                   <Input
@@ -245,7 +252,7 @@ export function StoriesManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700">
+                  <label className="text-sm font-bold text-foreground/80">
                     Read Time
                   </label>
                   <Input
@@ -261,7 +268,7 @@ export function StoriesManagement() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
+                <label className="text-sm font-bold text-foreground/80">
                   Cover Image
                 </label>
                 <div className="flex gap-4 items-center">
@@ -269,7 +276,7 @@ export function StoriesManagement() {
                     <img
                       src={formData.imageUrl}
                       alt="Preview"
-                      className="w-20 h-20 rounded-xl object-cover border border-gray-200"
+                      className="w-20 h-20 rounded-xl object-cover border border-border"
                     />
                   )}
                   <div className="flex-1">
@@ -282,7 +289,7 @@ export function StoriesManagement() {
                     />
                     <label
                       htmlFor="story-image-upload"
-                      className="flex items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors text-sm font-bold text-gray-500"
+                      className="flex items-center justify-center w-full h-20 border-2 border-dashed border-border/120 rounded-xl hover:bg-muted-light cursor-pointer transition-colors text-sm font-bold text-muted-foreground/85"
                     >
                       {uploadImage.isPending ? (
                         <Loader variant="brand" />
@@ -294,18 +301,22 @@ export function StoriesManagement() {
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
+              <div className="pt-4 flex justify-end gap-3 border-t border-border/30">
                 <Button
                   type="button"
                   onClick={handleCloseModal}
-                  className="rounded-full font-bold h-12 px-6 bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all border-none active:scale-[0.98] cursor-pointer"
+                  className="rounded-full font-bold h-12 px-6 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none active:scale-[0.98] cursor-pointer"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  disabled={createStory.isPending || updateStory.isPending || uploadImage.isPending}
-                  className="bg-dash-brand hover:bg-dash-brand/90 text-white rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  disabled={
+                    createStory.isPending ||
+                    updateStory.isPending ||
+                    uploadImage.isPending
+                  }
+                  className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   {createStory.isPending || updateStory.isPending ? (
                     <Loader variant="white" />

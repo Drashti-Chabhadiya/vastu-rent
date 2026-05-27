@@ -48,14 +48,14 @@ export const CategoryDonut = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm">
         Loading...
       </div>
     )
   }
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <h3 className="font-bold text-dash-text mb-8">Listings by Category</h3>
 
       <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-8">

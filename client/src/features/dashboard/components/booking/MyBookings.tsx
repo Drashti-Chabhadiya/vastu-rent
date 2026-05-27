@@ -19,7 +19,13 @@ import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
 import { toast } from 'sonner'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '#/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '#/components/ui/dialog'
 import { Textarea } from '#/components/ui/textarea'
 import {
   DropdownMenu,
@@ -30,9 +36,12 @@ import {
 
 export const MyBookings = () => {
   const { data: rentals, isLoading } = useMyRentals()
-  console.log(rentals, "rentals-=-=-=-==-")
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'ongoing' | 'completed' | 'cancelled'>('upcoming')
-  const [paymentFilter, setPaymentFilter] = useState<'all' | 'paid' | 'pending'>('all')
+  const [activeTab, setActiveTab] = useState<
+    'upcoming' | 'ongoing' | 'completed' | 'cancelled'
+  >('upcoming')
+  const [paymentFilter, setPaymentFilter] = useState<
+    'all' | 'paid' | 'pending'
+  >('all')
 
   // Review submission states
   const [selectedRental, setSelectedRental] = useState<any>(null)
@@ -48,14 +57,27 @@ export const MyBookings = () => {
 
   const queryClient = useQueryClient()
   const reviewMutation = useMutation({
-    mutationFn: async ({ productId, rating, comment }: { productId: string; rating: number; comment: string }) => {
-      const res = await apiClient.post('/reviews', { rating, comment, productId })
+    mutationFn: async (params: {
+      productId: string
+      rating: number
+      comment: string
+    }) => {
+      const { productId, rating: reviewRating, comment: reviewComment } = params
+      const res = await apiClient.post('/reviews', {
+        rating: reviewRating,
+        comment: reviewComment,
+        productId,
+      })
       return res.data.review
     },
     onSuccess: (_, variables) => {
       toast.success('Review submitted successfully!')
-      queryClient.invalidateQueries({ queryKey: ['product-reviews', variables.productId] })
-      queryClient.invalidateQueries({ queryKey: ['product', variables.productId] })
+      queryClient.invalidateQueries({
+        queryKey: ['product-reviews', variables.productId],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['product', variables.productId],
+      })
       queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
       setIsReviewDialogOpen(false)
       setRating(5)
@@ -64,43 +86,110 @@ export const MyBookings = () => {
     },
     onError: () => {
       toast.error('Failed to submit review. Please try again.')
-    }
+    },
   })
 
   if (isLoading) {
     return (
-      <div className="space-y-8 animate-pulse">
+      <div className={cn('space-y-8', 'animate-pulse')}>
         {/* Header Skeleton */}
-        <div className="flex justify-between items-center">
+        <div className={cn('flex', 'justify-between', 'items-center')}>
           <div className="space-y-2">
-            <div className="h-8 bg-slate-200 rounded-full w-48" />
-            <div className="h-4 bg-slate-100 rounded-full w-80" />
+            <div
+              className={cn('h-8', 'bg-muted', 'rounded-full', 'w-48')}
+            />
+            <div
+              className={cn('h-4', 'bg-muted/50', 'rounded-full', 'w-80')}
+            />
           </div>
-          <div className="h-10 bg-slate-200 rounded-full w-24" />
+          <div className={cn('h-10', 'bg-muted', 'rounded-full', 'w-24')} />
         </div>
         {/* Tabs Skeleton */}
-        <div className="flex gap-6 border-b border-slate-100 pb-2">
+        <div
+          className={cn(
+            'flex',
+            'gap-6',
+            'border-b',
+            'border-border/30',
+            'pb-2',
+          )}
+        >
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-5 bg-slate-200 rounded-full w-20" />
+            <div
+              key={i}
+              className={cn('h-5', 'bg-muted', 'rounded-full', 'w-20')}
+            />
           ))}
         </div>
         {/* List Skeleton */}
-        <div className="grid gap-4">
+        <div className={cn('grid', 'gap-4')}>
           {[1, 2].map((i) => (
             <div
               key={i}
-              className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row gap-6"
+              className={cn(
+                'bg-card',
+                'p-6',
+                'rounded-[2.5rem]',
+                'border',
+                'border-border/30',
+                'shadow-sm',
+                'flex',
+                'flex-col',
+                'md:flex-row',
+                'gap-6',
+              )}
             >
-              <div className="w-32 h-32 rounded-2xl bg-slate-100 shrink-0" />
-              <div className="flex-1 space-y-3">
-                <div className="h-5 bg-slate-200 rounded-full w-48" />
-                <div className="h-4 bg-slate-150 rounded-full w-32" />
-                <div className="h-4 bg-slate-100 rounded-full w-56 mt-4" />
+              <div
+                className={cn(
+                  'w-32',
+                  'h-32',
+                  'rounded-2xl',
+                  'bg-muted/50',
+                  'shrink-0',
+                )}
+              />
+              <div className={cn('flex-1', 'space-y-3')}>
+                <div
+                  className={cn('h-5', 'bg-muted', 'rounded-full', 'w-48')}
+                />
+                <div
+                  className={cn('h-4', 'bg-muted-light/80', 'rounded-full', 'w-32')}
+                />
+                <div
+                  className={cn(
+                    'h-4',
+                    'bg-muted/50',
+                    'rounded-full',
+                    'w-56',
+                    'mt-4',
+                  )}
+                />
               </div>
-              <div className="w-48 flex flex-col items-end gap-2 shrink-0">
-                <div className="h-4 bg-slate-200 rounded-full w-24" />
-                <div className="h-5 bg-slate-200 rounded-full w-32" />
-                <div className="h-9 bg-slate-150 rounded-full w-28 mt-2" />
+              <div
+                className={cn(
+                  'w-48',
+                  'flex',
+                  'flex-col',
+                  'items-end',
+                  'gap-2',
+                  'shrink-0',
+                )}
+              >
+                <div
+                  className={cn('h-4', 'bg-muted', 'rounded-full', 'w-24')}
+                />
+                <div
+                  className={cn('h-5', 'bg-muted', 'rounded-full', 'w-32')}
+                />
+                <div
+                  className={cn(
+                    'h-9',
+                    'bg-muted-light/80',
+                    'rounded-full',
+                    'w-28',
+                    'mt-2',
+                  )}
+                />
               </div>
             </div>
           ))}
@@ -110,7 +199,9 @@ export const MyBookings = () => {
   }
 
   // Define dynamic status grouping
-  const getBookingGroup = (status: string): 'upcoming' | 'ongoing' | 'completed' | 'cancelled' => {
+  const getBookingGroup = (
+    status: string,
+  ): 'upcoming' | 'ongoing' | 'completed' | 'cancelled' => {
     const s = status.toLowerCase()
     if (s === 'pending' || s === 'confirmed') return 'upcoming'
     if (s === 'picked_up' || s === 'in_use') return 'ongoing'
@@ -121,47 +212,114 @@ export const MyBookings = () => {
 
   // Calculate dynamic tab counts
   const counts = {
-    upcoming: rentals?.filter((r: any) => getBookingGroup(r.status) === 'upcoming').length || 0,
-    ongoing: rentals?.filter((r: any) => getBookingGroup(r.status) === 'ongoing').length || 0,
-    completed: rentals?.filter((r: any) => getBookingGroup(r.status) === 'completed').length || 0,
-    cancelled: rentals?.filter((r: any) => getBookingGroup(r.status) === 'cancelled').length || 0,
+    upcoming:
+      rentals?.filter((r: any) => getBookingGroup(r.status) === 'upcoming')
+        .length || 0,
+    ongoing:
+      rentals?.filter((r: any) => getBookingGroup(r.status) === 'ongoing')
+        .length || 0,
+    completed:
+      rentals?.filter((r: any) => getBookingGroup(r.status) === 'completed')
+        .length || 0,
+    cancelled:
+      rentals?.filter((r: any) => getBookingGroup(r.status) === 'cancelled')
+        .length || 0,
   }
 
   // Filter rentals based on active tab and payment filter
-  const filteredRentals = rentals?.filter((r: any) => {
-    // 1. Tab status filter
-    if (getBookingGroup(r.status) !== activeTab) return false
+  const filteredRentals =
+    rentals?.filter((r: any) => {
+      // 1. Tab status filter
+      if (getBookingGroup(r.status) !== activeTab) return false
 
-    // 2. Payment filter
-    if (paymentFilter !== 'all' && r.paymentStatus !== paymentFilter) return false
+      // 2. Payment filter
+      if (paymentFilter !== 'all' && r.paymentStatus !== paymentFilter)
+        return false
 
-    return true
-  }) || []
+      return true
+    }) || []
 
   const getStatusBadge = (status: string) => {
     const group = getBookingGroup(status)
     switch (group) {
       case 'upcoming':
         return (
-          <Badge className="bg-[#fef3c7] hover:bg-[#fef3c7] text-[#d97706] border-none px-3.5 py-1 rounded-full font-bold text-xs shrink-0 shadow-sm shadow-amber-500/5">
+          <Badge
+            className={cn(
+              'bg-warning/25',
+              'hover:bg-warning/25',
+              'text-warning-foreground',
+              'border-none',
+              'px-3.5',
+              'py-1',
+              'rounded-full',
+              'font-bold',
+              'text-xs',
+              'shrink-0',
+              'shadow-sm',
+              'shadow-warning-foreground/5',
+            )}
+          >
             Upcoming
           </Badge>
         )
       case 'ongoing':
         return (
-          <Badge className="bg-[#e0e7ff] hover:bg-[#e0e7ff] text-[#4f46e5] border-none px-3.5 py-1 rounded-full font-bold text-xs shrink-0 shadow-sm">
+          <Badge
+            className={cn(
+              'bg-info/25',
+              'hover:bg-info/25',
+              'text-info-foreground',
+              'border-none',
+              'px-3.5',
+              'py-1',
+              'rounded-full',
+              'font-bold',
+              'text-xs',
+              'shrink-0',
+              'shadow-sm',
+            )}
+          >
             Ongoing
           </Badge>
         )
       case 'completed':
         return (
-          <Badge className="bg-[#dcfce7] hover:bg-[#dcfce7] text-[#15803d] border-none px-3.5 py-1 rounded-full font-bold text-xs shrink-0 shadow-sm">
+          <Badge
+            className={cn(
+              'bg-primary-soft',
+              'hover:bg-primary-soft',
+              'text-primary',
+              'border-none',
+              'px-3.5',
+              'py-1',
+              'rounded-full',
+              'font-bold',
+              'text-xs',
+              'shrink-0',
+              'shadow-sm',
+            )}
+          >
             Completed
           </Badge>
         )
       case 'cancelled':
         return (
-          <Badge className="bg-[#fee2e2] hover:bg-[#fee2e2] text-[#b91c1c] border-none px-3.5 py-1 rounded-full font-bold text-xs shrink-0 shadow-sm">
+          <Badge
+            className={cn(
+              'bg-danger',
+              'hover:bg-danger',
+              'text-danger-foreground',
+              'border-none',
+              'px-3.5',
+              'py-1',
+              'rounded-full',
+              'font-bold',
+              'text-xs',
+              'shrink-0',
+              'shadow-sm',
+            )}
+          >
             Cancelled
           </Badge>
         )
@@ -169,14 +327,30 @@ export const MyBookings = () => {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className={cn('space-y-8', 'animate-in', 'fade-in', 'duration-500')}>
       {/* Top Header Block */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div
+        className={cn(
+          'flex',
+          'flex-col',
+          'sm:flex-row',
+          'sm:items-center',
+          'justify-between',
+          'gap-4',
+        )}
+      >
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-gray-900 tracking-tight">
+          <h1
+            className={cn(
+              'text-3xl',
+              'font-black',
+              'text-foreground',
+              'tracking-tight',
+            )}
+          >
             My Bookings
           </h1>
-          <p className="text-sm text-gray-400 font-bold">
+          <p className={cn('text-sm', 'text-muted-foreground/70', 'font-bold')}>
             Manage your upcoming and past bookings.
           </p>
         </div>
@@ -184,18 +358,45 @@ export const MyBookings = () => {
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="rounded-full border-slate-200 text-slate-700 font-bold h-10 px-5 flex items-center gap-2 hover:bg-slate-50/50 shadow-sm shrink-0 cursor-pointer"
+              className={cn(
+                'rounded-full',
+                'border-border',
+                'text-foreground/80',
+                'font-bold',
+                'h-10',
+                'px-5',
+                'flex',
+                'items-center',
+                'gap-2',
+                'hover:bg-muted-light/50',
+                'shadow-sm',
+                'shrink-0',
+                'cursor-pointer',
+              )}
             >
-              <SlidersHorizontal size={14} className="text-slate-400" />
-              {paymentFilter === 'all' ? 'Filter' : paymentFilter === 'paid' ? 'Paid Bookings' : 'Unpaid Bookings'}
+              <SlidersHorizontal size={14} className="text-muted-dark" />
+              {paymentFilter === 'all'
+                ? 'Filter'
+                : paymentFilter === 'paid'
+                  ? 'Paid Bookings'
+                  : 'Unpaid Bookings'}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white border-slate-100/80 rounded-xl shadow-lg p-1 min-w-[160px]">
+          <DropdownMenuContent
+            className={cn(
+              'bg-card',
+              'border-border/30/80',
+              'rounded-xl',
+              'shadow-lg',
+              'p-1',
+              'min-w-[160px]',
+            )}
+          >
             <DropdownMenuItem
               onClick={() => setPaymentFilter('all')}
               className={cn(
-                "text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]",
-                paymentFilter === 'all' && "text-[#2d5222] bg-[#2d5222]/5"
+                'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary',
+                paymentFilter === 'all' && 'text-primary bg-primary/5',
               )}
             >
               All Payments
@@ -203,8 +404,8 @@ export const MyBookings = () => {
             <DropdownMenuItem
               onClick={() => setPaymentFilter('paid')}
               className={cn(
-                "text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]",
-                paymentFilter === 'paid' && "text-[#2d5222] bg-[#2d5222]/5"
+                'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary',
+                paymentFilter === 'paid' && 'text-primary bg-primary/5',
               )}
             >
               Paid Bookings
@@ -212,8 +413,8 @@ export const MyBookings = () => {
             <DropdownMenuItem
               onClick={() => setPaymentFilter('pending')}
               className={cn(
-                "text-xs font-semibold text-slate-700 cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-50 focus:bg-[#2d5222]/5 focus:text-[#2d5222]",
-                paymentFilter === 'pending' && "text-[#2d5222] bg-[#2d5222]/5"
+                'text-xs font-semibold text-foreground/80 cursor-pointer rounded-lg px-3 py-2 hover:bg-muted-light focus:bg-primary/5 focus:text-primary',
+                paymentFilter === 'pending' && 'text-primary bg-primary/5',
               )}
             >
               Pending Payment
@@ -223,126 +424,360 @@ export const MyBookings = () => {
       </div>
 
       {/* Tabs Filter Navigation */}
-      <div className="flex gap-6 border-b border-slate-100 pb-px overflow-x-auto custom-scrollbar">
-        {(['upcoming', 'ongoing', 'completed', 'cancelled'] as const).map((tab) => {
-          const isActive = activeTab === tab
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                'pb-3 font-extrabold text-[13px] capitalize transition-all relative shrink-0',
-                isActive
-                  ? 'text-[#2d5222]'
-                  : 'text-slate-400 hover:text-slate-600',
-              )}
-            >
-              <span>
-                {tab} ({counts[tab]})
-              </span>
-              {isActive && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2d5222] rounded-full" />
-              )}
-            </button>
-          )
-        })}
+      <div
+        className={cn(
+          'flex',
+          'gap-6',
+          'border-b',
+          'border-border/30',
+          'pb-px',
+          'overflow-x-auto',
+          'custom-scrollbar',
+        )}
+      >
+        {(['upcoming', 'ongoing', 'completed', 'cancelled'] as const).map(
+          (tab) => {
+            const isActive = activeTab === tab
+            return (
+              <Button
+                key={tab}
+                variant="ghost"
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  'pb-3 font-extrabold text-[13px] capitalize transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
+                  isActive
+                    ? 'text-primary'
+                    : 'text-muted-dark hover:text-muted-foreground',
+                )}
+              >
+                <span>
+                  {tab} ({counts[tab]})
+                </span>
+                {isActive && (
+                  <div
+                    className={cn(
+                      'absolute',
+                      'bottom-0',
+                      'left-0',
+                      'right-0',
+                      'h-0.5',
+                      'bg-primary',
+                      'rounded-full',
+                    )}
+                  />
+                )}
+              </Button>
+            )
+          },
+        )}
       </div>
 
       {/* Bookings Card List */}
       {filteredRentals.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[2.5rem] border border-dashed border-slate-200">
-          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-            <Calendar className="text-slate-300" size={32} />
+        <div
+          className={cn(
+            'flex',
+            'flex-col',
+            'items-center',
+            'justify-center',
+            'py-20',
+            'bg-card',
+            'rounded-[2.5rem]',
+            'border',
+            'border-dashed',
+            'border-border',
+          )}
+        >
+          <div
+            className={cn(
+              'w-16',
+              'h-16',
+              'bg-muted-light',
+              'rounded-full',
+              'flex',
+              'items-center',
+              'justify-center',
+              'mb-4',
+            )}
+          >
+            <Calendar className="text-muted-dark" size={32} />
           </div>
-          <h3 className="text-lg font-extrabold text-gray-800">No {activeTab} bookings</h3>
-          <p className="text-slate-400 text-xs mt-1.5 max-w-xs text-center font-bold">
+          <h3 className={cn('text-lg', 'font-extrabold', 'text-foreground/90')}>
+            No {activeTab} bookings
+          </h3>
+          <p
+            className={cn(
+              'text-muted-dark',
+              'text-xs',
+              'mt-1.5',
+              'max-w-xs',
+              'text-center',
+              'font-bold',
+            )}
+          >
             You don't have any bookings matching this status right now.
           </p>
         </div>
       ) : (
-        <div className="grid gap-5">
+        <div className={cn('grid', 'gap-5')}>
           {filteredRentals.map((rental: any) => {
             const nights = Math.max(
               1,
               Math.ceil(
-                (new Date(rental.endDate).getTime() - new Date(rental.startDate).getTime()) /
-                (1000 * 60 * 60 * 24),
+                (new Date(rental.endDate).getTime() -
+                  new Date(rental.startDate).getTime()) /
+                  (1000 * 60 * 60 * 24),
               ),
             )
             return (
               <div
                 key={rental.id}
-                className="group bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row gap-6 items-start md:items-center relative"
+                className={cn(
+                  'group',
+                  'bg-card',
+                  'p-6',
+                  'rounded-[2.5rem]',
+                  'border',
+                  'border-border/30',
+                  'shadow-sm',
+                  'hover:shadow-md',
+                  'transition-all',
+                  'duration-300',
+                  'flex',
+                  'flex-col',
+                  'md:flex-row',
+                  'gap-6',
+                  'items-start',
+                  'md:items-center',
+                  'relative',
+                )}
               >
                 {/* Left side Image with link */}
-                <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0 bg-slate-50 shadow-inner">
+                <div
+                  className={cn(
+                    'w-32',
+                    'h-32',
+                    'rounded-2xl',
+                    'overflow-hidden',
+                    'shrink-0',
+                    'bg-muted-light',
+                    'shadow-inner',
+                  )}
+                >
                   <img
-                    src={rental.product?.images?.[0] || 'https://placehold.co/128?text=Vastu'}
+                    src={
+                      rental.product?.images?.[0] ||
+                      'https://placehold.co/128?text=Vastu'
+                    }
                     alt={rental.product?.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className={cn(
+                      'w-full',
+                      'h-full',
+                      'object-cover',
+                      'transition-transform',
+                      'duration-500',
+                      'group-hover:scale-105',
+                    )}
                   />
                 </div>
 
                 {/* Middle details column */}
-                <div className="flex-1 space-y-4">
+                <div className={cn('flex-1', 'space-y-4')}>
                   <div>
-                    <h3 className="text-[17px] font-black text-gray-900 leading-tight">
+                    <h3
+                      className={cn(
+                        'text-[17px]',
+                        'font-black',
+                        'text-foreground',
+                        'leading-tight',
+                      )}
+                    >
                       {rental.product?.title}
                     </h3>
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-slate-400 mt-1">
-                      <MapPin size={12} className="text-[#2d5222]" />
-                      <span>{rental.product?.location || rental.product?.city || 'Ahmedabad, India'}</span>
+                    <div
+                      className={cn(
+                        'flex',
+                        'items-center',
+                        'gap-1',
+                        'text-[11px]',
+                        'font-bold',
+                        'text-muted-dark',
+                        'mt-1',
+                      )}
+                    >
+                      <MapPin size={12} className="text-primary" />
+                      <span>
+                        {rental.product?.location ||
+                          rental.product?.city ||
+                          'Ahmedabad, India'}
+                      </span>
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                      <Calendar size={13} className="text-slate-400" />
+                    <div
+                      className={cn(
+                        'flex',
+                        'items-center',
+                        'gap-2',
+                        'text-xs',
+                        'font-bold',
+                        'text-muted-foreground/85',
+                      )}
+                    >
+                      <Calendar size={13} className="text-muted-dark" />
                       <span>
                         {format(new Date(rental.startDate), 'dd MMMM')} –{' '}
                         {format(new Date(rental.endDate), 'dd MMMM, yyyy')}{' '}
-                        <span className="text-slate-400">({nights} {nights === 1 ? 'Night' : 'Nights'})</span>
+                        <span className="text-muted-dark">
+                          ({nights} {nights === 1 ? 'Night' : 'Nights'})
+                        </span>
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                      <Users size={13} className="text-slate-400" />
-                      <span>{rental.product?.category?.name || 'Vastu Rental'}</span>
+                    <div
+                      className={cn(
+                        'flex',
+                        'items-center',
+                        'gap-2',
+                        'text-xs',
+                        'font-bold',
+                        'text-muted-foreground/85',
+                      )}
+                    >
+                      <Users size={13} className="text-muted-dark" />
+                      <span>
+                        {rental.product?.category?.name || 'Vastu Rental'}
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Right side stats and button */}
-                <div className="flex flex-col items-start md:items-end gap-3 shrink-0 self-stretch justify-between md:text-right border-t md:border-t-0 border-slate-50 pt-4 md:pt-0 w-full md:w-auto">
+                <div
+                  className={cn(
+                    'flex',
+                    'flex-col',
+                    'items-start',
+                    'md:items-end',
+                    'gap-3',
+                    'shrink-0',
+                    'self-stretch',
+                    'justify-between',
+                    'md:text-right',
+                    'border-t',
+                    'md:border-t-0',
+                    'border-border/30',
+                    'pt-4',
+                    'md:pt-0',
+                    'w-full',
+                    'md:w-auto',
+                  )}
+                >
                   <div className="space-y-1">
-                    <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">
-                      Booking ID: <span className="font-mono text-slate-500">#BK{rental.id.slice(-6).toUpperCase()}</span>
+                    <p
+                      className={cn(
+                        'text-[10px]',
+                        'text-muted-dark',
+                        'font-extrabold',
+                        'uppercase',
+                        'tracking-wider',
+                      )}
+                    >
+                      Booking ID:{' '}
+                      <span className={cn('font-mono', 'text-muted-foreground/85')}>
+                        #BK{rental.id.slice(-6).toUpperCase()}
+                      </span>
                     </p>
-                    <div className="flex items-center md:justify-end gap-1.5 text-xs font-bold text-slate-500 mt-1">
-                      <span className="text-slate-400 font-extrabold">Total Amount</span>
-                      <span className="text-base font-black text-gray-900 flex items-center">
+                    <div
+                      className={cn(
+                        'flex',
+                        'items-center',
+                        'md:justify-end',
+                        'gap-1.5',
+                        'text-xs',
+                        'font-bold',
+                        'text-muted-foreground/85',
+                        'mt-1',
+                      )}
+                    >
+                      <span className={cn('text-muted-dark', 'font-extrabold')}>
+                        Total Amount
+                      </span>
+                      <span
+                        className={cn(
+                          'text-base',
+                          'font-black',
+                          'text-foreground',
+                          'flex',
+                          'items-center',
+                        )}
+                      >
                         <IndianRupee size={14} className="stroke-[3]" />
                         {rental.totalPrice?.toLocaleString()}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center md:justify-end gap-3 w-full md:w-auto flex-wrap md:flex-nowrap">
+                  <div
+                    className={cn(
+                      'flex',
+                      'items-center',
+                      'md:justify-end',
+                      'gap-3',
+                      'w-full',
+                      'md:w-auto',
+                      'flex-wrap',
+                      'md:flex-nowrap',
+                    )}
+                  >
                     {getStatusBadge(rental.status)}
 
                     {getBookingGroup(rental.status) === 'completed' && (
                       <>
-                        {rental.product?.reviews && rental.product.reviews.length > 0 ? (
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge className="bg-[#f0f9eb] hover:bg-[#f0f9eb] text-[#2d5222] border-none px-3.5 py-1.5 rounded-full font-bold text-xs shrink-0 shadow-sm flex items-center gap-1.5">
-                              <CheckCircle2 size={12} className="text-[#2d5222]" />
+                        {rental.product?.reviews &&
+                        rental.product.reviews.length > 0 ? (
+                          <div
+                            className={cn(
+                              'flex',
+                              'items-center',
+                              'gap-2',
+                              'flex-wrap',
+                            )}
+                          >
+                            <Badge
+                              className={cn(
+                                'bg-[#f0f9eb]',
+                                'hover:bg-[#f0f9eb]',
+                                'text-primary',
+                                'border-none',
+                                'px-3.5',
+                                'py-1.5',
+                                'rounded-full',
+                                'font-bold',
+                                'text-xs',
+                                'shrink-0',
+                                'shadow-sm',
+                                'flex',
+                                'items-center',
+                                'gap-1.5',
+                              )}
+                            >
+                              <CheckCircle2
+                                size={12}
+                                className="text-primary"
+                              />
                               Review Submitted
                             </Badge>
 
                             {/* Allow edit within 7 days */}
                             {(() => {
-                              const review = rental.product.reviews[0];
-                              const createdTime = new Date(review.createdAt).getTime();
-                              const diffDays = (new Date().getTime() - createdTime) / (1000 * 60 * 60 * 24);
+                              const review = rental.product.reviews[0]
+                              const createdTime = new Date(
+                                review.createdAt,
+                              ).getTime()
+                              const diffDays =
+                                (new Date().getTime() - createdTime) /
+                                (1000 * 60 * 60 * 24)
 
                               if (diffDays <= 7) {
                                 return (
@@ -351,17 +786,39 @@ export const MyBookings = () => {
                                       setSelectedRental(rental)
                                       setRating(review.rating)
                                       // Extract actual comment text (stripping images block if present)
-                                      const commentText = review.comment ? review.comment.split('\n\n[Images:')[0] : '';
+                                      const commentText = review.comment
+                                        ? review.comment.split(
+                                            '\n\n[Images:',
+                                          )[0]
+                                        : ''
                                       setComment(commentText)
                                       setIsReviewDialogOpen(true)
                                     }}
-                                    className="rounded-full bg-[#f4f7f4] hover:bg-[#eaf0ea] text-[#2d5222] font-black text-[11px] px-3.5 h-8 flex items-center justify-center border border-[#2d5222]/15 active:scale-95 transition-all cursor-pointer shadow-sm"
+                                    className={cn(
+                                      'rounded-full',
+                                      'bg-[#f4f7f4]',
+                                      'hover:bg-[#eaf0ea]',
+                                      'text-primary',
+                                      'font-black',
+                                      'text-[11px]',
+                                      'px-3.5',
+                                      'h-8',
+                                      'flex',
+                                      'items-center',
+                                      'justify-center',
+                                      'border',
+                                      'border-primary/15',
+                                      'active:scale-95',
+                                      'transition-all',
+                                      'cursor-pointer',
+                                      'shadow-sm',
+                                    )}
                                   >
                                     Edit Review
                                   </Button>
                                 )
                               }
-                              return null;
+                              return null
                             })()}
                           </div>
                         ) : (
@@ -372,7 +829,22 @@ export const MyBookings = () => {
                               setComment('')
                               setIsReviewDialogOpen(true)
                             }}
-                            className="rounded-full bg-[#2d5222] hover:bg-[#1e3816] text-white font-extrabold text-xs px-4 h-9 flex items-center justify-center shadow-sm active:scale-95 cursor-pointer"
+                            className={cn(
+                              'rounded-full',
+                              'bg-primary',
+                              'hover:bg-primary-hover',
+                              'text-primary-foreground',
+                              'font-extrabold',
+                              'text-xs',
+                              'px-4',
+                              'h-9',
+                              'flex',
+                              'items-center',
+                              'justify-center',
+                              'shadow-sm',
+                              'active:scale-95',
+                              'cursor-pointer',
+                            )}
                           >
                             Write Review
                           </Button>
@@ -386,10 +858,28 @@ export const MyBookings = () => {
                         setSelectedDetailsRental(rental)
                         setIsDetailsDialogOpen(true)
                       }}
-                      className="rounded-full border-slate-200 text-[#2d5222] font-black text-xs px-4 h-9 flex items-center gap-1 hover:bg-slate-50/50 shadow-sm active:scale-95 cursor-pointer"
+                      className={cn(
+                        'rounded-full',
+                        'border-border',
+                        'text-primary',
+                        'font-black',
+                        'text-xs',
+                        'px-4',
+                        'h-9',
+                        'flex',
+                        'items-center',
+                        'gap-1',
+                        'hover:bg-muted-light/50',
+                        'shadow-sm',
+                        'active:scale-95',
+                        'cursor-pointer',
+                      )}
                     >
                       View Details
-                      <ChevronRight size={14} className="text-[#2d5222] stroke-[3]" />
+                      <ChevronRight
+                        size={14}
+                        className={cn('text-primary', 'stroke-[3]')}
+                      />
                     </Button>
                   </div>
                 </div>
@@ -400,44 +890,155 @@ export const MyBookings = () => {
       )}
 
       {/* Need Help Booking Banner */}
-      <div className="bg-[#fdfcf9] rounded-[2.5rem] border border-slate-100 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 shadow-sm">
-        <div className="flex items-center gap-4 text-left">
-          <div className="w-12 h-12 rounded-full bg-[#f4f8f1] flex items-center justify-center text-[#2d5222] shrink-0 border border-[#e2edd8]">
+      <div
+        className={cn(
+          'bg-background',
+          'rounded-[2.5rem]',
+          'border',
+          'border-border/30',
+          'p-6',
+          'flex',
+          'flex-col',
+          'sm:flex-row',
+          'items-center',
+          'justify-between',
+          'gap-4',
+          'mt-8',
+          'shadow-sm',
+        )}
+      >
+        <div className={cn('flex', 'items-center', 'gap-4', 'text-left')}>
+          <div
+            className={cn(
+              'w-12',
+              'h-12',
+              'rounded-full',
+              'bg-primary-soft',
+              'flex',
+              'items-center',
+              'justify-center',
+              'text-primary',
+              'shrink-0',
+              'border',
+              'border-primary-border',
+            )}
+          >
             <HelpCircle size={22} className="stroke-[2.5]" />
           </div>
           <div>
-            <h4 className="font-extrabold text-gray-900 text-sm">Need help with your booking?</h4>
-            <p className="text-slate-400 text-xs font-semibold mt-0.5">Our support team is here to assist you.</p>
+            <h4 className={cn('font-extrabold', 'text-foreground', 'text-sm')}>
+              Need help with your booking?
+            </h4>
+            <p
+              className={cn(
+                'text-muted-dark',
+                'text-xs',
+                'font-semibold',
+                'mt-0.5',
+              )}
+            >
+              Our support team is here to assist you.
+            </p>
           </div>
         </div>
         <Button
           variant="outline"
-          className="rounded-full border-slate-200 text-slate-700 font-black px-6 h-10 flex items-center gap-1.5 hover:bg-slate-50 shadow-sm cursor-pointer"
+          className={cn(
+            'rounded-full',
+            'border-border',
+            'text-foreground/80',
+            'font-black',
+            'px-6',
+            'h-10',
+            'flex',
+            'items-center',
+            'gap-1.5',
+            'hover:bg-muted-light',
+            'shadow-sm',
+            'cursor-pointer',
+          )}
         >
-          <MessageSquare size={15} className="text-slate-400 shrink-0" />
+          <MessageSquare
+            size={15}
+            className={cn('text-muted-dark', 'shrink-0')}
+          />
           Contact Support
         </Button>
       </div>
 
       {/* Booking Details Dialog */}
       <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
-        <DialogContent className="max-w-xl p-0 border-none bg-slate-50 rounded-[2.5rem] shadow-2xl font-sans overflow-hidden">
+        <DialogContent
+          className={cn(
+            'max-w-xl',
+            'p-0',
+            'border-none',
+            'bg-muted-light',
+            'rounded-[2.5rem]',
+            'shadow-2xl',
+            'font-sans',
+            'overflow-hidden',
+          )}
+        >
           {/* Top Product Banner card */}
-          <div className="relative h-44 bg-slate-900">
+          <div className={cn('relative', 'h-44', 'bg-foreground')}>
             {selectedDetailsRental?.product?.images?.[0] && (
               <img
                 src={selectedDetailsRental.product.images[0]}
                 alt=""
-                className="w-full h-full object-cover opacity-60"
+                className={cn('w-full', 'h-full', 'object-cover', 'opacity-60')}
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+            <div
+              className={cn(
+                'absolute',
+                'inset-0',
+                'bg-gradient-to-t',
+                'from-slate-900',
+                'via-slate-900/40',
+                'to-transparent',
+              )}
+            />
+            <div
+              className={cn(
+                'absolute',
+                'bottom-6',
+                'left-6',
+                'right-6',
+                'flex',
+                'items-end',
+                'justify-between',
+              )}
+            >
               <div>
-                <span className="text-[9px] font-black uppercase tracking-widest text-[#2d5222] bg-[#f4f8f1] px-2 py-1 rounded-md border border-[#e2edd8]">
-                  {selectedDetailsRental?.product?.category?.name || 'Vastu Rental'}
+                <span
+                  className={cn(
+                    'text-[9px]',
+                    'font-black',
+                    'uppercase',
+                    'tracking-widest',
+                    'text-primary',
+                    'bg-primary-soft',
+                    'px-2',
+                    'py-1',
+                    'rounded-md',
+                    'border',
+                    'border-primary-border',
+                  )}
+                >
+                  {selectedDetailsRental?.product?.category?.name ||
+                    'Vastu Rental'}
                 </span>
-                <h3 className="text-xl font-extrabold text-white leading-tight font-display mt-2.5">
+                <h3
+                  className={cn(
+                    'text-xl',
+                    'font-extrabold',
+                    'text-primary-foreground',
+                    'leading-tight',
+                    'font-display',
+                    'mt-2.5',
+                  )}
+                >
                   {selectedDetailsRental?.product?.title}
                 </h3>
               </div>
@@ -445,143 +1046,421 @@ export const MyBookings = () => {
           </div>
 
           {/* Core Details body */}
-          <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto custom-scrollbar">
+          <div
+            className={cn(
+              'p-6',
+              'space-y-5',
+              'max-h-[80vh]',
+              'overflow-y-auto',
+              'custom-scrollbar',
+            )}
+          >
             {/* Owner & Status columns */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white p-4 rounded-2xl border border-slate-100/80 space-y-1">
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block">
+            <div className={cn('grid', 'grid-cols-2', 'gap-4')}>
+              <div
+                className={cn(
+                  'bg-card',
+                  'p-4',
+                  'rounded-2xl',
+                  'border',
+                  'border-border/30/80',
+                  'space-y-1',
+                )}
+              >
+                <span
+                  className={cn(
+                    'text-[8px]',
+                    'font-black',
+                    'text-muted-dark',
+                    'uppercase',
+                    'tracking-widest',
+                    'block',
+                  )}
+                >
                   Host Details
                 </span>
-                <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5 pt-0.5">
-                  <Users size={12} className="text-slate-400" />
-                  <span>{selectedDetailsRental?.product?.owner?.name || 'Vastu Host'}</span>
+                <div
+                  className={cn(
+                    'text-xs',
+                    'font-bold',
+                    'text-foreground/90',
+                    'flex',
+                    'items-center',
+                    'gap-1.5',
+                    'pt-0.5',
+                  )}
+                >
+                  <Users size={12} className="text-muted-dark" />
+                  <span>
+                    {selectedDetailsRental?.product?.owner?.name ||
+                      'Vastu Host'}
+                  </span>
                 </div>
-                <span className="text-[10px] font-medium text-slate-400 block truncate">
+                <span
+                  className={cn(
+                    'text-[10px]',
+                    'font-medium',
+                    'text-muted-dark',
+                    'block',
+                    'truncate',
+                  )}
+                >
                   Ahmedabad, India
                 </span>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border border-slate-100/80 space-y-1">
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block">
+              <div
+                className={cn(
+                  'bg-card',
+                  'p-4',
+                  'rounded-2xl',
+                  'border',
+                  'border-border/30/80',
+                  'space-y-1',
+                )}
+              >
+                <span
+                  className={cn(
+                    'text-[8px]',
+                    'font-black',
+                    'text-muted-dark',
+                    'uppercase',
+                    'tracking-widest',
+                    'block',
+                  )}
+                >
                   Booking Status
                 </span>
-                <div className="flex gap-1.5 items-center pt-0.5">
-                  {selectedDetailsRental && getStatusBadge(selectedDetailsRental.status)}
+                <div
+                  className={cn('flex', 'gap-1.5', 'items-center', 'pt-0.5')}
+                >
+                  {selectedDetailsRental &&
+                    getStatusBadge(selectedDetailsRental.status)}
                 </div>
-                <span className="text-[10px] font-extrabold uppercase text-slate-400 block tracking-tight pt-1">
+                <span
+                  className={cn(
+                    'text-[10px]',
+                    'font-extrabold',
+                    'uppercase',
+                    'text-muted-dark',
+                    'block',
+                    'tracking-tight',
+                    'pt-1',
+                  )}
+                >
                   ID: #BK{selectedDetailsRental?.id?.slice(-6).toUpperCase()}
                 </span>
               </div>
             </div>
 
             {/* OTP Verification Section (if booking is pending, confirmed, or ongoing) */}
-            {selectedDetailsRental && (selectedDetailsRental.status === 'pending' || selectedDetailsRental.status === 'confirmed' || selectedDetailsRental.status === 'picked_up' || selectedDetailsRental.status === 'in_use') && (
-              <div className="bg-[#fcfdfa] p-4.5 rounded-2xl border border-[#e2edd8] space-y-2">
-                <span className="text-[8px] font-black text-[#2d5222] uppercase tracking-widest block">
-                  🛡️ Verification Security OTP
-                </span>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-bold text-slate-700">
-                      {selectedDetailsRental.status === 'pending' || selectedDetailsRental.status === 'confirmed'
-                        ? 'Pickup Verification OTP'
-                        : 'Return Verification OTP'}
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                      Share this OTP with the host upon physical verification.
-                    </p>
-                  </div>
-                  <div className="bg-[#2d5222]/5 border border-[#2d5222]/20 px-3.5 py-1.5 rounded-xl font-mono font-black text-sm text-[#2d5222]">
-                    {selectedDetailsRental.status === 'pending' || selectedDetailsRental.status === 'confirmed'
-                      ? (selectedDetailsRental.pickupOTP || '123456')
-                      : (selectedDetailsRental.returnOTP || '654321')}
+            {selectedDetailsRental &&
+              (selectedDetailsRental.status === 'pending' ||
+                selectedDetailsRental.status === 'confirmed' ||
+                selectedDetailsRental.status === 'picked_up' ||
+                selectedDetailsRental.status === 'in_use') && (
+                <div
+                  className={cn(
+                    'bg-[#fcfdfa]',
+                    'p-4.5',
+                    'rounded-2xl',
+                    'border',
+                    'border-primary-border',
+                    'space-y-2',
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'text-[8px]',
+                      'font-black',
+                      'text-primary',
+                      'uppercase',
+                      'tracking-widest',
+                      'block',
+                    )}
+                  >
+                    🛡️ Verification Security OTP
+                  </span>
+                  <div
+                    className={cn('flex', 'items-center', 'justify-between')}
+                  >
+                    <div>
+                      <p
+                        className={cn('text-xs', 'font-bold', 'text-foreground/80')}
+                      >
+                        {selectedDetailsRental.status === 'pending' ||
+                        selectedDetailsRental.status === 'confirmed'
+                          ? 'Pickup Verification OTP'
+                          : 'Return Verification OTP'}
+                      </p>
+                      <p
+                        className={cn(
+                          'text-[10px]',
+                          'text-muted-dark',
+                          'font-medium',
+                          'mt-0.5',
+                        )}
+                      >
+                        Share this OTP with the host upon physical verification.
+                      </p>
+                    </div>
+                    <div
+                      className={cn(
+                        'bg-primary/5',
+                        'border',
+                        'border-primary/20',
+                        'px-3.5',
+                        'py-1.5',
+                        'rounded-xl',
+                        'font-mono',
+                        'font-black',
+                        'text-sm',
+                        'text-primary',
+                      )}
+                    >
+                      {selectedDetailsRental.status === 'pending' ||
+                      selectedDetailsRental.status === 'confirmed'
+                        ? selectedDetailsRental.pickupOTP || '123456'
+                        : selectedDetailsRental.returnOTP || '654321'}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Booking dates and rental duration info */}
-            <div className="bg-white p-4.5 rounded-2xl border border-slate-100/80 space-y-3">
-              <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block">
+            <div
+              className={cn(
+                'bg-card',
+                'p-4.5',
+                'rounded-2xl',
+                'border',
+                'border-border/30/80',
+                'space-y-3',
+              )}
+            >
+              <span
+                className={cn(
+                  'text-[8px]',
+                  'font-black',
+                  'text-muted-dark',
+                  'uppercase',
+                  'tracking-widest',
+                  'block',
+                )}
+              >
                 Rental Period
               </span>
-              <div className="flex items-center justify-between text-xs font-bold text-slate-700">
-                <div className="flex flex-col">
-                  <span className="text-[9px] text-slate-400 uppercase">From</span>
+              <div
+                className={cn(
+                  'flex',
+                  'items-center',
+                  'justify-between',
+                  'text-xs',
+                  'font-bold',
+                  'text-foreground/80',
+                )}
+              >
+                <div className={cn('flex', 'flex-col')}>
+                  <span
+                    className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
+                  >
+                    From
+                  </span>
                   <span className="mt-0.5">
-                    {selectedDetailsRental?.startDate && format(new Date(selectedDetailsRental.startDate), 'dd MMM yyyy')}
+                    {selectedDetailsRental?.startDate &&
+                      format(
+                        new Date(selectedDetailsRental.startDate),
+                        'dd MMM yyyy',
+                      )}
                   </span>
                 </div>
-                <ChevronRight size={14} className="text-slate-300 mt-2" />
-                <div className="flex flex-col text-right">
-                  <span className="text-[9px] text-slate-400 uppercase">To</span>
+                <ChevronRight
+                  size={14}
+                  className={cn('text-muted-dark', 'mt-2')}
+                />
+                <div className={cn('flex', 'flex-col', 'text-right')}>
+                  <span
+                    className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
+                  >
+                    To
+                  </span>
                   <span className="mt-0.5">
-                    {selectedDetailsRental?.endDate && format(new Date(selectedDetailsRental.endDate), 'dd MMM yyyy')}
+                    {selectedDetailsRental?.endDate &&
+                      format(
+                        new Date(selectedDetailsRental.endDate),
+                        'dd MMM yyyy',
+                      )}
                   </span>
                 </div>
               </div>
-              <div className="border-t border-slate-50 pt-2.5 flex items-center justify-between text-[11px] font-bold text-slate-500">
+              <div
+                className={cn(
+                  'border-t',
+                  'border-border/30',
+                  'pt-2.5',
+                  'flex',
+                  'items-center',
+                  'justify-between',
+                  'text-[11px]',
+                  'font-bold',
+                  'text-muted-foreground/85',
+                )}
+              >
                 <span>Total Duration</span>
-                <span className="text-[#2d5222] font-black">
-                  {selectedDetailsRental?.startDate && selectedDetailsRental?.endDate && Math.max(
-                    1,
-                    Math.ceil(
-                      (new Date(selectedDetailsRental.endDate).getTime() - new Date(selectedDetailsRental.startDate).getTime()) /
-                      (1000 * 60 * 60 * 24),
-                    ),
-                  )} Nights
+                <span className={cn('text-primary', 'font-black')}>
+                  {selectedDetailsRental?.startDate &&
+                    selectedDetailsRental?.endDate &&
+                    Math.max(
+                      1,
+                      Math.ceil(
+                        (new Date(selectedDetailsRental.endDate).getTime() -
+                          new Date(selectedDetailsRental.startDate).getTime()) /
+                          (1000 * 60 * 60 * 24),
+                      ),
+                    )}{' '}
+                  Nights
                 </span>
               </div>
             </div>
 
             {/* Financial breakdown */}
-            <div className="bg-white p-4.5 rounded-2xl border border-slate-100/80 space-y-2 text-xs font-semibold text-slate-500">
-              <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-1">
+            <div
+              className={cn(
+                'bg-card',
+                'p-4.5',
+                'rounded-2xl',
+                'border',
+                'border-border/30/80',
+                'space-y-2',
+                'text-xs',
+                'font-semibold',
+                'text-muted-foreground/85',
+              )}
+            >
+              <span
+                className={cn(
+                  'text-[8px]',
+                  'font-black',
+                  'text-muted-dark',
+                  'uppercase',
+                  'tracking-widest',
+                  'block',
+                  'mb-1',
+                )}
+              >
                 Payment & Billing Details
               </span>
-              <div className="flex justify-between">
+              <div className={cn('flex', 'justify-between')}>
                 <span>Daily Rent Rate</span>
-                <span className="text-slate-800 font-bold">
+                <span className={cn('text-foreground/90', 'font-bold')}>
                   ₹{selectedDetailsRental?.product?.price?.toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className={cn('flex', 'justify-between')}>
                 <span>Rental Fee</span>
-                <span className="text-slate-800 font-bold">
+                <span className={cn('text-foreground/90', 'font-bold')}>
                   ₹{selectedDetailsRental?.rentalFee?.toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className={cn('flex', 'justify-between')}>
                 <span>Refundable Security Deposit</span>
-                <span className="text-slate-800 font-bold">
-                  ₹{selectedDetailsRental?.depositAmount?.toLocaleString() || '₹0'}
+                <span className={cn('text-foreground/90', 'font-bold')}>
+                  ₹
+                  {selectedDetailsRental?.depositAmount?.toLocaleString() ||
+                    '₹0'}
                 </span>
               </div>
               {selectedDetailsRental?.coupon && (
-                <div className="flex justify-between text-emerald-600 font-bold">
-                  <span>Coupon Discount ({selectedDetailsRental.coupon.code})</span>
-                  <span>- ₹{((selectedDetailsRental.rentalFee + selectedDetailsRental.depositAmount) - selectedDetailsRental.totalPrice).toLocaleString()}</span>
+                <div
+                  className={cn(
+                    'flex',
+                    'justify-between',
+                    'text-emerald-600',
+                    'font-bold',
+                  )}
+                >
+                  <span>
+                    Coupon Discount ({selectedDetailsRental.coupon.code})
+                  </span>
+                  <span>
+                    - ₹
+                    {(
+                      selectedDetailsRental.rentalFee +
+                      selectedDetailsRental.depositAmount -
+                      selectedDetailsRental.totalPrice
+                    ).toLocaleString()}
+                  </span>
                 </div>
               )}
-              <div className="flex justify-between text-[13px] font-black text-[#2d5222] border-t border-slate-50 pt-2.5">
+              <div
+                className={cn(
+                  'flex',
+                  'justify-between',
+                  'text-[13px]',
+                  'font-black',
+                  'text-primary',
+                  'border-t',
+                  'border-border/30',
+                  'pt-2.5',
+                )}
+              >
                 <span>Total Amount Paid</span>
-                <span className="flex items-center">
+                <span className={cn('flex', 'items-center')}>
                   <IndianRupee size={12} className="stroke-[3]" />
                   {selectedDetailsRental?.totalPrice?.toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold pt-1.5">
-                <span>Payment Mode: <span className="text-slate-500 uppercase">{selectedDetailsRental?.paymentMethod === 'cash' ? 'Cash/COD' : 'Online Payment'}</span></span>
-                <span>Payment Status: <span className={cn(
-                  "uppercase",
-                  selectedDetailsRental?.paymentStatus === 'paid' ? "text-emerald-600" : "text-amber-600"
-                )}>{selectedDetailsRental?.paymentStatus || 'Pending'}</span></span>
+              <div
+                className={cn(
+                  'flex',
+                  'justify-between',
+                  'items-center',
+                  'text-[10px]',
+                  'text-muted-dark',
+                  'font-bold',
+                  'pt-1.5',
+                )}
+              >
+                <span>
+                  Payment Mode:{' '}
+                  <span className={cn('text-muted-foreground/85', 'uppercase')}>
+                    {selectedDetailsRental?.paymentMethod === 'cash'
+                      ? 'Cash/COD'
+                      : 'Online Payment'}
+                  </span>
+                </span>
+                <span>
+                  Payment Status:{' '}
+                  <span
+                    className={cn(
+                      'uppercase',
+                      selectedDetailsRental?.paymentStatus === 'paid'
+                        ? 'text-emerald-600'
+                        : 'text-warning-foreground',
+                    )}
+                  >
+                    {selectedDetailsRental?.paymentStatus || 'Pending'}
+                  </span>
+                </span>
               </div>
             </div>
 
             <Button
               onClick={() => setIsDetailsDialogOpen(false)}
-              className="w-full h-11 rounded-2xl bg-[#2d5222] hover:bg-[#1e3816] text-white font-extrabold text-xs shadow-sm active:scale-98 transition-all cursor-pointer"
+              className={cn(
+                'w-full',
+                'h-11',
+                'rounded-2xl',
+                'bg-primary',
+                'hover:bg-primary-hover',
+                'text-primary-foreground',
+                'font-extrabold',
+                'text-xs',
+                'shadow-sm',
+                'active:scale-98',
+                'transition-all',
+                'cursor-pointer',
+              )}
             >
               Close
             </Button>
@@ -591,37 +1470,69 @@ export const MyBookings = () => {
 
       {/* Write Review Dialog */}
       <Dialog open={isReviewDialogOpen} onOpenChange={setIsReviewDialogOpen}>
-        <DialogContent className="sm:max-w-[480px] bg-white rounded-3xl p-6 border border-slate-100 shadow-xl">
+        <DialogContent
+          className={cn(
+            'sm:max-w-[480px]',
+            'bg-card',
+            'rounded-3xl',
+            'p-6',
+            'border',
+            'border-border/30',
+            'shadow-xl',
+          )}
+        >
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-gray-900">
+            <DialogTitle
+              className={cn('text-xl', 'font-bold', 'text-foreground')}
+            >
               Write a Review for {selectedRental?.product?.title}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
+          <div className={cn('space-y-6', 'py-4')}>
             {/* Rating Stars Input */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Rating</label>
-              <div className="flex items-center gap-1.5">
+              <label
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
+              >
+                Rating
+              </label>
+              <div className={cn('flex', 'items-center', 'gap-1.5')}>
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button
+                  <Button
                     key={star}
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setRating(star)}
-                    className="p-1 transition-transform active:scale-90 cursor-pointer"
+                    className={cn(
+                      'p-1',
+                      'transition-transform',
+                      'active:scale-90',
+                      'cursor-pointer',
+                      'h-auto w-auto',
+                      'hover:bg-transparent',
+                    )}
                   >
                     <Star
                       size={28}
                       className={cn(
                         'stroke-[2]',
                         star <= rating
-                          ? 'text-[#2d5222] fill-[#2d5222]'
-                          : 'text-slate-200 fill-transparent'
+                          ? 'text-primary fill-primary'
+                          : 'text-muted-foreground/30 fill-transparent',
                       )}
                     />
-                  </button>
+                  </Button>
                 ))}
-                <span className="text-sm font-bold text-slate-400 ml-2">
+                <span
+                  className={cn(
+                    'text-sm',
+                    'font-bold',
+                    'text-muted-dark',
+                    'ml-2',
+                  )}
+                >
                   ({rating}.0 / 5.0)
                 </span>
               </div>
@@ -629,37 +1540,87 @@ export const MyBookings = () => {
 
             {/* Review Comment Input */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Comment</label>
+              <label
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
+              >
+                Comment
+              </label>
               <Textarea
                 placeholder="Product quality was very good. Sturdy and easy to use..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="rounded-xl border-slate-200 min-h-[100px] text-sm focus-visible:ring-[#2d5222]"
+                className={cn(
+                  'rounded-xl',
+                  'border-border',
+                  'min-h-[100px]',
+                  'text-sm',
+                  'focus-visible:ring-primary',
+                )}
               />
             </div>
 
             {/* Review Images Option (Optional) */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Review Images (Optional)</label>
-              <div className="flex flex-wrap gap-3 items-center">
+              <label
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
+              >
+                Review Images (Optional)
+              </label>
+              <div className={cn('flex', 'flex-wrap', 'gap-3', 'items-center')}>
                 {uploadedImages.map((img, i) => (
-                  <div key={i} className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-100 bg-slate-50">
-                    <img src={img} className="w-full h-full object-cover" />
-                    <button
+                  <div
+                    key={i}
+                    className={cn(
+                      'relative',
+                      'w-16',
+                      'h-16',
+                      'rounded-xl',
+                      'overflow-hidden',
+                      'border',
+                      'border-border/30',
+                      'bg-muted-light',
+                    )}
+                  >
+                    <img
+                      src={img}
+                      className={cn('w-full', 'h-full', 'object-cover')}
+                    />
+                    <Button
                       type="button"
-                      onClick={() => setUploadedImages(prev => prev.filter((_, idx) => idx !== i))}
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600 transition-colors w-4 h-4 flex items-center justify-center text-[9px] font-bold"
+                      variant="destructive"
+                      size="icon"
+                      onClick={() =>
+                        setUploadedImages((prev) =>
+                          prev.filter((_, idx) => idx !== i),
+                        )
+                      }
+                      className={cn(
+                        'absolute',
+                        'top-1',
+                        'right-1',
+                        'rounded-full',
+                        'w-4',
+                        'h-4',
+                        'flex',
+                        'items-center',
+                        'justify-center',
+                        'text-[9px]',
+                        'font-bold',
+                        'p-0',
+                      )}
                     >
                       ×
-                    </button>
+                    </Button>
                   </div>
                 ))}
 
                 {uploadedImages.length < 3 && (
-                  <label className={cn(
-                    "w-16 h-16 rounded-xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 hover:text-[#2d5222] hover:border-[#2d5222] transition-colors cursor-pointer text-[10px] font-bold gap-1",
-                    isUploading && "opacity-50 pointer-events-none"
-                  )}>
+                  <label
+                    className={cn(
+                      'w-16 h-16 rounded-xl border border-dashed border-border/120 flex flex-col items-center justify-center text-muted-dark hover:text-primary hover:border-primary transition-colors cursor-pointer text-[10px] font-bold gap-1',
+                      isUploading && 'opacity-50 pointer-events-none',
+                    )}
+                  >
                     <input
                       type="file"
                       accept="image/*"
@@ -671,11 +1632,17 @@ export const MyBookings = () => {
                           setIsUploading(true)
                           const formData = new FormData()
                           formData.append('file', file)
-                          const res = await apiClient.post('/upload/product', formData, {
-                            headers: { 'Content-Type': 'multipart/form-data' },
-                          })
+                          const res = await apiClient.post(
+                            '/upload/product',
+                            formData,
+                            {
+                              headers: {
+                                'Content-Type': 'multipart/form-data',
+                              },
+                            },
+                          )
                           if (res.data.url) {
-                            setUploadedImages(prev => [...prev, res.data.url])
+                            setUploadedImages((prev) => [...prev, res.data.url])
                           }
                         } catch (err) {
                           toast.error('Image upload failed.')
@@ -691,11 +1658,11 @@ export const MyBookings = () => {
             </div>
           </div>
 
-          <DialogFooter className="flex gap-2 sm:justify-end">
+          <DialogFooter className={cn('flex', 'gap-2', 'sm:justify-end')}>
             <Button
               variant="outline"
               onClick={() => setIsReviewDialogOpen(false)}
-              className="rounded-xl border-slate-200 font-semibold"
+              className={cn('rounded-xl', 'border-border', 'font-semibold')}
             >
               Cancel
             </Button>
@@ -713,11 +1680,17 @@ export const MyBookings = () => {
                 reviewMutation.mutate({
                   productId: selectedRental.productId,
                   rating,
-                  comment: finalComment
+                  comment: finalComment,
                 })
               }}
               disabled={reviewMutation.isPending}
-              className="rounded-xl bg-[#2d5222] hover:bg-[#1e3816] text-white font-semibold"
+              className={cn(
+                'rounded-xl',
+                'bg-primary',
+                'hover:bg-primary-hover',
+                'text-primary-foreground',
+                'font-semibold',
+              )}
             >
               {reviewMutation.isPending ? 'Submitting...' : 'Submit Review'}
             </Button>
@@ -727,4 +1700,3 @@ export const MyBookings = () => {
     </div>
   )
 }
-

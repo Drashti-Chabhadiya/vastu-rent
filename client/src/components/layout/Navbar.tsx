@@ -3,12 +3,11 @@ import { authClient } from '#/lib/auth/auth-client'
 import { Logo } from '#/components/layout'
 import { useCategories, useWishlist } from '#/hook'
 import { Link, useNavigate } from '@tanstack/react-router'
+import { SearchDialog } from '#/components/common/SearchDialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
@@ -53,6 +52,7 @@ const navLinks = [
 export function Navbar() {
   const [session, setSession] = useState<any>(null)
   const [isPending, setIsPending] = useState(true)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const navigate = useNavigate()
 
   const { count } = useWishlist()
@@ -65,6 +65,19 @@ export function Navbar() {
     })
   }, [])
 
+  // Keyboard shortcut for search (Cmd+K or Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsSearchOpen(true)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   const handleSignOut = async () => {
     setIsPending(true)
     await authClient.signOut()
@@ -73,404 +86,912 @@ export function Navbar() {
     navigate({ to: '/' })
   }
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 md:px-10">
-        <Link to="/" className="transition-opacity hover:opacity-90">
-          <Logo />
-        </Link>
-        <nav className="hidden items-center lg:flex">
-          <NavigationMenu>
-            <NavigationMenuList className="gap-1">
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent hover:bg-transparent data-[state=open]:bg-transparent text-sm font-bold text-gray-700">
-                  Categories
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                    {categories?.map((category: any) => (
-                      <li key={category.id}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/categories/$id"
-                            params={{ id: category.id }}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              {category.name}
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Explore items in {category.name}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                    {!categories?.length && (
-                      <div className="p-4 text-sm text-muted-foreground">
-                        No categories found
-                      </div>
-                    )}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              {navLinks.map((link) => (
-                <NavigationMenuItem key={link.label}>
-                  <Link
-                    to={link.path as any}
-                    hash={link.hash}
-                    onClick={(e) => {
-                      if (link.hash && window.location.pathname === '/') {
-                        const el = document.getElementById(link.hash)
-                        if (el) {
-                          e.preventDefault()
-                          el.scrollIntoView({ behavior: 'smooth' })
-                        }
-                      }
-                    }}
-                    className={cn(
-                      navigationMenuTriggerStyle(),
-                      'bg-transparent hover:bg-transparent focus:bg-transparent text-sm font-bold text-gray-700',
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
-        </nav>
-        <div className="flex items-center gap-2.5">
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label="Search"
-            className="h-10 w-10 rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-gray-900 active:scale-95 cursor-pointer shadow-sm"
+    <>
+      <header
+        className={cn(
+          'sticky',
+          'top-0',
+          'z-40',
+          'border-b',
+          'border-border/30/50',
+          'bg-card/80',
+          'backdrop-blur-lg',
+          'supports-backdrop-filter:bg-card/60',
+        )}
+      >
+        <div
+          className={cn(
+            'mx-auto',
+            'flex',
+            'h-20',
+            'max-w-[1400px]',
+            'items-center',
+            'justify-between',
+            'gap-4',
+            'px-4',
+            'sm:px-6',
+            'lg:px-8',
+          )}
+        >
+          {/* Logo */}
+          <Link
+            to="/"
+            className={cn('shrink-0', 'transition-opacity', 'hover:opacity-80')}
           >
-            <Search className="h-4 w-4" />
-          </Button>
-          <Link to="/download">
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Download App"
-              className="h-10 w-10 rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-gray-900 active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Smartphone className="h-4 w-4" />
-            </Button>
+            <Logo />
           </Link>
-          <Link to="/wishlist">
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Saved"
-              className="group relative h-10 w-10 rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-gray-900 active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Heart className="h-4 w-4" />
-              {count > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#2d5222] text-[9px] font-black text-white shadow-sm border border-white">
-                  {count}
-                </span>
-              )}
-            </Button>
-          </Link>
-          {isPending ? (
-            <div className="h-10 w-10 animate-pulse rounded-full bg-accent/50" />
-          ) : session?.user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative flex items-center gap-1.5 p-0 hover:bg-transparent active:scale-95 cursor-pointer outline-none shadow-none border-none">
-                  <div className="relative h-9 w-9 rounded-full border border-slate-200">
-                    <Avatar className="h-full w-full">
-                      <AvatarImage
-                        src={session.user.image || ''}
-                        alt={session.user.name}
-                      />
-                      <AvatarFallback className="bg-[#2d5222]/5 text-[13px] font-bold text-[#2d5222]">
-                        {session.user.name?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    {/* Active Online Indicator */}
-                    <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-[#2d5222] border-2 border-white rounded-full" />
-                  </div>
-                  <ChevronDown className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[340px] p-3 rounded-[24px] bg-card border border-border shadow-lift" align="end" sideOffset={8}>
-                <div className="flex flex-col gap-1.5 p-1">
-                  {/* User Profile Header */}
-                  <Link
-                    to="/account"
-                    className="flex items-center gap-3 p-2 rounded-xl transition-all hover:bg-muted/55 focus:bg-accent/40 cursor-pointer"
+
+          {/* Desktop Navigation */}
+          <nav className={cn('hidden', 'items-center', 'lg:flex')}>
+            <NavigationMenu>
+              <NavigationMenuList className="gap-1">
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger
+                    className={cn(
+                      'bg-transparent',
+                      'hover:bg-muted-light',
+                      'data-[state=open]:bg-muted-light',
+                      'text-sm',
+                      'font-semibold',
+                      'text-foreground/80',
+                      'transition-colors',
+                    )}
                   >
-                    <Avatar className="h-12 w-12 border border-border/60">
-                      <AvatarImage
-                        src={session.user.image || ''}
-                        alt={session.user.name}
-                      />
-                      <AvatarFallback className="bg-primary/5 text-base font-bold text-primary">
-                        {session.user.name?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-bold text-foreground text-[14px] leading-none truncate">
-                          {session.user.name}
-                        </span>
-                        <span className="inline-flex items-center gap-0.5 rounded-full bg-accent/60 px-1.5 py-0.5 text-[9px] font-bold text-accent-foreground">
-                          <svg
-                            className="h-2.5 w-2.5 text-primary shrink-0"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={3}
+                    Categories
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul
+                      className={cn(
+                        'grid',
+                        'w-[400px]',
+                        'gap-2',
+                        'p-4',
+                        'md:w-[500px]',
+                        'md:grid-cols-2',
+                        'lg:w-[600px]',
+                      )}
+                    >
+                      {categories?.map((category: any) => (
+                        <li key={category.id}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/categories/$id"
+                              params={{ id: category.id }}
+                              className={cn(
+                                'block',
+                                'select-none',
+                                'space-y-1',
+                                'rounded-lg',
+                                'p-3',
+                                'leading-none',
+                                'no-underline',
+                                'outline-none',
+                                'transition-all',
+                                'hover:bg-primary/5',
+                                'hover:text-primary',
+                                'focus:bg-primary/5',
+                                'focus:text-primary',
+                              )}
+                            >
+                              <div
+                                className={cn(
+                                  'text-sm',
+                                  'font-semibold',
+                                  'leading-none',
+                                  'text-foreground',
+                                )}
+                              >
+                                {category.name}
+                              </div>
+                              <p
+                                className={cn(
+                                  'line-clamp-2',
+                                  'text-sm',
+                                  'leading-snug',
+                                  'text-muted-foreground/85',
+                                )}
+                              >
+                                Explore items in {category.name}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                      {!categories?.length && (
+                        <div className={cn('p-4', 'text-sm', 'text-muted-foreground/85')}>
+                          Loading categories...
+                        </div>
+                      )}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                {navLinks.map((link) => (
+                  <NavigationMenuItem key={link.label}>
+                    <Link
+                      to={link.path as any}
+                      hash={link.hash}
+                      onClick={(e) => {
+                        if (link.hash && window.location.pathname === '/') {
+                          const el = document.getElementById(link.hash)
+                          if (el) {
+                            e.preventDefault()
+                            el.scrollIntoView({ behavior: 'smooth' })
+                          }
+                        }
+                      }}
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        'bg-transparent hover:bg-muted-light focus:bg-muted-light text-sm font-semibold text-foreground/80 transition-colors',
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </nav>
+
+          {/* Right Side Actions */}
+          <div className={cn('flex', 'items-center', 'gap-1.5', 'sm:gap-2')}>
+            {/* Search Button */}
+            <Button
+              onClick={() => setIsSearchOpen(true)}
+              variant="ghost"
+              className={cn(
+                'hidden lg:flex items-center gap-2 h-9 rounded-full bg-muted/50 hover:bg-muted transition-all px-4',
+                'text-muted-foreground/85 hover:text-foreground/80 border border-transparent hover:border-border',
+              )}
+              aria-label="Search (⌘K)"
+              title="Search (⌘K)"
+            >
+              <Search className="h-4 w-4 shrink-0" />
+              <span className="text-sm font-medium">Search...</span>
+              <kbd className="ml-1 pointer-events-none hidden select-none items-center gap-0.5 rounded border border-border/120 bg-card px-1.5 py-0.5 font-sans text-[10px] font-bold text-muted-foreground/85 opacity-100 sm:flex">
+                ⌘K
+              </kbd>
+            </Button>
+            {/* Mobile search icon */}
+            <Button
+              onClick={() => setIsSearchOpen(true)}
+              variant="ghost"
+              size="icon"
+              className={cn(
+                'flex lg:hidden h-10 w-10 rounded-full text-muted-foreground',
+                'hover:bg-muted/50 hover:text-foreground transition-all active:scale-95',
+              )}
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+
+            {/* Download App Button */}
+            <Link to="/download" className={cn('hidden', 'sm:block')}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  'h-10',
+                  'w-10',
+                  'rounded-full',
+                  'text-muted-foreground',
+                  'hover:bg-muted/50',
+                  'hover:text-foreground',
+                  'transition-all',
+                  'active:scale-95',
+                )}
+                aria-label="Download App"
+              >
+                <Smartphone className={cn('h-5', 'w-5')} />
+              </Button>
+            </Link>
+
+            {/* Wishlist Button */}
+            <Link to="/wishlist" className={cn('hidden', 'sm:block')}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  'group',
+                  'relative',
+                  'h-10',
+                  'w-10',
+                  'rounded-full',
+                  'text-muted-foreground',
+                  'hover:bg-muted/50',
+                  'hover:text-foreground',
+                  'transition-all',
+                  'active:scale-95',
+                )}
+                aria-label="Wishlist"
+              >
+                <Heart className={cn('h-5', 'w-5')} />
+                {count > 0 && (
+                  <span
+                    className={cn(
+                      'absolute',
+                      '-right-1.5',
+                      '-top-1.5',
+                      'flex',
+                      'h-5',
+                      'w-5',
+                      'items-center',
+                      'justify-center',
+                      'rounded-full',
+                      'bg-primary',
+                      'text-[10px]',
+                      'font-bold',
+                      'text-primary-foreground',
+                      'shadow-lg',
+                      'border',
+                      'border-card',
+                    )}
+                  >
+                    {count > 99 ? '99+' : count}
+                  </span>
+                )}
+              </Button>
+            </Link>
+
+            {/* User Menu */}
+            {isPending ? (
+              <div
+                className={cn(
+                  'h-10',
+                  'w-10',
+                  'animate-pulse',
+                  'rounded-full',
+                  'bg-muted',
+                )}
+              />
+            ) : session?.user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      'relative',
+                      'flex',
+                      'items-center',
+                      'gap-2',
+                      'p-0.5',
+                      'pr-1.5',
+                      'h-auto',
+                      'hover:bg-muted/50',
+                      'transition-all',
+                      'active:scale-95',
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'relative',
+                        'h-9',
+                        'w-9',
+                        'rounded-full',
+                        'border-2',
+                        'border-border',
+                      )}
+                    >
+                      <Avatar className={cn('h-full', 'w-full')}>
+                        <AvatarImage
+                          src={session.user.image || ''}
+                          alt={session.user.name}
+                        />
+                        <AvatarFallback
+                          className={cn(
+                            'bg-primary/10',
+                            'text-sm',
+                            'font-bold',
+                            'text-primary',
+                          )}
+                        >
+                          {session.user.name?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span
+                        className={cn(
+                          'absolute',
+                          '-bottom-0.5',
+                          '-right-0.5',
+                          'h-3',
+                          'w-3',
+                          'rounded-full',
+                          'bg-primary',
+                          'border-2',
+                          'border-card',
+                          'shadow-sm',
+                        )}
+                      >
+                        <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75" />
+                      </span>
+                    </div>
+                    <ChevronDown
+                      className={cn(
+                        'hidden',
+                        'sm:block',
+                        'h-4',
+                        'w-4',
+                        'text-muted-dark',
+                        'transition-transform',
+                        'group-data-[state=open]:rotate-180',
+                      )}
+                    />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className={cn(
+                    'w-64',
+                    'p-3',
+                    'rounded-2xl',
+                    'bg-card',
+                    'border',
+                    'border-border',
+                    'shadow-lg',
+                  )}
+                  align="end"
+                  sideOffset={12}
+                >
+                  <div className="space-y-3">
+                    {/* User Profile Header */}
+                    <Link
+                      to="/account"
+                      className={cn(
+                        'flex',
+                        'items-center',
+                        'gap-3',
+                        'p-2',
+                        'rounded-xl',
+                        'transition-colors',
+                        'hover:bg-muted-light',
+                      )}
+                    >
+                      <Avatar
+                        className={cn(
+                          'h-12',
+                          'w-12',
+                          'border',
+                          'border-border',
+                        )}
+                      >
+                        <AvatarImage
+                          src={session.user.image || ''}
+                          alt={session.user.name}
+                        />
+                        <AvatarFallback
+                          className={cn(
+                            'bg-primary/10',
+                            'text-sm',
+                            'font-bold',
+                            'text-primary',
+                          )}
+                        >
+                          {session.user.name?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className={cn('flex-1', 'min-w-0')}>
+                        <div
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-1.5',
+                            'flex-wrap',
+                          )}
+                        >
+                          <span
+                            className={cn(
+                              'font-bold',
+                              'text-foreground',
+                              'text-sm',
+                              'truncate',
+                            )}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M5 13l4 4L19 7"
-                            />
+                            {session.user.name}
+                          </span>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                              'truncate',
+                            )}
+                          >
+                            {session.user.email}
+                          </p>
+                        </div>
+
+                        <span
+                          className={cn(
+                            'inline-flex',
+                            'items-center',
+                            'gap-0.5',
+                            'rounded-full',
+                            'bg-primary-soft/80',
+                            'px-1.5',
+                            'py-0.5',
+                            'text-[8px]',
+                            'font-bold',
+                            'text-primary-hover',
+                          )}
+                        >
+                          <svg
+                            className={cn('h-2', 'w-2')}
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                           </svg>
                           Verified
                         </span>
+                        <span
+                          className={cn(
+                            'inline-flex',
+                            'items-center',
+                            'gap-0.5',
+                            'rounded-full',
+                            'bg-emerald-100',
+                            'px-1.5',
+                            'py-0.5',
+                            'text-[8px]',
+                            'font-bold',
+                            'text-emerald-700',
+                          )}
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          Online
+                        </span>
                       </div>
-                      <p className="text-[11px] text-muted-foreground truncate mt-1">
-                        {session.user.email}
-                      </p>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground/60 shrink-0" />
-                  </Link>
+                      <ChevronRight
+                        className={cn(
+                          'h-4',
+                          'w-4',
+                          'text-muted-dark',
+                          'shrink-0',
+                        )}
+                      />
+                    </Link>
 
-                  {/* Green Member Banner */}
-                  <div className="mt-1 flex items-center justify-between gap-3 rounded-xl bg-accent/30 p-3 border border-accent/20">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/80 text-primary">
-                        <Leaf className="h-4 w-4" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[11px] font-bold text-accent-foreground leading-tight">
-                          Green Member
-                        </span>
-                        <span className="text-[9px] text-muted-foreground/80 leading-none mt-0.5">
-                          You're saving the planet!
-                        </span>
+                    {/* Green Member Banner */}
+                    <div
+                      className={cn(
+                        'rounded-xl',
+                        'bg-linear-to-r',
+                        'from-green-50',
+                        'to-emerald-50',
+                        'p-3',
+                        'border',
+                        'border-primary-border',
+                      )}
+                    >
+                      <div className={cn('flex', 'items-center', 'gap-2.5')}>
+                        <div
+                          className={cn(
+                            'flex',
+                            'h-8',
+                            'w-8',
+                            'shrink-0',
+                            'items-center',
+                            'justify-center',
+                            'rounded-full',
+                            'bg-primary-soft/80',
+                            'text-primary-hover',
+                          )}
+                        >
+                          <Leaf className={cn('h-4', 'w-4')} />
+                        </div>
+                        <div className="flex-1">
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'font-bold',
+                              'text-green-900',
+                            )}
+                          >
+                            Green Member
+                          </p>
+                          <p className={cn('text-[11px]', 'text-primary-hover')}>
+                            You're saving the planet! 🌍
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <Link
-                      to="/about"
-                      className="text-[10px] font-bold text-accent-foreground underline hover:text-primary transition-colors shrink-0"
-                    >
-                      View Impact
+                  </div>
+
+                  <DropdownMenuSeparator className="my-2" />
+
+                  {/* Menu Items */}
+                  <div className="space-y-1">
+                    <Link to="/account">
+                      <DropdownMenuItem
+                        className={cn(
+                          'flex',
+                          'items-center',
+                          'gap-3',
+                          'px-3',
+                          'py-2',
+                          'rounded-lg',
+                          'cursor-pointer',
+                          'transition-colors',
+                        )}
+                      >
+                        <User className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <div>
+                          <p
+                            className={cn(
+                              'text-sm',
+                              'font-medium',
+                              'text-foreground',
+                            )}
+                          >
+                            My Profile
+                          </p>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            Manage your profile
+                          </p>
+                        </div>
+                      </DropdownMenuItem>
+                    </Link>
+
+                    <Link to="/account/bookings">
+                      <DropdownMenuItem
+                        className={cn(
+                          'flex',
+                          'items-center',
+                          'gap-3',
+                          'px-3',
+                          'py-2',
+                          'rounded-lg',
+                          'cursor-pointer',
+                          'transition-colors',
+                        )}
+                      >
+                        <Calendar
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                        />
+                        <div>
+                          <p
+                            className={cn(
+                              'text-sm',
+                              'font-medium',
+                              'text-foreground',
+                            )}
+                          >
+                            My Bookings
+                          </p>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            View your bookings
+                          </p>
+                        </div>
+                      </DropdownMenuItem>
+                    </Link>
+
+                    {(session.user.role === 'owner' ||
+                      session.user.role === 'admin' ||
+                      session.user.role === 'superAdmin') && (
+                      <Link to="/account/listings">
+                        <DropdownMenuItem
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-3',
+                            'px-3',
+                            'py-2',
+                            'rounded-lg',
+                            'cursor-pointer',
+                            'transition-colors',
+                          )}
+                        >
+                          <Percent
+                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          />
+                          <div>
+                            <p
+                              className={cn(
+                                'text-sm',
+                                'font-medium',
+                                'text-foreground',
+                              )}
+                            >
+                              My Listings
+                            </p>
+                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                              Manage your items
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+
+                    {(session.user.role === 'owner' ||
+                      session.user.role === 'admin' ||
+                      session.user.role === 'superAdmin') && (
+                      <Link to="/owner/dashboard">
+                        <DropdownMenuItem
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-3',
+                            'px-3',
+                            'py-2',
+                            'rounded-lg',
+                            'cursor-pointer',
+                            'transition-colors',
+                          )}
+                        >
+                          <LayoutDashboard
+                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          />
+                          <div>
+                            <p
+                              className={cn(
+                                'text-sm',
+                                'font-medium',
+                                'text-foreground',
+                              )}
+                            >
+                              Dashboard
+                            </p>
+                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                              View statistics
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+
+                    {(session.user.role === 'admin' ||
+                      session.user.role === 'superAdmin') && (
+                      <Link to="/admin/dashboard">
+                        <DropdownMenuItem
+                          className={cn(
+                            'flex',
+                            'items-center',
+                            'gap-3',
+                            'px-3',
+                            'py-2',
+                            'rounded-lg',
+                            'cursor-pointer',
+                            'transition-colors',
+                          )}
+                        >
+                          <LayoutDashboard
+                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          />
+                          <div>
+                            <p
+                              className={cn(
+                                'text-sm',
+                                'font-medium',
+                                'text-foreground',
+                              )}
+                            >
+                              Admin
+                            </p>
+                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                              System management
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
+
+                    <Link to="/wishlist">
+                      <DropdownMenuItem
+                        className={cn(
+                          'flex',
+                          'items-center',
+                          'gap-3',
+                          'px-3',
+                          'py-2',
+                          'rounded-lg',
+                          'cursor-pointer',
+                          'transition-colors',
+                          'sm:hidden',
+                        )}
+                      >
+                        <Heart className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <div>
+                          <p
+                            className={cn(
+                              'text-sm',
+                              'font-medium',
+                              'text-foreground',
+                            )}
+                          >
+                            Wishlist
+                          </p>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            Saved items
+                          </p>
+                        </div>
+                      </DropdownMenuItem>
+                    </Link>
+
+                    <Link to="/account/reviews">
+                      <DropdownMenuItem
+                        className={cn(
+                          'flex',
+                          'items-center',
+                          'gap-3',
+                          'px-3',
+                          'py-2',
+                          'rounded-lg',
+                          'cursor-pointer',
+                          'transition-colors',
+                        )}
+                      >
+                        <Star className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <div>
+                          <p
+                            className={cn(
+                              'text-sm',
+                              'font-medium',
+                              'text-foreground',
+                            )}
+                          >
+                            Reviews
+                          </p>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            Your feedback
+                          </p>
+                        </div>
+                      </DropdownMenuItem>
+                    </Link>
+
+                    <Link to="/account/messages">
+                      <DropdownMenuItem
+                        className={cn(
+                          'flex',
+                          'items-center',
+                          'gap-3',
+                          'px-3',
+                          'py-2',
+                          'rounded-lg',
+                          'cursor-pointer',
+                          'transition-colors',
+                        )}
+                      >
+                        <MessageSquare
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                        />
+                        <div>
+                          <p
+                            className={cn(
+                              'text-sm',
+                              'font-medium',
+                              'text-foreground',
+                            )}
+                          >
+                            Messages
+                          </p>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            Conversations
+                          </p>
+                        </div>
+                      </DropdownMenuItem>
                     </Link>
                   </div>
-                </div>
 
-                <DropdownMenuSeparator className="my-2 bg-border/60" />
+                  <DropdownMenuSeparator className="my-2" />
 
-                <div className="flex flex-col gap-0.5">
-                  {/* My Profile */}
-                  <Link to="/account">
-                    <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                      <User className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-foreground leading-snug">
-                          My Profile
-                        </span>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                          View and edit your profile
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </Link>
-
-                  {/* My Bookings */}
-                  <Link to="/account/bookings">
-                    <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                      <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-foreground leading-snug">
-                          My Bookings
-                        </span>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                          Check your upcoming and past bookings
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </Link>
-
-                  {/* My Listings / Become Host */}
-                  {session.user.role === 'owner' ||
-                  session.user.role === 'admin' ||
-                  session.user.role === 'superAdmin' ? (
-                    <Link to="/account/listings">
-                      <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                        <Percent className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs font-bold text-foreground leading-snug">
-                            My Listings
-                          </span>
-                          <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                            Manage your listed items
-                          </span>
+                  <div className="space-y-1">
+                    <Link to="/account/profile">
+                      <DropdownMenuItem
+                        className={cn(
+                          'flex',
+                          'items-center',
+                          'gap-3',
+                          'px-3',
+                          'py-2',
+                          'rounded-lg',
+                          'cursor-pointer',
+                          'transition-colors',
+                        )}
+                      >
+                        <Settings
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                        />
+                        <div>
+                          <p
+                            className={cn(
+                              'text-sm',
+                              'font-medium',
+                              'text-foreground',
+                            )}
+                          >
+                            Settings
+                          </p>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            Preferences
+                          </p>
                         </div>
                       </DropdownMenuItem>
                     </Link>
-                  ) : (
-                    <Link to="/become-lister">
-                      <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                        <Percent className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs font-bold text-foreground leading-snug">
-                            Become a Host
-                          </span>
-                          <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                            Earn income renting your items
-                          </span>
+
+                    <Link to="/help">
+                      <DropdownMenuItem
+                        className={cn(
+                          'flex',
+                          'items-center',
+                          'gap-3',
+                          'px-3',
+                          'py-2',
+                          'rounded-lg',
+                          'cursor-pointer',
+                          'transition-colors',
+                        )}
+                      >
+                        <HelpCircle
+                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                        />
+                        <div>
+                          <p
+                            className={cn(
+                              'text-sm',
+                              'font-medium',
+                              'text-foreground',
+                            )}
+                          >
+                            Help & Support
+                          </p>
+                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            Get assistance
+                          </p>
                         </div>
                       </DropdownMenuItem>
                     </Link>
+                  </div>
+
+                  <DropdownMenuSeparator className="my-2" />
+
+                  <DropdownMenuItem
+                    className={cn(
+                      'flex',
+                      'items-center',
+                      'gap-3',
+                      'px-3',
+                      'py-2',
+                      'rounded-lg',
+                      'cursor-pointer',
+                      'text-destructive',
+                      'hover:text-destructive',
+                      'hover:bg-danger',
+                      'transition-colors',
+                    )}
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className={cn('h-4', 'w-4')} />
+                    <p className={cn('text-sm', 'font-medium')}>Sign Out</p>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login" className={cn('hidden', 'sm:block')}>
+                <Button
+                  className={cn(
+                    'gap-2',
+                    'rounded-full',
+                    'bg-primary',
+                    'px-6',
+                    'py-2.5',
+                    'h-auto',
+                    'text-sm',
+                    'font-semibold',
+                    'text-primary-foreground',
+                    'transition-all',
+                    'hover:bg-primary-hover',
+                    'active:scale-95',
                   )}
-
-                  {/* Owner Dashboard */}
-                  {(session.user.role === 'owner' ||
-                    session.user.role === 'admin' ||
-                    session.user.role === 'superAdmin') && (
-                    <Link to="/owner/dashboard">
-                      <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                        <LayoutDashboard className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs font-bold text-foreground leading-snug">
-                            Owner Dashboard
-                          </span>
-                          <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                            Manage bookings and listings performance
-                          </span>
-                        </div>
-                      </DropdownMenuItem>
-                    </Link>
-                  )}
-
-                  {/* Admin Dashboard */}
-                  {(session.user.role === 'admin' ||
-                    session.user.role === 'superAdmin') && (
-                    <Link to="/admin/dashboard">
-                      <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                        <LayoutDashboard className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs font-bold text-foreground leading-snug">
-                            Admin Dashboard
-                          </span>
-                          <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                            System overview and administration
-                          </span>
-                        </div>
-                      </DropdownMenuItem>
-                    </Link>
-                  )}
-
-                  {/* Wishlist */}
-                  <Link to="/wishlist">
-                    <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                      <Heart className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-foreground leading-snug">
-                          Wishlist
-                        </span>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                          Items you love
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </Link>
-
-                  {/* Reviews */}
-                  <Link to="/account/reviews">
-                    <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                      <Star className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-foreground leading-snug">
-                          Reviews
-                        </span>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                          Reviews you've given and received
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </Link>
-
-                  {/* Messages / Notifications */}
-                  <Link to="/account/notifications">
-                    <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                      <MessageSquare className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-foreground leading-snug">
-                          Messages
-                        </span>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                          Chat with hosts and members
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </Link>
-                </div>
-
-                <DropdownMenuSeparator className="my-2 bg-border/60" />
-
-                <div className="flex flex-col gap-0.5">
-                  {/* Settings */}
-                  <Link to="/account/profile">
-                    <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                      <Settings className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-foreground leading-snug">
-                          Settings
-                        </span>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                          Account, privacy and preferences
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </Link>
-
-                  {/* Help & Support */}
-                  <Link to="/help">
-                    <DropdownMenuItem className="flex items-start gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors focus:bg-accent/40">
-                      <HelpCircle className="mt-0.5 h-4 w-4 text-muted-foreground/70 shrink-0" />
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-foreground leading-snug">
-                          Help & Support
-                        </span>
-                        <span className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                          Get help and view FAQs
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  </Link>
-                </div>
-
-                <DropdownMenuSeparator className="my-2 bg-border/60" />
-
-                {/* Log Out */}
-                <DropdownMenuItem
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/5 transition-colors"
-                  onClick={handleSignOut}
                 >
-                  <LogOut className="h-4 w-4 text-destructive shrink-0" />
-                  <span className="text-xs font-bold text-destructive">
-                    Log out
-                  </span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Link to="/login">
-              <Button className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 h-auto text-[13px] font-bold text-primary-foreground transition-all hover:bg-primary/90 active:scale-95 sm:inline-flex cursor-pointer">
-                Sign in
-                <ArrowUpRight className="h-3.5 w-3.5" />
-              </Button>
-            </Link>
-          )}
+                  Sign in
+                  <ArrowUpRight className={cn('h-4', 'w-4')} />
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Search Dialog */}
+      <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+    </>
   )
 }

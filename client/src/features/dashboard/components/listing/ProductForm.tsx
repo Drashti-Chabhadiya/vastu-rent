@@ -60,7 +60,7 @@ export const ProductForm = ({
   return (
     <div className="space-y-6">
       {/* Hero Preview Section */}
-      <div className="relative group overflow-hidden rounded-xl bg-gray-50 border border-gray-100 min-h-[220px] flex items-center justify-center shadow-inner">
+      <div className="relative group overflow-hidden rounded-xl bg-muted-light border border-border/30 min-h-[220px] flex items-center justify-center shadow-inner">
         {form.watch('images').length > 0 ? (
           <img
             src={form.watch('images')[0]}
@@ -69,8 +69,8 @@ export const ProductForm = ({
           />
         ) : (
           <div className="text-center p-8">
-            <PackagePlus size={32} className="text-gray-300 mx-auto mb-3" />
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">
+            <PackagePlus size={32} className="text-muted-dark mx-auto mb-3" />
+            <p className="text-sm font-bold text-muted-foreground/70 uppercase tracking-widest">
               No photos uploaded
             </p>
           </div>
@@ -83,7 +83,7 @@ export const ProductForm = ({
           name="title"
           render={({ field }) => (
             <FormItem className="col-span-full">
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Type size={14} className="text-dash-brand" />
                 Product Title
               </FormLabel>
@@ -91,7 +91,7 @@ export const ProductForm = ({
                 <Input
                   placeholder="e.g. Canon EOS R5 Camera"
                   {...field}
-                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
               </FormControl>
               <FormMessage />
@@ -104,7 +104,7 @@ export const ProductForm = ({
           name="images"
           render={({ field }) => (
             <FormItem className="col-span-full">
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <ImageIcon size={14} className="text-dash-brand" />
                 Product Photos
               </FormLabel>
@@ -125,7 +125,7 @@ export const ProductForm = ({
           name="description"
           render={({ field }) => (
             <FormItem className="col-span-full">
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <AlignLeft size={14} className="text-dash-brand" />
                 Description
               </FormLabel>
@@ -133,7 +133,7 @@ export const ProductForm = ({
                 <Textarea
                   placeholder="Describe the item, features, and condition..."
                   {...field}
-                  className="min-h-[120px] w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                  className="min-h-[120px] w-full px-4 py-3 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
               </FormControl>
               <FormMessage />
@@ -146,7 +146,7 @@ export const ProductForm = ({
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <IndianRupee size={14} className="text-dash-brand" />
                 Price / Day
               </FormLabel>
@@ -154,7 +154,7 @@ export const ProductForm = ({
                 <Input
                   type="number"
                   {...field}
-                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
               </FormControl>
               <FormMessage />
@@ -167,7 +167,7 @@ export const ProductForm = ({
           name="securityDeposit"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <ShieldCheck size={14} className="text-dash-brand" />
                 Security Deposit (Refundable)
               </FormLabel>
@@ -176,7 +176,7 @@ export const ProductForm = ({
                   type="number"
                   placeholder="2000"
                   {...field}
-                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
               </FormControl>
               <FormMessage />
@@ -189,7 +189,7 @@ export const ProductForm = ({
           name="city"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <MapPin size={14} className="text-dash-brand" />
                 City
               </FormLabel>
@@ -197,7 +197,7 @@ export const ProductForm = ({
                 <Input
                   placeholder="Mumbai, MH"
                   {...field}
-                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
               </FormControl>
               <FormMessage />
@@ -210,7 +210,7 @@ export const ProductForm = ({
           name="location"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <MapPin size={14} className="text-dash-brand" />
                 Location
               </FormLabel>
@@ -218,7 +218,7 @@ export const ProductForm = ({
                 <Input
                   placeholder="Mumbai, MH"
                   {...field}
-                  className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 placeholder:text-gray-400 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
               </FormControl>
               <FormMessage />
@@ -226,13 +226,12 @@ export const ProductForm = ({
           )}
         />
 
-
         <FormField<ListingSchema>
           control={form.control}
           name="categoryId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Tag size={14} className="text-dash-brand" />
                 Category
               </FormLabel>
@@ -241,11 +240,11 @@ export const ProductForm = ({
                 value={field.value as string}
               >
                 <FormControl>
-                  <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-gray-50/50 transition-all">
+                  <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
+                <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
                   {categories.map((cat) => (
                     <SelectItem
                       key={cat.id}
@@ -267,7 +266,7 @@ export const ProductForm = ({
           name="ownerId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[13px] font-bold text-gray-900 ml-1 flex items-center gap-2">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <User size={14} className="text-dash-brand" />
                 Provider
               </FormLabel>
@@ -277,13 +276,13 @@ export const ProductForm = ({
                 disabled={isOwner}
               >
                 <FormControl>
-                  <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-white text-[15px] text-gray-900 focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-gray-50/50 transition-all disabled:opacity-100 disabled:bg-gray-50">
+                  <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all disabled:opacity-100 disabled:bg-muted-light">
                     <SelectValue
                       placeholder={isOwner ? currentUser.name : 'Select Owner'}
                     />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-white rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
+                <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
                   {isOwner ? (
                     <SelectItem
                       key={currentUser.id}

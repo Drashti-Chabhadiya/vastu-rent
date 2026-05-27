@@ -288,7 +288,10 @@ export function JournalPage() {
                 placeholder="Email address"
                 className="h-14 w-full rounded-full border border-background/20 bg-background/5 px-8 text-background outline-none transition-all focus:border-background sm:w-[350px]"
               />
-              <Button variant="outline" className="h-14 w-full rounded-full bg-background border-none hover:bg-background/90 px-10 text-[14px] font-bold text-foreground transition-all active:scale-[0.98] sm:w-auto">
+              <Button
+                variant="outline"
+                className="h-14 w-full rounded-full bg-background border-none hover:bg-background/90 px-10 text-[14px] font-bold text-foreground transition-all active:scale-[0.98] sm:w-auto"
+              >
                 Subscribe
               </Button>
             </form>
@@ -298,4 +301,3 @@ export function JournalPage() {
     </div>
   )
 }
-

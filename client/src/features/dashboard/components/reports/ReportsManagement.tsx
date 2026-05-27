@@ -30,8 +30,8 @@ export const ReportsManagement = () => {
       value: '₹12,45,000',
       sub: '+22.4% from last week',
       icon: IndianRupee,
-      color: 'text-blue-500',
-      bg: 'bg-blue-50',
+      color: 'text-info-foreground',
+      bg: 'bg-info',
     },
     {
       label: 'Total Users',
@@ -54,8 +54,8 @@ export const ReportsManagement = () => {
       value: '890',
       sub: '+9.5% from last week',
       icon: Star,
-      color: 'text-rose-500',
-      bg: 'bg-rose-50',
+      color: 'text-danger-foreground',
+      bg: 'bg-danger',
     },
   ]
 
@@ -101,22 +101,22 @@ export const ReportsManagement = () => {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Breadcrumbs */}
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
+        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
           <span>Dashboard</span>
-          <ChevronRight size={10} className="text-slate-300" />
+          <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold uppercase tracking-widest">
             Reports
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black text-[#1e293b]">Reports</h1>
-          <div className="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-100 shadow-sm">
-            <div className="flex items-center gap-2 px-4 py-1.5 border-r border-slate-50">
+          <h1 className="text-xl font-black text-foreground">Reports</h1>
+          <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border/30 shadow-sm">
+            <div className="flex items-center gap-2 px-4 py-1.5 border-r border-border/30">
               <Calendar size={14} className="text-dash-brand" />
-              <span className="text-[11px] font-bold text-slate-600">
+              <span className="text-[11px] font-bold text-muted-foreground">
                 May 12 - May 18, 2024
               </span>
-              <ChevronRight size={12} className="rotate-90 text-slate-300" />
+              <ChevronRight size={12} className="rotate-90 text-muted-dark" />
             </div>
             <div className="p-1.5 px-2">
               <div className="w-6 h-6 rounded-lg bg-dash-brand/5 flex items-center justify-center text-dash-brand">
@@ -128,15 +128,15 @@ export const ReportsManagement = () => {
       </div>
 
       {/* Overview Stats */}
-      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm overflow-x-auto scrollbar-hide">
+      <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-x-auto scrollbar-hide">
         <div className="mb-8">
-          <h3 className="text-[15px] font-black text-[#1e293b]">Overview</h3>
+          <h3 className="text-[15px] font-black text-foreground">Overview</h3>
         </div>
         <div className="flex gap-6 min-w-max pb-2">
           {stats.map((stat, i) => (
             <div
               key={i}
-              className="flex-1 min-w-[200px] flex items-center gap-4 p-5 rounded-3xl border border-slate-50 bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] transition-all hover:shadow-md cursor-default group"
+              className="flex-1 min-w-[200px] flex items-center gap-4 p-5 rounded-3xl border border-border/30 bg-card shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] transition-all hover:shadow-md cursor-default group"
             >
               <div
                 className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform group-hover:scale-110`}
@@ -144,10 +144,10 @@ export const ReportsManagement = () => {
                 <stat.icon size={22} strokeWidth={2.5} />
               </div>
               <div className="space-y-0.5">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <p className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
                   {stat.label}
                 </p>
-                <p className="text-lg font-black text-[#1e293b]">
+                <p className="text-lg font-black text-foreground">
                   {stat.value}
                 </p>
                 <p className={`text-[9px] font-bold ${stat.color}`}>
@@ -164,15 +164,15 @@ export const ReportsManagement = () => {
         {/* Left Column: Chart & Table */}
         <div className="lg:col-span-2 space-y-6">
           {/* Revenue Overview Chart */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-[15px] font-black text-[#1e293b]">
+              <h3 className="text-[15px] font-black text-foreground">
                 Revenue Overview
               </h3>
               <div className="relative">
                 <Button
                   variant="ghost"
-                  className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl text-[11px] font-black text-slate-700 h-auto active:scale-[0.98] transition-all cursor-pointer hover:bg-slate-100"
+                  className="flex items-center gap-2 bg-muted-light px-4 py-2 rounded-xl text-[11px] font-black text-foreground/80 h-auto active:scale-[0.98] transition-all cursor-pointer hover:bg-muted/50"
                 >
                   This Week <ChevronDown size={14} />
                 </Button>
@@ -184,10 +184,10 @@ export const ReportsManagement = () => {
               <div className="absolute inset-0 flex flex-col justify-between py-2">
                 {[200000, 150000, 100000, 50000, 0].map((val) => (
                   <div key={val} className="flex items-center gap-4">
-                    <span className="text-[10px] font-bold text-slate-300 w-12">
+                    <span className="text-[10px] font-bold text-muted-dark w-12">
                       ₹{val.toLocaleString()}
                     </span>
-                    <div className="flex-1 h-px bg-slate-50"></div>
+                    <div className="flex-1 h-px bg-muted-light"></div>
                   </div>
                 ))}
               </div>
@@ -233,12 +233,12 @@ export const ReportsManagement = () => {
               </svg>
 
               {/* Tooltip Mock */}
-              <div className="absolute top-[30px] left-[320px] bg-[#1e293b] p-3 rounded-2xl shadow-xl z-10 pointer-events-none animate-in fade-in zoom-in duration-300">
-                <p className="text-[8px] font-bold text-slate-400 mb-1">
+              <div className="absolute top-[30px] left-[320px] bg-foreground p-3 rounded-2xl shadow-xl z-10 pointer-events-none animate-in fade-in zoom-in duration-300">
+                <p className="text-[8px] font-bold text-muted-dark mb-1">
                   15 May 2024
                 </p>
-                <p className="text-[14px] font-black text-white">₹1,85,000</p>
-                <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-[#1e293b] rotate-45"></div>
+                <p className="text-[14px] font-black text-primary-foreground">₹1,85,000</p>
+                <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-foreground rotate-45"></div>
               </div>
 
               {/* X-Axis Labels */}
@@ -254,7 +254,7 @@ export const ReportsManagement = () => {
                 ].map((day) => (
                   <span
                     key={day}
-                    className="text-[10px] font-bold text-slate-400"
+                    className="text-[10px] font-bold text-muted-dark"
                   >
                     {day}
                   </span>
@@ -264,16 +264,16 @@ export const ReportsManagement = () => {
           </div>
 
           {/* Top Performing Categories */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="text-[15px] font-black text-[#1e293b]">
+                <h3 className="text-[15px] font-black text-foreground">
                   Top Performing Categories
                 </h3>
               </div>
               <Button
                 variant="link"
-                className="text-[11px] font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer font-sans"
+                className="text-[11px] font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer font-sans"
               >
                 View Full Report
               </Button>
@@ -281,37 +281,37 @@ export const ReportsManagement = () => {
             <div className="overflow-x-auto -mx-2">
               <table className="w-full">
                 <thead>
-                  <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                  <tr className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
                     <th className="text-left px-4 py-3">Category</th>
                     <th className="text-left px-4 py-3">Total Orders</th>
                     <th className="text-left px-4 py-3">Revenue</th>
                     <th className="text-left px-4 py-3">Growth</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-border/30">
                   {categories.map((cat, i) => (
                     <tr
                       key={i}
-                      className="group hover:bg-slate-50/50 transition-all"
+                      className="group hover:bg-muted-light/50 transition-all"
                     >
                       <td className="px-4 py-5">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+                          <div className="w-10 h-10 rounded-lg bg-muted/50 overflow-hidden flex-shrink-0">
                             {/* Placeholder for category image */}
                             <Layout
                               size={16}
-                              className="w-full h-full p-2.5 text-slate-300"
+                              className="w-full h-full p-2.5 text-muted-dark"
                             />
                           </div>
-                          <p className="text-[12px] font-black text-[#1e293b]">
+                          <p className="text-[12px] font-black text-foreground">
                             {cat.name}
                           </p>
                         </div>
                       </td>
-                      <td className="px-4 py-5 font-bold text-slate-700 text-[12px]">
+                      <td className="px-4 py-5 font-bold text-foreground/80 text-[12px]">
                         {cat.orders}
                       </td>
-                      <td className="px-4 py-5 font-black text-[#1e293b] text-[12px]">
+                      <td className="px-4 py-5 font-black text-foreground text-[12px]">
                         {cat.revenue}
                       </td>
                       <td className="px-4 py-5">
@@ -319,7 +319,7 @@ export const ReportsManagement = () => {
                           className={`px-2 py-0.5 rounded-lg border-none text-[8px] font-black ${
                             cat.growth.includes('+')
                               ? 'bg-emerald-50 text-emerald-600'
-                              : 'bg-rose-50 text-rose-500'
+                              : 'bg-danger text-danger-foreground'
                           }`}
                         >
                           {cat.growth.includes('+') ? '↑' : '↓'}{' '}
@@ -333,7 +333,7 @@ export const ReportsManagement = () => {
             </div>
             <Button
               variant="ghost"
-              className="w-full mt-6 h-12 bg-slate-50 rounded-2xl text-[11px] font-black text-slate-700 flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full mt-6 h-12 bg-muted-light rounded-2xl text-[11px] font-black text-foreground/80 flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer"
             >
               <FileText size={16} /> View Category Report
             </Button>
@@ -343,14 +343,14 @@ export const ReportsManagement = () => {
         {/* Right Column: Reports Summary & Downloads */}
         <div className="space-y-6">
           {/* Reports Summary */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-[15px] font-black text-[#1e293b]">
+              <h3 className="text-[15px] font-black text-foreground">
                 Reports Summary
               </h3>
               <Button
                 variant="link"
-                className="text-[11px] font-extrabold text-[#15803d] hover:text-[#166534] hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer font-sans"
+                className="text-[11px] font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer font-sans"
               >
                 View All
               </Button>
@@ -367,7 +367,7 @@ export const ReportsManagement = () => {
                   label: 'User Report',
                   desc: 'Summary of user registrations and activity',
                   icon: Users,
-                  color: 'bg-blue-50 text-blue-600',
+                  color: 'bg-info text-info-foreground',
                 },
                 {
                   label: 'Order Report',
@@ -385,7 +385,7 @@ export const ReportsManagement = () => {
                   label: 'Review Report',
                   desc: 'Summary of reviews and ratings',
                   icon: Star,
-                  color: 'bg-rose-50 text-rose-600',
+                  color: 'bg-danger text-danger-foreground',
                 },
                 {
                   label: 'Payout Report',
@@ -396,7 +396,7 @@ export const ReportsManagement = () => {
               ].map((report, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 transition-all cursor-pointer group border border-transparent hover:border-slate-100"
+                  className="flex items-center justify-between p-4 rounded-2xl hover:bg-muted-light transition-all cursor-pointer group border border-transparent hover:border-border/30"
                 >
                   <div className="flex items-center gap-3">
                     <div
@@ -405,17 +405,17 @@ export const ReportsManagement = () => {
                       <report.icon size={16} strokeWidth={2.5} />
                     </div>
                     <div>
-                      <p className="text-[11px] font-black text-[#1e293b]">
+                      <p className="text-[11px] font-black text-foreground">
                         {report.label}
                       </p>
-                      <p className="text-[9px] font-bold text-slate-400">
+                      <p className="text-[9px] font-bold text-muted-dark">
                         {report.desc}
                       </p>
                     </div>
                   </div>
                   <ChevronRight
                     size={14}
-                    className="text-slate-300 group-hover:text-dash-brand"
+                    className="text-muted-dark group-hover:text-dash-brand"
                   />
                 </div>
               ))}
@@ -423,11 +423,11 @@ export const ReportsManagement = () => {
           </div>
 
           {/* Download Reports */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            <h3 className="text-[15px] font-black text-[#1e293b] mb-2">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
+            <h3 className="text-[15px] font-black text-foreground mb-2">
               Download Reports
             </h3>
-            <p className="text-[11px] font-bold text-slate-400 mb-8">
+            <p className="text-[11px] font-bold text-muted-dark mb-8">
               Download and export reports in your preferred format.
             </p>
 
@@ -452,17 +452,17 @@ export const ReportsManagement = () => {
               ].map((dl, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between p-4 rounded-2xl bg-slate-50/50 group hover:bg-slate-50 transition-all"
+                  className="flex items-center justify-between p-4 rounded-2xl bg-muted-light/50 group hover:bg-muted-light transition-all"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-400 group-hover:text-emerald-600 border border-slate-50 shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-card flex items-center justify-center text-muted-dark group-hover:text-emerald-600 border border-border/30 shadow-sm">
                       <Download size={14} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-black text-[#1e293b]">
+                      <p className="text-[10px] font-black text-foreground">
                         {dl.label}
                       </p>
-                      <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight">
+                      <p className="text-[8px] font-bold text-muted-dark uppercase tracking-tight">
                         {dl.type}
                       </p>
                     </div>
@@ -470,7 +470,7 @@ export const ReportsManagement = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-400 hover:text-[#15803d] border border-slate-50 shadow-sm active:scale-[0.98] transition-all p-0 min-w-0"
+                    className="w-8 h-8 rounded-lg bg-card flex items-center justify-center text-muted-dark hover:text-primary border border-border/30 shadow-sm active:scale-[0.98] transition-all p-0 min-w-0"
                   >
                     <Download size={14} />
                   </Button>
@@ -480,7 +480,7 @@ export const ReportsManagement = () => {
 
             <Button
               variant="outline"
-              className="w-full mt-8 h-12 rounded-2xl border-[#e2f5ec] text-[#15803d] font-black text-[11px] flex items-center justify-center gap-2 hover:bg-[#e2f5ec] shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+              className="w-full mt-8 h-12 rounded-2xl border-primary-border text-primary font-black text-[11px] flex items-center justify-center gap-2 hover:bg-primary-soft shadow-sm transition-all active:scale-[0.98] cursor-pointer"
             >
               <Layout size={16} /> View All Reports
             </Button>

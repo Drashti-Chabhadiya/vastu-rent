@@ -7,13 +7,13 @@ export function CategoryList() {
   const { data: categories, isLoading } = useCategories()
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-background py-12">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+          <h1 className="text-4xl font-extrabold text-foreground tracking-tight mb-4">
             Browse by Categories
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Discover a wide range of rental items organized by categories to
             help you find exactly what you need.
           </p>
@@ -24,7 +24,7 @@ export function CategoryList() {
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="h-48 bg-white rounded-3xl animate-pulse border border-gray-100"
+                className="h-48 bg-card rounded-3xl animate-pulse border border-border/30"
               />
             ))}
           </div>
@@ -35,12 +35,12 @@ export function CategoryList() {
                 key={category.id}
                 to="/categories/$id"
                 params={{ id: String(category.id) }}
-                className="group relative bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+                className="group relative bg-card p-8 rounded-[32px] border border-border/30 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
               >
                 {/* Background Decoration */}
                 <div
                   className="absolute -right-4 -top-4 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-150"
-                  style={{ backgroundColor: category.color || '#166534' }}
+                  style={{ backgroundColor: category.color || 'var(--color-primary)' }}
                 />
 
                 <div className="relative z-10 flex flex-col items-center text-center">
@@ -50,11 +50,11 @@ export function CategoryList() {
                     className="mb-6 group-hover:scale-110 transition-transform duration-500"
                   />
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                     {category.name}
                   </h3>
 
-                  <p className="text-sm font-medium text-gray-500 mb-6 uppercase tracking-wider">
+                  <p className="text-sm font-medium text-muted-foreground/85 mb-6 uppercase tracking-wider">
                     {category._count?.products || 0} active listings
                   </p>
 

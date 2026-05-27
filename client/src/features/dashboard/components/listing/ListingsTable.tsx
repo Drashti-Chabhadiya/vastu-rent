@@ -21,11 +21,11 @@ export const ListingsTable = ({
   currentUser,
 }: ListingsTableProps) => {
   return (
-    <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden">
       <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full">
           <thead>
-            <tr className="text-left border-b border-gray-50 bg-gray-50/50">
+            <tr className="text-left border-b border-border/30 bg-muted-light/50">
               <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
                 Listing Info
               </th>
@@ -46,38 +46,38 @@ export const ListingsTable = ({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-border/30">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="animate-pulse">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gray-100 shrink-0" />
+                      <div className="w-12 h-12 rounded-xl bg-muted/50 shrink-0" />
                       <div className="space-y-2">
-                        <div className="h-3.5 bg-gray-200 rounded-md w-28" />
-                        <div className="h-2.5 bg-gray-100 rounded-md w-16" />
+                        <div className="h-3.5 bg-muted rounded-md w-28" />
+                        <div className="h-2.5 bg-muted/50 rounded-md w-16" />
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="h-6 bg-gray-100 rounded-lg w-20" />
+                    <div className="h-6 bg-muted/50 rounded-lg w-20" />
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1.5">
-                      <div className="h-3 bg-gray-200 rounded-md w-20" />
-                      <div className="h-2.5 bg-gray-100 rounded-md w-28" />
+                      <div className="h-3 bg-muted rounded-md w-20" />
+                      <div className="h-2.5 bg-muted/50 rounded-md w-28" />
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="h-4 bg-gray-200 rounded-md w-12 mx-auto" />
+                    <div className="h-4 bg-muted rounded-md w-12 mx-auto" />
                   </td>
                   <td className="px-6 py-4">
-                    <div className="h-8 bg-gray-100 rounded-full w-20 mx-auto" />
+                    <div className="h-8 bg-muted/50 rounded-full w-20 mx-auto" />
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-gray-150" />
-                      <div className="w-8 h-8 rounded-lg bg-gray-150" />
+                      <div className="w-8 h-8 rounded-lg bg-muted/40" />
+                      <div className="w-8 h-8 rounded-lg bg-muted/40" />
                     </div>
                   </td>
                 </tr>
@@ -95,11 +95,11 @@ export const ListingsTable = ({
               products.map((item) => (
                 <tr
                   key={item.id}
-                  className="group hover:bg-gray-50/80 transition-all"
+                  className="group hover:bg-muted-light/80 transition-all"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
-                      <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-gray-100 flex-shrink-0">
+                      <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-border/30 flex-shrink-0">
                         <img
                           src={
                             item.images?.[0] ||
@@ -122,7 +122,7 @@ export const ListingsTable = ({
                   <td className="px-6 py-4">
                     <Badge
                       variant="outline"
-                      className="rounded-lg bg-white border-gray-100 text-dash-text-soft font-bold text-[10px] uppercase tracking-wider h-6"
+                      className="rounded-lg bg-card border-border/30 text-dash-text-soft font-bold text-[10px] uppercase tracking-wider h-6"
                     >
                       {item.category?.name || 'Uncategorized'}
                     </Badge>
@@ -154,8 +154,8 @@ export const ListingsTable = ({
                       className={cn(
                         'inline-flex h-auto items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest transition-all active:scale-[0.98] cursor-pointer hover:bg-transparent',
                         item.isAvailable
-                          ? 'bg-dash-brand/10 text-[#15803d] hover:bg-dash-brand/20 hover:text-[#15803d]'
-                          : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-500',
+                          ? 'bg-dash-brand/10 text-primary hover:bg-dash-brand/20 hover:text-primary'
+                          : 'bg-muted/50 text-muted-foreground/70 hover:bg-muted hover:text-muted-foreground/85',
                       )}
                     >
                       {item.isAvailable ? (
@@ -205,7 +205,7 @@ export const ListingsTable = ({
                           'w-8 h-8 rounded-lg transition-all active:scale-[0.98]',
                           currentUser?.role === 'superAdmin' ||
                             item.ownerId === currentUser?.id
-                            ? 'text-dash-text-soft hover:bg-red-50 hover:text-red-500'
+                            ? 'text-dash-text-soft hover:bg-danger hover:text-destructive'
                             : 'text-dash-text-soft hover:bg-orange-50 hover:text-orange-500',
                         )}
                         title={

@@ -36,7 +36,7 @@ export const UsersManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header & Filters */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card p-4 rounded-2xl border border-border/30 shadow-sm">
         <div className="relative flex-1 max-w-md">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-dash-text-muted z-10"
@@ -56,12 +56,37 @@ export const UsersManagement = () => {
             <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
               <SelectValue placeholder="All Roles" />
             </SelectTrigger>
-            <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-              <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Roles</SelectItem>
-              <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">User</SelectItem>
-              <SelectItem value="owner" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Owner</SelectItem>
-              <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Admin</SelectItem>
-              <SelectItem value="superAdmin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Super Admin</SelectItem>
+            <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+              <SelectItem
+                value="all"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                All Roles
+              </SelectItem>
+              <SelectItem
+                value="user"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                User
+              </SelectItem>
+              <SelectItem
+                value="owner"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Owner
+              </SelectItem>
+              <SelectItem
+                value="admin"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Admin
+              </SelectItem>
+              <SelectItem
+                value="superAdmin"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Super Admin
+              </SelectItem>
             </SelectContent>
           </Select>
 
@@ -69,21 +94,36 @@ export const UsersManagement = () => {
             <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
-            <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-              <SelectItem value="all" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All Status</SelectItem>
-              <SelectItem value="active" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Active</SelectItem>
-              <SelectItem value="banned" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Banned</SelectItem>
+            <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+              <SelectItem
+                value="all"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                All Status
+              </SelectItem>
+              <SelectItem
+                value="active"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Active
+              </SelectItem>
+              <SelectItem
+                value="banned"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                Banned
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left bg-gray-50/50 border-b border-gray-100">
+              <tr className="text-left bg-muted-light/50 border-b border-border/30">
                 <th className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider">
                   User
                 </th>
@@ -101,13 +141,13 @@ export const UsersManagement = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border/30">
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="animate-pulse">
                     <td
                       colSpan={5}
-                      className="px-6 py-8 h-16 bg-gray-50/20"
+                      className="px-6 py-8 h-16 bg-muted-light/20"
                     ></td>
                   </tr>
                 ))
@@ -124,7 +164,7 @@ export const UsersManagement = () => {
                 usersData?.map((user: any) => (
                   <tr
                     key={user.id}
-                    className="hover:bg-gray-50/50 transition-colors group"
+                    className="hover:bg-muted-light/50 transition-colors group"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -139,7 +179,7 @@ export const UsersManagement = () => {
                             user.name?.[0] || user.email[0]
                           )}
                           {user.banned && (
-                            <div className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full">
+                            <div className="absolute -top-1 -right-1 p-0.5 bg-card rounded-full">
                               <AlertCircle
                                 className="text-dash-error"
                                 size={14}
@@ -164,14 +204,32 @@ export const UsersManagement = () => {
                           roleMutation.mutate({ id: user.id, role })
                         }
                       >
-                        <SelectTrigger className="h-8 w-32 bg-gray-50 hover:bg-gray-100/80 border-none text-xs font-bold text-dash-text-soft transition-all rounded-lg">
+                        <SelectTrigger className="h-8 w-32 bg-muted-light hover:bg-muted/50/80 border-none text-xs font-bold text-dash-text-soft transition-all rounded-lg">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-                          <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">User</SelectItem>
-                          <SelectItem value="owner" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Owner</SelectItem>
-                          <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">Admin</SelectItem>
-                          <SelectItem value="superAdmin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                        <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+                          <SelectItem
+                            value="user"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
+                            User
+                          </SelectItem>
+                          <SelectItem
+                            value="owner"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
+                            Owner
+                          </SelectItem>
+                          <SelectItem
+                            value="admin"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
+                            Admin
+                          </SelectItem>
+                          <SelectItem
+                            value="superAdmin"
+                            className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                          >
                             Super Admin
                           </SelectItem>
                         </SelectContent>
@@ -183,7 +241,7 @@ export const UsersManagement = () => {
                         className={cn(
                           'text-[10px] font-bold uppercase',
                           !user.banned
-                            ? 'bg-green-50 text-green-600 border-green-100'
+                            ? 'bg-primary-soft text-primary border-primary-border'
                             : '',
                         )}
                       >
@@ -208,7 +266,7 @@ export const UsersManagement = () => {
                           className={cn(
                             'h-9 w-9 rounded-xl transition-colors',
                             user.banned
-                              ? 'text-green-600 hover:text-green-700 hover:bg-green-50'
+                              ? 'text-primary hover:text-primary-hover hover:bg-primary-soft'
                               : 'text-orange-600 hover:text-orange-700 hover:bg-orange-50',
                           )}
                         >
@@ -231,7 +289,7 @@ export const UsersManagement = () => {
                               deleteMutation.mutate(user.id)
                             }
                           }}
-                          className="h-9 w-9 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors"
+                          className="h-9 w-9 text-destructive hover:text-destructive hover:bg-danger rounded-xl transition-colors"
                         >
                           <Trash2 size={18} />
                         </Button>

@@ -95,19 +95,18 @@ export const SettingsManagement = () => {
 
   // Memoize derived storage stats so they only recompute when usageData changes,
   // not on every parent render (which was causing the blink).
-  const { formattedUsed, formattedLimit, usedPercent } =
-    useMemo(() => {
-      const stats = usageData?.storage || {
-        usage: 0,
-        limit: 10485760000,
-        used_percent: 0,
-      }
-      return {
-        formattedUsed: formatBytes(stats.usage),
-        formattedLimit: formatBytes(stats.limit),
-        usedPercent: Math.min(100, Math.max(0, stats.used_percent)),
-      }
-    }, [usageData])
+  const { formattedUsed, formattedLimit, usedPercent } = useMemo(() => {
+    const stats = usageData?.storage || {
+      usage: 0,
+      limit: 10485760000,
+      used_percent: 0,
+    }
+    return {
+      formattedUsed: formatBytes(stats.usage),
+      formattedLimit: formatBytes(stats.limit),
+      usedPercent: Math.min(100, Math.max(0, stats.used_percent)),
+    }
+  }, [usageData])
 
   // Load Cloudinary config when active tab is selected
   useEffect(() => {
@@ -333,10 +332,10 @@ export const SettingsManagement = () => {
     return (
       <div className="space-y-6 animate-pulse">
         <div className="space-y-2">
-          <div className="h-3 bg-gray-150 rounded-md w-32" />
-          <div className="h-6 bg-gray-250 rounded-lg w-48" />
+          <div className="h-3 bg-muted/40 rounded-md w-32" />
+          <div className="h-6 bg-muted/80 rounded-lg w-48" />
         </div>
-        <div className="h-[400px] bg-white border border-slate-100 rounded-[2rem] shadow-sm" />
+        <div className="h-[400px] bg-card border border-border/30 rounded-[2rem] shadow-sm" />
       </div>
     )
   }
@@ -381,16 +380,16 @@ export const SettingsManagement = () => {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Breadcrumbs */}
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+        <div className="flex items-center gap-1.5 text-[10px] font-black text-muted-dark uppercase tracking-widest">
           <span>Dashboard</span>
-          <ChevronRight size={10} className="text-slate-300" />
+          <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold">Settings</span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black text-slate-800">Settings</h1>
-          <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-2xl border border-slate-100 shadow-sm">
+          <h1 className="text-xl font-black text-foreground/90">Settings</h1>
+          <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
             <Calendar size={14} className="text-dash-brand" />
-            <span className="text-xs font-black text-slate-600 tracking-wider">
+            <span className="text-xs font-black text-muted-foreground tracking-wider">
               {format(new Date(), 'MMMM yyyy')}
             </span>
           </div>
@@ -399,7 +398,7 @@ export const SettingsManagement = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
         {/* Left Sidebar: Settings Navigation */}
-        <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm h-fit space-y-1">
+        <div className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm h-fit space-y-1">
           {sidebarItems.map((item) => (
             <Button
               key={item.id}
@@ -408,14 +407,14 @@ export const SettingsManagement = () => {
               className={`w-full flex items-center justify-start gap-4 p-4 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
                 activeSubTab === item.id
                   ? 'bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light hover:text-dash-brand'
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                  : 'text-muted-foreground/85 hover:bg-muted-light hover:text-foreground/80'
               }`}
             >
               <div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
                   activeSubTab === item.id
-                    ? 'bg-white shadow-sm text-dash-brand'
-                    : 'bg-slate-50 text-slate-400 group-hover:bg-white group-hover:shadow-sm'
+                    ? 'bg-card shadow-sm text-dash-brand'
+                    : 'bg-muted-light text-muted-dark group-hover:bg-card group-hover:shadow-sm'
                 }`}
               >
                 <item.icon
@@ -431,7 +430,7 @@ export const SettingsManagement = () => {
                   className={`text-[9px] font-bold truncate ${
                     activeSubTab === item.id
                       ? 'text-dash-brand'
-                      : 'text-slate-400'
+                      : 'text-muted-dark'
                   }`}
                 >
                   {item.desc}
@@ -442,7 +441,7 @@ export const SettingsManagement = () => {
         </div>
 
         {/* Middle Column: Dynamic Forms */}
-        <div className="xl:col-span-2 bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+        <div className="xl:col-span-2 bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm">
           {activeSubTab === 'profile' && (
             <ProfileSettingsForm
               profileName={profileName}
@@ -508,13 +507,13 @@ export const SettingsManagement = () => {
         {/* Right Column: Account Summary Info */}
         <div className="space-y-6">
           {/* Account Details summary */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            <h3 className="text-[13px] font-black text-slate-800 mb-6 uppercase tracking-widest">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
+            <h3 className="text-[13px] font-black text-foreground/90 mb-6 uppercase tracking-widest">
               Account Information
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400">
+                <span className="text-[11px] font-bold text-muted-dark">
                   Account Type
                 </span>
                 <Badge className="bg-dash-brand-light text-dash-brand border-none font-black text-[9px] px-2.5 capitalize">
@@ -522,28 +521,28 @@ export const SettingsManagement = () => {
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400">
+                <span className="text-[11px] font-bold text-muted-dark">
                   Member Since
                 </span>
-                <span className="text-[11px] font-black text-slate-700">
+                <span className="text-[11px] font-black text-foreground/80">
                   {activeUser?.createdAt
-                     ? format(new Date(activeUser.createdAt), 'dd MMM yyyy')
-                     : '01 Jan 2026'}
+                    ? format(new Date(activeUser.createdAt), 'dd MMM yyyy')
+                    : '01 Jan 2026'}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400">
+                <span className="text-[11px] font-bold text-muted-dark">
                   Database ID
                 </span>
                 <span
-                  className="text-[10px] font-black text-slate-700 max-w-[120px] truncate"
+                  className="text-[10px] font-black text-foreground/80 max-w-[120px] truncate"
                   title={activeUser?.id}
                 >
                   {activeUser?.id}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400">
+                <span className="text-[11px] font-bold text-muted-dark">
                   Email Status
                 </span>
                 <span className="text-[11px] font-black text-dash-brand uppercase tracking-widest">
@@ -554,12 +553,12 @@ export const SettingsManagement = () => {
           </div>
 
           {/* Secure Details Card */}
-          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
-            <h3 className="text-[13px] font-black text-slate-800 flex items-center gap-2">
+          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4">
+            <h3 className="text-[13px] font-black text-foreground/90 flex items-center gap-2">
               <ShieldCheck size={18} className="text-dash-brand" />
               Safety Guarantee
             </h3>
-            <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
+            <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
               Your details are protected using industry-grade SSL encryption and
               are kept confidential.
             </p>

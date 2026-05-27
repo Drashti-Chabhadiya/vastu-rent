@@ -55,7 +55,7 @@ export function AuthLeftSection() {
             <br />
             <span className="text-primary">Live Smarter</span>
           </h1>
-          <p className="mt-5 text-[16px] text-gray-500 max-w-[440px] leading-relaxed">
+          <p className="mt-5 text-[16px] text-muted-foreground/85 max-w-[440px] leading-relaxed">
             Join thousands of happy users who are renting anything they need,
             anytime, anywhere.
           </p>
@@ -96,16 +96,16 @@ export function AuthLeftSection() {
           </svg>
 
           {/* Floating category icons */}
-          <div className="absolute top-[6%] left-[32%] z-20 h-9 w-9 rounded-full bg-white border border-gray-100 flex items-center justify-center shadow-md">
+          <div className="absolute top-[6%] left-[32%] z-20 h-9 w-9 rounded-full bg-card border border-border/30 flex items-center justify-center shadow-md">
             <Home className="h-4 w-4 bg-primary-light" />
           </div>
-          <div className="absolute top-[8%] right-[34%] z-20 h-9 w-9 rounded-full bg-white border border-gray-100 flex items-center justify-center shadow-md">
+          <div className="absolute top-[8%] right-[34%] z-20 h-9 w-9 rounded-full bg-card border border-border/30 flex items-center justify-center shadow-md">
             <Percent className="h-4 w-4 bg-primary-light" />
           </div>
-          <div className="absolute top-[55%] left-[33%] z-20 h-9 w-9 rounded-full bg-white border border-gray-100 flex items-center justify-center shadow-md">
+          <div className="absolute top-[55%] left-[33%] z-20 h-9 w-9 rounded-full bg-card border border-border/30 flex items-center justify-center shadow-md">
             <Car className="h-4 w-4 bg-primary-light" />
           </div>
-          <div className="absolute top-[55%] right-[36%] z-20 h-9 w-9 rounded-full bg-white border border-gray-100 flex items-center justify-center shadow-md">
+          <div className="absolute top-[55%] right-[36%] z-20 h-9 w-9 rounded-full bg-card border border-border/30 flex items-center justify-center shadow-md">
             <Car className="h-4 w-4 bg-primary-light" />
           </div>
 
@@ -140,9 +140,9 @@ export function AuthLeftSection() {
           {floatingItems.map((item) => (
             <div
               key={item.title}
-              className={`absolute ${item.className} w-[120px] rounded-xl bg-white p-2 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] z-30`}
+              className={`absolute ${item.className} w-[120px] rounded-xl bg-card p-2 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)] z-30`}
             >
-              <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-50 flex items-center justify-center">
+              <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-muted-light flex items-center justify-center">
                 <img
                   src={item.image}
                   alt={item.title}
@@ -151,12 +151,12 @@ export function AuthLeftSection() {
                 />
               </div>
               <div className="mt-2 px-1 pb-1">
-                <h4 className="text-[11px] font-bold text-gray-900">
+                <h4 className="text-[11px] font-bold text-foreground">
                   {item.title}
                 </h4>
                 <p className="text-[12px] font-extrabold bg-primary-light mt-0.5">
                   {item.price}
-                  <span className="text-[10px] font-medium text-gray-400">
+                  <span className="text-[10px] font-medium text-muted-foreground/70">
                     /day
                   </span>
                 </p>
@@ -169,40 +169,40 @@ export function AuthLeftSection() {
       {/* Trust badges */}
       <div className="grid grid-cols-3 gap-4 rounded-2xl bg-auth-card-bg p-5 mt-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+          <div className="h-10 w-10 rounded-full bg-card flex items-center justify-center shadow-sm">
             <ShieldCheck className="h-5 w-5 bg-primary-light" />
           </div>
           <div className="leading-tight">
-            <h4 className="text-[12px] font-bold text-gray-900">
+            <h4 className="text-[12px] font-bold text-foreground">
               Trusted & Verified
             </h4>
-            <p className="text-[10px] text-gray-500">
+            <p className="text-[10px] text-muted-foreground/85">
               Every item and user is verified
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+          <div className="h-10 w-10 rounded-full bg-card flex items-center justify-center shadow-sm">
             <CreditCard className="h-5 w-5 bg-primary-light" />
           </div>
           <div className="leading-tight">
-            <h4 className="text-[12px] font-bold text-gray-900">
+            <h4 className="text-[12px] font-bold text-foreground">
               Secure Payments
             </h4>
-            <p className="text-[10px] text-gray-500">
+            <p className="text-[10px] text-muted-foreground/85">
               100% safe and hassle free transactions
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+          <div className="h-10 w-10 rounded-full bg-card flex items-center justify-center shadow-sm">
             <Headphones className="h-5 w-5 bg-primary-light" />
           </div>
           <div className="leading-tight">
-            <h4 className="text-[12px] font-bold text-gray-900">
+            <h4 className="text-[12px] font-bold text-foreground">
               24/7 Support
             </h4>
-            <p className="text-[10px] text-gray-500">
+            <p className="text-[10px] text-muted-foreground/85">
               We're here to help you anytime
             </p>
           </div>

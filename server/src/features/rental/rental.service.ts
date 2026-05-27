@@ -120,6 +120,27 @@ export class RentalService {
       console.error("Failed to deliver booking request notification to owner:", err);
     }
 
+    // Send email alert to product owner if preference is enabled
+    try {
+      const owner = await prisma.user.findUnique({
+        where: { id: rental.product.ownerId },
+        select: { name: true, email: true, bookingAlerts: true }
+      });
+
+      if (owner && owner.bookingAlerts !== false) {
+        const { sendBookingAlertEmail } = await import('../../lib/mail.js');
+        await sendBookingAlertEmail({
+          email: owner.email,
+          name: owner.name || "Owner",
+          title: "New Booking Request! 📦",
+          message: `You have received a new booking request from ${rental.renter.name} for "${rental.product.title}". Please log in to your dashboard to review and manage this request.`,
+          type: "booking_request",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to send booking alert email to owner:", err);
+    }
+
     return rental;
   }
 
@@ -262,6 +283,40 @@ export class RentalService {
       }
     } catch (err) {
       console.error("Failed to deliver notification for renter:", err)
+    }
+
+    // Send email alert to renter if preference is enabled
+    try {
+      if (updatedRental.renter && updatedRental.renter.bookingAlerts !== false) {
+        const { sendBookingAlertEmail } = await import('../../lib/mail.js');
+        let title = "";
+        let message = "";
+        let type = "booking_status";
+
+        if (status === "active" || status === "confirmed") {
+          title = "Booking Confirmed! 🎉";
+          message = `Your booking request for "${updatedRental.product.title}" has been successfully confirmed.`;
+        } else if (status === "cancelled" || status === "rejected") {
+          title = "Booking Rejected ❌";
+          message = `Your booking request for "${updatedRental.product.title}" was rejected by the owner.`;
+        } else if (status === "completed" || status === "returned") {
+          title = "Rental Completed! 🎉";
+          message = `Your rental period for "${updatedRental.product.title}" has ended. Please leave a review!`;
+          type = "booking_completed";
+        }
+
+        if (title && message) {
+          await sendBookingAlertEmail({
+            email: updatedRental.renter.email,
+            name: updatedRental.renter.name || "Customer",
+            title,
+            message,
+            type,
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to send booking alert email to renter:", err);
     }
 
     return updatedRental;

@@ -41,16 +41,16 @@ export function CouponsTable({
   const canManage = isAdmin || (isOwner && activeTab === 'my')
 
   return (
-    <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+    <div className="lg:col-span-2 bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-hidden">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
-          <h3 className="text-[15px] font-black text-[#1e293b]">
+          <h3 className="text-[15px] font-black text-foreground">
             {isOwner && activeTab === 'global'
               ? 'Global Platform Promo Codes'
               : 'All Coupons'}
           </h3>
-          <p className="text-[11px] font-bold text-slate-400">
+          <p className="text-[11px] font-bold text-muted-dark">
             {isOwner && activeTab === 'global'
               ? 'Active voucher offers created by Vastu Rent Admins.'
               : 'View, query, and audit active/inactive discount policies.'}
@@ -60,11 +60,11 @@ export function CouponsTable({
           <div className="relative">
             <Search
               size={14}
-              className="absolute left-3 top-3 text-slate-400"
+              className="absolute left-3 top-3 text-muted-dark"
             />
             <Input
               placeholder="Search code..."
-              className="h-10 pl-9 pr-4 w-44 bg-slate-50 border-none rounded-xl text-[11px] font-bold focus:ring-0"
+              className="h-10 pl-9 pr-4 w-44 bg-muted-light border-none rounded-xl text-[11px] font-bold focus:ring-0"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -72,7 +72,7 @@ export function CouponsTable({
           {canManage && (
             <Button
               onClick={onCreateClick}
-              className="h-10 px-4 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-white font-black text-[11px] flex items-center gap-2 active:scale-[0.98] transition-all shadow-md shadow-dash-brand/10"
+              className="h-10 px-4 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center gap-2 active:scale-[0.98] transition-all shadow-md shadow-dash-brand/10"
             >
               <Plus size={14} /> Create Coupon
             </Button>
@@ -84,24 +84,22 @@ export function CouponsTable({
       <div className="overflow-x-auto -mx-2">
         <table className="w-full">
           <thead>
-            <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+            <tr className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
               <th className="text-left px-4 py-3">Code</th>
               <th className="text-left px-4 py-3">Discount</th>
               <th className="text-left px-4 py-3">Configuration</th>
               <th className="text-left px-4 py-3">Min. Booking</th>
               <th className="text-left px-4 py-3">Expiry</th>
               <th className="text-left px-4 py-3">Redeemed</th>
-              {canManage && (
-                <th className="px-4 py-3 text-right">Actions</th>
-              )}
+              {canManage && <th className="px-4 py-3 text-right">Actions</th>}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-border/30">
             {isLoading ? (
               <tr>
                 <td
                   colSpan={7}
-                  className="text-center py-10 text-xs text-slate-400"
+                  className="text-center py-10 text-xs text-muted-dark"
                 >
                   Syncing coupon policies...
                 </td>
@@ -110,7 +108,7 @@ export function CouponsTable({
               <tr>
                 <td
                   colSpan={7}
-                  className="text-center py-10 text-xs text-slate-400"
+                  className="text-center py-10 text-xs text-muted-dark"
                 >
                   No vouchers available in this view.
                 </td>
@@ -122,16 +120,13 @@ export function CouponsTable({
                   coupon.perUserLimit,
                 )
                 const pct = coupon.usageLimit
-                  ? Math.min(
-                      (coupon.usedCount / coupon.usageLimit) * 100,
-                      100,
-                    )
+                  ? Math.min((coupon.usedCount / coupon.usageLimit) * 100, 100)
                   : 10
 
                 return (
                   <tr
                     key={coupon.id}
-                    className="group hover:bg-slate-50/50 transition-all"
+                    className="group hover:bg-muted-light/50 transition-all"
                   >
                     {/* Code */}
                     <td className="px-4 py-5">
@@ -152,20 +147,20 @@ export function CouponsTable({
 
                     {/* Discount */}
                     <td className="px-4 py-5">
-                      <p className="text-[12px] font-black text-[#1e293b]">
+                      <p className="text-[12px] font-black text-foreground">
                         {coupon.type === 'percentage'
                           ? `${coupon.discount}% OFF`
                           : `₹${coupon.discount} OFF`}
                       </p>
                       {coupon.maxDiscount && (
-                        <p className="text-[9px] font-bold text-slate-400">
+                        <p className="text-[9px] font-bold text-muted-dark">
                           Upto ₹{coupon.maxDiscount}
                         </p>
                       )}
                     </td>
 
                     {/* Configuration */}
-                    <td className="px-4 py-5 font-bold text-slate-500 text-[10px]">
+                    <td className="px-4 py-5 font-bold text-muted-foreground/85 text-[10px]">
                       <div className="flex flex-col gap-1.5 items-start">
                         {/* Scope */}
                         {coupon.product?.title ? (
@@ -177,7 +172,7 @@ export function CouponsTable({
                             Owner Specific
                           </span>
                         ) : (
-                          <span className="text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+                          <span className="text-muted-foreground/85 bg-muted-light px-2 py-0.5 rounded border border-border/30">
                             Platform Wide
                           </span>
                         )}
@@ -194,13 +189,13 @@ export function CouponsTable({
                     </td>
 
                     {/* Min Booking */}
-                    <td className="px-4 py-5 font-black text-[#1e293b] text-[11px]">
+                    <td className="px-4 py-5 font-black text-foreground text-[11px]">
                       ₹{coupon.minBooking || '0'}
                     </td>
 
                     {/* Expiry */}
                     <td className="px-4 py-5">
-                      <p className="text-[10px] font-black text-[#1e293b] leading-tight">
+                      <p className="text-[10px] font-black text-foreground leading-tight">
                         {new Date(coupon.endDate).toLocaleDateString('en-IN', {
                           day: '2-digit',
                           month: 'short',
@@ -208,7 +203,7 @@ export function CouponsTable({
                         })}
                       </p>
                       {new Date(coupon.endDate) < new Date() && (
-                        <span className="text-[9px] font-bold text-red-400">
+                        <span className="text-[9px] font-bold text-destructive/80">
                           Expired
                         </span>
                       )}
@@ -216,18 +211,18 @@ export function CouponsTable({
 
                     {/* Redeemed */}
                     <td className="px-4 py-5 min-w-[90px]">
-                      <p className="text-[10px] font-black text-[#1e293b] mb-1">
+                      <p className="text-[10px] font-black text-foreground mb-1">
                         {coupon.usedCount}
                         {coupon.usageLimit
                           ? ` / ${coupon.usageLimit}`
                           : ' used'}
                       </p>
-                      <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="w-16 h-1.5 bg-muted/50 rounded-full overflow-hidden">
                         <div
                           className={cn(
                             'h-full rounded-full transition-all',
                             pct >= 90
-                              ? 'bg-red-400'
+                              ? 'bg-destructive/80'
                               : pct >= 60
                                 ? 'bg-amber-400'
                                 : 'bg-emerald-500',
@@ -236,7 +231,7 @@ export function CouponsTable({
                         />
                       </div>
                       {coupon.perUserLimit && (
-                        <p className="text-[8px] font-bold text-slate-400 mt-1">
+                        <p className="text-[8px] font-bold text-muted-dark mt-1">
                           Max {coupon.perUserLimit}× per user
                         </p>
                       )}
@@ -249,7 +244,7 @@ export function CouponsTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => onDelete(coupon.id)}
-                          className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl active:scale-[0.98] transition-all"
+                          className="h-8 w-8 text-muted-dark hover:text-destructive hover:bg-danger rounded-xl active:scale-[0.98] transition-all"
                         >
                           <Trash2 size={16} />
                         </Button>

@@ -10,7 +10,7 @@ export const UsersOverviewTable = ({
   isLoading,
 }: UsersOverviewTableProps) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Users</h3>
         <Button
@@ -24,7 +24,7 @@ export const UsersOverviewTable = ({
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="text-left border-b border-gray-50">
+            <tr className="text-left border-b border-border/30">
               <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
                 Name
               </th>
@@ -36,7 +36,7 @@ export const UsersOverviewTable = ({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-border/30">
             {isLoading ? (
               <tr>
                 <td
@@ -72,7 +72,7 @@ export const UsersOverviewTable = ({
                     {user.email}
                   </td>
                   <td className="py-4 text-right">
-                    <span className="text-[10px] font-bold px-2 py-1 rounded bg-gray-50 text-dash-text-soft uppercase">
+                    <span className="text-[10px] font-bold px-2 py-1 rounded bg-muted-light text-dash-text-soft uppercase">
                       {user.role}
                     </span>
                   </td>

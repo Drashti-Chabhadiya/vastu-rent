@@ -69,9 +69,8 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
     {
       label: 'Active Coupons',
       value:
-        coupons?.filter(
-          (c) => c.isActive && new Date(c.endDate) >= new Date(),
-        ).length || 0,
+        coupons?.filter((c) => c.isActive && new Date(c.endDate) >= new Date())
+          .length || 0,
       icon: Ticket,
       color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },
@@ -85,7 +84,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       label: 'Total Generated',
       value: coupons?.length || 0,
       icon: Grid,
-      color: 'bg-amber-50 text-amber-600 border-amber-100',
+      color: 'bg-warning text-warning-foreground border-amber-100',
     },
   ]
 
@@ -94,14 +93,14 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Breadcrumb */}
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
+        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
           <span>Dashboard</span>
-          <ChevronRight size={10} className="text-slate-300" />
+          <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold uppercase tracking-widest">
             Coupons Management
           </span>
         </div>
-        <h1 className="text-xl font-black text-[#1e293b]">Coupons</h1>
+        <h1 className="text-xl font-black text-foreground">Coupons</h1>
       </div>
 
       {/* Admin Stats */}
@@ -112,13 +111,13 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
             return (
               <div
                 key={i}
-                className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center justify-between"
+                className="bg-card p-6 rounded-[2rem] border border-border/30 shadow-sm flex items-center justify-between"
               >
                 <div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  <p className="text-[11px] font-bold text-muted-dark uppercase tracking-widest">
                     {stat.label}
                   </p>
-                  <p className="text-2xl font-black text-slate-800 mt-1">
+                  <p className="text-2xl font-black text-foreground/90 mt-1">
                     {stat.value}
                   </p>
                 </div>
@@ -138,7 +137,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
 
       {/* Owner Tabs */}
       {isOwner && (
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-px">
+        <div className="flex items-center gap-2 border-b border-border/30 pb-px">
           {(['my', 'global'] as const).map((tab) => (
             <Button
               key={tab}
@@ -147,8 +146,8 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
               className={cn(
                 'pb-3 text-xs font-black uppercase tracking-wider transition-all border-b-2 px-2 rounded-none hover:bg-transparent h-auto active:scale-[0.98] cursor-pointer',
                 activeTab === tab
-                  ? 'border-[#15803d] text-[#15803d]'
-                  : 'border-transparent text-slate-400 hover:text-slate-600',
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-dark hover:text-muted-foreground',
               )}
             >
               {tab === 'my' ? 'My Listings Coupons' : 'Platform Wide Coupons'}

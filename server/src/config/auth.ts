@@ -24,6 +24,21 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
 
+  user: {
+    additionalFields: {
+      gender: { type: "string", required: false },
+      location: { type: "string", required: false },
+      phone: { type: "string", required: false },
+      language: { type: "string", required: false },
+      dob: { type: "string", required: false },
+      currency: { type: "string", required: false },
+      twoFactorEnabled: { type: "boolean", required: false },
+      bookingAlerts: { type: "boolean", required: false },
+      settlementAlerts: { type: "boolean", required: false },
+      marketingAlerts: { type: "boolean", required: false },
+    }
+  },
+
   /**
    * Enable email + password sign-up / sign-in.
    */

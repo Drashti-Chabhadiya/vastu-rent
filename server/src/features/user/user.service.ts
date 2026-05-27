@@ -121,8 +121,29 @@ export class UserService {
     };
   }
 
-  async updateUserSettings(id: string, data: { upiId?: string; bankName?: string; accountNumber?: string; ifscCode?: string; accountHolder?: string; bookingAlerts?: boolean; settlementAlerts?: boolean; marketingAlerts?: boolean }) {
-    return prisma.user.update({
+  async updateUserSettings(id: string, data: {
+    upiId?: string;
+    bankName?: string;
+    accountNumber?: string;
+    ifscCode?: string;
+    accountHolder?: string;
+    bookingAlerts?: boolean;
+    settlementAlerts?: boolean;
+    marketingAlerts?: boolean;
+    gender?: string;
+    location?: string;
+    phone?: string;
+    language?: string;
+    dob?: string;
+    currency?: string;
+    twoFactorEnabled?: boolean;
+  }) {
+    const userBefore = await prisma.user.findUnique({
+      where: { id },
+      select: { name: true, email: true, bookingAlerts: true, marketingAlerts: true }
+    });
+
+    const updatedUser = await prisma.user.update({
       where: { id },
       data: {
         upiId: data.upiId !== undefined ? data.upiId : undefined,
@@ -133,8 +154,42 @@ export class UserService {
         bookingAlerts: data.bookingAlerts !== undefined ? data.bookingAlerts : undefined,
         settlementAlerts: data.settlementAlerts !== undefined ? data.settlementAlerts : undefined,
         marketingAlerts: data.marketingAlerts !== undefined ? data.marketingAlerts : undefined,
+        gender: data.gender !== undefined ? data.gender : undefined,
+        location: data.location !== undefined ? data.location : undefined,
+        phone: data.phone !== undefined ? data.phone : undefined,
+        language: data.language !== undefined ? data.language : undefined,
+        dob: data.dob !== undefined ? data.dob : undefined,
+        currency: data.currency !== undefined ? data.currency : undefined,
+        twoFactorEnabled: data.twoFactorEnabled !== undefined ? data.twoFactorEnabled : undefined,
       }
     });
+
+    if (userBefore) {
+      const name = updatedUser.name || "User";
+      const email = updatedUser.email;
+
+      // Check if Email Notifications were toggled from OFF to ON (accepts false/nullish values)
+      if (data.bookingAlerts === true && userBefore.bookingAlerts !== true) {
+        try {
+          const { sendEmailNotificationsConfirmationEmail } = await import('../../lib/mail.js');
+          await sendEmailNotificationsConfirmationEmail({ email, name });
+        } catch (err) {
+          console.error("Failed to send email activation confirmation:", err);
+        }
+      }
+
+      // Check if Marketing Emails were toggled from OFF to ON (accepts false/nullish values)
+      if (data.marketingAlerts === true && userBefore.marketingAlerts !== true) {
+        try {
+          const { sendMarketingWelcomeEmail } = await import('../../lib/mail.js');
+          await sendMarketingWelcomeEmail({ email, name });
+        } catch (err) {
+          console.error("Failed to send marketing welcome email:", err);
+        }
+      }
+    }
+
+    return updatedUser;
   }
 
   async getCloudinaryConfig(userId: string) {
@@ -152,7 +207,7 @@ export class UserService {
 
   async saveCloudinaryConfig(userId: string, data: { cloudName: string; apiKey: string; apiSecret?: string; uploadPreset?: string }) {
     const { cloudName, apiKey, apiSecret, uploadPreset } = data;
-    
+
     let encryptedSecret: string | undefined;
     if (apiSecret) {
       const { encrypt } = await import("../../config/encryption.js");
@@ -187,6 +242,68 @@ export class UserService {
         }
       });
     }
+  }
+
+  async getRecentSearches(userId: string) {
+    return prisma.recentSearch.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    });
+  }
+
+  async saveRecentSearch(userId: string, query: string) {
+    const trimmed = query.trim();
+    if (!trimmed) return [];
+
+    // Use upsert to create or update the search query's timestamp
+    await prisma.recentSearch.upsert({
+      where: {
+        userId_query: {
+          userId,
+          query: trimmed,
+        },
+      },
+      update: {
+        createdAt: new Date(),
+      },
+      create: {
+        userId,
+        query: trimmed,
+      },
+    });
+
+    // Enforce limit of 10 recent searches per user by deleting the oldest ones
+    const searches = await prisma.recentSearch.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (searches.length > 10) {
+      const idsToDelete = searches.slice(10).map((s) => s.id);
+      await prisma.recentSearch.deleteMany({
+        where: {
+          id: { in: idsToDelete },
+        },
+      });
+    }
+
+    return this.getRecentSearches(userId);
+  }
+
+  async deleteRecentSearch(userId: string, id: string) {
+    return prisma.recentSearch.deleteMany({
+      where: {
+        id,
+        userId,
+      },
+    });
+  }
+
+  async clearRecentSearches(userId: string) {
+    return prisma.recentSearch.deleteMany({
+      where: { userId },
+    });
   }
 }
 

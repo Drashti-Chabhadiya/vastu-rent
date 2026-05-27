@@ -18,10 +18,10 @@ export function ProductsExplorePage() {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-10">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-4xl font-extrabold text-foreground mb-4 tracking-tight">
             Explore Marketplace
           </h1>
-          <p className="text-lg text-gray-500 max-w-2xl">
+          <p className="text-lg text-muted-foreground/85 max-w-2xl">
             Find everything you need, from high-end cameras to designer outfits,
             available for rent near you.
           </p>
@@ -30,10 +30,10 @@ export function ProductsExplorePage() {
         {/* Search and Filter Bar */}
         <div className="flex flex-col md:flex-row gap-4 mb-12">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/70 w-5 h-5" />
             <Input
               placeholder="Search for items, brands, or categories..."
-              className="pl-12 h-14 bg-white border-gray-100 rounded-2xl shadow-sm focus:ring-brand focus:border-brand"
+              className="pl-12 h-14 bg-card border-border/30 rounded-2xl shadow-sm focus:ring-brand focus:border-brand"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -41,12 +41,12 @@ export function ProductsExplorePage() {
           <div className="flex gap-3">
             <Button
               variant="outline"
-              className="h-14 px-6 rounded-2xl border-gray-100 bg-white font-bold text-gray-700 flex items-center gap-2 hover:bg-gray-50"
+              className="h-14 px-6 rounded-2xl border-border/30 bg-card font-bold text-foreground/80 flex items-center gap-2 hover:bg-muted-light"
             >
               <SlidersHorizontal className="w-5 h-5" />
               Filters
             </Button>
-            <Button className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-white font-bold shadow-lg shadow-brand/20">
+            <Button className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-lg shadow-brand/20">
               Search
             </Button>
           </div>
@@ -64,13 +64,13 @@ export function ProductsExplorePage() {
             ))
           ) : (
             <div className="col-span-full py-24 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-300">
+              <div className="w-24 h-24 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-6 text-muted-dark">
                 <Search size={48} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-2xl font-bold text-foreground mb-2">
                 No items found
               </h3>
-              <p className="text-gray-500 max-w-md mx-auto">
+              <p className="text-muted-foreground/85 max-w-md mx-auto">
                 We couldn't find any items matching your search. Try adjusting
                 your keywords or filters.
               </p>

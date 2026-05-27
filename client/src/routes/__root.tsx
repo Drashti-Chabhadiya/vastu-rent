@@ -1,7 +1,16 @@
-import { Outlet, createRootRoute, useRouterState, useNavigate } from '@tanstack/react-router'
+import {
+  Outlet,
+  createRootRoute,
+  useRouterState,
+  useNavigate,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query'
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
 import { Footer, Navbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
@@ -21,11 +30,11 @@ export const Route = createRootRoute({
 })
 
 function NotificationListener() {
-  const queryClient = useQueryClient()
+  const rqClient = useQueryClient()
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
-  const token = session?.session?.token
-  const userRole = session?.user?.role || 'owner'
+  const token = session?.session.token
+  const userRole = session?.user.role || 'owner'
 
   // Register device token for push notifications on login
   useEffect(() => {
@@ -38,7 +47,7 @@ function NotificationListener() {
         })
       })
     } else {
-      registerDeviceForPush().catch(() => { })
+      registerDeviceForPush().catch(() => {})
     }
   }, [token, navigate])
 
@@ -59,7 +68,7 @@ function NotificationListener() {
 
     socket.on('notification', (notif: any) => {
       // Update react-query cache instantly
-      queryClient.setQueryData(['notifications'], (old: any) => {
+      rqClient.setQueryData(['notifications'], (old: any) => {
         if (!old) return [notif]
         if (old.some((n: any) => n.id === notif.id)) return old
         return [notif, ...old]
@@ -94,14 +103,18 @@ function NotificationListener() {
                   navigate({ to: '/account/notifications' })
                   break
               }
-            }
+            },
           },
           duration: 6000,
         })
       }
 
       // Trigger native browser desktop notification if supported
-      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      if (
+        typeof window !== 'undefined' &&
+        'Notification' in window &&
+        Notification.permission === 'granted'
+      ) {
         try {
           new Notification(notif.title, {
             body: notif.message,
@@ -116,7 +129,7 @@ function NotificationListener() {
     return () => {
       socket.disconnect()
     }
-  }, [token, queryClient, userRole, navigate])
+  }, [token, rqClient, userRole, navigate])
 
   // 2. Global Foreground FCM message listener
   useEffect(() => {
@@ -133,7 +146,7 @@ function NotificationListener() {
       }
 
       // Update react-query notifications cache
-      queryClient.setQueryData(['notifications'], (old: any) => {
+      rqClient.setQueryData(['notifications'], (old: any) => {
         if (!old) return [notif]
         if (old.some((n: any) => n.id === notif.id)) return old
         return [notif, ...old]
@@ -143,7 +156,11 @@ function NotificationListener() {
       // playNotificationSound()
 
       // Trigger native browser desktop notification immediately like WhatsApp!
-      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      if (
+        typeof window !== 'undefined' &&
+        'Notification' in window &&
+        Notification.permission === 'granted'
+      ) {
         try {
           new Notification(notif.title, {
             body: notif.message,
@@ -155,7 +172,7 @@ function NotificationListener() {
       }
     })
     return () => off && off()
-  }, [queryClient, token])
+  }, [rqClient, token])
 
   return null
 }
@@ -169,7 +186,7 @@ function RootDocument() {
   const isOwnerPage = routerState.location.pathname.startsWith('/owner')
 
   return (
-    <div className={cn('bg-white', 'font-sans', 'antialiased')}>
+    <div className={cn('bg-card', 'font-sans', 'antialiased')}>
       <QueryClientProvider client={queryClient}>
         <NotificationListener />
         {!isAuthPage && !isAdminPage && !isOwnerPage && <Navbar />}
