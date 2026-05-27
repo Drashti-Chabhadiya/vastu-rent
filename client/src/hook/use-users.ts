@@ -94,6 +94,13 @@ export const useUpdateUserSettings = () => {
       bookingAlerts?: boolean
       settlementAlerts?: boolean
       marketingAlerts?: boolean
+      gender?: string
+      location?: string
+      phone?: string
+      language?: string
+      dob?: string
+      currency?: string
+      twoFactorEnabled?: boolean
     }) => {
       const res = await apiClient.patch('/users/settings', data)
       return res.data.user

@@ -217,25 +217,7 @@ export const Sidebar = ({
     >
       {/* Logo & Close Button */}
       <div className="p-6 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <Logo />
-          <div>
-            <h1 className="text-lg font-black text-dash-text tracking-tight leading-none">
-              vastu-rent
-            </h1>
-            <p className="text-[9px] text-primary/70 font-black tracking-widest mt-1 uppercase">
-              {role === 'superAdmin'
-                ? 'Super Admin'
-                : role === 'admin'
-                  ? 'Admin'
-                  : role === 'owner'
-                    ? 'Owner'
-                    : 'User'}{' '}
-              Portal
-            </p>
-          </div>
-        </div>
-
+        <Logo />
         <Button
           variant="ghost"
           size="icon"

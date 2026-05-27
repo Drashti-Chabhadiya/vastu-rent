@@ -212,6 +212,78 @@ export class UserController {
       };
     }
   }
+
+  async getSessions(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    try {
+      const { prisma } = await import("../../config/prisma.js");
+      const sessions = await prisma.session.findMany({
+        where: { userId: session.user.id },
+        orderBy: { createdAt: "desc" },
+      });
+      return { sessions };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to fetch sessions" });
+    }
+  }
+
+  async revokeSession(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const { id } = request.params as any;
+
+    try {
+      const { prisma } = await import("../../config/prisma.js");
+      const targetSession = await prisma.session.findUnique({
+        where: { id },
+      });
+
+      if (!targetSession || targetSession.userId !== session.user.id) {
+        return reply.status(404).send({ message: "Session not found" });
+      }
+
+      await prisma.session.delete({
+        where: { id },
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to revoke session" });
+    }
+  }
+
+  async renameSession(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+
+    const { id } = request.params as any;
+    const { deviceName } = request.body as any;
+
+    try {
+      const { prisma } = await import("../../config/prisma.js");
+      const targetSession = await prisma.session.findUnique({
+        where: { id },
+      });
+
+      if (!targetSession || targetSession.userId !== session.user.id) {
+        return reply.status(404).send({ message: "Session not found" });
+      }
+
+      const updated = await prisma.session.update({
+        where: { id },
+        data: {
+          deviceName: deviceName || null,
+        },
+      });
+
+      return { success: true, session: updated };
+    } catch (error: any) {
+      return reply.status(400).send({ message: error.message || "Failed to rename device" });
+    }
+  }
 }
 
 export const userController = new UserController();

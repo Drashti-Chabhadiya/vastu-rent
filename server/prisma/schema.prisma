@@ -44,6 +44,15 @@ model User {
   bookingAlerts    Boolean @default(true)
   settlementAlerts Boolean @default(true)
   marketingAlerts  Boolean @default(false)
+
+  // Custom Profile Details & Preferences
+  gender            String?
+  location          String?
+  phone             String?
+  language          String?
+  dob               String?
+  currency          String?   @default("INR")
+  twoFactorEnabled  Boolean   @default(false)
   
   // Relations
   sessions      Session[]
@@ -95,6 +104,7 @@ model Session {
   
   ipAddress String?
   userAgent String?
+  deviceName String?
   
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

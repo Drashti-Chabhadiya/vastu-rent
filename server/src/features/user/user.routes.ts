@@ -9,6 +9,11 @@ export async function userRoutes(fastify: FastifyInstance) {
   // User & Owner Settings Route
   fastify.patch("/settings", userController.updateSettings);
 
+  // User Sessions Routes
+  fastify.get("/settings/sessions", userController.getSessions);
+  fastify.patch("/settings/sessions/:id", userController.renameSession);
+  fastify.delete("/settings/sessions/:id", userController.revokeSession);
+
   // Cloudinary Settings Routes
   fastify.get("/settings/cloudinary", userController.getCloudinaryConfig);
   fastify.post("/settings/cloudinary", userController.saveCloudinaryConfig);

@@ -6,7 +6,6 @@ import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
 import {
   Mail,
-  User as UserIcon,
   Calendar,
   Camera,
   Phone,
@@ -26,6 +25,11 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { Switch } from '#/components/ui/switch'
+import { toast } from 'sonner'
+import { ChangePasswordDialog } from './ChangePasswordDialog'
+import { TwoFactorDialog } from './TwoFactorDialog'
+import { SessionsDialog } from './SessionsDialog'
+import { DevicesDialog } from './DevicesDialog'
 
 export function PersonalInfo() {
   const [isEditing, setIsEditing] = useState(false)
@@ -44,9 +48,16 @@ export function PersonalInfo() {
   const [smsNotifications, setSmsNotifications] = useState(false)
   const [marketingEmails, setMarketingEmails] = useState(true)
 
+  // Dialog visibility states
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+  const [is2faModalOpen, setIs2faModalOpen] = useState(false)
+  const [isSessionsModalOpen, setIsSessionsModalOpen] = useState(false)
+  const [isDevicesModalOpen, setIsDevicesModalOpen] = useState(false)
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false)
+
   const { mutateAsync: uploadImage, isPending: isUploadingImage } =
     useUploadProfileImage()
-  
+
   const { mutateAsync: updateSettings, isPending: isSavingSettings } =
     useUpdateUserSettings()
 
@@ -61,31 +72,74 @@ export function PersonalInfo() {
     },
   })
 
-  // Synchronize state once session data loads and load localStorage custom properties
+  // Synchronize state once session data loads from backend DB
   useEffect(() => {
     if (session?.user) {
-      setName(session.user.name || '')
-      
-      const key = `profile_${session.user.id || session.user.email}`
-      const saved = localStorage.getItem(key)
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved)
-          if (parsed.gender) setGender(parsed.gender)
-          if (parsed.location) setLocation(parsed.location)
-          if (parsed.phone) setPhone(parsed.phone)
-          if (parsed.language) setLanguage(parsed.language)
-          if (parsed.dob) setDob(parsed.dob)
-          if (parsed.currency) setCurrency(parsed.currency)
-          if (parsed.emailNotifications !== undefined) setEmailNotifications(parsed.emailNotifications)
-          if (parsed.smsNotifications !== undefined) setSmsNotifications(parsed.smsNotifications)
-          if (parsed.marketingEmails !== undefined) setMarketingEmails(parsed.marketingEmails)
-        } catch (e) {
-          console.error('Error loading profile storage:', e)
-        }
-      }
+      const u = session.user as any
+      setName(u.name || '')
+      if (u.gender !== undefined && u.gender !== null) setGender(u.gender)
+      if (u.location !== undefined && u.location !== null) setLocation(u.location)
+      if (u.phone !== undefined && u.phone !== null) setPhone(u.phone)
+      if (u.language !== undefined && u.language !== null) setLanguage(u.language)
+      if (u.dob !== undefined && u.dob !== null) setDob(u.dob)
+      if (u.currency !== undefined && u.currency !== null) setCurrency(u.currency)
+      if (u.bookingAlerts !== undefined && u.bookingAlerts !== null) setEmailNotifications(u.bookingAlerts)
+      if (u.settlementAlerts !== undefined && u.settlementAlerts !== null) setSmsNotifications(u.settlementAlerts)
+      if (u.marketingAlerts !== undefined && u.marketingAlerts !== null) setMarketingEmails(u.marketingAlerts)
+      if (u.twoFactorEnabled !== undefined && u.twoFactorEnabled !== null) setTwoFactorEnabled(u.twoFactorEnabled)
     }
   }, [session])
+
+  // Instant Auto-Save preferences handler
+  const handleTogglePreference = async (
+    key: 'email' | 'sms' | 'marketing',
+    newValue: boolean
+  ) => {
+    if (key === 'email') setEmailNotifications(newValue)
+    if (key === 'sms') setSmsNotifications(newValue)
+    if (key === 'marketing') setMarketingEmails(newValue)
+
+    try {
+      await updateSettings({
+        bookingAlerts: key === 'email' ? newValue : emailNotifications,
+        settlementAlerts: key === 'sms' ? newValue : smsNotifications,
+        marketingAlerts: key === 'marketing' ? newValue : marketingEmails,
+      })
+      toast.success('Preferences auto-saved successfully!')
+    } catch (error) {
+      console.error('Failed to update preference:', error)
+      toast.error('Failed to update preference.')
+      if (key === 'email') setEmailNotifications(!newValue)
+      if (key === 'sms') setSmsNotifications(!newValue)
+      if (key === 'marketing') setMarketingEmails(!newValue)
+    }
+  }
+
+  const handleCurrencyChange = async (newCurrency: string) => {
+    setCurrency(newCurrency)
+    try {
+      await updateSettings({
+        currency: newCurrency,
+      })
+      toast.success(`Currency set to ${newCurrency}`)
+    } catch (error) {
+      console.error('Failed to update currency:', error)
+      toast.error('Failed to update currency.')
+    }
+  }
+
+  // Database persistent 2FA status toggler
+  const handleToggleTwoFactor = async (enabled: boolean) => {
+    try {
+      await updateSettings({
+        twoFactorEnabled: enabled,
+      })
+      setTwoFactorEnabled(enabled)
+    } catch (error) {
+      console.error('Failed to update 2FA status:', error)
+      toast.error('Failed to update 2FA settings.')
+    }
+  }
 
   const handleEditClick = () => {
     if (isEditing) {
@@ -128,25 +182,14 @@ export function PersonalInfo() {
         await uploadImage(fileInputRef.current.files[0])
       }
 
-      // 3. Save other properties locally
-      if (session?.user) {
-        const key = `profile_${session.user.id || session.user.email}`
-        const dataToSave = {
-          gender,
-          location,
-          phone,
-          language,
-          dob,
-          currency,
-          emailNotifications,
-          smsNotifications,
-          marketingEmails,
-        }
-        localStorage.setItem(key, JSON.stringify(dataToSave))
-      }
-
-      // 4. Update database settings for alerts
+      // 3. Save other properties and alerts to the database
       await updateSettings({
+        gender,
+        location,
+        phone,
+        language,
+        dob,
+        currency,
         bookingAlerts: emailNotifications,
         settlementAlerts: smsNotifications,
         marketingAlerts: marketingEmails,
@@ -155,9 +198,10 @@ export function PersonalInfo() {
       await refetch()
       setIsEditing(false)
       setImagePreview(null)
+      toast.success('Profile changes saved successfully!')
     } catch (error) {
       console.error('Save failed:', error)
-      alert('Failed to save changes. Please try again.')
+      toast.error('Failed to save changes. Please try again.')
     }
   }
 
@@ -165,9 +209,9 @@ export function PersonalInfo() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Jan 2024'
 
   return (
@@ -521,6 +565,7 @@ export function PersonalInfo() {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => setIsPasswordModalOpen(true)}
                   className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
                 >
                   Change
@@ -533,13 +578,21 @@ export function PersonalInfo() {
                   <span className="text-sm font-bold text-gray-900">
                     Two-Factor Authentication
                   </span>
-                  <span className="text-[10px] text-[#2d5222] bg-[#F4F8F1] border border-[#e6efe1] font-bold px-2 py-0.5 rounded-full w-fit mt-1.5 leading-none">
-                    Enabled
+                  <span className={cn(
+                    "text-[10px] font-bold px-2 py-0.5 rounded-full w-fit mt-1.5 leading-none border transition-colors",
+                    twoFactorEnabled
+                      ? "text-[#2d5222] bg-[#F4F8F1] border-[#e6efe1]"
+                      : "text-gray-500 bg-gray-100 border-gray-200"
+                  )}>
+                    {twoFactorEnabled ? 'Enabled' : 'Disabled'}
                   </span>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => {
+                    setIs2faModalOpen(true)
+                  }}
                   className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
                 >
                   Manage
@@ -559,6 +612,7 @@ export function PersonalInfo() {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => setIsSessionsModalOpen(true)}
                   className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
                 >
                   View
@@ -578,6 +632,7 @@ export function PersonalInfo() {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => setIsDevicesModalOpen(true)}
                   className="h-8 rounded-lg px-4 text-xs font-bold text-gray-700 shadow-none border-gray-200 hover:bg-gray-50 cursor-pointer"
                 >
                   View
@@ -608,7 +663,7 @@ export function PersonalInfo() {
                 </div>
                 <Switch
                   checked={emailNotifications}
-                  onCheckedChange={setEmailNotifications}
+                  onCheckedChange={(checked) => handleTogglePreference('email', checked)}
                 />
               </div>
 
@@ -624,7 +679,7 @@ export function PersonalInfo() {
                 </div>
                 <Switch
                   checked={smsNotifications}
-                  onCheckedChange={setSmsNotifications}
+                  onCheckedChange={(checked) => handleTogglePreference('sms', checked)}
                 />
               </div>
 
@@ -640,7 +695,7 @@ export function PersonalInfo() {
                 </div>
                 <Switch
                   checked={marketingEmails}
-                  onCheckedChange={setMarketingEmails}
+                  onCheckedChange={(checked) => handleTogglePreference('marketing', checked)}
                 />
               </div>
 
@@ -649,7 +704,7 @@ export function PersonalInfo() {
                 <span className="text-sm font-bold text-gray-900">Currency</span>
                 <Select
                   value={currency}
-                  onValueChange={setCurrency}
+                  onValueChange={handleCurrencyChange}
                 >
                   <SelectTrigger
                     className="w-28 h-9 px-3 rounded-xl border border-gray-200 text-xs font-semibold text-gray-900 bg-white focus:outline-none cursor-pointer shadow-none"
@@ -694,6 +749,27 @@ export function PersonalInfo() {
           </Link>
         </div>
       </div>
+
+      {/* Account Security Modals */}
+      <ChangePasswordDialog
+        open={isPasswordModalOpen}
+        onOpenChange={setIsPasswordModalOpen}
+      />
+      <TwoFactorDialog
+        open={is2faModalOpen}
+        onOpenChange={setIs2faModalOpen}
+        twoFactorEnabled={twoFactorEnabled}
+        setTwoFactorEnabled={handleToggleTwoFactor}
+        userEmail={session?.user?.email}
+      />
+      <SessionsDialog
+        open={isSessionsModalOpen}
+        onOpenChange={setIsSessionsModalOpen}
+      />
+      <DevicesDialog
+        open={isDevicesModalOpen}
+        onOpenChange={setIsDevicesModalOpen}
+      />
     </div>
   )
 }

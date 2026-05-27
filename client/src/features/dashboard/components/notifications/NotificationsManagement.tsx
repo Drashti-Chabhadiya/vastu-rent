@@ -9,14 +9,13 @@ import {
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
+import { cn } from '#/lib/utils'
 import {
   useNotifications,
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
 } from '#/hook'
-import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
-import { useQueryClient } from '@tanstack/react-query'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Select,
   SelectContent,
@@ -35,10 +34,15 @@ export const NotificationsManagement = () => {
   const { data: notifications, isLoading } = useNotifications()
   const markReadMutation = useMarkNotificationRead()
   const markAllReadMutation = useMarkAllNotificationsRead()
-  const queryClient = useQueryClient()
 
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('all')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 8
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, filterType])
 
   const handleNotificationClick = async (notif: any) => {
     if (!notif.isRead) {
@@ -106,6 +110,46 @@ export const NotificationsManagement = () => {
     return matchesSearch && matchesFilter
   })
 
+  const totalItems = filteredNotifs?.length || 0
+  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedNotifs = filteredNotifs?.slice(startIndex, endIndex) || []
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = []
+    const maxVisible = 5
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      pages.push(1)
+
+      if (currentPage > 3) {
+        pages.push('...')
+      }
+
+      const start = Math.max(2, currentPage - 1)
+      const end = Math.min(totalPages - 1, currentPage + 1)
+
+      for (let i = start; i <= end; i++) {
+        if (i > 1 && i < totalPages) {
+          pages.push(i)
+        }
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push('...')
+      }
+
+      pages.push(totalPages)
+    }
+
+    return pages
+  }
+
   const unreadCount = notifications?.filter((n) => !n.isRead).length || 0
 
   return (
@@ -159,25 +203,27 @@ export const NotificationsManagement = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="max-h-[520px] overflow-y-auto pr-1 space-y-2 custom-scrollbar">
             {isLoading ? (
               <div className="text-center py-10 text-xs text-slate-400">
                 Loading alerts...
               </div>
-            ) : filteredNotifs?.length === 0 ? (
+            ) : paginatedNotifs.length === 0 ? (
               <div className="text-center py-10 text-xs text-slate-400">
                 No alerts matching your criteria.
               </div>
             ) : (
-              filteredNotifs?.map((notif) => {
+              paginatedNotifs.map((notif) => {
                 const Icon = getIcon(notif.type)
                 const colorCls = getColorClasses(notif.type)
                 return (
                   <div
                     key={notif.id}
                     onClick={() => handleNotificationClick(notif)}
-                    className={`flex items-center justify-between p-4 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all cursor-pointer group ${!notif.isRead ? 'bg-slate-50/70 border-slate-100' : ''
-                      }`}
+                    className={cn(
+                      "flex items-center justify-between p-4 rounded-2xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all cursor-pointer group active:scale-[0.99]",
+                      !notif.isRead ? 'bg-slate-50/70 border-slate-100' : ''
+                    )}
                   >
                     <div className="flex items-center gap-4">
                       <div
@@ -207,6 +253,82 @@ export const NotificationsManagement = () => {
               })
             )}
           </div>
+
+          {totalItems > itemsPerPage && (
+            <div className="flex flex-col xl:flex-row items-center justify-between pt-6 border-t border-slate-100 mt-6 gap-4 animate-in fade-in duration-300">
+              <p className="text-[11px] font-bold text-slate-400 text-center xl:text-left">
+                Showing <span className="font-extrabold text-[#1e293b]">{startIndex + 1}</span> to{' '}
+                <span className="font-extrabold text-[#1e293b]">
+                  {Math.min(endIndex, totalItems)}
+                </span>{' '}
+                of <span className="font-extrabold text-[#1e293b]">{totalItems}</span> notifications
+              </p>
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  className="h-8 rounded-lg px-3 text-[10px] font-black border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none shadow-none"
+                >
+                  Previous
+                </Button>
+                <div className="flex items-center gap-1">
+                  {getPageNumbers().map((page, idx) => {
+                    if (page === '...') {
+                      return (
+                        <span
+                          key={`ellipsis-${idx}`}
+                          className="w-8 h-8 flex items-center justify-center text-[10px] font-black text-slate-400 select-none"
+                        >
+                          ...
+                        </span>
+                      )
+                    }
+                    return (
+                      <button
+                        key={`page-${page}`}
+                        onClick={() => setCurrentPage(page as number)}
+                        className={cn(
+                          "w-8 h-8 rounded-lg text-[10px] font-black transition-all active:scale-95 cursor-pointer",
+                          currentPage === page
+                            ? "bg-dash-brand text-white shadow-md shadow-dash-brand/20 border-none font-bold"
+                            : "border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white"
+                        )}
+                      >
+                        {page}
+                      </button>
+                    )
+                  })}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  className="h-8 rounded-lg px-3 text-[10px] font-black border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none shadow-none"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <style>{`
+            .custom-scrollbar::-webkit-scrollbar {
+              width: 5px !important;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+              background: transparent !important;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+              background: #cbd5e1 !important;
+              border-radius: 9999px !important;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+              background: #94a3b8 !important;
+            }
+          `}</style>
         </div>
 
         {/* Right Column: Settings & Summary */}

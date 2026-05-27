@@ -58,7 +58,7 @@ export function CreateCouponModal({
   const [minBooking, setMinBooking] = useState('')
   const [endDate, setEndDate] = useState('')
   const [usageLimit, setUsageLimit] = useState('')
-  const [productId, setProductId] = useState('')
+  const [productId, setProductId] = useState('all')
   const [perUserLimit, setPerUserLimit] = useState('')
 
   const resetForm = () => {
@@ -68,7 +68,7 @@ export function CreateCouponModal({
     setMinBooking('')
     setEndDate('')
     setUsageLimit('')
-    setProductId('')
+    setProductId('all')
     setPerUserLimit('')
   }
 
@@ -123,7 +123,7 @@ export function CreateCouponModal({
         startDate: new Date().toISOString(),
         endDate: new Date(endDate).toISOString(),
         usageLimit: usageLimit ? parseInt(usageLimit) : undefined,
-        productId: productId || undefined,
+        productId: productId && productId !== 'all' ? productId : undefined,
         perUserLimit: perUserLimit ? parseInt(perUserLimit) : undefined,
       },
       {
@@ -240,7 +240,7 @@ export function CreateCouponModal({
                   <SelectValue placeholder="All My Listings" />
                 </SelectTrigger>
                 <SelectContent className="bg-white rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200 max-h-[200px]">
-                  <SelectItem value="" className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All My Listings</SelectItem>
+                  <SelectItem value="all" className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">All My Listings</SelectItem>
                   {myListings.map((p: any) => (
                     <SelectItem key={p.id} value={p.id} className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
                       {p.title || p.name}
