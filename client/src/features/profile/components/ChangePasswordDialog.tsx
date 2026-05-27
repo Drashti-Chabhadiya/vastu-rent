@@ -133,13 +133,15 @@ export function ChangePasswordDialog({
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 className="h-11 rounded-xl border-gray-200 bg-gray-50/30 text-gray-900 font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
               />
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-650 cursor-pointer border-none bg-transparent"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-400 hover:text-gray-600 hover:bg-transparent"
               >
                 {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -156,13 +158,15 @@ export function ChangePasswordDialog({
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="h-11 rounded-xl border-gray-200 bg-gray-50/30 text-gray-900 font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
               />
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-650 cursor-pointer border-none bg-transparent"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-400 hover:text-gray-600 hover:bg-transparent"
               >
                 {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+              </Button>
             </div>
 
             {/* Strength Indicator */}
@@ -213,13 +217,15 @@ export function ChangePasswordDialog({
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="h-11 rounded-xl border-gray-200 bg-gray-50/30 text-gray-900 font-semibold text-sm transition-all focus:ring-primary/20 pr-10"
               />
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-650 cursor-pointer border-none bg-transparent"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 text-gray-400 hover:text-gray-600 hover:bg-transparent"
               >
                 {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+              </Button>
             </div>
           </div>
 

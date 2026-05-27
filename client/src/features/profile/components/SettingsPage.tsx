@@ -270,26 +270,27 @@ export function SettingsPage() {
             const active = section === id
             const isDel = id === 'delete'
             return (
-              <button
+              <Button
                 key={id}
+                variant="ghost"
                 onClick={() => setSection(id)}
                 className={cn(
-                  'flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-left w-full border-none cursor-pointer transition-colors border-l-2',
+                  'flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-left w-full cursor-pointer transition-colors border-l-2 rounded-none justify-start h-auto',
                   active &&
                     !isDel &&
-                    'text-[#2d5222] bg-[#F4F8F1]/70 border-[#2d5222]',
-                  active && isDel && 'text-red-500 bg-red-50/60 border-red-400',
+                    'text-[#2d5222] bg-[#F4F8F1]/70 border-[#2d5222] hover:bg-[#F4F8F1]/70 hover:text-[#2d5222]',
+                  active && isDel && 'text-red-500 bg-red-50/60 border-red-400 hover:bg-red-50/60 hover:text-red-500',
                   !active &&
                     !isDel &&
-                    'text-slate-500 hover:text-gray-800 hover:bg-slate-50 bg-transparent border-transparent',
+                    'text-slate-500 hover:text-gray-800 hover:bg-slate-50 border-transparent',
                   !active &&
                     isDel &&
-                    'text-red-400 hover:text-red-500 hover:bg-red-50 bg-transparent border-transparent',
+                    'text-red-400 hover:text-red-500 hover:bg-red-50 border-transparent',
                 )}
               >
                 <Icon size={15} className="shrink-0" />
                 {label}
-              </button>
+              </Button>
             )
           })}
         </nav>
@@ -621,7 +622,8 @@ export function SettingsPage() {
               </div>
               <div className={cn('divide-y', 'divide-gray-50')}>
                 <Row label="Password" desc="••••••••••••••••">
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={() => setPwOpen(true)}
                     className={cn(
                       'flex',
@@ -633,12 +635,14 @@ export function SettingsPage() {
                       'hover:text-gray-800',
                       'cursor-pointer',
                       'bg-transparent',
-                      'border-none',
+                      'hover:bg-transparent',
                       'transition-colors',
+                      'h-auto',
+                      'p-0',
                     )}
                   >
                     Change Password <ChevronRight size={14} />
-                  </button>
+                  </Button>
                 </Row>
                 <Row
                   label="Two-Factor Authentication"
@@ -662,7 +666,8 @@ export function SettingsPage() {
                   label="Login Sessions"
                   desc="View and manage your active sessions."
                 >
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={() => setSessOpen(true)}
                     className={cn(
                       'flex',
@@ -674,19 +679,22 @@ export function SettingsPage() {
                       'hover:text-gray-800',
                       'cursor-pointer',
                       'bg-transparent',
-                      'border-none',
+                      'hover:bg-transparent',
                       'transition-colors',
+                      'h-auto',
+                      'p-0',
                     )}
                   >
                     View Sessions <ChevronRight size={14} />
-                  </button>
+                  </Button>
                 </Row>
                 <Row
                   label="Trusted Devices"
                   desc="Manage devices that can access your account."
                   last
                 >
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={() => setDevOpen(true)}
                     className={cn(
                       'flex',
@@ -698,12 +706,14 @@ export function SettingsPage() {
                       'hover:text-gray-800',
                       'cursor-pointer',
                       'bg-transparent',
-                      'border-none',
+                      'hover:bg-transparent',
                       'transition-colors',
+                      'h-auto',
+                      'p-0',
                     )}
                   >
                     View Devices <ChevronRight size={14} />
-                  </button>
+                  </Button>
                 </Row>
               </div>
             </div>

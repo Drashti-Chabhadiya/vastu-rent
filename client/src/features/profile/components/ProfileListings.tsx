@@ -319,11 +319,12 @@ export function ProfileListings() {
         ).map((tab) => {
           const isActive = activeTab === tab.id
           return (
-            <button
+            <Button
               key={tab.id}
+              variant="ghost"
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                'pb-3 font-extrabold text-[13px] transition-all relative shrink-0',
+                'pb-3 font-extrabold text-[13px] transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
                 isActive
                   ? 'text-[#2d5222]'
                   : 'text-slate-400 hover:text-slate-600',
@@ -335,7 +336,7 @@ export function ProfileListings() {
               {isActive && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2d5222] rounded-full" />
               )}
-            </button>
+            </Button>
           )
         })}
       </div>
@@ -470,7 +471,8 @@ export function ProfileListings() {
                           onClick={() => setOpenDropdownId(null)}
                         />
                         <div className="absolute right-0 bottom-11 md:bottom-auto md:top-11 bg-white rounded-2xl shadow-xl border border-slate-100 p-1.5 z-50 min-w-[130px] animate-in fade-in slide-in-from-top-2 duration-200">
-                          <button
+                          <Button
+                            variant="ghost"
                             onClick={() => {
                               setOpenDropdownId(null)
                               if (
@@ -487,11 +489,10 @@ export function ProfileListings() {
                                 })
                               }
                             }}
-                            className="w-full text-left px-3.5 py-2 text-xs font-bold text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl flex items-center gap-2 cursor-pointer transition-colors"
+                            className="w-full text-left px-3.5 py-2 text-xs font-bold text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl flex items-center gap-2 cursor-pointer transition-colors justify-start h-auto"
                           >
-                            <Trash2 size={13} />
-                            Delete item
-                          </button>
+                            <Trash2 size={12} /> Delete Listing
+                          </Button>
                         </div>
                       </>
                     )}

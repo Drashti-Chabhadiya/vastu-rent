@@ -103,13 +103,14 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {recentSearches.map((search) => (
-                      <button
+                      <Button
                         key={search}
+                        variant="outline"
                         onClick={() => setSearchQuery(search)}
-                        className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-all hover:border-primary hover:bg-primary/5 hover:text-primary"
+                        className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-all hover:border-primary hover:bg-primary/5 hover:text-primary h-auto"
                       >
                         {search}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
@@ -123,20 +124,22 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     </span>
                   </div>
                   <div className="space-y-2">
-                    <button
+                    <Button
+                      variant="outline"
                       onClick={() => navigate({ to: '/products' })}
-                      className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white p-3 text-sm font-medium text-slate-700 transition-all hover:border-primary hover:bg-primary/5 hover:text-primary"
+                      className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white p-3 text-sm font-medium text-slate-700 transition-all hover:border-primary hover:bg-primary/5 hover:text-primary h-auto"
                     >
                       Browse All Products
                       <ArrowRight className="h-4 w-4" />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="outline"
                       onClick={() => navigate({ to: '/categories' })}
-                      className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white p-3 text-sm font-medium text-slate-700 transition-all hover:border-primary hover:bg-primary/5 hover:text-primary"
+                      className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white p-3 text-sm font-medium text-slate-700 transition-all hover:border-primary hover:bg-primary/5 hover:text-primary h-auto"
                     >
                       View Categories
                       <ArrowRight className="h-4 w-4" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -150,15 +153,16 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             ) : filteredProducts && filteredProducts.length > 0 ? (
               <div className="divide-y divide-slate-100">
                 {filteredProducts.map((product: any, index: number) => (
-                  <button
+                  <Button
                     key={product.id}
+                    variant="ghost"
                     onClick={() => handleSelectProduct(product.id)}
                     className={cn(
-                      'w-full px-4 py-3 text-left transition-colors hover:bg-slate-50 sm:px-6 sm:py-4',
+                      'w-full px-4 py-3 text-left transition-colors hover:bg-slate-50 sm:px-6 sm:py-4 h-auto justify-start rounded-none',
                       index === 0 && 'border-t border-slate-100',
                     )}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 w-full">
                       {product.images?.[0] && (
                         <img
                           src={product.images[0]}
@@ -176,7 +180,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                       </div>
                       <ArrowRight className="h-4 w-4 shrink-0 text-slate-400" />
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             ) : (
@@ -199,7 +203,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             filteredProducts &&
             filteredProducts.length > 0 && (
               <div className="border-t border-slate-100 bg-slate-50 p-4 sm:p-6">
-                <button
+                <Button
                   onClick={() => {
                     navigate({
                       to: '/products',
@@ -208,11 +212,11 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     onOpenChange(false)
                     setSearchQuery('')
                   }}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-95"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90 active:scale-95 h-auto"
                 >
                   View All Results ({filteredProducts.length})
                   <ArrowRight className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             )}
         </div>

@@ -52,7 +52,9 @@ export function UserProfilePage() {
                   </div>
                 )}
               </div>
-              <Badge className="absolute bottom-2 right-2 bg-green-500 text-white border-2 border-white px-2 py-1 rounded-lg">
+              {/* Online/active green dot */}
+              <span className="absolute bottom-3 right-3 w-5 h-5 bg-green-500 border-[3px] border-white rounded-full shadow-md" title="Online" />
+              <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-green-500 text-white border-2 border-white px-2 py-1 rounded-lg whitespace-nowrap">
                 <CheckCircle2 size={12} className="mr-1" />
                 Verified
               </Badge>

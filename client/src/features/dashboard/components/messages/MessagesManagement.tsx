@@ -573,8 +573,9 @@ export const MessagesManagement = () => {
               </div>
             ) : (
               userResults.map((u) => (
-                <button
+                <Button
                   key={u.id}
+                  variant="ghost"
                   onClick={() => handleStartChat(u.id, u.name)}
                   disabled={startingChatWith === u.id}
                   className={cn(
@@ -586,10 +587,9 @@ export const MessagesManagement = () => {
                     'rounded-2xl',
                     'hover:bg-slate-50',
                     'transition-colors',
-                    'border-none',
-                    'bg-transparent',
                     'cursor-pointer',
-                    'text-left',
+                    'justify-start',
+                    'h-auto',
                     'disabled:opacity-60',
                   )}
                 >
@@ -599,7 +599,7 @@ export const MessagesManagement = () => {
                     isOnline={u.isOnline}
                     size="sm"
                   />
-                  <div className={cn('flex-1', 'min-w-0')}>
+                  <div className={cn('flex-1', 'min-w-0', 'text-left')}>
                     <p
                       className={cn(
                         'text-[12px]',
@@ -646,7 +646,7 @@ export const MessagesManagement = () => {
                       Chat
                     </span>
                   )}
-                </button>
+                </Button>
               ))
             )}
           </div>
@@ -702,25 +702,23 @@ export const MessagesManagement = () => {
                   )}
                 />
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 className={cn(
                   'w-10',
                   'h-10',
                   'bg-slate-50',
                   'hover:bg-slate-100',
                   'rounded-xl',
-                  'flex',
-                  'items-center',
-                  'justify-center',
                   'text-slate-500',
                   'transition-colors',
-                  'border-none',
                   'cursor-pointer',
                   'shrink-0',
                 )}
               >
                 <SlidersHorizontal size={14} />
-              </button>
+              </Button>
             </div>
 
             {/* Subtabs */}
@@ -754,11 +752,12 @@ export const MessagesManagement = () => {
                             .reduce((s, c) => s + c.unreadCount, 0)
 
                   return (
-                    <button
+                    <Button
                       key={tab}
+                      variant="ghost"
                       onClick={() => setActiveSubTab(tab)}
                       className={cn(
-                        'relative pb-3 text-[11px] font-extrabold capitalize tracking-wider whitespace-nowrap border-none bg-transparent cursor-pointer transition-colors flex items-center gap-1.5',
+                        'relative pb-3 text-[11px] font-extrabold capitalize tracking-wider whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5 rounded-none h-auto px-0 hover:bg-transparent',
                         activeSubTab === tab
                           ? 'text-[#2d5222]'
                           : 'text-slate-400 hover:text-slate-600',
@@ -796,7 +795,7 @@ export const MessagesManagement = () => {
                           )}
                         />
                       )}
-                    </button>
+                    </Button>
                   )
                 },
               )}
@@ -976,7 +975,8 @@ export const MessagesManagement = () => {
             >
               Can't find your conversation?
             </p>
-            <button
+            <Button
+              variant="ghost"
               className={cn(
                 'text-[#2d5222]',
                 'text-[10px]',
@@ -985,14 +985,14 @@ export const MessagesManagement = () => {
                 'items-center',
                 'gap-0.5',
                 'hover:underline',
-                'border-none',
-                'bg-transparent',
                 'cursor-pointer',
+                'h-auto',
                 'p-0',
+                'hover:bg-transparent',
               )}
             >
               View archived messages <ChevronRight size={10} strokeWidth={3} />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -1024,22 +1024,24 @@ export const MessagesManagement = () => {
               >
                 <div className={cn('flex', 'items-center', 'gap-3')}>
                   {/* Back on mobile */}
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setShowMobileChat(false)}
                     className={cn(
                       'lg:hidden',
-                      'p-1.5',
+                      'h-8',
+                      'w-8',
                       'bg-slate-50',
                       'hover:bg-slate-100',
                       'rounded-lg',
                       'text-slate-600',
-                      'border-none',
                       'cursor-pointer',
                       'transition-colors',
                     )}
                   >
                     <ArrowLeft size={15} />
-                  </button>
+                  </Button>
 
                   <UserAvatar
                     image={activeConversation.otherParticipant.image}
@@ -1107,7 +1109,9 @@ export const MessagesManagement = () => {
                 </div>
 
                 <div className={cn('flex', 'items-center', 'gap-1')}>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() =>
                       toast.success(
                         `Calling ${activeConversation.otherParticipant.name}...`,
@@ -1118,20 +1122,17 @@ export const MessagesManagement = () => {
                       'h-9',
                       'hover:bg-slate-50',
                       'rounded-xl',
-                      'flex',
-                      'items-center',
-                      'justify-center',
                       'text-slate-400',
                       'hover:text-slate-600',
-                      'border-none',
-                      'bg-transparent',
                       'cursor-pointer',
                       'transition-colors',
                     )}
                   >
                     <Phone size={16} />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() =>
                       toast.success(
                         `Starting video call with ${activeConversation.otherParticipant.name}...`,
@@ -1142,20 +1143,17 @@ export const MessagesManagement = () => {
                       'h-9',
                       'hover:bg-slate-50',
                       'rounded-xl',
-                      'flex',
-                      'items-center',
-                      'justify-center',
                       'text-slate-400',
                       'hover:text-slate-600',
-                      'border-none',
-                      'bg-transparent',
                       'cursor-pointer',
                       'transition-colors',
                     )}
                   >
                     <Video size={16} />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() =>
                       toast.info('Conversation options coming soon')
                     }
@@ -1164,19 +1162,14 @@ export const MessagesManagement = () => {
                       'h-9',
                       'hover:bg-slate-50',
                       'rounded-xl',
-                      'flex',
-                      'items-center',
-                      'justify-center',
                       'text-slate-400',
                       'hover:text-slate-600',
-                      'border-none',
-                      'bg-transparent',
                       'cursor-pointer',
                       'transition-colors',
                     )}
                   >
                     <MoreVertical size={16} />
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -1406,7 +1399,9 @@ export const MessagesManagement = () => {
                   'shrink-0',
                 )}
               >
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() =>
                     toast.info('File attachments coming in next update!')
                   }
@@ -1416,18 +1411,14 @@ export const MessagesManagement = () => {
                     'bg-slate-50',
                     'hover:bg-slate-100',
                     'rounded-xl',
-                    'flex',
-                    'items-center',
-                    'justify-center',
                     'text-slate-500',
                     'transition-colors',
-                    'border-none',
                     'cursor-pointer',
                     'shrink-0',
                   )}
                 >
                   <Paperclip size={15} />
-                </button>
+                </Button>
 
                 <div className={cn('flex-1', 'relative')}>
                   <Input
@@ -1451,36 +1442,40 @@ export const MessagesManagement = () => {
                       'disabled:opacity-50',
                     )}
                   />
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => toast.info('Emoji picker coming soon!')}
                     className={cn(
                       'absolute',
-                      'right-3',
-                      'top-[11px]',
+                      'right-2',
+                      'top-[7px]',
+                      'h-7',
+                      'w-7',
                       'text-slate-400',
                       'hover:text-slate-600',
-                      'border-none',
-                      'bg-transparent',
+                      'hover:bg-transparent',
                       'cursor-pointer',
                       'transition-colors',
                     )}
                   >
                     <Smile size={15} />
-                  </button>
+                  </Button>
                 </div>
 
-                <button
+                <Button
+                  size="icon"
                   onClick={handleSend}
                   disabled={!inputText.trim() || !isConnected}
                   className={cn(
-                    'w-10 h-10 rounded-full flex items-center justify-center text-white border-none cursor-pointer transition-all shadow-md active:scale-95 shrink-0',
+                    'w-10 h-10 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-md active:scale-95 shrink-0',
                     inputText.trim() && isConnected
                       ? 'bg-[#2d5222] hover:bg-[#1d3515]'
                       : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none',
                   )}
                 >
                   <Send size={14} className="ml-0.5" />
-                </button>
+                </Button>
               </div>
             </>
           )}

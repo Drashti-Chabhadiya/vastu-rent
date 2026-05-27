@@ -439,11 +439,12 @@ export const MyBookings = () => {
           (tab) => {
             const isActive = activeTab === tab
             return (
-              <button
+              <Button
                 key={tab}
+                variant="ghost"
                 onClick={() => setActiveTab(tab)}
                 className={cn(
-                  'pb-3 font-extrabold text-[13px] capitalize transition-all relative shrink-0',
+                  'pb-3 font-extrabold text-[13px] capitalize transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
                   isActive
                     ? 'text-[#2d5222]'
                     : 'text-slate-400 hover:text-slate-600',
@@ -465,7 +466,7 @@ export const MyBookings = () => {
                     )}
                   />
                 )}
-              </button>
+              </Button>
             )
           },
         )}
@@ -1498,15 +1499,19 @@ export const MyBookings = () => {
               </label>
               <div className={cn('flex', 'items-center', 'gap-1.5')}>
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button
+                  <Button
                     key={star}
                     type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setRating(star)}
                     className={cn(
                       'p-1',
                       'transition-transform',
                       'active:scale-90',
                       'cursor-pointer',
+                      'h-auto w-auto',
+                      'hover:bg-transparent',
                     )}
                   >
                     <Star
@@ -1518,7 +1523,7 @@ export const MyBookings = () => {
                           : 'text-slate-200 fill-transparent',
                       )}
                     />
-                  </button>
+                  </Button>
                 ))}
                 <span
                   className={cn(
@@ -1580,8 +1585,10 @@ export const MyBookings = () => {
                       src={img}
                       className={cn('w-full', 'h-full', 'object-cover')}
                     />
-                    <button
+                    <Button
                       type="button"
+                      variant="destructive"
+                      size="icon"
                       onClick={() =>
                         setUploadedImages((prev) =>
                           prev.filter((_, idx) => idx !== i),
@@ -1591,12 +1598,7 @@ export const MyBookings = () => {
                         'absolute',
                         'top-1',
                         'right-1',
-                        'bg-red-500',
-                        'text-white',
                         'rounded-full',
-                        'p-0.5',
-                        'hover:bg-red-600',
-                        'transition-colors',
                         'w-4',
                         'h-4',
                         'flex',
@@ -1604,10 +1606,11 @@ export const MyBookings = () => {
                         'justify-center',
                         'text-[9px]',
                         'font-bold',
+                        'p-0',
                       )}
                     >
                       ×
-                    </button>
+                    </Button>
                   </div>
                 ))}
 

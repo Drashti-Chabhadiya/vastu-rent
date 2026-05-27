@@ -380,11 +380,12 @@ export const ReviewsManagement = () => {
         ].map((tab) => {
           const isActive = activeTab === tab.id
           return (
-            <button
+            <Button
               key={tab.id}
+              variant="ghost"
               onClick={() => setActiveTab(tab.id as any)}
               className={cn(
-                'pb-3 font-semibold text-sm transition-all relative shrink-0',
+                'pb-3 font-semibold text-sm transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
                 isActive
                   ? 'text-[#2d5222]'
                   : 'text-slate-400 hover:text-slate-600',
@@ -396,7 +397,7 @@ export const ReviewsManagement = () => {
               {isActive && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#2d5222] rounded-full" />
               )}
-            </button>
+            </Button>
           )
         })}
       </div>
@@ -559,16 +560,17 @@ export const ReviewsManagement = () => {
                             onClick={() => setOpenDropdownId(null)}
                           />
                           <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg border border-slate-100 p-1 z-50 min-w-[120px] animate-in fade-in slide-in-from-top-1 duration-150">
-                            <button
+                            <Button
+                              variant="ghost"
                               onClick={() => {
                                 setOpenDropdownId(null)
                                 handleDelete(review.id)
                               }}
-                              className="w-full text-left px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors"
+                              className="w-full text-left px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors justify-start h-auto"
                             >
                               <Trash2 size={13} />
                               Delete Review
-                            </button>
+                            </Button>
                           </div>
                         </>
                       )}

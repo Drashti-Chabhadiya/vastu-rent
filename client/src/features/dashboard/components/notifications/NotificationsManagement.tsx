@@ -1,6 +1,5 @@
 import {
   Bell,
-  ChevronRight,
   Search,
   ShoppingCart,
   CreditCard,
@@ -449,15 +448,14 @@ export const NotificationsManagement = () => {
             <div
               className={cn(
                 'flex',
-                'flex-col',
-                'sm:flex-row',
+                'flex-row',
                 'items-center',
                 'justify-between',
                 'px-5',
-                'py-4',
+                'py-3',
                 'border-t',
                 'border-slate-50',
-                'gap-3',
+                'gap-2',
               )}
             >
               <p
@@ -517,18 +515,20 @@ export const NotificationsManagement = () => {
                       …
                     </span>
                   ) : (
-                    <button
+                    <Button
                       key={`p-${page}`}
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setCurrentPage(page as number)}
                       className={cn(
-                        'w-7 h-7 rounded-lg text-[10px] font-semibold transition-all cursor-pointer',
+                        'w-7 h-7 rounded-lg text-[10px] font-semibold transition-all cursor-pointer p-0',
                         currentPage === page
-                          ? 'bg-[#2d5222] text-white shadow-sm'
+                          ? 'bg-[#2d5222] text-white shadow-sm hover:bg-[#2d5222] hover:text-white'
                           : 'border border-slate-200 text-slate-600 hover:bg-slate-50 bg-white',
                       )}
                     >
                       {page}
-                    </button>
+                    </Button>
                   ),
                 )}
 
@@ -644,7 +644,8 @@ export const NotificationsManagement = () => {
 
             {/* Mark all read */}
             {unreadCount > 0 && (
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => markAllReadMutation.mutate()}
                 disabled={markAllReadMutation.isPending}
                 className={cn(
@@ -659,14 +660,14 @@ export const NotificationsManagement = () => {
                   'text-[#2d5222]',
                   'hover:underline',
                   'cursor-pointer',
-                  'bg-transparent',
-                  'border-none',
+                  'hover:bg-transparent',
+                  'h-auto',
                   'disabled:opacity-50',
                 )}
               >
                 <CheckCheck size={13} />
                 Mark all as read
-              </button>
+              </Button>
             )}
           </div>
         </div>

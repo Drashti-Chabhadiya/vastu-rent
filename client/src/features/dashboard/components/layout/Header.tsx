@@ -269,15 +269,16 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                 <Bell size={13} className="text-[#2d5222]" /> Platform Alerts
               </span>
               {unreadCount > 0 && (
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => markAllReadMutation.mutate()}
-                  className="text-[10px] font-extrabold text-[#2d5222] hover:underline cursor-pointer border-none bg-transparent"
+                  className="text-[10px] font-extrabold text-[#2d5222] hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
                   disabled={markAllReadMutation.isPending}
                 >
                   {markAllReadMutation.isPending
                     ? 'Marking...'
                     : 'Mark all read'}
-                </button>
+                </Button>
               )}
             </div>
 
@@ -337,12 +338,13 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
 
             {/* Popover Footer */}
             <div className="border-t border-slate-50 p-3 bg-slate-50/10 text-center">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => navigate({ to: '/account/notifications' })}
-                className="text-[10px] font-black text-[#2d5222] hover:underline cursor-pointer border-none bg-transparent"
+                className="text-[10px] font-black text-[#2d5222] hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
               >
                 View all notifications ({notifications.length})
-              </button>
+              </Button>
             </div>
           </PopoverContent>
         </Popover>

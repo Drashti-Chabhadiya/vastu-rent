@@ -256,17 +256,19 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
                           <h4 className="text-xs font-extrabold text-gray-900 truncate">
                             {displayName}
                           </h4>
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() =>
                               handleStartRenameDevice(
                                 sessionItem.id,
                                 displayName,
                               )
                             }
-                            className="text-gray-400 hover:text-gray-600 transition-colors p-0.5 border-none bg-transparent cursor-pointer"
+                            className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors p-0 border-none bg-transparent cursor-pointer"
                           >
                             <Pencil size={10} />
-                          </button>
+                          </Button>
                         </div>
                       )}
                       <p className="text-[10px] text-gray-400 font-semibold mt-0.5">
