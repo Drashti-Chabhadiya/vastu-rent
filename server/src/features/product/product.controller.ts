@@ -20,9 +20,16 @@ export class ProductController {
   }
 
   async createProduct(request: FastifyRequest, reply: FastifyReply) {
-    const userId = (request as any).user?.id || (request.body as any).ownerId;
-    const product = await productService.createProduct({ ...request.body as any, ownerId: userId });
-    return { product };
+    try {
+      const userId = (request as any).user?.id || (request.body as any).ownerId;
+      const product = await productService.createProduct({ ...request.body as any, ownerId: userId });
+      return { product };
+    } catch (error: any) {
+      if (error.message?.includes("Forbidden") || error.message?.includes("limit")) {
+        return reply.status(403).send({ message: error.message });
+      }
+      return reply.status(500).send({ message: error.message || "Internal server error" });
+    }
   }
 
   async updateProduct(request: FastifyRequest, reply: FastifyReply) {

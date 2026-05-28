@@ -10,14 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as TrustSafetyRouteImport } from './routes/trust-safety'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JournalRouteImport } from './routes/journal'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as HelpRouteImport } from './routes/help'
 import { Route as DownloadRouteImport } from './routes/download'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as BecomeListerRouteImport } from './routes/become-lister'
 import { Route as AboutRouteImport } from './routes/about'
@@ -55,6 +59,16 @@ const VerifyEmailRoute = VerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrustSafetyRoute = TrustSafetyRouteImport.update({
+  id: '/trust-safety',
+  path: '/trust-safety',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -68,6 +82,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -93,6 +112,11 @@ const HelpRoute = HelpRouteImport.update({
 const DownloadRoute = DownloadRouteImport.update({
   id: '/download',
   path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoriesRoute = CategoriesRouteImport.update({
@@ -266,14 +290,18 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/become-lister': typeof BecomeListerRoute
   '/categories': typeof CategoriesRouteWithChildren
+  '/contact': typeof ContactRoute
   '/download': typeof DownloadRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/journal': typeof JournalRouteWithChildren
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/trust-safety': typeof TrustSafetyRoute
   '/verify-email': typeof VerifyEmailRoute
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/wishlist': typeof AuthenticatedWishlistRoute
@@ -304,12 +332,16 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/become-lister': typeof BecomeListerRoute
+  '/contact': typeof ContactRoute
   '/download': typeof DownloadRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRouteWithChildren
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/trust-safety': typeof TrustSafetyRoute
   '/verify-email': typeof VerifyEmailRoute
   '/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
@@ -342,14 +374,18 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/become-lister': typeof BecomeListerRoute
   '/categories': typeof CategoriesRouteWithChildren
+  '/contact': typeof ContactRoute
   '/download': typeof DownloadRoute
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/journal': typeof JournalRouteWithChildren
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
   '/signup': typeof SignupRoute
+  '/terms': typeof TermsRoute
+  '/trust-safety': typeof TrustSafetyRoute
   '/verify-email': typeof VerifyEmailRoute
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/_owner': typeof AuthenticatedOwnerRouteWithChildren
@@ -385,14 +421,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/become-lister'
     | '/categories'
+    | '/contact'
     | '/download'
     | '/help'
     | '/how-it-works'
     | '/journal'
     | '/login'
+    | '/pricing'
     | '/products'
     | '/profile'
     | '/signup'
+    | '/terms'
+    | '/trust-safety'
     | '/verify-email'
     | '/account'
     | '/wishlist'
@@ -423,12 +463,16 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/become-lister'
+    | '/contact'
     | '/download'
     | '/help'
     | '/how-it-works'
     | '/login'
+    | '/pricing'
     | '/profile'
     | '/signup'
+    | '/terms'
+    | '/trust-safety'
     | '/verify-email'
     | '/wishlist'
     | '/categories/$id'
@@ -460,14 +504,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/become-lister'
     | '/categories'
+    | '/contact'
     | '/download'
     | '/help'
     | '/how-it-works'
     | '/journal'
     | '/login'
+    | '/pricing'
     | '/products'
     | '/profile'
     | '/signup'
+    | '/terms'
+    | '/trust-safety'
     | '/verify-email'
     | '/_authenticated/_admin'
     | '/_authenticated/_owner'
@@ -503,14 +551,18 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BecomeListerRoute: typeof BecomeListerRoute
   CategoriesRoute: typeof CategoriesRouteWithChildren
+  ContactRoute: typeof ContactRoute
   DownloadRoute: typeof DownloadRoute
   HelpRoute: typeof HelpRoute
   HowItWorksRoute: typeof HowItWorksRoute
   JournalRoute: typeof JournalRouteWithChildren
   LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
   ProductsRoute: typeof ProductsRouteWithChildren
   ProfileRoute: typeof ProfileRouteWithChildren
   SignupRoute: typeof SignupRoute
+  TermsRoute: typeof TermsRoute
+  TrustSafetyRoute: typeof TrustSafetyRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   UsersIdRoute: typeof UsersIdRoute
 }
@@ -522,6 +574,20 @@ declare module '@tanstack/react-router' {
       path: '/verify-email'
       fullPath: '/verify-email'
       preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trust-safety': {
+      id: '/trust-safety'
+      path: '/trust-safety'
+      fullPath: '/trust-safety'
+      preLoaderRoute: typeof TrustSafetyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -543,6 +609,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -578,6 +651,13 @@ declare module '@tanstack/react-router' {
       path: '/download'
       fullPath: '/download'
       preLoaderRoute: typeof DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/categories': {
@@ -933,14 +1013,18 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BecomeListerRoute: BecomeListerRoute,
   CategoriesRoute: CategoriesRouteWithChildren,
+  ContactRoute: ContactRoute,
   DownloadRoute: DownloadRoute,
   HelpRoute: HelpRoute,
   HowItWorksRoute: HowItWorksRoute,
   JournalRoute: JournalRouteWithChildren,
   LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
   ProductsRoute: ProductsRouteWithChildren,
   ProfileRoute: ProfileRouteWithChildren,
   SignupRoute: SignupRoute,
+  TermsRoute: TermsRoute,
+  TrustSafetyRoute: TrustSafetyRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   UsersIdRoute: UsersIdRoute,
 }

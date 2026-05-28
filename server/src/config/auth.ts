@@ -36,6 +36,10 @@ export const auth = betterAuth({
       bookingAlerts: { type: "boolean", required: false },
       settlementAlerts: { type: "boolean", required: false },
       marketingAlerts: { type: "boolean", required: false },
+      subscriptionTier: { type: "string", required: false },
+      subscriptionExpiresAt: { type: "date", required: false },
+      stripeCustomerId: { type: "string", required: false },
+      stripeSubscriptionId: { type: "string", required: false },
     }
   },
 

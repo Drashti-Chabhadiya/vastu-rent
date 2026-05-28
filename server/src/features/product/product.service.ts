@@ -129,6 +129,36 @@ export class ProductService {
   }
 
   async createProduct(data: any) {
+    if (!data.ownerId) {
+      throw new Error("Owner ID is required to create a listing");
+    }
+
+    const owner = await prisma.user.findUnique({
+      where: { id: data.ownerId },
+      select: { subscriptionTier: true, subscriptionExpiresAt: true },
+    });
+
+    if (!owner) {
+      throw new Error("Owner not found");
+    }
+
+    let tier = (owner.subscriptionTier || "Starter").toLowerCase();
+    if (owner.subscriptionExpiresAt && owner.subscriptionExpiresAt < new Date()) {
+      tier = "starter";
+    }
+
+    const listingCount = await prisma.product.count({
+      where: { ownerId: data.ownerId },
+    });
+
+    if (tier === "starter" && listingCount >= 5) {
+      throw new Error("Forbidden: You have reached the limit of 5 listings for the Starter plan. Please upgrade your plan to list more items.");
+    }
+
+    if (tier === "pro" && listingCount >= 50) {
+      throw new Error("Forbidden: You have reached the limit of 50 listings for the Pro plan. Please upgrade to the Business plan to list more items.");
+    }
+
     return prisma.product.create({
       data: {
         ...data,

@@ -484,3 +484,102 @@ export async function sendMarketingWelcomeEmail({
     console.error("❌  Error sending marketing welcome email:", error);
   }
 }
+
+interface SendContactSupportOptions {
+  email: string;
+  name: string;
+  subject: string;
+  message: string;
+}
+
+export async function sendContactSupportEmail({
+  email,
+  name,
+  subject,
+  message,
+}: SendContactSupportOptions): Promise<void> {
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const smtpFrom = process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>';
+
+  const hasSmtpConfig = smtpHost && smtpUser && smtpPass;
+  const emailSubject = `📥 New Support Inquiry: ${subject} - VastuRent`;
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Support Inquiry</title>
+      <style>
+        body { font-family: 'Inter', sans-serif; background-color: #faf7f0; color: #132019; padding: 20px; }
+        .container { max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 32px; border: 1px solid #edf0ed; }
+        .header { color: #24553e; font-size: 24px; font-weight: bold; margin-bottom: 24px; border-bottom: 2px solid #F4F8F1; padding-bottom: 12px; }
+        h1 { font-size: 20px; color: #132019; }
+        p { font-size: 15px; line-height: 1.6; color: #4a5c52; }
+        .inquiry-details { background-color: #F4F8F1; border-radius: 12px; padding: 20px; border-left: 4px solid #24553e; margin: 20px 0; }
+        .footer { font-size: 12px; color: #8fa397; margin-top: 32px; border-top: 1px solid #edf0ed; padding-top: 16px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">VastuRent Support</div>
+        <h1>New Contact Form Submission</h1>
+        <p>A user has submitted an inquiry on the VastuRent Contact page:</p>
+        
+        <div class="inquiry-details">
+          <p style="margin: 0; font-size: 14px;"><strong>From Name:</strong> ${name}</p>
+          <p style="margin: 6px 0; font-size: 14px;"><strong>From Email:</strong> ${email}</p>
+          <p style="margin: 6px 0; font-size: 14px;"><strong>Subject:</strong> ${subject}</p>
+          <p style="margin: 12px 0 0 0; font-size: 14px; white-space: pre-wrap;"><strong>Message:</strong><br/>${message}</p>
+        </div>
+
+        <p>Please reply directly to the customer's email address listed above.</p>
+        <div class="footer">
+          &copy; ${new Date().getFullYear()} VastuRent. All rights reserved.
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  if (!hasSmtpConfig) {
+    console.log("\n" + "=".repeat(75));
+    console.log(`📧  [VastuRent Email Simulator] - SUPPORT INQUIRY RECEIVED`);
+    console.log("=".repeat(75));
+    console.log(`👤  From Name:  ${name}`);
+    console.log(`✉️  From Email: ${email}`);
+    console.log(`📋  Subject:    ${subject}`);
+    console.log(`💬  Message:    ${message}`);
+    console.log("-".repeat(75));
+    console.log("💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS");
+    console.log("    in your server/.env file. Proceeding with simulated success.");
+    console.log("=".repeat(75) + "\n");
+    return;
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth: { user: smtpUser, pass: smtpPass },
+    });
+
+    await transporter.sendMail({
+      from: smtpFrom,
+      to: process.env.CONTACT_EMAIL || process.env.SMTP_USER || "support@vasturent.com",
+      replyTo: email,
+      subject: emailSubject,
+      html: htmlContent,
+      text: `New Support Inquiry!\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\nMessage: ${message}`,
+    });
+    console.log(`📧  Support inquiry alert sent successfully.`);
+  } catch (error) {
+    console.error("❌  Error sending support inquiry email:", error);
+  }
+}
+

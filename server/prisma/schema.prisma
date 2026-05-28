@@ -33,6 +33,12 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  // Subscription Details
+  subscriptionTier      String    @default("Starter") // "Starter", "Pro", "Business"
+  subscriptionExpiresAt DateTime?
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+
   // Bank & UPI Settlement details
   upiId          String?
   bankName       String?

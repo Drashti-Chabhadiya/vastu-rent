@@ -1,9 +1,17 @@
-import { Plus } from 'lucide-react'
+import { Plus, BookOpen } from 'lucide-react'
 import { motion } from 'motion/react'
+import { Link } from '@tanstack/react-router'
+import { authClient } from '#/lib/auth/auth-client'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 export function OwnerCTA() {
+  const { data: session } = authClient.useSession()
+
+  // Logged-in users go straight to their listings dashboard to create a listing.
+  // Guests see the Become a Host marketing page which funnels them to sign up.
+  const listItemHref = session?.user ? '/account/listings' : '/become-lister'
+
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32">
       <motion.div
@@ -31,19 +39,23 @@ export function OwnerCTA() {
               objects you've already invested in into a gentle stream of income.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3.5 text-[14px] font-medium text-foreground transition-all hover:bg-background/90"
+              {/* Button 1: List your first item */}
+              <Link
+                to={listItemHref as any}
+                className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3.5 text-[14px] font-medium text-foreground transition-all hover:bg-background/90 active:scale-[0.97]"
               >
                 List your first item
                 <Plus className="h-4 w-4" />
-              </a>
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-[14px] font-medium text-primary-foreground transition-all hover:bg-primary-foreground/10"
+              </Link>
+
+              {/* Button 2: Read the host guide → /how-it-works */}
+              <Link
+                to="/how-it-works"
+                className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-[14px] font-medium text-primary-foreground transition-all hover:bg-primary-foreground/10 active:scale-[0.97]"
               >
+                <BookOpen className="h-4 w-4" />
                 Read the host guide
-              </a>
+              </Link>
             </div>
           </div>
         </div>

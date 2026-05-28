@@ -12,11 +12,15 @@ import {
   Pencil,
   ChevronRight,
   Leaf,
+  CreditCard,
+  Sparkles,
+  AlertTriangle,
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
-import { useUploadProfileImage, useUpdateUserSettings } from '#/hook'
+import { useUploadProfileImage, useUpdateUserSettings, useMyListings } from '#/hook'
 import { Loader, LoadingOverlay } from '#/components/ui/loader'
 import { Link } from '@tanstack/react-router'
+import { apiClient } from '#/lib/api'
 import {
   Select,
   SelectContent,
@@ -61,7 +65,9 @@ export function PersonalInfo() {
   const { mutateAsync: updateSettings, isPending: isSavingSettings } =
     useUpdateUserSettings()
 
-  const isSaving = isUploadingImage || isSavingSettings
+  const [isVerifying, setIsVerifying] = useState(false)
+  const { data: myListings } = useMyListings()
+  const isSaving = isUploadingImage || isSavingSettings || isVerifying
 
   // Fetch session via React Query for consistency
   const { data: session, refetch } = useQuery({
@@ -71,6 +77,34 @@ export function PersonalInfo() {
       return res.data
     },
   })
+
+  // Verify Stripe Checkout session on mount/redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const sessionId = params.get('session_id')
+    if (sessionId) {
+      const verifySession = async () => {
+        setIsVerifying(true)
+        const toastId = toast.loading('Verifying your payment and updating your plan...')
+        try {
+          const res = await apiClient.post('/billing/verify-session', { sessionId })
+          if (res.data?.success) {
+            toast.success('🎉 Plan upgraded successfully!', { id: toastId })
+            await refetch()
+            window.history.replaceState({}, document.title, window.location.pathname)
+          } else {
+            toast.error('Could not verify your checkout session.', { id: toastId })
+          }
+        } catch (error: any) {
+          console.error('Session verification failed:', error)
+          toast.error(error.response?.data?.message || 'Payment verification failed.', { id: toastId })
+        } finally {
+          setIsVerifying(false)
+        }
+      }
+      verifySession()
+    }
+  }, [refetch])
 
   // Synchronize state once session data loads from backend DB
   useEffect(() => {
@@ -216,10 +250,36 @@ export function PersonalInfo() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Jan 2024'
+
+  const usedCount = myListings?.length || 0
+  const rawTier = (session?.user as any)?.subscriptionTier || 'Starter'
+  const expiresAtStr = (session?.user as any)?.subscriptionExpiresAt
+  const expiresAt = expiresAtStr ? new Date(expiresAtStr) : null
+  const isExpired = expiresAt ? expiresAt < new Date() : false
+  const activeTier = isExpired ? 'Starter' : rawTier
+
+  let limit = 5
+  let limitStr = '5'
+  if (activeTier.toLowerCase() === 'pro') {
+    limit = 50
+    limitStr = '50'
+  } else if (activeTier.toLowerCase() === 'business') {
+    limit = 999999
+    limitStr = 'Unlimited'
+  }
+
+  const quotaPercent = Math.min(100, (usedCount / limit) * 100)
+
+  let barColor = 'bg-primary'
+  if (quotaPercent >= 90) {
+    barColor = 'bg-destructive'
+  } else if (quotaPercent >= 70) {
+    barColor = 'bg-amber-500'
+  }
 
   return (
     <div className="font-sans">
@@ -735,6 +795,117 @@ export function PersonalInfo() {
                 </Select>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* ─── Subscription Plan Card ─── */}
+        <div className="bg-card rounded-[32px] border border-border/30 shadow-sm p-8 flex flex-col md:flex-row items-stretch justify-between gap-8 relative overflow-hidden">
+          {/* Decorative background gradient */}
+          <div className="absolute right-0 top-0 w-80 h-80 bg-primary/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+
+          {/* Left: Plan Status */}
+          <div className="flex-1 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
+                  <CreditCard size={20} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-foreground text-base font-display">
+                    Subscription Plan
+                  </h3>
+                  <p className="text-xs text-muted-foreground/85 mt-0.5 font-medium leading-none">
+                    Manage your current plan, check limits, and view options.
+                  </p>
+                </div>
+              </div>
+
+              {/* Plan Tier Info */}
+              <div className="mt-8 flex flex-wrap items-baseline gap-3">
+                <span className="text-3xl font-black text-foreground font-display tracking-tight font-sans">
+                  {activeTier} Plan
+                </span>
+                {isExpired && (
+                  <span className="text-[10px] font-bold text-destructive bg-danger border border-destructive/20 rounded-full px-2.5 py-0.5">
+                    Plan Expired
+                  </span>
+                )}
+              </div>
+
+              {/* Validity Details */}
+              <p className="text-xs text-muted-foreground/85 font-semibold mt-2.5">
+                {activeTier.toLowerCase() === 'starter' ? (
+                  'Enjoy basic hosting with lifetime free access.'
+                ) : (
+                  <>
+                    Valid until{' '}
+                    <span className="text-foreground font-bold">
+                      {expiresAt ? expiresAt.toLocaleDateString('en-US', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      }) : 'N/A'}
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+
+            {/* Quick Upgrade Callout */}
+            <div className="mt-8">
+              <Link to="/pricing">
+                <Button className="rounded-xl h-10 px-5 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground flex items-center gap-1.5 shadow-md shadow-primary/10 cursor-pointer">
+                  <Sparkles size={13} />
+                  Upgrade Plan
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Middle border separator for larger screens */}
+          <div className="hidden md:block w-px bg-border/40 shrink-0 self-stretch" />
+
+          {/* Right: Quota Utilization */}
+          <div className="flex-1 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold text-foreground">
+                  Listing Capacity
+                </span>
+                <span className="text-xs font-bold text-muted-foreground">
+                  {usedCount} / {limitStr} Used
+                </span>
+              </div>
+
+              {/* Quota Progress Bar */}
+              <div className="w-full h-3 bg-muted-light/60 rounded-full overflow-hidden mt-3.5 border border-border/10">
+                <div
+                  className={cn('h-full rounded-full transition-all duration-500 ease-out', barColor)}
+                  style={{ width: `${quotaPercent}%` }}
+                />
+              </div>
+
+              {/* Limit Status Description */}
+              <p className="text-[11px] text-muted-foreground/85 mt-3.5 font-medium leading-relaxed">
+                {activeTier.toLowerCase() === 'starter' ? (
+                  'Starter members can list up to 5 items. Upgrade to a paid plan to list up to 50 or unlimited items.'
+                ) : activeTier.toLowerCase() === 'pro' ? (
+                  'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.'
+                ) : (
+                  'You have unlimited listing capacity with your Business plan!'
+                )}
+              </p>
+            </div>
+
+            {/* Warning if nearing limits */}
+            {activeTier.toLowerCase() !== 'business' && usedCount >= limit && (
+              <div className="bg-danger border border-destructive/20 text-destructive rounded-xl p-3.5 flex items-start gap-2.5 mt-6">
+                <AlertTriangle size={15} className="shrink-0 mt-0.5" />
+                <p className="text-[10px] font-bold leading-normal">
+                  You have reached your listing limit. Upgrade your subscription plan to create new listings.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

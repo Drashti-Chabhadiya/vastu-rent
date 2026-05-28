@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
-import { Coins, Camera, ShieldCheck, Zap, ArrowRight, Star } from 'lucide-react'
+import { Coins, Camera, ShieldCheck, Zap, ArrowRight, Star, LayoutDashboard } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { authClient } from '#/lib/auth/auth-client'
 
 const features = [
   {
@@ -32,6 +33,13 @@ const features = [
 ]
 
 export function BecomeListerPage() {
+  const { data: session } = authClient.useSession()
+  const isLoggedIn = !!session?.user
+
+  // Logged-in users go straight to their listings dashboard.
+  // Guests go to sign up first.
+  const ctaHref = isLoggedIn ? '/account/listings' : '/signup'
+
   return (
     <div className="min-h-screen bg-card pb-20">
       {/* Hero Section */}
@@ -57,10 +65,19 @@ export function BecomeListerPage() {
               start earning money today. It's safe, easy, and free to get
               started.
             </p>
-            <Link to={'/signup'}>
+            <Link to={ctaHref as any}>
               <Button size="lg" className="flex items-center gap-3">
-                Start Listing Now
-                <ArrowRight size={20} />
+                {isLoggedIn ? (
+                  <>
+                    Go to My Listings
+                    <LayoutDashboard size={20} />
+                  </>
+                ) : (
+                  <>
+                    Start Listing Now
+                    <ArrowRight size={20} />
+                  </>
+                )}
               </Button>
             </Link>
           </div>
@@ -115,7 +132,7 @@ export function BecomeListerPage() {
                 alt="Happy Owner"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  ;(e.target as any).src =
+                  ; (e.target as any).src =
                     'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Owner'
                 }}
               />
@@ -151,11 +168,15 @@ export function BecomeListerPage() {
           <h2 className="text-4xl font-bold text-foreground mb-8">
             Your items could be earning for you right now.
           </h2>
-          <Link to={'/signup'}>
-            <Button size="lg">Get Started for Free</Button>
+          <Link to={ctaHref as any}>
+            <Button size="lg">
+              {isLoggedIn ? 'Go to My Listings' : 'Get Started for Free'}
+            </Button>
           </Link>
           <p className="mt-6 text-muted-foreground/85">
-            No hidden fees. No listing costs. Just earnings.
+            {isLoggedIn
+              ? 'Create your first listing in under 2 minutes.'
+              : 'No hidden fees. No listing costs. Just earnings.'}
           </p>
         </div>
       </section>
