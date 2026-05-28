@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Link } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import {
   Mail,
@@ -7,8 +6,6 @@ import {
   MessageCircle,
   MapPin,
   ArrowRight,
-  Headphones,
-  ExternalLink,
   Loader2,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
@@ -24,9 +21,17 @@ import {
 } from '#/components/ui/select'
 import { authClient } from '#/lib/auth/auth-client'
 import { apiClient } from '#/lib/api'
+import { useSettings } from '#/hook'
 
 export function ContactPage() {
   const { data: session } = authClient.useSession()
+  const { data: settings } = useSettings()
+
+  const contactEmail = settings?.contact?.email || 'support@vastu.com'
+  const contactPhone = settings?.contact?.phone || '+91 98765 43210'
+  const contactAddress = settings?.contact?.address || 'Vastu HQ, 123 Harmony Lane, Bengaluru, Karnataka 560001, India'
+  const contactDescription = settings?.contact?.description || 'Have a question, suggestion, or need help? Our team is here to support you.'
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [subject, setSubject] = useState('General Inquiry')
@@ -44,7 +49,7 @@ export function ContactPage() {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
     if (isSubmitting) return
-    
+
     const trimmedName = name.trim()
     const trimmedEmail = email.trim()
     const trimmedMessage = message.trim()
@@ -120,8 +125,7 @@ export function ContactPage() {
               <span className="italic text-primary">hear from you.</span>
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Have a question, suggestion, or need help? <br />
-              Our team is here to support you.
+              {contactDescription}
             </p>
             <div className="mt-8">
               <Button
@@ -156,7 +160,7 @@ export function ContactPage() {
       <section id="contact-form" className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10">
         <div className="bg-card rounded-[2.5rem] p-8 sm:p-12 lg:p-16 border border-border/30 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-            
+
             {/* Left side details */}
             <div className="lg:col-span-4">
               <h2 className="text-2xl font-bold text-[#0F291B] tracking-tight">
@@ -174,10 +178,10 @@ export function ContactPage() {
                       We typically reply within 24 hours.
                     </p>
                     <a
-                      href="mailto:support@vastu.com"
+                      href={`mailto:${contactEmail}`}
                       className="inline-block text-sm font-bold text-primary hover:underline mt-2"
                     >
-                      support@vastu.com
+                      {contactEmail}
                     </a>
                   </div>
                 </div>
@@ -193,10 +197,10 @@ export function ContactPage() {
                       Mon - Fri, 9:00 AM - 6:00 PM (IST)
                     </p>
                     <a
-                      href="tel:+919876543210"
+                      href={`tel:${contactPhone}`}
                       className="inline-block text-sm font-bold text-primary hover:underline mt-2"
                     >
-                      +91 98765 43210
+                      {contactPhone}
                     </a>
                   </div>
                 </div>
@@ -225,8 +229,7 @@ export function ContactPage() {
                   <div>
                     <h3 className="font-bold text-[#0F291B] text-base">Office</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-                      Vastu HQ, 123 Harmony Lane,<br />
-                      Bengaluru, Karnataka 560001, India
+                      {contactAddress}
                     </p>
                   </div>
                 </div>
@@ -342,36 +345,6 @@ export function ContactPage() {
                 </div>
               </form>
             </div>
-          </div>
-        </div>
-
-        {/* Bottom Callout Section */}
-        <div className="mt-12 bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 border border-primary/10 shrink-0">
-              <Headphones className="h-7 w-7 text-primary animate-pulse" />
-            </div>
-            <div>
-              <h3 className="font-bold text-[#0F291B] text-lg">
-                Can’t find what you’re looking for?
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Browse our{' '}
-                <Link to="/help" className="text-primary font-bold hover:underline">
-                  Help Center
-                </Link>{' '}
-                for answers to common questions.
-              </p>
-            </div>
-          </div>
-          <div>
-            <Link
-              to="/help"
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-[#0F291B] shadow-sm transition-all hover:bg-[#faf9f5] hover:border-primary active:scale-[0.98]"
-            >
-              Visit Help Center
-              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
-            </Link>
           </div>
         </div>
       </section>

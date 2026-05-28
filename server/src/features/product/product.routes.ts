@@ -18,18 +18,14 @@ export async function productRoutes(fastify: FastifyInstance) {
 
   const ownerOrAdmin = async (request: any, reply: any) => {
     await authHandler(request, reply);
-    const role = request.user.role;
-    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
-      return reply.status(403).send({ message: "Forbidden: Owner access required" });
-    }
   };
 
   // Owner/Admin Management
-  fastify.post("/", { preHandler: [ownerOrAdmin] }, productController.createProduct);
-  fastify.get("/my-listings", { preHandler: [ownerOrAdmin] }, productController.getMyListings);
-  fastify.put("/:id", { preHandler: [ownerOrAdmin] }, productController.updateProduct);
-  fastify.delete("/:id", { preHandler: [ownerOrAdmin] }, productController.deleteProduct);
-  
+  fastify.post("/", { preHandler: [authHandler] }, productController.createProduct);
+  fastify.get("/my-listings", { preHandler: [authHandler] }, productController.getMyListings);
+  fastify.put("/:id", { preHandler: [authHandler] }, productController.updateProduct);
+  fastify.delete("/:id", { preHandler: [authHandler] }, productController.deleteProduct);
+
   // Toggle product availability (Owner of the product, or Admin/SuperAdmin)
   fastify.post("/:id/available", {
     preHandler: async (request: any, reply: any) => {
@@ -44,17 +40,13 @@ export async function productRoutes(fastify: FastifyInstance) {
         return;
       }
 
-      if (role === "owner") {
-        const product = await prisma.product.findUnique({ where: { id } });
-        if (!product) return reply.status(404).send({ message: "Product not found" });
-        if (product.ownerId !== session.user.id) {
-          return reply.status(403).send({ message: "Forbidden: You do not own this listing" });
-        }
-        request.user = session.user;
-        return;
+      const product = await prisma.product.findUnique({ where: { id } });
+      if (!product) return reply.status(404).send({ message: "Product not found" });
+      if (product.ownerId !== session.user.id) {
+        return reply.status(403).send({ message: "Forbidden: You do not own this listing" });
       }
-
-      return reply.status(403).send({ message: "Forbidden: Owner or Admin access required" });
+      request.user = session.user;
+      return;
     }
   }, productController.toggleAvailability);
 }

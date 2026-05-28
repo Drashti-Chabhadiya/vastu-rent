@@ -48,6 +48,7 @@ export class BillingService {
         ],
         mode: "payment",
         customer_email: user.email,
+        customer_creation: "always",
         billing_address_collection: "required",
         payment_intent_data: {
           description: `VastuRent ${planName} Plan (${interval === "yearly" ? "Yearly" : "Monthly"}) Subscription Export Transaction`,

@@ -609,7 +609,7 @@ export const ReviewsManagement = () => {
                 )}
 
                 {/* Reply to Review Option (Owners Only) */}
-                {role === 'owner' && (
+                {(role === 'owner' || role === 'user') && (
                   <div className="w-full mt-2 space-y-2">
                     {replyingReviewId === review.id ? (
                       <div className="space-y-2">

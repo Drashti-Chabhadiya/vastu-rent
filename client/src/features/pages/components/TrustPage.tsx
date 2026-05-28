@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Flag,
-  HelpCircle,
   AlertTriangle,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
@@ -34,8 +33,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
+import { useSettings } from '#/hook'
+import { MapPin, FileText } from 'lucide-react'
+
+const getIcon = (name: string, className = "h-6 w-6 text-primary") => {
+  switch (name) {
+    case 'Shield':
+      return <Shield className={className} />
+    case 'UserCheck':
+      return <UserCheck className={className} />
+    case 'MessageSquare':
+      return <MessageSquare className={className} />
+    case 'Headphones':
+      return <Headphones className={className} />
+    case 'MapPin':
+      return <MapPin className={className} />
+    case 'FileText':
+      return <FileText className={className} />
+    case 'Flag':
+      return <Flag className={className} />
+    default:
+      return <Shield className={className} />
+  }
+}
 
 export function TrustPage() {
+  const { data: settings } = useSettings()
+
   // Report form state
   const [reportType, setReportType] = useState('listing')
   const [targetId, setTargetId] = useState('')
@@ -56,7 +80,17 @@ export function TrustPage() {
     setIsDialogOpen(false)
   }
 
-  const commitments = [
+  interface TrustItem {
+    icon: React.ReactNode
+    title: string
+    description: string
+  }
+
+  const commitments: TrustItem[] = settings?.trust?.commitments?.map((c: any) => ({
+    icon: getIcon(c.iconName, "h-6 w-6 text-primary"),
+    title: c.title,
+    description: c.description
+  })) || [
     {
       icon: <Shield className="h-6 w-6 text-primary" />,
       title: 'Secure platform',
@@ -83,7 +117,11 @@ export function TrustPage() {
     },
   ]
 
-  const safetyTips = [
+  const safetyTips: TrustItem[] = settings?.trust?.safetyTips?.map((s: any) => ({
+    icon: getIcon(s.iconName, "h-5 w-5 text-primary"),
+    title: s.title,
+    description: s.description
+  })) || [
     {
       icon: <MessageSquare className="h-5 w-5 text-primary" />,
       title: 'Communicate on Vastu',
@@ -95,12 +133,12 @@ export function TrustPage() {
       description: 'Check profiles, reviews and verification badges.',
     },
     {
-      icon: <MapPinIcon className="h-5 w-5 text-primary" />,
+      icon: <MapPin className="h-5 w-5 text-primary" />,
       title: 'Meet safely',
       description: 'Visit the place and meet in public when possible.',
     },
     {
-      icon: <FileTextIcon className="h-5 w-5 text-primary" />,
+      icon: <FileText className="h-5 w-5 text-primary" />,
       title: 'Read the listing carefully',
       description: 'Review house rules, policies and cancellation terms.',
     },
@@ -344,49 +382,5 @@ export function TrustPage() {
         </div>
       </section>
     </div>
-  )
-}
-
-// Inline fallback icons for safety list
-function MapPinIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>
-  )
-}
-
-function FileTextIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-      <path d="M10 9H8" />
-      <path d="M16 13H8" />
-      <path d="M16 17H8" />
-    </svg>
   )
 }

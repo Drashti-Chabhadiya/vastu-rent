@@ -203,7 +203,7 @@ export const Sidebar = ({
   }
 
   // Retrieve menus dynamically based on role; fallback if role is basic 'user' to owner stats
-  const menuItems = SIDEBAR_MENU_CONFIG[role]
+  const menuItems = SIDEBAR_MENU_CONFIG[role] || SIDEBAR_MENU_CONFIG.owner
 
   return (
     <aside

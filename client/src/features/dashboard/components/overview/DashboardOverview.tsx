@@ -62,7 +62,7 @@ export const DashboardOverview = ({
     return <DashboardOverviewSkeleton />
   }
 
-  if (role === 'owner' && (listLoading || ordersLoading)) {
+  if ((role === 'owner' || role === 'user') && (listLoading || ordersLoading)) {
     return <DashboardOverviewSkeleton />
   }
 
@@ -74,7 +74,7 @@ export const DashboardOverview = ({
   }
 
   // 1. OWNER / LISTER DASHBOARD OVERVIEW
-  if (role === 'owner') {
+  if (role === 'owner' || role === 'user') {
     return (
       <ListerOverview
         myListings={myListings}

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import {
   Sprout,
@@ -10,17 +9,50 @@ import {
   CreditCard,
   Lock,
   Headphones,
-  ArrowRight,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Card, CardContent } from '#/components/ui/card'
 import { Switch } from '#/components/ui/switch'
 import { authClient } from '#/lib/auth/auth-client'
 import { apiClient } from '#/lib/api'
+import { useSettings } from '#/hook'
 
 export function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
   const { data: session } = authClient.useSession()
+  const { data: settings } = useSettings()
+
+  const rawStarterPrice = settings?.pricing?.starterPrice !== undefined ? settings.pricing.starterPrice : 0
+  const rawProPrice = settings?.pricing?.proPrice !== undefined ? settings.pricing.proPrice : 499
+  const rawBusinessPrice = settings?.pricing?.businessPrice !== undefined ? settings.pricing.businessPrice : 999
+
+  // Calculate pricing based on billing toggle (20% off for yearly)
+  const getProPrice = () => (isYearly ? Math.round(rawProPrice * 0.8) : rawProPrice)
+  const getBusinessPrice = () => (isYearly ? Math.round(rawBusinessPrice * 0.8) : rawBusinessPrice)
+
+  const starterFeatures: string[] = settings?.pricing?.starterFeatures || [
+    'List up to 5 items',
+    'Basic item insights',
+    'Standard support',
+    'Secure payments',
+  ]
+
+  const proFeatures: string[] = settings?.pricing?.proFeatures || [
+    'List up to 50 items',
+    'Advanced item insights',
+    'Priority support',
+    'Secure payments',
+    'Promoted listings',
+  ]
+
+  const businessFeatures: string[] = settings?.pricing?.businessFeatures || [
+    'Unlimited listings',
+    'Advanced analytics',
+    'Priority support',
+    'Secure payments',
+    'Promoted listings',
+    'Custom business profile',
+  ]
 
   const handleSelectPlan = async (planName: string) => {
     if (planName.toLowerCase() === 'starter') {
@@ -52,34 +84,6 @@ export function PricingPage() {
       toast.error(err.response?.data?.message || 'Checkout failed. Please try again.', { id: toastId })
     }
   }
-
-  // Calculate pricing based on billing toggle (20% off for yearly)
-  const getProPrice = () => (isYearly ? 399 : 499)
-  const getBusinessPrice = () => (isYearly ? 799 : 999)
-
-  const starterFeatures = [
-    'List up to 5 items',
-    'Basic item insights',
-    'Standard support',
-    'Secure payments',
-  ]
-
-  const proFeatures = [
-    'List up to 50 items',
-    'Advanced item insights',
-    'Priority support',
-    'Secure payments',
-    'Promoted listings',
-  ]
-
-  const businessFeatures = [
-    'Unlimited listings',
-    'Advanced analytics',
-    'Priority support',
-    'Secure payments',
-    'Promoted listings',
-    'Custom business profile',
-  ]
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -159,7 +163,7 @@ export function PricingPage() {
                 {/* Price */}
                 <div className="mt-8">
                   <div className="flex items-baseline text-[#0F291B]">
-                    <span className="text-4xl font-extrabold tracking-tight">₹0</span>
+                    <span className="text-4xl font-extrabold tracking-tight">₹{rawStarterPrice}</span>
                     <span className="ml-1 text-sm font-semibold text-muted-foreground">/month</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">No setup fees. No hidden charges.</p>
@@ -220,8 +224,8 @@ export function PricingPage() {
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
                     {isYearly
-                      ? `Billed annually as ₹${getProPrice() * 12} (Save ₹1,200)`
-                      : 'Billed monthly as ₹499'}
+                      ? `Billed annually as ₹${getProPrice() * 12} (Save ₹${(rawProPrice - getProPrice()) * 12})`
+                      : `Billed monthly as ₹${rawProPrice}`}
                   </p>
                 </div>
               </div>
@@ -274,8 +278,8 @@ export function PricingPage() {
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
                     {isYearly
-                      ? `Billed annually as ₹${getBusinessPrice() * 12} (Save ₹2,400)`
-                      : 'Billed monthly as ₹999'}
+                      ? `Billed annually as ₹${getBusinessPrice() * 12} (Save ₹${(rawBusinessPrice - getBusinessPrice()) * 12})`
+                      : `Billed monthly as ₹${rawBusinessPrice}`}
                   </p>
                 </div>
               </div>

@@ -41,12 +41,12 @@ export function PersonalInfo() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Custom details states matching exact screenshot data
-  const [gender, setGender] = useState('Female')
-  const [location, setLocation] = useState('Gurugram, Haryana, India')
-  const [phone, setPhone] = useState('+91 98765 43210')
-  const [language, setLanguage] = useState('English')
-  const [dob, setDob] = useState('12 March 1995')
+  // Custom details states matching exact database values
+  const [gender, setGender] = useState('')
+  const [location, setLocation] = useState('')
+  const [phone, setPhone] = useState('')
+  const [language, setLanguage] = useState('')
+  const [dob, setDob] = useState('')
   const [currency, setCurrency] = useState('INR')
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [smsNotifications, setSmsNotifications] = useState(false)
@@ -111,15 +111,12 @@ export function PersonalInfo() {
     if (session?.user) {
       const u = session.user as any
       setName(u.name || '')
-      if (u.gender !== undefined && u.gender !== null) setGender(u.gender)
-      if (u.location !== undefined && u.location !== null)
-        setLocation(u.location)
-      if (u.phone !== undefined && u.phone !== null) setPhone(u.phone)
-      if (u.language !== undefined && u.language !== null)
-        setLanguage(u.language)
-      if (u.dob !== undefined && u.dob !== null) setDob(u.dob)
-      if (u.currency !== undefined && u.currency !== null)
-        setCurrency(u.currency)
+      setGender(u.gender || '')
+      setLocation(u.location || '')
+      setPhone(u.phone || '')
+      setLanguage(u.language || '')
+      setDob(u.dob || '')
+      setCurrency(u.currency || 'INR')
       if (u.bookingAlerts !== undefined && u.bookingAlerts !== null)
         setEmailNotifications(u.bookingAlerts)
       if (u.settlementAlerts !== undefined && u.settlementAlerts !== null)
@@ -281,6 +278,21 @@ export function PersonalInfo() {
     barColor = 'bg-amber-500'
   }
 
+  const fields = [
+    { key: 'name', label: 'Full Name', value: name },
+    { key: 'email', label: 'Email Address', value: session?.user?.email },
+    { key: 'image', label: 'Profile Photo', value: session?.user?.image || imagePreview },
+    { key: 'phone', label: 'Phone Number', value: phone },
+    { key: 'gender', label: 'Gender', value: gender },
+    { key: 'location', label: 'Location', value: location },
+    { key: 'language', label: 'Preferred Language', value: language },
+    { key: 'dob', label: 'Date of Birth', value: dob },
+  ]
+
+  const filledFields = fields.filter(f => f.value && f.value.trim() !== '')
+  const missingFields = fields.filter(f => !f.value || f.value.trim() === '')
+  const completenessPercent = Math.round((filledFields.length / fields.length) * 100)
+
   return (
     <div className="font-sans">
       {/* Page Title Header */}
@@ -371,15 +383,64 @@ export function PersonalInfo() {
                 Verified Member
               </span>
 
+              {/* Profile Completeness Widget */}
+              <div className="w-full mt-6 bg-muted-light/30 border border-border/20 rounded-2xl p-4 text-left">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
+                    Completeness
+                  </span>
+                  <span className={cn(
+                    "text-xs font-black",
+                    completenessPercent === 100 ? "text-primary" : "text-amber-500"
+                  )}>
+                    {completenessPercent}%
+                  </span>
+                </div>
+                {/* Progress Bar */}
+                <div className="w-full h-2 bg-muted-light rounded-full overflow-hidden mb-3">
+                  <div
+                    className={cn(
+                      "h-full transition-all duration-500 rounded-full",
+                      completenessPercent === 100 ? "bg-primary" : "bg-amber-500"
+                    )}
+                    style={{ width: `${completenessPercent}%` }}
+                  />
+                </div>
+
+                {/* Missing fields list */}
+                {missingFields.length > 0 ? (
+                  <div className="space-y-1.5">
+                    <p className="text-[9px] font-bold text-muted-dark uppercase tracking-wider">
+                      Pending Details:
+                    </p>
+                    <ul className="space-y-1 pl-1">
+                      {missingFields.map((f) => (
+                        <li key={f.key} className="text-[10px] font-semibold text-amber-600 flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
+                          {f.label}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 text-[10px] font-black text-primary">
+                    <Sparkles size={11} className="fill-primary-soft shrink-0 animate-bounce" />
+                    Profile fully complete!
+                  </div>
+                )}
+              </div>
+
               {/* Dynamic Contact Details */}
-              <div className="mt-8 space-y-4 text-left w-full max-w-[240px]">
+              <div className="mt-6 space-y-4 text-left w-full max-w-[240px]">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
                   <Mail size={16} className="text-muted-foreground/70 shrink-0" />
                   <span className="truncate">{session.user.email}</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
                   <Phone size={16} className="text-muted-foreground/70 shrink-0" />
-                  <span>{phone}</span>
+                  <span className={cn(!phone && "italic text-muted-foreground/50")}>
+                    {phone || 'Not specified'}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
                   <Calendar size={16} className="text-muted-foreground/70 shrink-0" />
@@ -429,6 +490,7 @@ export function PersonalInfo() {
                   <Input
                     id="fullName"
                     value={name}
+                    placeholder="Not specified"
                     onChange={(e) => setName(e.target.value)}
                     disabled={!isEditing}
                     className={cn(
@@ -499,6 +561,7 @@ export function PersonalInfo() {
                   <Input
                     id="location"
                     value={location}
+                    placeholder="Not specified"
                     onChange={(e) => setLocation(e.target.value)}
                     disabled={!isEditing}
                     className={cn(
@@ -521,6 +584,7 @@ export function PersonalInfo() {
                   <Input
                     id="phone"
                     value={phone}
+                    placeholder="Not specified"
                     onChange={(e) => setPhone(e.target.value)}
                     disabled={!isEditing}
                     className={cn(
@@ -577,6 +641,7 @@ export function PersonalInfo() {
                     <Input
                       id="dob"
                       value={dob}
+                      placeholder="Not specified"
                       onChange={(e) => setDob(e.target.value)}
                       disabled={!isEditing}
                       className={cn(

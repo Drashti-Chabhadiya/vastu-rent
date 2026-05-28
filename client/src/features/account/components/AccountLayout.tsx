@@ -115,19 +115,12 @@ export function AccountLayout() {
       icon: Calendar,
       href: '/account/bookings',
     },
-    isLister
-      ? {
-          id: 'listings',
-          label: 'My Listings',
-          icon: Percent,
-          href: '/account/listings',
-        }
-      : {
-          id: 'listings',
-          label: 'Become a Host',
-          icon: Percent,
-          href: '/become-lister',
-        },
+    {
+      id: 'listings',
+      label: 'My Listings',
+      icon: Percent,
+      href: '/account/listings',
+    },
     { id: 'wishlist', label: 'Wishlist', icon: Heart, href: '/wishlist' },
     { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
     {

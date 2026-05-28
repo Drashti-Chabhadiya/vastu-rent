@@ -101,7 +101,7 @@ export const ListingDialog = ({
           city: '',
           location: '',
           categoryId: '',
-          ownerId: currentUser?.role === 'owner' ? currentUser.id : '',
+          ownerId: currentUser?.role !== 'admin' && currentUser?.role !== 'superAdmin' ? (currentUser?.id || '') : '',
           images: [],
           condition: 'Good',
           features: [],

@@ -287,11 +287,14 @@ export function Footer() {
             {/* Interactive Dropdown for region selection */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 text-[11.5px] hover:text-primary transition-colors cursor-pointer outline-none select-none">
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 text-[11.5px] hover:text-primary transition-colors cursor-pointer outline-none select-none h-auto p-0 hover:bg-transparent font-medium text-muted-foreground"
+                >
                   <Globe className="h-4 w-4 text-primary" />
                   <span>{region}</span>
                   <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-                </button>
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-popover border border-border/50 rounded-xl shadow-md p-1">
                 {[

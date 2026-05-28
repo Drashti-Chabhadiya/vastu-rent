@@ -53,7 +53,7 @@ export const CategoryManagement = ({
 
   const user = session?.user
   const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin'
-  const isOwner = user?.role === 'owner'
+  const isOwner = user?.role === 'owner' || user?.role === 'user'
 
   const createMutation = useCreateCategory()
   const updateMutation = useUpdateCategory()

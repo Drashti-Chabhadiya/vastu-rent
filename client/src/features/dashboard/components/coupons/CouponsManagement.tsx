@@ -21,8 +21,8 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
   const user = session?.user
   const role = user?.role || 'user'
   const isAdmin = role === 'admin' || role === 'superAdmin'
-  const isOwner = role === 'owner'
-  const renderAsRenter = isRenterView || role === 'user'
+  const isOwner = role === 'owner' || role === 'user'
+  const renderAsRenter = isRenterView
 
   const [activeTab, setActiveTab] = useState<'my' | 'global'>('my')
   const [isFormOpen, setIsFormOpen] = useState(false)

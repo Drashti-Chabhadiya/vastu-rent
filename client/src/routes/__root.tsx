@@ -120,7 +120,13 @@ function NotificationListener() {
         })
       })
     } else {
-      registerDeviceForPush().catch(() => {})
+      if (
+        typeof window !== 'undefined' &&
+        'Notification' in window &&
+        Notification.permission === 'granted'
+      ) {
+        registerDeviceForPush().catch(() => {})
+      }
     }
   }, [token, navigate])
 

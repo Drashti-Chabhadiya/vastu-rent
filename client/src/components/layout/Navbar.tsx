@@ -664,9 +664,7 @@ export function Navbar() {
                       </DropdownMenuItem>
                     </Link>
 
-                    {(session.user.role === 'owner' ||
-                      session.user.role === 'admin' ||
-                      session.user.role === 'superAdmin') && (
+                    {session.user && (
                       <Link to="/account/listings">
                         <DropdownMenuItem
                           className={cn(
@@ -701,9 +699,7 @@ export function Navbar() {
                       </Link>
                     )}
 
-                    {(session.user.role === 'owner' ||
-                      session.user.role === 'admin' ||
-                      session.user.role === 'superAdmin') && (
+                    {session.user && (
                       <Link to="/owner/dashboard">
                         <DropdownMenuItem
                           className={cn(

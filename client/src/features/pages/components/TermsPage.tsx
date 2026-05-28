@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
-import { toast } from 'sonner'
 import {
   ChevronDown,
   ChevronUp,
   Headphones,
-  ExternalLink,
   ShieldAlert,
   ArrowRight,
 } from 'lucide-react'
@@ -17,30 +15,101 @@ import {
   CollapsibleContent,
 } from '#/components/ui/collapsible'
 
+import { useSettings } from '#/hook'
+
 export function TermsPage() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('intro')
+  const { data: settings } = useSettings()
 
-  const sections = [
-    { id: 'intro', label: '1. Introduction' },
-    { id: 'eligibility', label: '2. Eligibility' },
-    { id: 'accounts', label: '3. User Accounts' },
-    { id: 'bookings', label: '4. Listings and Bookings' },
-    { id: 'payments', label: '5. Payments and Fees' },
-    { id: 'cancellations', label: '6. Cancellations and Refunds', collapsedOnly: true },
-    { id: 'conduct', label: '7. User Conduct', collapsedOnly: true },
-    { id: 'intellectual', label: '8. Intellectual Property', collapsedOnly: true },
-    { id: 'liability', label: '9. Limitation of Liability', collapsedOnly: true },
-    { id: 'indemnity', label: '10. Indemnification', collapsedOnly: true },
-    { id: 'changes', label: '11. Changes to Terms', collapsedOnly: true },
-    { id: 'governing', label: '12. Governing Law', collapsedOnly: true },
-    { id: 'contact', label: '13. Contact Us', collapsedOnly: true },
+  const lastUpdated = settings?.terms?.lastUpdated || '28 May 2026'
+
+  const dynamicSections = settings?.terms?.sections || [
+    {
+      id: 'intro',
+      title: '1. Introduction',
+      content: 'Welcome to Vastu. These Terms of Service ("Terms") govern your access to and use of the Vastu website, mobile application, and any related services (collectively, the "Platform") operated by Vastu Rentals Private Limited ("we", "us", or "our").\n\nBy accessing or using our Platform, you agree to be bound by these Terms.'
+    },
+    {
+      id: 'eligibility',
+      title: '2. Eligibility',
+      content: 'You must be at least 18 years old and legally capable of entering into binding contracts to use Vastu. By using our Platform, you represent and warrant that you meet these requirements.'
+    },
+    {
+      id: 'accounts',
+      title: '3. User Accounts',
+      content: 'To access certain features, you may need to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use.'
+    },
+    {
+      id: 'bookings',
+      title: '4. Listings and Bookings',
+      content: 'Users can list items for rent and book items listed by others. We do not own the items listed on Vastu and act solely as an intermediary between users.\n\nWe reserve the right to remove any listing or user that violates these Terms or our policies.'
+    },
+    {
+      id: 'payments',
+      title: '5. Payments and Fees',
+      content: 'All payments must be made through our secure payment system. We may charge service fees for certain transactions, which will be clearly displayed before you complete a booking.\n\nYou agree to pay all applicable fees and taxes.'
+    },
+    {
+      id: 'cancellations',
+      title: '6. Cancellations and Refunds',
+      content: 'Cancellation policies and refund eligibility are governed by the terms specified at the time of booking. Users must resolve disputes through Vastu support in alignment with our formal Refund Policy.'
+    },
+    {
+      id: 'conduct',
+      title: '7. User Conduct',
+      content: "Users agree to behave professionally, not list prohibited items, and not bypass Vastu's secure system or direct transactions off-platform. Any attempt to negotiate or transact off-platform will lead to account suspension."
+    },
+    {
+      id: 'intellectual',
+      title: '8. Intellectual Property',
+      content: 'All content, designs, trademarks, logos, and code displayed on the Vastu Platform are owned by Vastu Rentals and protected by copyright and intellectual property laws.'
+    },
+    {
+      id: 'liability',
+      title: '9. Limitation of Liability',
+      content: 'Vastu acts as a secure platform and venue, and is not liable for any physical damages, loss of earnings, or disputes arising between users. Renters and hosts accept all operational risks.'
+    },
+    {
+      id: 'indemnity',
+      title: '10. Indemnification',
+      content: 'Users agree to defend, indemnify, and hold harmless Vastu, its affiliates, and its officers from any claims, losses, or legal expenses arising from their use of the platform or violation of these Terms.'
+    },
+    {
+      id: 'changes',
+      title: '11. Changes to Terms',
+      content: 'Vastu reserves the right to modify these Terms at any time. Your continued use of the platform after updates have been published constitutes acceptance of the new terms.'
+    },
+    {
+      id: 'governing',
+      title: '12. Governing Law',
+      content: 'These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. All disputes are subject to exclusive jurisdiction in Bengaluru.'
+    },
+    {
+      id: 'contact',
+      title: '13. Contact Us',
+      content: 'For any questions regarding these Terms of Service, please contact us at support@vastu.com or through our Contact page.'
+    }
   ]
+
+  interface TermsNavSection {
+    id: string
+    label: string
+    collapsedOnly: boolean
+  }
+
+  const sections: TermsNavSection[] = dynamicSections.map((sec: any, idx: number) => ({
+    id: sec.id,
+    label: sec.title,
+    collapsedOnly: idx >= 5
+  }))
+
+  const mainSections = dynamicSections.slice(0, 5)
+  const collapsedSections = dynamicSections.slice(5)
 
   const handleScrollTo = (id: string, collapsedOnly = false) => {
     if (collapsedOnly && !isOpen) {
       setIsOpen(true)
-      // Small timeout to allow render of collapsed content before scroll
       setTimeout(() => {
         const el = document.getElementById(id)
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -71,7 +140,7 @@ export function TermsPage() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isOpen])
+  }, [isOpen, sections])
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -95,8 +164,8 @@ export function TermsPage() {
               By using our platform, you agree to these terms.
             </p>
             <div className="mt-8">
-              <span className="inline-block rounded-full bg-primary px-5 py-3 text-[13px] font-bold text-primary-foreground">
-                Last updated: 28 May 2026
+              <span className="inline-flex rounded-full bg-primary px-5 py-3 text-[13px] font-bold text-primary-foreground">
+                Last updated: {lastUpdated}
               </span>
             </div>
           </div>
@@ -130,11 +199,12 @@ export function TermsPage() {
                       const isActive = activeSection === sec.id
                       const isCollapsed = sec.collapsedOnly && !isOpen
                       return (
-                        <button
+                        <Button
+                          variant="ghost"
                           key={sec.id}
                           onClick={() => handleScrollTo(sec.id, sec.collapsedOnly)}
-                          className={`text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center relative ${isActive
-                            ? 'text-primary bg-primary/5 pl-4 font-bold'
+                          className={`text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-start relative h-auto w-full ${isActive
+                            ? 'text-primary bg-primary/5 pl-4 font-bold hover:bg-primary/5 hover:text-primary'
                             : 'text-muted-foreground hover:text-foreground hover:bg-muted/10'
                             }`}
                         >
@@ -144,7 +214,7 @@ export function TermsPage() {
                           <span className={isCollapsed ? 'opacity-40 line-through' : ''}>
                             {sec.label}
                           </span>
-                        </button>
+                        </Button>
                       )
                     })}
                   </nav>
@@ -180,162 +250,47 @@ export function TermsPage() {
           {/* Right Content */}
           <div className="lg:col-span-9 space-y-12 pr-0 lg:pr-6">
 
-            {/* 1. Introduction */}
-            <div id="intro" className="scroll-mt-28 border-b border-border/30 pb-10">
-              <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">1. Introduction</h2>
-              <div className="mt-4 text-sm leading-relaxed text-muted-foreground space-y-4">
-                <p>
-                  Welcome to Vastu. These Terms of Service (&quot;Terms&quot;) govern your access to and use of the Vastu website, mobile application, and any related services (collectively, the &quot;Platform&quot;) operated by Vastu Rentals Private Limited (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;).
-                </p>
-                <p>
-                  By accessing or using our Platform, you agree to be bound by these Terms.
-                </p>
+            {mainSections.map((sec: any) => (
+              <div key={sec.id} id={sec.id} className="scroll-mt-28 border-b border-border/30 pb-10">
+                <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">{sec.title}</h2>
+                <div className="text-sm leading-relaxed text-muted-foreground">
+                  {sec.content.split('\n').map((para: string, i: number) => (
+                    <p key={i} className="mt-4">{para}</p>
+                  ))}
+                </div>
               </div>
-            </div>
+            ))}
 
-            {/* 2. Eligibility */}
-            <div id="eligibility" className="scroll-mt-28 border-b border-border/30 pb-10">
-              <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">2. Eligibility</h2>
-              <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                <p>
-                  You must be at least 18 years old and legally capable of entering into binding contracts to use Vastu. By using our Platform, you represent and warrant that you meet these requirements.
-                </p>
-              </div>
-            </div>
+            {/* Shadcn Collapsible Section for remaining items */}
+            {collapsedSections.length > 0 && (
+              <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-12">
+                <CollapsibleContent className="space-y-12 data-[state=open]:animate-slide-down">
+                  {collapsedSections.map((sec: any) => (
+                    <div key={sec.id} id={sec.id} className="scroll-mt-28 border-b border-border/30 pb-10">
+                      <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">{sec.title}</h2>
+                      <div className="text-sm leading-relaxed text-muted-foreground">
+                        {sec.content.split('\n').map((para: string, i: number) => (
+                          <p key={i} className="mt-4">{para}</p>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </CollapsibleContent>
 
-            {/* 3. User Accounts */}
-            <div id="accounts" className="scroll-mt-28 border-b border-border/30 pb-10">
-              <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">3. User Accounts</h2>
-              <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                <p>
-                  To access certain features, you may need to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use.
-                </p>
-              </div>
-            </div>
-
-            {/* 4. Listings and Bookings */}
-            <div id="bookings" className="scroll-mt-28 border-b border-border/30 pb-10">
-              <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">4. Listings and Bookings</h2>
-              <div className="mt-4 text-sm leading-relaxed text-muted-foreground space-y-4">
-                <p>
-                  Users can list items for rent and book items listed by others. We do not own the items listed on Vastu and act solely as an intermediary between users.
-                </p>
-                <p>
-                  We reserve the right to remove any listing or user that violates these Terms or our policies.
-                </p>
-              </div>
-            </div>
-
-            {/* 5. Payments and Fees */}
-            <div id="payments" className="scroll-mt-28 border-b border-border/30 pb-10">
-              <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">5. Payments and Fees</h2>
-              <div className="mt-4 text-sm leading-relaxed text-muted-foreground space-y-4">
-                <p>
-                  All payments must be made through our secure payment system. We may charge service fees for certain transactions, which will be clearly displayed before you complete a booking.
-                </p>
-                <p>
-                  You agree to pay all applicable fees and taxes.
-                </p>
-              </div>
-            </div>
-
-            {/* Shadcn Collapsible Section for 6 - 13 */}
-            <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-12">
-              <CollapsibleContent className="space-y-12 data-[state=open]:animate-slide-down">
-                {/* 6. Cancellations and Refunds */}
-                <div id="cancellations" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">6. Cancellations and Refunds</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      Cancellation policies and refund eligibility are governed by the terms specified at the time of booking. Users must resolve disputes through Vastu support in alignment with our formal Refund Policy.
-                    </p>
-                  </div>
+                {/* Trigger Toggle */}
+                <div className="flex justify-center pt-4">
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="rounded-full border border-border px-8 py-5 h-auto text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
+                    >
+                      {isOpen ? 'Collapse terms' : 'View all terms'}
+                      {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                  </CollapsibleTrigger>
                 </div>
-
-                {/* 7. User Conduct */}
-                <div id="conduct" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">7. User Conduct</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      Users agree to behave professionally, not list prohibited items, and not bypass Vastu's secure system or direct transactions off-platform. Any attempt to negotiate or transact off-platform will lead to account suspension.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 8. Intellectual Property */}
-                <div id="intellectual" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">8. Intellectual Property</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      All content, designs, trademarks, logos, and code displayed on the Vastu Platform are owned by Vastu Rentals and protected by copyright and intellectual property laws.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 9. Limitation of Liability */}
-                <div id="liability" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">9. Limitation of Liability</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      Vastu acts as a secure platform and venue, and is not liable for any physical damages, loss of earnings, or disputes arising between users. Renters and hosts accept all operational risks.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 10. Indemnification */}
-                <div id="indemnity" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">10. Indemnification</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      Users agree to defend, indemnify, and hold harmless Vastu, its affiliates, and its officers from any claims, losses, or legal expenses arising from their use of the platform or violation of these Terms.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 11. Changes to Terms */}
-                <div id="changes" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">11. Changes to Terms</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      Vastu reserves the right to modify these Terms at any time. Your continued use of the platform after updates have been published constitutes acceptance of the new terms.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 12. Governing Law */}
-                <div id="governing" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">12. Governing Law</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. All disputes are subject to exclusive jurisdiction in Bengaluru.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 13. Contact Us */}
-                <div id="contact" className="scroll-mt-28 border-b border-border/30 pb-10">
-                  <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">13. Contact Us</h2>
-                  <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      For any questions regarding these Terms of Service, please contact us at support@vastu.com or through our Contact page.
-                    </p>
-                  </div>
-                </div>
-              </CollapsibleContent>
-
-              {/* Trigger Toggle */}
-              <div className="flex justify-center pt-4">
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="rounded-full border border-border px-8 py-5 h-auto text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
-                  >
-                    {isOpen ? 'Collapse terms' : 'View all terms'}
-                    {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                  </Button>
-                </CollapsibleTrigger>
-              </div>
-            </Collapsible>
+              </Collapsible>
+            )}
 
             {/* Important notice block */}
             <div className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex items-start gap-4 shadow-sm mt-8">
