@@ -185,11 +185,7 @@ function EmptyState() {
           'justify-center',
         )}
       >
-        <MessageSquare
-          size={28}
-          className="text-primary"
-          fill="currentColor"
-        />
+        <MessageSquare size={28} className="text-primary" fill="currentColor" />
       </div>
       <div>
         <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
@@ -567,7 +563,9 @@ export const MessagesManagement = () => {
                 )}
               >
                 <MessageSquare size={24} className="text-muted-foreground/30" />
-                <p className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}>
+                <p
+                  className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}
+                >
                   {userSearch
                     ? 'No users found'
                     : 'Start typing to search users'}
@@ -626,11 +624,7 @@ export const MessagesManagement = () => {
                   {startingChatWith === u.id ? (
                     <Loader2
                       size={14}
-                      className={cn(
-                        'animate-spin',
-                        'text-primary',
-                        'shrink-0',
-                      )}
+                      className={cn('animate-spin', 'text-primary', 'shrink-0')}
                     />
                   ) : (
                     <span

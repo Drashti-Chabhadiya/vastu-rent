@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import {
   useProduct,
   useProducts,
@@ -14,6 +14,7 @@ import { Button } from '#/components/ui/button'
 import { AlertCircle } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 import { apiClient } from '#/lib/api'
+import { authClient } from '#/lib/auth/auth-client'
 
 // Subcomponents import
 import { ProductBreadcrumbs } from './detail/ProductBreadcrumbs'
@@ -25,6 +26,8 @@ import { AvailabilityCalendar } from './detail/AvailabilityCalendar'
 import { BookingConfirmationModal } from './detail/BookingConfirmationModal'
 
 export function ProductDetail({ id }: { id: string }) {
+  const navigate = useNavigate()
+  const { data: session } = authClient.useSession()
   const { data: product, isLoading, error } = useProduct(id)
   const { data: similarProducts } = useProducts({
     categoryId: product?.categoryId,
@@ -196,6 +199,12 @@ export function ProductDetail({ id }: { id: string }) {
   }
 
   const handleRentNow = async () => {
+    // Guard: redirect unauthenticated users to login immediately
+    if (!session?.user) {
+      navigate({ to: '/login' })
+      return
+    }
+
     if (!startDate || !endDate) {
       alert('Please select start and end dates on the calendar.')
       return

@@ -227,7 +227,10 @@ export function LoginForm() {
                 className={`w-4 h-4 rounded-[4px] flex items-center justify-center border transition-colors ${rememberMe ? 'bg-primary border-primary' : 'bg-card border-border/120'}`}
               >
                 {rememberMe && (
-                  <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+                  <Check
+                    className="h-3 w-3 text-primary-foreground"
+                    strokeWidth={3}
+                  />
                 )}
               </div>
               <span className="text-[13px] font-bold text-foreground">

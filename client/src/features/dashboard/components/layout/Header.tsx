@@ -24,6 +24,7 @@ import {
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
 import { authClient } from '#/lib/auth/auth-client'
+import { isAdminRole, isUserRole } from '#/lib/auth/roles'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatMsgTime(dateStr: string) {
@@ -43,7 +44,8 @@ interface HeaderProps {
 export const Header = ({ onMenuClick }: HeaderProps) => {
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
-  const userRole = session?.user?.role || 'owner'
+  const userRole = session?.user?.role || 'user'
+  const isAdmin = isAdminRole(userRole)
 
   const { data: notifications = [], isLoading: isLoadingNotifications } =
     useNotifications()
@@ -91,8 +93,10 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
     // Dynamic Role-based navigation based on notification types
     switch (notif.type) {
       case 'booking':
-        if (userRole === 'owner') {
+        if (isUserRole(userRole)) {
           navigate({ to: '/account/orders' })
+        } else if (isAdmin) {
+          navigate({ to: '/account/bookings' })
         } else {
           navigate({ to: '/account/bookings' })
         }

@@ -199,7 +199,9 @@ export function HelpPage() {
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   Live Chat
                 </p>
-                <p className="font-bold text-foreground">Start a conversation</p>
+                <p className="font-bold text-foreground">
+                  Start a conversation
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-4">

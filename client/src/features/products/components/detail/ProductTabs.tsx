@@ -344,7 +344,9 @@ export const ProductTabs = ({
             )}
 
             <div className="border-t border-border/30 pt-5 space-y-3">
-              <p className="text-sm font-bold text-foreground">Write a Review</p>
+              <p className="text-sm font-bold text-foreground">
+                Write a Review
+              </p>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Button

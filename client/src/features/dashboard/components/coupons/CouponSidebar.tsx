@@ -134,7 +134,9 @@ export function CouponSidebar({
               <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0">
                 <CheckCircle2 size={12} />
               </div>
-              <p className="text-[11px] font-bold text-muted-foreground/85">{rule}</p>
+              <p className="text-[11px] font-bold text-muted-foreground/85">
+                {rule}
+              </p>
             </div>
           ))}
         </div>

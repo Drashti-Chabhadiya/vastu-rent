@@ -23,6 +23,9 @@ import { paymentRoutes } from "./features/payment/payment.routes.js";
 import { payoutRoutes } from "./features/payout/payout.routes.js";
 import { storyRoutes } from "./features/story/story.routes.js";
 import { chatRoutes } from "./features/chat/chat.routes.js";
+import { supportRoutes } from "./features/support/support.routes.js";
+import { billingRoutes } from "./features/billing/billing.routes.js";
+import { settingsRoutes } from "./features/settings/settings.routes.js";
 
 
 export const app = Fastify({ logger: true, trustProxy: true });
@@ -68,6 +71,9 @@ app.register(paymentRoutes, { prefix: "/api/payments" });
 app.register(payoutRoutes, { prefix: "/api/payouts" });
 app.register(storyRoutes, { prefix: "/api/stories" });
 app.register(chatRoutes, { prefix: "/api/chat" });
+app.register(supportRoutes, { prefix: "/api" });
+app.register(billingRoutes, { prefix: "/api/billing" });
+app.register(settingsRoutes, { prefix: "/api/settings" });
 
 // Aliases for backward compatibility with the frontend
 app.register(productRoutes, { prefix: "/api/admin/products" });

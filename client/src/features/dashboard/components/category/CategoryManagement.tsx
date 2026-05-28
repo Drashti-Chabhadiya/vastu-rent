@@ -11,6 +11,7 @@ import {
   useCreateCategoryRequest,
   useUpdateCategoryRequestStatus,
 } from '#/hook'
+import { isAdminRole, isUserRole } from '#/lib/auth/roles'
 import { CategoryFormDialog } from './components/CategoryFormDialog'
 import { DeleteConfirmDialog } from './components/DeleteConfirmDialog'
 import { authClient } from '#/lib/auth/auth-client'
@@ -52,8 +53,8 @@ export const CategoryManagement = ({
   const { data: session } = authClient.useSession()
 
   const user = session?.user
-  const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin'
-  const isOwner = user?.role === 'owner'
+  const isAdmin = isAdminRole(user?.role)
+  const isOwner = isUserRole(user?.role)
 
   const createMutation = useCreateCategory()
   const updateMutation = useUpdateCategory()
@@ -246,7 +247,9 @@ export const CategoryManagement = ({
                 <div className="w-16 h-16 bg-muted-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <FolderPlus className="text-muted-dark" size={32} />
                 </div>
-                <p className="text-muted-foreground/85 font-bold">No categories found.</p>
+                <p className="text-muted-foreground/85 font-bold">
+                  No categories found.
+                </p>
               </div>
             ) : (
               filteredCategories?.map((category: any) => (

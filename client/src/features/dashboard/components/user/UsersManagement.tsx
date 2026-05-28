@@ -70,22 +70,10 @@ export const UsersManagement = () => {
                 User
               </SelectItem>
               <SelectItem
-                value="owner"
-                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-              >
-                Owner
-              </SelectItem>
-              <SelectItem
                 value="admin"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
                 Admin
-              </SelectItem>
-              <SelectItem
-                value="superAdmin"
-                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-              >
-                Super Admin
               </SelectItem>
             </SelectContent>
           </Select>

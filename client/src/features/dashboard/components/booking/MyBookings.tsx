@@ -95,12 +95,8 @@ export const MyBookings = () => {
         {/* Header Skeleton */}
         <div className={cn('flex', 'justify-between', 'items-center')}>
           <div className="space-y-2">
-            <div
-              className={cn('h-8', 'bg-muted', 'rounded-full', 'w-48')}
-            />
-            <div
-              className={cn('h-4', 'bg-muted/50', 'rounded-full', 'w-80')}
-            />
+            <div className={cn('h-8', 'bg-muted', 'rounded-full', 'w-48')} />
+            <div className={cn('h-4', 'bg-muted/50', 'rounded-full', 'w-80')} />
           </div>
           <div className={cn('h-10', 'bg-muted', 'rounded-full', 'w-24')} />
         </div>
@@ -153,7 +149,12 @@ export const MyBookings = () => {
                   className={cn('h-5', 'bg-muted', 'rounded-full', 'w-48')}
                 />
                 <div
-                  className={cn('h-4', 'bg-muted-light/80', 'rounded-full', 'w-32')}
+                  className={cn(
+                    'h-4',
+                    'bg-muted-light/80',
+                    'rounded-full',
+                    'w-32',
+                  )}
                 />
                 <div
                   className={cn(
@@ -684,7 +685,9 @@ export const MyBookings = () => {
                       )}
                     >
                       Booking ID:{' '}
-                      <span className={cn('font-mono', 'text-muted-foreground/85')}>
+                      <span
+                        className={cn('font-mono', 'text-muted-foreground/85')}
+                      >
                         #BK{rental.id.slice(-6).toUpperCase()}
                       </span>
                     </p>
@@ -1186,7 +1189,11 @@ export const MyBookings = () => {
                   >
                     <div>
                       <p
-                        className={cn('text-xs', 'font-bold', 'text-foreground/80')}
+                        className={cn(
+                          'text-xs',
+                          'font-bold',
+                          'text-foreground/80',
+                        )}
                       >
                         {selectedDetailsRental.status === 'pending' ||
                         selectedDetailsRental.status === 'confirmed'

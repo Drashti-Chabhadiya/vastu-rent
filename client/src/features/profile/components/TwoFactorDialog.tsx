@@ -165,7 +165,10 @@ export function TwoFactorDialog({
                 />
                 {/* Embedded Leaf Icon in center of scannable QR */}
                 <div className="absolute inset-0 m-auto h-8 w-8 rounded-lg bg-primary border-2 border-card flex items-center justify-center shadow-md pointer-events-none">
-                  <Leaf size={14} className="text-primary-foreground fill-primary-foreground" />
+                  <Leaf
+                    size={14}
+                    className="text-primary-foreground fill-primary-foreground"
+                  />
                 </div>
               </div>
               <span className="text-[9px] text-primary font-extrabold uppercase tracking-widest mt-2">

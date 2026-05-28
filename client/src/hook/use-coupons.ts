@@ -55,6 +55,19 @@ export const useDeleteCoupon = () => {
   })
 }
 
+export const useApproveCoupon = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const res = await apiClient.patch(`/coupons/${id}/approve`)
+      return res.data.coupon
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['coupons'] })
+    },
+  })
+}
+
 export const useApplyCoupon = () => {
   return useMutation({
     mutationFn: async ({

@@ -25,6 +25,7 @@ import {
 } from '#/components/ui/select'
 import { useNavigate } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
+import { isUserRole } from '#/lib/auth/roles'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function getIcon(type: string) {
@@ -69,7 +70,7 @@ function formatDate(dateStr: string) {
 export const NotificationsManagement = () => {
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
-  const userRole = session?.user?.role || 'owner'
+  const userRole = session?.user?.role || 'user'
 
   const { data: notifications, isLoading } = useNotifications()
   const markReadMutation = useMarkNotificationRead()
@@ -91,7 +92,7 @@ export const NotificationsManagement = () => {
     switch (notif.type) {
       case 'booking':
         navigate({
-          to: userRole === 'owner' ? '/account/orders' : '/account/bookings',
+          to: isUserRole(userRole) ? '/account/orders' : '/account/bookings',
         })
         break
       case 'payment':
@@ -459,7 +460,11 @@ export const NotificationsManagement = () => {
               )}
             >
               <p
-                className={cn('text-[10px]', 'font-semibold', 'text-muted-dark')}
+                className={cn(
+                  'text-[10px]',
+                  'font-semibold',
+                  'text-muted-dark',
+                )}
               >
                 Showing{' '}
                 <span className={cn('font-black', 'text-foreground/80')}>

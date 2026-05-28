@@ -8,8 +8,6 @@ import { ListingsManagement } from './listing/ListingsManagement'
 import { CategoryManagement } from './category/CategoryManagement'
 import { ReviewsManagement } from './review/ReviewsManagement'
 import { DeleteRequestsManagement } from './listing/DeleteRequestsManagement'
-import { MyBookings } from './booking/MyBookings'
-import { RentalsCalendar } from './order/RentalsCalendar'
 import { OrdersManagement } from './order/OrdersManagement'
 import { PaymentsManagement } from './payments/PaymentsManagement'
 import { DisputesManagement } from './disputes/DisputesManagement'
@@ -24,6 +22,8 @@ import {
   useAdminRecentProducts,
 } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
+import { isAdminRole } from '#/lib/auth/roles'
+import { RentalsCalendar } from './order/RentalsCalendar'
 
 const DashboardPage = () => {
   const [currentTab, setCurrentTab] = useState('overview')
@@ -33,9 +33,7 @@ const DashboardPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const { data: session } = authClient.useSession()
-  const role = session?.user.role || 'owner'
-
-  const isAdmin = role === 'admin' || role === 'superAdmin'
+  const isAdmin = isAdminRole(session?.user.role)
 
   const { data: statsData, isLoading: statsLoading } = useAdminStats({
     enabled: isAdmin,
@@ -104,11 +102,7 @@ const DashboardPage = () => {
           ) : currentTab === 'delete-requests' ? (
             <DeleteRequestsManagement />
           ) : currentTab === 'bookings' ? (
-            role === 'owner' ? (
-              <RentalsCalendar />
-            ) : (
-              <MyBookings />
-            )
+            <RentalsCalendar />
           ) : currentTab === 'orders' ? (
             <OrdersManagement />
           ) : currentTab === 'payments' ? (

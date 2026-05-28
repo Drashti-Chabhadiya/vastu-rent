@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
+
 import { useState, useEffect } from 'react'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
@@ -104,9 +105,6 @@ export function AccountLayout() {
 
   if (isLoading) return <AccountLayoutSkeleton />
 
-  const role = session?.user?.role
-  const isLister = role === 'owner' || role === 'admin' || role === 'superAdmin'
-
   const menuItems = [
     { id: 'personal', label: 'My Profile', icon: User, href: '/account' },
     {
@@ -115,19 +113,12 @@ export function AccountLayout() {
       icon: Calendar,
       href: '/account/bookings',
     },
-    isLister
-      ? {
-          id: 'listings',
-          label: 'My Listings',
-          icon: Percent,
-          href: '/account/listings',
-        }
-      : {
-          id: 'listings',
-          label: 'Become a Host',
-          icon: Percent,
-          href: '/become-lister',
-        },
+    {
+      id: 'listings',
+      label: 'My Listings',
+      icon: Percent,
+      href: '/account/listings',
+    },
     { id: 'wishlist', label: 'Wishlist', icon: Heart, href: '/wishlist' },
     { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
     {
@@ -228,7 +219,10 @@ export function AccountLayout() {
                     onClick={() => setLogoutOpen(true)}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-destructive hover:bg-danger hover:text-destructive transition-all font-semibold text-[13px] mt-1 cursor-pointer justify-start h-auto"
                   >
-                    <LogOut size={16} className="shrink-0 text-destructive/80" />
+                    <LogOut
+                      size={16}
+                      className="shrink-0 text-destructive/80"
+                    />
                     <span>Log out</span>
                   </Button>
                 </nav>

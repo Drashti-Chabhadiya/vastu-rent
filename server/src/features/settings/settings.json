@@ -1,0 +1,155 @@
+{
+  "contact": {
+    "email": "support@vastu.com",
+    "phone": "+91 98765 43210",
+    "address": "Vastu HQ, 123 Harmony Lane, Bengaluru, Karnataka 560001, India",
+    "description": "Have a question, suggestion, or need help? Our team is here to support you."
+  },
+  "pricing": {
+    "starterPrice": 0,
+    "proPrice": 499,
+    "businessPrice": 999,
+    "starterFeatures": [
+      "List up to 5 items",
+      "Basic item insights",
+      "Standard support",
+      "Secure payments"
+    ],
+    "proFeatures": [
+      "List up to 50 items",
+      "Advanced item insights",
+      "Priority support",
+      "Secure payments",
+      "Promoted listings"
+    ],
+    "businessFeatures": [
+      "Unlimited listings",
+      "Advanced analytics",
+      "Priority support",
+      "Secure payments",
+      "Promoted listings",
+      "Custom business profile"
+    ]
+  },
+  "trust": {
+    "commitments": [
+      {
+        "iconName": "Shield",
+        "title": "Secure platform",
+        "description": "We use industry-leading security measures to protect your data and payments."
+      },
+      {
+        "iconName": "UserCheck",
+        "title": "Verified members",
+        "description": "Hosts and renters go through verification checks to build trust in our community."
+      },
+      {
+        "iconName": "MessageSquare",
+        "title": "Fair & transparent",
+        "description": "Clear policies, honest communication and support when you need it."
+      },
+      {
+        "iconName": "Headphones",
+        "title": "24/7 support",
+        "description": "Our dedicated support team is always here to help you, any time."
+      }
+    ],
+    "safetyTips": [
+      {
+        "iconName": "MessageSquare",
+        "title": "Communicate on Vastu",
+        "description": "Keep all conversations and payments within Vastu."
+      },
+      {
+        "iconName": "UserCheck",
+        "title": "Verify before you book",
+        "description": "Check profiles, reviews and verification badges."
+      },
+      {
+        "iconName": "MapPin",
+        "title": "Meet safely",
+        "description": "Visit the place and meet in public when possible."
+      },
+      {
+        "iconName": "FileText",
+        "title": "Read the listing carefully",
+        "description": "Review house rules, policies and cancellation terms."
+      },
+      {
+        "iconName": "Flag",
+        "title": "Report suspicious activity",
+        "description": "Help us keep the community safe by reporting concerns."
+      }
+    ]
+  },
+  "terms": {
+    "lastUpdated": "28 May 2026",
+    "sections": [
+      {
+        "id": "intro",
+        "title": "1. Introduction",
+        "content": "Welcome to Vastu. These Terms of Service (\"Terms\") govern your access to and use of the Vastu website, mobile application, and any related services (collectively, the \"Platform\") operated by Vastu Rentals Private Limited (\"we\", \"us\", or \"our\").\n\nBy accessing or using our Platform, you agree to be bound by these Terms."
+      },
+      {
+        "id": "eligibility",
+        "title": "2. Eligibility",
+        "content": "You must be at least 18 years old and legally capable of entering into binding contracts to use Vastu. By using our Platform, you represent and warrant that you meet these requirements."
+      },
+      {
+        "id": "accounts",
+        "title": "3. User Accounts",
+        "content": "To access certain features, you may need to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use."
+      },
+      {
+        "id": "bookings",
+        "title": "4. Listings and Bookings",
+        "content": "Users can list items for rent and book items listed by others. We do not own the items listed on Vastu and act solely as an intermediary between users.\n\nWe reserve the right to remove any listing or user that violates these Terms or our policies."
+      },
+      {
+        "id": "payments",
+        "title": "5. Payments and Fees",
+        "content": "All payments must be made through our secure payment system. We may charge service fees for certain transactions, which will be clearly displayed before you complete a booking.\n\nYou agree to pay all applicable fees and taxes."
+      },
+      {
+        "id": "cancellations",
+        "title": "6. Cancellations and Refunds",
+        "content": "Cancellation policies and refund eligibility are governed by the terms specified at the time of booking. Users must resolve disputes through Vastu support in alignment with our formal Refund Policy."
+      },
+      {
+        "id": "conduct",
+        "title": "7. User Conduct",
+        "content": "Users agree to behave professionally, not list prohibited items, and not bypass Vastu's secure system or direct transactions off-platform. Any attempt to negotiate or transact off-platform will lead to account suspension."
+      },
+      {
+        "id": "intellectual",
+        "title": "8. Intellectual Property",
+        "content": "All content, designs, trademarks, logos, and code displayed on the Vastu Platform are owned by Vastu Rentals and protected by copyright and intellectual property laws."
+      },
+      {
+        "id": "liability",
+        "title": "9. Limitation of Liability",
+        "content": "Vastu acts as a secure platform and venue, and is not liable for any physical damages, loss of earnings, or disputes arising between users. Renters and hosts accept all operational risks."
+      },
+      {
+        "id": "indemnity",
+        "title": "10. Indemnification",
+        "content": "Users agree to defend, indemnify, and hold harmless Vastu, its affiliates, and its officers from any claims, losses, or legal expenses arising from their use of the platform or violation of these Terms."
+      },
+      {
+        "id": "changes",
+        "title": "11. Changes to Terms",
+        "content": "Vastu reserves the right to modify these Terms at any time. Your continued use of the platform after updates have been published constitutes acceptance of the new terms."
+      },
+      {
+        "id": "governing",
+        "title": "12. Governing Law",
+        "content": "These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. All disputes are subject to exclusive jurisdiction in Bengaluru."
+      },
+      {
+        "id": "contact",
+        "title": "13. Contact Us",
+        "content": "For any questions regarding these Terms of Service, please contact us at support@vastu.com or through our Contact page."
+      }
+    ]
+  }
+}

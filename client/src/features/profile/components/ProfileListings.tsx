@@ -1,9 +1,6 @@
-import { Link } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
 import { useState, useEffect } from 'react'
 import {
-  ShieldAlert,
-  ArrowLeft,
   Plus,
   MapPin,
   IndianRupee,
@@ -110,35 +107,6 @@ export function ProfileListings() {
             </div>
           ))}
         </div>
-      </div>
-    )
-  }
-
-  const isOwner =
-    session?.user?.role === 'owner' ||
-    session?.user?.role === 'admin' ||
-    session?.user?.role === 'superAdmin'
-
-  if (!isOwner) {
-    return (
-      <div className="p-8 lg:p-12 flex flex-col items-center justify-center min-h-[500px] text-center">
-        <div className="w-20 h-20 bg-danger rounded-full flex items-center justify-center mb-6">
-          <ShieldAlert className="w-10 h-10 text-destructive" />
-        </div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Access Denied</h2>
-        <p className="text-muted-foreground/85 mb-8 max-w-sm font-medium">
-          You need to be a **Lister/Owner** to access this page. Please upgrade
-          your account or contact support.
-        </p>
-        <Link to="/">
-          <Button
-            variant="outline"
-            className="rounded-full font-bold flex items-center gap-2"
-          >
-            <ArrowLeft size={18} />
-            Back to Home
-          </Button>
-        </Link>
       </div>
     )
   }

@@ -1,4 +1,4 @@
-import { ChevronRight, Sparkles } from 'lucide-react'
+import { ArrowUpRight, Sparkles } from 'lucide-react'
 import { useProducts } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductCardSkeleton } from '#/components/skeletons'
@@ -40,10 +40,10 @@ export function RecentProducts() {
           </div>
           <Link
             to="/products"
-            className="text-sm font-black text-primary hover:text-primary-hover flex items-center gap-1.5 group transition-all shrink-0 self-start sm:self-center"
+            className="group inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-primary underline decoration-primary/20 decoration-2 underline-offset-[6px] transition-all hover:decoration-primary"
           >
             Explore all new arrivals
-            <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
 

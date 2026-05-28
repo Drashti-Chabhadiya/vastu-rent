@@ -40,7 +40,9 @@ export function CategoryList() {
                 {/* Background Decoration */}
                 <div
                   className="absolute -right-4 -top-4 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-150"
-                  style={{ backgroundColor: category.color || 'var(--color-primary)' }}
+                  style={{
+                    backgroundColor: category.color || 'var(--color-primary)',
+                  }}
                 />
 
                 <div className="relative z-10 flex flex-col items-center text-center">

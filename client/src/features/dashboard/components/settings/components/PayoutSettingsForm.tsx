@@ -49,7 +49,10 @@ export const PayoutSettingsForm = ({
       </div>
 
       <div className="bg-warning/50 p-4 rounded-2xl border border-amber-100/50 flex items-start gap-2.5">
-        <AlertCircle size={16} className="text-warning-foreground shrink-0 mt-0.5" />
+        <AlertCircle
+          size={16}
+          className="text-warning-foreground shrink-0 mt-0.5"
+        />
         <p className="text-[10px] font-semibold text-warning-foreground leading-relaxed">
           Settlements are processed via bank accounts or UPI within 24-48 hours
           of approved payout withdrawal requests. Ensure details are fully

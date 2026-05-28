@@ -33,7 +33,9 @@ export const RecentReviews = () => {
       ) : reviews.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <Star size={36} className="text-muted-foreground/30 mb-3" />
-          <p className="text-sm font-bold text-muted-foreground/70">No reviews yet</p>
+          <p className="text-sm font-bold text-muted-foreground/70">
+            No reviews yet
+          </p>
           <p className="text-xs text-muted-dark mt-1">
             Reviews will appear here once tenants start rating listings.
           </p>

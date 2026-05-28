@@ -11,11 +11,20 @@ export async function couponRoutes(fastify: FastifyInstance) {
   fastify.post("/", {
     preHandler: async (request, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin" && session.user.role !== "owner")) {
+      if (!session) {
         return reply.status(403).send({ message: "Forbidden: Unauthorized" });
       }
     }
   }, couponController.createCoupon);
+
+  fastify.patch("/:id/approve", {
+    preHandler: async (request, reply) => {
+      const session = await auth.api.getSession({ headers: request.headers as any });
+      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin")) {
+        return reply.status(403).send({ message: "Forbidden: Unauthorized" });
+      }
+    }
+  }, couponController.approveCoupon);
 
   fastify.delete("/:id", {
     preHandler: async (request, reply) => {

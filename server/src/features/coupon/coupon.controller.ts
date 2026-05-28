@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
+import { isAdminRole } from "../../config/roles.js";
 
 export class CouponController {
   async getAllCoupons(request: FastifyRequest, reply: FastifyReply) {
@@ -10,10 +11,10 @@ export class CouponController {
 
     if (session) {
       const role = session.user.role;
-      if (role === "admin" || role === "superAdmin") {
+      if (isAdminRole(role)) {
         whereClause = {}; // Admins see everything
-      } else if (role === "owner") {
-        // Owners see their own coupons (active/inactive) + active global coupons
+      } else {
+        // Regular users (including owners) can see their own coupons and active global coupons.
         whereClause = {
           OR: [
             { ownerId: session.user.id },
@@ -51,9 +52,9 @@ export class CouponController {
 
     const role = session.user.role;
 
-    if (role === "owner") {
+    if (role === "owner" || role === "user") {
       couponOwnerId = session.user.id;
-      // If owner sets a product restriction, verify they own the product
+      // If a product restriction is requested, verify ownership
       if (productId) {
         const product = await prisma.product.findUnique({
           where: { id: productId }
@@ -63,7 +64,7 @@ export class CouponController {
         }
         couponProductId = productId;
       }
-    } else if (role === "admin" || role === "superAdmin") {
+    } else if (isAdminRole(role)) {
       // Admins can set ownerId or productId arbitrarily
       couponOwnerId = (request.body as any).ownerId || null;
       couponProductId = productId || null;
@@ -88,6 +89,7 @@ export class CouponController {
         minBooking: minBooking ? parseFloat(minBooking) : null,
         startDate: new Date(startDate || new Date()),
         endDate: new Date(endDate),
+        isActive: isAdminRole(role),
         usageLimit: usageLimit ? parseInt(usageLimit) : null,
         perUserLimit: perUserLimit ? parseInt(perUserLimit) : null,
         ownerId: couponOwnerId,
@@ -213,6 +215,30 @@ export class CouponController {
         discountAmount
       }
     };
+  }
+
+  async approveCoupon(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session || !isAdminRole(session.user.role)) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    const { id } = request.params as any;
+    const coupon = await prisma.coupon.findUnique({ where: { id } });
+    if (!coupon) {
+      return reply.status(404).send({ message: "Coupon not found" });
+    }
+
+    if (coupon.isActive) {
+      return reply.status(400).send({ message: "Coupon is already active" });
+    }
+
+    const updatedCoupon = await prisma.coupon.update({
+      where: { id },
+      data: { isActive: true }
+    });
+
+    return { coupon: updatedCoupon };
   }
 }
 

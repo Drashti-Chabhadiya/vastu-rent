@@ -15,9 +15,7 @@ datasource db {
 
 enum Role {
   user
-  owner
   admin
-  superAdmin
 }
 
 model User {
@@ -32,6 +30,12 @@ model User {
   emailVerified Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  // Subscription Details
+  subscriptionTier      String    @default("Starter") // "Starter", "Pro", "Business"
+  subscriptionExpiresAt DateTime?
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
 
   // Bank & UPI Settlement details
   upiId          String?

@@ -65,8 +65,8 @@ export function Categories() {
 
   const latestCategories = categories
     ? [...categories]
-      .sort((a: any, b: any) => b.id.localeCompare(a.id))
-      .slice(0, 4)
+        .sort((a: any, b: any) => b.id.localeCompare(a.id))
+        .slice(0, 4)
     : []
 
   return (

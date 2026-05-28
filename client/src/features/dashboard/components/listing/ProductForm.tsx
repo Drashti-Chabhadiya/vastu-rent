@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { ListingSchema } from '../../../../schema/listing-schema'
 import { ImageGalleryManager } from './ImageGalleryManager'
+import { RequestCategoryModal } from './RequestCategoryModal'
 import {
   FormControl,
   FormField,
@@ -9,6 +11,7 @@ import {
   FormMessage,
 } from '#/components/ui/form'
 import { Input } from '#/components/ui/input'
+import { Button } from '#/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -56,7 +59,9 @@ export const ProductForm = ({
   currentUser,
   onUploadStatusChange,
 }: ProductFormProps) => {
-  const isOwner = currentUser?.role === 'owner'
+  const isOwner =
+    currentUser?.role !== 'admin' && currentUser?.role !== 'superAdmin'
+  const [requestCategoryOpen, setRequestCategoryOpen] = useState(false)
   return (
     <div className="space-y-6">
       {/* Hero Preview Section */}
@@ -256,9 +261,24 @@ export const ProductForm = ({
                   ))}
                 </SelectContent>
               </Select>
+              <div className="flex justify-end mt-1">
+                <Button
+                  variant="link"
+                  type="button"
+                  onClick={() => setRequestCategoryOpen(true)}
+                  className="text-[11px] font-bold text-dash-brand hover:underline cursor-pointer p-0 h-auto"
+                >
+                  Can't find your category? Request it here.
+                </Button>
+              </div>
               <FormMessage />
             </FormItem>
           )}
+        />
+
+        <RequestCategoryModal
+          open={requestCategoryOpen}
+          onOpenChange={setRequestCategoryOpen}
         />
 
         <FormField<ListingSchema>

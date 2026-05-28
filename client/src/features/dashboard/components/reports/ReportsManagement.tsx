@@ -237,7 +237,9 @@ export const ReportsManagement = () => {
                 <p className="text-[8px] font-bold text-muted-dark mb-1">
                   15 May 2024
                 </p>
-                <p className="text-[14px] font-black text-primary-foreground">₹1,85,000</p>
+                <p className="text-[14px] font-black text-primary-foreground">
+                  ₹1,85,000
+                </p>
                 <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-foreground rotate-45"></div>
               </div>
 

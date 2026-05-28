@@ -209,7 +209,9 @@ export function StoriesManagement() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-foreground/80">Title</label>
+                <label className="text-sm font-bold text-foreground/80">
+                  Title
+                </label>
                 <Input
                   required
                   value={formData.title}

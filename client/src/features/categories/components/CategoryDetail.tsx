@@ -88,7 +88,11 @@ export function CategoryDetail() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button variant="outline" size="lg" className="gap-3 text-foreground/80">
+          <Button
+            variant="outline"
+            size="lg"
+            className="gap-3 text-foreground/80"
+          >
             <SlidersHorizontal size={20} className="text-muted-foreground/70" />
             Filter
           </Button>

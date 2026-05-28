@@ -101,7 +101,9 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
               >
                 <Icon
                   size={18}
-                  className={isUpcoming ? 'text-muted-dark' : 'text-primary-foreground'}
+                  className={
+                    isUpcoming ? 'text-muted-dark' : 'text-primary-foreground'
+                  }
                 />
               </div>
               <div className="space-y-1">

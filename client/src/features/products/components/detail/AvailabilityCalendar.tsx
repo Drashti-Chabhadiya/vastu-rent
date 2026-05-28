@@ -33,7 +33,9 @@ export const AvailabilityCalendar = ({
 }: AvailabilityCalendarProps) => {
   return (
     <div className="bg-card rounded-2xl p-6 border border-border/30 shadow-sm space-y-4">
-      <h3 className="text-base font-bold text-foreground">Check Availability</h3>
+      <h3 className="text-base font-bold text-foreground">
+        Check Availability
+      </h3>
       <div className="flex items-center justify-between">
         <Button
           type="button"
@@ -69,7 +71,10 @@ export const AvailabilityCalendar = ({
       </div>
       <div className="grid grid-cols-7 gap-y-1 gap-x-0.5 text-center">
         {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
-          <div key={d} className="text-[10px] font-bold text-muted-foreground/70 py-1">
+          <div
+            key={d}
+            className="text-[10px] font-bold text-muted-foreground/70 py-1"
+          >
             {d}
           </div>
         ))}

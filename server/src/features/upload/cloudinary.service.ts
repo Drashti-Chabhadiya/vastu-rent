@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { prisma } from "../../config/prisma.js";
 import { decrypt } from "../../config/encryption.js";
+import { isDashboardRole } from "../../config/roles.js";
 
 export class CloudinaryService {
   /**
@@ -17,9 +18,7 @@ export class CloudinaryService {
     }
 
     const role = user.role;
-    const isDashboardRole = role === "owner" || role === "admin" || role === "superAdmin";
-
-    if (isDashboardRole) {
+    if (isDashboardRole(role)) {
       if (!user.cloudinaryConfig) {
         throw new Error("Cloudinary credentials are not configured. Please set them up in your dashboard settings before uploading.");
       }

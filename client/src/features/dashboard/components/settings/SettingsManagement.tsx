@@ -7,6 +7,7 @@ import {
   CreditCard,
   ShieldCheck,
   Upload,
+  Settings,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
@@ -25,6 +26,7 @@ import { ProfileSettingsForm } from './components/ProfileSettingsForm'
 import { PayoutSettingsForm } from './components/PayoutSettingsForm'
 import { NotificationSettingsForm } from './components/NotificationSettingsForm'
 import { CloudinarySettingsForm } from './components/CloudinarySettingsForm'
+import { SiteSettingsForm } from './components/SiteSettingsForm'
 import { StorageDetailsDialog } from './components/StorageDetailsDialog'
 
 // Pure helper — lives outside the component so it never changes reference.
@@ -345,6 +347,9 @@ export const SettingsManagement = () => {
     activeUser?.role === 'admin' ||
     activeUser?.role === 'superAdmin'
 
+  const isAdminOrSuper =
+    activeUser?.role === 'admin' || activeUser?.role === 'superAdmin'
+
   const sidebarItems = [
     {
       id: 'profile',
@@ -374,22 +379,34 @@ export const SettingsManagement = () => {
           },
         ]
       : []),
+    ...(isAdminOrSuper
+      ? [
+          {
+            id: 'site-content',
+            label: 'Site Content Settings',
+            desc: 'Customize contact, pricing, trust, and terms pages',
+            icon: Settings,
+          },
+        ]
+      : []),
   ]
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Breadcrumbs */}
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1.5 text-[10px] font-black text-muted-dark uppercase tracking-widest">
+        <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
           <span>Dashboard</span>
-          <ChevronRight size={10} className="text-muted-dark" />
-          <span className="text-dash-brand font-extrabold">Settings</span>
+          <ChevronRight size={10} className="text-muted-foreground/60" />
+          <span className="text-dash-brand font-bold">Settings</span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black text-foreground/90">Settings</h1>
-          <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
+          <h1 className="font-display text-2xl font-semibold text-foreground/90 tracking-tight">
+            Settings
+          </h1>
+          <div className="flex items-center gap-2 bg-card px-3.5 py-1.5 rounded-full border border-border/30 shadow-sm">
             <Calendar size={14} className="text-dash-brand" />
-            <span className="text-xs font-black text-muted-foreground tracking-wider">
+            <span className="text-xs font-semibold text-muted-foreground tracking-wide">
               {format(new Date(), 'MMMM yyyy')}
             </span>
           </div>
@@ -423,14 +440,14 @@ export const SettingsManagement = () => {
                 />
               </div>
               <div className="min-w-0 text-left">
-                <p className="text-[11px] font-black leading-tight">
+                <p className="font-sans text-[13px] font-bold leading-snug text-foreground/80 group-hover:text-foreground">
                   {item.label}
                 </p>
                 <p
-                  className={`text-[9px] font-bold truncate ${
+                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
                     activeSubTab === item.id
-                      ? 'text-dash-brand'
-                      : 'text-muted-dark'
+                      ? 'text-dash-brand/90'
+                      : 'text-muted-foreground/80'
                   }`}
                 >
                   {item.desc}
@@ -501,6 +518,10 @@ export const SettingsManagement = () => {
               usedPercent={usedPercent}
               setIsDetailsModalOpen={setIsDetailsModalOpen}
             />
+          )}
+
+          {activeSubTab === 'site-content' && isAdminOrSuper && (
+            <SiteSettingsForm />
           )}
         </div>
 

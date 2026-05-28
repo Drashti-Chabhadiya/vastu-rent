@@ -60,7 +60,9 @@ export const RenterOverview = ({
           >
             Renter Portal
           </h1>
-          <p className={cn('text-sm', 'text-muted-foreground/85', 'font-medium')}>
+          <p
+            className={cn('text-sm', 'text-muted-foreground/85', 'font-medium')}
+          >
             Track your active rentals, saved properties, and booking schedules.
           </p>
         </div>
@@ -161,7 +163,13 @@ export const RenterOverview = ({
             <h3 className={cn('text-xl', 'font-black', 'text-foreground')}>
               Active Rented Properties
             </h3>
-            <p className={cn('text-xs', 'text-muted-foreground/85', 'font-medium')}>
+            <p
+              className={cn(
+                'text-xs',
+                'text-muted-foreground/85',
+                'font-medium',
+              )}
+            >
               Timeline of your approved rentals currently active or upcoming.
             </p>
           </div>
@@ -218,7 +226,10 @@ export const RenterOverview = ({
                   {myRentals.map((rental: any) => (
                     <tr
                       key={rental.id}
-                      className={cn('hover:bg-muted-light/50', 'transition-colors')}
+                      className={cn(
+                        'hover:bg-muted-light/50',
+                        'transition-colors',
+                      )}
                     >
                       <td className="py-4">
                         <div className={cn('flex', 'items-center', 'gap-3')}>
@@ -252,7 +263,9 @@ export const RenterOverview = ({
                           </div>
                         </div>
                       </td>
-                      <td className={cn('py-4', 'font-bold', 'text-foreground')}>
+                      <td
+                        className={cn('py-4', 'font-bold', 'text-foreground')}
+                      >
                         {rental.product?.owner?.name || 'Owner lister'}
                       </td>
                       <td
@@ -266,7 +279,9 @@ export const RenterOverview = ({
                         {new Date(rental.startDate).toLocaleDateString()} -{' '}
                         {new Date(rental.endDate).toLocaleDateString()}
                       </td>
-                      <td className={cn('py-4', 'font-black', 'text-foreground')}>
+                      <td
+                        className={cn('py-4', 'font-black', 'text-foreground')}
+                      >
                         ₹ {rental.totalPrice?.toLocaleString()}
                       </td>
                       <td className={cn('py-4', 'text-right')}>
@@ -312,7 +327,14 @@ export const RenterOverview = ({
               <h4 className={cn('font-bold', 'text-foreground', 'mb-1')}>
                 No active rentals yet
               </h4>
-              <p className={cn('text-xs', 'text-muted-foreground/85', 'max-w-xs', 'mb-4')}>
+              <p
+                className={cn(
+                  'text-xs',
+                  'text-muted-foreground/85',
+                  'max-w-xs',
+                  'mb-4',
+                )}
+              >
                 You haven't rented any property yet. Browse our listings to get
                 started!
               </p>
@@ -361,7 +383,12 @@ export const RenterOverview = ({
               Saved Favorites
             </h3>
             <p
-              className={cn('text-xs', 'text-muted-foreground/85', 'font-medium', 'mb-6')}
+              className={cn(
+                'text-xs',
+                'text-muted-foreground/85',
+                'font-medium',
+                'mb-6',
+              )}
             >
               List of properties bookmarked for later consideration.
             </p>

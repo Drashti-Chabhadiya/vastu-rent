@@ -51,7 +51,9 @@ export const CategoryRequestList = ({
         ) : requests.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground/70">
             <FileText className="mx-auto w-12 h-12 text-muted-foreground/30 mb-3" />
-            <p className="font-bold text-muted-foreground/85">No requests found</p>
+            <p className="font-bold text-muted-foreground/85">
+              No requests found
+            </p>
             <p className="text-xs mt-1">
               Requested category proposals will display here.
             </p>

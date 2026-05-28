@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { userService } from "./user.service.js";
 import { auth } from "../../config/auth.js";
+import { isAdminRole, isDashboardRole } from "../../config/roles.js";
 
 export class UserController {
   async getRecentUsers(request: FastifyRequest, reply: FastifyReply) {
@@ -22,8 +23,8 @@ export class UserController {
 
   async updateUserRole(request: FastifyRequest, reply: FastifyReply) {
     const session = await auth.api.getSession({ headers: request.headers as any as any });
-    if (session?.user.role !== "superAdmin") {
-      return reply.status(403).send({ message: "Forbidden: Super Admin access required" });
+    if (!isAdminRole(session?.user.role)) {
+      return reply.status(403).send({ message: "Forbidden: Admin access required" });
     }
 
     const { id } = request.params as any;
@@ -34,8 +35,8 @@ export class UserController {
 
   async deleteUser(request: FastifyRequest, reply: FastifyReply) {
     const session = await auth.api.getSession({ headers: request.headers as any as any });
-    if (session?.user.role !== "superAdmin") {
-      return reply.status(403).send({ message: "Forbidden: Super Admin access required" });
+    if (!isAdminRole(session?.user.role)) {
+      return reply.status(403).send({ message: "Forbidden: Admin access required" });
     }
 
     const { id } = request.params as any;
@@ -67,7 +68,7 @@ export class UserController {
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
 
     const role = session.user.role;
-    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+    if (!isDashboardRole(role)) {
       return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
     }
 
@@ -84,7 +85,7 @@ export class UserController {
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
 
     const role = session.user.role;
-    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+    if (!isDashboardRole(role)) {
       return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
     }
 
@@ -101,7 +102,7 @@ export class UserController {
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
 
     const role = session.user.role;
-    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+    if (!isDashboardRole(role)) {
       return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
     }
 
@@ -150,7 +151,7 @@ export class UserController {
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
 
     const role = session.user.role;
-    if (role !== "owner" && role !== "admin" && role !== "superAdmin") {
+    if (!isDashboardRole(role)) {
       return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
     }
 

@@ -156,7 +156,7 @@ export function HowItWorksPage() {
             Ready to start renting?
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to={'/'}>
+            <Link to={'/products'}>
               <Button size="lg">Browse Items</Button>
             </Link>
             <Link to={'/become-lister'}>

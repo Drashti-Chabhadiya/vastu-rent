@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
+import { isAdminRole } from '#/lib/auth/roles'
 import { Logo } from '#/components/layout'
 import { useCategories, useWishlist } from '#/hook'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -45,6 +46,7 @@ import { cn } from '#/lib/utils'
 const navLinks = [
   { label: 'Catalogue', path: '/', hash: 'categories' },
   { label: 'How it works', path: '/', hash: 'how-it-works' },
+  { label: 'Pricing', path: '/pricing' },
   { label: 'Journal', path: '/', hash: 'journal' },
   { label: 'Become a host', path: '/become-lister' },
 ]
@@ -198,7 +200,13 @@ export function Navbar() {
                         </li>
                       ))}
                       {!categories?.length && (
-                        <div className={cn('p-4', 'text-sm', 'text-muted-foreground/85')}>
+                        <div
+                          className={cn(
+                            'p-4',
+                            'text-sm',
+                            'text-muted-foreground/85',
+                          )}
+                        >
                           Loading categories...
                         </div>
                       )}
@@ -587,7 +595,9 @@ export function Navbar() {
                           >
                             Green Member
                           </p>
-                          <p className={cn('text-[11px]', 'text-primary-hover')}>
+                          <p
+                            className={cn('text-[11px]', 'text-primary-hover')}
+                          >
                             You're saving the planet! 🌍
                           </p>
                         </div>
@@ -612,7 +622,13 @@ export function Navbar() {
                           'transition-colors',
                         )}
                       >
-                        <User className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <User
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
+                        />
                         <div>
                           <p
                             className={cn(
@@ -623,7 +639,12 @@ export function Navbar() {
                           >
                             My Profile
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Manage your profile
                           </p>
                         </div>
@@ -644,7 +665,11 @@ export function Navbar() {
                         )}
                       >
                         <Calendar
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -656,16 +681,19 @@ export function Navbar() {
                           >
                             My Bookings
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             View your bookings
                           </p>
                         </div>
                       </DropdownMenuItem>
                     </Link>
 
-                    {(session.user.role === 'owner' ||
-                      session.user.role === 'admin' ||
-                      session.user.role === 'superAdmin') && (
+                    {session.user && (
                       <Link to="/account/listings">
                         <DropdownMenuItem
                           className={cn(
@@ -680,7 +708,11 @@ export function Navbar() {
                           )}
                         >
                           <Percent
-                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                            className={cn(
+                              'h-4',
+                              'w-4',
+                              'text-muted-foreground/85',
+                            )}
                           />
                           <div>
                             <p
@@ -692,7 +724,12 @@ export function Navbar() {
                             >
                               My Listings
                             </p>
-                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            <p
+                              className={cn(
+                                'text-xs',
+                                'text-muted-foreground/85',
+                              )}
+                            >
                               Manage your items
                             </p>
                           </div>
@@ -700,9 +737,7 @@ export function Navbar() {
                       </Link>
                     )}
 
-                    {(session.user.role === 'owner' ||
-                      session.user.role === 'admin' ||
-                      session.user.role === 'superAdmin') && (
+                    {session.user && (
                       <Link to="/owner/dashboard">
                         <DropdownMenuItem
                           className={cn(
@@ -717,7 +752,11 @@ export function Navbar() {
                           )}
                         >
                           <LayoutDashboard
-                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                            className={cn(
+                              'h-4',
+                              'w-4',
+                              'text-muted-foreground/85',
+                            )}
                           />
                           <div>
                             <p
@@ -729,7 +768,12 @@ export function Navbar() {
                             >
                               Dashboard
                             </p>
-                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            <p
+                              className={cn(
+                                'text-xs',
+                                'text-muted-foreground/85',
+                              )}
+                            >
                               View statistics
                             </p>
                           </div>
@@ -737,8 +781,7 @@ export function Navbar() {
                       </Link>
                     )}
 
-                    {(session.user.role === 'admin' ||
-                      session.user.role === 'superAdmin') && (
+                    {isAdminRole(session.user.role) && (
                       <Link to="/admin/dashboard">
                         <DropdownMenuItem
                           className={cn(
@@ -753,7 +796,11 @@ export function Navbar() {
                           )}
                         >
                           <LayoutDashboard
-                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                            className={cn(
+                              'h-4',
+                              'w-4',
+                              'text-muted-foreground/85',
+                            )}
                           />
                           <div>
                             <p
@@ -765,7 +812,12 @@ export function Navbar() {
                             >
                               Admin
                             </p>
-                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            <p
+                              className={cn(
+                                'text-xs',
+                                'text-muted-foreground/85',
+                              )}
+                            >
                               System management
                             </p>
                           </div>
@@ -787,7 +839,13 @@ export function Navbar() {
                           'sm:hidden',
                         )}
                       >
-                        <Heart className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <Heart
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
+                        />
                         <div>
                           <p
                             className={cn(
@@ -798,7 +856,12 @@ export function Navbar() {
                           >
                             Wishlist
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Saved items
                           </p>
                         </div>
@@ -818,7 +881,13 @@ export function Navbar() {
                           'transition-colors',
                         )}
                       >
-                        <Star className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <Star
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
+                        />
                         <div>
                           <p
                             className={cn(
@@ -829,7 +898,12 @@ export function Navbar() {
                           >
                             Reviews
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Your feedback
                           </p>
                         </div>
@@ -850,7 +924,11 @@ export function Navbar() {
                         )}
                       >
                         <MessageSquare
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -862,7 +940,12 @@ export function Navbar() {
                           >
                             Messages
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Conversations
                           </p>
                         </div>
@@ -887,7 +970,11 @@ export function Navbar() {
                         )}
                       >
                         <Settings
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -899,7 +986,12 @@ export function Navbar() {
                           >
                             Settings
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Preferences
                           </p>
                         </div>
@@ -920,7 +1012,11 @@ export function Navbar() {
                         )}
                       >
                         <HelpCircle
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -932,7 +1028,12 @@ export function Navbar() {
                           >
                             Help & Support
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Get assistance
                           </p>
                         </div>
@@ -964,27 +1065,51 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/login" className={cn('hidden', 'sm:block')}>
-                <Button
-                  className={cn(
-                    'gap-2',
-                    'rounded-full',
-                    'bg-primary',
-                    'px-6',
-                    'py-2.5',
-                    'h-auto',
-                    'text-sm',
-                    'font-semibold',
-                    'text-primary-foreground',
-                    'transition-all',
-                    'hover:bg-primary-hover',
-                    'active:scale-95',
-                  )}
-                >
-                  Sign in
-                  <ArrowUpRight className={cn('h-4', 'w-4')} />
-                </Button>
-              </Link>
+              <>
+                {/* Full Sign In button — visible on sm and above */}
+                <Link to="/login" className={cn('hidden', 'sm:block')}>
+                  <Button
+                    className={cn(
+                      'gap-2',
+                      'rounded-full',
+                      'bg-primary',
+                      'px-6',
+                      'py-2.5',
+                      'h-auto',
+                      'text-sm',
+                      'font-semibold',
+                      'text-primary-foreground',
+                      'transition-all',
+                      'hover:bg-primary-hover',
+                      'active:scale-95',
+                    )}
+                  >
+                    Sign in
+                    <ArrowUpRight className={cn('h-4', 'w-4')} />
+                  </Button>
+                </Link>
+
+                {/* Compact icon-only Sign In button — visible only on mobile (< sm) */}
+                <Link to="/login" className={cn('sm:hidden')}>
+                  <Button
+                    size="icon"
+                    className={cn(
+                      'h-10',
+                      'w-10',
+                      'rounded-full',
+                      'bg-primary',
+                      'text-primary-foreground',
+                      'hover:bg-primary-hover',
+                      'active:scale-95',
+                      'transition-all',
+                    )}
+                    aria-label="Sign in"
+                    title="Sign in"
+                  >
+                    <User className={cn('h-5', 'w-5')} />
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
         </div>

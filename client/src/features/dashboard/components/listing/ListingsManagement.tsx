@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
+import { isAdminRole } from '#/lib/auth/roles'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,6 +50,7 @@ export const ListingsManagement = ({
     initialCategoryFilter || 'all',
   )
   const [statusFilter, setStatusFilter] = useState('all')
+  const [currentView, setCurrentView] = useState<'my' | 'all'>('my')
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [productToEdit, setProductToEdit] = useState<any>(null)
@@ -64,17 +66,17 @@ export const ListingsManagement = ({
   // Auth
   const { data: session } = authClient.useSession()
   const currentUser = session?.user
-  const isOwner = currentUser?.role === 'owner'
+  const isAdmin = isAdminRole(currentUser?.role)
 
   // Fetch categories
   const { data: categories } = useAdminCategories()
 
-  // Fetch users (providers) - using same params as before if needed, or just all users
-  const { data: users } = useAdminUsers(undefined, { enabled: !isOwner })
+  // Fetch users (providers) only for admin views
+  const { data: users } = useAdminUsers(undefined, { enabled: isAdmin })
 
   // Fetch products based on role
   const { data: adminProducts, isLoading: isAdminLoading } = useAdminProducts(
-    !isOwner
+    isAdmin
       ? {
           search,
           categoryId: categoryFilter === 'all' ? undefined : categoryFilter,
@@ -85,25 +87,23 @@ export const ListingsManagement = ({
 
   const { data: myProducts, isLoading: isMyLoading } = useMyListings()
 
-  const isLoading = isOwner ? isMyLoading : isAdminLoading
+  const filteredMyProducts = myProducts?.filter((p: any) => {
+    const matchesSearch =
+      !search.trim() ||
+      p.title?.toLowerCase().includes(search.toLowerCase()) ||
+      p.description?.toLowerCase().includes(search.toLowerCase())
+    const matchesCategory =
+      categoryFilter === 'all' || p.categoryId === categoryFilter
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'available'
+        ? p.isAvailable === true
+        : p.isAvailable === false)
+    return matchesSearch && matchesCategory && matchesStatus
+  })
 
-  // Filter listings locally if owner
-  const products = isOwner
-    ? myProducts?.filter((p: any) => {
-        const matchesSearch =
-          !search.trim() ||
-          p.title?.toLowerCase().includes(search.toLowerCase()) ||
-          p.description?.toLowerCase().includes(search.toLowerCase())
-        const matchesCategory =
-          categoryFilter === 'all' || p.categoryId === categoryFilter
-        const matchesStatus =
-          statusFilter === 'all' ||
-          (statusFilter === 'available'
-            ? p.isAvailable === true
-            : p.isAvailable === false)
-        return matchesSearch && matchesCategory && matchesStatus
-      })
-    : adminProducts
+  const products = isAdmin && currentView === 'all' ? adminProducts : filteredMyProducts
+  const isLoading = isAdmin && currentView === 'all' ? isAdminLoading : isMyLoading
 
   // Mutations
   const createMutation = useCreateProduct()
@@ -169,6 +169,30 @@ export const ListingsManagement = ({
             Manage your rental inventory, pricing, and provider assignments.
           </p>
         </div>
+        {isAdmin ? (
+          <div className="flex items-center gap-2 rounded-full bg-dash-bg-soft p-1">
+            <button
+              onClick={() => setCurrentView('my')}
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+                currentView === 'my'
+                  ? 'bg-dash-brand text-primary-foreground'
+                  : 'text-dash-text-soft hover:text-dash-text'
+              }`}
+            >
+              My Listings
+            </button>
+            <button
+              onClick={() => setCurrentView('all')}
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+                currentView === 'all'
+                  ? 'bg-dash-brand text-primary-foreground'
+                  : 'text-dash-text-soft hover:text-dash-text'
+              }`}
+            >
+              All Listings
+            </button>
+          </div>
+        ) : null}
         <Button
           onClick={() => setIsAddOpen(true)}
           className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-2xl px-6 h-14 font-extrabold shadow-lg shadow-dash-brand/20 transition-all active:scale-95 flex items-center gap-2"

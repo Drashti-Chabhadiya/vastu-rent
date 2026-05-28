@@ -108,7 +108,10 @@ export function WishlistPage() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 rounded-2xl bg-danger flex items-center justify-center shadow-sm">
-                  <Heart size={20} className="text-danger-foreground fill-rose-500" />
+                  <Heart
+                    size={20}
+                    className="text-danger-foreground fill-rose-500"
+                  />
                 </div>
                 <span className="text-xs font-black uppercase tracking-widest text-danger-foreground bg-danger px-3 py-1 rounded-full">
                   My Wishlist
