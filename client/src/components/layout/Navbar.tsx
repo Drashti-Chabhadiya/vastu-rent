@@ -964,27 +964,51 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/login" className={cn('hidden', 'sm:block')}>
-                <Button
-                  className={cn(
-                    'gap-2',
-                    'rounded-full',
-                    'bg-primary',
-                    'px-6',
-                    'py-2.5',
-                    'h-auto',
-                    'text-sm',
-                    'font-semibold',
-                    'text-primary-foreground',
-                    'transition-all',
-                    'hover:bg-primary-hover',
-                    'active:scale-95',
-                  )}
-                >
-                  Sign in
-                  <ArrowUpRight className={cn('h-4', 'w-4')} />
-                </Button>
-              </Link>
+              <>
+                {/* Full Sign In button — visible on sm and above */}
+                <Link to="/login" className={cn('hidden', 'sm:block')}>
+                  <Button
+                    className={cn(
+                      'gap-2',
+                      'rounded-full',
+                      'bg-primary',
+                      'px-6',
+                      'py-2.5',
+                      'h-auto',
+                      'text-sm',
+                      'font-semibold',
+                      'text-primary-foreground',
+                      'transition-all',
+                      'hover:bg-primary-hover',
+                      'active:scale-95',
+                    )}
+                  >
+                    Sign in
+                    <ArrowUpRight className={cn('h-4', 'w-4')} />
+                  </Button>
+                </Link>
+
+                {/* Compact icon-only Sign In button — visible only on mobile (< sm) */}
+                <Link to="/login" className={cn('sm:hidden')}>
+                  <Button
+                    size="icon"
+                    className={cn(
+                      'h-10',
+                      'w-10',
+                      'rounded-full',
+                      'bg-primary',
+                      'text-primary-foreground',
+                      'hover:bg-primary-hover',
+                      'active:scale-95',
+                      'transition-all',
+                    )}
+                    aria-label="Sign in"
+                    title="Sign in"
+                  >
+                    <User className={cn('h-5', 'w-5')} />
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
         </div>
