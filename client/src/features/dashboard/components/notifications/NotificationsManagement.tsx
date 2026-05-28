@@ -459,7 +459,11 @@ export const NotificationsManagement = () => {
               )}
             >
               <p
-                className={cn('text-[10px]', 'font-semibold', 'text-muted-dark')}
+                className={cn(
+                  'text-[10px]',
+                  'font-semibold',
+                  'text-muted-dark',
+                )}
               >
                 Showing{' '}
                 <span className={cn('font-black', 'text-foreground/80')}>

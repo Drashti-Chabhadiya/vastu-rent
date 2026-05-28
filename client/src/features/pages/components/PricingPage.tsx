@@ -22,13 +22,22 @@ export function PricingPage() {
   const { data: session } = authClient.useSession()
   const { data: settings } = useSettings()
 
-  const rawStarterPrice = settings?.pricing?.starterPrice !== undefined ? settings.pricing.starterPrice : 0
-  const rawProPrice = settings?.pricing?.proPrice !== undefined ? settings.pricing.proPrice : 499
-  const rawBusinessPrice = settings?.pricing?.businessPrice !== undefined ? settings.pricing.businessPrice : 999
+  const rawStarterPrice =
+    settings?.pricing?.starterPrice !== undefined
+      ? settings.pricing.starterPrice
+      : 0
+  const rawProPrice =
+    settings?.pricing?.proPrice !== undefined ? settings.pricing.proPrice : 499
+  const rawBusinessPrice =
+    settings?.pricing?.businessPrice !== undefined
+      ? settings.pricing.businessPrice
+      : 999
 
   // Calculate pricing based on billing toggle (20% off for yearly)
-  const getProPrice = () => (isYearly ? Math.round(rawProPrice * 0.8) : rawProPrice)
-  const getBusinessPrice = () => (isYearly ? Math.round(rawBusinessPrice * 0.8) : rawBusinessPrice)
+  const getProPrice = () =>
+    isYearly ? Math.round(rawProPrice * 0.8) : rawProPrice
+  const getBusinessPrice = () =>
+    isYearly ? Math.round(rawBusinessPrice * 0.8) : rawBusinessPrice
 
   const starterFeatures: string[] = settings?.pricing?.starterFeatures || [
     'List up to 5 items',
@@ -66,7 +75,9 @@ export function PricingPage() {
       return
     }
 
-    const toastId = toast.loading(`Initiating checkout for the ${planName} plan...`)
+    const toastId = toast.loading(
+      `Initiating checkout for the ${planName} plan...`,
+    )
     try {
       const res = await apiClient.post('/billing/create-checkout-session', {
         planName,
@@ -81,7 +92,10 @@ export function PricingPage() {
       }
     } catch (err: any) {
       console.error(err)
-      toast.error(err.response?.data?.message || 'Checkout failed. Please try again.', { id: toastId })
+      toast.error(
+        err.response?.data?.message || 'Checkout failed. Please try again.',
+        { id: toastId },
+      )
     }
   }
 
@@ -103,7 +117,8 @@ export function PricingPage() {
               <span className="italic text-primary">pricing.</span>
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Choose the perfect plan to rent your items and start earning with Vastu.
+              Choose the perfect plan to rent your items and start earning with
+              Vastu.
             </p>
           </div>
 
@@ -122,7 +137,9 @@ export function PricingPage() {
       {/* Billing Switch Toggle */}
       <section className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10 flex justify-center">
         <div className="flex items-center gap-4 bg-muted/30 p-2 px-5 rounded-full border border-border/40 shadow-sm">
-          <span className={`text-sm font-semibold transition-colors ${!isYearly ? 'text-[#0F291B]' : 'text-muted-foreground'}`}>
+          <span
+            className={`text-sm font-semibold transition-colors ${!isYearly ? 'text-[#0F291B]' : 'text-muted-foreground'}`}
+          >
             Monthly billing
           </span>
 
@@ -132,7 +149,9 @@ export function PricingPage() {
             className="data-[state=checked]:bg-primary"
           />
 
-          <span className={`text-sm font-semibold transition-colors ${isYearly ? 'text-[#0F291B]' : 'text-muted-foreground'}`}>
+          <span
+            className={`text-sm font-semibold transition-colors ${isYearly ? 'text-[#0F291B]' : 'text-muted-foreground'}`}
+          >
             Yearly billing
           </span>
           <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary">
@@ -144,7 +163,6 @@ export function PricingPage() {
       {/* Pricing Cards Grid */}
       <section className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-
           {/* Starter Plan */}
           <Card className="border border-border/30 rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-0 flex flex-col h-full justify-between">
@@ -155,18 +173,28 @@ export function PricingPage() {
                     <Sprout className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-lg">Starter</h3>
-                    <p className="text-xs text-muted-foreground">Perfect for getting started.</p>
+                    <h3 className="font-bold text-[#0F291B] text-lg">
+                      Starter
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Perfect for getting started.
+                    </p>
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="mt-8">
                   <div className="flex items-baseline text-[#0F291B]">
-                    <span className="text-4xl font-extrabold tracking-tight">₹{rawStarterPrice}</span>
-                    <span className="ml-1 text-sm font-semibold text-muted-foreground">/month</span>
+                    <span className="text-4xl font-extrabold tracking-tight">
+                      ₹{rawStarterPrice}
+                    </span>
+                    <span className="ml-1 text-sm font-semibold text-muted-foreground">
+                      /month
+                    </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">No setup fees. No hidden charges.</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    No setup fees. No hidden charges.
+                  </p>
                 </div>
               </div>
 
@@ -189,7 +217,9 @@ export function PricingPage() {
                 {starterFeatures.map((f, i) => (
                   <li key={i} className="flex items-center gap-3">
                     <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                    <span className="text-[13.5px] text-muted-foreground leading-relaxed">{f}</span>
+                    <span className="text-[13.5px] text-muted-foreground leading-relaxed">
+                      {f}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -212,15 +242,21 @@ export function PricingPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-[#0F291B] text-lg">Pro</h3>
-                    <p className="text-xs text-muted-foreground">For growing renters.</p>
+                    <p className="text-xs text-muted-foreground">
+                      For growing renters.
+                    </p>
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="mt-8">
                   <div className="flex items-baseline text-[#0F291B]">
-                    <span className="text-4xl font-extrabold tracking-tight">₹{getProPrice()}</span>
-                    <span className="ml-1 text-sm font-semibold text-muted-foreground">/month</span>
+                    <span className="text-4xl font-extrabold tracking-tight">
+                      ₹{getProPrice()}
+                    </span>
+                    <span className="ml-1 text-sm font-semibold text-muted-foreground">
+                      /month
+                    </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
                     {isYearly
@@ -248,7 +284,9 @@ export function PricingPage() {
                 {proFeatures.map((f, i) => (
                   <li key={i} className="flex items-center gap-3">
                     <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                    <span className="text-[13.5px] text-[#0F291B] font-medium leading-relaxed">{f}</span>
+                    <span className="text-[13.5px] text-[#0F291B] font-medium leading-relaxed">
+                      {f}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -265,16 +303,24 @@ export function PricingPage() {
                     <Building2 className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-lg">Business</h3>
-                    <p className="text-xs text-muted-foreground">For serious sellers & businesses.</p>
+                    <h3 className="font-bold text-[#0F291B] text-lg">
+                      Business
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      For serious sellers & businesses.
+                    </p>
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="mt-8">
                   <div className="flex items-baseline text-[#0F291B]">
-                    <span className="text-4xl font-extrabold tracking-tight">₹{getBusinessPrice()}</span>
-                    <span className="ml-1 text-sm font-semibold text-muted-foreground">/month</span>
+                    <span className="text-4xl font-extrabold tracking-tight">
+                      ₹{getBusinessPrice()}
+                    </span>
+                    <span className="ml-1 text-sm font-semibold text-muted-foreground">
+                      /month
+                    </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
                     {isYearly
@@ -303,13 +349,14 @@ export function PricingPage() {
                 {businessFeatures.map((f, i) => (
                   <li key={i} className="flex items-center gap-3">
                     <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                    <span className="text-[13.5px] text-muted-foreground leading-relaxed">{f}</span>
+                    <span className="text-[13.5px] text-muted-foreground leading-relaxed">
+                      {f}
+                    </span>
                   </li>
                 ))}
               </ul>
             </CardContent>
           </Card>
-
         </div>
       </section>
 
@@ -321,7 +368,9 @@ export function PricingPage() {
               <ShieldCheck className="h-7 w-7 text-primary animate-pulse" />
             </div>
             <div>
-              <h3 className="font-bold text-[#0F291B] text-lg">Trusted. Secure. Hassle-free.</h3>
+              <h3 className="font-bold text-[#0F291B] text-lg">
+                Trusted. Secure. Hassle-free.
+              </h3>
               <p className="text-sm text-muted-foreground mt-1">
                 Your data is protected and payments are 100% secure with Vastu.
               </p>

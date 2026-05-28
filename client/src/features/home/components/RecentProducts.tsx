@@ -10,11 +10,11 @@ export function RecentProducts() {
   // Sort by date/id descending to get the latest 4 added items
   const recentProducts = products
     ? [...products]
-      .sort(
-        (a: any, b: any) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-      .slice(0, 4)
+        .sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+        .slice(0, 4)
     : []
 
   return (

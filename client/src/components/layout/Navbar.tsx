@@ -199,7 +199,13 @@ export function Navbar() {
                         </li>
                       ))}
                       {!categories?.length && (
-                        <div className={cn('p-4', 'text-sm', 'text-muted-foreground/85')}>
+                        <div
+                          className={cn(
+                            'p-4',
+                            'text-sm',
+                            'text-muted-foreground/85',
+                          )}
+                        >
                           Loading categories...
                         </div>
                       )}
@@ -588,7 +594,9 @@ export function Navbar() {
                           >
                             Green Member
                           </p>
-                          <p className={cn('text-[11px]', 'text-primary-hover')}>
+                          <p
+                            className={cn('text-[11px]', 'text-primary-hover')}
+                          >
                             You're saving the planet! 🌍
                           </p>
                         </div>
@@ -613,7 +621,13 @@ export function Navbar() {
                           'transition-colors',
                         )}
                       >
-                        <User className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <User
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
+                        />
                         <div>
                           <p
                             className={cn(
@@ -624,7 +638,12 @@ export function Navbar() {
                           >
                             My Profile
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Manage your profile
                           </p>
                         </div>
@@ -645,7 +664,11 @@ export function Navbar() {
                         )}
                       >
                         <Calendar
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -657,7 +680,12 @@ export function Navbar() {
                           >
                             My Bookings
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             View your bookings
                           </p>
                         </div>
@@ -679,7 +707,11 @@ export function Navbar() {
                           )}
                         >
                           <Percent
-                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                            className={cn(
+                              'h-4',
+                              'w-4',
+                              'text-muted-foreground/85',
+                            )}
                           />
                           <div>
                             <p
@@ -691,7 +723,12 @@ export function Navbar() {
                             >
                               My Listings
                             </p>
-                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            <p
+                              className={cn(
+                                'text-xs',
+                                'text-muted-foreground/85',
+                              )}
+                            >
                               Manage your items
                             </p>
                           </div>
@@ -714,7 +751,11 @@ export function Navbar() {
                           )}
                         >
                           <LayoutDashboard
-                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                            className={cn(
+                              'h-4',
+                              'w-4',
+                              'text-muted-foreground/85',
+                            )}
                           />
                           <div>
                             <p
@@ -726,7 +767,12 @@ export function Navbar() {
                             >
                               Dashboard
                             </p>
-                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            <p
+                              className={cn(
+                                'text-xs',
+                                'text-muted-foreground/85',
+                              )}
+                            >
                               View statistics
                             </p>
                           </div>
@@ -750,7 +796,11 @@ export function Navbar() {
                           )}
                         >
                           <LayoutDashboard
-                            className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                            className={cn(
+                              'h-4',
+                              'w-4',
+                              'text-muted-foreground/85',
+                            )}
                           />
                           <div>
                             <p
@@ -762,7 +812,12 @@ export function Navbar() {
                             >
                               Admin
                             </p>
-                            <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                            <p
+                              className={cn(
+                                'text-xs',
+                                'text-muted-foreground/85',
+                              )}
+                            >
                               System management
                             </p>
                           </div>
@@ -784,7 +839,13 @@ export function Navbar() {
                           'sm:hidden',
                         )}
                       >
-                        <Heart className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <Heart
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
+                        />
                         <div>
                           <p
                             className={cn(
@@ -795,7 +856,12 @@ export function Navbar() {
                           >
                             Wishlist
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Saved items
                           </p>
                         </div>
@@ -815,7 +881,13 @@ export function Navbar() {
                           'transition-colors',
                         )}
                       >
-                        <Star className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                        <Star
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
+                        />
                         <div>
                           <p
                             className={cn(
@@ -826,7 +898,12 @@ export function Navbar() {
                           >
                             Reviews
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Your feedback
                           </p>
                         </div>
@@ -847,7 +924,11 @@ export function Navbar() {
                         )}
                       >
                         <MessageSquare
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -859,7 +940,12 @@ export function Navbar() {
                           >
                             Messages
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Conversations
                           </p>
                         </div>
@@ -884,7 +970,11 @@ export function Navbar() {
                         )}
                       >
                         <Settings
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -896,7 +986,12 @@ export function Navbar() {
                           >
                             Settings
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Preferences
                           </p>
                         </div>
@@ -917,7 +1012,11 @@ export function Navbar() {
                         )}
                       >
                         <HelpCircle
-                          className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                          className={cn(
+                            'h-4',
+                            'w-4',
+                            'text-muted-foreground/85',
+                          )}
                         />
                         <div>
                           <p
@@ -929,7 +1028,12 @@ export function Navbar() {
                           >
                             Help & Support
                           </p>
-                          <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                          <p
+                            className={cn(
+                              'text-xs',
+                              'text-muted-foreground/85',
+                            )}
+                          >
                             Get assistance
                           </p>
                         </div>

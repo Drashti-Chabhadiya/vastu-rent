@@ -173,8 +173,10 @@
   }
 
   .bg-grain {
-    background-image: radial-gradient(rgba(20, 35, 25, 0.025) 1px,
-        transparent 1px);
+    background-image: radial-gradient(
+      rgba(20, 35, 25, 0.025) 1px,
+      transparent 1px
+    );
     background-size: 3px 3px;
   }
 
@@ -198,7 +200,7 @@
   }
 
   /* Hide all elements on the parent document */
-  body>* {
+  body > * {
     display: none !important;
   }
 

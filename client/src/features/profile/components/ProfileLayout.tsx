@@ -96,8 +96,6 @@ export function ProfileLayout() {
     window.location.href = '/'
   }
 
-
-
   const menuItems = [
     { id: 'personal', label: 'My Profile', icon: User, href: '/account' },
     {
@@ -235,7 +233,10 @@ export function ProfileLayout() {
                     onClick={() => setLogoutOpen(true)}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-destructive hover:bg-danger hover:text-destructive transition-all font-semibold text-[13px] mt-1 cursor-pointer justify-start h-auto"
                   >
-                    <LogOut size={16} className="shrink-0 text-destructive/80" />
+                    <LogOut
+                      size={16}
+                      className="shrink-0 text-destructive/80"
+                    />
                     <span>Log out</span>
                   </Button>
                 </nav>

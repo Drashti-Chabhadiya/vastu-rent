@@ -246,7 +246,9 @@ export const CategoryManagement = ({
                 <div className="w-16 h-16 bg-muted-light rounded-full flex items-center justify-center mx-auto mb-4">
                   <FolderPlus className="text-muted-dark" size={32} />
                 </div>
-                <p className="text-muted-foreground/85 font-bold">No categories found.</p>
+                <p className="text-muted-foreground/85 font-bold">
+                  No categories found.
+                </p>
               </div>
             ) : (
               filteredCategories?.map((category: any) => (

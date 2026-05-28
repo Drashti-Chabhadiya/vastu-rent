@@ -109,7 +109,10 @@ export const WithdrawalRequestModal = ({
 
           {/* Platform notice */}
           <div className="bg-warning/50 p-4 rounded-2xl border border-amber-100/50 flex items-start gap-2">
-            <AlertCircle size={16} className="text-warning-foreground shrink-0 mt-0.5" />
+            <AlertCircle
+              size={16}
+              className="text-warning-foreground shrink-0 mt-0.5"
+            />
             <p className="text-[10px] font-semibold text-warning-foreground leading-relaxed">
               By requesting this withdrawal, you authorize standard 10% platform
               fee calculations against your gross earnings bookings database.

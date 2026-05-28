@@ -41,7 +41,7 @@ export function OwnerCTA() {
             <div className="mt-8 flex flex-wrap gap-3">
               {/* Button 1: List your first item */}
               <Link
-                to={listItemHref as any}
+                to={listItemHref}
                 className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3.5 text-[14px] font-medium text-foreground transition-all hover:bg-background/90 active:scale-[0.97]"
               >
                 List your first item

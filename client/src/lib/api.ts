@@ -51,9 +51,7 @@ export const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const config = error.config as typeof error.config & {
-      _retried?: boolean
-    }
+    const config = error.config
 
     // Only retry once, only for network-level failures (no response received)
     // or 503 / 429 (server temporarily unavailable / rate-limit).

@@ -235,7 +235,12 @@ export function SettingsPage() {
           Settings
         </h1>
         <p
-          className={cn('text-[13px]', 'text-muted-foreground/85', 'mt-2', 'font-medium')}
+          className={cn(
+            'text-[13px]',
+            'text-muted-foreground/85',
+            'mt-2',
+            'font-medium',
+          )}
         >
           Manage your account preferences and security.
         </p>
@@ -304,7 +309,11 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
+                  className={cn(
+                    'text-base',
+                    'font-extrabold',
+                    'text-foreground',
+                  )}
                 >
                   Profile Information
                 </h2>
@@ -332,7 +341,11 @@ export function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-name"
-                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+                    className={cn(
+                      'text-xs',
+                      'font-semibold',
+                      'text-muted-foreground/85',
+                    )}
                   >
                     Full Name
                   </Label>
@@ -354,7 +367,11 @@ export function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-email"
-                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+                    className={cn(
+                      'text-xs',
+                      'font-semibold',
+                      'text-muted-foreground/85',
+                    )}
                   >
                     Email Address
                   </Label>
@@ -377,7 +394,11 @@ export function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-phone"
-                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+                    className={cn(
+                      'text-xs',
+                      'font-semibold',
+                      'text-muted-foreground/85',
+                    )}
                   >
                     Phone Number
                   </Label>
@@ -399,7 +420,11 @@ export function SettingsPage() {
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="s-loc"
-                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+                    className={cn(
+                      'text-xs',
+                      'font-semibold',
+                      'text-muted-foreground/85',
+                    )}
                   >
                     Location
                   </Label>
@@ -421,7 +446,11 @@ export function SettingsPage() {
                 <div className={cn('space-y-1.5', 'sm:col-span-2')}>
                   <Label
                     htmlFor="s-bio"
-                    className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+                    className={cn(
+                      'text-xs',
+                      'font-semibold',
+                      'text-muted-foreground/85',
+                    )}
                   >
                     Bio
                   </Label>
@@ -464,7 +493,11 @@ export function SettingsPage() {
               {/* Profile photo */}
               <div className="space-y-2">
                 <Label
-                  className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+                  className={cn(
+                    'text-xs',
+                    'font-semibold',
+                    'text-muted-foreground/85',
+                  )}
                 >
                   Profile Photo
                 </Label>
@@ -607,7 +640,11 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
+                  className={cn(
+                    'text-base',
+                    'font-extrabold',
+                    'text-foreground',
+                  )}
                 >
                   Account &amp; Security
                 </h2>
@@ -726,7 +763,11 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
+                  className={cn(
+                    'text-base',
+                    'font-extrabold',
+                    'text-foreground',
+                  )}
                 >
                   Notifications
                 </h2>
@@ -788,7 +829,11 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
+                  className={cn(
+                    'text-base',
+                    'font-extrabold',
+                    'text-foreground',
+                  )}
                 >
                   Payment Methods
                 </h2>
@@ -865,7 +910,11 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
+                  className={cn(
+                    'text-base',
+                    'font-extrabold',
+                    'text-foreground',
+                  )}
                 >
                   Privacy
                 </h2>
@@ -918,7 +967,11 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
+                  className={cn(
+                    'text-base',
+                    'font-extrabold',
+                    'text-foreground',
+                  )}
                 >
                   Connected Accounts
                 </h2>
@@ -988,7 +1041,11 @@ export function SettingsPage() {
             <div className={cn('space-y-7', 'max-w-2xl')}>
               <div>
                 <h2
-                  className={cn('text-base', 'font-extrabold', 'text-foreground')}
+                  className={cn(
+                    'text-base',
+                    'font-extrabold',
+                    'text-foreground',
+                  )}
                 >
                   Delete Account
                 </h2>
@@ -1108,7 +1165,11 @@ export function SettingsPage() {
               {/* Confirmation input */}
               <div className="space-y-2">
                 <Label
-                  className={cn('text-xs', 'font-semibold', 'text-muted-foreground')}
+                  className={cn(
+                    'text-xs',
+                    'font-semibold',
+                    'text-muted-foreground',
+                  )}
                 >
                   Type{' '}
                   <span

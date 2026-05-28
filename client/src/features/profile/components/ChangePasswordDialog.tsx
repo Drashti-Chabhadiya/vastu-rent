@@ -173,7 +173,9 @@ export function ChangePasswordDialog({
             {newPassword && (
               <div className="space-y-1 mt-1.5 animate-fade-in">
                 <div className="flex justify-between items-center text-[10px] font-bold">
-                  <span className="text-muted-foreground/70">Password Strength</span>
+                  <span className="text-muted-foreground/70">
+                    Password Strength
+                  </span>
                   <span
                     className={cn(
                       getPasswordStrength(newPassword).label === 'Weak' &&

@@ -255,7 +255,10 @@ export const CategoryFormDialog = ({
                   ) : (
                     <>
                       <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
-                        <Upload className="text-muted-foreground/70" size={20} />
+                        <Upload
+                          className="text-muted-foreground/70"
+                          size={20}
+                        />
                       </div>
                       <div className="text-center text-foreground">
                         <p className="text-sm font-bold">

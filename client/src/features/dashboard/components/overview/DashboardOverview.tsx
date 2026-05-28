@@ -74,7 +74,7 @@ export const DashboardOverview = ({
   }
 
   // 1. OWNER / LISTER DASHBOARD OVERVIEW
-  if (role === 'owner' || role === 'user') {
+  if (role === 'owner') {
     return (
       <ListerOverview
         myListings={myListings}

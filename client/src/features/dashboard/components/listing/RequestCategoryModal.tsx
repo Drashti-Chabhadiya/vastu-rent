@@ -19,7 +19,10 @@ interface RequestCategoryModalProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function RequestCategoryModal({ open, onOpenChange }: RequestCategoryModalProps) {
+export function RequestCategoryModal({
+  open,
+  onOpenChange,
+}: RequestCategoryModalProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const { mutate: createRequest, isPending } = useCreateCategoryRequest()
@@ -39,8 +42,8 @@ export function RequestCategoryModal({ open, onOpenChange }: RequestCategoryModa
         },
         onError: (err: any) => {
           toast.error(err.response?.data?.message || 'Failed to send request')
-        }
-      }
+        },
+      },
     )
   }
 
@@ -52,16 +55,22 @@ export function RequestCategoryModal({ open, onOpenChange }: RequestCategoryModa
             <FolderPlus size={24} />
           </div>
           <div>
-            <DialogTitle className="text-xl font-black text-foreground">Request New Category</DialogTitle>
-            <p className="text-xs text-muted-foreground/80 mt-1 font-bold">Admin will review and approve your category.</p>
+            <DialogTitle className="text-xl font-black text-foreground">
+              Request New Category
+            </DialogTitle>
+            <p className="text-xs text-muted-foreground/80 mt-1 font-bold">
+              Admin will review and approve your category.
+            </p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5 relative">
           {isPending && <LoadingOverlay message="Sending request..." />}
-          
+
           <div className="space-y-2">
-            <label className="text-xs font-bold text-foreground ml-1">Category Name</label>
+            <label className="text-xs font-bold text-foreground ml-1">
+              Category Name
+            </label>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -72,7 +81,9 @@ export function RequestCategoryModal({ open, onOpenChange }: RequestCategoryModa
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-foreground ml-1">Description (Optional)</label>
+            <label className="text-xs font-bold text-foreground ml-1">
+              Description (Optional)
+            </label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}

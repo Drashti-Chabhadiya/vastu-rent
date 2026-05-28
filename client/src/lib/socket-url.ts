@@ -12,8 +12,7 @@ export function getSocketUrl(): string {
   // Always use the explicit env var baked in at build time.
   if (Capacitor.isNativePlatform()) {
     return (
-      import.meta.env.VITE_SOCKET_URL ||
-      'https://new-vastu-rent.onrender.com'
+      import.meta.env.VITE_SOCKET_URL || 'https://new-vastu-rent.onrender.com'
     )
   }
 

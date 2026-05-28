@@ -114,8 +114,6 @@ export function ProfileListings() {
     )
   }
 
-
-
   // Calculate counts dynamically
   const counts = {
     all: listings?.length || 0,

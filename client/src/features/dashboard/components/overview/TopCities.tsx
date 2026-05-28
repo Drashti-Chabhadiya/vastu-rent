@@ -56,7 +56,10 @@ export const TopCities = () => {
             'text-center',
           )}
         >
-          <MapPin size={36} className={cn('text-muted-foreground/30', 'mb-3')} />
+          <MapPin
+            size={36}
+            className={cn('text-muted-foreground/30', 'mb-3')}
+          />
           <p className={cn('text-sm', 'font-bold', 'text-muted-foreground/70')}>
             No city data yet
           </p>

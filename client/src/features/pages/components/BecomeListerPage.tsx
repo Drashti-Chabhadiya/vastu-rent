@@ -1,7 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
-import { Coins, Camera, ShieldCheck, Zap, ArrowRight, Star, LayoutDashboard } from 'lucide-react'
+import {
+  Coins,
+  Camera,
+  ShieldCheck,
+  Zap,
+  ArrowRight,
+  Star,
+  LayoutDashboard,
+} from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
 
@@ -65,7 +73,7 @@ export function BecomeListerPage() {
               start earning money today. It's safe, easy, and free to get
               started.
             </p>
-            <Link to={ctaHref as any}>
+            <Link to={ctaHref}>
               <Button size="lg" className="flex items-center gap-3">
                 {isLoggedIn ? (
                   <>
@@ -132,7 +140,7 @@ export function BecomeListerPage() {
                 alt="Happy Owner"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  ; (e.target as any).src =
+                  ;(e.target as any).src =
                     'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Owner'
                 }}
               />
@@ -168,7 +176,7 @@ export function BecomeListerPage() {
           <h2 className="text-4xl font-bold text-foreground mb-8">
             Your items could be earning for you right now.
           </h2>
-          <Link to={ctaHref as any}>
+          <Link to={ctaHref}>
             <Button size="lg">
               {isLoggedIn ? 'Go to My Listings' : 'Get Started for Free'}
             </Button>

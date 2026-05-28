@@ -17,7 +17,11 @@ import {
   AlertTriangle,
 } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
-import { useUploadProfileImage, useUpdateUserSettings, useMyListings } from '#/hook'
+import {
+  useUploadProfileImage,
+  useUpdateUserSettings,
+  useMyListings,
+} from '#/hook'
 import { Loader, LoadingOverlay } from '#/components/ui/loader'
 import { Link } from '@tanstack/react-router'
 import { apiClient } from '#/lib/api'
@@ -85,19 +89,32 @@ export function PersonalInfo() {
     if (sessionId) {
       const verifySession = async () => {
         setIsVerifying(true)
-        const toastId = toast.loading('Verifying your payment and updating your plan...')
+        const toastId = toast.loading(
+          'Verifying your payment and updating your plan...',
+        )
         try {
-          const res = await apiClient.post('/billing/verify-session', { sessionId })
+          const res = await apiClient.post('/billing/verify-session', {
+            sessionId,
+          })
           if (res.data?.success) {
             toast.success('🎉 Plan upgraded successfully!', { id: toastId })
             await refetch()
-            window.history.replaceState({}, document.title, window.location.pathname)
+            window.history.replaceState(
+              {},
+              document.title,
+              window.location.pathname,
+            )
           } else {
-            toast.error('Could not verify your checkout session.', { id: toastId })
+            toast.error('Could not verify your checkout session.', {
+              id: toastId,
+            })
           }
         } catch (error: any) {
           console.error('Session verification failed:', error)
-          toast.error(error.response?.data?.message || 'Payment verification failed.', { id: toastId })
+          toast.error(
+            error.response?.data?.message || 'Payment verification failed.',
+            { id: toastId },
+          )
         } finally {
           setIsVerifying(false)
         }
@@ -247,9 +264,9 @@ export function PersonalInfo() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      year: 'numeric',
-    })
+        month: 'short',
+        year: 'numeric',
+      })
     : 'Jan 2024'
 
   const usedCount = myListings?.length || 0
@@ -281,7 +298,11 @@ export function PersonalInfo() {
   const fields = [
     { key: 'name', label: 'Full Name', value: name },
     { key: 'email', label: 'Email Address', value: session?.user?.email },
-    { key: 'image', label: 'Profile Photo', value: session?.user?.image || imagePreview },
+    {
+      key: 'image',
+      label: 'Profile Photo',
+      value: session?.user?.image || imagePreview,
+    },
     { key: 'phone', label: 'Phone Number', value: phone },
     { key: 'gender', label: 'Gender', value: gender },
     { key: 'location', label: 'Location', value: location },
@@ -289,9 +310,11 @@ export function PersonalInfo() {
     { key: 'dob', label: 'Date of Birth', value: dob },
   ]
 
-  const filledFields = fields.filter(f => f.value && f.value.trim() !== '')
-  const missingFields = fields.filter(f => !f.value || f.value.trim() === '')
-  const completenessPercent = Math.round((filledFields.length / fields.length) * 100)
+  const filledFields = fields.filter((f) => f.value && f.value.trim() !== '')
+  const missingFields = fields.filter((f) => !f.value || f.value.trim() === '')
+  const completenessPercent = Math.round(
+    (filledFields.length / fields.length) * 100,
+  )
 
   return (
     <div className="font-sans">
@@ -389,10 +412,14 @@ export function PersonalInfo() {
                   <span className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
                     Completeness
                   </span>
-                  <span className={cn(
-                    "text-xs font-black",
-                    completenessPercent === 100 ? "text-primary" : "text-amber-500"
-                  )}>
+                  <span
+                    className={cn(
+                      'text-xs font-black',
+                      completenessPercent === 100
+                        ? 'text-primary'
+                        : 'text-amber-500',
+                    )}
+                  >
                     {completenessPercent}%
                   </span>
                 </div>
@@ -400,8 +427,10 @@ export function PersonalInfo() {
                 <div className="w-full h-2 bg-muted-light rounded-full overflow-hidden mb-3">
                   <div
                     className={cn(
-                      "h-full transition-all duration-500 rounded-full",
-                      completenessPercent === 100 ? "bg-primary" : "bg-amber-500"
+                      'h-full transition-all duration-500 rounded-full',
+                      completenessPercent === 100
+                        ? 'bg-primary'
+                        : 'bg-amber-500',
                     )}
                     style={{ width: `${completenessPercent}%` }}
                   />
@@ -415,7 +444,10 @@ export function PersonalInfo() {
                     </p>
                     <ul className="space-y-1 pl-1">
                       {missingFields.map((f) => (
-                        <li key={f.key} className="text-[10px] font-semibold text-amber-600 flex items-center gap-1.5">
+                        <li
+                          key={f.key}
+                          className="text-[10px] font-semibold text-amber-600 flex items-center gap-1.5"
+                        >
                           <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
                           {f.label}
                         </li>
@@ -424,7 +456,10 @@ export function PersonalInfo() {
                   </div>
                 ) : (
                   <div className="flex items-center gap-1.5 text-[10px] font-black text-primary">
-                    <Sparkles size={11} className="fill-primary-soft shrink-0 animate-bounce" />
+                    <Sparkles
+                      size={11}
+                      className="fill-primary-soft shrink-0 animate-bounce"
+                    />
                     Profile fully complete!
                   </div>
                 )}
@@ -433,17 +468,28 @@ export function PersonalInfo() {
               {/* Dynamic Contact Details */}
               <div className="mt-6 space-y-4 text-left w-full max-w-[240px]">
                 <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-                  <Mail size={16} className="text-muted-foreground/70 shrink-0" />
+                  <Mail
+                    size={16}
+                    className="text-muted-foreground/70 shrink-0"
+                  />
                   <span className="truncate">{session.user.email}</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-                  <Phone size={16} className="text-muted-foreground/70 shrink-0" />
-                  <span className={cn(!phone && "italic text-muted-foreground/50")}>
+                  <Phone
+                    size={16}
+                    className="text-muted-foreground/70 shrink-0"
+                  />
+                  <span
+                    className={cn(!phone && 'italic text-muted-foreground/50')}
+                  >
                     {phone || 'Not specified'}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-                  <Calendar size={16} className="text-muted-foreground/70 shrink-0" />
+                  <Calendar
+                    size={16}
+                    className="text-muted-foreground/70 shrink-0"
+                  />
                   <span>Member since {joinDate}</span>
                 </div>
               </div>
@@ -905,11 +951,13 @@ export function PersonalInfo() {
                   <>
                     Valid until{' '}
                     <span className="text-foreground font-bold">
-                      {expiresAt ? expiresAt.toLocaleDateString('en-US', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      }) : 'N/A'}
+                      {expiresAt
+                        ? expiresAt.toLocaleDateString('en-US', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })
+                        : 'N/A'}
                     </span>
                   </>
                 )}
@@ -945,20 +993,21 @@ export function PersonalInfo() {
               {/* Quota Progress Bar */}
               <div className="w-full h-3 bg-muted-light/60 rounded-full overflow-hidden mt-3.5 border border-border/10">
                 <div
-                  className={cn('h-full rounded-full transition-all duration-500 ease-out', barColor)}
+                  className={cn(
+                    'h-full rounded-full transition-all duration-500 ease-out',
+                    barColor,
+                  )}
                   style={{ width: `${quotaPercent}%` }}
                 />
               </div>
 
               {/* Limit Status Description */}
               <p className="text-[11px] text-muted-foreground/85 mt-3.5 font-medium leading-relaxed">
-                {activeTier.toLowerCase() === 'starter' ? (
-                  'Starter members can list up to 5 items. Upgrade to a paid plan to list up to 50 or unlimited items.'
-                ) : activeTier.toLowerCase() === 'pro' ? (
-                  'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.'
-                ) : (
-                  'You have unlimited listing capacity with your Business plan!'
-                )}
+                {activeTier.toLowerCase() === 'starter'
+                  ? 'Starter members can list up to 5 items. Upgrade to a paid plan to list up to 50 or unlimited items.'
+                  : activeTier.toLowerCase() === 'pro'
+                    ? 'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.'
+                    : 'You have unlimited listing capacity with your Business plan!'}
               </p>
             </div>
 
@@ -967,7 +1016,8 @@ export function PersonalInfo() {
               <div className="bg-danger border border-destructive/20 text-destructive rounded-xl p-3.5 flex items-start gap-2.5 mt-6">
                 <AlertTriangle size={15} className="shrink-0 mt-0.5" />
                 <p className="text-[10px] font-bold leading-normal">
-                  You have reached your listing limit. Upgrade your subscription plan to create new listings.
+                  You have reached your listing limit. Upgrade your subscription
+                  plan to create new listings.
                 </p>
               </div>
             )}

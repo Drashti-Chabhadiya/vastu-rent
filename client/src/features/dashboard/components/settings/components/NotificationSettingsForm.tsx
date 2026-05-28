@@ -32,13 +32,15 @@ export const NotificationSettingsForm = ({
   const handlePushToggle = async (val: boolean) => {
     if (!val) {
       toast.info(
-        'To completely block push notifications, click the lock/settings icon in your browser address bar and reset notification permissions.'
+        'To completely block push notifications, click the lock/settings icon in your browser address bar and reset notification permissions.',
       )
       setPushEnabled(false)
       return
     }
 
-    const toastId = toast.loading('Requesting browser notification permissions...')
+    const toastId = toast.loading(
+      'Requesting browser notification permissions...',
+    )
     try {
       const token = await registerDeviceForPush()
       if (token) {
@@ -50,12 +52,14 @@ export const NotificationSettingsForm = ({
         setPushEnabled(false)
         toast.error(
           'Failed to enable push notifications. Please ensure you select "Allow" when prompted.',
-          { id: toastId }
+          { id: toastId },
         )
       }
     } catch (err) {
       setPushEnabled(false)
-      toast.error('Could not request notification permissions.', { id: toastId })
+      toast.error('Could not request notification permissions.', {
+        id: toastId,
+      })
     }
   }
 
@@ -76,11 +80,15 @@ export const NotificationSettingsForm = ({
           <div className="flex items-center justify-between p-5 rounded-2xl border border-emerald-500/25 bg-emerald-500/5 hover:bg-emerald-500/10 transition-all duration-300 shadow-sm">
             <div className="space-y-1 pr-4">
               <h4 className="text-xs font-black text-foreground/90 flex items-center gap-1.5">
-                <BellRing size={14} className="text-emerald-600 animate-bounce" />
+                <BellRing
+                  size={14}
+                  className="text-emerald-600 animate-bounce"
+                />
                 Browser Push Notifications
               </h4>
               <p className="text-[10px] font-semibold text-muted-dark leading-normal">
-                Receive instant real-time updates for bookings, payments, and messaging directly on this device.
+                Receive instant real-time updates for bookings, payments, and
+                messaging directly on this device.
               </p>
             </div>
             <Switch

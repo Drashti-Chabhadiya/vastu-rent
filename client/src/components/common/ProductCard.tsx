@@ -84,7 +84,9 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="text-lg font-bold text-primary-light">
               ₹{product.price.toLocaleString()}
             </span>
-            <span className="text-xs font-medium text-muted-foreground/85">/day</span>
+            <span className="text-xs font-medium text-muted-foreground/85">
+              /day
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />

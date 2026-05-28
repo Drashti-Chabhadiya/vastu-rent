@@ -11,6 +11,8 @@ import {
   ArrowRight,
   Flag,
   AlertTriangle,
+  MapPin,
+  FileText,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Card, CardContent } from '#/components/ui/card'
@@ -34,9 +36,8 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { useSettings } from '#/hook'
-import { MapPin, FileText } from 'lucide-react'
 
-const getIcon = (name: string, className = "h-6 w-6 text-primary") => {
+const getIcon = (name: string, className = 'h-6 w-6 text-primary') => {
   switch (name) {
     case 'Shield':
       return <Shield className={className} />
@@ -74,7 +75,9 @@ export function TrustPage() {
       return
     }
 
-    toast.success('Thank you. Your report has been submitted to Vastu Trust & Safety.')
+    toast.success(
+      'Thank you. Your report has been submitted to Vastu Trust & Safety.',
+    )
     setTargetId('')
     setDescription('')
     setIsDialogOpen(false)
@@ -86,11 +89,13 @@ export function TrustPage() {
     description: string
   }
 
-  const commitments: TrustItem[] = settings?.trust?.commitments?.map((c: any) => ({
-    icon: getIcon(c.iconName, "h-6 w-6 text-primary"),
-    title: c.title,
-    description: c.description
-  })) || [
+  const commitments: TrustItem[] = settings?.trust?.commitments?.map(
+    (c: any) => ({
+      icon: getIcon(c.iconName, 'h-6 w-6 text-primary'),
+      title: c.title,
+      description: c.description,
+    }),
+  ) || [
     {
       icon: <Shield className="h-6 w-6 text-primary" />,
       title: 'Secure platform',
@@ -117,11 +122,13 @@ export function TrustPage() {
     },
   ]
 
-  const safetyTips: TrustItem[] = settings?.trust?.safetyTips?.map((s: any) => ({
-    icon: getIcon(s.iconName, "h-5 w-5 text-primary"),
-    title: s.title,
-    description: s.description
-  })) || [
+  const safetyTips: TrustItem[] = settings?.trust?.safetyTips?.map(
+    (s: any) => ({
+      icon: getIcon(s.iconName, 'h-5 w-5 text-primary'),
+      title: s.title,
+      description: s.description,
+    }),
+  ) || [
     {
       icon: <MessageSquare className="h-5 w-5 text-primary" />,
       title: 'Communicate on Vastu',
@@ -167,7 +174,8 @@ export function TrustPage() {
               <span className="italic text-primary">our priority.</span>
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-              At Vastu, we’re building a community where everyone can rent and host with confidence.
+              At Vastu, we’re building a community where everyone can rent and
+              host with confidence.
             </p>
           </div>
 
@@ -191,7 +199,8 @@ export function TrustPage() {
             Our commitment to you
           </h2>
           <p className="text-muted-foreground mt-2 text-sm max-w-xl leading-relaxed">
-            We work around the clock to keep Vastu safe, secure and reliable for our community.
+            We work around the clock to keep Vastu safe, secure and reliable for
+            our community.
           </p>
         </div>
 
@@ -206,7 +215,9 @@ export function TrustPage() {
                   {c.icon}
                 </div>
                 <div>
-                  <h3 className="font-bold text-[#0F291B] text-base">{c.title}</h3>
+                  <h3 className="font-bold text-[#0F291B] text-base">
+                    {c.title}
+                  </h3>
                   <p className="text-muted-foreground text-[13px] leading-relaxed mt-2">
                     {c.description}
                   </p>
@@ -220,7 +231,6 @@ export function TrustPage() {
       {/* Safety Tips and Privacy Section */}
       <section className="mx-auto max-w-[1400px] px-6 mt-20 md:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-
           {/* Left Column: Safety Tips List */}
           <div className="lg:col-span-7">
             <h2 className="text-2xl font-bold text-[#0F291B] tracking-tight">
@@ -269,7 +279,8 @@ export function TrustPage() {
               Your privacy matters
             </h3>
             <p className="text-muted-foreground text-sm leading-relaxed mt-2">
-              We collect only what we need to provide a better experience and never share your personal information without consent.
+              We collect only what we need to provide a better experience and
+              never share your personal information without consent.
             </p>
 
             <div className="mt-6 space-y-4">
@@ -280,7 +291,9 @@ export function TrustPage() {
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                  <span className="text-[13.5px] font-medium text-foreground">{item}</span>
+                  <span className="text-[13.5px] font-medium text-foreground">
+                    {item}
+                  </span>
                 </div>
               ))}
             </div>
@@ -295,7 +308,6 @@ export function TrustPage() {
               </Link>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -311,7 +323,8 @@ export function TrustPage() {
                 See something that doesn’t look right?
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Report it to us. Your report helps us take action and keep the community safe for everyone.
+                Report it to us. Your report helps us take action and keep the
+                community safe for everyone.
               </p>
             </div>
           </div>
@@ -330,27 +343,52 @@ export function TrustPage() {
                     Report a concern
                   </DialogTitle>
                   <DialogDescription className="text-sm text-muted-foreground">
-                    Please provide details about the issue. Our Vastu trust team will investigate and take immediate actions.
+                    Please provide details about the issue. Our Vastu trust team
+                    will investigate and take immediate actions.
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSendReport} className="mt-4 space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B]">What kind of concern is this?</Label>
+                    <Label className="text-[13px] font-bold text-[#0F291B]">
+                      What kind of concern is this?
+                    </Label>
                     <Select value={reportType} onValueChange={setReportType}>
                       <SelectTrigger className="w-full rounded-xl border border-border h-11 text-sm bg-transparent">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-popover rounded-xl shadow-md border border-border/50">
-                        <SelectItem value="listing" className="cursor-pointer rounded-lg">Suspicious/Incorrect Listing</SelectItem>
-                        <SelectItem value="user" className="cursor-pointer rounded-lg">Inappropriate/Fraudulent User</SelectItem>
-                        <SelectItem value="payment" className="cursor-pointer rounded-lg">Payment issues / Off-platform requests</SelectItem>
-                        <SelectItem value="other" className="cursor-pointer rounded-lg">Other safety issues</SelectItem>
+                        <SelectItem
+                          value="listing"
+                          className="cursor-pointer rounded-lg"
+                        >
+                          Suspicious/Incorrect Listing
+                        </SelectItem>
+                        <SelectItem
+                          value="user"
+                          className="cursor-pointer rounded-lg"
+                        >
+                          Inappropriate/Fraudulent User
+                        </SelectItem>
+                        <SelectItem
+                          value="payment"
+                          className="cursor-pointer rounded-lg"
+                        >
+                          Payment issues / Off-platform requests
+                        </SelectItem>
+                        <SelectItem
+                          value="other"
+                          className="cursor-pointer rounded-lg"
+                        >
+                          Other safety issues
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B]">Reference URL / Listing / User ID (Optional)</Label>
+                    <Label className="text-[13px] font-bold text-[#0F291B]">
+                      Reference URL / Listing / User ID (Optional)
+                    </Label>
                     <Input
                       placeholder="e.g. VASTU-12345"
                       value={targetId}
@@ -360,7 +398,9 @@ export function TrustPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B]">Detailed Description</Label>
+                    <Label className="text-[13px] font-bold text-[#0F291B]">
+                      Detailed Description
+                    </Label>
                     <Textarea
                       placeholder="Describe the issue in detail..."
                       value={description}
@@ -371,7 +411,10 @@ export function TrustPage() {
                   </div>
 
                   <DialogFooter className="pt-2">
-                    <Button type="submit" className="w-full rounded-full bg-primary hover:bg-primary/95 text-white font-bold h-11 text-sm">
+                    <Button
+                      type="submit"
+                      className="w-full rounded-full bg-primary hover:bg-primary/95 text-white font-bold h-11 text-sm"
+                    >
                       Submit report
                     </Button>
                   </DialogFooter>

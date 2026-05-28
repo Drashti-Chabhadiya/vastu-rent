@@ -91,7 +91,9 @@ export const ProductInfoSection = ({
           <span className="text-3xl font-black text-primary">
             ₹{product.price.toLocaleString()}
           </span>
-          <span className="text-sm font-bold text-muted-foreground/85">/day</span>
+          <span className="text-sm font-bold text-muted-foreground/85">
+            /day
+          </span>
           {product.securityDeposit > 0 && (
             <span className="ml-3 text-xs font-medium text-muted-foreground/70">
               + ₹{product.securityDeposit.toLocaleString()} deposit
@@ -108,7 +110,9 @@ export const ProductInfoSection = ({
 
       {/* Product Information Table */}
       <div className="space-y-4">
-        <h3 className="text-sm font-bold text-foreground">Product Information</h3>
+        <h3 className="text-sm font-bold text-foreground">
+          Product Information
+        </h3>
         <div className="grid grid-cols-1 gap-y-3">
           {productInfo.map((info) => (
             <div key={info.label} className="grid grid-cols-3">
@@ -152,7 +156,9 @@ export const ProductInfoSection = ({
               <p className="text-[11px] font-bold text-foreground leading-tight">
                 {feature.title}
               </p>
-              <p className="text-[10px] text-muted-foreground/85">{feature.desc}</p>
+              <p className="text-[10px] text-muted-foreground/85">
+                {feature.desc}
+              </p>
             </div>
           </div>
         ))}

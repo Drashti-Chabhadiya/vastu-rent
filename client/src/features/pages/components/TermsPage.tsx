@@ -28,68 +28,81 @@ export function TermsPage() {
     {
       id: 'intro',
       title: '1. Introduction',
-      content: 'Welcome to Vastu. These Terms of Service ("Terms") govern your access to and use of the Vastu website, mobile application, and any related services (collectively, the "Platform") operated by Vastu Rentals Private Limited ("we", "us", or "our").\n\nBy accessing or using our Platform, you agree to be bound by these Terms.'
+      content:
+        'Welcome to Vastu. These Terms of Service ("Terms") govern your access to and use of the Vastu website, mobile application, and any related services (collectively, the "Platform") operated by Vastu Rentals Private Limited ("we", "us", or "our").\n\nBy accessing or using our Platform, you agree to be bound by these Terms.',
     },
     {
       id: 'eligibility',
       title: '2. Eligibility',
-      content: 'You must be at least 18 years old and legally capable of entering into binding contracts to use Vastu. By using our Platform, you represent and warrant that you meet these requirements.'
+      content:
+        'You must be at least 18 years old and legally capable of entering into binding contracts to use Vastu. By using our Platform, you represent and warrant that you meet these requirements.',
     },
     {
       id: 'accounts',
       title: '3. User Accounts',
-      content: 'To access certain features, you may need to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use.'
+      content:
+        'To access certain features, you may need to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use.',
     },
     {
       id: 'bookings',
       title: '4. Listings and Bookings',
-      content: 'Users can list items for rent and book items listed by others. We do not own the items listed on Vastu and act solely as an intermediary between users.\n\nWe reserve the right to remove any listing or user that violates these Terms or our policies.'
+      content:
+        'Users can list items for rent and book items listed by others. We do not own the items listed on Vastu and act solely as an intermediary between users.\n\nWe reserve the right to remove any listing or user that violates these Terms or our policies.',
     },
     {
       id: 'payments',
       title: '5. Payments and Fees',
-      content: 'All payments must be made through our secure payment system. We may charge service fees for certain transactions, which will be clearly displayed before you complete a booking.\n\nYou agree to pay all applicable fees and taxes.'
+      content:
+        'All payments must be made through our secure payment system. We may charge service fees for certain transactions, which will be clearly displayed before you complete a booking.\n\nYou agree to pay all applicable fees and taxes.',
     },
     {
       id: 'cancellations',
       title: '6. Cancellations and Refunds',
-      content: 'Cancellation policies and refund eligibility are governed by the terms specified at the time of booking. Users must resolve disputes through Vastu support in alignment with our formal Refund Policy.'
+      content:
+        'Cancellation policies and refund eligibility are governed by the terms specified at the time of booking. Users must resolve disputes through Vastu support in alignment with our formal Refund Policy.',
     },
     {
       id: 'conduct',
       title: '7. User Conduct',
-      content: "Users agree to behave professionally, not list prohibited items, and not bypass Vastu's secure system or direct transactions off-platform. Any attempt to negotiate or transact off-platform will lead to account suspension."
+      content:
+        "Users agree to behave professionally, not list prohibited items, and not bypass Vastu's secure system or direct transactions off-platform. Any attempt to negotiate or transact off-platform will lead to account suspension.",
     },
     {
       id: 'intellectual',
       title: '8. Intellectual Property',
-      content: 'All content, designs, trademarks, logos, and code displayed on the Vastu Platform are owned by Vastu Rentals and protected by copyright and intellectual property laws.'
+      content:
+        'All content, designs, trademarks, logos, and code displayed on the Vastu Platform are owned by Vastu Rentals and protected by copyright and intellectual property laws.',
     },
     {
       id: 'liability',
       title: '9. Limitation of Liability',
-      content: 'Vastu acts as a secure platform and venue, and is not liable for any physical damages, loss of earnings, or disputes arising between users. Renters and hosts accept all operational risks.'
+      content:
+        'Vastu acts as a secure platform and venue, and is not liable for any physical damages, loss of earnings, or disputes arising between users. Renters and hosts accept all operational risks.',
     },
     {
       id: 'indemnity',
       title: '10. Indemnification',
-      content: 'Users agree to defend, indemnify, and hold harmless Vastu, its affiliates, and its officers from any claims, losses, or legal expenses arising from their use of the platform or violation of these Terms.'
+      content:
+        'Users agree to defend, indemnify, and hold harmless Vastu, its affiliates, and its officers from any claims, losses, or legal expenses arising from their use of the platform or violation of these Terms.',
     },
     {
       id: 'changes',
       title: '11. Changes to Terms',
-      content: 'Vastu reserves the right to modify these Terms at any time. Your continued use of the platform after updates have been published constitutes acceptance of the new terms.'
+      content:
+        'Vastu reserves the right to modify these Terms at any time. Your continued use of the platform after updates have been published constitutes acceptance of the new terms.',
     },
     {
       id: 'governing',
       title: '12. Governing Law',
-      content: 'These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. All disputes are subject to exclusive jurisdiction in Bengaluru.'
+      content:
+        'These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. All disputes are subject to exclusive jurisdiction in Bengaluru.',
     },
     {
       id: 'contact',
       title: '13. Contact Us',
-      content: 'For any questions regarding these Terms of Service, please contact us at support@vastu.com or through our Contact page.'
-    }
+      content:
+        'For any questions regarding these Terms of Service, please contact us at support@vastu.com or through our Contact page.',
+    },
   ]
 
   interface TermsNavSection {
@@ -98,11 +111,13 @@ export function TermsPage() {
     collapsedOnly: boolean
   }
 
-  const sections: TermsNavSection[] = dynamicSections.map((sec: any, idx: number) => ({
-    id: sec.id,
-    label: sec.title,
-    collapsedOnly: idx >= 5
-  }))
+  const sections: TermsNavSection[] = dynamicSections.map(
+    (sec: any, idx: number) => ({
+      id: sec.id,
+      label: sec.title,
+      collapsedOnly: idx >= 5,
+    }),
+  )
 
   const mainSections = dynamicSections.slice(0, 5)
   const collapsedSections = dynamicSections.slice(5)
@@ -185,7 +200,6 @@ export function TermsPage() {
       {/* Main content grid */}
       <section className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-
           {/* Sticky Left Sidebar Navigation */}
           <div className="lg:col-span-3">
             <div className="sticky top-[100px] space-y-6">
@@ -202,16 +216,23 @@ export function TermsPage() {
                         <Button
                           variant="ghost"
                           key={sec.id}
-                          onClick={() => handleScrollTo(sec.id, sec.collapsedOnly)}
-                          className={`text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-start relative h-auto w-full ${isActive
-                            ? 'text-primary bg-primary/5 pl-4 font-bold hover:bg-primary/5 hover:text-primary'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/10'
-                            }`}
+                          onClick={() =>
+                            handleScrollTo(sec.id, sec.collapsedOnly)
+                          }
+                          className={`text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-start relative h-auto w-full ${
+                            isActive
+                              ? 'text-primary bg-primary/5 pl-4 font-bold hover:bg-primary/5 hover:text-primary'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-muted/10'
+                          }`}
                         >
                           {isActive && (
                             <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full" />
                           )}
-                          <span className={isCollapsed ? 'opacity-40 line-through' : ''}>
+                          <span
+                            className={
+                              isCollapsed ? 'opacity-40 line-through' : ''
+                            }
+                          >
                             {sec.label}
                           </span>
                         </Button>
@@ -249,13 +270,20 @@ export function TermsPage() {
 
           {/* Right Content */}
           <div className="lg:col-span-9 space-y-12 pr-0 lg:pr-6">
-
             {mainSections.map((sec: any) => (
-              <div key={sec.id} id={sec.id} className="scroll-mt-28 border-b border-border/30 pb-10">
-                <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">{sec.title}</h2>
+              <div
+                key={sec.id}
+                id={sec.id}
+                className="scroll-mt-28 border-b border-border/30 pb-10"
+              >
+                <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">
+                  {sec.title}
+                </h2>
                 <div className="text-sm leading-relaxed text-muted-foreground">
                   {sec.content.split('\n').map((para: string, i: number) => (
-                    <p key={i} className="mt-4">{para}</p>
+                    <p key={i} className="mt-4">
+                      {para}
+                    </p>
                   ))}
                 </div>
               </div>
@@ -263,15 +291,29 @@ export function TermsPage() {
 
             {/* Shadcn Collapsible Section for remaining items */}
             {collapsedSections.length > 0 && (
-              <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-12">
+              <Collapsible
+                open={isOpen}
+                onOpenChange={setIsOpen}
+                className="space-y-12"
+              >
                 <CollapsibleContent className="space-y-12 data-[state=open]:animate-slide-down">
                   {collapsedSections.map((sec: any) => (
-                    <div key={sec.id} id={sec.id} className="scroll-mt-28 border-b border-border/30 pb-10">
-                      <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">{sec.title}</h2>
+                    <div
+                      key={sec.id}
+                      id={sec.id}
+                      className="scroll-mt-28 border-b border-border/30 pb-10"
+                    >
+                      <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">
+                        {sec.title}
+                      </h2>
                       <div className="text-sm leading-relaxed text-muted-foreground">
-                        {sec.content.split('\n').map((para: string, i: number) => (
-                          <p key={i} className="mt-4">{para}</p>
-                        ))}
+                        {sec.content
+                          .split('\n')
+                          .map((para: string, i: number) => (
+                            <p key={i} className="mt-4">
+                              {para}
+                            </p>
+                          ))}
                       </div>
                     </div>
                   ))}
@@ -285,7 +327,11 @@ export function TermsPage() {
                       className="rounded-full border border-border px-8 py-5 h-auto text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
                     >
                       {isOpen ? 'Collapse terms' : 'View all terms'}
-                      {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      {isOpen ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
                     </Button>
                   </CollapsibleTrigger>
                 </div>
@@ -300,13 +346,12 @@ export function TermsPage() {
               <div className="text-sm">
                 <h4 className="font-bold text-[#0F291B]">Important</h4>
                 <p className="text-muted-foreground mt-1 leading-relaxed">
-                  These Terms may be updated from time to time. Continued use of Vastu after changes means you accept the updated Terms.
+                  These Terms may be updated from time to time. Continued use of
+                  Vastu after changes means you accept the updated Terms.
                 </p>
               </div>
             </div>
-
           </div>
-
         </div>
       </section>
     </div>

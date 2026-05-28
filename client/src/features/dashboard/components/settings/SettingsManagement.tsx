@@ -348,8 +348,7 @@ export const SettingsManagement = () => {
     activeUser?.role === 'superAdmin'
 
   const isAdminOrSuper =
-    activeUser?.role === 'admin' ||
-    activeUser?.role === 'superAdmin'
+    activeUser?.role === 'admin' || activeUser?.role === 'superAdmin'
 
   const sidebarItems = [
     {
@@ -402,7 +401,9 @@ export const SettingsManagement = () => {
           <span className="text-dash-brand font-bold">Settings</span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="font-display text-2xl font-semibold text-foreground/90 tracking-tight">Settings</h1>
+          <h1 className="font-display text-2xl font-semibold text-foreground/90 tracking-tight">
+            Settings
+          </h1>
           <div className="flex items-center gap-2 bg-card px-3.5 py-1.5 rounded-full border border-border/30 shadow-sm">
             <Calendar size={14} className="text-dash-brand" />
             <span className="text-xs font-semibold text-muted-foreground tracking-wide">

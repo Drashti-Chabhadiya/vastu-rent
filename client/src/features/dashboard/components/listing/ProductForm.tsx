@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { ListingSchema } from '../../../../schema/listing-schema'
 import { ImageGalleryManager } from './ImageGalleryManager'
+import { RequestCategoryModal } from './RequestCategoryModal'
 import {
   FormControl,
   FormField,
@@ -50,9 +52,6 @@ interface ProductFormProps {
   onUploadStatusChange?: (uploading: boolean) => void
 }
 
-import { RequestCategoryModal } from './RequestCategoryModal'
-import { useState } from 'react'
-
 export const ProductForm = ({
   form,
   categories,
@@ -60,7 +59,8 @@ export const ProductForm = ({
   currentUser,
   onUploadStatusChange,
 }: ProductFormProps) => {
-  const isOwner = currentUser?.role !== 'admin' && currentUser?.role !== 'superAdmin'
+  const isOwner =
+    currentUser?.role !== 'admin' && currentUser?.role !== 'superAdmin'
   const [requestCategoryOpen, setRequestCategoryOpen] = useState(false)
   return (
     <div className="space-y-6">
@@ -275,10 +275,10 @@ export const ProductForm = ({
             </FormItem>
           )}
         />
-        
-        <RequestCategoryModal 
-          open={requestCategoryOpen} 
-          onOpenChange={setRequestCategoryOpen} 
+
+        <RequestCategoryModal
+          open={requestCategoryOpen}
+          onOpenChange={setRequestCategoryOpen}
         />
 
         <FormField<ListingSchema>

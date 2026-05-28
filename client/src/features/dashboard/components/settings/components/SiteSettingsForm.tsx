@@ -11,7 +11,9 @@ export const SiteSettingsForm = () => {
   const { data: settings, isLoading } = useSettings()
   const updateSettings = useUpdateSettings()
 
-  const [activeTab, setActiveTab] = useState<'contact' | 'pricing' | 'trust' | 'terms'>('contact')
+  const [activeTab, setActiveTab] = useState<
+    'contact' | 'pricing' | 'trust' | 'terms'
+  >('contact')
 
   // Contact States
   const [contactEmail, setContactEmail] = useState('')
@@ -29,12 +31,18 @@ export const SiteSettingsForm = () => {
   const [businessFeatures, setBusinessFeatures] = useState<string[]>([])
 
   // Trust States
-  const [commitments, setCommitments] = useState<Array<{ iconName: string; title: string; description: string }>>([])
-  const [safetyTips, setSafetyTips] = useState<Array<{ iconName: string; title: string; description: string }>>([])
+  const [commitments, setCommitments] = useState<
+    Array<{ iconName: string; title: string; description: string }>
+  >([])
+  const [safetyTips, setSafetyTips] = useState<
+    Array<{ iconName: string; title: string; description: string }>
+  >([])
 
   // Terms States
   const [termsLastUpdated, setTermsLastUpdated] = useState('')
-  const [termsSections, setTermsSections] = useState<Array<{ id: string; title: string; content: string }>>([])
+  const [termsSections, setTermsSections] = useState<
+    Array<{ id: string; title: string; content: string }>
+  >([])
 
   // Initialize fields once settings data loads
   useEffect(() => {
@@ -46,9 +54,21 @@ export const SiteSettingsForm = () => {
       setContactDescription(settings.contact?.description || '')
 
       // Pricing
-      setStarterPrice(settings.pricing?.starterPrice !== undefined ? settings.pricing.starterPrice : 0)
-      setProPrice(settings.pricing?.proPrice !== undefined ? settings.pricing.proPrice : 499)
-      setBusinessPrice(settings.pricing?.businessPrice !== undefined ? settings.pricing.businessPrice : 999)
+      setStarterPrice(
+        settings.pricing?.starterPrice !== undefined
+          ? settings.pricing.starterPrice
+          : 0,
+      )
+      setProPrice(
+        settings.pricing?.proPrice !== undefined
+          ? settings.pricing.proPrice
+          : 499,
+      )
+      setBusinessPrice(
+        settings.pricing?.businessPrice !== undefined
+          ? settings.pricing.businessPrice
+          : 999,
+      )
 
       setStarterFeatures(settings.pricing?.starterFeatures || [])
       setProFeatures(settings.pricing?.proFeatures || [])
@@ -100,7 +120,7 @@ export const SiteSettingsForm = () => {
         toast.error(
           err.response?.data?.message ||
             err.message ||
-            'Failed to save settings. Please try again.'
+            'Failed to save settings. Please try again.',
         )
       },
     })
@@ -113,13 +133,23 @@ export const SiteSettingsForm = () => {
     if (plan === 'business') setBusinessFeatures([...businessFeatures, ''])
   }
 
-  const removeFeature = (plan: 'starter' | 'pro' | 'business', index: number) => {
-    if (plan === 'starter') setStarterFeatures(starterFeatures.filter((_, i) => i !== index))
-    if (plan === 'pro') setProFeatures(proFeatures.filter((_, i) => i !== index))
-    if (plan === 'business') setBusinessFeatures(businessFeatures.filter((_, i) => i !== index))
+  const removeFeature = (
+    plan: 'starter' | 'pro' | 'business',
+    index: number,
+  ) => {
+    if (plan === 'starter')
+      setStarterFeatures(starterFeatures.filter((_, i) => i !== index))
+    if (plan === 'pro')
+      setProFeatures(proFeatures.filter((_, i) => i !== index))
+    if (plan === 'business')
+      setBusinessFeatures(businessFeatures.filter((_, i) => i !== index))
   }
 
-  const updateFeatureText = (plan: 'starter' | 'pro' | 'business', index: number, value: string) => {
+  const updateFeatureText = (
+    plan: 'starter' | 'pro' | 'business',
+    index: number,
+    value: string,
+  ) => {
     if (plan === 'starter') {
       const updated = [...starterFeatures]
       updated[index] = value
@@ -139,14 +169,21 @@ export const SiteSettingsForm = () => {
 
   // Trust/Commitments Helpers
   const addCommitment = () => {
-    setCommitments([...commitments, { iconName: 'Shield', title: '', description: '' }])
+    setCommitments([
+      ...commitments,
+      { iconName: 'Shield', title: '', description: '' },
+    ])
   }
 
   const removeCommitment = (index: number) => {
     setCommitments(commitments.filter((_, i) => i !== index))
   }
 
-  const updateCommitment = (index: number, field: 'iconName' | 'title' | 'description', value: string) => {
+  const updateCommitment = (
+    index: number,
+    field: 'iconName' | 'title' | 'description',
+    value: string,
+  ) => {
     const updated = [...commitments]
     updated[index] = { ...updated[index], [field]: value }
     setCommitments(updated)
@@ -154,14 +191,21 @@ export const SiteSettingsForm = () => {
 
   // Safety Tips Helpers
   const addSafetyTip = () => {
-    setSafetyTips([...safetyTips, { iconName: 'MessageSquare', title: '', description: '' }])
+    setSafetyTips([
+      ...safetyTips,
+      { iconName: 'MessageSquare', title: '', description: '' },
+    ])
   }
 
   const removeSafetyTip = (index: number) => {
     setSafetyTips(safetyTips.filter((_, i) => i !== index))
   }
 
-  const updateSafetyTip = (index: number, field: 'iconName' | 'title' | 'description', value: string) => {
+  const updateSafetyTip = (
+    index: number,
+    field: 'iconName' | 'title' | 'description',
+    value: string,
+  ) => {
     const updated = [...safetyTips]
     updated[index] = { ...updated[index], [field]: value }
     setSafetyTips(updated)
@@ -170,14 +214,21 @@ export const SiteSettingsForm = () => {
   // Terms Section Helpers
   const addTermsSection = () => {
     const randomId = `section_${Math.random().toString(36).substr(2, 9)}`
-    setTermsSections([...termsSections, { id: randomId, title: '', content: '' }])
+    setTermsSections([
+      ...termsSections,
+      { id: randomId, title: '', content: '' },
+    ])
   }
 
   const removeTermsSection = (index: number) => {
     setTermsSections(termsSections.filter((_, i) => i !== index))
   }
 
-  const updateTermsSection = (index: number, field: 'id' | 'title' | 'content', value: string) => {
+  const updateTermsSection = (
+    index: number,
+    field: 'id' | 'title' | 'content',
+    value: string,
+  ) => {
     const updated = [...termsSections]
     updated[index] = { ...updated[index], [field]: value }
     setTermsSections(updated)
@@ -204,7 +255,10 @@ export const SiteSettingsForm = () => {
   }
 
   return (
-    <form onSubmit={handleSave} className="space-y-8 animate-in fade-in duration-300">
+    <form
+      onSubmit={handleSave}
+      className="space-y-8 animate-in fade-in duration-300"
+    >
       {/* Title Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -225,7 +279,11 @@ export const SiteSettingsForm = () => {
       </div>
 
       {/* Pill Sub-Tabs */}
-      <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val)} className="w-full space-y-8">
+      <Tabs
+        value={activeTab}
+        onValueChange={(val: any) => setActiveTab(val)}
+        className="w-full space-y-8"
+      >
         <TabsList className="w-full flex p-1.5 rounded-2xl bg-muted-light/80 border border-border/30 h-auto">
           <TabsTrigger
             value="contact"
@@ -254,14 +312,18 @@ export const SiteSettingsForm = () => {
         </TabsList>
 
         {/* Content for CONTACT Tab */}
-        <TabsContent value="contact" className="space-y-6 animate-in fade-in duration-300 outline-none">
+        <TabsContent
+          value="contact"
+          className="space-y-6 animate-in fade-in duration-300 outline-none"
+        >
           <div className="space-y-4">
             <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
               <Mail size={15} className="text-dash-brand" />
               Contact Information Details
             </h4>
             <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              These details are loaded dynamically on the public Contact Us page. Ensure support communication channels are valid.
+              These details are loaded dynamically on the public Contact Us
+              page. Ensure support communication channels are valid.
             </p>
           </div>
 
@@ -319,14 +381,18 @@ export const SiteSettingsForm = () => {
         </TabsContent>
 
         {/* Content for PRICING Tab */}
-        <TabsContent value="pricing" className="space-y-8 animate-in fade-in duration-300 outline-none">
+        <TabsContent
+          value="pricing"
+          className="space-y-8 animate-in fade-in duration-300 outline-none"
+        >
           <div className="space-y-4">
             <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
               <Info size={15} className="text-dash-brand" />
               Upgrade Plans & Billing Tiers
             </h4>
             <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              Define the price for each monthly tier (in INR). Add or edit plan features dynamically.
+              Define the price for each monthly tier (in INR). Add or edit plan
+              features dynamically.
             </p>
           </div>
 
@@ -413,7 +479,9 @@ export const SiteSettingsForm = () => {
                   <div key={index} className="flex gap-2 items-center">
                     <Input
                       value={feat}
-                      onChange={(e) => updateFeatureText('starter', index, e.target.value)}
+                      onChange={(e) =>
+                        updateFeatureText('starter', index, e.target.value)
+                      }
                       placeholder="e.g. List up to 5 items"
                       className="h-10 bg-muted-light border-none rounded-xl text-[11px] font-bold text-foreground px-4 focus:ring-2 focus:ring-emerald-500/20 flex-1"
                     />
@@ -455,7 +523,9 @@ export const SiteSettingsForm = () => {
                   <div key={index} className="flex gap-2 items-center">
                     <Input
                       value={feat}
-                      onChange={(e) => updateFeatureText('pro', index, e.target.value)}
+                      onChange={(e) =>
+                        updateFeatureText('pro', index, e.target.value)
+                      }
                       placeholder="e.g. Priority support"
                       className="h-10 bg-muted-light border-none rounded-xl text-[11px] font-bold text-foreground px-4 focus:ring-2 focus:ring-emerald-500/20 flex-1"
                     />
@@ -497,7 +567,9 @@ export const SiteSettingsForm = () => {
                   <div key={index} className="flex gap-2 items-center">
                     <Input
                       value={feat}
-                      onChange={(e) => updateFeatureText('business', index, e.target.value)}
+                      onChange={(e) =>
+                        updateFeatureText('business', index, e.target.value)
+                      }
                       placeholder="e.g. Unlimited listings"
                       className="h-10 bg-muted-light border-none rounded-xl text-[11px] font-bold text-foreground px-4 focus:ring-2 focus:ring-emerald-500/20 flex-1"
                     />
@@ -522,14 +594,19 @@ export const SiteSettingsForm = () => {
         </TabsContent>
 
         {/* Content for TRUST Tab */}
-        <TabsContent value="trust" className="space-y-8 animate-in fade-in duration-300 outline-none">
+        <TabsContent
+          value="trust"
+          className="space-y-8 animate-in fade-in duration-300 outline-none"
+        >
           <div className="space-y-4">
             <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
               <HelpCircle size={15} className="text-dash-brand" />
               Trust & Community Commitments
             </h4>
             <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              Configure trust badges, platform commitments, and community safety guidelines. Lucide icon keywords: Shield, UserCheck, MessageSquare, Headphones, MapPin, FileText, Flag.
+              Configure trust badges, platform commitments, and community safety
+              guidelines. Lucide icon keywords: Shield, UserCheck,
+              MessageSquare, Headphones, MapPin, FileText, Flag.
             </p>
           </div>
 
@@ -550,7 +627,10 @@ export const SiteSettingsForm = () => {
 
             <div className="space-y-4">
               {commitments.map((comm, index) => (
-                <div key={index} className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group">
+                <div
+                  key={index}
+                  className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group"
+                >
                   <Button
                     type="button"
                     onClick={() => removeCommitment(index)}
@@ -562,19 +642,27 @@ export const SiteSettingsForm = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Icon Keyword</label>
+                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                        Icon Keyword
+                      </label>
                       <Input
                         value={comm.iconName}
-                        onChange={(e) => updateCommitment(index, 'iconName', e.target.value)}
+                        onChange={(e) =>
+                          updateCommitment(index, 'iconName', e.target.value)
+                        }
                         placeholder="Shield / UserCheck / MessageSquare"
                         className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
                       />
                     </div>
                     <div className="space-y-1 md:col-span-2">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Title</label>
+                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                        Title
+                      </label>
                       <Input
                         value={comm.title}
-                        onChange={(e) => updateCommitment(index, 'title', e.target.value)}
+                        onChange={(e) =>
+                          updateCommitment(index, 'title', e.target.value)
+                        }
                         placeholder="e.g. Secure payments"
                         className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
                       />
@@ -582,10 +670,14 @@ export const SiteSettingsForm = () => {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Description</label>
+                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                      Description
+                    </label>
                     <Textarea
                       value={comm.description}
-                      onChange={(e) => updateCommitment(index, 'description', e.target.value)}
+                      onChange={(e) =>
+                        updateCommitment(index, 'description', e.target.value)
+                      }
                       placeholder="Enter description explaining this commitment."
                       rows={2}
                       className="bg-muted-light border-none rounded-xl text-[10px] font-semibold text-foreground p-3 leading-normal"
@@ -618,7 +710,10 @@ export const SiteSettingsForm = () => {
 
             <div className="space-y-4">
               {safetyTips.map((tip, index) => (
-                <div key={index} className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group">
+                <div
+                  key={index}
+                  className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group"
+                >
                   <Button
                     type="button"
                     onClick={() => removeSafetyTip(index)}
@@ -630,19 +725,27 @@ export const SiteSettingsForm = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Icon Keyword</label>
+                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                        Icon Keyword
+                      </label>
                       <Input
                         value={tip.iconName}
-                        onChange={(e) => updateSafetyTip(index, 'iconName', e.target.value)}
+                        onChange={(e) =>
+                          updateSafetyTip(index, 'iconName', e.target.value)
+                        }
                         placeholder="MapPin / MessageSquare / Flag"
                         className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
                       />
                     </div>
                     <div className="space-y-1 md:col-span-2">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Title</label>
+                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                        Title
+                      </label>
                       <Input
                         value={tip.title}
-                        onChange={(e) => updateSafetyTip(index, 'title', e.target.value)}
+                        onChange={(e) =>
+                          updateSafetyTip(index, 'title', e.target.value)
+                        }
                         placeholder="e.g. Meet safely"
                         className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
                       />
@@ -650,10 +753,14 @@ export const SiteSettingsForm = () => {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Description</label>
+                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                      Description
+                    </label>
                     <Textarea
                       value={tip.description}
-                      onChange={(e) => updateSafetyTip(index, 'description', e.target.value)}
+                      onChange={(e) =>
+                        updateSafetyTip(index, 'description', e.target.value)
+                      }
                       placeholder="Enter safety tip instructions."
                       rows={2}
                       className="bg-muted-light border-none rounded-xl text-[10px] font-semibold text-foreground p-3 leading-normal"
@@ -671,14 +778,19 @@ export const SiteSettingsForm = () => {
         </TabsContent>
 
         {/* Content for TERMS Tab */}
-        <TabsContent value="terms" className="space-y-8 animate-in fade-in duration-300 outline-none">
+        <TabsContent
+          value="terms"
+          className="space-y-8 animate-in fade-in duration-300 outline-none"
+        >
           <div className="space-y-4">
             <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
               <AlignLeft size={15} className="text-dash-brand" />
               Terms of Service Sections
             </h4>
             <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              Configure formal legal agreements and documentation sections dynamically. Use standard linebreaks (`\n` or Enter key) to create paragraphs in document content.
+              Configure formal legal agreements and documentation sections
+              dynamically. Use standard linebreaks (`\n` or Enter key) to create
+              paragraphs in document content.
             </p>
           </div>
 
@@ -712,7 +824,10 @@ export const SiteSettingsForm = () => {
 
             <div className="space-y-4">
               {termsSections.map((sec, index) => (
-                <div key={index} className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group">
+                <div
+                  key={index}
+                  className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group"
+                >
                   <Button
                     type="button"
                     onClick={() => removeTermsSection(index)}
@@ -724,19 +839,27 @@ export const SiteSettingsForm = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Unique Anchor ID</label>
+                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                        Unique Anchor ID
+                      </label>
                       <Input
                         value={sec.id}
-                        onChange={(e) => updateTermsSection(index, 'id', e.target.value)}
+                        onChange={(e) =>
+                          updateTermsSection(index, 'id', e.target.value)
+                        }
                         placeholder="e.g. refunds"
                         className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
                       />
                     </div>
                     <div className="space-y-1 md:col-span-2">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Section Title</label>
+                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                        Section Title
+                      </label>
                       <Input
                         value={sec.title}
-                        onChange={(e) => updateTermsSection(index, 'title', e.target.value)}
+                        onChange={(e) =>
+                          updateTermsSection(index, 'title', e.target.value)
+                        }
                         placeholder="e.g. 5. Refund Policy"
                         className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
                       />
@@ -744,10 +867,14 @@ export const SiteSettingsForm = () => {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">Content Body</label>
+                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                      Content Body
+                    </label>
                     <Textarea
                       value={sec.content}
-                      onChange={(e) => updateTermsSection(index, 'content', e.target.value)}
+                      onChange={(e) =>
+                        updateTermsSection(index, 'content', e.target.value)
+                      }
                       placeholder="Insert paragraph block content here. Hit enter for linebreaks."
                       rows={5}
                       className="bg-muted-light border-none rounded-xl text-[10px] font-semibold text-foreground p-3 leading-normal"

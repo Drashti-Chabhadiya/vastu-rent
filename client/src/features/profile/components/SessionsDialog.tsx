@@ -210,7 +210,10 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
                         {browser} on {os}
                       </p>
                       <p className="text-[10px] text-muted-foreground/85 font-semibold mt-0.5 flex items-center gap-1">
-                        <MapPin size={10} className="text-muted-foreground/70" />
+                        <MapPin
+                          size={10}
+                          className="text-muted-foreground/70"
+                        />
                         IP: {sessionItem.ipAddress || 'Unknown IP'}{' '}
                         <span className="divider-dot" />{' '}
                         {isActiveNow

@@ -29,8 +29,12 @@ export function ContactPage() {
 
   const contactEmail = settings?.contact?.email || 'support@vastu.com'
   const contactPhone = settings?.contact?.phone || '+91 98765 43210'
-  const contactAddress = settings?.contact?.address || 'Vastu HQ, 123 Harmony Lane, Bengaluru, Karnataka 560001, India'
-  const contactDescription = settings?.contact?.description || 'Have a question, suggestion, or need help? Our team is here to support you.'
+  const contactAddress =
+    settings?.contact?.address ||
+    'Vastu HQ, 123 Harmony Lane, Bengaluru, Karnataka 560001, India'
+  const contactDescription =
+    settings?.contact?.description ||
+    'Have a question, suggestion, or need help? Our team is here to support you.'
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -92,7 +96,7 @@ export function ContactPage() {
       toast.success('Your message has been sent successfully!')
       setMessage('')
     } catch (error: any) {
-      // If the backend doesn't have the endpoint yet but the request went through otherwise, 
+      // If the backend doesn't have the endpoint yet but the request went through otherwise,
       // or if we want a highly polished mock transition:
       if (error.response?.status === 404) {
         // Fallback simulation for offline/preview environments
@@ -100,7 +104,10 @@ export function ContactPage() {
         toast.success('Your message has been sent successfully!')
         setMessage('')
       } else {
-        toast.error(error.response?.data?.message || 'Failed to send message. Please try again.')
+        toast.error(
+          error.response?.data?.message ||
+            'Failed to send message. Please try again.',
+        )
       }
     } finally {
       setIsSubmitting(false)
@@ -157,10 +164,12 @@ export function ContactPage() {
       </section>
 
       {/* Forms and Details Container */}
-      <section id="contact-form" className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10">
+      <section
+        id="contact-form"
+        className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10"
+      >
         <div className="bg-card rounded-[2.5rem] p-8 sm:p-12 lg:p-16 border border-border/30 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-
             {/* Left side details */}
             <div className="lg:col-span-4">
               <h2 className="text-2xl font-bold text-[#0F291B] tracking-tight">
@@ -173,7 +182,9 @@ export function ContactPage() {
                     <Mail className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">Email us</h3>
+                    <h3 className="font-bold text-[#0F291B] text-base">
+                      Email us
+                    </h3>
                     <p className="text-sm text-muted-foreground mt-1">
                       We typically reply within 24 hours.
                     </p>
@@ -192,7 +203,9 @@ export function ContactPage() {
                     <Phone className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">Call us</h3>
+                    <h3 className="font-bold text-[#0F291B] text-base">
+                      Call us
+                    </h3>
                     <p className="text-sm text-muted-foreground mt-1">
                       Mon - Fri, 9:00 AM - 6:00 PM (IST)
                     </p>
@@ -211,7 +224,9 @@ export function ContactPage() {
                     <MessageCircle className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">Live chat</h3>
+                    <h3 className="font-bold text-[#0F291B] text-base">
+                      Live chat
+                    </h3>
                     <p className="text-sm text-muted-foreground mt-1">
                       Chat with our support team
                     </p>
@@ -227,7 +242,9 @@ export function ContactPage() {
                     <MapPin className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">Office</h3>
+                    <h3 className="font-bold text-[#0F291B] text-base">
+                      Office
+                    </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed mt-1">
                       {contactAddress}
                     </p>
@@ -242,7 +259,8 @@ export function ContactPage() {
                 Send us a message
               </h2>
               <p className="text-sm text-muted-foreground mt-1.5">
-                Fill out the form and our team will get back to you as soon as possible.
+                Fill out the form and our team will get back to you as soon as
+                possible.
               </p>
 
               <form onSubmit={handleSendMessage} className="mt-10 space-y-6">
@@ -283,16 +301,45 @@ export function ContactPage() {
                   <Label className="text-[13px] font-bold text-[#0F291B] tracking-tight">
                     Subject
                   </Label>
-                  <Select value={subject} onValueChange={setSubject} disabled={isSubmitting}>
+                  <Select
+                    value={subject}
+                    onValueChange={setSubject}
+                    disabled={isSubmitting}
+                  >
                     <SelectTrigger className="h-13 w-full rounded-2xl border border-border bg-[#faf9f5]/30 px-5 text-sm transition-all focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/5 cursor-pointer text-[#0F291B] focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none disabled:opacity-60">
                       <SelectValue placeholder="What is this regarding?" />
                     </SelectTrigger>
                     <SelectContent className="bg-popover rounded-2xl border border-border/50 shadow-md">
-                      <SelectItem value="General Inquiry" className="rounded-xl cursor-pointer">General Inquiry</SelectItem>
-                      <SelectItem value="Rental Support" className="rounded-xl cursor-pointer">Rental Support</SelectItem>
-                      <SelectItem value="Listing Assistance" className="rounded-xl cursor-pointer">Listing Assistance</SelectItem>
-                      <SelectItem value="Partnerships" className="rounded-xl cursor-pointer">Partnerships</SelectItem>
-                      <SelectItem value="Other" className="rounded-xl cursor-pointer">Other</SelectItem>
+                      <SelectItem
+                        value="General Inquiry"
+                        className="rounded-xl cursor-pointer"
+                      >
+                        General Inquiry
+                      </SelectItem>
+                      <SelectItem
+                        value="Rental Support"
+                        className="rounded-xl cursor-pointer"
+                      >
+                        Rental Support
+                      </SelectItem>
+                      <SelectItem
+                        value="Listing Assistance"
+                        className="rounded-xl cursor-pointer"
+                      >
+                        Listing Assistance
+                      </SelectItem>
+                      <SelectItem
+                        value="Partnerships"
+                        className="rounded-xl cursor-pointer"
+                      >
+                        Partnerships
+                      </SelectItem>
+                      <SelectItem
+                        value="Other"
+                        className="rounded-xl cursor-pointer"
+                      >
+                        Other
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

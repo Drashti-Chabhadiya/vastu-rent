@@ -25,7 +25,9 @@ export function UserProfilePage() {
   if (!profile) {
     return (
       <div className="min-h-screen bg-bg-base flex items-center justify-center">
-        <p className="text-muted-foreground/85 font-bold">User profile not found</p>
+        <p className="text-muted-foreground/85 font-bold">
+          User profile not found
+        </p>
       </div>
     )
   }
@@ -146,7 +148,10 @@ export function UserProfilePage() {
               ))
             ) : (
               <div className="col-span-full py-20 bg-card rounded-3xl border border-dashed border-border text-center">
-                <Package size={48} className="mx-auto text-muted-foreground/30 mb-4" />
+                <Package
+                  size={48}
+                  className="mx-auto text-muted-foreground/30 mb-4"
+                />
                 <h3 className="text-lg font-bold text-foreground">
                   No active listings
                 </h3>

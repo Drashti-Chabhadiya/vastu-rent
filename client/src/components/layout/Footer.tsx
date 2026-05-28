@@ -59,7 +59,10 @@ export function Footer() {
         toast.success('Thank you for subscribing to stay in the loop!')
         setEmail('')
       } else {
-        toast.error(error.response?.data?.message || 'Subscription failed. Please try again.')
+        toast.error(
+          error.response?.data?.message ||
+            'Subscription failed. Please try again.',
+        )
       }
     } finally {
       setIsSubmitting(false)
@@ -99,7 +102,6 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background pt-16 pb-8">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-        
         {/* Top Callout Card: Integrated inside the footer */}
         <div className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm mb-16">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
@@ -133,23 +135,35 @@ export function Footer() {
 
         {/* Main Footer Links Grid */}
         <div className="grid grid-cols-1 gap-12 pt-8 md:grid-cols-12">
-          
           {/* Column 1: Brand details & Socials */}
           <div className="md:col-span-4 flex flex-col justify-between">
             <div>
               <Logo />
               <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                A trusted community marketplace for renting and hosting quality items. Live simply. Live in harmony.
+                A trusted community marketplace for renting and hosting quality
+                items. Live simply. Live in harmony.
               </p>
             </div>
-            
+
             {/* Social Icons row */}
             <div className="flex gap-3 mt-8">
               {[
-                { icon: <Instagram className="h-4.5 w-4.5 text-primary" />, url: 'https://instagram.com' },
-                { icon: <Facebook className="h-4.5 w-4.5 text-primary" />, url: 'https://facebook.com' },
-                { icon: <Twitter className="h-4.5 w-4.5 text-primary" />, url: 'https://twitter.com' },
-                { icon: <Linkedin className="h-4.5 w-4.5 text-primary" />, url: 'https://linkedin.com' },
+                {
+                  icon: <Instagram className="h-4.5 w-4.5 text-primary" />,
+                  url: 'https://instagram.com',
+                },
+                {
+                  icon: <Facebook className="h-4.5 w-4.5 text-primary" />,
+                  url: 'https://facebook.com',
+                },
+                {
+                  icon: <Twitter className="h-4.5 w-4.5 text-primary" />,
+                  url: 'https://twitter.com',
+                },
+                {
+                  icon: <Linkedin className="h-4.5 w-4.5 text-primary" />,
+                  url: 'https://linkedin.com',
+                },
               ].map((social, idx) => (
                 <a
                   key={idx}
@@ -229,9 +243,12 @@ export function Footer() {
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
               Get tips, updates, and inspiration straight to your inbox.
             </p>
-            
+
             {/* Newsletter input form */}
-            <form onSubmit={handleSubscribe} className="mt-6 relative flex items-center bg-[#faf9f5] border border-border rounded-2xl p-1 shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/5 transition-all">
+            <form
+              onSubmit={handleSubscribe}
+              className="mt-6 relative flex items-center bg-[#faf9f5] border border-border rounded-2xl p-1 shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/5 transition-all"
+            >
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -253,22 +270,22 @@ export function Footer() {
                 )}
               </Button>
             </form>
-            
+
             {/* Guarantee check text */}
             <div className="mt-4 flex items-center gap-2 text-[10.5px] text-muted-foreground">
               <ShieldCheck className="h-3.5 w-3.5 text-primary shrink-0" />
               <span>No spam, unsubscribe anytime.</span>
             </div>
           </div>
-
         </div>
 
         {/* Sub-footer divider / region row */}
         <div className="mt-16 pt-8 border-t border-border/40 flex flex-col md:flex-row items-center justify-between gap-6 text-[12px] text-muted-foreground">
           <div>
-            © {new Date().getFullYear()} Vastu Rentals Private Limited. All rights reserved.
+            © {new Date().getFullYear()} Vastu Rentals Private Limited. All
+            rights reserved.
           </div>
-          
+
           {/* Bottom right region indicators */}
           <div className="flex flex-wrap items-center gap-6 font-medium text-[#0F291B]/80">
             <div className="flex items-center gap-2">
@@ -315,7 +332,6 @@ export function Footer() {
             </DropdownMenu>
           </div>
         </div>
-
       </div>
     </footer>
   )
