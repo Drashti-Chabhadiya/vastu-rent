@@ -7,7 +7,6 @@ import {
   Star,
   Check,
   X,
-  ArrowUpRight,
   TrendingUp,
   Wallet,
   IndianRupee,
@@ -82,11 +81,6 @@ export const ListerOverview = ({
 
   const pendingOrders =
     listerOrders?.filter((o: any) => o.status === 'pending') || []
-
-  const activeRentalsCount =
-    listerOrders?.filter(
-      (o: any) => o.status === 'active' || o.status === 'confirmed',
-    ).length || 0
 
   // Compute average rating from reviews
   const allRatings: number[] = []

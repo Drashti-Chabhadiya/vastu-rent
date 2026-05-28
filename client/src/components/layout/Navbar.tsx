@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
+import { isAdminRole } from '#/lib/auth/roles'
 import { Logo } from '#/components/layout'
 import { useCategories, useWishlist } from '#/hook'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -780,8 +781,7 @@ export function Navbar() {
                       </Link>
                     )}
 
-                    {(session.user.role === 'admin' ||
-                      session.user.role === 'superAdmin') && (
+                    {isAdminRole(session.user.role) && (
                       <Link to="/admin/dashboard">
                         <DropdownMenuItem
                           className={cn(

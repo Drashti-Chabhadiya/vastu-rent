@@ -16,6 +16,7 @@ import { Footer, Navbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
 import { useEffect, useRef } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
+import { isAdminRole, isUserRole } from '#/lib/auth/roles'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
 import { isNative, initNativePush } from '#/lib/push-notifications'
 // import { playNotificationSound } from '#/lib/sound'
@@ -104,7 +105,8 @@ function NotificationListener() {
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
   const token = session?.session.token
-  const userRole = session?.user.role || 'owner'
+  const userRole = session?.user.role || 'user'
+  const isAdmin = isAdminRole(userRole)
   const socketRef = useRef<Socket | null>(null)
 
   useAppResumeRefresh()
@@ -185,8 +187,10 @@ function NotificationListener() {
               // Dynamic deep-link navigation
               switch (notif.type) {
                 case 'booking':
-                  if (userRole === 'owner') {
+                  if (isUserRole(userRole)) {
                     navigate({ to: '/account/orders' })
+                  } else if (isAdmin) {
+                    navigate({ to: '/account/bookings' })
                   } else {
                     navigate({ to: '/account/bookings' })
                   }

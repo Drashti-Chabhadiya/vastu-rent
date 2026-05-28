@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { userController } from "./user.controller.js";
 import { auth } from "../../config/auth.js";
+import { isAdminRole } from "../../config/roles.js";
 
 export async function userRoutes(fastify: FastifyInstance) {
   // Public Profile Route
@@ -31,7 +32,7 @@ export async function userRoutes(fastify: FastifyInstance) {
   fastify.register(async (adminScope) => {
     adminScope.addHook("preHandler", async (request, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin")) {
+      if (!session || !isAdminRole(session.user.role)) {
         return reply.status(403).send({ message: "Forbidden: Admin access required" });
       }
     });

@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { rentalService } from "./rental.service.js";
 import { prisma } from "../../config/prisma.js";
+import { isAdminRole, isDashboardRole } from "../../config/roles.js";
 
 export class RentalController {
   async createRental(request: FastifyRequest, reply: FastifyReply) {
@@ -17,7 +18,7 @@ export class RentalController {
 
   async getAllRentals(request: FastifyRequest, reply: FastifyReply) {
     const user = (request as any).user;
-    if (user.role !== "admin" && user.role !== "superAdmin") {
+    if (!isAdminRole(user.role)) {
       return reply.status(403).send({ message: "Forbidden: Admin access required" });
     }
     const rentals = await rentalService.getAllRentals();
@@ -27,20 +28,17 @@ export class RentalController {
   async getOrders(request: FastifyRequest, reply: FastifyReply) {
     const user = (request as any).user;
     
-    // Check if user has permission (Owner, Admin, or SuperAdmin)
-    if (user.role !== "admin" && user.role !== "superAdmin" && user.role !== "owner") {
+    if (!isDashboardRole(user.role)) {
       return reply.status(403).send({ message: "Forbidden: Access restricted to Owners and Admins" });
     }
     
-    if (user.role === "admin" || user.role === "superAdmin") {
+    if (isAdminRole(user.role)) {
       const rentals = await rentalService.getAllRentals();
       return { rentals };
     }
     
-    if (user.role === "owner") {
-      const rentals = await rentalService.getOwnerOrders(user.id);
-      return { rentals };
-    }
+    const rentals = await rentalService.getOwnerOrders(user.id);
+    return { rentals };
 
     return { rentals: [] };
   }
@@ -60,14 +58,13 @@ export class RentalController {
       return reply.status(404).send({ message: "Booking request not found" });
     }
 
-    // Role-based permissions validation: Only admin, superAdmin, or the actual listed product's owner can update status
-    if (user.role !== "admin" && user.role !== "superAdmin") {
-      if (user.role === "owner") {
-        if (rentalExists.product.ownerId !== user.id) {
-          return reply.status(403).send({ message: "Forbidden: You are not authorized to manage bookings for this product" });
-        }
-      } else {
+    // Role-based permissions validation: Only admin or the actual listed product's owner can update status
+    if (!isAdminRole(user.role)) {
+      if (!isDashboardRole(user.role)) {
         return reply.status(403).send({ message: "Forbidden: Owner permissions required" });
+      }
+      if (rentalExists.product.ownerId !== user.id) {
+        return reply.status(403).send({ message: "Forbidden: You are not authorized to manage bookings for this product" });
       }
     }
 

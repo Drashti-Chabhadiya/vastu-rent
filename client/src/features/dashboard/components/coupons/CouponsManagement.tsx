@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ChevronRight, Ticket, Zap, Grid } from 'lucide-react'
 import { Button } from '#/components/ui/button'
-import { useCoupons, useDeleteCoupon } from '#/hook'
+import { useCoupons, useDeleteCoupon, useApproveCoupon } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { cn } from '#/lib/utils'
 import { CouponRenterView } from './CouponRenterView'
@@ -16,6 +16,7 @@ interface CouponsManagementProps {
 export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
   const { data: coupons, isLoading } = useCoupons()
   const deleteMutation = useDeleteCoupon()
+  const approveMutation = useApproveCoupon()
 
   const { data: session } = authClient.useSession()
   const user = session?.user
@@ -75,10 +76,12 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },
     {
-      label: 'Total Redeemed',
-      value: coupons?.reduce((acc, c) => acc + c.usedCount, 0) || 0,
+      label: 'Pending Approval',
+      value:
+        coupons?.filter((c) => !c.isActive && new Date(c.endDate) >= new Date())
+          .length || 0,
       icon: Zap,
-      color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+      color: 'bg-amber-50 text-amber-700 border-amber-100',
     },
     {
       label: 'Total Generated',
@@ -165,6 +168,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
           isOwner={isOwner}
           activeTab={activeTab}
           onDelete={handleDelete}
+          onApprove={(id) => approveMutation.mutate(id)}
           onCreateClick={() => setIsFormOpen(true)}
         />
 

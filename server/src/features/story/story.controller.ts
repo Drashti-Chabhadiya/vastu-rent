@@ -1,6 +1,7 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import { StoryService } from './story.service.js'
 import { auth } from '../../config/auth.js'
+import { isAdminRole } from '../../config/roles.js'
 
 export const StoryController = {
   async getAllStories(request: FastifyRequest, reply: FastifyReply) {
@@ -32,7 +33,7 @@ export const StoryController = {
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
-      if (session.user.role !== 'admin' && session.user.role !== 'superAdmin') {
+      if (!isAdminRole(session.user.role)) {
         return reply.code(403).send({ success: false, message: 'Forbidden: Only Admins can manage stories' })
       }
 
@@ -59,7 +60,7 @@ export const StoryController = {
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
-      if (session.user.role !== 'admin' && session.user.role !== 'superAdmin') {
+      if (!isAdminRole(session.user.role)) {
         return reply.code(403).send({ success: false, message: 'Forbidden: Only Admins can manage stories' })
       }
 
@@ -86,7 +87,7 @@ export const StoryController = {
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
-      if (session.user.role !== 'admin' && session.user.role !== 'superAdmin') {
+      if (!isAdminRole(session.user.role)) {
         return reply.code(403).send({ success: false, message: 'Forbidden: Only Admins can manage stories' })
       }
 

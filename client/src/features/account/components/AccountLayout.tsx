@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
+
 import { useState, useEffect } from 'react'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
@@ -103,9 +104,6 @@ export function AccountLayout() {
   }
 
   if (isLoading) return <AccountLayoutSkeleton />
-
-  const role = session?.user?.role
-  const isLister = role === 'owner' || role === 'admin' || role === 'superAdmin'
 
   const menuItems = [
     { id: 'personal', label: 'My Profile', icon: User, href: '/account' },

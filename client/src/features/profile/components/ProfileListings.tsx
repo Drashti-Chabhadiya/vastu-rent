@@ -1,9 +1,6 @@
-import { Link } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
 import { useState, useEffect } from 'react'
 import {
-  ShieldAlert,
-  ArrowLeft,
   Plus,
   MapPin,
   IndianRupee,

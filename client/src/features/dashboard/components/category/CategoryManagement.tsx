@@ -11,6 +11,7 @@ import {
   useCreateCategoryRequest,
   useUpdateCategoryRequestStatus,
 } from '#/hook'
+import { isAdminRole, isUserRole } from '#/lib/auth/roles'
 import { CategoryFormDialog } from './components/CategoryFormDialog'
 import { DeleteConfirmDialog } from './components/DeleteConfirmDialog'
 import { authClient } from '#/lib/auth/auth-client'
@@ -52,8 +53,8 @@ export const CategoryManagement = ({
   const { data: session } = authClient.useSession()
 
   const user = session?.user
-  const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin'
-  const isOwner = user?.role === 'owner' || user?.role === 'user'
+  const isAdmin = isAdminRole(user?.role)
+  const isOwner = isUserRole(user?.role)
 
   const createMutation = useCreateCategory()
   const updateMutation = useUpdateCategory()

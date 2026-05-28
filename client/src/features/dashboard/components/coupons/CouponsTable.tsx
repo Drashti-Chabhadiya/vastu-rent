@@ -13,6 +13,7 @@ interface CouponsTableProps {
   isOwner: boolean
   activeTab: 'my' | 'global'
   onDelete: (id: string) => void
+  onApprove?: (id: string) => void
   onCreateClick: () => void
 }
 
@@ -23,6 +24,7 @@ export function CouponsTable({
   isOwner,
   activeTab,
   onDelete,
+  onApprove,
   onCreateClick,
 }: CouponsTableProps) {
   const [search, setSearch] = useState('')
@@ -91,6 +93,7 @@ export function CouponsTable({
               <th className="text-left px-4 py-3">Min. Booking</th>
               <th className="text-left px-4 py-3">Expiry</th>
               <th className="text-left px-4 py-3">Redeemed</th>
+              {canManage && <th className="text-left px-4 py-3">Status</th>}
               {canManage && <th className="px-4 py-3 text-right">Actions</th>}
             </tr>
           </thead>
@@ -237,9 +240,35 @@ export function CouponsTable({
                       )}
                     </td>
 
+                    {/* Status */}
+                    {canManage && (
+                      <td className="px-4 py-5">
+                        <span
+                          className={cn(
+                            'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.25em]',
+                            coupon.isActive
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                              : 'bg-amber-50 text-amber-700 border border-amber-100',
+                          )}
+                        >
+                          {coupon.isActive ? 'Active' : 'Pending Approval'}
+                        </span>
+                      </td>
+                    )}
+
                     {/* Actions */}
                     {canManage && (
-                      <td className="px-4 py-5 text-right">
+                      <td className="px-4 py-5 text-right flex flex-wrap justify-end gap-2">
+                        {!coupon.isActive && onApprove && isAdmin && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => onApprove(coupon.id)}
+                            className="rounded-full font-bold h-9 px-3 text-[11px]"
+                          >
+                            Approve
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="icon"
