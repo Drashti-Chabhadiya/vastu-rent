@@ -14,27 +14,100 @@ import {
 import { cn } from '@/lib/utils'
 import { Footer, Navbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
 import { isNative, initNativePush } from '#/lib/push-notifications'
 // import { playNotificationSound } from '#/lib/sound'
 import { io } from 'socket.io-client'
+import type { Socket } from 'socket.io-client'
 import { toast } from 'sonner'
 import { getSocketUrl } from '#/lib/socket-url'
+import { Capacitor } from '@capacitor/core'
+import { App as CapacitorApp } from '@capacitor/app'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Keep cached data fresh for 30 seconds before considering it stale.
+      // This prevents unnecessary refetches when switching tabs / screens.
+      staleTime: 30_000,
+
+      // Retry failed requests up to 2 times with React Query's built-in
+      // exponential back-off before showing an error to the user.
+      retry: 2,
+
+      // 'offlineFirst' tells React Query to attempt queries regardless of
+      // what it thinks the network state is. In Capacitor WebViews the
+      // navigator.onLine / online event is unreliable, so without this flag
+      // queries can get stuck in a "paused" state and never fire.
+      networkMode: 'offlineFirst',
+
+      // Always re-fetch when the window/app regains focus so data is
+      // never stale after the user backgrounds and returns to the app.
+      refetchOnWindowFocus: true,
+    },
+    mutations: {
+      // Also run mutations without checking perceived network state.
+      networkMode: 'offlineFirst',
+    },
+  },
+})
 
 export const Route = createRootRoute({
   component: RootDocument,
 })
 
+// ─── App-resume / focus refresh ────────────────────────────────────────────
+// Wires BOTH the DOM visibilitychange event (web) and the Capacitor
+// appStateChange event (Android / iOS) to invalidate stale queries.
+// visibilitychange fires unreliably inside the Capacitor WebView on Android,
+// so the Capacitor listener is the reliable fallback for native.
+function useAppResumeRefresh() {
+  const rqClient = useQueryClient()
+
+  useEffect(() => {
+    const refresh = () => {
+      // Invalidate all queries that are currently considered stale so they
+      // re-fetch silently in the background when the app comes back.
+      rqClient.invalidateQueries()
+    }
+
+    // Web / browser visibility handler
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        refresh()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    // Capacitor native app-state handler
+    let capHandle: { remove: () => void } | null = null
+    if (Capacitor.isNativePlatform()) {
+      CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) refresh()
+      }).then((handle) => {
+        capHandle = handle
+      })
+    }
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility)
+      capHandle?.remove()
+    }
+  }, [rqClient])
+}
+
+// ─── Notification + real-time listener ─────────────────────────────────────
 function NotificationListener() {
   const rqClient = useQueryClient()
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
   const token = session?.session.token
   const userRole = session?.user.role || 'owner'
+  const socketRef = useRef<Socket | null>(null)
+
+  useAppResumeRefresh()
 
   // Register device token for push notifications on login
   useEffect(() => {
@@ -60,10 +133,29 @@ function NotificationListener() {
       auth: { token },
       withCredentials: true,
       transports: ['polling', 'websocket'],
+      // Robust reconnection so the socket recovers after phone sleep / network
+      // changes without requiring the user to restart the app.
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1_000,
+      reconnectionDelayMax: 10_000,
+      randomizationFactor: 0.5,
+      timeout: 20_000,
     })
+
+    socketRef.current = socket
 
     socket.on('connect', () => {
       console.log('Global authenticated socket connected at root:', socket.id)
+    })
+
+    socket.on('disconnect', (reason) => {
+      console.warn('Global notification socket disconnected:', reason)
+      // Socket.IO auto-reconnects unless disconnect() was called manually.
+    })
+
+    socket.on('connect_error', (err) => {
+      console.error('Global notification socket error:', err.message)
     })
 
     socket.on('notification', (notif: any) => {
@@ -128,6 +220,7 @@ function NotificationListener() {
 
     return () => {
       socket.disconnect()
+      socketRef.current = null
     }
   }, [token, rqClient, userRole, navigate])
 

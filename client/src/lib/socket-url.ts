@@ -1,17 +1,35 @@
+import { Capacitor } from '@capacitor/core'
+
+/**
+ * Resolves the correct Socket.IO server URL at runtime.
+ *
+ * On Capacitor native (Android/iOS) the VITE_SOCKET_URL env var must be used
+ * directly — we cannot derive anything from window.location because the
+ * WebView origin is capacitor://localhost, not the backend server.
+ */
 export function getSocketUrl(): string {
-  // 1. Check if a dedicated WebSocket URL is defined in the environment variables
+  // ── Native Capacitor app ─────────────────────────────────────────────────
+  // Always use the explicit env var baked in at build time.
+  if (Capacitor.isNativePlatform()) {
+    return (
+      import.meta.env.VITE_SOCKET_URL ||
+      'https://new-vastu-rent.onrender.com'
+    )
+  }
+
+  // ── Web browser — explicit env var wins if set ────────────────────────────
   const envSocketUrl = import.meta.env.VITE_SOCKET_URL
   if (envSocketUrl) {
     return envSocketUrl
   }
 
-  // 2. Otherwise, dynamically derive it from the API base URL (by stripping the '/api' suffix)
+  // ── Derive from API base URL (strip the /api suffix) ─────────────────────
   const envApiUrl = import.meta.env.VITE_API_BASE_URL
   if (envApiUrl) {
     return envApiUrl.replace(/\/api$/, '').replace(/\/api\/$/, '')
   }
 
-  // 3. Fallback automatically to local development server if on local network/localhost
+  // ── Fallback to local dev server ─────────────────────────────────────────
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname
     if (
@@ -23,6 +41,5 @@ export function getSocketUrl(): string {
     }
   }
 
-  // Default fallback if no environment variable is present and not on a local network
   return 'http://localhost:4000'
 }

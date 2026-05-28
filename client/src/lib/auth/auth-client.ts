@@ -1,8 +1,24 @@
 import { createAuthClient } from 'better-auth/react'
 import { adminClient } from 'better-auth/client/plugins'
+import { Capacitor } from '@capacitor/core'
 
-const getAuthBaseUrl = () => {
-  // If we are in a browser and NOT on localhost/local network, use the current origin's /api/auth proxy path
+/**
+ * Resolves the correct auth base URL at runtime.
+ *
+ * On Capacitor native (Android/iOS) we must use the explicit env var because
+ * window.location.origin is the WebView's own scheme (capacitor://localhost),
+ * not the backend server.
+ */
+const getAuthBaseUrl = (): string => {
+  // ── Native Capacitor app ────────────────────────────────────────────────
+  if (Capacitor.isNativePlatform()) {
+    return (
+      import.meta.env.VITE_AUTH_URL ||
+      'https://new-vastu-rent-server.vercel.app/api/auth'
+    )
+  }
+
+  // ── Web browser — non-local origin (production / staging) ───────────────
   if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
@@ -11,7 +27,8 @@ const getAuthBaseUrl = () => {
   ) {
     return `${window.location.origin}/api/auth`
   }
-  // Otherwise, use the configured environment variable or fallback to localhost
+
+  // ── Local development ───────────────────────────────────────────────────
   return import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
 }
 

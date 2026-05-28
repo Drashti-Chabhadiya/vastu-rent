@@ -1,7 +1,29 @@
 import axios from 'axios'
+import { Capacitor } from '@capacitor/core'
 
-const getApiBaseUrl = () => {
-  // If we are in a browser and NOT on localhost/local network, use the current origin's /api proxy path
+/**
+ * Resolves the correct API base URL at runtime.
+ *
+ * Priority order:
+ *  1. On a Capacitor native platform (Android/iOS), always use the
+ *     VITE_API_BASE_URL env var so requests go to the real server,
+ *     never to the WebView's own origin (capacitor://localhost).
+ *  2. On a browser served from a non-local origin (Vercel / production
+ *     web), use the current origin's /api proxy path.
+ *  3. Everything else (local dev) falls back to the env var or localhost.
+ */
+const getApiBaseUrl = (): string => {
+  // ── Native Capacitor app (Android / iOS) ───────────────────────────────
+  // window.location.origin is the WebView origin, NOT the backend server.
+  // We must use the explicit env var that was baked in at build time.
+  if (Capacitor.isNativePlatform()) {
+    return (
+      import.meta.env.VITE_API_BASE_URL ||
+      'https://new-vastu-rent-server.vercel.app/api'
+    )
+  }
+
+  // ── Web browser — non-local origin (production / staging) ─────────────
   if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
@@ -10,11 +32,44 @@ const getApiBaseUrl = () => {
   ) {
     return `${window.location.origin}/api`
   }
-  // Otherwise, use the configured environment variable or fallback to localhost
+
+  // ── Local development ──────────────────────────────────────────────────
   return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'
 }
 
 export const apiClient = axios.create({
   baseURL: getApiBaseUrl(),
   withCredentials: true,
+  // Abort requests that take longer than 15 seconds so a stalled mobile
+  // connection fails fast instead of hanging the UI indefinitely.
+  timeout: 15_000,
 })
+
+// ─── Response interceptor — single silent retry on network errors ───────────
+// This handles transient mobile blips (brief connectivity drops, cell
+// handoffs) that would otherwise permanently fail a request.
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const config = error.config as typeof error.config & {
+      _retried?: boolean
+    }
+
+    // Only retry once, only for network-level failures (no response received)
+    // or 503 / 429 (server temporarily unavailable / rate-limit).
+    const isNetworkError = !error.response
+    const isRetryableStatus =
+      error.response?.status === 503 || error.response?.status === 429
+
+    if (!config._retried && (isNetworkError || isRetryableStatus)) {
+      config._retried = true
+
+      // Wait 1.5 s before retrying to give the network a moment to recover.
+      await new Promise((resolve) => setTimeout(resolve, 1_500))
+
+      return apiClient(config)
+    }
+
+    return Promise.reject(error)
+  },
+)
