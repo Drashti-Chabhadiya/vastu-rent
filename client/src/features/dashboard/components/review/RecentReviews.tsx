@@ -1,6 +1,6 @@
 import { Star } from 'lucide-react'
 import { useAdminRecentReviews } from '#/hook'
-import { Link } from '@tanstack/react-router'
+import { ExploreLink } from '#/components/common/ExploreLink'
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
 
 export const RecentReviews = () => {
@@ -10,12 +10,7 @@ export const RecentReviews = () => {
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Reviews</h3>
-        <Link
-          to="/account/reviews"
-          className="text-xs font-bold text-dash-brand hover:underline"
-        >
-          View All
-        </Link>
+        <ExploreLink to="/account/reviews">View All</ExploreLink>
       </div>
 
       {isLoading ? (

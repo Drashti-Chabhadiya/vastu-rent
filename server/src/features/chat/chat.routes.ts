@@ -9,10 +9,12 @@ export async function chatRoutes(fastify: FastifyInstance) {
     if (!session) {
       return reply.status(401).send({ message: "Unauthorized" });
     }
+    (request as any).chatSession = session;
   });
 
   fastify.get("/conversations", chatController.getConversations);
   fastify.get("/conversations/:id/messages", chatController.getMessages);
   fastify.post("/conversations", chatController.getOrCreateConversation);
   fastify.get("/users/search", chatController.searchUsers);
+  fastify.post("/upload", chatController.uploadChatAttachment);
 }

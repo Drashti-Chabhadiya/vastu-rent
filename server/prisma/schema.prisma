@@ -407,6 +407,7 @@ model Message {
   sender         User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 
   content        String
+  attachments    String[]     @default([])
   isRead         Boolean      @default(false)
 
   createdAt      DateTime     @default(now())

@@ -1,9 +1,10 @@
 import type { Variants } from 'motion/react'
-import { ArrowUpRight, Calendar, Clock } from 'lucide-react'
+import { Calendar, Clock } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link } from '@tanstack/react-router'
 import { useStories } from '#/hook'
 import { cn } from '../../../lib/utils'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -62,36 +63,9 @@ export function Journal() {
               Stories from the catalogue.
             </h2>
           </div>
-          <Link
-            to="/journal"
-            className={cn(
-              'hidden',
-              'items-center',
-              'gap-2',
-              'text-[13px]',
-              'font-medium',
-              'text-foreground/80',
-              'underline',
-              'decoration-border',
-              'decoration-2',
-              'underline-offset-[8px]',
-              'transition-all',
-              'hover:text-primary',
-              'hover:decoration-primary',
-              'md:inline-flex',
-            )}
-          >
-            Read the journal{' '}
-            <ArrowUpRight
-              className={cn(
-                'h-3.5',
-                'w-3.5',
-                'transition-transform',
-                'group-hover:translate-x-0.5',
-                'group-hover:-translate-y-0.5',
-              )}
-            />
-          </Link>
+          <ExploreLink to="/journal" className="hidden md:inline-flex">
+            Read the journal
+          </ExploreLink>
         </div>
 
         {displayStories.length > 0 ? (
@@ -216,22 +190,9 @@ export function Journal() {
                   >
                     {p.excerpt}
                   </p>
-                  <div
-                    className={cn(
-                      'mt-6',
-                      'flex',
-                      'items-center',
-                      'gap-2',
-                      'text-[12px]',
-                      'font-semibold',
-                      'text-foreground',
-                      'transition-all',
-                      'group-hover:gap-3',
-                      'group-hover:text-primary',
-                    )}
-                  >
-                    Read story <ArrowUpRight className={cn('h-3.5', 'w-3.5')} />
-                  </div>
+                  <ExploreLink className="mt-6 text-foreground group-hover:text-primary group-hover:gap-3 text-[12px] font-semibold transition-all">
+                    Read story
+                  </ExploreLink>
                 </Link>
               </motion.div>
             ))}

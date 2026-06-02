@@ -17,17 +17,7 @@ import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { OrderDetailsView } from './components/OrderDetailsView'
 import { toast } from 'sonner'
-import { cn } from '#/lib/utils'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '#/components/ui/alert-dialog'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 export const OrdersManagement = () => {
   const { data: orders, isLoading } = useOrders()
@@ -324,65 +314,39 @@ export const OrdersManagement = () => {
       </div>
 
       {/* High-Fidelity Alert Confirmation Dialog */}
-      <AlertDialog
-        open={pendingAction !== null}
+      {/* High-Fidelity Alert Confirmation Dialog */}
+      <ReusableAlertDialog
+        isOpen={pendingAction !== null}
         onOpenChange={(open) => !open && setPendingAction(null)}
-      >
-        <AlertDialogContent className="rounded-[2.5rem] border border-border/30 p-10 max-w-md bg-card shadow-2xl font-sans">
-          <AlertDialogHeader className="space-y-4">
-            <AlertDialogTitle className="text-lg font-black text-foreground flex items-center gap-3">
-              {pendingAction?.action === 'confirm' ? (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-primary-soft flex items-center justify-center text-primary">
-                    <CheckCircle2 size={20} />
-                  </div>
-                  <span>Confirm Booking?</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-danger flex items-center justify-center text-destructive">
-                    <XCircle size={20} />
-                  </div>
-                  <span>Reject Booking?</span>
-                </div>
-              )}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-[13px] font-semibold text-muted-foreground/85 leading-relaxed pt-2">
-              {pendingAction?.action === 'confirm'
-                ? `Are you sure you want to accept this rental booking request for "${pendingAction.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
-                : `Are you sure you want to reject this rental booking request for "${pendingAction?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex gap-4 mt-10 font-sans">
-            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-border/30 font-black text-[12px] text-muted-foreground/85 hover:bg-muted-light active:scale-[0.98] transition-all cursor-pointer">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (pendingAction) {
-                  if (pendingAction.action === 'confirm') {
-                    handleStatusUpdate(pendingAction.id, 'confirmed')
-                  } else {
-                    handleStatusUpdate(pendingAction.id, 'rejected')
-                  }
-                }
-
-                setPendingAction(null)
-              }}
-              className={cn(
-                'h-14 flex-1 rounded-2xl font-black text-[12px] text-primary-foreground active:scale-[0.98] transition-all cursor-pointer',
-                pendingAction?.action === 'confirm'
-                  ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10'
-                  : 'bg-destructive hover:bg-destructive/90 shadow-lg shadow-destructive/5',
-              )}
-            >
-              {pendingAction?.action === 'confirm'
-                ? 'Confirm Booking'
-                : 'Reject Booking'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={() => {
+          if (pendingAction) {
+            if (pendingAction.action === 'confirm') {
+              handleStatusUpdate(pendingAction.id, 'confirmed')
+            } else {
+              handleStatusUpdate(pendingAction.id, 'rejected')
+            }
+          }
+          setPendingAction(null)
+        }}
+        onCancel={() => setPendingAction(null)}
+        title={
+          pendingAction?.action === 'confirm'
+            ? 'Confirm Booking?'
+            : 'Reject Booking?'
+        }
+        description={
+          pendingAction?.action === 'confirm'
+            ? `Are you sure you want to accept this rental booking request for "${pendingAction.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
+            : `Are you sure you want to reject this rental booking request for "${pendingAction?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`
+        }
+        confirmText={
+          pendingAction?.action === 'confirm'
+            ? 'Confirm Booking'
+            : 'Reject Booking'
+        }
+        variant={pendingAction?.action === 'confirm' ? 'success' : 'danger'}
+        isPending={updateStatus.isPending}
+      />
     </div>
   )
 }

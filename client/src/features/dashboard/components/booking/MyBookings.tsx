@@ -1,4 +1,4 @@
-import { useMyRentals } from '#/hook'
+import { useMyRentals, useCreateDispute } from '#/hook'
 import {
   Calendar,
   MapPin,
@@ -24,9 +24,17 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from '#/components/ui/dialog'
 import { Textarea } from '#/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,6 +62,41 @@ export const MyBookings = () => {
   // Booking details states
   const [selectedDetailsRental, setSelectedDetailsRental] = useState<any>(null)
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false)
+
+  // Dispute states
+  const [isDisputeDialogOpen, setIsDisputeDialogOpen] = useState(false)
+  const [disputeReason, setDisputeReason] = useState('')
+  const [disputeDescription, setDisputeDescription] = useState('')
+  const disputeMutation = useCreateDispute()
+
+  const handleCreateDispute = () => {
+    if (!selectedRental || !disputeReason || !disputeDescription.trim()) return
+
+    disputeMutation.mutate(
+      {
+        rentalId: selectedRental.id,
+        reason: disputeReason,
+        description: disputeDescription,
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            'Dispute reported successfully! Vastu Support is reviewing it.',
+          )
+          setIsDisputeDialogOpen(false)
+          setDisputeReason('')
+          setDisputeDescription('')
+          setSelectedRental(null)
+        },
+        onError: (err: any) => {
+          toast.error(
+            err.response?.data?.message ||
+              'Failed to submit dispute. Try again.',
+          )
+        },
+      },
+    )
+  }
 
   const queryClient = useQueryClient()
   const reviewMutation = useMutation({
@@ -853,6 +896,34 @@ export const MyBookings = () => {
                           </Button>
                         )}
                       </>
+                    )}
+
+                    {getBookingGroup(rental.status) !== 'cancelled' && (
+                      <Button
+                        onClick={() => {
+                          setSelectedRental(rental)
+                          setIsDisputeDialogOpen(true)
+                        }}
+                        variant="outline"
+                        className={cn(
+                          'rounded-full',
+                          'border-danger/30',
+                          'text-danger-foreground',
+                          'hover:bg-danger/10',
+                          'font-extrabold',
+                          'text-xs',
+                          'px-4',
+                          'h-9',
+                          'flex',
+                          'items-center',
+                          'justify-center',
+                          'shadow-sm',
+                          'active:scale-95',
+                          'cursor-pointer',
+                        )}
+                      >
+                        Report Dispute
+                      </Button>
                     )}
 
                     <Button
@@ -1700,6 +1771,116 @@ export const MyBookings = () => {
               )}
             >
               {reviewMutation.isPending ? 'Submitting...' : 'Submit Review'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDisputeDialogOpen} onOpenChange={setIsDisputeDialogOpen}>
+        <DialogContent
+          className={cn(
+            'sm:max-w-[480px]',
+            'bg-card',
+            'rounded-3xl',
+            'p-6',
+            'border',
+            'border-border/30',
+            'shadow-xl',
+          )}
+        >
+          <DialogHeader>
+            <DialogTitle
+              className={cn('text-xl', 'font-bold', 'text-foreground')}
+            >
+              Report Dispute for {selectedRental?.product?.title || 'Rental'}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground mt-1">
+              If you have experienced an issue with this booking, please select
+              a reason and describe it. Vastu Support will review your report.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className={cn('space-y-4', 'py-4')}>
+            <div className="space-y-2">
+              <label
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
+              >
+                Reason for Dispute
+              </label>
+              <Select value={disputeReason} onValueChange={setDisputeReason}>
+                <SelectTrigger className="w-full rounded-xl border-border bg-background">
+                  <SelectValue placeholder="Select a reason" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border border-border/30 rounded-xl">
+                  <SelectItem value="Item damaged or not working">
+                    Item damaged or not working
+                  </SelectItem>
+                  <SelectItem value="Item not as described">
+                    Item not as described
+                  </SelectItem>
+                  <SelectItem value="Host did not show up / unavailable">
+                    Host did not show up / unavailable
+                  </SelectItem>
+                  <SelectItem value="Billing or pricing issue">
+                    Billing or pricing issue
+                  </SelectItem>
+                  <SelectItem value="Security deposit dispute">
+                    Security deposit dispute
+                  </SelectItem>
+                  <SelectItem value="Late return / pickup dispute">
+                    Late return / pickup dispute
+                  </SelectItem>
+                  <SelectItem value="Other operational issues">
+                    Other operational issues
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label
+                className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
+              >
+                Detailed Description
+              </label>
+              <Textarea
+                value={disputeDescription}
+                onChange={(e) => setDisputeDescription(e.target.value)}
+                placeholder="Provide details about the issue. Be as specific as possible so our support team can resolve it fairly."
+                className="min-h-[120px] rounded-xl border-border bg-background focus-visible:ring-1 focus-visible:ring-primary"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className={cn('flex', 'gap-2', 'sm:justify-end')}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsDisputeDialogOpen(false)
+                setDisputeReason('')
+                setDisputeDescription('')
+                setSelectedRental(null)
+              }}
+              className={cn('rounded-xl', 'border-border', 'font-semibold')}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleCreateDispute}
+              disabled={
+                disputeMutation.isPending ||
+                !disputeReason ||
+                !disputeDescription.trim()
+              }
+              className={cn(
+                'rounded-xl',
+                'bg-primary',
+                'hover:bg-primary-hover',
+                'text-primary-foreground',
+                'font-semibold',
+              )}
+            >
+              {disputeMutation.isPending ? 'Submitting...' : 'Submit Dispute'}
             </Button>
           </DialogFooter>
         </DialogContent>

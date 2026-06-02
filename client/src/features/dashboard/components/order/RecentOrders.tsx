@@ -1,6 +1,6 @@
 import { useOrders } from '#/hook'
-import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 interface Order {
   id: string
@@ -81,12 +81,7 @@ export const RecentOrders = () => {
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Orders</h3>
 
-        <Button
-          variant="link"
-          className="text-xs font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer"
-        >
-          View All
-        </Button>
+        <ExploreLink to="/account/orders">View All</ExploreLink>
       </div>
 
       <div className="space-y-4">

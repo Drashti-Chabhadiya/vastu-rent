@@ -1,5 +1,5 @@
 import { cn } from '#/lib/utils'
-import { Button } from '#/components/ui/button'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 interface RecentListingsTableProps {
   products?: any[]
@@ -14,34 +14,29 @@ export const RecentListingsTable = ({
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Listings</h3>
-        <Button
-          variant="link"
-          className="text-xs font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer"
-        >
-          View All
-        </Button>
+        <ExploreLink to="/account/listings">View All</ExploreLink>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto scrollbar-hide">
+        <table className="w-full min-w-[600px]">
           <thead>
             <tr className="text-left border-b border-border/30">
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4">
                 Listing
               </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4">
                 Category
               </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4">
                 Owner
               </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center whitespace-nowrap px-4">
                 Price / Day
               </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center whitespace-nowrap px-4">
                 Status
               </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right whitespace-nowrap pl-4">
                 Date
               </th>
             </tr>
@@ -71,7 +66,7 @@ export const RecentListingsTable = ({
                   key={item.id}
                   className="group hover:bg-muted-light transition-colors"
                 >
-                  <td className="py-3">
+                  <td className="py-3 whitespace-nowrap pr-4">
                     <div className="flex items-center gap-3">
                       <img
                         src={
@@ -79,23 +74,23 @@ export const RecentListingsTable = ({
                           'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
                         }
                         alt={item.title}
-                        className="w-8 h-8 rounded-lg object-cover"
+                        className="w-8 h-8 rounded-lg object-cover shrink-0"
                       />
                       <span className="text-xs font-bold text-dash-text">
                         {item.title}
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 text-xs text-dash-text-soft">
+                  <td className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
                     {item.category?.name || 'Uncategorized'}
                   </td>
-                  <td className="py-3 text-xs text-dash-text-soft">
+                  <td className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
                     {item.owner?.name || 'Unknown'}
                   </td>
-                  <td className="py-3 text-xs font-bold text-dash-text text-center">
+                  <td className="py-3 text-xs font-bold text-dash-text text-center whitespace-nowrap px-4">
                     ₹{item.price}
                   </td>
-                  <td className="py-3 text-center">
+                  <td className="py-3 text-center whitespace-nowrap px-4">
                     <span
                       className={cn(
                         'px-2 py-1 rounded-md text-[10px] font-bold',
@@ -107,7 +102,7 @@ export const RecentListingsTable = ({
                       {item.isAvailable ? 'Active' : 'Unavailable'}
                     </span>
                   </td>
-                  <td className="py-3 text-xs text-dash-text-muted text-right">
+                  <td className="py-3 text-xs text-dash-text-muted text-right whitespace-nowrap pl-4">
                     {new Date(item.createdAt).toLocaleDateString()}
                   </td>
                 </tr>

@@ -32,7 +32,7 @@ export const AvailabilityCalendar = ({
   handleDayClick,
 }: AvailabilityCalendarProps) => {
   return (
-    <div className="bg-card rounded-2xl p-6 border border-border/30 shadow-sm space-y-4">
+    <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-4">
       <h3 className="text-base font-bold text-foreground">
         Check Availability
       </h3>

@@ -1,7 +1,7 @@
 import { useTopCities } from '#/hook'
 import { MapPin } from 'lucide-react'
 import { cn } from '../../../../lib/utils'
-import { Button } from '#/components/ui/button'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 export const TopCities = () => {
   const { data: cities = [], isLoading } = useTopCities()
@@ -22,12 +22,7 @@ export const TopCities = () => {
         <h3 className={cn('font-bold', 'text-dash-text')}>
           Top Cities by Listings
         </h3>
-        <Button
-          variant="link"
-          className="h-auto p-0 text-xs font-bold text-primary hover:underline hover:text-primary active:scale-[0.98]"
-        >
-          View All
-        </Button>
+        <ExploreLink to="/products">View All</ExploreLink>
       </div>
 
       {isLoading ? (

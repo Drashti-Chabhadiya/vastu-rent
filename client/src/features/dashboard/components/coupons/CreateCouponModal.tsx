@@ -366,7 +366,8 @@ export function CreateCouponModal({
 
           {!isAdmin && (
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900 text-sm font-medium">
-              Coupon requests from non-admin users will be reviewed by an admin and activated after approval.
+              Coupon requests from non-admin users will be reviewed by an admin
+              and activated after approval.
             </div>
           )}
           <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-border/30">

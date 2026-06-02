@@ -289,9 +289,9 @@ export function ContactPage() {
                       type="email"
                       placeholder="Enter your email"
                       value={email}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !!session?.user}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-13 w-full rounded-2xl border border-border bg-[#faf9f5]/30 px-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none text-[#0F291B] disabled:opacity-60"
+                      className="h-13 w-full rounded-2xl border border-border bg-[#faf9f5]/30 px-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none text-[#0F291B] disabled:opacity-60 disabled:bg-[#faf9f5]/10 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>

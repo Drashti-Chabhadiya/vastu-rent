@@ -361,9 +361,9 @@ export function ProductDetail({ id }: { id: string }) {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <ProductBreadcrumbs title={product.title || product.name} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* Left Column: Images and Tabs (5 cols) */}
-          <div className="lg:col-span-5 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Image Gallery */}
+          <div className="col-span-1 lg:col-span-5 order-1">
             <ProductImageGallery
               images={images}
               title={product.title || product.name}
@@ -374,7 +374,72 @@ export function ProductDetail({ id }: { id: string }) {
               copied={copied}
               handleShare={handleShare}
             />
+          </div>
 
+          {/* Product Info Section */}
+          <div className="col-span-1 lg:col-span-7 xl:col-span-4 order-2 lg:order-2 lg:row-span-2 xl:row-span-1">
+            <ProductInfoSection
+              product={product}
+              productInfo={productInfo}
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              handleRentNow={handleRentNow}
+              createRentalIsPending={createRental.isPending}
+              isPaying={isPaying}
+              startDate={startDate}
+              endDate={endDate}
+              rentalDays={rentalDays}
+              totalPrice={totalPrice}
+              couponCode={couponCode}
+              setCouponCode={setCouponCode}
+              handleApplyCoupon={handleApplyCoupon}
+              appliedCoupon={appliedCoupon}
+              handleRemoveCoupon={handleRemoveCoupon}
+              couponError={couponError}
+              applyCouponIsPending={applyCoupon.isPending}
+              availabilityCalendar={
+                <AvailabilityCalendar
+                  calMonth={calMonth}
+                  calYear={calYear}
+                  setCalMonth={setCalMonth}
+                  setCalYear={setCalYear}
+                  daysInMonth={daysInMonth}
+                  firstDay={firstDay}
+                  monthName={monthName}
+                  startDate={startDate}
+                  endDate={endDate}
+                  today={today}
+                  productRentals={productRentals}
+                  handleDayClick={handleDayClick}
+                />
+              }
+            />
+          </div>
+
+          {/* Sidebar: Owner & Calendar (Desktop Only) */}
+          <div className="col-span-1 lg:col-span-7 xl:col-span-3 order-3 lg:order-4 xl:order-3 space-y-6">
+            <ProductOwnerCard owner={product.owner} />
+
+            <div className="hidden xl:block">
+              <AvailabilityCalendar
+                calMonth={calMonth}
+                calYear={calYear}
+                setCalMonth={setCalMonth}
+                setCalYear={setCalYear}
+                daysInMonth={daysInMonth}
+                firstDay={firstDay}
+                monthName={monthName}
+                startDate={startDate}
+                endDate={endDate}
+                today={today}
+                productRentals={productRentals}
+                handleDayClick={handleDayClick}
+              />
+            </div>
+          </div>
+
+          {/* Product Tabs (Reviews / Description) */}
+          <div className="col-span-1 lg:col-span-5 order-4 lg:order-3 xl:order-4 mt-4 lg:mt-0">
             <ProductTabs
               product={product}
               reviews={reviews}
@@ -390,79 +455,30 @@ export function ProductDetail({ id }: { id: string }) {
             />
           </div>
 
-          {/* Right Side (7 cols) */}
-          <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-              {/* Middle Column (Product Info - 7 cols of 12) */}
-              <div className="xl:col-span-7">
-                <ProductInfoSection
-                  product={product}
-                  productInfo={productInfo}
-                  paymentMethod={paymentMethod}
-                  setPaymentMethod={setPaymentMethod}
-                  handleRentNow={handleRentNow}
-                  createRentalIsPending={createRental.isPending}
-                  isPaying={isPaying}
-                  startDate={startDate}
-                  endDate={endDate}
-                  rentalDays={rentalDays}
-                  totalPrice={totalPrice}
-                  couponCode={couponCode}
-                  setCouponCode={setCouponCode}
-                  handleApplyCoupon={handleApplyCoupon}
-                  appliedCoupon={appliedCoupon}
-                  handleRemoveCoupon={handleRemoveCoupon}
-                  couponError={couponError}
-                  applyCouponIsPending={applyCoupon.isPending}
-                />
+          {/* Similar Items Section */}
+          {similarProducts && similarProducts.length > 0 && (
+            <div className="col-span-1 lg:col-span-12 order-5 mt-10">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-bold text-foreground">
+                  Similar Items
+                </h3>
+                <Link
+                  to="/products"
+                  className="text-sm font-bold text-primary hover:underline"
+                >
+                  View all
+                </Link>
               </div>
-
-              {/* Rightmost Column (Sidebar - 5 cols of 12) */}
-              <div className="xl:col-span-5 space-y-6">
-                <ProductOwnerCard owner={product.owner} />
-
-                <AvailabilityCalendar
-                  calMonth={calMonth}
-                  calYear={calYear}
-                  setCalMonth={setCalMonth}
-                  setCalYear={setCalYear}
-                  daysInMonth={daysInMonth}
-                  firstDay={firstDay}
-                  monthName={monthName}
-                  startDate={startDate}
-                  endDate={endDate}
-                  today={today}
-                  productRentals={productRentals}
-                  handleDayClick={handleDayClick}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+                {similarProducts
+                  .filter((p: any) => p.id !== id)
+                  .slice(0, 3)
+                  .map((item: any) => (
+                    <ProductCard key={item.id} product={item} />
+                  ))}
               </div>
             </div>
-
-            {/* Similar Items Section */}
-            {similarProducts && similarProducts.length > 0 && (
-              <div className="mt-10">
-                <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-lg font-bold text-foreground">
-                    Similar Items
-                  </h3>
-                  <Link
-                    to="/products"
-                    className="text-sm font-bold text-primary hover:underline"
-                  >
-                    View all
-                  </Link>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-                  {similarProducts
-                    .filter((p: any) => p.id !== id)
-                    .slice(0, 3)
-                    .map((item: any) => (
-                      <ProductCard key={item.id} product={item} />
-                    ))}
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
 

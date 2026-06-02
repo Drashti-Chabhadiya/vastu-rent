@@ -117,7 +117,11 @@ export class UserService {
       listings: user.products,
       listingsCount: user._count.products,
       averageRating,
-      reviewCount
+      reviewCount,
+      emailVerified: user.emailVerified,
+      location: user.location,
+      language: user.language,
+      phone: user.phone
     };
   }
 

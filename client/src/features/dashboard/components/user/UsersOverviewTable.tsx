@@ -1,4 +1,4 @@
-import { Button } from '#/components/ui/button'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 interface UsersOverviewTableProps {
   users?: any[]
@@ -13,25 +13,20 @@ export const UsersOverviewTable = ({
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Users</h3>
-        <Button
-          variant="link"
-          className="text-xs font-bold text-dash-brand hover:underline p-0 h-auto cursor-pointer active:scale-95 transition-all"
-        >
-          View All
-        </Button>
+        <ExploreLink to="/account/users">View All</ExploreLink>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto scrollbar-hide">
+        <table className="w-full min-w-[400px]">
           <thead>
             <tr className="text-left border-b border-border/30">
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4">
                 Name
               </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4">
                 Email
               </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right">
+              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right whitespace-nowrap pl-4">
                 Role
               </th>
             </tr>
@@ -58,7 +53,7 @@ export const UsersOverviewTable = ({
             ) : (
               users.map((user) => (
                 <tr key={user.id} className="group">
-                  <td className="py-4">
+                  <td className="py-4 whitespace-nowrap pr-4">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 rounded-full bg-dash-brand-light flex items-center justify-center text-[10px] font-bold text-dash-brand uppercase">
                         {user.name?.[0] || user.email[0]}
@@ -68,10 +63,10 @@ export const UsersOverviewTable = ({
                       </span>
                     </div>
                   </td>
-                  <td className="py-4 text-xs text-dash-text-muted">
+                  <td className="py-4 text-xs text-dash-text-muted whitespace-nowrap pr-4">
                     {user.email}
                   </td>
-                  <td className="py-4 text-right">
+                  <td className="py-4 text-right whitespace-nowrap pl-4">
                     <span className="text-[10px] font-bold px-2 py-1 rounded bg-muted-light text-dash-text-soft uppercase">
                       {user.role}
                     </span>

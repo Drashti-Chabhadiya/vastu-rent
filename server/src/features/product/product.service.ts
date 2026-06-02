@@ -11,7 +11,7 @@ export class ProductService {
     }
 
     if (isAvailable !== undefined) where.isAvailable = isAvailable;
-    
+
     if (search) {
       where.OR = [
         { title: { contains: search, mode: 'insensitive' } },
@@ -52,7 +52,7 @@ export class ProductService {
     return products.map((p: any) => ({
       ...p,
       reviewsCount: p._count.reviews,
-      rating: p.reviews.length > 0 
+      rating: p.reviews.length > 0
         ? (p.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / p.reviews.length).toFixed(1)
         : "5.0"
     }));
@@ -74,7 +74,7 @@ export class ProductService {
       where: { id },
       include: {
         category: true,
-        owner: { 
+        owner: {
           include: {
             products: {
               include: {
@@ -86,7 +86,7 @@ export class ProductService {
             _count: {
               select: { products: true }
             }
-          } 
+          }
         },
         reviews: {
           include: { user: { select: { name: true, image: true } } },
@@ -114,7 +114,7 @@ export class ProductService {
     return {
       ...product,
       reviewsCount: product._count.reviews,
-      rating: product.reviews.length > 0 
+      rating: product.reviews.length > 0
         ? (product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length).toFixed(1)
         : "5.0",
       owner: {
@@ -212,6 +212,9 @@ export class ProductService {
         }
       }
     }
+
+    // Delete associated rentals (which cascades to disputes)
+    await prisma.rental.deleteMany({ where: { productId: id } });
 
     return prisma.product.delete({ where: { id } });
   }

@@ -21,6 +21,7 @@ export interface Message {
   conversationId: string
   senderId: string
   content: string
+  attachments: string[]
   isRead: boolean
   createdAt: string
   updatedAt: string
@@ -339,14 +340,16 @@ export function useChat() {
     [queryClient],
   )
 
-  // ── Send a message ─────────────────────────────────────────────────────────
-  const sendMessage = useCallback((content: string) => {
+  // ── Send a message ──────────────────────────────────────────────────────────────────
+  const sendMessage = useCallback((content: string, attachments?: string[]) => {
     const convId = activeConversationIdRef.current
-    if (!convId || !content.trim() || !socketRef.current?.connected) return
+    if (!convId || !socketRef.current?.connected) return
+    if (!content.trim() && (!attachments || attachments.length === 0)) return
 
     socketRef.current.emit('send_message', {
       conversationId: convId,
       content: content.trim(),
+      attachments: attachments ?? [],
     })
   }, [])
 
@@ -394,4 +397,17 @@ export function useChat() {
     currentUserId: userId,
     session,
   }
+}
+
+export const useCreateConversation = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (targetUserId: string) => {
+      const res = await apiClient.post('/chat/conversations', { targetUserId })
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
 }
