@@ -1,5 +1,5 @@
 // Reusable Stat Card Skeleton
-export const StatCardSkeleton = () => (
+const StatCardSkeleton = () => (
   <div className="bg-card rounded-[2rem] p-6 border border-border/30 shadow-sm flex items-center justify-between animate-pulse">
     <div className="space-y-3 flex-1">
       <div className="h-3.5 bg-muted rounded-md w-28" />
@@ -11,7 +11,7 @@ export const StatCardSkeleton = () => (
 )
 
 // Reusable Table Skeleton
-export const TableSkeleton = ({
+const TableSkeleton = ({
   rows = 4,
   cols = 4,
 }: {
@@ -39,49 +39,6 @@ export const TableSkeleton = ({
   </div>
 )
 
-// Reusable Chart Skeleton Mockup
-export const ChartSkeleton = () => (
-  <div className="bg-card rounded-[2rem] p-6 border border-border/30 shadow-sm space-y-6 animate-pulse">
-    <div className="flex justify-between items-center">
-      <div className="space-y-2">
-        <div className="h-4.5 bg-muted rounded-md w-32" />
-        <div className="h-3 bg-muted/50 rounded-md w-48" />
-      </div>
-      <div className="h-7 bg-muted rounded-lg w-16" />
-    </div>
-    <div className="h-48 flex items-end gap-3 pt-6 border-b border-l border-border/30 pl-4 pb-2">
-      {[40, 60, 45, 80, 55, 90, 70, 85].map((height, i) => (
-        <div
-          key={i}
-          className="bg-muted/50/70 rounded-t-lg flex-1 transition-all duration-300"
-          style={{ height: `${height}%` }}
-        />
-      ))}
-    </div>
-  </div>
-)
-
-// Reusable Listings Grid Card Skeleton
-export const ListingsGridSkeleton = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
-    {Array.from({ length: 3 }).map((_, i) => (
-      <div
-        key={i}
-        className="bg-card rounded-3xl p-4 border border-border/30 space-y-4"
-      >
-        <div className="aspect-[4/3] rounded-2xl bg-muted/40 w-full" />
-        <div className="space-y-2">
-          <div className="h-4 bg-muted/80 rounded-md w-3/4" />
-          <div className="h-3 bg-muted/40 rounded-md w-1/2" />
-        </div>
-        <div className="flex justify-between items-center pt-2">
-          <div className="h-5 bg-muted rounded-md w-16" />
-          <div className="h-7 bg-muted rounded-lg w-20" />
-        </div>
-      </div>
-    ))}
-  </div>
-)
 
 // Unified Dashboard Full Page Loader (prevents layout shifting)
 export const DashboardOverviewSkeleton = () => (
