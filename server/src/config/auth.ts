@@ -80,6 +80,9 @@ export const auth = betterAuth({
    */
   trustedOrigins: [
     process.env.CLIENT_URL,
+    "https://new-vastu-rent-client.vercel.app",
+    "http://localhost",
+    "capacitor://localhost",
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
