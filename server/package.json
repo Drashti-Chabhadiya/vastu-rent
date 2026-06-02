@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsx src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "prisma generate && tsc",
     "vercel-build": "prisma generate && tsc",
     "postinstall": "prisma generate",

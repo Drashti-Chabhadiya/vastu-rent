@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma.js";
 import { admin } from "better-auth/plugins";
-import { sendVerificationEmail } from "../lib/mail.js";
+import { sendVerificationEmail, sendResetPasswordEmail } from "../lib/mail.js";
 
 export const auth = betterAuth({
   /**
@@ -49,6 +49,14 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }) => {
+      await sendResetPasswordEmail({
+        email: user.email,
+        name: user.name || "",
+        url,
+        token,
+      });
+    },
   },
 
   /**
