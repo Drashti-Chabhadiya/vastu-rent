@@ -19,7 +19,7 @@ const getApiBaseUrl = (): string => {
   if (Capacitor.isNativePlatform()) {
     return (
       import.meta.env.VITE_API_BASE_URL ||
-      'https://new-vastu-rent-server.vercel.app/api'
+      'https://new-vastu-rent.onrender.com/api'
     )
   }
 

@@ -14,7 +14,7 @@ const getAuthBaseUrl = (): string => {
   if (Capacitor.isNativePlatform()) {
     return (
       import.meta.env.VITE_AUTH_URL ||
-      'https://new-vastu-rent-server.vercel.app/api/auth'
+      'https://new-vastu-rent.onrender.com/api/auth'
     )
   }
 
