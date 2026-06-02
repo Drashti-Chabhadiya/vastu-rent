@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { Dialog, DialogContent } from '#/components/ui/dialog'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
+import { Label } from '#/components/ui/label'
 import { toast } from 'sonner'
 
 interface WithdrawalRequestModalProps {
@@ -66,14 +68,14 @@ export const WithdrawalRequestModal = ({
 
           {/* Input field */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+            <Label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
               Withdrawal Amount (₹)
-            </label>
+            </Label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-dark font-extrabold text-sm">
                 ₹
               </span>
-              <input
+              <Input
                 type="number"
                 placeholder="e.g. 5000"
                 value={payoutAmount}

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
@@ -55,7 +56,9 @@ export function LoginForm() {
       })
 
       if (error) {
-        setResetError(error.message ?? 'Failed to send reset link. Please try again.')
+        setResetError(
+          error.message ?? 'Failed to send reset link. Please try again.',
+        )
       } else {
         setResetSuccess(true)
         toast.success('Reset email sent!')
@@ -138,9 +141,13 @@ export function LoginForm() {
 
         {resetSuccess ? (
           <div className="bg-primary-soft/50 border border-primary/20 rounded-xl p-5 mb-6 text-center animate-in fade-in duration-300">
-            <p className="text-sm font-bold text-primary">Reset link sent successfully!</p>
+            <p className="text-sm font-bold text-primary">
+              Reset link sent successfully!
+            </p>
             <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-              We have sent a password reset link to <strong className="text-foreground">{resetEmail}</strong>. Please check your inbox.
+              We have sent a password reset link to{' '}
+              <strong className="text-foreground">{resetEmail}</strong>. Please
+              check your inbox.
             </p>
           </div>
         ) : (
@@ -157,7 +164,7 @@ export function LoginForm() {
                       strokeWidth={2}
                     />
                   </div>
-                  <input
+                  <Input
                     type="email"
                     required
                     placeholder="Enter your email"
@@ -269,7 +276,7 @@ export function LoginForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 type="email"
                 placeholder="Enter your email"
                 className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
@@ -305,7 +312,7 @@ export function LoginForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
                 className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"

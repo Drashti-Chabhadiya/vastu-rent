@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { X, Check } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import { Textarea } from '#/components/ui/textarea'
 
 interface CategoryRequestActionModalsProps {
   rejectingRequest: any
@@ -60,7 +61,7 @@ export const CategoryRequestActionModals = ({
                 <label className="text-xs font-bold text-muted-foreground/70 uppercase tracking-wider block mb-2">
                   Rejection Feedback
                 </label>
-                <textarea
+                <Textarea
                   placeholder="State why this category is rejected (e.g. Duplicated category name, not relevant, etc.)"
                   value={rejectReason}
                   onChange={(e) => setRejectReason(e.target.value)}

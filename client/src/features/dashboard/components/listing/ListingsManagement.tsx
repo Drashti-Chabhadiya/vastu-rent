@@ -172,26 +172,28 @@ export const ListingsManagement = ({
         </div>
         {isAdmin ? (
           <div className="flex items-center gap-2 rounded-full bg-dash-bg-soft p-1">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setCurrentView('my')}
-              className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${
                 currentView === 'my'
-                  ? 'bg-dash-brand text-primary-foreground'
-                  : 'text-dash-text-soft hover:text-dash-text'
+                  ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                  : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
               }`}
             >
               My Listings
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => setCurrentView('all')}
-              className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${
                 currentView === 'all'
-                  ? 'bg-dash-brand text-primary-foreground'
-                  : 'text-dash-text-soft hover:text-dash-text'
+                  ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                  : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
               }`}
             >
               All Listings
-            </button>
+            </Button>
           </div>
         ) : null}
         <Button

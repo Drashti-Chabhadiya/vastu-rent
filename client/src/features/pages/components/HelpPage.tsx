@@ -12,6 +12,7 @@ import {
 import { useState } from 'react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 
 const faqs = [
   {
@@ -62,7 +63,7 @@ export function HelpPage() {
               className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:bg-primary transition-colors"
               size={24}
             />
-            <input
+            <Input
               type="text"
               placeholder="Search for answers..."
               className="w-full h-16 pl-16 pr-8 bg-card rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-lg shadow-xl"

@@ -1500,13 +1500,14 @@ export const MessagesManagement = () => {
                                       )}
                                     >
                                       {msg.attachments.map((src, i) => (
-                                        <button
+                                        <Button
                                           key={i}
                                           type="button"
+                                          variant="ghost"
                                           onClick={() =>
                                             openLightbox(msg.attachments, i)
                                           }
-                                          className="relative group/img block overflow-hidden focus:outline-none"
+                                          className="relative group/img block overflow-hidden focus:outline-none p-0 h-auto rounded-none hover:bg-transparent"
                                         >
                                           <img
                                             src={src}
@@ -1519,7 +1520,7 @@ export const MessagesManagement = () => {
                                               className="text-white opacity-0 group-hover/img:opacity-100 drop-shadow-lg transition-opacity duration-200"
                                             />
                                           </div>
-                                        </button>
+                                        </Button>
                                       ))}
                                     </div>
                                   )}
@@ -1603,7 +1604,9 @@ export const MessagesManagement = () => {
                               </div>
 
                               {/* Hover Reply Action */}
-                              <button
+                              <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={() => handleReply(msg, isMe)}
                                 className={cn(
                                   'self-center shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
@@ -1615,7 +1618,7 @@ export const MessagesManagement = () => {
                                 title="Reply"
                               >
                                 <Reply size={12} strokeWidth={2.5} />
-                              </button>
+                              </Button>
                             </div>
                           )
                         })}
@@ -1652,12 +1655,14 @@ export const MessagesManagement = () => {
                           {replyTarget.content}
                         </p>
                       </div>
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setReplyTarget(null)}
                         className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-muted-dark hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
                       >
                         <X size={11} strokeWidth={2.5} />
-                      </button>
+                      </Button>
                     </div>
                   )}
                   {/* Attachment previews (before send) */}
@@ -1673,25 +1678,29 @@ export const MessagesManagement = () => {
                             alt={`preview-${i}`}
                             className="w-full h-full object-cover"
                           />
-                          <button
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => removeFile(i)}
-                            className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                            className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-0 rounded-none hover:bg-black/50 w-full h-full"
                           >
                             <X
                               size={14}
                               className="text-white"
                               strokeWidth={2.5}
                             />
-                          </button>
+                          </Button>
                         </div>
                       ))}
                       {pendingFiles.length < 5 && (
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => fileInputRef.current?.click()}
                           className="w-14 h-14 rounded-xl border-2 border-dashed border-border/50 hover:border-primary/40 hover:bg-primary/5 flex items-center justify-center text-muted-dark hover:text-primary transition-all cursor-pointer"
                         >
                           <ImagePlus size={18} />
-                        </button>
+                        </Button>
                       )}
                     </div>
                   )}
@@ -1841,12 +1850,14 @@ export const MessagesManagement = () => {
           <div className="absolute inset-0 bg-black/85 backdrop-blur-md" />
 
           {/* Close button */}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setShowLightbox(false)}
             className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
           >
             <X size={18} strokeWidth={2.5} />
-          </button>
+          </Button>
 
           {/* Image counter */}
           {lightboxImages.length > 1 && (
@@ -1857,7 +1868,9 @@ export const MessagesManagement = () => {
 
           {/* Prev button */}
           {lightboxImages.length > 1 && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={(e) => {
                 e.stopPropagation()
                 setLightboxIndex(
@@ -1868,12 +1881,14 @@ export const MessagesManagement = () => {
               className="absolute left-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
             >
               <ChevronLeft size={22} strokeWidth={2.5} />
-            </button>
+            </Button>
           )}
 
           {/* Next button */}
           {lightboxImages.length > 1 && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={(e) => {
                 e.stopPropagation()
                 setLightboxIndex((i) => (i + 1) % lightboxImages.length)
@@ -1881,7 +1896,7 @@ export const MessagesManagement = () => {
               className="absolute right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
             >
               <ChevronRight size={22} strokeWidth={2.5} />
-            </button>
+            </Button>
           )}
 
           {/* Main image */}
@@ -1901,14 +1916,15 @@ export const MessagesManagement = () => {
           {lightboxImages.length > 1 && (
             <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
               {lightboxImages.map((src, i) => (
-                <button
+                <Button
                   key={i}
+                  variant="ghost"
                   onClick={(e) => {
                     e.stopPropagation()
                     setLightboxIndex(i)
                   }}
                   className={cn(
-                    'w-10 h-10 rounded-lg overflow-hidden border-2 transition-all cursor-pointer',
+                    'w-10 h-10 rounded-lg overflow-hidden border-2 transition-all cursor-pointer p-0 hover:bg-transparent',
                     i === lightboxIndex
                       ? 'border-white scale-110 shadow-lg'
                       : 'border-white/30 opacity-60 hover:opacity-90',
@@ -1919,7 +1935,7 @@ export const MessagesManagement = () => {
                     alt={`thumb-${i}`}
                     className="w-full h-full object-cover"
                   />
-                </button>
+                </Button>
               ))}
             </div>
           )}

@@ -5,6 +5,7 @@ import type { Variants } from 'motion/react'
 import { Link } from '@tanstack/react-router'
 import { useStories } from '#/hook/use-stories'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 import { ExploreLink } from '#/components/common/ExploreLink'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
@@ -152,7 +153,7 @@ export function JournalPage() {
           </div>
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => {
@@ -283,7 +284,7 @@ export function JournalPage() {
               onSubmit={(e) => e.preventDefault()}
               className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
             >
-              <input
+              <Input
                 type="email"
                 placeholder="Email address"
                 className="h-14 w-full rounded-full border border-background/20 bg-background/5 px-8 text-background outline-none transition-all focus:border-background sm:w-[350px]"

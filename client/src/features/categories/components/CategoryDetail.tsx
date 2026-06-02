@@ -6,6 +6,7 @@ import { Search, SlidersHorizontal, ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { CategoryDetailSkeleton } from '#/components/skeletons'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 
 export function CategoryDetail() {
   const { id } = useParams({ from: '/categories/$id' })
@@ -80,7 +81,7 @@ export function CategoryDetail() {
               className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:text-primary transition-colors"
               size={20}
             />
-            <input
+            <Input
               type="text"
               placeholder={`Search in ${category?.name || 'this category'}...`}
               className="w-full h-14 pl-12 pr-6 bg-card border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all shadow-sm"

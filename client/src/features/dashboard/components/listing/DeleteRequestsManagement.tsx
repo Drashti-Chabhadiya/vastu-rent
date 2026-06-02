@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   CheckCircle2,
   XCircle,
@@ -8,28 +9,28 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
 import { useDeleteRequests, useProcessDeleteRequest } from '#/hook'
 import { toast } from 'sonner'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 export const DeleteRequestsManagement = () => {
   const { data: requests, isLoading } = useDeleteRequests()
   const processMutation = useProcessDeleteRequest()
+  const [pendingAction, setPendingAction] = useState<{
+    id: string
+    status: 'approved' | 'rejected'
+  } | null>(null)
 
   const handleProcess = (id: string, status: 'approved' | 'rejected') => {
-    const action = status === 'approved' ? 'approve' : 'reject'
-    if (
-      window.confirm(
-        `Are you sure you want to ${action} this deletion request?`,
-      )
-    ) {
-      processMutation.mutate(
-        { id, status },
-        {
-          onSuccess: () => toast.success(`Request ${status} successfully`),
-          onError: () => toast.error(`Failed to process request`),
-        },
-      )
-    }
+    setPendingAction({ id, status })
   }
 
   return (
@@ -46,52 +47,52 @@ export const DeleteRequestsManagement = () => {
 
       <div className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left border-b border-border/30 bg-muted-light/50">
-                <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b border-border/30 bg-muted-light/50">
+                <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
                   Product
-                </th>
-                <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
+                </TableHead>
+                <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
                   Requested By
-                </th>
-                <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
+                </TableHead>
+                <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
                   Reason
-                </th>
-                <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
+                </TableHead>
+                <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
                   Status
-                </th>
-                <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-right">
+                </TableHead>
+                <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-right h-auto">
                   Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/30">
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="divide-y divide-border/30">
               {isLoading ? (
-                <tr>
-                  <td
+                <TableRow>
+                  <TableCell
                     colSpan={5}
                     className="px-6 py-20 text-center text-dash-text-soft animate-pulse font-bold"
                   >
                     Loading requests...
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : requests?.length === 0 ? (
-                <tr>
-                  <td
+                <TableRow>
+                  <TableCell
                     colSpan={5}
                     className="px-6 py-20 text-center text-dash-text-soft font-bold"
                   >
                     No pending requests
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : (
                 requests?.map((req: any) => (
-                  <tr
+                  <TableRow
                     key={req.id}
                     className="group hover:bg-muted-light/80 transition-all"
                   >
-                    <td className="px-6 py-4">
+                    <TableCell className="px-6 py-4">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center text-dash-text-soft">
                           <Package size={20} />
@@ -105,8 +106,8 @@ export const DeleteRequestsManagement = () => {
                           </span>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-dash-brand/10 flex items-center justify-center text-dash-brand">
                           <User size={14} />
@@ -120,8 +121,8 @@ export const DeleteRequestsManagement = () => {
                           </span>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
                       <div className="flex items-start gap-2 max-w-xs">
                         <AlertCircle
                           size={14}
@@ -131,8 +132,8 @@ export const DeleteRequestsManagement = () => {
                           "{req.reason || 'No reason provided'}"
                         </span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
                       <Badge
                         variant="outline"
                         className={`
@@ -148,8 +149,8 @@ export const DeleteRequestsManagement = () => {
                       >
                         {req.status}
                       </Badge>
-                    </td>
-                    <td className="px-6 py-4 text-right">
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-right">
                       {req.status === 'pending' && (
                         <div className="flex items-center justify-end gap-2">
                           <Button
@@ -172,14 +173,49 @@ export const DeleteRequestsManagement = () => {
                           </Button>
                         </div>
                       )}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
+
+      <ReusableAlertDialog
+        isOpen={pendingAction !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingAction(null)
+        }}
+        onConfirm={() => {
+          if (pendingAction) {
+            const { id, status } = pendingAction
+            processMutation.mutate(
+              { id, status },
+              {
+                onSuccess: () =>
+                  toast.success(`Request processed successfully`),
+                onError: () => toast.error(`Failed to process request`),
+              },
+            )
+            setPendingAction(null)
+          }
+        }}
+        title={
+          pendingAction?.status === 'approved'
+            ? 'Approve Deletion Request'
+            : 'Reject Deletion Request'
+        }
+        description={
+          pendingAction?.status === 'approved'
+            ? 'Are you sure you want to approve this listing deletion request? The listing will be permanently removed from the application.'
+            : 'Are you sure you want to reject this listing deletion request? The request will be cancelled and the listing will remain active.'
+        }
+        confirmText={
+          pendingAction?.status === 'approved' ? 'Approve' : 'Reject'
+        }
+        variant={pendingAction?.status === 'approved' ? 'danger' : 'warning'}
+      />
     </div>
   )
 }

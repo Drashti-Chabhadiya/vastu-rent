@@ -12,6 +12,7 @@ import { useStory, useStories } from '#/hook/use-stories'
 import { motion } from 'motion/react'
 import { useState } from 'react'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -451,7 +452,7 @@ export function StoryDetail({ id }: { id: string }) {
               onSubmit={(e) => e.preventDefault()}
               className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
             >
-              <input
+              <Input
                 type="email"
                 placeholder="Email address"
                 className="h-13 w-full rounded-full border border-background/20 bg-background/5 px-7 text-sm text-background outline-none transition-all placeholder:text-background/40 focus:border-background sm:w-[300px]"

@@ -28,6 +28,7 @@ import {
   DialogFooter,
 } from '#/components/ui/dialog'
 import { Textarea } from '#/components/ui/textarea'
+import { Label } from '#/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -1570,11 +1571,11 @@ export const MyBookings = () => {
           <div className={cn('space-y-6', 'py-4')}>
             {/* Rating Stars Input */}
             <div className="space-y-2">
-              <label
+              <Label
                 className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Rating
-              </label>
+              </Label>
               <div className={cn('flex', 'items-center', 'gap-1.5')}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Button
@@ -1618,11 +1619,11 @@ export const MyBookings = () => {
 
             {/* Review Comment Input */}
             <div className="space-y-2">
-              <label
+              <Label
                 className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Comment
-              </label>
+              </Label>
               <Textarea
                 placeholder="Product quality was very good. Sturdy and easy to use..."
                 value={comment}
@@ -1639,11 +1640,11 @@ export const MyBookings = () => {
 
             {/* Review Images Option (Optional) */}
             <div className="space-y-2">
-              <label
+              <Label
                 className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Review Images (Optional)
-              </label>
+              </Label>
               <div className={cn('flex', 'flex-wrap', 'gap-3', 'items-center')}>
                 {uploadedImages.map((img, i) => (
                   <div
@@ -1693,7 +1694,7 @@ export const MyBookings = () => {
                 ))}
 
                 {uploadedImages.length < 3 && (
-                  <label
+                  <Label
                     className={cn(
                       'w-16 h-16 rounded-xl border border-dashed border-border/120 flex flex-col items-center justify-center text-muted-dark hover:text-primary hover:border-primary transition-colors cursor-pointer text-[10px] font-bold gap-1',
                       isUploading && 'opacity-50 pointer-events-none',
@@ -1730,7 +1731,7 @@ export const MyBookings = () => {
                       }}
                     />
                     {isUploading ? '...' : '+ Add'}
-                  </label>
+                  </Label>
                 )}
               </div>
             </div>
@@ -1802,11 +1803,11 @@ export const MyBookings = () => {
 
           <div className={cn('space-y-4', 'py-4')}>
             <div className="space-y-2">
-              <label
+              <Label
                 className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Reason for Dispute
-              </label>
+              </Label>
               <Select value={disputeReason} onValueChange={setDisputeReason}>
                 <SelectTrigger className="w-full rounded-xl border-border bg-background">
                   <SelectValue placeholder="Select a reason" />
@@ -1838,11 +1839,11 @@ export const MyBookings = () => {
             </div>
 
             <div className="space-y-2">
-              <label
+              <Label
                 className={cn('text-sm', 'font-semibold', 'text-foreground/80')}
               >
                 Detailed Description
-              </label>
+              </Label>
               <Textarea
                 value={disputeDescription}
                 onChange={(e) => setDisputeDescription(e.target.value)}

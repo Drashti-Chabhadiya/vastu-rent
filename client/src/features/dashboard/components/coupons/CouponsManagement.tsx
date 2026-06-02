@@ -8,6 +8,7 @@ import { CouponRenterView } from './CouponRenterView'
 import { CouponsTable } from './CouponsTable'
 import { CouponSidebar } from './CouponSidebar'
 import { CreateCouponModal } from './CreateCouponModal'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 interface CouponsManagementProps {
   isRenterView?: boolean
@@ -27,6 +28,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
 
   const [activeTab, setActiveTab] = useState<'my' | 'global'>('my')
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
 
   // ── Renter: filter active, non-expired, non-exhausted coupons ──
   const renterCoupons = (() => {
@@ -51,9 +53,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
   })()
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this coupon?')) {
-      deleteMutation.mutate(id)
-    }
+    setDeleteId(id)
   }
 
   // ── Renter View ───────────────────────────────────────────────
@@ -186,6 +186,28 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
         isAdmin={isAdmin}
         isOwner={isOwner}
         onClose={() => setIsFormOpen(false)}
+      />
+
+      {/* Delete Confirmation Alert Dialog */}
+      <ReusableAlertDialog
+        isOpen={!!deleteId}
+        onOpenChange={(open) => !open && setDeleteId(null)}
+        title="Delete Coupon"
+        description="Are you sure you want to delete this coupon? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        isPending={deleteMutation.isPending}
+        onConfirm={async () => {
+          if (deleteId) {
+            try {
+              await deleteMutation.mutateAsync(deleteId)
+              setDeleteId(null)
+            } catch (err) {
+              console.error(err)
+            }
+          }
+        }}
       />
     </div>
   )

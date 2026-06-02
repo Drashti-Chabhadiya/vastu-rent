@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { Button } from '#/components/ui/button'
 
 interface ExploreLinkProps {
   to?: string
@@ -29,9 +30,9 @@ export function ExploreLink({
 
   if (onClick) {
     return (
-      <button onClick={onClick} className={baseClasses}>
+      <Button variant="ghost" onClick={onClick} className={baseClasses}>
         {content}
-      </button>
+      </Button>
     )
   }
 

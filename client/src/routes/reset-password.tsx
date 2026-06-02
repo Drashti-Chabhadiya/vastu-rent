@@ -3,8 +3,17 @@ import { useState } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { AuthLayout } from '#/features/auth/components/auth-layout'
 import { AuthLeftSection } from '#/features/auth/components/auth-left-section'
-import { CheckCircle2, AlertTriangle, Loader2, Lock, Eye, EyeOff } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Loader2,
+  Lock,
+  Eye,
+  EyeOff,
+} from 'lucide-react'
+import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
+import { Label } from '#/components/ui/label'
 import { toast } from 'sonner'
 
 type SearchParams = {
@@ -58,7 +67,9 @@ function ResetPasswordPage() {
       })
 
       if (error) {
-        setErrorMessage(error.message ?? 'Failed to reset password. Please try again.')
+        setErrorMessage(
+          error.message ?? 'Failed to reset password. Please try again.',
+        )
         setStatus('error')
       } else {
         setStatus('success')
@@ -92,13 +103,17 @@ function ResetPasswordPage() {
               {!token ? (
                 <div className="bg-warning/30 border border-warning-foreground/20 rounded-2xl p-6 sm:p-8 text-center shadow-soft">
                   <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mb-5 mx-auto">
-                    <AlertTriangle className="h-8 w-8 text-warning-foreground" strokeWidth={1.5} />
+                    <AlertTriangle
+                      className="h-8 w-8 text-warning-foreground"
+                      strokeWidth={1.5}
+                    />
                   </div>
                   <h3 className="text-lg font-bold text-foreground mb-2">
                     Missing Reset Token
                   </h3>
                   <p className="text-[14px] text-muted-foreground max-w-[340px] leading-relaxed mb-6 mx-auto">
-                    You cannot reset your password without a valid link token. Please request a new password reset email.
+                    You cannot reset your password without a valid link token.
+                    Please request a new password reset email.
                   </p>
                   <Link
                     to="/login"
@@ -120,14 +135,17 @@ function ResetPasswordPage() {
                   <div className="space-y-4">
                     {/* New Password */}
                     <div className="space-y-2">
-                      <label className="text-[14px] font-bold text-foreground/90">
+                      <Label className="text-[14px] font-bold text-foreground/90">
                         New Password
-                      </label>
+                      </Label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <Lock className="h-[18px] w-[18px] text-muted-foreground/70" strokeWidth={2} />
+                          <Lock
+                            className="h-[18px] w-[18px] text-muted-foreground/70"
+                            strokeWidth={2}
+                          />
                         </div>
-                        <input
+                        <Input
                           type={showPassword ? 'text' : 'password'}
                           required
                           placeholder="At least 8 characters"
@@ -135,30 +153,41 @@ function ResetPasswordPage() {
                           onChange={(e) => setNewPassword(e.target.value)}
                           className="w-full h-12 pl-11 pr-11 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         />
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground/70 hover:text-foreground transition-colors"
+                          className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground/70 hover:text-foreground transition-colors hover:bg-transparent w-11 h-full"
                         >
                           {showPassword ? (
-                            <EyeOff className="h-[18px] w-[18px]" strokeWidth={2} />
+                            <EyeOff
+                              className="h-[18px] w-[18px]"
+                              strokeWidth={2}
+                            />
                           ) : (
-                            <Eye className="h-[18px] w-[18px]" strokeWidth={2} />
+                            <Eye
+                              className="h-[18px] w-[18px]"
+                              strokeWidth={2}
+                            />
                           )}
-                        </button>
+                        </Button>
                       </div>
                     </div>
 
                     {/* Confirm Password */}
                     <div className="space-y-2">
-                      <label className="text-[14px] font-bold text-foreground/90">
+                      <Label className="text-[14px] font-bold text-foreground/90">
                         Confirm New Password
-                      </label>
+                      </Label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <Lock className="h-[18px] w-[18px] text-muted-foreground/70" strokeWidth={2} />
+                          <Lock
+                            className="h-[18px] w-[18px] text-muted-foreground/70"
+                            strokeWidth={2}
+                          />
                         </div>
-                        <input
+                        <Input
                           type={showConfirmPassword ? 'text' : 'password'}
                           required
                           placeholder="Re-enter your new password"
@@ -166,17 +195,27 @@ function ResetPasswordPage() {
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           className="w-full h-12 pl-11 pr-11 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         />
-                        <button
+                        <Button
                           type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground/70 hover:text-foreground transition-colors"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground/70 hover:text-foreground transition-colors hover:bg-transparent w-11 h-full"
                         >
                           {showConfirmPassword ? (
-                            <EyeOff className="h-[18px] w-[18px]" strokeWidth={2} />
+                            <EyeOff
+                              className="h-[18px] w-[18px]"
+                              strokeWidth={2}
+                            />
                           ) : (
-                            <Eye className="h-[18px] w-[18px]" strokeWidth={2} />
+                            <Eye
+                              className="h-[18px] w-[18px]"
+                              strokeWidth={2}
+                            />
                           )}
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -222,14 +261,18 @@ function ResetPasswordPage() {
 
               <div className="bg-primary-soft/50 border border-primary/20 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-5 animate-bounce">
-                  <CheckCircle2 className="h-9 w-9 text-primary" strokeWidth={2} />
+                  <CheckCircle2
+                    className="h-9 w-9 text-primary"
+                    strokeWidth={2}
+                  />
                 </div>
 
                 <h3 className="text-lg font-bold text-foreground mb-2">
                   Password Changed
                 </h3>
                 <p className="text-[14px] text-muted-foreground max-w-[340px] leading-relaxed mb-6">
-                  Your password has been securely updated. You can now use your new password to sign into your account.
+                  Your password has been securely updated. You can now use your
+                  new password to sign into your account.
                 </p>
 
                 <Link
@@ -255,14 +298,18 @@ function ResetPasswordPage() {
 
               <div className="bg-warning/30 border border-warning-foreground/20 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
                 <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mb-5">
-                  <AlertTriangle className="h-8 w-8 text-warning-foreground" strokeWidth={1.5} />
+                  <AlertTriangle
+                    className="h-8 w-8 text-warning-foreground"
+                    strokeWidth={1.5}
+                  />
                 </div>
 
                 <h3 className="text-lg font-bold text-foreground mb-2">
                   Update Unsuccessful
                 </h3>
                 <p className="text-[14px] text-muted-foreground max-w-[340px] leading-relaxed mb-6">
-                  {errorMessage ?? 'The link is invalid or expired. Please request a new password reset email.'}
+                  {errorMessage ??
+                    'The link is invalid or expired. Please request a new password reset email.'}
                 </p>
 
                 <Button
