@@ -8,8 +8,11 @@ import {
 import { Plus, Edit2, Trash2, Image as ImageIcon } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { Textarea } from '#/components/ui/textarea'
+import { Label } from '#/components/ui/label'
 import { useUploadProductImage } from '#/hook'
 import { Loader, LoadingOverlay } from '#/components/ui/loader'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 export function StoriesManagement() {
   const { data: stories, isLoading } = useStories()
@@ -20,6 +23,7 @@ export function StoriesManagement() {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [storyToDelete, setStoryToDelete] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -82,9 +86,7 @@ export function StoriesManagement() {
   }
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this story?')) {
-      await deleteStory.mutateAsync(id)
-    }
+    setStoryToDelete(id)
   }
 
   if (isLoading) {
@@ -209,9 +211,9 @@ export function StoriesManagement() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-foreground/80">
+                <Label className="text-sm font-bold text-foreground/80">
                   Title
-                </label>
+                </Label>
                 <Input
                   required
                   value={formData.title}
@@ -224,10 +226,10 @@ export function StoriesManagement() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-foreground/80">
+                <Label className="text-sm font-bold text-foreground/80">
                   Excerpt / Short Description
-                </label>
-                <textarea
+                </Label>
+                <Textarea
                   required
                   value={formData.excerpt}
                   onChange={(e) =>
@@ -240,9 +242,9 @@ export function StoriesManagement() {
 
               <div className="grid grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-foreground/80">
+                  <Label className="text-sm font-bold text-foreground/80">
                     Category Tag
-                  </label>
+                  </Label>
                   <Input
                     required
                     value={formData.tag}
@@ -254,9 +256,9 @@ export function StoriesManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-foreground/80">
+                  <Label className="text-sm font-bold text-foreground/80">
                     Read Time
-                  </label>
+                  </Label>
                   <Input
                     required
                     value={formData.readTime}
@@ -270,9 +272,9 @@ export function StoriesManagement() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-foreground/80">
+                <Label className="text-sm font-bold text-foreground/80">
                   Cover Image
-                </label>
+                </Label>
                 <div className="flex gap-4 items-center">
                   {formData.imageUrl && (
                     <img
@@ -289,7 +291,7 @@ export function StoriesManagement() {
                       className="hidden"
                       id="story-image-upload"
                     />
-                    <label
+                    <Label
                       htmlFor="story-image-upload"
                       className="flex items-center justify-center w-full h-20 border-2 border-dashed border-border/120 rounded-xl hover:bg-muted-light cursor-pointer transition-colors text-sm font-bold text-muted-foreground/85"
                     >
@@ -298,7 +300,7 @@ export function StoriesManagement() {
                       ) : (
                         'Click to Upload Image'
                       )}
-                    </label>
+                    </Label>
                   </div>
                 </div>
               </div>
@@ -333,6 +335,23 @@ export function StoriesManagement() {
           </div>
         </div>
       )}
+
+      <ReusableAlertDialog
+        isOpen={storyToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setStoryToDelete(null)
+        }}
+        onConfirm={async () => {
+          if (storyToDelete) {
+            await deleteStory.mutateAsync(storyToDelete)
+            setStoryToDelete(null)
+          }
+        }}
+        title="Delete Story"
+        description="Are you sure you want to permanently delete this story? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+      />
     </div>
   )
 }

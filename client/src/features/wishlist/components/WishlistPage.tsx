@@ -19,6 +19,7 @@ import {
   Check,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 import { useState, useMemo, useRef, useEffect } from 'react'
 
 export function WishlistPage() {
@@ -163,7 +164,7 @@ export function WishlistPage() {
                 size={16}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/50 pointer-events-none"
               />
-              <input
+              <Input
                 type="text"
                 placeholder="Search saved items…"
                 value={searchQuery}

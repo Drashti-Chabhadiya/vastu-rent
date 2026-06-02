@@ -3,6 +3,14 @@ import { format } from 'date-fns'
 import { Button } from '#/components/ui/button'
 import { Dialog, DialogContent } from '#/components/ui/dialog'
 import { cn } from '#/lib/utils'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
 
 interface OrderInvoiceDialogProps {
   isOpen: boolean
@@ -166,20 +174,27 @@ export const OrderInvoiceDialog = ({
             </div>
           </div>
 
-          {/* Product Item Details Table */}
           <div className="border border-border/30 rounded-2xl overflow-hidden shadow-sm">
-            <table className="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr className="bg-muted-light border-b border-border/30 font-black text-muted-foreground/85 uppercase tracking-wider">
-                  <th className="p-4 pl-6">Product / Item</th>
-                  <th className="p-4 text-center">Rental Rate</th>
-                  <th className="p-4 text-center">Duration</th>
-                  <th className="p-4 pr-6 text-right">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/50 font-semibold text-foreground/80">
-                <tr>
-                  <td className="p-4 pl-6 flex items-center gap-4">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted-light border-b border-border/30 font-black text-muted-foreground/85 uppercase tracking-wider hover:bg-transparent">
+                  <TableHead className="p-4 pl-6 h-auto">
+                    Product / Item
+                  </TableHead>
+                  <TableHead className="p-4 text-center h-auto">
+                    Rental Rate
+                  </TableHead>
+                  <TableHead className="p-4 text-center h-auto">
+                    Duration
+                  </TableHead>
+                  <TableHead className="p-4 pr-6 text-right h-auto">
+                    Subtotal
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-border/50 font-semibold text-foreground/80">
+                <TableRow className="border-b-0 hover:bg-transparent">
+                  <TableCell className="p-4 pl-6 flex items-center gap-4">
                     {order.product?.images?.[0] && (
                       <div className="w-12 h-12 rounded-xl overflow-hidden border border-border/30 shadow-sm hidden sm:block">
                         <img
@@ -197,27 +212,27 @@ export const OrderInvoiceDialog = ({
                         Category: {order.product?.category?.name || 'General'}
                       </div>
                     </div>
-                  </td>
-                  <td className="p-4 text-center">
+                  </TableCell>
+                  <TableCell className="p-4 text-center">
                     ₹
                     {(
                       order.product?.price || order.totalPrice
                     ).toLocaleString()}{' '}
                     / day
-                  </td>
-                  <td className="p-4 text-center">
+                  </TableCell>
+                  <TableCell className="p-4 text-center">
                     {calculateDuration(order.startDate, order.endDate)} Days
-                  </td>
-                  <td className="p-4 pr-6 text-right font-black text-foreground/90">
+                  </TableCell>
+                  <TableCell className="p-4 pr-6 text-right font-black text-foreground/90">
                     ₹
                     {(
                       (order.product?.price || order.totalPrice) *
                       calculateDuration(order.startDate, order.endDate)
                     ).toLocaleString()}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
 
           {/* Calculations & Summary Section */}

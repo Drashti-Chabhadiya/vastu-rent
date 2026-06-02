@@ -10,6 +10,14 @@ import {
 import { Link } from '@tanstack/react-router'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
 
 interface RenterOverviewProps {
   myRentals: any[] | undefined
@@ -190,48 +198,33 @@ export const RenterOverview = ({
             </div>
           ) : myRentals && myRentals.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className={cn('w-full', 'text-left', 'border-collapse')}>
-                <thead>
-                  <tr
-                    className={cn(
-                      'border-b',
-                      'border-border/30',
-                      'text-xs',
-                      'font-bold',
-                      'text-muted-foreground/70',
-                      'uppercase',
-                      'tracking-wider',
-                    )}
-                  >
-                    <th className={cn('pb-3', 'font-semibold')}>Listing</th>
-                    <th className={cn('pb-3', 'font-semibold')}>Landlord</th>
-                    <th className={cn('pb-3', 'font-semibold')}>
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-b border-border/30 hover:bg-transparent">
+                    <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
+                      Listing
+                    </TableHead>
+                    <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
+                      Landlord
+                    </TableHead>
+                    <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
                       Rental Dates
-                    </th>
-                    <th className={cn('pb-3', 'font-semibold')}>Rental Cost</th>
-                    <th className={cn('pb-3', 'font-semibold', 'text-right')}>
+                    </TableHead>
+                    <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
+                      Rental Cost
+                    </TableHead>
+                    <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider text-right h-auto">
                       Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody
-                  className={cn(
-                    'divide-y',
-                    'divide-border/30',
-                    'text-sm',
-                    'font-medium',
-                    'text-foreground/80',
-                  )}
-                >
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="divide-y divide-border/30 text-sm font-medium text-foreground/80">
                   {myRentals.map((rental: any) => (
-                    <tr
+                    <TableRow
                       key={rental.id}
-                      className={cn(
-                        'hover:bg-muted-light/50',
-                        'transition-colors',
-                      )}
+                      className="hover:bg-muted-light/50 transition-colors border-b-0"
                     >
-                      <td className="py-4">
+                      <TableCell className="py-4">
                         <div className={cn('flex', 'items-center', 'gap-3')}>
                           <img
                             src={
@@ -262,29 +255,18 @@ export const RenterOverview = ({
                             </p>
                           </div>
                         </div>
-                      </td>
-                      <td
-                        className={cn('py-4', 'font-bold', 'text-foreground')}
-                      >
+                      </TableCell>
+                      <TableCell className="py-4 font-bold text-foreground">
                         {rental.product?.owner?.name || 'Owner lister'}
-                      </td>
-                      <td
-                        className={cn(
-                          'py-4',
-                          'text-xs',
-                          'font-semibold',
-                          'text-muted-foreground/85',
-                        )}
-                      >
+                      </TableCell>
+                      <TableCell className="py-4 text-xs font-semibold text-muted-foreground/85">
                         {new Date(rental.startDate).toLocaleDateString()} -{' '}
                         {new Date(rental.endDate).toLocaleDateString()}
-                      </td>
-                      <td
-                        className={cn('py-4', 'font-black', 'text-foreground')}
-                      >
+                      </TableCell>
+                      <TableCell className="py-4 font-black text-foreground">
                         ₹ {rental.totalPrice?.toLocaleString()}
-                      </td>
-                      <td className={cn('py-4', 'text-right')}>
+                      </TableCell>
+                      <TableCell className="py-4 text-right">
                         <span
                           className={cn(
                             'px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider',
@@ -299,11 +281,11 @@ export const RenterOverview = ({
                         >
                           {rental.status}
                         </span>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           ) : (
             <div

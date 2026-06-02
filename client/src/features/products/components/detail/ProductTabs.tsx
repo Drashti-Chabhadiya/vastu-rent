@@ -79,7 +79,7 @@ export const ProductTabs = ({
 
   return (
     <div className="border border-border/30 rounded-2xl bg-card shadow-sm overflow-hidden">
-      <div className="flex items-center gap-6 px-6 pt-2 border-b border-border/30 bg-card">
+      <div className="flex items-center gap-6 px-6 pt-2 border-b border-border/30 bg-card overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <Button
             key={tab.id}
@@ -132,7 +132,7 @@ export const ProductTabs = ({
 
         {activeTab === 'details' && (
           <div className="space-y-8">
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <h4 className="font-bold text-foreground text-sm uppercase tracking-wider flex items-center gap-2">
                   <Calendar size={16} className="text-primary" /> Rental Terms

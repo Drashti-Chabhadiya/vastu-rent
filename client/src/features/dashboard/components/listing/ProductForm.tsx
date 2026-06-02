@@ -2,7 +2,9 @@ import { useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { ListingSchema } from '../../../../schema/listing-schema'
 import { ImageGalleryManager } from './ImageGalleryManager'
-import { RequestCategoryModal } from './RequestCategoryModal'
+import { CategoryFormDialog } from '../category/components/CategoryFormDialog'
+import { useCreateCategoryRequest } from '#/hook/use-category-requests'
+import { toast } from 'sonner'
 import {
   FormControl,
   FormField,
@@ -62,6 +64,7 @@ export const ProductForm = ({
   const isOwner =
     currentUser?.role !== 'admin' && currentUser?.role !== 'superAdmin'
   const [requestCategoryOpen, setRequestCategoryOpen] = useState(false)
+  const createRequestMutation = useCreateCategoryRequest()
   return (
     <div className="space-y-6">
       {/* Hero Preview Section */}
@@ -276,9 +279,30 @@ export const ProductForm = ({
           )}
         />
 
-        <RequestCategoryModal
-          open={requestCategoryOpen}
+        <CategoryFormDialog
+          isOpen={requestCategoryOpen}
           onOpenChange={setRequestCategoryOpen}
+          editingCategory={null}
+          isPending={createRequestMutation.isPending}
+          isRequest={true}
+          onSubmit={(data) => {
+            const payload = {
+              ...data,
+              requestReason:
+                data.requestReason?.trim() || 'Requested from Add Listing form',
+            }
+            createRequestMutation.mutate(payload, {
+              onSuccess: () => {
+                toast.success('Category request proposed successfully!')
+                setRequestCategoryOpen(false)
+              },
+              onError: (err: any) => {
+                toast.error(
+                  err.response?.data?.message || 'Failed to send request',
+                )
+              },
+            })
+          }}
         />
 
         <FormField<ListingSchema>

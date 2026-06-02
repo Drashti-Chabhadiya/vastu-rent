@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
 import { isUserOnline } from "../../lib/socket.js";
+import { cloudinaryService } from "../upload/cloudinary.service.js";
 
 export class ChatController {
   async getConversations(request: FastifyRequest, reply: FastifyReply) {
@@ -186,6 +187,53 @@ export class ChatController {
     });
 
     return users.map((u) => ({ ...u, isOnline: isUserOnline(u.id) }));
+  }
+  async uploadChatAttachment(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const session = (request as any).chatSession ||
+        await auth.api.getSession({ headers: request.headers as any });
+      if (!session) {
+        return reply.status(401).send({ message: "Unauthorized" });
+      }
+      const userId = session.user.id;
+
+      const data = await request.file();
+      if (!data) {
+        return reply.status(400).send({ message: "No file uploaded" });
+      }
+
+      // Validate file type
+      if (!data.mimetype.startsWith("image/")) {
+        return reply.status(400).send({ message: "Only image files are allowed" });
+      }
+
+      const buffer = await data.toBuffer();
+      const base64 = `data:${data.mimetype};base64,${buffer.toString("base64")}`;
+
+      // Upload to Cloudinary – use global env creds as fallback if user doesn't have their own
+      let url: string;
+      try {
+        const result = await cloudinaryService.uploadImage(base64, "chat", userId);
+        url = result.url;
+      } catch {
+        // If per-user credentials fail, try global env credentials
+        if (
+          process.env.CLOUDINARY_CLOUD_NAME &&
+          process.env.CLOUDINARY_API_KEY &&
+          process.env.CLOUDINARY_API_SECRET
+        ) {
+          const result = await cloudinaryService.uploadImage(base64, "chat");
+          url = result.url;
+        } else {
+          return reply.status(500).send({ message: "Cloudinary is not configured. Please set up your credentials in settings." });
+        }
+      }
+
+      return reply.send({ url });
+    } catch (error: any) {
+      console.error("Chat Attachment Upload Error:", error);
+      return reply.status(500).send({ message: error.message || "Upload failed" });
+    }
   }
 }
 

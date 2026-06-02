@@ -5,6 +5,14 @@ import { Input } from '#/components/ui/input'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -17,11 +25,13 @@ import {
   useDeleteUser,
   useUpdateUserRole,
 } from '#/hook'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 export const UsersManagement = () => {
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [userToDelete, setUserToDelete] = useState<string | null>(null)
 
   const { data: usersData, isLoading } = useAdminUsers({
     search,
@@ -109,52 +119,52 @@ export const UsersManagement = () => {
       {/* Users Table */}
       <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left bg-muted-light/50 border-b border-border/30">
-                <th className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider">
+          <Table>
+            <TableHeader>
+              <TableRow className="text-left bg-muted-light/50 border-b border-border/30">
+                <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider">
                   User
-                </th>
-                <th className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider">
+                </TableHead>
+                <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider">
                   Role
-                </th>
-                <th className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-center">
+                </TableHead>
+                <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-center">
                   Status
-                </th>
-                <th className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-center">
+                </TableHead>
+                <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-center">
                   Joined Date
-                </th>
-                <th className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-right">
+                </TableHead>
+                <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-right">
                   Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/30">
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="divide-y divide-border/30">
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="animate-pulse">
-                    <td
+                  <TableRow key={i} className="animate-pulse">
+                    <TableCell
                       colSpan={5}
                       className="px-6 py-8 h-16 bg-muted-light/20"
-                    ></td>
-                  </tr>
+                    ></TableCell>
+                  </TableRow>
                 ))
               ) : usersData?.length === 0 ? (
-                <tr>
-                  <td
+                <TableRow>
+                  <TableCell
                     colSpan={5}
                     className="px-6 py-12 text-center text-dash-text-muted text-sm"
                   >
                     No users found matching your criteria.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : (
                 usersData?.map((user: any) => (
-                  <tr
+                  <TableRow
                     key={user.id}
                     className="hover:bg-muted-light/50 transition-colors group"
                   >
-                    <td className="px-6 py-4">
+                    <TableCell className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-dash-brand-light flex items-center justify-center text-dash-brand font-bold uppercase relative">
                           {user.image ? (
@@ -184,8 +194,8 @@ export const UsersManagement = () => {
                           </span>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
                       <Select
                         value={user.role}
                         onValueChange={(role) =>
@@ -222,8 +232,8 @@ export const UsersManagement = () => {
                           </SelectItem>
                         </SelectContent>
                       </Select>
-                    </td>
-                    <td className="px-6 py-4 text-center">
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-center">
                       <Badge
                         variant={user.banned ? 'destructive' : 'outline'}
                         className={cn(
@@ -235,11 +245,11 @@ export const UsersManagement = () => {
                       >
                         {user.banned ? 'Banned' : 'Active'}
                       </Badge>
-                    </td>
-                    <td className="px-6 py-4 text-center text-xs text-dash-text-muted">
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-center text-xs text-dash-text-muted">
                       {new Date(user.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 text-right">
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Button
                           variant="ghost"
@@ -269,27 +279,38 @@ export const UsersManagement = () => {
                           size="icon"
                           title="Delete User"
                           onClick={() => {
-                            if (
-                              confirm(
-                                'Are you sure you want to delete this user?',
-                              )
-                            ) {
-                              deleteMutation.mutate(user.id)
-                            }
+                            setUserToDelete(user.id)
                           }}
                           className="h-9 w-9 text-destructive hover:text-destructive hover:bg-danger rounded-xl transition-colors"
                         >
                           <Trash2 size={18} />
                         </Button>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
+
+      <ReusableAlertDialog
+        isOpen={userToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setUserToDelete(null)
+        }}
+        onConfirm={() => {
+          if (userToDelete) {
+            deleteMutation.mutate(userToDelete)
+            setUserToDelete(null)
+          }
+        }}
+        title="Delete User Account"
+        description="Are you sure you want to permanently delete this user account? This action is irreversible and will remove all profile records."
+        confirmText="Delete"
+        variant="danger"
+      />
     </div>
   )
 }

@@ -60,7 +60,11 @@ export class ProductController {
 
   async toggleAvailability(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as any;
-    const { isAvailable } = request.body as any;
+    const body = (request.body || {}) as any;
+    const query = (request.query || {}) as any;
+    const rawVal = body.isAvailable !== undefined ? body.isAvailable : query.isAvailable;
+    const isAvailable = typeof rawVal === "string" ? rawVal === "true" : !!rawVal;
+    
     const product = await productService.toggleAvailability(id, isAvailable);
     return { product };
   }

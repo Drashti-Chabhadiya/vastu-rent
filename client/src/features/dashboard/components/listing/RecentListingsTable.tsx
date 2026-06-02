@@ -1,5 +1,13 @@
 import { cn } from '#/lib/utils'
-import { Button } from '#/components/ui/button'
+import { ExploreLink } from '#/components/common/ExploreLink'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
 
 interface RecentListingsTableProps {
   products?: any[]
@@ -14,64 +22,59 @@ export const RecentListingsTable = ({
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Listings</h3>
-        <Button
-          variant="link"
-          className="text-xs font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all cursor-pointer"
-        >
-          View All
-        </Button>
+        <ExploreLink to="/account/listings">View All</ExploreLink>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left border-b border-border/30">
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+      <div className="overflow-x-auto scrollbar-hide">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b border-border/30 hover:bg-transparent">
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
                 Listing
-              </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+              </TableHead>
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
                 Category
-              </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase">
+              </TableHead>
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
                 Owner
-              </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center">
+              </TableHead>
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center whitespace-nowrap px-4 h-auto">
                 Price / Day
-              </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center">
+              </TableHead>
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center whitespace-nowrap px-4 h-auto">
                 Status
-              </th>
-              <th className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right">
+              </TableHead>
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right whitespace-nowrap pl-4 h-auto">
                 Date
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/30">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="divide-y divide-border/30">
             {isLoading ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={6}
                   className="py-4 text-center text-xs text-dash-text-muted"
                 >
                   Loading...
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : products.length === 0 ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={6}
                   className="py-4 text-center text-xs text-dash-text-muted"
                 >
                   No listings found
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               products.map((item) => (
-                <tr
+                <TableRow
                   key={item.id}
-                  className="group hover:bg-muted-light transition-colors"
+                  className="group hover:bg-muted-light/30 transition-colors border-b-0"
                 >
-                  <td className="py-3">
+                  <TableCell className="py-3 whitespace-nowrap pr-4">
                     <div className="flex items-center gap-3">
                       <img
                         src={
@@ -79,23 +82,23 @@ export const RecentListingsTable = ({
                           'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
                         }
                         alt={item.title}
-                        className="w-8 h-8 rounded-lg object-cover"
+                        className="w-8 h-8 rounded-lg object-cover shrink-0"
                       />
                       <span className="text-xs font-bold text-dash-text">
                         {item.title}
                       </span>
                     </div>
-                  </td>
-                  <td className="py-3 text-xs text-dash-text-soft">
+                  </TableCell>
+                  <TableCell className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
                     {item.category?.name || 'Uncategorized'}
-                  </td>
-                  <td className="py-3 text-xs text-dash-text-soft">
+                  </TableCell>
+                  <TableCell className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
                     {item.owner?.name || 'Unknown'}
-                  </td>
-                  <td className="py-3 text-xs font-bold text-dash-text text-center">
+                  </TableCell>
+                  <TableCell className="py-3 text-xs font-bold text-dash-text text-center whitespace-nowrap px-4">
                     ₹{item.price}
-                  </td>
-                  <td className="py-3 text-center">
+                  </TableCell>
+                  <TableCell className="py-3 text-center whitespace-nowrap px-4">
                     <span
                       className={cn(
                         'px-2 py-1 rounded-md text-[10px] font-bold',
@@ -106,15 +109,15 @@ export const RecentListingsTable = ({
                     >
                       {item.isAvailable ? 'Active' : 'Unavailable'}
                     </span>
-                  </td>
-                  <td className="py-3 text-xs text-dash-text-muted text-right">
+                  </TableCell>
+                  <TableCell className="py-3 text-xs text-dash-text-muted text-right whitespace-nowrap pl-4">
                     {new Date(item.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

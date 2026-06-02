@@ -46,7 +46,7 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
   }
 
   return (
-    <div className="bg-card rounded-2xl p-6 border border-border/30 shadow-sm space-y-5">
+    <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-5">
       <h3 className="text-base font-bold text-foreground">Listed by</h3>
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-muted/50 overflow-hidden shrink-0">
@@ -66,7 +66,7 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
           <p className="font-bold text-foreground text-sm">
             {owner.name || 'Verified Owner'}
           </p>
-          <div className="flex items-center gap-1.5 mt-0.5">
+          <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
             <Star size={12} className="text-primary fill-brand" />
             <span className="text-xs font-bold text-foreground">
               {owner.rating || '0.0'}

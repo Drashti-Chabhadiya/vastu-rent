@@ -1,15 +1,25 @@
-import {
-  ChevronRight,
-  CheckCircle2,
-  XCircle,
-  ShieldCheck,
-  X,
-} from 'lucide-react'
+import { ChevronRight, CheckCircle2, XCircle, ShieldCheck } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
+import { Textarea } from '#/components/ui/textarea'
 import { useDisputes, useResolveDispute } from '#/hook'
 import { useState } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/dialog'
 
 export const DisputesManagement = () => {
   const { data: disputes, isLoading } = useDisputes()
@@ -82,66 +92,80 @@ export const DisputesManagement = () => {
           </div>
 
           <div className="overflow-x-auto -mx-2">
-            <table className="w-full">
-              <thead>
-                <tr className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
-                  <th className="text-left px-4 py-3">Dispute Detail</th>
-                  <th className="text-left px-4 py-3">Rental ID</th>
-                  <th className="text-left px-4 py-3">Reported By</th>
-                  <th className="text-left px-4 py-3">Date</th>
-                  <th className="text-left px-4 py-3">Status</th>
-                  <th className="px-4 py-3"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/30">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-b border-border/30 hover:bg-transparent">
+                  <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                    Dispute Detail
+                  </TableHead>
+                  <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                    Rental ID
+                  </TableHead>
+                  <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                    Reported By
+                  </TableHead>
+                  <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                    Date
+                  </TableHead>
+                  <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                    Status
+                  </TableHead>
+                  <TableHead className="px-4 py-3 h-auto"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody className="divide-y divide-border/30">
                 {isLoading ? (
-                  <tr>
-                    <td
+                  <TableRow>
+                    <TableCell
                       colSpan={6}
                       className="text-center py-10 text-xs text-muted-dark"
                     >
                       Loading disputes...
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : disputes?.length === 0 ? (
-                  <tr>
-                    <td
+                  <TableRow>
+                    <TableCell
                       colSpan={6}
                       className="text-center py-10 text-xs text-muted-dark"
                     >
                       No disputes reported.
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ) : (
                   disputes?.map((dispute) => (
-                    <tr
+                    <TableRow
                       key={dispute.id}
                       onClick={() => setActiveDispute(dispute)}
-                      className={`group cursor-pointer hover:bg-muted-light/50 transition-all ${selectedDispute?.id === dispute.id ? 'bg-muted-light/80' : ''}`}
+                      className={`group cursor-pointer hover:bg-muted-light/50 transition-all ${
+                        selectedDispute?.id === dispute.id
+                          ? 'bg-muted-light/80'
+                          : ''
+                      }`}
                     >
-                      <td className="px-4 py-5">
+                      <TableCell className="px-4 py-5">
                         <p className="text-[11px] font-black text-foreground leading-tight">
                           {dispute.reason}
                         </p>
                         <p className="text-[9px] font-bold text-muted-dark mt-0.5 truncate max-w-[150px]">
                           {dispute.description}
                         </p>
-                      </td>
-                      <td className="px-4 py-5 font-mono text-[10px] text-foreground">
+                      </TableCell>
+                      <TableCell className="px-4 py-5 font-mono text-[10px] text-foreground">
                         {dispute.rentalId.substring(0, 10)}...
-                      </td>
-                      <td className="px-4 py-5">
+                      </TableCell>
+                      <TableCell className="px-4 py-5">
                         <p className="text-[10px] font-black text-foreground">
                           {dispute.reportedBy?.name || 'Anonymous'}
                         </p>
                         <p className="text-[8px] font-bold text-muted-dark">
                           {dispute.reportedBy?.email}
                         </p>
-                      </td>
-                      <td className="px-4 py-5 text-[10px] font-bold text-muted-foreground/85">
+                      </TableCell>
+                      <TableCell className="px-4 py-5 text-[10px] font-bold text-muted-foreground/85">
                         {new Date(dispute.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-5">
+                      </TableCell>
+                      <TableCell className="px-4 py-5">
                         <Badge
                           className={`px-2.5 py-0.5 rounded-lg border-none text-[8px] font-black uppercase tracking-wider ${
                             dispute.status === 'open'
@@ -153,18 +177,18 @@ export const DisputesManagement = () => {
                         >
                           {dispute.status}
                         </Badge>
-                      </td>
-                      <td className="px-4 py-5 text-right">
+                      </TableCell>
+                      <TableCell className="px-4 py-5 text-right">
                         <ChevronRight
                           size={14}
                           className="text-muted-dark group-hover:text-dash-brand transition-colors"
                         />
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
 
@@ -293,61 +317,51 @@ export const DisputesManagement = () => {
         </div>
       </div>
 
-      {/* Resolution Dialog Modal */}
-      {isResolveModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-card rounded-3xl max-w-md w-full p-8 border border-border/30 shadow-2xl relative">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsResolveModalOpen(false)}
-              className="absolute top-6 right-6 text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/50/50 rounded-full h-8 w-8 active:scale-[0.98] transition-all cursor-pointer"
-            >
-              <X size={20} />
-            </Button>
-
-            <h3 className="text-xl font-black text-foreground tracking-tight mb-2">
+      {/* Resolution Dialog Modal using Shadcn Dialog */}
+      <Dialog open={isResolveModalOpen} onOpenChange={setIsResolveModalOpen}>
+        <DialogContent className="bg-card rounded-3xl max-w-md w-full p-8 border border-border/30 shadow-2xl animate-scale-in">
+          <DialogHeader className="text-left">
+            <DialogTitle className="text-xl font-black text-foreground tracking-tight mb-2">
               {resolveType === 'resolved'
                 ? 'Resolve Dispute'
                 : 'Dismiss Dispute'}
-            </h3>
-            <p className="text-sm text-muted-foreground/85 mb-6">
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground/85">
               Write the official resolution verdict. Both renter and landlord
               will receive notifications.
-            </p>
+            </DialogDescription>
+          </DialogHeader>
 
-            <form onSubmit={handleResolveSubmit} className="space-y-4">
-              <div>
-                <label className="text-xs font-bold text-muted-foreground/70 uppercase tracking-wider block mb-1">
-                  Veritable Verdict Remarks
-                </label>
-                <textarea
-                  required
-                  placeholder="Provide detailed feedback on this resolution..."
-                  value={resolutionText}
-                  onChange={(e) => setResolutionText(e.target.value)}
-                  className="w-full border border-border rounded-xl p-3 h-28 focus:ring-1 focus:ring-dash-brand text-sm"
-                />
-              </div>
+          <form onSubmit={handleResolveSubmit} className="space-y-4 mt-4">
+            <div>
+              <label className="text-xs font-bold text-muted-foreground/70 uppercase tracking-wider block mb-1">
+                Veritable Verdict Remarks
+              </label>
+              <Textarea
+                required
+                placeholder="Provide detailed feedback on this resolution..."
+                value={resolutionText}
+                onChange={(e) => setResolutionText(e.target.value)}
+                className="w-full border border-border rounded-xl p-3 h-28 focus:ring-1 focus:ring-dash-brand text-sm resize-none"
+              />
+            </div>
 
-              <Button
-                type="submit"
-                disabled={resolveMutation.isPending}
-                className={`w-full text-primary-foreground rounded-xl h-12 font-bold mt-2 active:scale-[0.98] transition-all cursor-pointer ${
-                  resolveType === 'resolved'
-                    ? 'bg-primary hover:bg-primary-hover'
-                    : 'bg-destructive/90 hover:bg-destructive/90'
-                }`}
-              >
-                {resolveMutation.isPending
-                  ? 'Submitting resolution...'
-                  : 'Submit Verdict'}
-              </Button>
-            </form>
-          </div>
-        </div>
-      )}
+            <Button
+              type="submit"
+              disabled={resolveMutation.isPending}
+              className={`w-full text-primary-foreground rounded-xl h-12 font-bold mt-2 active:scale-[0.98] transition-all cursor-pointer border-none ${
+                resolveType === 'resolved'
+                  ? 'bg-primary hover:bg-primary-hover'
+                  : 'bg-destructive/90 hover:bg-destructive/90'
+              }`}
+            >
+              {resolveMutation.isPending
+                ? 'Submitting resolution...'
+                : 'Submit Verdict'}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -4,7 +4,8 @@ import { authClient } from '#/lib/auth/auth-client'
 import { AuthLayout } from '#/features/auth/components/auth-layout'
 import { AuthLeftSection } from '#/features/auth/components/auth-left-section'
 import { CheckCircle2, AlertTriangle, Loader2, Mail } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 
 type SearchParams = {
   token?: string
@@ -143,12 +144,12 @@ function VerifyEmailPage() {
                   You can now log in and start renting.
                 </p>
 
-                <Link
-                  to="/login"
+                <Button
+                  asChild
                   className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-[15px] font-bold transition-colors flex items-center justify-center cursor-pointer"
                 >
-                  Go to Login
-                </Link>
+                  <Link to="/login">Go to Login</Link>
+                </Button>
               </div>
             </div>
           )}
@@ -192,7 +193,7 @@ function VerifyEmailPage() {
                         strokeWidth={2}
                       />
                     </div>
-                    <input
+                    <Input
                       type="email"
                       required
                       placeholder="Enter your email address"
@@ -234,19 +235,21 @@ function VerifyEmailPage() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <Link
-                  to="/signup"
+                <Button
+                  asChild
+                  variant="outline"
                   className="w-full h-11 rounded-xl border border-border bg-card text-foreground/80 text-[14px] font-bold hover:bg-muted-light transition-colors flex items-center justify-center cursor-pointer"
                 >
-                  Back to Sign Up
-                </Link>
+                  <Link to="/signup">Back to Sign Up</Link>
+                </Button>
 
-                <Link
-                  to="/login"
+                <Button
+                  asChild
+                  variant="ghost"
                   className="w-full h-11 rounded-xl bg-muted/50 hover:bg-muted text-foreground/90 text-[14px] font-bold transition-colors flex items-center justify-center cursor-pointer"
                 >
-                  Go to Login
-                </Link>
+                  <Link to="/login">Go to Login</Link>
+                </Button>
               </div>
             </div>
           )}

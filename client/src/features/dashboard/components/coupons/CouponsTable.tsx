@@ -2,6 +2,14 @@ import { useState } from 'react'
 import { Search, Plus, Copy, Trash2 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
 import type { Coupon } from '#/hook/use-coupons'
 import { cn } from '#/lib/utils'
 import { getScenarioLabel, scenarioColorMap } from '#/lib/coupon-utils'
@@ -84,38 +92,46 @@ export function CouponsTable({
 
       {/* Table */}
       <div className="overflow-x-auto -mx-2">
-        <table className="w-full">
-          <thead>
-            <tr className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
-              <th className="text-left px-4 py-3">Code</th>
-              <th className="text-left px-4 py-3">Discount</th>
-              <th className="text-left px-4 py-3">Configuration</th>
-              <th className="text-left px-4 py-3">Min. Booking</th>
-              <th className="text-left px-4 py-3">Expiry</th>
-              <th className="text-left px-4 py-3">Redeemed</th>
-              {canManage && <th className="text-left px-4 py-3">Status</th>}
-              {canManage && <th className="px-4 py-3 text-right">Actions</th>}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/30">
+        <Table>
+          <TableHeader>
+            <TableRow className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
+              <TableHead className="text-left px-4 py-3">Code</TableHead>
+              <TableHead className="text-left px-4 py-3">Discount</TableHead>
+              <TableHead className="text-left px-4 py-3">
+                Configuration
+              </TableHead>
+              <TableHead className="text-left px-4 py-3">
+                Min. Booking
+              </TableHead>
+              <TableHead className="text-left px-4 py-3">Expiry</TableHead>
+              <TableHead className="text-left px-4 py-3">Redeemed</TableHead>
+              {canManage && (
+                <TableHead className="text-left px-4 py-3">Status</TableHead>
+              )}
+              {canManage && (
+                <TableHead className="px-4 py-3 text-right">Actions</TableHead>
+              )}
+            </TableRow>
+          </TableHeader>
+          <TableBody className="divide-y divide-border/30">
             {isLoading ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={7}
                   className="text-center py-10 text-xs text-muted-dark"
                 >
                   Syncing coupon policies...
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : filtered.length === 0 ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={7}
                   className="text-center py-10 text-xs text-muted-dark"
                 >
                   No vouchers available in this view.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               filtered.map((coupon) => {
                 const scenario = getScenarioLabel(
@@ -127,12 +143,12 @@ export function CouponsTable({
                   : 10
 
                 return (
-                  <tr
+                  <TableRow
                     key={coupon.id}
                     className="group hover:bg-muted-light/50 transition-all"
                   >
                     {/* Code */}
-                    <td className="px-4 py-5">
+                    <TableCell className="px-4 py-5">
                       <div className="inline-flex flex-col items-center justify-center p-3 rounded-xl border-2 border-dashed bg-emerald-50 text-emerald-600 border-emerald-100">
                         <span className="text-[11px] font-black tracking-widest uppercase">
                           {coupon.code}
@@ -146,10 +162,10 @@ export function CouponsTable({
                           <Copy size={8} />
                         </Button>
                       </div>
-                    </td>
+                    </TableCell>
 
                     {/* Discount */}
-                    <td className="px-4 py-5">
+                    <TableCell className="px-4 py-5">
                       <p className="text-[12px] font-black text-foreground">
                         {coupon.type === 'percentage'
                           ? `${coupon.discount}% OFF`
@@ -160,10 +176,10 @@ export function CouponsTable({
                           Upto ₹{coupon.maxDiscount}
                         </p>
                       )}
-                    </td>
+                    </TableCell>
 
                     {/* Configuration */}
-                    <td className="px-4 py-5 font-bold text-muted-foreground/85 text-[10px]">
+                    <TableCell className="px-4 py-5 font-bold text-muted-foreground/85 text-[10px]">
                       <div className="flex flex-col gap-1.5 items-start">
                         {/* Scope */}
                         {coupon.product?.title ? (
@@ -189,15 +205,15 @@ export function CouponsTable({
                           {scenario.label}
                         </span>
                       </div>
-                    </td>
+                    </TableCell>
 
                     {/* Min Booking */}
-                    <td className="px-4 py-5 font-black text-foreground text-[11px]">
+                    <TableCell className="px-4 py-5 font-black text-foreground text-[11px]">
                       ₹{coupon.minBooking || '0'}
-                    </td>
+                    </TableCell>
 
                     {/* Expiry */}
-                    <td className="px-4 py-5">
+                    <TableCell className="px-4 py-5">
                       <p className="text-[10px] font-black text-foreground leading-tight">
                         {new Date(coupon.endDate).toLocaleDateString('en-IN', {
                           day: '2-digit',
@@ -210,10 +226,10 @@ export function CouponsTable({
                           Expired
                         </span>
                       )}
-                    </td>
+                    </TableCell>
 
                     {/* Redeemed */}
-                    <td className="px-4 py-5 min-w-[90px]">
+                    <TableCell className="px-4 py-5 min-w-[90px]">
                       <p className="text-[10px] font-black text-foreground mb-1">
                         {coupon.usedCount}
                         {coupon.usageLimit
@@ -238,11 +254,11 @@ export function CouponsTable({
                           Max {coupon.perUserLimit}× per user
                         </p>
                       )}
-                    </td>
+                    </TableCell>
 
                     {/* Status */}
                     {canManage && (
-                      <td className="px-4 py-5">
+                      <TableCell className="px-4 py-5">
                         <span
                           className={cn(
                             'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.25em]',
@@ -253,12 +269,12 @@ export function CouponsTable({
                         >
                           {coupon.isActive ? 'Active' : 'Pending Approval'}
                         </span>
-                      </td>
+                      </TableCell>
                     )}
 
                     {/* Actions */}
                     {canManage && (
-                      <td className="px-4 py-5 text-right flex flex-wrap justify-end gap-2">
+                      <TableCell className="px-4 py-5 text-right flex flex-wrap justify-end gap-2">
                         {!coupon.isActive && onApprove && isAdmin && (
                           <Button
                             variant="secondary"
@@ -277,14 +293,14 @@ export function CouponsTable({
                         >
                           <Trash2 size={16} />
                         </Button>
-                      </td>
+                      </TableCell>
                     )}
-                  </tr>
+                  </TableRow>
                 )
               })
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

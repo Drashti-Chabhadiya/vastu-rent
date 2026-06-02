@@ -1,9 +1,12 @@
-import { useParams } from '@tanstack/react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useUserProfile } from '#/hook/use-users'
+import { useCreateConversation } from '#/hook/use-chat'
 import { ProductCard } from '#/components/common/ProductCard'
 import { UserProfilePageSkeleton } from '#/components/skeletons'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
+import { authClient } from '#/lib/auth/auth-client'
+import { toast } from 'sonner'
 import {
   Star,
   MapPin,
@@ -12,11 +15,62 @@ import {
   MessageCircle,
   Share2,
   Package,
+  Languages,
+  Phone,
 } from 'lucide-react'
 
 export function UserProfilePage() {
   const { id } = useParams({ from: '/users/$id' })
   const { data: profile, isLoading } = useUserProfile(id)
+  const { data: session } = authClient.useSession()
+  const navigate = useNavigate()
+  const createConversation = useCreateConversation()
+
+  const handleMessageOwner = async () => {
+    if (!profile) return
+
+    if (!session?.user) {
+      toast.error('Please sign in to contact the owner.')
+      navigate({ to: '/login' })
+      return
+    }
+
+    if (session.user.id === profile.id) {
+      toast.info('This is your own profile.')
+      return
+    }
+
+    createConversation.mutate(profile.id, {
+      onSuccess: () => {
+        toast.success(`Chat started with ${profile.name}!`)
+        navigate({ to: '/account/messages' })
+      },
+      onError: (err: any) => {
+        toast.error(
+          err?.response?.data?.message ||
+            'Could not start conversation. Try again.',
+        )
+      },
+    })
+  }
+
+  const handleShareProfile = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `${profile?.name}'s Profile - Vastu Rent`,
+          text: `Check out ${profile?.name}'s rental profile on Vastu Rent!`,
+          url: window.location.href,
+        })
+        .catch(() => {
+          navigator.clipboard.writeText(window.location.href)
+          toast.success('Profile link copied to clipboard!')
+        })
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+      toast.success('Profile link copied to clipboard!')
+    }
+  }
 
   if (isLoading) {
     return <UserProfilePageSkeleton />
@@ -59,10 +113,16 @@ export function UserProfilePage() {
                 className="absolute bottom-3 right-3 w-5 h-5 bg-primary border-[3px] border-card rounded-full shadow-md"
                 title="Online"
               />
-              <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground border-2 border-card px-2 py-1 rounded-lg whitespace-nowrap">
-                <CheckCircle2 size={12} className="mr-1" />
-                Verified
-              </Badge>
+              {profile.emailVerified ? (
+                <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground border-2 border-card px-2 py-1 rounded-lg whitespace-nowrap">
+                  <CheckCircle2 size={12} className="mr-1" />
+                  Verified
+                </Badge>
+              ) : (
+                <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-500 text-amber-950 border-2 border-card px-2 py-1 rounded-lg whitespace-nowrap hover:bg-amber-500">
+                  Unverified
+                </Badge>
+              )}
             </div>
 
             <div className="flex-1 text-center md:text-left">
@@ -95,7 +155,7 @@ export function UserProfilePage() {
               <div className="flex flex-wrap justify-center md:justify-start gap-y-3 gap-x-6 mb-8 text-muted-foreground/85 font-medium">
                 <div className="flex items-center gap-2">
                   <MapPin size={18} className="text-primary" />
-                  <span>Ahmedabad, Gujarat</span>
+                  <span>{profile.location || 'Ahmedabad, Gujarat'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-primary" />
@@ -108,16 +168,47 @@ export function UserProfilePage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <MessageCircle size={18} className="text-primary" />
-                  <span>Verified Identity</span>
+                  <MessageCircle
+                    size={18}
+                    className={
+                      profile.emailVerified
+                        ? 'text-primary'
+                        : 'text-muted-foreground/50'
+                    }
+                  />
+                  <span>
+                    {profile.emailVerified
+                      ? 'Verified Identity'
+                      : 'Unverified Identity'}
+                  </span>
                 </div>
+                {profile.language && (
+                  <div className="flex items-center gap-2">
+                    <Languages size={18} className="text-primary" />
+                    <span>Speaks {profile.language}</span>
+                  </div>
+                )}
+                {profile.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone size={18} className="text-primary" />
+                    <span>{profile.phone}</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                <Button className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-lg shadow-brand/20 transition-all active:scale-95">
-                  Message Owner
+                <Button
+                  onClick={handleMessageOwner}
+                  disabled={createConversation.isPending}
+                  className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-lg shadow-brand/20 transition-all active:scale-95 flex items-center gap-2"
+                >
+                  <MessageCircle size={18} />
+                  {createConversation.isPending
+                    ? 'Connecting...'
+                    : 'Message Owner'}
                 </Button>
                 <Button
+                  onClick={handleShareProfile}
                   variant="outline"
                   className="h-12 px-6 rounded-2xl border-border font-bold text-foreground/80 gap-2 hover:bg-muted-light"
                 >

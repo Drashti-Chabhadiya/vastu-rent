@@ -1,29 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Search, Plus, PackagePlus } from 'lucide-react'
-import { Input } from '#/components/ui/input'
+import { Plus, PackagePlus } from 'lucide-react'
 import { Button } from '#/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '#/components/ui/select'
 import { isAdminRole } from '#/lib/auth/roles'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '#/components/ui/alert-dialog'
 
 // Sub-components
 import { ListingsTable } from './ListingsTable'
 import { ListingDialog } from './ListingDialog'
+import { ListingsFilters } from './ListingsFilters'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import {
   useAdminCategories,
   useAdminUsers,
@@ -102,8 +86,10 @@ export const ListingsManagement = ({
     return matchesSearch && matchesCategory && matchesStatus
   })
 
-  const products = isAdmin && currentView === 'all' ? adminProducts : filteredMyProducts
-  const isLoading = isAdmin && currentView === 'all' ? isAdminLoading : isMyLoading
+  const products =
+    isAdmin && currentView === 'all' ? adminProducts : filteredMyProducts
+  const isLoading =
+    isAdmin && currentView === 'all' ? isAdminLoading : isMyLoading
 
   // Mutations
   const createMutation = useCreateProduct()
@@ -122,7 +108,7 @@ export const ListingsManagement = ({
 
     const isProductOwner = productToDelete.ownerId === currentUser.id
     const isSuperAdmin = currentUser.role === 'superAdmin'
-    const isAdmin = currentUser.role === 'admin'
+    const isRegularAdmin = currentUser.role === 'admin'
 
     if (isSuperAdmin || isProductOwner) {
       deleteMutation.mutate(productToDelete.id, {
@@ -134,7 +120,7 @@ export const ListingsManagement = ({
           toast.error(err.response?.data?.message || 'Failed to delete listing')
         },
       })
-    } else if (isAdmin) {
+    } else if (isRegularAdmin) {
       createDeleteRequestMutation.mutate(
         {
           productId: productToDelete.id,
@@ -156,6 +142,21 @@ export const ListingsManagement = ({
     }
   }
 
+  const isOwnerOrSuperAdmin =
+    productToDelete &&
+    (currentUser?.role === 'superAdmin' ||
+      productToDelete.ownerId === currentUser?.id)
+
+  const deleteTitle = isOwnerOrSuperAdmin
+    ? 'Delete Listing permanently?'
+    : 'Request Deletion?'
+
+  const deleteDescription = productToDelete
+    ? isOwnerOrSuperAdmin
+      ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
+      : `You don't own "${productToDelete.title}". Sending this request will notify the SuperAdmin to review and approve the deletion. Do you want to proceed?`
+    : ''
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Page Header */}
@@ -171,26 +172,28 @@ export const ListingsManagement = ({
         </div>
         {isAdmin ? (
           <div className="flex items-center gap-2 rounded-full bg-dash-bg-soft p-1">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setCurrentView('my')}
-              className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${
                 currentView === 'my'
-                  ? 'bg-dash-brand text-primary-foreground'
-                  : 'text-dash-text-soft hover:text-dash-text'
+                  ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                  : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
               }`}
             >
               My Listings
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
               onClick={() => setCurrentView('all')}
-              className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${
                 currentView === 'all'
-                  ? 'bg-dash-brand text-primary-foreground'
-                  : 'text-dash-text-soft hover:text-dash-text'
+                  ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                  : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
               }`}
             >
               All Listings
-            </button>
+            </Button>
           </div>
         ) : null}
         <Button
@@ -203,69 +206,15 @@ export const ListingsManagement = ({
       </div>
 
       {/* Filters Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2 bg-card rounded-[2rem] shadow-sm border border-border/30">
-        <div className="md:col-span-2 relative">
-          <Search
-            className="absolute left-5 top-1/2 -translate-y-1/2 text-dash-text-soft opacity-40"
-            size={18}
-          />
-          <Input
-            placeholder="Search by title or description..."
-            className="h-14 pl-12 bg-transparent border-none focus-visible:ring-0 text-dash-text font-bold placeholder:text-dash-text-soft/40"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="h-14 border-none bg-dash-bg-soft hover:bg-dash-bg-soft/80 rounded-2xl font-extrabold text-dash-text transition-all focus:ring-2 focus:ring-dash-brand/20 px-6">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
-            <SelectItem
-              value="all"
-              className="rounded-xl font-bold py-3 px-4 focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer text-dash-text-soft"
-            >
-              All Categories
-            </SelectItem>
-            {categories?.map((cat: any) => (
-              <SelectItem
-                key={cat.id}
-                value={cat.id}
-                className="rounded-xl font-bold py-3 px-4 focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer text-dash-text-soft"
-              >
-                {cat.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="h-14 border-none bg-dash-bg-soft hover:bg-dash-bg-soft/80 rounded-2xl font-extrabold text-dash-text transition-all focus:ring-2 focus:ring-dash-brand/20 px-6">
-            <SelectValue placeholder="Availability" />
-          </SelectTrigger>
-          <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
-            <SelectItem
-              value="all"
-              className="rounded-xl font-bold py-3 px-4 focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer text-dash-text-soft"
-            >
-              Any Status
-            </SelectItem>
-            <SelectItem
-              value="available"
-              className="rounded-xl font-bold py-3 px-4 focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer text-dash-text-soft"
-            >
-              Public
-            </SelectItem>
-            <SelectItem
-              value="unavailable"
-              className="rounded-xl font-bold py-3 px-4 focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer text-dash-text-soft"
-            >
-              Hidden
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <ListingsFilters
+        search={search}
+        setSearch={setSearch}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={setCategoryFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        categories={categories}
+      />
 
       {/* Listings Table Component */}
       <ListingsTable
@@ -349,55 +298,19 @@ export const ListingsManagement = ({
       />
 
       {/* Delete Confirmation Alert Dialog */}
-      <AlertDialog
-        open={!!productToDelete}
+      <ReusableAlertDialog
+        isOpen={!!productToDelete}
         onOpenChange={(open) => !open && setProductToDelete(null)}
-      >
-        <AlertDialogContent className="bg-card rounded-[2rem] border border-border/30 shadow-2xl p-8 max-w-md animate-in fade-in zoom-in-95 duration-200">
-          <AlertDialogHeader className="space-y-3 text-left">
-            <AlertDialogTitle className="text-xl font-black text-dash-text flex items-center gap-2.5">
-              {productToDelete &&
-                (currentUser?.role === 'superAdmin' ||
-                productToDelete.ownerId === currentUser?.id
-                  ? 'Delete Listing permanently?'
-                  : 'Request Deletion?')}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-sm text-dash-text-soft font-medium leading-relaxed">
-              {productToDelete &&
-                (currentUser?.role === 'superAdmin' ||
-                productToDelete.ownerId === currentUser?.id
-                  ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
-                  : `You don't own "${productToDelete.title}". Sending this request will notify the SuperAdmin to review and approve the deletion. Do you want to proceed?`)}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="mt-6 flex gap-3">
-            <AlertDialogCancel className="h-12 rounded-xl font-black text-dash-text-soft hover:bg-muted/50 transition-all border-none bg-muted-light/50">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => {
-                e.preventDefault()
-                handleConfirmDelete()
-              }}
-              disabled={
-                deleteMutation.isPending ||
-                createDeleteRequestMutation.isPending
-              }
-              className="h-12 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-xl font-black transition-all shadow-md active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2"
-            >
-              {deleteMutation.isPending ||
-              createDeleteRequestMutation.isPending ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-card border-t-transparent rounded-full animate-spin" />
-                  <span>Processing...</span>
-                </>
-              ) : (
-                <span>Confirm</span>
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setProductToDelete(null)}
+        title={deleteTitle}
+        description={deleteDescription}
+        confirmText={isOwnerOrSuperAdmin ? 'Delete' : 'Request'}
+        variant="danger"
+        isPending={
+          deleteMutation.isPending || createDeleteRequestMutation.isPending
+        }
+      />
     </div>
   )
 }

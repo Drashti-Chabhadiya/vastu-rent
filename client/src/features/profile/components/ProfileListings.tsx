@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { ListingDialog } from '#/features/dashboard/components/listing/ListingDialog'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import {
   useMyListings,
   useDeleteProduct,
@@ -59,6 +60,7 @@ export function ProfileListings() {
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [productToEdit, setProductToEdit] = useState<any>(null)
+  const [productToDelete, setProductToDelete] = useState<any>(null)
 
   useEffect(() => {
     authClient.getSession().then((res) => {
@@ -443,19 +445,7 @@ export function ProfileListings() {
                             variant="ghost"
                             onClick={() => {
                               setOpenDropdownId(null)
-                              if (
-                                confirm(
-                                  'Are you sure you want to delete this listing?',
-                                )
-                              ) {
-                                deleteProduct.mutate(item.id, {
-                                  onSuccess: () => {
-                                    toast.success(
-                                      'Listing deleted successfully',
-                                    )
-                                  },
-                                })
-                              }
+                              setProductToDelete(item)
                             }}
                             className="w-full text-left px-3.5 py-2 text-xs font-bold text-destructive hover:bg-danger hover:text-destructive rounded-xl flex items-center gap-2 cursor-pointer transition-colors justify-start h-auto"
                           >
@@ -600,6 +590,36 @@ export function ProfileListings() {
         categories={categories || []}
         users={[]}
         currentUser={session?.user}
+      />
+
+      {/* Delete Confirmation Alert Dialog */}
+      <ReusableAlertDialog
+        isOpen={!!productToDelete}
+        onOpenChange={(open) => !open && setProductToDelete(null)}
+        onConfirm={() => {
+          if (!productToDelete) return
+          deleteProduct.mutate(productToDelete.id, {
+            onSuccess: () => {
+              toast.success('Listing deleted successfully')
+              setProductToDelete(null)
+            },
+            onError: (err: any) => {
+              toast.error(
+                err.response?.data?.message || 'Failed to delete listing',
+              )
+            },
+          })
+        }}
+        onCancel={() => setProductToDelete(null)}
+        title="Delete Listing permanently?"
+        description={
+          productToDelete
+            ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
+            : ''
+        }
+        confirmText="Delete"
+        variant="danger"
+        isPending={deleteProduct.isPending}
       />
     </div>
   )

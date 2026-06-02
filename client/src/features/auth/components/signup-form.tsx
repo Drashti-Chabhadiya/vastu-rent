@@ -1,6 +1,7 @@
 import { signupSchema } from '#/schema'
 import type { SignupSchema } from '#/schema'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
@@ -147,12 +148,13 @@ export function SignupForm() {
             Back to Sign Up
           </Button>
 
-          <Link
-            to="/login"
+          <Button
+            asChild
+            variant="ghost"
             className="w-full h-11 rounded-xl bg-muted/50 hover:bg-muted text-foreground/90 text-[14px] font-bold transition-colors flex items-center justify-center cursor-pointer"
           >
-            Go to Login
-          </Link>
+            <Link to="/login">Go to Login</Link>
+          </Button>
         </div>
       </div>
     )
@@ -216,7 +218,7 @@ export function SignupForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 placeholder="Enter your name"
                 className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                 {...register('name')}
@@ -241,7 +243,7 @@ export function SignupForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 type="email"
                 placeholder="Enter your email"
                 className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
@@ -267,7 +269,7 @@ export function SignupForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Create password"
                 className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
@@ -312,7 +314,7 @@ export function SignupForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Confirm password"
                 className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"

@@ -2,6 +2,14 @@ import { cn } from '#/lib/utils'
 import { Eye, EyeOff, Trash2, ExternalLink, Pencil } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
 
 interface ListingsTableProps {
   products: any[]
@@ -23,34 +31,37 @@ export const ListingsTable = ({
   return (
     <div className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden">
       <div className="overflow-x-auto custom-scrollbar">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left border-b border-border/30 bg-muted-light/50">
-              <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b border-border/30 bg-muted-light/50 hover:bg-transparent">
+              <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
                 Listing Info
-              </th>
-              <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
+              </TableHead>
+              <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
                 Category
-              </th>
-              <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em]">
+              </TableHead>
+              <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
                 Owner
-              </th>
-              <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-center">
+              </TableHead>
+              <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-center h-auto">
                 Price / Day
-              </th>
-              <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-center">
+              </TableHead>
+              <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-center h-auto">
                 Visibility
-              </th>
-              <th className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-right">
+              </TableHead>
+              <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-right h-auto">
                 Management
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/30">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="divide-y divide-border/30">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="animate-pulse">
-                  <td className="px-6 py-4">
+                <TableRow
+                  key={i}
+                  className="animate-pulse border-b-0 hover:bg-transparent"
+                >
+                  <TableCell className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-muted/50 shrink-0" />
                       <div className="space-y-2">
@@ -58,46 +69,46 @@ export const ListingsTable = ({
                         <div className="h-2.5 bg-muted/50 rounded-md w-16" />
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <div className="h-6 bg-muted/50 rounded-lg w-20" />
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <div className="space-y-1.5">
                       <div className="h-3 bg-muted rounded-md w-20" />
                       <div className="h-2.5 bg-muted/50 rounded-md w-28" />
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <div className="h-4 bg-muted rounded-md w-12 mx-auto" />
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <div className="h-8 bg-muted/50 rounded-full w-20 mx-auto" />
-                  </td>
-                  <td className="px-6 py-4 text-right">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       <div className="w-8 h-8 rounded-lg bg-muted/40" />
                       <div className="w-8 h-8 rounded-lg bg-muted/40" />
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             ) : products.length === 0 ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={6}
                   className="px-6 py-20 text-center text-dash-text-soft font-bold uppercase tracking-widest"
                 >
                   No listings available
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               products.map((item) => (
-                <tr
+                <TableRow
                   key={item.id}
-                  className="group hover:bg-muted-light/80 transition-all"
+                  className="group hover:bg-muted-light/80 transition-all border-b-0"
                 >
-                  <td className="px-6 py-4">
+                  <TableCell className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-border/30 flex-shrink-0">
                         <img
@@ -118,16 +129,16 @@ export const ListingsTable = ({
                         </span>
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <Badge
                       variant="outline"
                       className="rounded-lg bg-card border-border/30 text-dash-text-soft font-bold text-[10px] uppercase tracking-wider h-6"
                     >
                       {item.category?.name || 'Uncategorized'}
                     </Badge>
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="text-xs font-extrabold text-dash-text">
                         {item.owner?.name || 'Vastu System'}
@@ -136,8 +147,8 @@ export const ListingsTable = ({
                         {item.owner?.email}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-center">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-center">
                     <div className="flex items-center justify-center gap-1">
                       <span className="text-[10px] font-bold text-dash-text-soft">
                         ₹
@@ -146,13 +157,13 @@ export const ListingsTable = ({
                         {item.price?.toLocaleString()}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-center">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-center">
                     <Button
                       variant="ghost"
                       onClick={() => onToggleStatus(item.id, !item.isAvailable)}
                       className={cn(
-                        'inline-flex h-auto items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest transition-all active:scale-[0.98] cursor-pointer hover:bg-transparent',
+                        'inline-flex h-auto items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest transition-all active:scale-[0.98] cursor-pointer hover:bg-transparent shadow-none',
                         item.isAvailable
                           ? 'bg-dash-brand/10 text-primary hover:bg-dash-brand/20 hover:text-primary'
                           : 'bg-muted/50 text-muted-foreground/70 hover:bg-muted hover:text-muted-foreground/85',
@@ -170,8 +181,8 @@ export const ListingsTable = ({
                         </>
                       )}
                     </Button>
-                  </td>
-                  <td className="px-6 py-4 text-right">
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <a
                         href={`/products/${item.id}`}
@@ -183,7 +194,7 @@ export const ListingsTable = ({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all active:scale-[0.98]"
+                          className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all active:scale-[0.98] shadow-none"
                         >
                           <ExternalLink size={14} />
                         </Button>
@@ -192,7 +203,7 @@ export const ListingsTable = ({
                         variant="ghost"
                         size="icon"
                         onClick={() => onEdit(item)}
-                        className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all active:scale-[0.98]"
+                        className="w-8 h-8 rounded-lg text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand transition-all active:scale-[0.98] shadow-none"
                         title="Edit Listing"
                       >
                         <Pencil size={14} />
@@ -202,7 +213,7 @@ export const ListingsTable = ({
                         size="icon"
                         onClick={() => onDelete(item)}
                         className={cn(
-                          'w-8 h-8 rounded-lg transition-all active:scale-[0.98]',
+                          'w-8 h-8 rounded-lg transition-all active:scale-[0.98] shadow-none',
                           currentUser?.role === 'superAdmin' ||
                             item.ownerId === currentUser?.id
                             ? 'text-dash-text-soft hover:bg-danger hover:text-destructive'
@@ -218,12 +229,12 @@ export const ListingsTable = ({
                         <Trash2 size={14} />
                       </Button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

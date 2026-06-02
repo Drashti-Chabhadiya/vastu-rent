@@ -115,8 +115,11 @@ export function initSocket(httpServer: any) {
     });
 
     // Send a message
-    socket.on("send_message", async ({ conversationId, content }) => {
-      if (!conversationId || !content || !content.trim()) return;
+    socket.on("send_message", async ({ conversationId, content, attachments }) => {
+      // Allow sending with either content or attachments (or both)
+      const hasContent = content && content.trim();
+      const hasAttachments = Array.isArray(attachments) && attachments.length > 0;
+      if (!conversationId || (!hasContent && !hasAttachments)) return;
 
       try {
         // Double-check user is part of the conversation
@@ -137,7 +140,8 @@ export function initSocket(httpServer: any) {
           data: {
             conversationId,
             senderId: userId,
-            content: content.trim(),
+            content: hasContent ? content.trim() : "",
+            attachments: hasAttachments ? attachments : [],
           },
           include: {
             sender: {
@@ -181,10 +185,13 @@ export function initSocket(httpServer: any) {
 
           if (!isOtherUserActiveInChat) {
             const { createAndDeliverNotification } = await import('./notification.js');
+            const notifMessage = hasAttachments && !hasContent
+              ? `📎 Sent ${attachments.length} image${attachments.length > 1 ? 's' : ''}`
+              : (content.trim().length > 80 ? `${content.trim().substring(0, 80)}...` : content.trim());
             await createAndDeliverNotification({
               userId: otherParticipantId,
               title: `New message from ${user.name} 💬`,
-              message: content.trim().length > 80 ? `${content.trim().substring(0, 80)}...` : content.trim(),
+              message: notifMessage,
               type: "info",
             });
           }

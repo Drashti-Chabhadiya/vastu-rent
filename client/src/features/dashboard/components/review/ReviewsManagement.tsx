@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
+import { Textarea } from '#/components/ui/textarea'
 import { useAdminReviews, useDeleteReview } from '#/hook'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
@@ -21,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 // Custom StarRating component to handle full stars, fractional stars (half-filled), and empty stars high-fidelity
 const StarRating = ({ rating }: { rating: number }) => {
@@ -169,6 +171,7 @@ export const ReviewsManagement = () => {
   const [replyText, setReplyText] = useState('')
   const [isSubmittingReply, setIsSubmittingReply] = useState(false)
   const [ratingFilter, setRatingFilter] = useState<number | 'all'>('all')
+  const [reviewToDelete, setReviewToDelete] = useState<string | null>(null)
 
   const queryClient = useQueryClient()
 
@@ -263,16 +266,7 @@ export const ReviewsManagement = () => {
   })
 
   const handleDelete = (id: string) => {
-    if (confirm('Permanently delete this review?')) {
-      deleteMutation.mutate(id, {
-        onSuccess: () => {
-          toast.success('Review deleted successfully')
-        },
-        onError: () => {
-          toast.error('Failed to delete review')
-        },
-      })
-    }
+    setReviewToDelete(id)
   }
 
   if (isLoading) {
@@ -613,7 +607,7 @@ export const ReviewsManagement = () => {
                   <div className="w-full mt-2 space-y-2">
                     {replyingReviewId === review.id ? (
                       <div className="space-y-2">
-                        <textarea
+                        <Textarea
                           placeholder="Write your response as the host..."
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
@@ -684,6 +678,30 @@ export const ReviewsManagement = () => {
           Keep sharing your experience and help our community.
         </p>
       </div>
+
+      <ReusableAlertDialog
+        isOpen={reviewToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setReviewToDelete(null)
+        }}
+        onConfirm={() => {
+          if (reviewToDelete) {
+            deleteMutation.mutate(reviewToDelete, {
+              onSuccess: () => {
+                toast.success('Review deleted successfully')
+              },
+              onError: () => {
+                toast.error('Failed to delete review')
+              },
+            })
+            setReviewToDelete(null)
+          }
+        }}
+        title="Delete Review"
+        description="Are you sure you want to permanently delete this review? This action cannot be undone."
+        confirmText="Delete"
+        variant="danger"
+      />
     </div>
   )
 }

@@ -1,10 +1,6 @@
 import { authClient } from '#/lib/auth/auth-client'
 import { isAdminRole } from '#/lib/auth/roles'
-import {
-  useMyRentals,
-  useWishlistProducts,
-  useNotifications,
-} from '#/hook'
+import { useMyRentals, useWishlistProducts, useNotifications } from '#/hook'
 import { DashboardOverviewSkeleton } from '#/components/skeletons'
 import { RenterOverview } from './RenterOverview'
 import { AdminOverview } from './AdminOverview'

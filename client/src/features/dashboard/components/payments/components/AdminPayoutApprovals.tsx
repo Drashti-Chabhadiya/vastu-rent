@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Zap } from 'lucide-react'
 import { format } from 'date-fns'
 import { Button } from '#/components/ui/button'
+import { Textarea } from '#/components/ui/textarea'
 import { Dialog, DialogContent } from '#/components/ui/dialog'
 
 interface AdminPayoutApprovalsProps {
@@ -163,7 +164,7 @@ export const AdminPayoutApprovals = ({
                 <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
                   Notes / Reason / Transaction ID
                 </label>
-                <textarea
+                <Textarea
                   placeholder={
                     adminActionType === 'rejected'
                       ? 'Enter rejection reason...'

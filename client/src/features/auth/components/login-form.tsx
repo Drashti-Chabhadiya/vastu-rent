@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
@@ -8,6 +9,7 @@ import { useState, useEffect } from 'react'
 import { Mail, Lock, EyeOff, Check, Eye } from 'lucide-react'
 import { loginSchema } from '#/schema'
 import type { LoginSchema } from '#/schema'
+import { toast } from 'sonner'
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -23,6 +25,13 @@ export function LoginForm() {
   const [resendError, setResendError] = useState<string | null>(null)
   const [resendCooldown, setResendCooldown] = useState(0)
 
+  // Forgot password states
+  const [isForgotPassword, setIsForgotPassword] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetSuccess, setResetSuccess] = useState(false)
+  const [resetLoading, setResetLoading] = useState(false)
+  const [resetError, setResetError] = useState<string | null>(null)
+
   // Countdown timer for resending verification email
   useEffect(() => {
     if (resendCooldown === 0) return
@@ -31,6 +40,35 @@ export function LoginForm() {
     }, 1000)
     return () => clearInterval(interval)
   }, [resendCooldown])
+
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!resetEmail.trim() || resetLoading) return
+
+    setResetLoading(true)
+    setResetError(null)
+    setResetSuccess(false)
+
+    try {
+      const { error } = await authClient.requestPasswordReset({
+        email: resetEmail.trim(),
+        redirectTo: '/reset-password',
+      })
+
+      if (error) {
+        setResetError(
+          error.message ?? 'Failed to send reset link. Please try again.',
+        )
+      } else {
+        setResetSuccess(true)
+        toast.success('Reset email sent!')
+      }
+    } catch (err: any) {
+      setResetError('An unexpected error occurred. Please try again.')
+    } finally {
+      setResetLoading(false)
+    }
+  }
 
   const {
     register,
@@ -87,6 +125,97 @@ export function LoginForm() {
       setResendCooldown(60)
       setTimeout(() => setResendSuccess(false), 5000)
     }
+  }
+
+  if (isForgotPassword) {
+    return (
+      <div className="w-full relative">
+        <div className="mb-8">
+          <h1 className="text-[32px] font-bold text-text-dark tracking-tight">
+            Forgot Password?
+          </h1>
+          <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
+            Enter your email address to receive a password reset link.
+          </p>
+        </div>
+
+        {resetSuccess ? (
+          <div className="bg-primary-soft/50 border border-primary/20 rounded-xl p-5 mb-6 text-center animate-in fade-in duration-300">
+            <p className="text-sm font-bold text-primary">
+              Reset link sent successfully!
+            </p>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              We have sent a password reset link to{' '}
+              <strong className="text-foreground">{resetEmail}</strong>. Please
+              check your inbox.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleForgotPasswordSubmit}>
+            <div className="space-y-5">
+              <Field>
+                <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                  Email Address
+                </FieldLabel>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Mail
+                      className="h-[18px] w-[18px] text-muted-foreground/70"
+                      strokeWidth={2}
+                    />
+                  </div>
+                  <Input
+                    type="email"
+                    required
+                    placeholder="Enter your email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                  />
+                </div>
+              </Field>
+
+              {resetError && (
+                <p className="text-xs text-destructive mt-1 font-medium text-center">
+                  {resetError}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                disabled={resetLoading}
+                className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded-xl shadow-md transition-all active:scale-[0.98] border-none flex items-center justify-center gap-2"
+              >
+                {resetLoading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                    <span>Sending Reset Link...</span>
+                  </>
+                ) : (
+                  'Send Reset Link'
+                )}
+              </Button>
+            </div>
+          </form>
+        )}
+
+        <div className="mt-6 text-center">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              setIsForgotPassword(false)
+              setResetSuccess(false)
+              setResetError(null)
+              setResetEmail('')
+            }}
+            className="text-sm font-bold text-primary hover:underline hover:bg-transparent"
+          >
+            Back to Login
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -147,7 +276,7 @@ export function LoginForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 type="email"
                 placeholder="Enter your email"
                 className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
@@ -170,6 +299,7 @@ export function LoginForm() {
               <Button
                 type="button"
                 variant="link"
+                onClick={() => setIsForgotPassword(true)}
                 className="text-[13px] font-bold text-primary p-0 h-auto hover:underline"
               >
                 Forgot Password?
@@ -182,7 +312,7 @@ export function LoginForm() {
                   strokeWidth={2}
                 />
               </div>
-              <input
+              <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Enter your password"
                 className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"

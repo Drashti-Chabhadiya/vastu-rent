@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '#/components/ui/dialog'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { authClient } from '#/lib/auth/auth-client'
 import { apiClient } from '#/lib/api'
@@ -82,6 +83,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
   const [editingDeviceId, setEditingDeviceId] = useState<string | null>(null)
   const [editingDeviceName, setEditingDeviceName] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
+  const [deviceToRemove, setDeviceToRemove] = useState<string | null>(null)
 
   // Fetch current session details to mark current device
   const { data: session } = useQuery({
@@ -139,11 +141,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
   })
 
   const handleRemoveDevice = (deviceId: string) => {
-    if (
-      confirm('Remove this device from trusted list? This will sign it out.')
-    ) {
-      removeMutation.mutate(deviceId)
-    }
+    setDeviceToRemove(deviceId)
   }
 
   const handleStartRenameDevice = (deviceId: string, name: string) => {
@@ -308,6 +306,22 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
           </Button>
         </div>
       </DialogContent>
+      <ReusableAlertDialog
+        isOpen={deviceToRemove !== null}
+        onOpenChange={(openState) => {
+          if (!openState) setDeviceToRemove(null)
+        }}
+        onConfirm={() => {
+          if (deviceToRemove) {
+            removeMutation.mutate(deviceToRemove)
+            setDeviceToRemove(null)
+          }
+        }}
+        title="Remove Trusted Device"
+        description="Are you sure you want to remove this device from the trusted list? This will sign the device out immediately."
+        confirmText="Remove"
+        variant="danger"
+      />
     </Dialog>
   )
 }

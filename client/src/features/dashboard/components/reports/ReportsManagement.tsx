@@ -14,6 +14,14 @@ import {
 } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/table'
 
 export const ReportsManagement = () => {
   const stats = [
@@ -281,22 +289,30 @@ export const ReportsManagement = () => {
               </Button>
             </div>
             <div className="overflow-x-auto -mx-2">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
-                    <th className="text-left px-4 py-3">Category</th>
-                    <th className="text-left px-4 py-3">Total Orders</th>
-                    <th className="text-left px-4 py-3">Revenue</th>
-                    <th className="text-left px-4 py-3">Growth</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/30">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-b border-border/30 hover:bg-transparent">
+                    <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                      Category
+                    </TableHead>
+                    <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                      Total Orders
+                    </TableHead>
+                    <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                      Revenue
+                    </TableHead>
+                    <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
+                      Growth
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="divide-y divide-border/30">
                   {categories.map((cat, i) => (
-                    <tr
+                    <TableRow
                       key={i}
-                      className="group hover:bg-muted-light/50 transition-all"
+                      className="group hover:bg-muted-light/50 transition-all border-b-0"
                     >
-                      <td className="px-4 py-5">
+                      <TableCell className="px-4 py-5">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-muted/50 overflow-hidden flex-shrink-0">
                             {/* Placeholder for category image */}
@@ -309,14 +325,14 @@ export const ReportsManagement = () => {
                             {cat.name}
                           </p>
                         </div>
-                      </td>
-                      <td className="px-4 py-5 font-bold text-foreground/80 text-[12px]">
+                      </TableCell>
+                      <TableCell className="px-4 py-5 font-bold text-foreground/80 text-[12px]">
                         {cat.orders}
-                      </td>
-                      <td className="px-4 py-5 font-black text-foreground text-[12px]">
+                      </TableCell>
+                      <TableCell className="px-4 py-5 font-black text-foreground text-[12px]">
                         {cat.revenue}
-                      </td>
-                      <td className="px-4 py-5">
+                      </TableCell>
+                      <TableCell className="px-4 py-5">
                         <Badge
                           className={`px-2 py-0.5 rounded-lg border-none text-[8px] font-black ${
                             cat.growth.includes('+')
@@ -327,11 +343,11 @@ export const ReportsManagement = () => {
                           {cat.growth.includes('+') ? '↑' : '↓'}{' '}
                           {cat.growth.replace('+', '').replace('-', '')}
                         </Badge>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
             <Button
               variant="ghost"

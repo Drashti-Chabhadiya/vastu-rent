@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
+import { Textarea } from '#/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
@@ -187,7 +188,7 @@ export const CategoryFormDialog = ({
                   <LucideIcons.FileText size={14} className="text-dash-brand" />
                   Description
                 </label>
-                <textarea
+                <Textarea
                   required
                   placeholder="Briefly describe what items belong in this category..."
                   value={description}
@@ -204,7 +205,7 @@ export const CategoryFormDialog = ({
                   />
                   Request Reason
                 </label>
-                <textarea
+                <Textarea
                   required
                   placeholder="Why is this category needed? (e.g., I have 10 cameras to list)"
                   value={requestReason}

@@ -40,6 +40,8 @@ import {
   Star,
   MessageSquare,
   HelpCircle,
+  Menu,
+  X,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 
@@ -55,6 +57,7 @@ export function Navbar() {
   const [session, setSession] = useState<any>(null)
   const [isPending, setIsPending] = useState(true)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
 
   const { count } = useWishlist()
@@ -247,15 +250,17 @@ export function Navbar() {
               onClick={() => setIsSearchOpen(true)}
               variant="ghost"
               className={cn(
-                'hidden lg:flex items-center gap-2 h-9 rounded-full bg-muted/50 hover:bg-muted transition-all px-4',
-                'text-muted-foreground/85 hover:text-foreground/80 border border-transparent hover:border-border',
+                'hidden lg:flex items-center gap-2 h-9 w-9 xl:w-auto rounded-full bg-muted/50 hover:bg-muted transition-all px-0 xl:px-4 justify-center border border-transparent hover:border-border',
+                'text-muted-foreground/85 hover:text-foreground/80',
               )}
               aria-label="Search (⌘K)"
               title="Search (⌘K)"
             >
               <Search className="h-4 w-4 shrink-0" />
-              <span className="text-sm font-medium">Search...</span>
-              <kbd className="ml-1 pointer-events-none hidden select-none items-center gap-0.5 rounded border border-border/120 bg-card px-1.5 py-0.5 font-sans text-[10px] font-bold text-muted-foreground/85 opacity-100 sm:flex">
+              <span className="text-sm font-medium hidden xl:inline">
+                Search...
+              </span>
+              <kbd className="ml-1 pointer-events-none hidden xl:flex select-none items-center gap-0.5 rounded border border-border/120 bg-card px-1.5 py-0.5 font-sans text-[10px] font-bold text-muted-foreground/85 opacity-100">
                 ⌘K
               </kbd>
             </Button>
@@ -1111,9 +1116,194 @@ export function Navbar() {
                 </Link>
               </>
             )}
+
+            {/* Mobile Hamburger Button */}
+            <Button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              variant="ghost"
+              size="icon"
+              className="flex lg:hidden h-10 w-10 rounded-full text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-all active:scale-95 z-50 relative"
+              aria-label="Toggle Menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
           </div>
         </div>
       </header>
+
+      {/* Mobile Navigation Drawer */}
+      <div
+        className={cn(
+          'fixed inset-0 z-30 lg:hidden transition-all duration-300 ease-in-out',
+          isMobileMenuOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none',
+        )}
+      >
+        {/* Backdrop blur */}
+        <div
+          className="absolute inset-0 bg-black/30 backdrop-blur-md transition-opacity duration-300"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+
+        {/* Sliding Panel */}
+        <div
+          className={cn(
+            'absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-card border-l border-border shadow-2xl flex flex-col justify-between pt-24 pb-8 px-6 transition-transform duration-300 ease-out',
+            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full',
+          )}
+        >
+          <div className="space-y-6 overflow-y-auto max-h-[75vh] scrollbar-hide pr-1">
+            {/* Quick Links Section */}
+            <div className="space-y-2">
+              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80 mb-3">
+                Quick Navigation
+              </h4>
+              <div className="flex flex-col gap-1">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    to={link.path as any}
+                    hash={link.hash}
+                    onClick={(e) => {
+                      setIsMobileMenuOpen(false)
+                      if (link.hash && window.location.pathname === '/') {
+                        const el = document.getElementById(link.hash)
+                        if (el) {
+                          e.preventDefault()
+                          el.scrollIntoView({ behavior: 'smooth' })
+                        }
+                      }
+                    }}
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-xl text-sm font-semibold text-foreground/80 hover:bg-primary/5 hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+
+                {/* Wishlist Link inside Drawer */}
+                <Link
+                  to="/wishlist"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-between py-2.5 px-3 rounded-xl text-sm font-semibold text-foreground/80 hover:bg-primary/5 hover:text-primary transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <Heart
+                      size={18}
+                      className="text-muted-foreground/80 group-hover:text-primary shrink-0"
+                    />
+                    <span>Wishlist</span>
+                  </div>
+                  {count > 0 && (
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground border border-card shadow-sm">
+                      {count > 99 ? '99+' : count}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Smartphone App Link inside Drawer */}
+                <Link
+                  to="/download"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 py-2.5 px-3 rounded-xl text-sm font-semibold text-foreground/80 hover:bg-primary/5 hover:text-primary transition-colors"
+                >
+                  <Smartphone
+                    size={18}
+                    className="text-muted-foreground/80 group-hover:text-primary shrink-0"
+                  />
+                  <span>Download App</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Collapsible/Direct Categories Section */}
+            <div className="space-y-2">
+              <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80 mb-3">
+                Categories
+              </h4>
+              <div className="grid grid-cols-1 gap-1">
+                {categories?.slice(0, 6).map((category: any) => (
+                  <Link
+                    key={category.id}
+                    to="/categories/$id"
+                    params={{ id: category.id }}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-between py-2 px-3 rounded-xl text-xs font-semibold text-foreground/75 hover:bg-primary/5 hover:text-primary transition-all"
+                  >
+                    <span>{category.name}</span>
+                    <ChevronRight size={14} className="opacity-45" />
+                  </Link>
+                ))}
+                {categories && categories.length > 6 && (
+                  <Link
+                    to="/categories"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-[11px] font-bold text-primary hover:underline px-3 pt-1 block"
+                  >
+                    View all categories
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Actions Area */}
+          <div className="border-t border-border/50 pt-6 space-y-4">
+            {session?.user ? (
+              <div className="space-y-3">
+                <Link
+                  to="/account"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted-light transition-colors"
+                >
+                  <Avatar className="h-9 w-9 border border-border">
+                    <AvatarImage
+                      src={session.user.image || ''}
+                      alt={session.user.name}
+                    />
+                    <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary">
+                      {session.user.name?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="font-bold text-foreground text-xs truncate">
+                      {session.user.name}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground/80 truncate">
+                      {session.user.email}
+                    </p>
+                  </div>
+                </Link>
+
+                <Button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false)
+                    handleSignOut()
+                  }}
+                  variant="outline"
+                  className="w-full h-10 rounded-xl border-border text-destructive hover:bg-danger/20 hover:text-destructive font-bold text-xs gap-2"
+                >
+                  <LogOut size={14} /> Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block"
+              >
+                <Button className="w-full h-10 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs flex items-center justify-center gap-2">
+                  <User size={14} /> Sign In
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Search Dialog */}
       <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />

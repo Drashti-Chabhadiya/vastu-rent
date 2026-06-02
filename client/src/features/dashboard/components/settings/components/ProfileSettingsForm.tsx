@@ -1,6 +1,7 @@
 import { Upload } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { Label } from '#/components/ui/label'
 
 interface ProfileSettingsFormProps {
   profileName: string
@@ -68,7 +69,7 @@ export const ProfileSettingsForm = ({
           </p>
 
           <div className="flex gap-2">
-            <label className="h-9 px-4 rounded-full bg-card border border-border hover:bg-muted-light text-muted-foreground text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all">
+            <Label className="h-9 px-4 rounded-full bg-card border border-border hover:bg-muted-light text-muted-foreground text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all">
               <Upload size={12} /> Upload Photo
               <input
                 type="file"
@@ -76,7 +77,7 @@ export const ProfileSettingsForm = ({
                 onChange={handleImageUpload}
                 className="hidden"
               />
-            </label>
+            </Label>
             {profileImage && (
               <Button
                 type="button"

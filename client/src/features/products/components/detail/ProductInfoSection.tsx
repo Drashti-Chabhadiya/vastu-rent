@@ -34,6 +34,7 @@ interface ProductInfoSectionProps {
   handleRemoveCoupon: () => void
   couponError: string
   applyCouponIsPending: boolean
+  availabilityCalendar: React.ReactNode
 }
 
 export const ProductInfoSection = ({
@@ -55,6 +56,7 @@ export const ProductInfoSection = ({
   handleRemoveCoupon,
   couponError,
   applyCouponIsPending,
+  availabilityCalendar,
 }: ProductInfoSectionProps) => {
   const discountAmount = appliedCoupon?.discountAmount || 0
   const finalPayable = Math.max(
@@ -179,6 +181,9 @@ export const ProductInfoSection = ({
         </div>
       </div>
 
+      {/* Availability Calendar (Mobile/Tablet/Laptop Only) */}
+      <div className="xl:hidden">{availabilityCalendar}</div>
+
       {/* Action Buttons */}
       {/* Payment Method Selection */}
       <div className="space-y-3">
@@ -222,11 +227,11 @@ export const ProductInfoSection = ({
         </div>
       </div>
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex flex-col sm:flex-row xl:flex-col min-[1400px]:flex-row gap-3 pt-2">
         <Button
           onClick={handleRentNow}
           disabled={createRentalIsPending || isPaying}
-          className="flex-1 h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
+          className="w-full sm:flex-1 h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
         >
           {createRentalIsPending || isPaying ? (
             <Loader2 size={16} className="animate-spin mr-2" />
@@ -240,7 +245,7 @@ export const ProductInfoSection = ({
         </Button>
         <Button
           variant="outline"
-          className="flex-1 h-12 rounded-xl border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all gap-2"
+          className="w-full sm:flex-1 h-12 rounded-xl border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all gap-2"
           onClick={() =>
             window.open(
               `mailto:${product.owner?.email || ''}?subject=Inquiry about ${product.title || product.name}`,

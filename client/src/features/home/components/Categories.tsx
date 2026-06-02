@@ -1,24 +1,34 @@
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
-import {
-  ArrowUpRight,
-  Home,
-  ShoppingBag,
-  Laptop,
-  Palmtree,
-  Sparkles,
-} from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import * as Icons from 'lucide-react'
 import { useCategories } from '#/hook'
 import { Link } from '@tanstack/react-router'
 import { CategoryCardSkeleton } from '#/components/skeletons'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
-const iconMap: Record<string, LucideIcon> = {
-  HomeIcon: Home,
-  ShoppingBagIcon: ShoppingBag,
-  LaptopIcon: Laptop,
-  PalmtreeIcon: Palmtree,
-  SparklesIcon: Sparkles,
+const getIcon = (iconName: string): Icons.LucideIcon => {
+  if (!iconName) return Icons.Sparkles
+
+  // Try exact lookup (e.g. "HomeIcon" or "Home")
+  if ((Icons as any)[iconName]) {
+    return (Icons as any)[iconName]
+  }
+
+  // Try stripping "Icon" suffix (e.g. "HomeIcon" -> "Home")
+  if (iconName.endsWith('Icon')) {
+    const stripped = iconName.slice(0, -4)
+    if ((Icons as any)[stripped]) {
+      return (Icons as any)[stripped]
+    }
+  }
+
+  // Try adding "Icon" suffix (e.g. "Home" -> "HomeIcon")
+  const withIconSuffix = `${iconName}Icon`
+  if ((Icons as any)[withIconSuffix]) {
+    return (Icons as any)[withIconSuffix]
+  }
+
+  return Icons.Sparkles
 }
 
 const IconComponent = ({
@@ -28,7 +38,7 @@ const IconComponent = ({
   iconName: string
   color?: string
 }) => {
-  const Icon = iconMap[iconName] ?? Sparkles
+  const Icon = getIcon(iconName)
 
   return (
     <div
@@ -88,13 +98,7 @@ export function Categories() {
             Browse a slow-edited selection across home, work and play — every
             item kept in condition by neighbors who care.
           </p>
-          <Link
-            to="/categories"
-            className="group inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-primary underline decoration-primary/20 decoration-2 underline-offset-[6px] transition-all hover:decoration-primary"
-          >
-            Explore all categories
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
+          <ExploreLink to="/categories">Explore all categories</ExploreLink>
         </div>
       </div>
 
@@ -148,7 +152,7 @@ export function Categories() {
                     </div>
                   </div>
                   <span className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                    <ArrowUpRight className="h-4 w-4" />
+                    <Icons.ArrowUpRight className="h-4 w-4" />
                   </span>
                 </div>
               </Link>

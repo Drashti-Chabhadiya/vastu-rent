@@ -152,6 +152,12 @@ const SIDEBAR_MENU_CONFIG: Record<
     },
     { id: 'delete-requests', label: 'Delete Requests', icon: Trash2 },
     {
+      id: 'disputes',
+      label: 'Handle Disputes',
+      icon: AlertCircle,
+      hasSub: true,
+    },
+    {
       id: 'payments',
       label: 'Earnings & Payouts',
       icon: CreditCard,

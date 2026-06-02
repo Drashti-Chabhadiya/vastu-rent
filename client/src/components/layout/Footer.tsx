@@ -76,8 +76,6 @@ export function Footer() {
 
   const companyLinks = [
     { label: 'About Us', to: '/about' },
-    { label: 'Careers', to: '/about' },
-    { label: 'Press & Media', to: '/about' },
     { label: 'Blog', to: '/journal' },
     { label: 'Contact Us', to: '/contact' },
   ]
@@ -86,17 +84,13 @@ export function Footer() {
     { label: 'Categories', to: '/categories' },
     { label: 'How it works', to: '/how-it-works' },
     { label: 'Pricing Plans', to: '/pricing' },
-    { label: 'List an item', to: '/become-lister' },
-    { label: 'Become a host', to: '/become-lister' },
-    { label: 'Sustainability', to: '/about' },
+    { label: 'List an Item', to: '/become-lister' },
   ]
 
   const supportLinks = [
     { label: 'Help Center', to: '/help' },
     { label: 'Trust & Safety', to: '/trust-safety' },
-    { label: 'Community Guidelines', to: '/help' },
     { label: 'Terms of Service', to: '/terms' },
-    { label: 'Privacy Policy', to: '/help' },
   ]
 
   return (
@@ -115,17 +109,17 @@ export function Footer() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             <Link
               to="/help"
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-[#0F291B] shadow-sm transition-all hover:bg-[#faf9f5] hover:border-primary active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-[#0F291B] shadow-sm transition-all hover:bg-[#faf9f5] hover:border-primary active:scale-[0.98] w-full sm:w-auto"
             >
               Visit Help Center
               <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-primary hover:bg-primary/95 px-6 py-3.5 text-sm font-bold text-primary-foreground active:scale-[0.98] transition-all"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary/95 px-6 py-3.5 text-sm font-bold text-primary-foreground active:scale-[0.98] transition-all w-full sm:w-auto"
             >
               Contact Support
               <Send className="h-3.5 w-3.5" />
@@ -134,12 +128,12 @@ export function Footer() {
         </div>
 
         {/* Main Footer Links Grid */}
-        <div className="grid grid-cols-1 gap-12 pt-8 md:grid-cols-12">
+        <div className="grid grid-cols-1 min-[375px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-6 pt-8 xl:grid-cols-12">
           {/* Column 1: Brand details & Socials */}
-          <div className="md:col-span-4 flex flex-col justify-between">
+          <div className="col-span-1 min-[375px]:col-span-2 sm:col-span-3 lg:col-span-4 xl:col-span-4 flex flex-col justify-between">
             <div>
               <Logo />
-              <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-6 max-w-none xl:max-w-xs text-sm leading-relaxed text-muted-foreground">
                 A trusted community marketplace for renting and hosting quality
                 items. Live simply. Live in harmony.
               </p>
@@ -179,7 +173,7 @@ export function Footer() {
           </div>
 
           {/* Column 2: Company Navigation */}
-          <div className="md:col-span-2">
+          <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
               Company
             </h4>
@@ -198,7 +192,7 @@ export function Footer() {
           </div>
 
           {/* Column 3: Explore Navigation */}
-          <div className="md:col-span-2">
+          <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
               Explore
             </h4>
@@ -217,7 +211,7 @@ export function Footer() {
           </div>
 
           {/* Column 4: Support Navigation */}
-          <div className="md:col-span-2">
+          <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
               Support
             </h4>
@@ -236,7 +230,7 @@ export function Footer() {
           </div>
 
           {/* Column 5: Stay in the loop */}
-          <div className="md:col-span-2">
+          <div className="col-span-1 min-[375px]:col-span-2 sm:col-span-3 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
               Stay in the loop
             </h4>

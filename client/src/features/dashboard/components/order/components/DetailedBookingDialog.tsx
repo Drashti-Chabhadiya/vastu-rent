@@ -10,17 +10,7 @@ import { format } from 'date-fns'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { Dialog, DialogContent } from '#/components/ui/dialog'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '#/components/ui/alert-dialog'
-import { cn } from '#/lib/utils'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 interface DetailedBookingDialogProps {
   order: any
@@ -218,63 +208,36 @@ export const DetailedBookingDialog = ({
       </Dialog>
 
       {/* RADIX CONFIRMATION PROMPTS */}
-      <AlertDialog
-        open={!!pendingAction}
+      {/* RADIX CONFIRMATION PROMPTS */}
+      <ReusableAlertDialog
+        isOpen={!!pendingAction}
         onOpenChange={(open) => !open && setPendingAction(null)}
-      >
-        <AlertDialogContent className="max-w-md p-8 border-none bg-card rounded-[2rem] shadow-2xl font-sans">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-lg font-black text-foreground/90 flex items-center gap-3">
-              {pendingAction === 'confirm' ? (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center text-primary">
-                    <CheckCircle2 size={20} />
-                  </div>
-                  <span>Confirm Booking?</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-danger flex items-center justify-center text-destructive">
-                    <XCircle size={20} />
-                  </div>
-                  <span>Reject Booking Request?</span>
-                </div>
-              )}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-[13px] font-semibold text-muted-foreground/85 leading-relaxed pt-2">
-              {pendingAction === 'confirm'
-                ? `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this item'}"? The dates will be reserved in your calendar, and the renter will receive a notification.`
-                : `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this item'}"? The dates will remain available, and the renter will be notified.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex gap-4 mt-8">
-            <AlertDialogCancel className="h-12 flex-1 rounded-xl border border-border/30 font-black text-[11px] text-muted-foreground/85 hover:bg-muted-light active:scale-95 transition-all cursor-pointer">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (pendingAction === 'confirm') {
-                  onStatusUpdate(order.id, 'confirmed')
-                } else if (pendingAction === 'reject') {
-                  onStatusUpdate(order.id, 'rejected')
-                }
-                setPendingAction(null)
-                onClose()
-              }}
-              className={cn(
-                'h-12 flex-1 rounded-xl font-black text-[11px] text-primary-foreground active:scale-95 transition-all cursor-pointer',
-                pendingAction === 'confirm'
-                  ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10'
-                  : 'bg-destructive hover:bg-destructive/90 shadow-lg shadow-destructive/5',
-              )}
-            >
-              {pendingAction === 'confirm'
-                ? 'Confirm Booking'
-                : 'Reject Request'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={() => {
+          if (pendingAction === 'confirm') {
+            onStatusUpdate(order.id, 'confirmed')
+          } else if (pendingAction === 'reject') {
+            onStatusUpdate(order.id, 'rejected')
+          }
+          setPendingAction(null)
+          onClose()
+        }}
+        onCancel={() => setPendingAction(null)}
+        title={
+          pendingAction === 'confirm'
+            ? 'Confirm Booking?'
+            : 'Reject Booking Request?'
+        }
+        description={
+          pendingAction === 'confirm'
+            ? `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this item'}"? The dates will be reserved in your calendar, and the renter will receive a notification.`
+            : `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this item'}"? The dates will remain available, and the renter will be notified.`
+        }
+        confirmText={
+          pendingAction === 'confirm' ? 'Confirm Booking' : 'Reject Request'
+        }
+        variant={pendingAction === 'confirm' ? 'success' : 'danger'}
+        isPending={isPendingStatusUpdate}
+      />
     </>
   )
 }

@@ -250,6 +250,8 @@ export function SettingsPage() {
       <div
         className={cn(
           'flex',
+          'flex-col',
+          'lg:flex-row',
           'bg-card',
           'rounded-2xl',
           'border',
@@ -262,13 +264,21 @@ export function SettingsPage() {
         {/* ── Left sub-nav ── */}
         <nav
           className={cn(
-            'w-[210px]',
+            'w-full',
+            'lg:w-[210px]',
             'shrink-0',
-            'border-r',
+            'border-b',
+            'lg:border-b-0',
+            'lg:border-r',
             'border-border/30',
-            'py-3',
+            'py-2',
+            'lg:py-3',
             'flex',
-            'flex-col',
+            'flex-row',
+            'lg:flex-col',
+            'overflow-x-auto',
+            'lg:overflow-x-visible',
+            'scrollbar-hide',
           )}
         >
           {subNavItems.map(({ id, label, icon: Icon }) => {
@@ -280,7 +290,7 @@ export function SettingsPage() {
                 variant="ghost"
                 onClick={() => setSection(id)}
                 className={cn(
-                  'flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-left w-full cursor-pointer transition-colors border-l-2 rounded-none justify-start h-auto',
+                  'flex items-center gap-3 px-4 py-2.5 lg:px-5 lg:py-3 text-[13px] font-semibold text-left w-auto lg:w-full shrink-0 cursor-pointer transition-colors border-b-2 border-l-0 lg:border-b-0 lg:border-l-2 rounded-none justify-start h-auto',
                   active &&
                     !isDel &&
                     'text-primary bg-primary-soft/70 border-primary hover:bg-primary-soft/70 hover:text-primary',
@@ -303,7 +313,15 @@ export function SettingsPage() {
         </nav>
 
         {/* ── Right content ── */}
-        <div className={cn('flex-1', 'min-w-0', 'p-8', 'overflow-y-auto')}>
+        <div
+          className={cn(
+            'flex-1',
+            'min-w-0',
+            'p-4',
+            'sm:p-8',
+            'overflow-y-auto',
+          )}
+        >
           {/* ── PROFILE INFORMATION ── */}
           {section === 'profile' && (
             <div className={cn('space-y-7', 'max-w-2xl')}>
@@ -504,7 +522,9 @@ export function SettingsPage() {
                 <div
                   className={cn(
                     'flex',
-                    'items-center',
+                    'flex-col',
+                    'sm:flex-row',
+                    'sm:items-center',
                     'justify-between',
                     'gap-4',
                     'p-4',
@@ -589,6 +609,10 @@ export function SettingsPage() {
                       'flex',
                       'items-center',
                       'gap-1.5',
+                      'w-full',
+                      'sm:w-auto',
+                      'justify-center',
+                      'shrink-0',
                     )}
                   >
                     <Upload size={13} /> Change Photo
@@ -627,6 +651,9 @@ export function SettingsPage() {
                   'items-center',
                   'gap-2',
                   'border-none',
+                  'w-full',
+                  'sm:w-auto',
+                  'justify-center',
                 )}
               >
                 {busy && <Loader variant="white" size={14} />}
@@ -1220,6 +1247,9 @@ export function SettingsPage() {
                   'gap-2',
                   'disabled:opacity-40',
                   'disabled:cursor-not-allowed',
+                  'w-full',
+                  'sm:w-auto',
+                  'justify-center',
                 )}
               >
                 {delLoading && <Loader variant="white" size={14} />}

@@ -14,6 +14,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react'
 import { useState, useEffect } from 'react'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
 
 const ApkDownloadSection = () => {
   const [downloadUrl, setDownloadUrl] = useState('')
@@ -182,7 +183,7 @@ const ApkDownloadSection = () => {
                           your PC's local IP address below.
                         </p>
                         <div className="flex gap-2">
-                          <input
+                          <Input
                             type="text"
                             placeholder="e.g. 192.168.1.23"
                             value={customIp}

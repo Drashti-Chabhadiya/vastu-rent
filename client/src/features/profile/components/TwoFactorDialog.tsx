@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '#/components/ui/dialog'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 interface TwoFactorDialogProps {
   open: boolean
@@ -44,6 +45,7 @@ export function TwoFactorDialog({
   const [twoFactorBackupCodes, setTwoFactorBackupCodes] = useState<string[]>([])
   const [isCopyingKey, setIsCopyingKey] = useState(false)
   const [isVerifying2fa, setIsVerifying2fa] = useState(false)
+  const [isDisableConfirmOpen, setIsDisableConfirmOpen] = useState(false)
 
   const email = userEmail || ''
   const secretKey = 'VASTUAUTHKEYRENT'
@@ -82,15 +84,7 @@ export function TwoFactorDialog({
   }
 
   const handleDisable2fa = () => {
-    if (
-      confirm(
-        'Are you sure you want to disable 2FA? This will make your account less secure.',
-      )
-    ) {
-      setTwoFactorEnabled(false)
-      setTwoFactorStep('intro')
-      toast.success('Two-factor authentication disabled.')
-    }
+    setIsDisableConfirmOpen(true)
   }
 
   return (
@@ -300,6 +294,20 @@ export function TwoFactorDialog({
           </div>
         )}
       </DialogContent>
+      <ReusableAlertDialog
+        isOpen={isDisableConfirmOpen}
+        onOpenChange={setIsDisableConfirmOpen}
+        onConfirm={() => {
+          setTwoFactorEnabled(false)
+          setTwoFactorStep('intro')
+          setIsDisableConfirmOpen(false)
+          toast.success('Two-factor authentication disabled.')
+        }}
+        title="Disable 2FA"
+        description="Are you sure you want to disable 2FA? This will make your account less secure."
+        confirmText="Disable"
+        variant="danger"
+      />
     </Dialog>
   )
 }

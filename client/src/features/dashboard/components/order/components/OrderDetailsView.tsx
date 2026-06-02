@@ -14,17 +14,7 @@ import { format } from 'date-fns'
 import { Button } from '#/components/ui/button'
 import { useUpdateRentalStatus } from '#/hook'
 import { toast } from 'sonner'
-import { cn } from '#/lib/utils'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '#/components/ui/alert-dialog'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 // Import extracted sub-components
 import { OrderStatusBadge } from './OrderStatusBadge'
@@ -45,6 +35,32 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
     'confirm' | 'reject' | 'complete' | null
   >(null)
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false)
+
+  const getActionTitle = () => {
+    if (pendingAction === 'complete') return 'Complete Rental?'
+    if (pendingAction === 'confirm') return 'Confirm Booking?'
+    return 'Reject Booking?'
+  }
+
+  const getActionDescription = () => {
+    if (pendingAction === 'complete')
+      return `Are you sure you want to mark this rental booking for "${order.product?.title || 'this product'}" as Completed? The product will be marked as returned, and the renter will be allowed to submit a review.`
+    if (pendingAction === 'confirm')
+      return `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
+    return `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`
+  }
+
+  const getActionConfirmText = () => {
+    if (pendingAction === 'complete') return 'Complete Rental'
+    if (pendingAction === 'confirm') return 'Confirm Booking'
+    return 'Reject Booking'
+  }
+
+  const getActionVariant = () => {
+    if (pendingAction === 'complete' || pendingAction === 'confirm')
+      return 'success'
+    return 'danger'
+  }
 
   if (!order) return null
 
@@ -277,75 +293,27 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
       </div>
 
       {/* High-Fidelity Alert Confirmation Dialog */}
-      <AlertDialog
-        open={pendingAction !== null}
+      {/* High-Fidelity Alert Confirmation Dialog */}
+      <ReusableAlertDialog
+        isOpen={pendingAction !== null}
         onOpenChange={(open) => !open && setPendingAction(null)}
-      >
-        <AlertDialogContent className="rounded-[2.5rem] border border-border/30 p-10 max-w-md bg-card shadow-2xl font-sans">
-          <AlertDialogHeader className="space-y-4">
-            <AlertDialogTitle className="text-lg font-black text-foreground flex items-center gap-3">
-              {pendingAction === 'complete' ? (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-primary-soft flex items-center justify-center text-primary">
-                    <CheckCircle2 size={20} />
-                  </div>
-                  <span>Complete Rental?</span>
-                </div>
-              ) : pendingAction === 'confirm' ? (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-primary-soft flex items-center justify-center text-primary">
-                    <CheckCircle2 size={20} />
-                  </div>
-                  <span>Confirm Booking?</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-danger flex items-center justify-center text-destructive">
-                    <XCircle size={20} />
-                  </div>
-                  <span>Reject Booking?</span>
-                </div>
-              )}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-[13px] font-semibold text-muted-foreground/85 leading-relaxed pt-2">
-              {pendingAction === 'complete'
-                ? `Are you sure you want to mark this rental booking for "${order.product?.title || 'this product'}" as Completed? The product will be marked as returned, and the renter will be allowed to submit a review.`
-                : pendingAction === 'confirm'
-                  ? `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this product'}"? The booking status will be updated to Confirmed, and the renter will receive a notification.`
-                  : `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this product'}"? This request will be cancelled, and the renter will be notified.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex gap-4 mt-10 font-sans">
-            <AlertDialogCancel className="h-14 flex-1 rounded-2xl border border-border/30 font-black text-[12px] text-muted-foreground/85 hover:bg-muted-light active:scale-95 transition-all">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (pendingAction === 'confirm') {
-                  handleStatusUpdate('confirmed')
-                } else if (pendingAction === 'reject') {
-                  handleStatusUpdate('rejected')
-                } else if (pendingAction === 'complete') {
-                  handleStatusUpdate('completed')
-                }
-                setPendingAction(null)
-              }}
-              className={cn(
-                'h-14 flex-1 rounded-2xl font-black text-[12px] text-primary-foreground active:scale-95 transition-all',
-                pendingAction === 'confirm' || pendingAction === 'complete'
-                  ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/10'
-                  : 'bg-destructive hover:bg-destructive/90 shadow-lg shadow-destructive/5',
-              )}
-            >
-              {pendingAction === 'complete'
-                ? 'Complete Rental'
-                : pendingAction === 'confirm'
-                  ? 'Confirm Booking'
-                  : 'Reject Booking'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onConfirm={() => {
+          if (pendingAction === 'confirm') {
+            handleStatusUpdate('confirmed')
+          } else if (pendingAction === 'reject') {
+            handleStatusUpdate('rejected')
+          } else if (pendingAction === 'complete') {
+            handleStatusUpdate('completed')
+          }
+          setPendingAction(null)
+        }}
+        onCancel={() => setPendingAction(null)}
+        title={getActionTitle()}
+        description={getActionDescription()}
+        confirmText={getActionConfirmText()}
+        variant={getActionVariant()}
+        isPending={updateStatus.isPending}
+      />
 
       {/* Premium Printable Invoice Dialog */}
       <OrderInvoiceDialog

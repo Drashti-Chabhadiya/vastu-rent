@@ -1,8 +1,8 @@
-import { ArrowUpRight, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { useProducts } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductCardSkeleton } from '#/components/skeletons'
-import { Link } from '@tanstack/react-router'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 export function RecentProducts() {
   const { data: products, isLoading } = useProducts({ status: 'active' })
@@ -18,33 +18,27 @@ export function RecentProducts() {
     : []
 
   return (
-    <section className="bg-background py-20 overflow-hidden border-t border-border/30/50">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative">
-        {/* Glow effect */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />
+    <section className="relative py-20 overflow-hidden bg-background">
+      {/* Background accents */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(15,41,27,0.02),transparent_50%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(15,41,27,0.01),transparent_50%)] pointer-events-none" />
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 relative z-10">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 relative z-10 border-b border-border/10 pb-6">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles size={12} className="animate-pulse" />
-                Just Added
-              </span>
+            <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-2.5">
+              <Sparkles className="h-3.5 w-3.5 animate-spin-slow" /> Fresh
+              Inventory
             </div>
-            <h2 className="text-3xl font-black text-foreground leading-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F291B] tracking-tight leading-none">
               Recent Additions
             </h2>
             <p className="text-muted-foreground/85 font-medium mt-1">
               Be the first to rent these brand new listings.
             </p>
           </div>
-          <Link
-            to="/products"
-            className="group inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-primary underline decoration-primary/20 decoration-2 underline-offset-[6px] transition-all hover:decoration-primary"
-          >
-            Explore all new arrivals
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
+          <ExploreLink to="/products">Explore all new arrivals</ExploreLink>
         </div>
 
         <div className="relative z-10">

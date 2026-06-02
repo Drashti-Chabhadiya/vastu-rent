@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { ArrowUpRight, Calendar, Clock, Search } from 'lucide-react'
+import { Calendar, Clock, Search } from 'lucide-react'
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
 import { Link } from '@tanstack/react-router'
 import { useStories } from '#/hook/use-stories'
 import { Button } from '#/components/ui/button'
+import { Input } from '#/components/ui/input'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -151,7 +153,7 @@ export function JournalPage() {
           </div>
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => {
@@ -244,10 +246,9 @@ export function JournalPage() {
                     {p.excerpt}
                   </p>
 
-                  <div className="mt-8 flex items-center gap-2 text-[13px] font-bold text-foreground transition-all group-hover:gap-3 group-hover:text-primary">
-                    Read story{' '}
-                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </div>
+                  <ExploreLink className="mt-8 text-foreground group-hover:text-primary group-hover:gap-3 transition-all">
+                    Read story
+                  </ExploreLink>
                 </Link>
               </motion.div>
             ))}
@@ -283,7 +284,7 @@ export function JournalPage() {
               onSubmit={(e) => e.preventDefault()}
               className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
             >
-              <input
+              <Input
                 type="email"
                 placeholder="Email address"
                 className="h-14 w-full rounded-full border border-background/20 bg-background/5 px-8 text-background outline-none transition-all focus:border-background sm:w-[350px]"
