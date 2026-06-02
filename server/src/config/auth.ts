@@ -86,6 +86,16 @@ export const auth = betterAuth({
   ].filter(Boolean) as string[],
 
   /**
+   * Enable social authentication providers.
+   */
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    },
+  },
+
+  /**
    * Enable the admin plugin for role management.
    */
   plugins: [
