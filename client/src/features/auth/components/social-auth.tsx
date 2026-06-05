@@ -35,7 +35,7 @@ export function SocialAuth() {
     try {
       if (Capacitor.isNativePlatform()) {
         const backendBaseUrl = import.meta.env.VITE_AUTH_URL || 'https://new-vastu-rent.onrender.com/api/auth'
-        const authUrl = `${backendBaseUrl}/signin/social?provider=google&callbackURL=${encodeURIComponent(window.location.origin)}`
+        const authUrl = `${backendBaseUrl}/sign-in/social?provider=google&callbackURL=${encodeURIComponent(window.location.origin)}`
 
         // Open inside the secure native Chrome Custom Tab / Safari View Controller
         await Browser.open({ url: authUrl })
