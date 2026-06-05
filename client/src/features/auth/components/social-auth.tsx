@@ -34,11 +34,18 @@ export function SocialAuth() {
     setIsLoading('google')
     try {
       if (Capacitor.isNativePlatform()) {
-        const backendBaseUrl = import.meta.env.VITE_AUTH_URL || 'https://new-vastu-rent.onrender.com/api/auth'
-        const authUrl = `${backendBaseUrl}/sign-in/social?provider=google&callbackURL=${encodeURIComponent(window.location.origin)}`
-
-        // Open inside the secure native Chrome Custom Tab / Safari View Controller
-        await Browser.open({ url: authUrl })
+        const result = await authClient.signIn.social({
+          provider: 'google',
+          callbackURL: window.location.origin,
+          disableRedirect: true,
+        })
+        if (result?.data?.url) {
+          // Open inside the secure native Chrome Custom Tab / Safari View Controller
+          await Browser.open({ url: result.data.url })
+        } else if (result?.error) {
+          console.error('Google Sign-In failed:', result.error)
+          toast.error(result.error.message || 'Failed to initialize Google sign-in.')
+        }
         setIsLoading(null)
       } else {
         const result = await authClient.signIn.social({
