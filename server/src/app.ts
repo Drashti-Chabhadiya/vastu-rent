@@ -40,11 +40,29 @@ app.register(multipart, {
 });
 
 app.register(cors, {
-  origin: process.env.CLIENT_URL ?? "http://localhost:3000",
-  // origin: process.env.CLIENT_URL ?? "http://192.168.1.8:3000",
+  origin: (origin, callback) => {
+    const allowed = [
+      process.env.CLIENT_URL,
+      'https://new-vastu-rent-client.vercel.app',
+      'https://new-vastu-rent.onrender.com',
+      'capacitor://localhost',
+      'http://localhost',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173',
+    ].filter(Boolean) as string[]
+
+    // Allow requests with no origin (server-to-server, curl, etc.)
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error(`CORS: origin '${origin}' not allowed`), false)
+    }
+  },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-better-auth-session-token", "better-auth-session-token"],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-better-auth-session-token', 'better-auth-session-token'],
 });
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
@@ -87,3 +105,51 @@ app.get("/api/my-listings", async (req, reply) => reply.redirect("/api/products/
 // Health check
 app.get("/api/health", async () => ({ status: "ok", timestamp: new Date().toISOString() }));
 app.get("/", async () => ({ message: "Vastu-Rent API is running" }));
+
+/**
+ * Native Capacitor OAuth callback page.
+ *
+ * After Better Auth completes the Google OAuth flow on the Render server it
+ * sets the session cookie on `new-vastu-rent.onrender.com` and redirects
+ * to the `callbackURL` — which for the native app is this endpoint.
+ *
+ * This page immediately JS-redirects to `com.vasturent.app://auth-done`.
+ * Android intercepts the custom scheme, brings the Capacitor app to the
+ * foreground (firing `appUrlOpen`), and Chrome Custom Tab closes automatically.
+ *
+ * On web (non-mobile) the page falls back to redirecting to the Vercel client.
+ */
+app.get("/oauth-callback", async (req, reply) => {
+  reply.type("text/html").send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Signing in…</title>
+  <style>
+    body { margin: 0; display: flex; flex-direction: column; align-items: center;
+           justify-content: center; min-height: 100dvh; gap: 16px;
+           font-family: system-ui, sans-serif; background: #f8f9fa; }
+    svg { animation: pop .35s ease; }
+    @keyframes pop { from { transform: scale(.6); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+    p { margin: 0; font-size: 15px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="32" r="32" fill="#1a7a4a"/>
+    <path d="M20 32l9 9 15-15" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <p>Login Successful — returning to app…</p>
+  <script>
+    // Redirect to custom scheme — Android intercepts and fires appUrlOpen.
+    window.location.href = 'com.vasturent.app://auth-done';
+    // Fallback: if not intercepted (web browser), go to the web client.
+    setTimeout(function () {
+      window.location.replace('https://new-vastu-rent-client.vercel.app/');
+    }, 1200);
+  </script>
+</body>
+</html>`);
+});
+

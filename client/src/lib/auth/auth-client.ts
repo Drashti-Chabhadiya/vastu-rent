@@ -5,12 +5,30 @@ import { Capacitor } from '@capacitor/core'
 /**
  * Resolves the correct auth base URL at runtime.
  *
- * On Capacitor native (Android/iOS) we must use the explicit env var because
- * window.location.origin is the WebView's own scheme (capacitor://localhost),
- * not the backend server.
+ * Priority order:
+ *  1. Native Capacitor app — always talk directly to the Render backend to avoid
+ *     the Vercel-proxy cookie-domain mismatch. All OAuth state/session cookies
+ *     must live on the same origin (new-vastu-rent.onrender.com) so Chrome Custom
+ *     Tab and the WebView share the same cookie jar.
+ *  2. Web browser on a remote host (Vercel/production) — use the same-origin
+ *     Vercel proxy so cookies land on the Vercel domain for the web app.
+ *  3. Local development — use the explicit VITE_AUTH_URL env var.
  */
 const getAuthBaseUrl = (): string => {
-  // ── Remote production server (both Web and Native WebView loading from remote) ──
+  // ── 1. Native Capacitor app — MUST come before hostname check ─────────────
+  //    capacitor.config.ts sets server.url = 'https://new-vastu-rent-client.vercel.app'
+  //    so window.location.hostname would be 'new-vastu-rent-client.vercel.app'
+  //    and would incorrectly fall into the "remote production" branch below.
+  //    By checking isNativePlatform() first we guarantee the native app always
+  //    bypasses the Vercel proxy and hits the backend directly.
+  if (Capacitor.isNativePlatform()) {
+    return (
+      import.meta.env.VITE_AUTH_URL ||
+      'https://new-vastu-rent.onrender.com/api/auth'
+    )
+  }
+
+  // ── 2. Web browser on a remote host (Vercel / staging) ───────────────────
   if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
@@ -20,15 +38,7 @@ const getAuthBaseUrl = (): string => {
     return `${window.location.origin}/api/auth`
   }
 
-  // ── Native Capacitor app (local files capacitor://localhost) ──────────────
-  if (Capacitor.isNativePlatform()) {
-    return (
-      import.meta.env.VITE_AUTH_URL ||
-      'https://new-vastu-rent.onrender.com/api/auth'
-    )
-  }
-
-  // ── Local development ───────────────────────────────────────────────────
+  // ── 3. Local development ────────────────────────────────────────────────
   return import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
 }
 

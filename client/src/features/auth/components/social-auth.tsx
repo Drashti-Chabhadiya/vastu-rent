@@ -1,25 +1,76 @@
 import { Button } from '@/components/ui/button'
 import { authClient } from '#/lib/auth/auth-client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Loader } from '@/components/ui/loader'
 import { toast } from 'sonner'
 import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
 import { App } from '@capacitor/app'
 
-export function SocialAuth() {
-  const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | 'facebook' | 'apple' | null
+/**
+ * The backend base URL that the native Capacitor app talks to directly.
+ * Must match the fallback in auth-client.ts so all cookies share one domain.
+ */
+const NATIVE_AUTH_BASE =
+  import.meta.env.VITE_AUTH_URL?.replace('/api/auth', '') ||
+  'https://new-vastu-rent.onrender.com'
 
-  // PRIMARY: appUrlOpen fires when the Vercel /oauth-callback page redirects
+/**
+ * After Google OAuth completes, Better Auth redirects the Chrome Custom Tab to
+ * this page on the same origin as the server so the session cookie is set on
+ * the correct domain before the app regains focus.
+ *
+ * For the native app the callbackURL must be on the SAME domain as the auth
+ * server (Render) so that Better Auth can set the session cookie on that domain
+ * and the Capacitor WebView (which also talks to Render) can pick it up.
+ */
+const NATIVE_CALLBACK_URL = `${NATIVE_AUTH_BASE}/oauth-callback`
+
+/**
+ * Waits for Better Auth's session to become available, retrying a few times
+ * after the Chrome Custom Tab closes (cookies may take a moment to sync).
+ */
+async function waitForSession(retries = 5, delayMs = 600): Promise<boolean> {
+  for (let i = 0; i < retries; i++) {
+    const { data } = await authClient.getSession()
+    if (data?.session) return true
+    if (i < retries - 1) await new Promise((r) => setTimeout(r, delayMs))
+  }
+  return false
+}
+
+export function SocialAuth() {
+  const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | null
+  // Ref to the browserFinished listener so we can remove it from appUrlOpen too
+  const browserFinishedRef = useRef<{ remove: () => void } | null>(null)
+
+  // PRIMARY: appUrlOpen fires when the /oauth-callback page on Render redirects
   // the Chrome Custom Tab to com.vasturent.app://auth-done via JS.
   // Android intercepts the custom scheme, brings the app to front, and fires this event.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
 
     const listenerPromise = App.addListener('appUrlOpen', async (data) => {
-      if (data.url?.startsWith('com.vasturent.app://')) {
-        await Browser.close().catch(console.error)
-        window.location.reload()
+      if (!data.url?.startsWith('com.vasturent.app://')) return
+
+      // Clean up the browserFinished fallback — appUrlOpen took over
+      browserFinishedRef.current?.remove()
+      browserFinishedRef.current = null
+
+      // Close the Chrome Custom Tab
+      await Browser.close().catch(console.error)
+
+      // Explicitly refetch the session from Render.
+      // The session cookie was set on new-vastu-rent.onrender.com by Better Auth;
+      // the WebView shares that cookie store for HTTPS origins on Android.
+      const ok = await waitForSession()
+      if (ok) {
+        // Navigate to home — replace so the user can't "back" to the login screen
+        window.location.replace('/')
+      } else {
+        // Session not found — possibly the user cancelled or an error occurred
+        toast.error('Sign-in failed. Please try again.')
+        setIsLoading(null)
       }
     })
 
@@ -37,41 +88,50 @@ export function SocialAuth() {
     setIsLoading('google')
     try {
       if (Capacitor.isNativePlatform()) {
-        // FALLBACK: if appUrlOpen never fires (JS redirect didn't trigger the scheme),
-        // reload when the user manually closes the Chrome Custom Tab.
-        let browserFinishedHandle: { remove: () => void } | null = null
-        browserFinishedHandle = await Browser.addListener('browserFinished', async () => {
-          browserFinishedHandle?.remove()
-          // Session cookie is shared between Chrome Custom Tab and WebView.
-          // Reloading the WebView picks up the new session automatically.
-          window.location.reload()
+        // FALLBACK: fires when the user closes the Custom Tab manually without
+        // the JS-redirect triggering the custom scheme (e.g. user pressed back).
+        browserFinishedRef.current?.remove()
+        browserFinishedRef.current = await Browser.addListener('browserFinished', async () => {
+          browserFinishedRef.current?.remove()
+          browserFinishedRef.current = null
+
+          // Try to pick up any session that was established before the tab closed
+          const ok = await waitForSession()
+          if (ok) {
+            window.location.replace('/')
+          } else {
+            setIsLoading(null)
+          }
         })
 
+        // Ask Better Auth for the Google OAuth URL.
+        // callbackURL is on the SAME domain as the auth server so the session
+        // cookie is set there and can be read by the WebView.
         const result = await authClient.signIn.social({
           provider: 'google',
-          // Use an HTTPS callbackURL on the Vercel site.
-          // The /oauth-callback route will JS-redirect to com.vasturent.app://auth-done
-          // which Android intercepts → fires appUrlOpen → closes tab + reloads app.
-          callbackURL: 'https://new-vastu-rent-client.vercel.app/oauth-callback',
+          callbackURL: NATIVE_CALLBACK_URL,
           disableRedirect: true,
         })
+
         if (result?.data?.url) {
           // Open Google login inside a secure native Chrome Custom Tab
           await Browser.open({ url: result.data.url })
         } else if (result?.error) {
-          browserFinishedHandle?.remove()
+          browserFinishedRef.current?.remove()
+          browserFinishedRef.current = null
           console.error('Google Sign-In failed:', result.error)
           toast.error(result.error.message || 'Failed to initialize Google sign-in.')
+          setIsLoading(null)
         }
-        setIsLoading(null)
       } else {
+        // Web browser: let Better Auth handle the full redirect flow
         const result = await authClient.signIn.social({
           provider: 'google',
           callbackURL: window.location.origin,
         })
 
-        // Note: better-auth redirects the browser window on success.
-        // If it immediately fails before redirecting, result will contain the error details.
+        // better-auth redirects the browser window on success.
+        // Only show an error if it fails before redirecting.
         if (result?.error) {
           console.error('Google Sign-In failed:', result.error)
           toast.error(result.error.message || 'Failed to initialize Google sign-in.')
@@ -124,7 +184,7 @@ export function SocialAuth() {
           </svg>
         )}
         <span className="text-[13px] hidden sm:inline">
-          {isLoading === 'google' ? 'Redirecting...' : 'Google'}
+          {isLoading === 'google' ? 'Signing in...' : 'Google'}
         </span>
       </Button>
 

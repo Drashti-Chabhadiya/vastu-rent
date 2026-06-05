@@ -102,18 +102,22 @@ export const auth = betterAuth({
    * Better Auth will set the correct CORS headers automatically.
    */
   trustedOrigins: [
+    // Local development
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost',
+    // Capacitor WebView
+    'capacitor://localhost',
+    // Production web app (Vercel)
+    'https://new-vastu-rent-client.vercel.app',
+    // Production backend (Render) — needed when Render itself is the callbackURL origin
+    'https://new-vastu-rent.onrender.com',
+    // Dynamic env-configured origins
     process.env.CLIENT_URL,
-    "https://new-vastu-rent-client.vercel.app",
-    "https://new-vastu-rent-client.vercel.app/oauth-callback",
-    "http://localhost",
-    "capacitor://localhost",
-    "com.vasturent.app://oauth-callback",
-    "com.vasturent.app://",
-    "com.vasturent.app",
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    process.env.BETTER_AUTH_URL,
   ].filter(Boolean) as string[],
+
 
 
   /**
