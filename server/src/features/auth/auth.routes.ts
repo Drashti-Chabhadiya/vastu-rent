@@ -7,17 +7,7 @@ export async function authRoutes(app: FastifyInstance) {
     const proto = (request.headers["x-forwarded-proto"] as string) || request.protocol;
     const host = (request.headers["x-forwarded-host"] as string) || request.headers.host || request.hostname;
     
-    let url = `${proto}://${host}${request.url}`;
-    
-    // Better Auth expects the request URL to match BETTER_AUTH_URL in production.
-    if (process.env.BETTER_AUTH_URL) {
-      try {
-        const parsedBase = new URL(process.env.BETTER_AUTH_URL);
-        url = `${parsedBase.origin}${request.url}`;
-      } catch (e) {
-        // Ignore parsing errors and fallback to header-based URL
-      }
-    }
+    const url = `${proto}://${host}${request.url}`;
     
     // Convert Fastify body to a string payload for the Web Standard Request
     let body = undefined;

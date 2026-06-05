@@ -4,12 +4,35 @@ import { prisma } from "./prisma.js";
 import { admin } from "better-auth/plugins";
 import { sendVerificationEmail, sendResetPasswordEmail } from "../lib/mail.js";
 
+const getHostName = (urlStr?: string) => {
+  if (!urlStr) return "";
+  try {
+    const formatted = urlStr.startsWith("http://") || urlStr.startsWith("https://") ? urlStr : `https://${urlStr}`;
+    return new URL(formatted).host;
+  } catch (e) {
+    return "";
+  }
+};
+
 export const auth = betterAuth({
   /**
    * The base URL where the auth server is running.
    * Better Auth uses this to build callback/redirect URLs.
    */
-  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:4000",
+  baseURL: {
+    allowedHosts: [
+      "new-vastu-rent.onrender.com",
+      "new-vastu-rent-client.vercel.app",
+      "localhost:4000",
+      "localhost:3000",
+      "127.0.0.1:4000",
+      "127.0.0.1:3000",
+      "*.vercel.app",
+      "*.onrender.com",
+      getHostName(process.env.BETTER_AUTH_URL),
+      getHostName(process.env.CLIENT_URL),
+    ].filter(Boolean) as string[],
+  },
 
   /**
    * Secret used to sign cookies and tokens.
