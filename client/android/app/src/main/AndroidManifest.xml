@@ -24,6 +24,14 @@
                 <action android:name="OPEN_ACTIVITY_1" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <!-- Custom URL scheme for OAuth deep links -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.vasturent.app" />
+            </intent-filter>
         </activity>
 
         <provider

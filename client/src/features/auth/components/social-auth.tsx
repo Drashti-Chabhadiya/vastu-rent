@@ -36,7 +36,7 @@ export function SocialAuth() {
       if (Capacitor.isNativePlatform()) {
         const result = await authClient.signIn.social({
           provider: 'google',
-          callbackURL: window.location.origin,
+          callbackURL: 'com.vasturent.app://oauth-callback',
           disableRedirect: true,
         })
         if (result?.data?.url) {
