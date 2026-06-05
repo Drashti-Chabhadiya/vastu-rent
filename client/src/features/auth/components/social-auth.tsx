@@ -1,11 +1,29 @@
 import { Button } from '@/components/ui/button'
 import { authClient } from '#/lib/auth/auth-client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Loader } from '@/components/ui/loader'
 import { toast } from 'sonner'
+import { Browser } from '@capacitor/browser'
+import { Capacitor } from '@capacitor/core'
+import { App } from '@capacitor/app'
 
 export function SocialAuth() {
   const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | 'facebook' | 'apple' | null
+
+  // Auto-close in-app browser when app returns to foreground
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return
+
+    const listener = App.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        Browser.close().catch(console.error)
+      }
+    })
+
+    return () => {
+      listener.then((l) => l.remove()).catch(console.error)
+    }
+  }, [])
 
   const handleSocialSignIn = async (provider: 'google' | 'facebook' | 'apple') => {
     if (provider !== 'google') {
@@ -15,17 +33,26 @@ export function SocialAuth() {
 
     setIsLoading('google')
     try {
-      const result = await authClient.signIn.social({
-        provider: 'google',
-        callbackURL: window.location.origin,
-      })
+      if (Capacitor.isNativePlatform()) {
+        const backendBaseUrl = import.meta.env.VITE_AUTH_URL || 'https://new-vastu-rent.onrender.com/api/auth'
+        const authUrl = `${backendBaseUrl}/signin/social?provider=google&callbackURL=${encodeURIComponent(window.location.origin)}`
 
-      // Note: better-auth redirects the browser window on success.
-      // If it immediately fails before redirecting, result will contain the error details.
-      if (result?.error) {
-        console.error('Google Sign-In failed:', result.error)
-        toast.error(result.error.message || 'Failed to initialize Google sign-in.')
+        // Open inside the secure native Chrome Custom Tab / Safari View Controller
+        await Browser.open({ url: authUrl })
         setIsLoading(null)
+      } else {
+        const result = await authClient.signIn.social({
+          provider: 'google',
+          callbackURL: window.location.origin,
+        })
+        
+        // Note: better-auth redirects the browser window on success.
+        // If it immediately fails before redirecting, result will contain the error details.
+        if (result?.error) {
+          console.error('Google Sign-In failed:', result.error)
+          toast.error(result.error.message || 'Failed to initialize Google sign-in.')
+          setIsLoading(null)
+        }
       }
     } catch (err: any) {
       console.error('Unexpected Google Sign-In error:', err)
