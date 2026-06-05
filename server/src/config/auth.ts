@@ -104,6 +104,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     process.env.CLIENT_URL,
     "https://new-vastu-rent-client.vercel.app",
+    "https://new-vastu-rent-client.vercel.app/oauth-callback",
     "http://localhost",
     "capacitor://localhost",
     "com.vasturent.app://oauth-callback",
@@ -113,6 +114,7 @@ export const auth = betterAuth({
     "http://localhost:5173",
     "http://127.0.0.1:5173",
   ].filter(Boolean) as string[],
+
 
   /**
    * Enable social authentication providers.

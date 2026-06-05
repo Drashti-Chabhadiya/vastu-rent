@@ -10,18 +10,15 @@ import { App } from '@capacitor/app'
 export function SocialAuth() {
   const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | 'facebook' | 'apple' | null
 
-  // Listen for deep link callback after Google OAuth completes.
-  // When Google finishes, the server redirects to com.vasturent.app://oauth-callback.
-  // Android intercepts this URL, brings the app to foreground, and fires appUrlOpen.
-  // We close the Chrome Custom Tab and reload the WebView so the new session is picked up.
+  // PRIMARY: appUrlOpen fires when the Vercel /oauth-callback page redirects
+  // the Chrome Custom Tab to com.vasturent.app://auth-done via JS.
+  // Android intercepts the custom scheme, brings the app to front, and fires this event.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
 
     const listenerPromise = App.addListener('appUrlOpen', async (data) => {
       if (data.url?.startsWith('com.vasturent.app://')) {
-        // Close Chrome Custom Tab
         await Browser.close().catch(console.error)
-        // Reload the WebView to trigger the auth session check
         window.location.reload()
       }
     })
@@ -40,15 +37,29 @@ export function SocialAuth() {
     setIsLoading('google')
     try {
       if (Capacitor.isNativePlatform()) {
+        // FALLBACK: if appUrlOpen never fires (JS redirect didn't trigger the scheme),
+        // reload when the user manually closes the Chrome Custom Tab.
+        let browserFinishedHandle: { remove: () => void } | null = null
+        browserFinishedHandle = await Browser.addListener('browserFinished', async () => {
+          browserFinishedHandle?.remove()
+          // Session cookie is shared between Chrome Custom Tab and WebView.
+          // Reloading the WebView picks up the new session automatically.
+          window.location.reload()
+        })
+
         const result = await authClient.signIn.social({
           provider: 'google',
-          callbackURL: 'com.vasturent.app://oauth-callback',
+          // Use an HTTPS callbackURL on the Vercel site.
+          // The /oauth-callback route will JS-redirect to com.vasturent.app://auth-done
+          // which Android intercepts → fires appUrlOpen → closes tab + reloads app.
+          callbackURL: 'https://new-vastu-rent-client.vercel.app/oauth-callback',
           disableRedirect: true,
         })
         if (result?.data?.url) {
-          // Open inside the secure native Chrome Custom Tab / Safari View Controller
+          // Open Google login inside a secure native Chrome Custom Tab
           await Browser.open({ url: result.data.url })
         } else if (result?.error) {
+          browserFinishedHandle?.remove()
           console.error('Google Sign-In failed:', result.error)
           toast.error(result.error.message || 'Failed to initialize Google sign-in.')
         }

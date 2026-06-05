@@ -17,6 +17,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as OauthCallbackRouteImport } from './routes/oauth-callback'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JournalRouteImport } from './routes/journal'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
@@ -93,6 +94,11 @@ const ProductsRoute = ProductsRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OauthCallbackRoute = OauthCallbackRouteImport.update({
+  id: '/oauth-callback',
+  path: '/oauth-callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -302,6 +308,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/journal': typeof JournalRouteWithChildren
   '/login': typeof LoginRoute
+  '/oauth-callback': typeof OauthCallbackRoute
   '/pricing': typeof PricingRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
@@ -344,6 +351,7 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/how-it-works': typeof HowItWorksRoute
   '/login': typeof LoginRoute
+  '/oauth-callback': typeof OauthCallbackRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
@@ -388,6 +396,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/journal': typeof JournalRouteWithChildren
   '/login': typeof LoginRoute
+  '/oauth-callback': typeof OauthCallbackRoute
   '/pricing': typeof PricingRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
@@ -436,6 +445,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/journal'
     | '/login'
+    | '/oauth-callback'
     | '/pricing'
     | '/products'
     | '/profile'
@@ -478,6 +488,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/how-it-works'
     | '/login'
+    | '/oauth-callback'
     | '/pricing'
     | '/profile'
     | '/reset-password'
@@ -521,6 +532,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/journal'
     | '/login'
+    | '/oauth-callback'
     | '/pricing'
     | '/products'
     | '/profile'
@@ -569,6 +581,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   JournalRoute: typeof JournalRouteWithChildren
   LoginRoute: typeof LoginRoute
+  OauthCallbackRoute: typeof OauthCallbackRoute
   PricingRoute: typeof PricingRoute
   ProductsRoute: typeof ProductsRouteWithChildren
   ProfileRoute: typeof ProfileRouteWithChildren
@@ -636,6 +649,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oauth-callback': {
+      id: '/oauth-callback'
+      path: '/oauth-callback'
+      fullPath: '/oauth-callback'
+      preLoaderRoute: typeof OauthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1039,6 +1059,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   JournalRoute: JournalRouteWithChildren,
   LoginRoute: LoginRoute,
+  OauthCallbackRoute: OauthCallbackRoute,
   PricingRoute: PricingRoute,
   ProductsRoute: ProductsRouteWithChildren,
   ProfileRoute: ProfileRouteWithChildren,
