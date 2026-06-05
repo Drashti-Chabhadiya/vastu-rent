@@ -2,6 +2,18 @@ import { auth } from "../../config/auth.js";
 import { FastifyInstance } from "fastify";
 
 export async function authRoutes(app: FastifyInstance) {
+  app.get("/session-token", async (request, reply) => {
+    const token =
+      request.cookies["better-auth.session_token"] ||
+      request.cookies["__Secure-better-auth.session_token"];
+
+    if (!token) {
+      return reply.status(401).send({ error: "No session token found in cookies" });
+    }
+
+    return { sessionToken: token };
+  });
+
   app.all("/*", async (request, reply) => {
     // When behind a reverse proxy (like Vercel rewrites), the protocol and host headers must be trusted.
     const proto = (request.headers["x-forwarded-proto"] as string) || request.protocol;

@@ -21,21 +21,56 @@ export const Route = createFileRoute('/oauth-callback')({
   component: OAuthCallback,
 })
 
+const getSessionTokenUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    if (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname.startsWith('192.168.')
+    ) {
+      return 'http://localhost:4000/api/auth/session-token'
+    }
+  }
+  return 'https://new-vastu-rent.onrender.com/api/auth/session-token'
+}
+
 function OAuthCallback() {
   useEffect(() => {
-    // Small delay to ensure the page renders before redirecting
-    const timer = setTimeout(() => {
+    let active = true
+
+    async function handleCallback() {
+      let redirectUrl = 'com.vasturent.app://auth-done'
+      try {
+        const response = await fetch(getSessionTokenUrl(), { credentials: 'include' })
+        if (response.ok) {
+          const data = await response.json()
+          if (data.sessionToken) {
+            redirectUrl = `com.vasturent.app://auth-done?token=${encodeURIComponent(data.sessionToken)}`
+          }
+        }
+      } catch (err) {
+        console.error('Failed to retrieve session token:', err)
+      }
+
+      if (!active) return
+
       // Redirect to custom scheme — Android intercepts this and fires appUrlOpen
       // in the native app, closing the Chrome Custom Tab automatically.
-      window.location.href = 'com.vasturent.app://auth-done'
+      window.location.href = redirectUrl
 
-      // Fallback: if we're on web (not intercepted by Android), go to home after 1s
+      // Fallback: if we're on web (not intercepted by Android), go to home after 1.2s
       setTimeout(() => {
-        window.location.replace('/')
-      }, 1000)
-    }, 100)
+        if (active) {
+          window.location.replace('/')
+        }
+      }, 1200)
+    }
 
-    return () => clearTimeout(timer)
+    handleCallback()
+
+    return () => {
+      active = false
+    }
   }, [])
 
   return (

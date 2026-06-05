@@ -5,22 +5,23 @@ import { Capacitor } from '@capacitor/core'
 /**
  * Resolves the correct auth base URL at runtime.
  *
- * Priority order:
- *  1. Native Capacitor app — always talk directly to the Render backend to avoid
- *     the Vercel-proxy cookie-domain mismatch. All OAuth state/session cookies
- *     must live on the same origin (new-vastu-rent.onrender.com) so Chrome Custom
- *     Tab and the WebView share the same cookie jar.
- *  2. Web browser on a remote host (Vercel/production) — use the same-origin
- *     Vercel proxy so cookies land on the Vercel domain for the web app.
- *  3. Local development — use the explicit VITE_AUTH_URL env var.
+ * For the Capacitor app, `capacitor.config.ts` sets
+ * `server.url = 'https://new-vastu-rent-client.vercel.app'`
+ * so `window.location.hostname` is always 'new-vastu-rent-client.vercel.app'
+ * in the WebView — both on native and in a regular browser.
+ *
+ * We route ALL production traffic (native + web) through the Vercel proxy.
+ * This ensures:
+ *  - State cookie is set on new-vastu-rent-client.vercel.app ✓
+ *  - Google redirect_uri matches the Vercel callback URI in Google Console ✓
+ *  - Chrome Custom Tab and WebView share the Vercel-domain cookie jar ✓
+ *  - Session cookie is picked up after OAuth without any extra work ✓
+ *
+ * The original state_mismatch was fixed in auth.routes.ts by removing the
+ * BETTER_AUTH_URL override that forced cookies onto the wrong domain.
  */
 const getAuthBaseUrl = (): string => {
   // ── 1. Native Capacitor app — MUST come before hostname check ─────────────
-  //    capacitor.config.ts sets server.url = 'https://new-vastu-rent-client.vercel.app'
-  //    so window.location.hostname would be 'new-vastu-rent-client.vercel.app'
-  //    and would incorrectly fall into the "remote production" branch below.
-  //    By checking isNativePlatform() first we guarantee the native app always
-  //    bypasses the Vercel proxy and hits the backend directly.
   if (Capacitor.isNativePlatform()) {
     return (
       import.meta.env.VITE_AUTH_URL ||
@@ -28,19 +29,22 @@ const getAuthBaseUrl = (): string => {
     )
   }
 
-  // ── 2. Web browser on a remote host (Vercel / staging) ───────────────────
+  // ── 2. Production / remote host (Vercel, staging) ──────────────────────────
   if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1' &&
     !window.location.hostname.startsWith('192.168.')
   ) {
+    // window.location.origin is 'https://new-vastu-rent-client.vercel.app'
+    // for both the native Capacitor WebView and the regular browser.
     return `${window.location.origin}/api/auth`
   }
 
-  // ── 3. Local development ────────────────────────────────────────────────
+  // ── 3. Local development ───────────────────────────────────────────────────
   return import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
 }
+
 
 /**
  * Better Auth client — the single source of truth for all auth actions
@@ -52,6 +56,29 @@ const getAuthBaseUrl = (): string => {
 export const authClient = createAuthClient({
   baseURL: getAuthBaseUrl(),
   plugins: [adminClient()],
+  fetchOptions: {
+    onRequest: (ctx) => {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
+      if (token) {
+        ctx.headers.set('Authorization', `Bearer ${token}`)
+      }
+    },
+    onResponse: (ctx) => {
+      if (typeof window !== 'undefined') {
+        const url = ctx.request?.url?.toString() || ''
+        if (url.includes('/sign-out')) {
+          localStorage.removeItem('session_token')
+        }
+      }
+    },
+    onError: (ctx) => {
+      if (typeof window !== 'undefined') {
+        if (ctx.error?.status === 401) {
+          localStorage.removeItem('session_token')
+        }
+      }
+    }
+  },
   user: {
     additionalFields: {
       gender: { type: 'string', required: false },

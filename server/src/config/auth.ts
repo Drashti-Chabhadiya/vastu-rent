@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma.js";
-import { admin } from "better-auth/plugins";
+import { admin, bearer } from "better-auth/plugins";
 import { sendVerificationEmail, sendResetPasswordEmail } from "../lib/mail.js";
 
 const getHostName = (urlStr?: string) => {
@@ -135,6 +135,7 @@ export const auth = betterAuth({
    */
   plugins: [
     admin(),
+    bearer(),
   ],
 });
 

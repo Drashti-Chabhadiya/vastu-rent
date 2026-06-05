@@ -8,23 +8,21 @@ import { Capacitor } from '@capacitor/core'
 import { App } from '@capacitor/app'
 
 /**
- * The backend base URL that the native Capacitor app talks to directly.
- * Must match the fallback in auth-client.ts so all cookies share one domain.
+ * Resolves the callback URL dynamically based on the current origin.
+ * For production, this maps to the client-side Vercel domain.
+ * For local development, it maps to the local dev origin.
  */
-const NATIVE_AUTH_BASE =
-  import.meta.env.VITE_AUTH_URL?.replace('/api/auth', '') ||
-  'https://new-vastu-rent.onrender.com'
+const getNativeCallbackUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')) {
+      return `${origin}/oauth-callback`
+    }
+  }
+  return 'https://new-vastu-rent-client.vercel.app/oauth-callback'
+}
 
-/**
- * After Google OAuth completes, Better Auth redirects the Chrome Custom Tab to
- * this page on the same origin as the server so the session cookie is set on
- * the correct domain before the app regains focus.
- *
- * For the native app the callbackURL must be on the SAME domain as the auth
- * server (Render) so that Better Auth can set the session cookie on that domain
- * and the Capacitor WebView (which also talks to Render) can pick it up.
- */
-const NATIVE_CALLBACK_URL = `${NATIVE_AUTH_BASE}/oauth-callback`
+const NATIVE_CALLBACK_URL = getNativeCallbackUrl()
 
 /**
  * Waits for Better Auth's session to become available, retrying a few times
@@ -60,9 +58,20 @@ export function SocialAuth() {
       // Close the Chrome Custom Tab
       await Browser.close().catch(console.error)
 
-      // Explicitly refetch the session from Render.
-      // The session cookie was set on new-vastu-rent.onrender.com by Better Auth;
-      // the WebView shares that cookie store for HTTPS origins on Android.
+      // Parse session token from URL parameters
+      let token: string | null = null
+      try {
+        const urlObj = new URL(data.url)
+        token = urlObj.searchParams.get('token')
+      } catch (err) {
+        console.error('Failed to parse URL from appUrlOpen:', err)
+      }
+
+      if (token) {
+        localStorage.setItem('session_token', token)
+      }
+
+      // Explicitly refetch the session.
       const ok = await waitForSession()
       if (ok) {
         // Navigate to home — replace so the user can't "back" to the login screen
