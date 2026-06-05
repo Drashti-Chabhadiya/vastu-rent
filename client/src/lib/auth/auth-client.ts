@@ -10,15 +10,7 @@ import { Capacitor } from '@capacitor/core'
  * not the backend server.
  */
 const getAuthBaseUrl = (): string => {
-  // ── Native Capacitor app ────────────────────────────────────────────────
-  if (Capacitor.isNativePlatform()) {
-    return (
-      import.meta.env.VITE_AUTH_URL ||
-      'https://new-vastu-rent.onrender.com/api/auth'
-    )
-  }
-
-  // ── Web browser — non-local origin (production / staging) ───────────────
+  // ── Remote production server (both Web and Native WebView loading from remote) ──
   if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
@@ -26,6 +18,14 @@ const getAuthBaseUrl = (): string => {
     !window.location.hostname.startsWith('192.168.')
   ) {
     return `${window.location.origin}/api/auth`
+  }
+
+  // ── Native Capacitor app (local files capacitor://localhost) ──────────────
+  if (Capacitor.isNativePlatform()) {
+    return (
+      import.meta.env.VITE_AUTH_URL ||
+      'https://new-vastu-rent.onrender.com/api/auth'
+    )
   }
 
   // ── Local development ───────────────────────────────────────────────────
