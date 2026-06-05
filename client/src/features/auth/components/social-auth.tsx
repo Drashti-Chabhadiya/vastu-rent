@@ -10,18 +10,24 @@ import { App } from '@capacitor/app'
 export function SocialAuth() {
   const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | 'facebook' | 'apple' | null
 
-  // Auto-close in-app browser when app returns to foreground
+  // Listen for deep link callback after Google OAuth completes.
+  // When Google finishes, the server redirects to com.vasturent.app://oauth-callback.
+  // Android intercepts this URL, brings the app to foreground, and fires appUrlOpen.
+  // We close the Chrome Custom Tab and reload the WebView so the new session is picked up.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
 
-    const listener = App.addListener('appStateChange', ({ isActive }) => {
-      if (isActive) {
-        Browser.close().catch(console.error)
+    const listenerPromise = App.addListener('appUrlOpen', async (data) => {
+      if (data.url?.startsWith('com.vasturent.app://')) {
+        // Close Chrome Custom Tab
+        await Browser.close().catch(console.error)
+        // Reload the WebView to trigger the auth session check
+        window.location.reload()
       }
     })
 
     return () => {
-      listener.then((l) => l.remove()).catch(console.error)
+      listenerPromise.then((l) => l.remove()).catch(console.error)
     }
   }, [])
 
@@ -52,7 +58,7 @@ export function SocialAuth() {
           provider: 'google',
           callbackURL: window.location.origin,
         })
-        
+
         // Note: better-auth redirects the browser window on success.
         // If it immediately fails before redirecting, result will contain the error details.
         if (result?.error) {
