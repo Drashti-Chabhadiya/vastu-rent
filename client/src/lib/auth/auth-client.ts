@@ -21,26 +21,29 @@ import { Capacitor } from '@capacitor/core'
  *   - Uses VITE_AUTH_URL which points to http://localhost:4000/api/auth
  */
 const getAuthBaseUrl = (): string => {
+  let url = ''
   // Native Capacitor app — always use the Render server directly
   if (Capacitor.isNativePlatform()) {
-    return (
+    url =
       import.meta.env.VITE_AUTH_URL ||
       'https://new-vastu-rent.onrender.com/api/auth'
-    )
-  }
-
-  // Web browser on a non-local origin (production Vercel deployment)
-  if (
+  } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1' &&
     !window.location.hostname.startsWith('192.168.')
   ) {
-    return `${window.location.origin}/api/auth`
+    url = `${window.location.origin}/api/auth`
+  } else {
+    // Local development
+    url = import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
   }
 
-  // Local development
-  return import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
+  // On Android emulator, rewrite localhost to 10.0.2.2 to connect to host dev server
+  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+    url = url.replace('localhost', '10.0.2.2').replace('127.0.0.1', '10.0.2.2')
+  }
+  return url
 }
 
 

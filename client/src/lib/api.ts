@@ -13,28 +13,28 @@ import { Capacitor } from '@capacitor/core'
  *  3. Everything else (local dev) falls back to the env var or localhost.
  */
 const getApiBaseUrl = (): string => {
-  // ── Native Capacitor app (Android / iOS) ───────────────────────────────
-  // window.location.origin is the WebView origin, NOT the backend server.
-  // We must use the explicit env var that was baked in at build time.
+  let url = ''
   if (Capacitor.isNativePlatform()) {
-    return (
+    url =
       import.meta.env.VITE_API_BASE_URL ||
       'https://new-vastu-rent.onrender.com/api'
-    )
-  }
-
-  // ── Web browser — non-local origin (production / staging) ─────────────
-  if (
+  } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1' &&
     !window.location.hostname.startsWith('192.168.')
   ) {
-    return `${window.location.origin}/api`
+    url = `${window.location.origin}/api`
+  } else {
+    url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'
   }
 
-  // ── Local development ──────────────────────────────────────────────────
-  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'
+  // On Android emulator, 'localhost' refers to the emulator itself, so we must
+  // route request to 10.0.2.2 to access the host machine's dev server.
+  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+    url = url.replace('localhost', '10.0.2.2').replace('127.0.0.1', '10.0.2.2')
+  }
+  return url
 }
 
 export const apiClient = axios.create({

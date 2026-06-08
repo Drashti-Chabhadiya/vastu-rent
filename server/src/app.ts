@@ -41,6 +41,11 @@ app.register(multipart, {
 
 app.register(cors, {
   origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true)
+      return
+    }
+
     const allowed = [
       process.env.CLIENT_URL,
       'https://new-vastu-rent-client.vercel.app',
@@ -50,8 +55,14 @@ app.register(cors, {
       'http://localhost:3000',
     ].filter(Boolean) as string[]
 
-    // Allow requests with no origin (server-to-server, curl, etc.)
-    if (!origin || allowed.includes(origin)) {
+    const isLocalOrCapacitor =
+      allowed.includes(origin) ||
+      origin.startsWith('capacitor://') ||
+      origin.startsWith('http://localhost') ||
+      origin.startsWith('https://localhost') ||
+      /\/\/(127\.0\.0\.1|10\.0\.2\.2|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(origin);
+
+    if (isLocalOrCapacitor) {
       callback(null, true)
     } else {
       callback(new Error(`CORS: origin '${origin}' not allowed`), false)

@@ -21,8 +21,19 @@ export function initSocket(httpServer: any) {
   io = new SocketIOServer(httpServer, {
     cors: {
       origin: (origin, callback) => {
-        // Allow requests with no origin (mobile apps, curl, etc.) or matching origins
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin) {
+          callback(null, true);
+          return;
+        }
+
+        const isLocalOrCapacitor =
+          allowedOrigins.includes(origin) ||
+          origin.startsWith('capacitor://') ||
+          origin.startsWith('http://localhost') ||
+          origin.startsWith('https://localhost') ||
+          /\/\/(127\.0\.0\.1|10\.0\.2\.2|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(origin);
+
+        if (isLocalOrCapacitor) {
           callback(null, true);
         } else {
           callback(new Error(`Origin ${origin} not allowed`));

@@ -4,6 +4,9 @@ const config: CapacitorConfig = {
   appId: 'com.vasturent.app',
   appName: 'Vastu Rent',
   webDir: 'dist',
+  server: {
+    androidScheme: 'http',
+  },
   // No server.url — the APK serves from its own bundled dist/ assets.
   // Setting server.url would cause the WebView to ignore the local dist and load
   // from a remote URL instead, breaking all auth fixes baked into the bundle.
