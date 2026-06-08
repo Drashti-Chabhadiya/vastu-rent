@@ -285,7 +285,7 @@ export function ProductDetail({ id }: { id: string }) {
       setIsPaying(false)
       alert(
         err.response?.data?.message ||
-          'Booking failed. Please make sure you are logged in.',
+        'Booking failed. Please make sure you are logged in.',
       )
     }
   }
@@ -322,8 +322,8 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-        ]
+        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+      ]
   const liked = isLiked(product.id)
 
   const productInfo = [
