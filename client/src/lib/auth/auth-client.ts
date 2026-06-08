@@ -94,7 +94,7 @@ export const authClient = createAuthClient({
 
         // 3. Last resort: try to parse JSON body for a token field
         try {
-          const body = ctx.data as any
+          const body = ctx.data
           const token =
             body?.token ||
             body?.session?.token ||
