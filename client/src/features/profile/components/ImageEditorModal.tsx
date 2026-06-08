@@ -17,6 +17,7 @@ export const ImageEditorModal = ({
   onCropComplete,
 }: ImageEditorModalProps) => {
   const [scale, setScale] = useState(1)
+  const [minScale, setMinScale] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [naturalSize, setNaturalSize] = useState({ width: 0, height: 0 })
   const [fitSize, setFitSize] = useState({ width: 0, height: 0 })
@@ -32,6 +33,7 @@ export const ImageEditorModal = ({
   useEffect(() => {
     if (isOpen) {
       setScale(1)
+      setMinScale(1)
       setPosition({ x: 0, y: 0 })
     }
   }, [isOpen, imageSrc])
@@ -57,15 +59,19 @@ export const ImageEditorModal = ({
     setFitSize({ width: fw, height: fh })
     setScale(1)
     setPosition({ x: 0, y: 0 })
+
+    // Calculate minimum scale to let the entire image fit inside the circular crop viewport
+    const calculatedMinScale = CROP_SIZE / Math.max(fw, fh)
+    setMinScale(Math.max(0.1, calculatedMinScale))
   }
 
-  // Get constraints to keep the circular crop viewport (220px) fully covered by the image
+  // Get constraints. If image is smaller than crop area, clamp translation to 0 (snap to center)
   const getConstraints = useCallback((currentScale: number) => {
     const w_r = fitSize.width * currentScale
     const h_r = fitSize.height * currentScale
 
-    const maxX = Math.max(0, (w_r - CROP_SIZE) / 2)
-    const maxY = Math.max(0, (h_r - CROP_SIZE) / 2)
+    const maxX = w_r > CROP_SIZE ? (w_r - CROP_SIZE) / 2 : 0
+    const maxY = h_r > CROP_SIZE ? (h_r - CROP_SIZE) / 2 : 0
 
     return {
       minX: -maxX,
@@ -107,7 +113,7 @@ export const ImageEditorModal = ({
     setIsDragging(false)
   }
 
-  // HTML5 Canvas Cropping Engine
+  // HTML5 Canvas Cropping Engine using Coordinate Space Transformation Matrix
   const handleSave = () => {
     if (!naturalSize.width || !naturalSize.height || !imageSrc) return
 
@@ -119,33 +125,30 @@ export const ImageEditorModal = ({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const w_r = fitSize.width * scale
-    const h_r = fitSize.height * scale
-
-    // Compute top-left position of the image in container coordinate space
-    const imgLeft = CONTAINER_SIZE / 2 + position.x - w_r / 2
-    const imgTop = CONTAINER_SIZE / 2 + position.y - h_r / 2
-
-    // Crop box coordinates in container space
-    const cropLeft = (CONTAINER_SIZE - CROP_SIZE) / 2
-    const cropTop = (CONTAINER_SIZE - CROP_SIZE) / 2
-
-    // Offsets of the crop area relative to the image
-    const offsetX = cropLeft - imgLeft
-    const offsetY = cropTop - imgTop
-
-    // Scale up the coordinates to map back to original high-res pixels
-    const scaleRatio = naturalSize.width / w_r
-
-    const sx = offsetX * scaleRatio
-    const sy = offsetY * scaleRatio
-    const sw = CROP_SIZE * scaleRatio
-    const sh = CROP_SIZE * scaleRatio
+    // Fill background with white in case image does not cover crop viewport
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, outputSize, outputSize)
 
     const img = new Image()
     img.src = imageSrc
     img.onload = () => {
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outputSize, outputSize)
+      const canvasScale = outputSize / CROP_SIZE
+
+      ctx.save()
+
+      // Translate center origin of output canvas
+      ctx.translate(outputSize / 2, outputSize / 2)
+
+      // Translate panning position in canvas coordinates
+      ctx.translate(position.x * canvasScale, position.y * canvasScale)
+
+      // Apply scale multiplier
+      ctx.scale(scale * canvasScale, scale * canvasScale)
+
+      // Draw centered raw image
+      ctx.drawImage(img, -fitSize.width / 2, -fitSize.height / 2, fitSize.width, fitSize.height)
+
+      ctx.restore()
 
       canvas.toBlob((blob) => {
         if (blob) {
@@ -162,8 +165,8 @@ export const ImageEditorModal = ({
     <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm transition-opacity" />
-        
-        <DialogPrimitive.Content 
+
+        <DialogPrimitive.Content
           className="fixed left-[50%] top-[50%] z-50 grid w-[360px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg rounded-3xl duration-200 outline-none select-none"
           aria-describedby={undefined}
         >
@@ -178,7 +181,7 @@ export const ImageEditorModal = ({
 
           <div className="flex flex-col items-center gap-6 mt-2">
             {/* Crop Viewport */}
-            <div 
+            <div
               className="relative w-[320px] h-[320px] overflow-hidden bg-muted border border-border/30 rounded-2xl shadow-inner cursor-grab select-none touch-none active:cursor-grabbing flex items-center justify-center"
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
@@ -208,8 +211,8 @@ export const ImageEditorModal = ({
 
               {/* Crop Circular Mask and Dashed overlay */}
               <div className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden">
-                <div 
-                  className="absolute w-[220px] h-[220px] rounded-full border border-white/50 top-[50px] left-[50px] shadow-[0_0_0_9999px_rgba(0,0,0,0.65)]" 
+                <div
+                  className="absolute w-[220px] h-[220px] rounded-full border border-white/50 top-[50px] left-[50px] shadow-[0_0_0_9999px_rgba(0,0,0,0.65)]"
                 />
                 <div className="absolute w-[220px] h-[220px] rounded-full border border-dashed border-white/20 top-[50px] left-[50px]" />
                 <div className="absolute top-2 left-2 bg-black/40 text-[10px] text-white/80 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -229,7 +232,7 @@ export const ImageEditorModal = ({
                 <ZoomOut size={16} className="text-muted-foreground" />
                 <input
                   type="range"
-                  min="1"
+                  min={minScale}
                   max="3"
                   step="0.01"
                   value={scale}
