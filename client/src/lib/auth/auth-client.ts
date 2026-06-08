@@ -5,22 +5,23 @@ import { Capacitor } from '@capacitor/core'
 /**
  * Resolves the correct auth base URL at runtime.
  *
- * For the Capacitor app, `capacitor.config.ts` sets
- * `server.url = 'https://new-vastu-rent-client.vercel.app'`
- * so `window.location.hostname` is always 'new-vastu-rent-client.vercel.app'
- * in the WebView — both on native and in a regular browser.
+ * Native Capacitor app (no server.url):
+ *   - WebView origin is `capacitor://localhost`
+ *   - Capacitor.isNativePlatform() = true
+ *   - Must use the Render production URL directly (cookies don't work cross-domain)
+ *   - Bearer token auth (localStorage) is the session mechanism
  *
- * We route ALL production traffic (native + web) through the Vercel proxy.
- * This ensures:
- *  - State cookie is set on new-vastu-rent-client.vercel.app ✓
- *  - Google redirect_uri matches the Vercel callback URI in Google Console ✓
- *  - Chrome Custom Tab and WebView share the Vercel-domain cookie jar ✓
- *  - Session cookie is picked up after OAuth without any extra work ✓
+ * Web browser (Vercel production):
+ *   - window.location.hostname = new-vastu-rent-client.vercel.app
+ *   - Routes through /api/auth Vercel proxy → Render server
+ *   - Cookie-based session works normally
  *
- * The original state_mismatch was fixed in auth.routes.ts by removing the
- * BETTER_AUTH_URL override that forced cookies onto the wrong domain.
+ * Local development:
+ *   - window.location.hostname = localhost
+ *   - Uses VITE_AUTH_URL which points to http://localhost:4000/api/auth
  */
 const getAuthBaseUrl = (): string => {
+  // Native Capacitor app — always use the Render server directly
   if (Capacitor.isNativePlatform()) {
     return (
       import.meta.env.VITE_AUTH_URL ||
@@ -28,7 +29,7 @@ const getAuthBaseUrl = (): string => {
     )
   }
 
-  // ── Web browser — non-local origin (production / staging) ─────────────
+  // Web browser on a non-local origin (production Vercel deployment)
   if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
@@ -38,20 +39,22 @@ const getAuthBaseUrl = (): string => {
     return `${window.location.origin}/api/auth`
   }
 
-  // ── Local development ──────────────────────────────────────────────────
+  // Local development
   return import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
 }
 
 
 /**
- * Better Auth client — the single source of truth for all auth actions
- * and session state on the client.
+ * Better Auth client — single source of truth for all auth actions.
  *
- * baseURL must point to where the server's Better Auth handler is mounted.
- * Cookies are sent automatically because we use `credentials: "include"`.
+ * On native Capacitor, cookies from onrender.com are blocked by the same-origin
+ * policy. The `bearer()` plugin on the server provides a session token via the
+ * `set-auth-token` response header, which we store in localStorage and send back
+ * as `Authorization: Bearer <token>` on every subsequent request.
  */
 export const authClient = createAuthClient({
   baseURL: getAuthBaseUrl(),
+
   plugins: [adminClient()],
   fetchOptions: {
     auth: {

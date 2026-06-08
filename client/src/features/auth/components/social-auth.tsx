@@ -67,38 +67,39 @@ export function SocialAuth() {
           return
         }
 
-        console.log('[GoogleSignIn] Better Auth success, verifying session...')
+        console.log('[GoogleSignIn] Better Auth success, extracting session token...')
 
-        // Step 4 — Try to extract the token from the response body as fallback.
-        // The onSuccess hook may have already stored it, but we do this just in case.
-        const body = (result as any)?.data
-        const directToken =
-          body?.token ||
-          body?.session?.token ||
-          body?.data?.token
-        if (directToken && !localStorage.getItem('bearer_token')) {
-          localStorage.setItem('bearer_token', directToken)
-          console.log('[GoogleSignIn] Token stored from response body (fallback)')
+        // ALWAYS extract and store the token directly from the response body.
+        // Better Auth with bearer() plugin returns `token` in the JSON body.
+        // This is more reliable than relying on the set-auth-token header alone.
+        const responseData = (result as any)?.data
+        const bearerToken =
+          responseData?.token ||
+          responseData?.session?.token
+
+        if (bearerToken) {
+          localStorage.setItem('bearer_token', bearerToken)
+          console.log('[GoogleSignIn] Token stored from response body')
+        } else {
+          // The onSuccess hook in auth-client.ts may have already set it from the header.
+          // Wait a moment for that to complete before polling.
+          await new Promise((r) => setTimeout(r, 300))
         }
 
-        // Step 5 — Give onSuccess 500 ms to store the token before polling.
-        await new Promise((r) => setTimeout(r, 500))
-
-        // Step 6 — Poll getSession() until the server confirms the session is valid.
+        // Poll getSession() to confirm the session is live on the server.
         const ok = await waitForSession(8, 500)
         if (ok) {
           console.log('[GoogleSignIn] Session confirmed, navigating...')
           window.location.replace('/')
+        } else if (localStorage.getItem('bearer_token')) {
+          // Token exists but getSession timed out — navigate anyway (slow server)
+          console.warn('[GoogleSignIn] Session poll timed out but token exists, navigating...')
+          window.location.replace('/')
         } else {
-          // If token is in localStorage but getSession still fails, try navigating anyway.
-          if (localStorage.getItem('bearer_token')) {
-            console.warn('[GoogleSignIn] Session poll timed out but token exists, navigating anyway...')
-            window.location.replace('/')
-          } else {
-            toast.error('Sign-in failed: session could not be established. Please try again.')
-            setIsLoading(null)
-          }
+          toast.error('Sign-in failed: could not establish session. Please try again.')
+          setIsLoading(null)
         }
+
       } else {
         // Web browser: let Better Auth handle the full redirect flow
         const result = await authClient.signIn.social({

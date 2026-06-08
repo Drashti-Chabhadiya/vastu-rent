@@ -88,8 +88,7 @@ export function LoginForm() {
     const { data, error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
-      // No callbackURL — on native a redirect response would prevent the
-      // bearer token from being returned in the set-auth-token header.
+      // No callbackURL — would cause a redirect response instead of JSON on the server
     })
 
     if (error) {
@@ -106,10 +105,15 @@ export function LoginForm() {
     }
 
     if (Capacitor.isNativePlatform()) {
-      // On native, cookies are blocked (capacitor://localhost != onrender.com)
-      // so session auth relies entirely on the Bearer token stored in localStorage.
-      // The onSuccess hook in auth-client.ts captures set-auth-token, but we
-      // poll a few times to ensure it was stored before navigating.
+      // On native, the session token comes back in the JSON response body as `token`.
+      // The onSuccess hook in auth-client.ts also captures it from the set-auth-token header.
+      // Store it directly here as an extra safety net before polling.
+      const token = (data as any)?.token
+      if (token) {
+        localStorage.setItem('bearer_token', token)
+      }
+
+      // Poll getSession() to confirm the session is live (up to ~3 seconds)
       let sessionOk = false
       for (let i = 0; i < 6; i++) {
         const { data: sessionData } = await authClient.getSession()
@@ -117,18 +121,13 @@ export function LoginForm() {
           sessionOk = true
           break
         }
-        await new Promise((r) => setTimeout(r, 400))
+        await new Promise((r) => setTimeout(r, 500))
       }
 
-      if (sessionOk) {
+      if (sessionOk || data?.user) {
         window.location.replace('/')
       } else {
-        // Last resort: if we have a user from signIn response, navigate anyway
-        if (data?.user) {
-          window.location.replace('/')
-        } else {
-          setServerError('Session could not be established. Please try again.')
-        }
+        setServerError('Login succeeded but session could not be confirmed. Please try again.')
       }
     } else {
       navigate({ to: '/' })
