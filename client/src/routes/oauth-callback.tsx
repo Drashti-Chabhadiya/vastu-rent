@@ -52,7 +52,9 @@ function OAuthCallback() {
     async function handleCallback() {
       let redirectUrl = 'com.vasturent.app://auth-done'
       try {
-        const response = await fetch(getSessionTokenUrl(), { credentials: 'include' })
+        const response = await fetch(getSessionTokenUrl(), {
+          credentials: 'include',
+        })
         if (response.ok) {
           const data = await response.json()
           if (data.sessionToken) {
@@ -113,7 +115,14 @@ function OAuthCallback() {
           strokeLinejoin="round"
         />
       </svg>
-      <p style={{ fontSize: '18px', fontWeight: 600, color: '#1a1a2e', margin: 0 }}>
+      <p
+        style={{
+          fontSize: '18px',
+          fontWeight: 600,
+          color: '#1a1a2e',
+          margin: 0,
+        }}
+      >
         Login Successful
       </p>
       <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>

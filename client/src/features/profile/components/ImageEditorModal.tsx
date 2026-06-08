@@ -66,20 +66,23 @@ export const ImageEditorModal = ({
   }
 
   // Get constraints. If image is smaller than crop area, clamp translation to 0 (snap to center)
-  const getConstraints = useCallback((currentScale: number) => {
-    const w_r = fitSize.width * currentScale
-    const h_r = fitSize.height * currentScale
+  const getConstraints = useCallback(
+    (currentScale: number) => {
+      const w_r = fitSize.width * currentScale
+      const h_r = fitSize.height * currentScale
 
-    const maxX = w_r > CROP_SIZE ? (w_r - CROP_SIZE) / 2 : 0
-    const maxY = h_r > CROP_SIZE ? (h_r - CROP_SIZE) / 2 : 0
+      const maxX = w_r > CROP_SIZE ? (w_r - CROP_SIZE) / 2 : 0
+      const maxY = h_r > CROP_SIZE ? (h_r - CROP_SIZE) / 2 : 0
 
-    return {
-      minX: -maxX,
-      maxX,
-      minY: -maxY,
-      maxY,
-    }
-  }, [fitSize])
+      return {
+        minX: -maxX,
+        maxX,
+        minY: -maxY,
+        maxY,
+      }
+    },
+    [fitSize],
+  )
 
   const clamp = (val: number, min: number, max: number) =>
     Math.max(min, Math.min(max, val))
@@ -146,23 +149,38 @@ export const ImageEditorModal = ({
       ctx.scale(scale * canvasScale, scale * canvasScale)
 
       // Draw centered raw image
-      ctx.drawImage(img, -fitSize.width / 2, -fitSize.height / 2, fitSize.width, fitSize.height)
+      ctx.drawImage(
+        img,
+        -fitSize.width / 2,
+        -fitSize.height / 2,
+        fitSize.width,
+        fitSize.height,
+      )
 
       ctx.restore()
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          onCropComplete(blob, URL.createObjectURL(blob))
-          onClose()
-        }
-      }, 'image/jpeg', 0.9)
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            onCropComplete(blob, URL.createObjectURL(blob))
+            onClose()
+          }
+        },
+        'image/jpeg',
+        0.9,
+      )
     }
   }
 
   if (!imageSrc) return null
 
   return (
-    <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => { if (!open) onClose() }}>
+    <DialogPrimitive.Root
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+    >
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm transition-opacity" />
 
@@ -211,9 +229,7 @@ export const ImageEditorModal = ({
 
               {/* Crop Circular Mask and Dashed overlay */}
               <div className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden">
-                <div
-                  className="absolute w-[220px] h-[220px] rounded-full border border-white/50 top-[50px] left-[50px] shadow-[0_0_0_9999px_rgba(0,0,0,0.65)]"
-                />
+                <div className="absolute w-[220px] h-[220px] rounded-full border border-white/50 top-[50px] left-[50px] shadow-[0_0_0_9999px_rgba(0,0,0,0.65)]" />
                 <div className="absolute w-[220px] h-[220px] rounded-full border border-dashed border-white/20 top-[50px] left-[50px]" />
                 <div className="absolute top-2 left-2 bg-black/40 text-[10px] text-white/80 px-2 py-0.5 rounded-full flex items-center gap-1">
                   <Move size={10} />
@@ -254,10 +270,17 @@ export const ImageEditorModal = ({
           </div>
 
           <div className="flex gap-3 justify-end mt-4">
-            <Button variant="outline" onClick={onClose} className="rounded-xl font-bold flex-1 sm:flex-none">
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="rounded-xl font-bold flex-1 sm:flex-none"
+            >
               Cancel
             </Button>
-            <Button onClick={handleSave} className="rounded-xl font-bold flex-1 sm:flex-none bg-brand hover:bg-brand/90 text-brand-foreground">
+            <Button
+              onClick={handleSave}
+              className="rounded-xl font-bold flex-1 sm:flex-none bg-brand hover:bg-brand/90 text-brand-foreground"
+            >
               Save Crop
             </Button>
           </div>

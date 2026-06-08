@@ -23,9 +23,13 @@ async function waitForSession(retries = 8, delayMs = 500): Promise<boolean> {
 export function SocialAuth() {
   const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | null
 
-  const handleSocialSignIn = async (provider: 'google' | 'facebook' | 'apple') => {
+  const handleSocialSignIn = async (
+    provider: 'google' | 'facebook' | 'apple',
+  ) => {
     if (provider !== 'google') {
-      toast.info(`${provider.charAt(0).toUpperCase() + provider.slice(1)} sign-in is not implemented yet.`)
+      toast.info(
+        `${provider.charAt(0).toUpperCase() + provider.slice(1)} sign-in is not implemented yet.`,
+      )
       return
     }
 
@@ -62,20 +66,22 @@ export function SocialAuth() {
 
         if (result?.error) {
           console.error('[GoogleSignIn] Better Auth error:', result.error)
-          toast.error(result.error.message || 'Google sign-in failed. Please try again.')
+          toast.error(
+            result.error.message || 'Google sign-in failed. Please try again.',
+          )
           setIsLoading(null)
           return
         }
 
-        console.log('[GoogleSignIn] Better Auth success, extracting session token...')
+        console.log(
+          '[GoogleSignIn] Better Auth success, extracting session token...',
+        )
 
         // ALWAYS extract and store the token directly from the response body.
         // Better Auth with bearer() plugin returns `token` in the JSON body.
         // This is more reliable than relying on the set-auth-token header alone.
         const responseData = (result as any)?.data
-        const bearerToken =
-          responseData?.token ||
-          responseData?.session?.token
+        const bearerToken = responseData?.token || responseData?.session?.token
 
         if (bearerToken) {
           localStorage.setItem('bearer_token', bearerToken)
@@ -93,13 +99,16 @@ export function SocialAuth() {
           window.location.replace('/')
         } else if (localStorage.getItem('bearer_token')) {
           // Token exists but getSession timed out — navigate anyway (slow server)
-          console.warn('[GoogleSignIn] Session poll timed out but token exists, navigating...')
+          console.warn(
+            '[GoogleSignIn] Session poll timed out but token exists, navigating...',
+          )
           window.location.replace('/')
         } else {
-          toast.error('Sign-in failed: could not establish session. Please try again.')
+          toast.error(
+            'Sign-in failed: could not establish session. Please try again.',
+          )
           setIsLoading(null)
         }
-
       } else {
         // Web browser: let Better Auth handle the full redirect flow
         const result = await authClient.signIn.social({
@@ -109,22 +118,28 @@ export function SocialAuth() {
 
         if (result?.error) {
           console.error('[GoogleSignIn] Web error:', result.error)
-          toast.error(result.error.message || 'Failed to initialize Google sign-in.')
+          toast.error(
+            result.error.message || 'Failed to initialize Google sign-in.',
+          )
           setIsLoading(null)
         }
       }
     } catch (err: any) {
       // Cancelled by user — don't show an error toast
-      if (err?.code === 'SIGN_IN_CANCELED' || err?.message?.includes('cancel')) {
+      if (
+        err?.code === 'SIGN_IN_CANCELED' ||
+        err?.message?.includes('cancel')
+      ) {
         console.log('[GoogleSignIn] User cancelled sign-in')
       } else {
         console.error('[GoogleSignIn] Unexpected error:', err)
-        toast.error(err?.message || 'An unexpected error occurred. Please try again.')
+        toast.error(
+          err?.message || 'An unexpected error occurred. Please try again.',
+        )
       }
       setIsLoading(null)
     }
   }
-
 
   return (
     <div className="grid grid-cols-3 gap-3 mb-8">

@@ -279,9 +279,9 @@ export function PersonalInfo() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      year: 'numeric',
-    })
+        month: 'short',
+        year: 'numeric',
+      })
     : 'Jan 2024'
 
   const usedCount = myListings?.length || 0
@@ -968,10 +968,10 @@ export function PersonalInfo() {
                     <span className="text-foreground font-bold">
                       {expiresAt
                         ? expiresAt.toLocaleDateString('en-US', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                        })
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })
                         : 'N/A'}
                     </span>
                   </>

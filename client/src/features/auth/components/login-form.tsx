@@ -127,7 +127,9 @@ export function LoginForm() {
       if (sessionOk || data?.user) {
         window.location.replace('/')
       } else {
-        setServerError('Login succeeded but session could not be confirmed. Please try again.')
+        setServerError(
+          'Login succeeded but session could not be confirmed. Please try again.',
+        )
       }
     } else {
       navigate({ to: '/' })
