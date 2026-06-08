@@ -196,56 +196,17 @@ export class UserService {
     return updatedUser;
   }
 
-  async getCloudinaryConfig(userId: string) {
-    const config = await prisma.cloudinaryConfig.findUnique({
-      where: { userId }
-    });
-    if (!config) return null;
+  async getCloudinaryConfig(_userId: string) {
     return {
-      cloudName: config.cloudName,
-      apiKey: config.apiKey,
-      uploadPreset: config.uploadPreset,
-      hasSecret: !!config.apiSecret,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
+      apiKey: process.env.CLOUDINARY_API_KEY || "",
+      uploadPreset: "",
+      hasSecret: !!process.env.CLOUDINARY_API_SECRET,
     };
   }
 
-  async saveCloudinaryConfig(userId: string, data: { cloudName: string; apiKey: string; apiSecret?: string; uploadPreset?: string }) {
-    const { cloudName, apiKey, apiSecret, uploadPreset } = data;
-
-    let encryptedSecret: string | undefined;
-    if (apiSecret) {
-      const { encrypt } = await import("../../config/encryption.js");
-      encryptedSecret = encrypt(apiSecret);
-    }
-
-    const existing = await prisma.cloudinaryConfig.findUnique({
-      where: { userId }
-    });
-
-    if (existing) {
-      return prisma.cloudinaryConfig.update({
-        where: { userId },
-        data: {
-          cloudName,
-          apiKey,
-          uploadPreset: uploadPreset !== undefined ? uploadPreset : null,
-          ...(encryptedSecret ? { apiSecret: encryptedSecret } : {}),
-        }
-      });
-    } else {
-      if (!apiSecret) {
-        throw new Error("API Secret is required for new configurations");
-      }
-      return prisma.cloudinaryConfig.create({
-        data: {
-          userId,
-          cloudName,
-          apiKey,
-          apiSecret: encryptedSecret!,
-          uploadPreset,
-        }
-      });
-    }
+  async saveCloudinaryConfig(_userId: string, _data: { cloudName: string; apiKey: string; apiSecret?: string; uploadPreset?: string }) {
+    throw new Error("Cloudinary configuration is managed globally via environment variables (.env) and cannot be configured per user.");
   }
 
   async getRecentSearches(userId: string) {

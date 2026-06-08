@@ -106,28 +106,12 @@ export class UserController {
       return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
     }
 
-    const { cloudName, apiKey, apiSecret } = request.body as any;
-
-    let testCloudName = cloudName;
-    let testApiKey = apiKey;
-    let testApiSecret = apiSecret;
-
-    const { prisma } = await import("../../config/prisma.js");
-
-    if (!testApiSecret) {
-      const config = await prisma.cloudinaryConfig.findUnique({
-        where: { userId: session.user.id }
-      });
-      if (config) {
-        const { decrypt } = await import("../../config/encryption.js");
-        testApiSecret = decrypt(config.apiSecret);
-        if (!testCloudName) testCloudName = config.cloudName;
-        if (!testApiKey) testApiKey = config.apiKey;
-      }
-    }
+    const testCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const testApiKey = process.env.CLOUDINARY_API_KEY;
+    const testApiSecret = process.env.CLOUDINARY_API_SECRET;
 
     if (!testCloudName || !testApiKey || !testApiSecret) {
-      return reply.status(400).send({ message: "Missing Cloudinary configuration parameters" });
+      return reply.status(400).send({ message: "Cloudinary is not configured in environment variables (.env)" });
     }
 
     try {
@@ -155,25 +139,9 @@ export class UserController {
       return reply.status(403).send({ message: "Forbidden: Dashboard role required" });
     }
 
-    const { prisma } = await import("../../config/prisma.js");
-    const config = await prisma.cloudinaryConfig.findUnique({
-      where: { userId: session.user.id }
-    });
-
-    let cloudName = config?.cloudName || process.env.CLOUDINARY_CLOUD_NAME;
-    let apiKey = config?.apiKey || process.env.CLOUDINARY_API_KEY;
-    let apiSecret = "";
-
-    if (config) {
-      const { decrypt } = await import("../../config/encryption.js");
-      try {
-        apiSecret = decrypt(config.apiSecret);
-      } catch (err) {
-        console.error("Failed to decrypt API Secret for usage tracking:", err);
-      }
-    } else {
-      apiSecret = process.env.CLOUDINARY_API_SECRET || "";
-    }
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET || "";
 
     if (!cloudName || !apiKey || !apiSecret) {
       return { 

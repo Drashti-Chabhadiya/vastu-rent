@@ -38,11 +38,15 @@ import { ChangePasswordDialog } from './ChangePasswordDialog'
 import { TwoFactorDialog } from './TwoFactorDialog'
 import { SessionsDialog } from './SessionsDialog'
 import { DevicesDialog } from './DevicesDialog'
+import { ImageEditorModal } from './ImageEditorModal'
 
 export function PersonalInfo() {
   const [isEditing, setIsEditing] = useState(false)
   const [name, setName] = useState('')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [editorImageSrc, setEditorImageSrc] = useState<string | null>(null)
+  const [croppedFile, setCroppedFile] = useState<File | null>(null)
+  const [isEditorOpen, setIsEditorOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Custom details states matching exact database values
@@ -200,6 +204,8 @@ export function PersonalInfo() {
     if (isEditing) {
       setName(session?.user.name || '')
       setImagePreview(null)
+      setCroppedFile(null)
+      setEditorImageSrc(null)
       setIsEditing(false)
     } else {
       setIsEditing(true)
@@ -217,10 +223,17 @@ export function PersonalInfo() {
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
-        setImagePreview(reader.result as string)
+        setEditorImageSrc(reader.result as string)
+        setIsEditorOpen(true)
       }
       reader.readAsDataURL(file)
     }
+  }
+
+  const handleCropComplete = (croppedBlob: Blob, croppedDataUrl: string) => {
+    setImagePreview(croppedDataUrl)
+    const file = new File([croppedBlob], 'avatar.jpg', { type: 'image/jpeg' })
+    setCroppedFile(file)
   }
 
   const handleSaveChanges = async () => {
@@ -232,9 +245,9 @@ export function PersonalInfo() {
         })
       }
 
-      // 2. Upload image if chosen
-      if (fileInputRef.current?.files?.[0]) {
-        await uploadImage(fileInputRef.current.files[0])
+      // 2. Upload cropped image if chosen
+      if (croppedFile) {
+        await uploadImage(croppedFile)
       }
 
       // 3. Save other properties and alerts to the database
@@ -253,6 +266,8 @@ export function PersonalInfo() {
       await refetch()
       setIsEditing(false)
       setImagePreview(null)
+      setCroppedFile(null)
+      setEditorImageSrc(null)
       toast.success('Profile changes saved successfully!')
     } catch (error) {
       console.error('Save failed:', error)
@@ -264,9 +279,9 @@ export function PersonalInfo() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Jan 2024'
 
   const usedCount = myListings?.length || 0
@@ -953,10 +968,10 @@ export function PersonalInfo() {
                     <span className="text-foreground font-bold">
                       {expiresAt
                         ? expiresAt.toLocaleDateString('en-US', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                          })
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })
                         : 'N/A'}
                     </span>
                   </>
@@ -1071,6 +1086,17 @@ export function PersonalInfo() {
       <DevicesDialog
         open={isDevicesModalOpen}
         onOpenChange={setIsDevicesModalOpen}
+      />
+      <ImageEditorModal
+        isOpen={isEditorOpen}
+        onClose={() => {
+          setIsEditorOpen(false)
+          if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+          }
+        }}
+        imageSrc={editorImageSrc}
+        onCropComplete={handleCropComplete}
       />
     </div>
   )

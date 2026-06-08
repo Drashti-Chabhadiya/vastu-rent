@@ -1,38 +1,18 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { prisma } from "../../config/prisma.js";
-import { decrypt } from "../../config/encryption.js";
-import { isDashboardRole } from "../../config/roles.js";
+
+// Configure Cloudinary globally using environment variables from .env
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+});
 
 export class CloudinaryService {
   /**
-   * Get dynamic Cloudinary credentials for a user
+   * Get dynamic Cloudinary credentials (now returns global config to maintain signature compatibility)
    */
-  async getCredentialsForUser(userId: string) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { cloudinaryConfig: true }
-    });
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const role = user.role;
-    if (isDashboardRole(role)) {
-      if (!user.cloudinaryConfig) {
-        throw new Error("Cloudinary credentials are not configured. Please set them up in your dashboard settings before uploading.");
-      }
-      
-      const decryptedSecret = decrypt(user.cloudinaryConfig.apiSecret);
-      return {
-        cloud_name: user.cloudinaryConfig.cloudName,
-        api_key: user.cloudinaryConfig.apiKey,
-        api_secret: decryptedSecret,
-      };
-    }
-
-    // Fallback for regular users (e.g. uploading profile pictures) if they don't have dashboard roles,
-    // we can use the global environment credentials if available.
+  async getCredentialsForUser(_userId: string) {
     if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
       return {
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -45,25 +25,17 @@ export class CloudinaryService {
   }
 
   /**
-   * Upload an image to Cloudinary
+   * Upload an image to Cloudinary using global configuration
    * @param file The file buffer or base64 string
    * @param folder The folder to store the image in (e.g., 'products', 'profiles')
-   * @param userId The ID of the user uploading the image (for dynamic credentials)
+   * @param _userId The ID of the user uploading the image (ignored, kept for signature compatibility)
    */
-  async uploadImage(file: string, folder: string, userId?: string): Promise<{ url: string; publicId: string }> {
+  async uploadImage(file: string, folder: string, _userId?: string): Promise<{ url: string; publicId: string }> {
     try {
-      let options: any = {
+      const options = {
         folder: `vastu-rent/${folder}`,
-        resource_type: 'auto',
+        resource_type: 'auto' as const,
       };
-
-      if (userId) {
-        const creds = await this.getCredentialsForUser(userId);
-        options = {
-          ...options,
-          ...creds
-        };
-      }
 
       const result = await cloudinary.uploader.upload(file, options);
       
@@ -78,49 +50,35 @@ export class CloudinaryService {
   }
 
   /**
-   * Delete an image from Cloudinary
+   * Delete an image from Cloudinary using global configuration
    * @param publicId The public ID of the image to delete
-   * @param userId The ID of the user who owns the image
+   * @param _userId The ID of the user who owns the image (ignored, kept for signature compatibility)
    */
-  async deleteImage(publicId: string, userId?: string): Promise<void> {
+  async deleteImage(publicId: string, _userId?: string): Promise<void> {
     try {
       if (!publicId) return;
       
-      let options: any = {};
-      if (userId) {
-        try {
-          const creds = await this.getCredentialsForUser(userId);
-          options = { ...creds };
-        } catch {
-          // If custom credentials fail, fall back to global config
-        }
-      }
-
-      const result = await cloudinary.uploader.destroy(publicId, options);
+      const result = await cloudinary.uploader.destroy(publicId);
       
       if (result.result !== 'ok' && result.result !== 'not found') {
         console.warn('Cloudinary Delete Warning:', result);
       }
     } catch (error) {
       console.error('Cloudinary Delete Error:', error);
-      // We don't throw here to avoid breaking the main application flow
     }
   }
 
   /**
    * Extract Public ID from a Cloudinary URL
-   * Useful for deleting images when you only have the URL stored
    */
   extractPublicId(url: string): string | null {
     try {
       if (!url || !url.includes('cloudinary.com')) return null;
       
-      // Cloudinary URL format: https://res.cloudinary.com/[cloud_name]/image/upload/v[version]/[public_id].[ext]
       const parts = url.split('/');
       const uploadIndex = parts.findIndex(part => part === 'upload');
       if (uploadIndex === -1) return null;
       
-      // Public ID is everything after the version (v1234567) or the upload index if no version
       const publicIdWithExt = parts.slice(uploadIndex + 2).join('/');
       const publicId = publicIdWithExt.split('.')[0];
       
