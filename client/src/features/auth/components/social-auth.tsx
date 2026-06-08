@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
 import { App } from '@capacitor/app'
+import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in'
 
 /**
  * Resolves the callback URL dynamically based on the current origin.
@@ -97,40 +98,40 @@ export function SocialAuth() {
     setIsLoading('google')
     try {
       if (Capacitor.isNativePlatform()) {
-        // FALLBACK: fires when the user closes the Custom Tab manually without
-        // the JS-redirect triggering the custom scheme (e.g. user pressed back).
-        browserFinishedRef.current?.remove()
-        browserFinishedRef.current = await Browser.addListener('browserFinished', async () => {
-          browserFinishedRef.current?.remove()
-          browserFinishedRef.current = null
+        // Initialize the Google SDK with the Web Client ID
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '210609431288-52nch7o4q4jlvf8bsmc4fn1q1hk2rtsc.apps.googleusercontent.com'
+        await GoogleSignIn.initialize({
+          clientId,
+        })
 
-          // Try to pick up any session that was established before the tab closed
+        // Sign in natively
+        const signInResult = await GoogleSignIn.signIn()
+
+        if (!signInResult || !signInResult.idToken) {
+          throw new Error('No ID token received from native Google Sign-In')
+        }
+
+        // Authenticate with Better Auth backend using the ID Token
+        const result = await authClient.signIn.social({
+          provider: 'google',
+          idToken: {
+            token: signInResult.idToken,
+          },
+        })
+
+        if (result?.error) {
+          console.error('Google Sign-In failed:', result.error)
+          toast.error(result.error.message || 'Failed to complete Google sign-in.')
+          setIsLoading(null)
+        } else {
+          // Explicitly wait for session to verify it succeeded
           const ok = await waitForSession()
           if (ok) {
             window.location.replace('/')
           } else {
+            toast.error('Session not found.')
             setIsLoading(null)
           }
-        })
-
-        // Ask Better Auth for the Google OAuth URL.
-        // callbackURL is on the SAME domain as the auth server so the session
-        // cookie is set there and can be read by the WebView.
-        const result = await authClient.signIn.social({
-          provider: 'google',
-          callbackURL: NATIVE_CALLBACK_URL,
-          disableRedirect: true,
-        })
-
-        if (result?.data?.url) {
-          // Open Google login inside a secure native Chrome Custom Tab
-          await Browser.open({ url: result.data.url })
-        } else if (result?.error) {
-          browserFinishedRef.current?.remove()
-          browserFinishedRef.current = null
-          console.error('Google Sign-In failed:', result.error)
-          toast.error(result.error.message || 'Failed to initialize Google sign-in.')
-          setIsLoading(null)
         }
       } else {
         // Web browser: let Better Auth handle the full redirect flow

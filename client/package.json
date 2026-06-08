@@ -27,6 +27,7 @@
     "@capacitor/core": "^8.3.4",
     "@capacitor/ios": "^8.3.4",
     "@capacitor/push-notifications": "^8.1.1",
+    "@capawesome/capacitor-google-sign-in": "^0.1.2",
     "@capgo/capacitor-updater": "^8.47.3",
     "@fontsource-variable/inter": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",

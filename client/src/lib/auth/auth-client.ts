@@ -69,6 +69,10 @@ export const authClient = createAuthClient({
         if (url.includes('/sign-out')) {
           localStorage.removeItem('session_token')
         }
+        const authToken = ctx.response.headers.get('set-auth-token')
+        if (authToken) {
+          localStorage.setItem('session_token', authToken)
+        }
       }
     },
     onError: (ctx) => {

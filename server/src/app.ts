@@ -63,6 +63,7 @@ app.register(cors, {
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-better-auth-session-token', 'better-auth-session-token'],
+  exposedHeaders: ['set-auth-token'],
 });
 
 // ─── Routes ──────────────────────────────────────────────────────────────────

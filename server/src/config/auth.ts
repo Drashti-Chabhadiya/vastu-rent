@@ -125,7 +125,11 @@ export const auth = betterAuth({
    */
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientId: [
+        process.env.GOOGLE_CLIENT_ID || "",
+        process.env.GOOGLE_ANDROID_CLIENT_ID || "",
+        process.env.GOOGLE_IOS_CLIENT_ID || "",
+      ].filter(Boolean) as string[],
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
   },
