@@ -1,35 +1,17 @@
 import { Button } from '@/components/ui/button'
 import { authClient } from '#/lib/auth/auth-client'
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { Loader } from '@/components/ui/loader'
 import { toast } from 'sonner'
-import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
-import { App } from '@capacitor/app'
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in'
 
 /**
- * Resolves the callback URL dynamically based on the current origin.
- * For production, this maps to the client-side Vercel domain.
- * For local development, it maps to the local dev origin.
+ * Polls Better Auth's getSession() until a valid session is returned.
+ * On native, the bearer token must already be in localStorage before calling this.
+ * Give the onSuccess hook time to run (call this after a short delay).
  */
-const getNativeCallbackUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    const origin = window.location.origin
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.')) {
-      return `${origin}/oauth-callback`
-    }
-  }
-  return 'https://new-vastu-rent-client.vercel.app/oauth-callback'
-}
-
-const NATIVE_CALLBACK_URL = getNativeCallbackUrl()
-
-/**
- * Waits for Better Auth's session to become available, retrying a few times
- * after the Chrome Custom Tab closes (cookies may take a moment to sync).
- */
-async function waitForSession(retries = 5, delayMs = 600): Promise<boolean> {
+async function waitForSession(retries = 8, delayMs = 500): Promise<boolean> {
   for (let i = 0; i < retries; i++) {
     const { data } = await authClient.getSession()
     if (data?.session) return true
@@ -40,52 +22,6 @@ async function waitForSession(retries = 5, delayMs = 600): Promise<boolean> {
 
 export function SocialAuth() {
   const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | null
-  // Ref to the browserFinished listener so we can remove it from appUrlOpen too
-  const browserFinishedRef = useRef<{ remove: () => void } | null>(null)
-
-  // PRIMARY: appUrlOpen fires when the /oauth-callback page on Render redirects
-  // the Chrome Custom Tab to com.vasturent.app://auth-done via JS.
-  // Android intercepts the custom scheme, brings the app to front, and fires this event.
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return
-
-    const listenerPromise = App.addListener('appUrlOpen', async (data) => {
-      if (!data.url?.startsWith('com.vasturent.app://')) return
-
-      // Clean up the browserFinished fallback — appUrlOpen took over
-      browserFinishedRef.current?.remove()
-      browserFinishedRef.current = null
-
-      // Close the Chrome Custom Tab
-      await Browser.close().catch(console.error)
-
-      // Parse session token from URL parameters
-      let token: string | null = null
-      try {
-        const urlObj = new URL(data.url)
-        token = urlObj.searchParams.get('token')
-      } catch (err) {
-        console.error('Failed to parse URL from appUrlOpen:', err)
-      }
-
-
-
-      // Explicitly refetch the session.
-      const ok = await waitForSession()
-      if (ok) {
-        // Navigate to home — replace so the user can't "back" to the login screen
-        window.location.replace('/')
-      } else {
-        // Session not found — possibly the user cancelled or an error occurred
-        toast.error('Sign-in failed. Please try again.')
-        setIsLoading(null)
-      }
-    })
-
-    return () => {
-      listenerPromise.then((l) => l.remove()).catch(console.error)
-    }
-  }, [])
 
   const handleSocialSignIn = async (provider: 'google' | 'facebook' | 'apple') => {
     if (provider !== 'google') {
@@ -96,20 +32,27 @@ export function SocialAuth() {
     setIsLoading('google')
     try {
       if (Capacitor.isNativePlatform()) {
-        // Initialize the Google SDK with the Web Client ID
-        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '210609431288-52nch7o4q4jlvf8bsmc4fn1q1hk2rtsc.apps.googleusercontent.com'
-        await GoogleSignIn.initialize({
-          clientId,
-        })
+        // Step 1 — Initialize the native Google Sign-In SDK.
+        // clientId must be the Web Client ID (NOT the Android one) because
+        // Better Auth's server-side idToken verification uses the Web Client ID.
+        const clientId =
+          import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+          '210609431288-52nch7o4q4jlvf8bsmc4fn1q1hk2rtsc.apps.googleusercontent.com'
 
-        // Sign in natively
+        await GoogleSignIn.initialize({ clientId })
+
+        // Step 2 — Trigger the native Credential Manager account picker.
         const signInResult = await GoogleSignIn.signIn()
 
-        if (!signInResult || !signInResult.idToken) {
+        if (!signInResult?.idToken) {
           throw new Error('No ID token received from native Google Sign-In')
         }
 
-        // Authenticate with Better Auth backend using the ID Token
+        console.log('[GoogleSignIn] Got idToken, calling Better Auth...')
+
+        // Step 3 — Exchange the idToken with the Better Auth backend.
+        // Better Auth returns a session + bearer token in the set-auth-token header.
+        // The onSuccess hook in auth-client.ts captures and stores it.
         const result = await authClient.signIn.social({
           provider: 'google',
           idToken: {
@@ -118,16 +61,41 @@ export function SocialAuth() {
         })
 
         if (result?.error) {
-          console.error('Google Sign-In failed:', result.error)
-          toast.error(result.error.message || 'Failed to complete Google sign-in.')
+          console.error('[GoogleSignIn] Better Auth error:', result.error)
+          toast.error(result.error.message || 'Google sign-in failed. Please try again.')
           setIsLoading(null)
+          return
+        }
+
+        console.log('[GoogleSignIn] Better Auth success, verifying session...')
+
+        // Step 4 — Try to extract the token from the response body as fallback.
+        // The onSuccess hook may have already stored it, but we do this just in case.
+        const body = (result as any)?.data
+        const directToken =
+          body?.token ||
+          body?.session?.token ||
+          body?.data?.token
+        if (directToken && !localStorage.getItem('bearer_token')) {
+          localStorage.setItem('bearer_token', directToken)
+          console.log('[GoogleSignIn] Token stored from response body (fallback)')
+        }
+
+        // Step 5 — Give onSuccess 500 ms to store the token before polling.
+        await new Promise((r) => setTimeout(r, 500))
+
+        // Step 6 — Poll getSession() until the server confirms the session is valid.
+        const ok = await waitForSession(8, 500)
+        if (ok) {
+          console.log('[GoogleSignIn] Session confirmed, navigating...')
+          window.location.replace('/')
         } else {
-          // Explicitly wait for session to verify it succeeded
-          const ok = await waitForSession()
-          if (ok) {
+          // If token is in localStorage but getSession still fails, try navigating anyway.
+          if (localStorage.getItem('bearer_token')) {
+            console.warn('[GoogleSignIn] Session poll timed out but token exists, navigating anyway...')
             window.location.replace('/')
           } else {
-            toast.error('Session not found.')
+            toast.error('Sign-in failed: session could not be established. Please try again.')
             setIsLoading(null)
           }
         }
@@ -138,17 +106,20 @@ export function SocialAuth() {
           callbackURL: window.location.origin,
         })
 
-        // better-auth redirects the browser window on success.
-        // Only show an error if it fails before redirecting.
         if (result?.error) {
-          console.error('Google Sign-In failed:', result.error)
+          console.error('[GoogleSignIn] Web error:', result.error)
           toast.error(result.error.message || 'Failed to initialize Google sign-in.')
           setIsLoading(null)
         }
       }
     } catch (err: any) {
-      console.error('Unexpected Google Sign-In error:', err)
-      toast.error('An unexpected error occurred. Please try again.')
+      // Cancelled by user — don't show an error toast
+      if (err?.code === 'SIGN_IN_CANCELED' || err?.message?.includes('cancel')) {
+        console.log('[GoogleSignIn] User cancelled sign-in')
+      } else {
+        console.error('[GoogleSignIn] Unexpected error:', err)
+        toast.error(err?.message || 'An unexpected error occurred. Please try again.')
+      }
       setIsLoading(null)
     }
   }

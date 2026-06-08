@@ -45,6 +45,17 @@ export const apiClient = axios.create({
   timeout: 15_000,
 })
 
+// Attach bearer token for native mobile requests to authenticate correctly
+apiClient.interceptors.request.use((config) => {
+  if (Capacitor.isNativePlatform()) {
+    const token = localStorage.getItem('bearer_token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+  }
+  return config
+})
+
 // ─── Response interceptor — single silent retry on network errors ───────────
 // This handles transient mobile blips (brief connectivity drops, cell
 // handoffs) that would otherwise permanently fail a request.

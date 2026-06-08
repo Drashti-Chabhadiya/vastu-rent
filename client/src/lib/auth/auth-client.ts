@@ -53,6 +53,61 @@ const getAuthBaseUrl = (): string => {
 export const authClient = createAuthClient({
   baseURL: getAuthBaseUrl(),
   plugins: [adminClient()],
+  fetchOptions: {
+    auth: {
+      type: 'Bearer',
+      token: () => {
+        if (Capacitor.isNativePlatform()) {
+          return localStorage.getItem('bearer_token') || ''
+        }
+        return ''
+      },
+    },
+    onSuccess: (ctx) => {
+      if (Capacitor.isNativePlatform()) {
+        // Clear token on sign-out
+        if (ctx.response.url.includes('/sign-out')) {
+          localStorage.removeItem('bearer_token')
+          return
+        }
+
+        // 1. Primary: set-auth-token header (Better Auth bearer plugin)
+        const setAuthToken = ctx.response.headers.get('set-auth-token')
+        if (setAuthToken) {
+          localStorage.setItem('bearer_token', decodeURIComponent(setAuthToken))
+          return
+        }
+
+        // 2. Fallback: Authorization header
+        const authHeader = ctx.response.headers.get('Authorization') ||
+          ctx.response.headers.get('authorization')
+        if (authHeader?.startsWith('Bearer ')) {
+          localStorage.setItem('bearer_token', authHeader.slice(7))
+          return
+        }
+
+        // 3. Last resort: try to parse JSON body for a token field
+        try {
+          const body = ctx.data as any
+          const token =
+            body?.token ||
+            body?.session?.token ||
+            body?.data?.token ||
+            body?.data?.session?.token
+          if (token) {
+            localStorage.setItem('bearer_token', decodeURIComponent(String(token)))
+          }
+        } catch {
+          // Ignore parse errors
+        }
+      }
+    },
+    onError: (ctx) => {
+      if (Capacitor.isNativePlatform() && ctx.error.status === 401) {
+        localStorage.removeItem('bearer_token')
+      }
+    },
+  },
   user: {
     additionalFields: {
       gender: { type: 'string', required: false },

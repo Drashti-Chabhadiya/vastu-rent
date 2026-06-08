@@ -11,6 +11,7 @@ import { loginSchema } from '#/schema'
 import type { LoginSchema } from '#/schema'
 import { toast } from 'sonner'
 import { SocialAuth } from './social-auth'
+import { Capacitor } from '@capacitor/core'
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -84,10 +85,11 @@ export function LoginForm() {
     setIsUnverified(false)
     setResendError(null)
 
-    const { error } = await authClient.signIn.email({
+    const { data, error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
-      callbackURL: '/',
+      // No callbackURL — on native a redirect response would prevent the
+      // bearer token from being returned in the set-auth-token header.
     })
 
     if (error) {
@@ -103,7 +105,34 @@ export function LoginForm() {
       return
     }
 
-    navigate({ to: '/' })
+    if (Capacitor.isNativePlatform()) {
+      // On native, cookies are blocked (capacitor://localhost != onrender.com)
+      // so session auth relies entirely on the Bearer token stored in localStorage.
+      // The onSuccess hook in auth-client.ts captures set-auth-token, but we
+      // poll a few times to ensure it was stored before navigating.
+      let sessionOk = false
+      for (let i = 0; i < 6; i++) {
+        const { data: sessionData } = await authClient.getSession()
+        if (sessionData?.session) {
+          sessionOk = true
+          break
+        }
+        await new Promise((r) => setTimeout(r, 400))
+      }
+
+      if (sessionOk) {
+        window.location.replace('/')
+      } else {
+        // Last resort: if we have a user from signIn response, navigate anyway
+        if (data?.user) {
+          window.location.replace('/')
+        } else {
+          setServerError('Session could not be established. Please try again.')
+        }
+      }
+    } else {
+      navigate({ to: '/' })
+    }
   }
 
   const handleResend = async () => {
