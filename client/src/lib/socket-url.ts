@@ -8,13 +8,13 @@ import { Capacitor } from '@capacitor/core'
  * WebView origin is capacitor://localhost, not the backend server.
  */
 export function getSocketUrl(): string {
-  // ── Native Capacitor app ─────────────────────────────────────────────────
-  // Always use the explicit env var baked in at build time.
   if (Capacitor.isNativePlatform()) {
     return (
-      import.meta.env.VITE_SOCKET_URL || 'https://new-vastu-rent.onrender.com'
+      import.meta.env.VITE_SOCKET_URL ||
+      'https://new-vastu-rent.onrender.com'
     )
   }
+
 
   // ── Web browser — explicit env var wins if set ────────────────────────────
   const envSocketUrl = import.meta.env.VITE_SOCKET_URL
@@ -40,5 +40,6 @@ export function getSocketUrl(): string {
     }
   }
 
-  return 'http://localhost:4000'
+  // ── Local development ──────────────────────────────────────────────────
+  return import.meta.env.VITE_SOCKET_URL || 'http://localhost:4000'
 }

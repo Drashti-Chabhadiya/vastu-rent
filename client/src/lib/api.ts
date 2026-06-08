@@ -45,30 +45,12 @@ export const apiClient = axios.create({
   timeout: 15_000,
 })
 
-// Inject bearer token in all Axios requests
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => Promise.reject(error)
-)
-
 // ─── Response interceptor — single silent retry on network errors ───────────
 // This handles transient mobile blips (brief connectivity drops, cell
 // handoffs) that would otherwise permanently fail a request.
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('session_token')
-      }
-    }
-
     const config = error.config
 
     // Only retry once, only for network-level failures (no response received)

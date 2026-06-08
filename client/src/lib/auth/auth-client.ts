@@ -21,7 +21,6 @@ import { Capacitor } from '@capacitor/core'
  * BETTER_AUTH_URL override that forced cookies onto the wrong domain.
  */
 const getAuthBaseUrl = (): string => {
-  // ── 1. Native Capacitor app — MUST come before hostname check ─────────────
   if (Capacitor.isNativePlatform()) {
     return (
       import.meta.env.VITE_AUTH_URL ||
@@ -29,19 +28,17 @@ const getAuthBaseUrl = (): string => {
     )
   }
 
-  // ── 2. Production / remote host (Vercel, staging) ──────────────────────────
+  // ── Web browser — non-local origin (production / staging) ─────────────
   if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1' &&
     !window.location.hostname.startsWith('192.168.')
   ) {
-    // window.location.origin is 'https://new-vastu-rent-client.vercel.app'
-    // for both the native Capacitor WebView and the regular browser.
     return `${window.location.origin}/api/auth`
   }
 
-  // ── 3. Local development ───────────────────────────────────────────────────
+  // ── Local development ──────────────────────────────────────────────────
   return import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
 }
 
@@ -56,33 +53,6 @@ const getAuthBaseUrl = (): string => {
 export const authClient = createAuthClient({
   baseURL: getAuthBaseUrl(),
   plugins: [adminClient()],
-  fetchOptions: {
-    onRequest: (ctx) => {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('session_token') : null
-      if (token) {
-        ctx.headers.set('Authorization', `Bearer ${token}`)
-      }
-    },
-    onResponse: (ctx) => {
-      if (typeof window !== 'undefined') {
-        const url = ctx.request?.url?.toString() || ''
-        if (url.includes('/sign-out')) {
-          localStorage.removeItem('session_token')
-        }
-        const authToken = ctx.response.headers.get('set-auth-token')
-        if (authToken) {
-          localStorage.setItem('session_token', authToken)
-        }
-      }
-    },
-    onError: (ctx) => {
-      if (typeof window !== 'undefined') {
-        if (ctx.error?.status === 401) {
-          localStorage.removeItem('session_token')
-        }
-      }
-    }
-  },
   user: {
     additionalFields: {
       gender: { type: 'string', required: false },

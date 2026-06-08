@@ -48,9 +48,6 @@ app.register(cors, {
       'capacitor://localhost',
       'http://localhost',
       'http://localhost:3000',
-      'http://localhost:5173',
-      'http://127.0.0.1:3000',
-      'http://127.0.0.1:5173',
     ].filter(Boolean) as string[]
 
     // Allow requests with no origin (server-to-server, curl, etc.)

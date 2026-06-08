@@ -68,9 +68,7 @@ export function SocialAuth() {
         console.error('Failed to parse URL from appUrlOpen:', err)
       }
 
-      if (token) {
-        localStorage.setItem('session_token', token)
-      }
+
 
       // Explicitly refetch the session.
       const ok = await waitForSession()

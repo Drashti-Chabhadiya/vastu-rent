@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { Capacitor } from '@capacitor/core'
 
 /**
  * /oauth-callback — Mobile Google OAuth landing page
@@ -22,16 +23,26 @@ export const Route = createFileRoute('/oauth-callback')({
 })
 
 const getSessionTokenUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    if (
-      window.location.hostname === 'localhost' ||
-      window.location.hostname === '127.0.0.1' ||
-      window.location.hostname.startsWith('192.168.')
-    ) {
-      return 'http://localhost:4000/api/auth/session-token'
-    }
+  if (Capacitor.isNativePlatform()) {
+    return import.meta.env.VITE_AUTH_URL
+      ? `${import.meta.env.VITE_AUTH_URL}/session-token`
+      : 'https://new-vastu-rent.onrender.com/api/auth/session-token'
   }
-  return 'https://new-vastu-rent.onrender.com/api/auth/session-token'
+
+  // ── Web browser — non-local origin (production / staging) ─────────────
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1' &&
+    !window.location.hostname.startsWith('192.168.')
+  ) {
+    return `${window.location.origin}/api/auth/session-token`
+  }
+
+  // ── Local development ──────────────────────────────────────────────────
+  return import.meta.env.VITE_AUTH_URL
+    ? `${import.meta.env.VITE_AUTH_URL}/session-token`
+    : 'http://localhost:4000/api/auth/session-token'
 }
 
 function OAuthCallback() {
