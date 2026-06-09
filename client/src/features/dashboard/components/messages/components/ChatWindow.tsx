@@ -24,73 +24,25 @@ import { format } from 'date-fns'
 import type { Conversation, Message } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
 import { TypingBubble } from './TypingBubble'
+import { useChatStore } from '../../../../../store/useChatStore'
 
-// ─── Reply Helpers ────────────────────────────────────────────────────────────
-const REPLY_SEP = '\u200B\u{1F4AC}\u200B'
+import { parseMessage, formatMsgTime } from '#/lib/chat-utils'
 
-function parseMessage(content: string): {
-  replyQuote: string | null
-  text: string
-} {
-  if (content.startsWith('>>REPLY_TO::')) {
-    const withoutPrefix = content.slice('>>REPLY_TO::'.length)
-    const sepIdx = withoutPrefix.indexOf(REPLY_SEP)
-    if (sepIdx !== -1) {
-      return {
-        replyQuote: withoutPrefix.slice(0, sepIdx),
-        text: withoutPrefix.slice(sepIdx + REPLY_SEP.length),
-      }
-    }
-  }
-  return { replyQuote: null, text: content }
-}
-
-function formatMsgTime(dateStr: string) {
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffHrs = diffMs / (1000 * 60 * 60)
-  if (diffHrs < 24) return format(date, 'h:mm a')
-  if (diffHrs < 48) return 'Yesterday'
-  return format(date, 'dd MMM')
-}
-
-interface ReplyTarget {
-  id: string
-  content: string
-  senderName: string
-  isMe: boolean
-}
 
 interface ChatWindowProps {
   activeConversation: Conversation | null
-  showMobileChat: boolean
-  setShowMobileChat: (show: boolean) => void
   checkOnline: (id: string) => boolean
   isOtherPersonTyping: boolean
   isLoadingMessages: boolean
   messages: Message[]
   currentUserId: string | null | undefined
-  hoveredMsgId: string | null
-  setHoveredMsgId: (id: string | null) => void
-  openLightbox: (images: string[], index: number) => void
   handleReply: (msg: Message, isMe: boolean) => void
-  replyTarget: ReplyTarget | null
-  setReplyTarget: (target: ReplyTarget | null) => void
-  pendingPreviews: string[]
-  pendingFiles: File[]
-  removeFile: (index: number) => void
   fileInputRef: React.RefObject<HTMLInputElement | null>
   handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void
   isConnected: boolean
-  inputText: string
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
-  showEmojiPicker: boolean
-  setShowEmojiPicker: (show: boolean) => void
-  setInputText: React.Dispatch<React.SetStateAction<string>>
   handleSend: () => void
-  isUploading: boolean
   messagesContainerRef: React.RefObject<HTMLDivElement | null>
   inputRef: React.RefObject<HTMLInputElement | null>
   onCallSuccess?: (name: string) => void
@@ -100,39 +52,41 @@ interface ChatWindowProps {
 
 export function ChatWindow({
   activeConversation,
-  showMobileChat,
-  setShowMobileChat,
   checkOnline,
   isOtherPersonTyping,
   isLoadingMessages,
   messages,
   currentUserId,
-  hoveredMsgId,
-  setHoveredMsgId,
-  openLightbox,
   handleReply,
-  replyTarget,
-  setReplyTarget,
-  pendingPreviews,
-  pendingFiles,
-  removeFile,
   fileInputRef,
   handleFileSelect,
   isConnected,
-  inputText,
   handleInputChange,
   handleKeyDown,
-  showEmojiPicker,
-  setShowEmojiPicker,
-  setInputText,
   handleSend,
-  isUploading,
   messagesContainerRef,
   inputRef,
   onCallSuccess,
   onVideoSuccess,
   onMoreInfo,
 }: ChatWindowProps) {
+  const {
+    showMobileChat,
+    setShowMobileChat,
+    hoveredMsgId,
+    setHoveredMsgId,
+    openLightbox,
+    replyTarget,
+    setReplyTarget,
+    pendingPreviews,
+    pendingFiles,
+    removeFile,
+    inputText,
+    setInputText,
+    showEmojiPicker,
+    setShowEmojiPicker,
+    isUploading,
+  } = useChatStore()
   if (!activeConversation) {
     return (
       <div
@@ -753,7 +707,7 @@ export function ChatWindow({
               'shrink-0',
               'disabled:opacity-40',
               pendingFiles.length > 0 &&
-                'text-primary bg-primary-soft/40',
+              'text-primary bg-primary-soft/40',
             )}
             title={`Attach images (${pendingFiles.length}/5)`}
           >

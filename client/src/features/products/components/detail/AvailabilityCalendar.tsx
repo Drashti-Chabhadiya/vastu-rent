@@ -1,36 +1,34 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
+import { useProductBookingStore } from '../../../../store/useProductBookingStore'
 
 interface AvailabilityCalendarProps {
-  calMonth: number
-  calYear: number
-  setCalMonth: React.Dispatch<React.SetStateAction<number>>
-  setCalYear: React.Dispatch<React.SetStateAction<number>>
-  daysInMonth: number
-  firstDay: number
-  monthName: string
-  startDate: Date | null
-  endDate: Date | null
   today: Date
   productRentals: any[]
   handleDayClick: (day: number) => void
 }
 
 export const AvailabilityCalendar = ({
-  calMonth,
-  calYear,
-  setCalMonth,
-  setCalYear,
-  daysInMonth,
-  firstDay,
-  monthName,
-  startDate,
-  endDate,
   today,
   productRentals,
   handleDayClick,
 }: AvailabilityCalendarProps) => {
+  const {
+    calMonth,
+    calYear,
+    setCalMonth,
+    setCalYear,
+    startDate,
+    endDate,
+  } = useProductBookingStore()
+
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate()
+  const firstDay = new Date(calYear, calMonth, 1).getDay()
+  const monthName = new Date(calYear, calMonth).toLocaleString('default', {
+    month: 'long',
+  })
+
   return (
     <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-4">
       <h3 className="text-base font-bold text-foreground">

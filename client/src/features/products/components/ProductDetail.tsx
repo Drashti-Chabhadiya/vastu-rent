@@ -24,6 +24,7 @@ import { ProductInfoSection } from './detail/ProductInfoSection'
 import { ProductOwnerCard } from './detail/ProductOwnerCard'
 import { AvailabilityCalendar } from './detail/AvailabilityCalendar'
 import { BookingConfirmationModal } from './detail/BookingConfirmationModal'
+import { useProductBookingStore } from '../../../store/useProductBookingStore'
 
 export function ProductDetail({ id }: { id: string }) {
   const navigate = useNavigate()
@@ -40,12 +41,27 @@ export function ProductDetail({ id }: { id: string }) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('description')
 
-  // Calendar state
-  const today = new Date()
-  const [calMonth, setCalMonth] = useState(today.getMonth())
-  const [calYear, setCalYear] = useState(today.getFullYear())
-  const [startDate, setStartDate] = useState<Date | null>(null)
-  const [endDate, setEndDate] = useState<Date | null>(null)
+  // Calendar/Booking State from store
+  const {
+    calMonth,
+    calYear,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    showBookingConfirm,
+    setShowBookingConfirm,
+    isPaying,
+    setIsPaying,
+    paymentMethod,
+    couponCode,
+    setCouponCode,
+    appliedCoupon,
+    setAppliedCoupon,
+    couponError,
+    setCouponError,
+    resetBooking,
+  } = useProductBookingStore()
 
   // Share state
   const [copied, setCopied] = useState(false)
@@ -55,29 +71,20 @@ export function ProductDetail({ id }: { id: string }) {
   const [reviewComment, setReviewComment] = useState('')
   const [reviewError, setReviewError] = useState('')
 
-  // Booking modal state
-  const [showBookingConfirm, setShowBookingConfirm] = useState(false)
-  const [isPaying, setIsPaying] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cash'>(
-    'online',
-  )
-
-  // Coupon state
-  const [couponCode, setCouponCode] = useState('')
-  const [appliedCoupon, setAppliedCoupon] = useState<{
-    id: string
-    code: string
-    discountAmount: number
-  } | null>(null)
-  const [couponError, setCouponError] = useState('')
   const applyCoupon = useApplyCoupon()
+  const today = new Date()
+
+  // Reset booking when id changes
+  useEffect(() => {
+    resetBooking()
+  }, [id, resetBooking])
 
   // Reset coupon if dates change
   useEffect(() => {
     setAppliedCoupon(null)
     setCouponCode('')
     setCouponError('')
-  }, [startDate, endDate])
+  }, [startDate, endDate, setAppliedCoupon, setCouponCode, setCouponError])
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return
@@ -285,7 +292,7 @@ export function ProductDetail({ id }: { id: string }) {
       setIsPaying(false)
       alert(
         err.response?.data?.message ||
-          'Booking failed. Please make sure you are logged in.',
+        'Booking failed. Please make sure you are logged in.',
       )
     }
   }
@@ -322,8 +329,8 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-        ]
+        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+      ]
   const liked = isLiked(product.id)
 
   const productInfo = [
@@ -345,11 +352,6 @@ export function ProductDetail({ id }: { id: string }) {
     },
   ]
 
-  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate()
-  const firstDay = new Date(calYear, calMonth, 1).getDay()
-  const monthName = new Date(calYear, calMonth).toLocaleString('default', {
-    month: 'long',
-  })
   const rentalDays =
     startDate && endDate
       ? Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000) + 1
@@ -381,33 +383,13 @@ export function ProductDetail({ id }: { id: string }) {
             <ProductInfoSection
               product={product}
               productInfo={productInfo}
-              paymentMethod={paymentMethod}
-              setPaymentMethod={setPaymentMethod}
               handleRentNow={handleRentNow}
               createRentalIsPending={createRental.isPending}
-              isPaying={isPaying}
-              startDate={startDate}
-              endDate={endDate}
-              rentalDays={rentalDays}
-              totalPrice={totalPrice}
-              couponCode={couponCode}
-              setCouponCode={setCouponCode}
               handleApplyCoupon={handleApplyCoupon}
-              appliedCoupon={appliedCoupon}
               handleRemoveCoupon={handleRemoveCoupon}
-              couponError={couponError}
               applyCouponIsPending={applyCoupon.isPending}
               availabilityCalendar={
                 <AvailabilityCalendar
-                  calMonth={calMonth}
-                  calYear={calYear}
-                  setCalMonth={setCalMonth}
-                  setCalYear={setCalYear}
-                  daysInMonth={daysInMonth}
-                  firstDay={firstDay}
-                  monthName={monthName}
-                  startDate={startDate}
-                  endDate={endDate}
                   today={today}
                   productRentals={productRentals}
                   handleDayClick={handleDayClick}
@@ -422,15 +404,6 @@ export function ProductDetail({ id }: { id: string }) {
 
             <div className="hidden xl:block">
               <AvailabilityCalendar
-                calMonth={calMonth}
-                calYear={calYear}
-                setCalMonth={setCalMonth}
-                setCalYear={setCalYear}
-                daysInMonth={daysInMonth}
-                firstDay={firstDay}
-                monthName={monthName}
-                startDate={startDate}
-                endDate={endDate}
                 today={today}
                 productRentals={productRentals}
                 handleDayClick={handleDayClick}

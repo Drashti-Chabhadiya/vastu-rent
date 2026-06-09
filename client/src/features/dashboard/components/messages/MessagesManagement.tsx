@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import {
   MessageSquare,
   PenSquare,
@@ -21,41 +21,12 @@ import { useChat } from '#/hook'
 import { NewChatDialog } from './components/NewChatDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
+import { useChatStore } from '../../../../store/useChatStore'
 
 type Message = BaseMessage
 
-// ─── Reply Helpers ────────────────────────────────────────────────────────────
-const REPLY_SEP = '\u200B\u{1F4AC}\u200B' // zero-width + speech bubble + zero-width (invisible separator)
+import { parseMessage, buildReplyContent } from '#/lib/chat-utils'
 
-function buildReplyContent(replyText: string, mainText: string) {
-  const truncated =
-    replyText.length > 120 ? replyText.slice(0, 120) + '…' : replyText
-  return `>>REPLY_TO::${truncated}${REPLY_SEP}${mainText}`
-}
-
-function parseMessage(content: string): {
-  replyQuote: string | null
-  text: string
-} {
-  if (content.startsWith('>>REPLY_TO::')) {
-    const withoutPrefix = content.slice('>>REPLY_TO::'.length)
-    const sepIdx = withoutPrefix.indexOf(REPLY_SEP)
-    if (sepIdx !== -1) {
-      return {
-        replyQuote: withoutPrefix.slice(0, sepIdx),
-        text: withoutPrefix.slice(sepIdx + REPLY_SEP.length),
-      }
-    }
-  }
-  return { replyQuote: null, text: content }
-}
-
-interface ReplyTarget {
-  id: string
-  content: string
-  senderName: string
-  isMe: boolean
-}
 
 export const MessagesManagement = () => {
   const {
@@ -73,27 +44,32 @@ export const MessagesManagement = () => {
     currentUserId,
   } = useChat()
 
-  const [searchQuery, setSearchQuery] = useState('')
-  const [activeSubTab, setActiveSubTab] = useState<
-    'all' | 'unread' | 'bookings' | 'support'
-  >('all')
-  const [inputText, setInputText] = useState('')
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [showMobileChat, setShowMobileChat] = useState(false)
-  const [replyTarget, setReplyTarget] = useState<ReplyTarget | null>(null)
-  const [hoveredMsgId, setHoveredMsgId] = useState<string | null>(null)
+  const {
+    searchQuery,
+    setSearchQuery,
+    activeSubTab,
+    setActiveSubTab,
+    inputText,
+    setInputText,
+    showMobileChat,
+    setShowMobileChat,
+    replyTarget,
+    setReplyTarget,
+    pendingFiles,
+    setIsUploading,
+    lightboxImages,
+    lightboxIndex,
+    setLightboxIndex,
+    showLightbox,
+    setShowLightbox,
+    showNewChat,
+    setShowNewChat,
+    addPendingFiles,
+    addPendingPreviews,
+    clearAttachments,
+  } = useChatStore()
 
-  // Attachment state
-  const [pendingFiles, setPendingFiles] = useState<File[]>([])
-  const [pendingPreviews, setPendingPreviews] = useState<string[]>([])
-  const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // Lightbox state
-  const [lightboxImages, setLightboxImages] = useState<string[]>([])
-  const [lightboxIndex, setLightboxIndex] = useState(0)
-  const [showLightbox, setShowLightbox] = useState(false)
-
   const inputRef = useRef<HTMLInputElement>(null)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
@@ -113,16 +89,7 @@ export const MessagesManagement = () => {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [showLightbox, lightboxImages.length])
-
-  const openLightbox = (images: string[], startIndex: number) => {
-    setLightboxImages(images)
-    setLightboxIndex(startIndex)
-    setShowLightbox(true)
-  }
-
-  // ── New Message Dialog state ──────────────────────────────────────────────
-  const [showNewChat, setShowNewChat] = useState(false)
+  }, [showLightbox, lightboxImages.length, setLightboxIndex, setShowLightbox])
 
   // Auto-scroll to bottom when messages change or conversation switches
   useEffect(() => {
@@ -213,8 +180,7 @@ export const MessagesManagement = () => {
       // 4. Reset state
       setInputText('')
       setReplyTarget(null)
-      setPendingFiles([])
-      setPendingPreviews([])
+      clearAttachments()
       emitTyping(false)
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
     } catch (err: any) {
@@ -231,16 +197,10 @@ export const MessagesManagement = () => {
     // Limit to 5 images
     const allowed = files.slice(0, 5 - pendingFiles.length)
     const newPreviews = allowed.map((f) => URL.createObjectURL(f))
-    setPendingFiles((prev) => [...prev, ...allowed])
-    setPendingPreviews((prev) => [...prev, ...newPreviews])
+    addPendingFiles(allowed)
+    addPendingPreviews(newPreviews)
     // Reset input so same file can be re-selected
     if (fileInputRef.current) fileInputRef.current.value = ''
-  }
-
-  const removeFile = (index: number) => {
-    URL.revokeObjectURL(pendingPreviews[index])
-    setPendingFiles((prev) => prev.filter((_, i) => i !== index))
-    setPendingPreviews((prev) => prev.filter((_, i) => i !== index))
   }
 
   // ── Handle reply ─────────────────────────────────────────────────────────
@@ -253,7 +213,7 @@ export const MessagesManagement = () => {
       setReplyTarget({ id: msg.id, content: text, senderName, isMe })
       setTimeout(() => inputRef.current?.focus(), 50)
     },
-    [activeConversation],
+    [activeConversation, setReplyTarget],
   )
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -400,33 +360,18 @@ export const MessagesManagement = () => {
           {/* ── RIGHT COLUMN: Active Chat ── */}
           <ChatWindow
             activeConversation={activeConversation}
-            showMobileChat={showMobileChat}
-            setShowMobileChat={setShowMobileChat}
             checkOnline={checkOnline}
             isOtherPersonTyping={isOtherPersonTyping}
             isLoadingMessages={isLoadingMessages}
             messages={messages}
             currentUserId={currentUserId}
-            hoveredMsgId={hoveredMsgId}
-            setHoveredMsgId={setHoveredMsgId}
-            openLightbox={openLightbox}
             handleReply={handleReply}
-            replyTarget={replyTarget}
-            setReplyTarget={setReplyTarget}
-            pendingPreviews={pendingPreviews}
-            pendingFiles={pendingFiles}
-            removeFile={removeFile}
             fileInputRef={fileInputRef}
             handleFileSelect={handleFileSelect}
             isConnected={isConnected}
-            inputText={inputText}
             handleInputChange={handleInputChange}
             handleKeyDown={handleKeyDown}
-            showEmojiPicker={showEmojiPicker}
-            setShowEmojiPicker={setShowEmojiPicker}
-            setInputText={setInputText}
             handleSend={handleSend}
-            isUploading={isUploading}
             messagesContainerRef={messagesContainerRef}
             inputRef={inputRef}
             onCallSuccess={(name) => toast.success(`Calling ${name}...`)}

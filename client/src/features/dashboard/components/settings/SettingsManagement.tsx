@@ -23,6 +23,7 @@ import { UserProfileSettingsCard } from '#/features/profile'
 import { PayoutSettingsForm } from './components/PayoutSettingsForm'
 import { NotificationSettingsForm } from './components/NotificationSettingsForm'
 import { SiteSettingsForm } from './components/SiteSettingsForm'
+import { usePayoutSettingsStore } from '../../../../store/usePayoutSettingsStore'
 
 export const SettingsManagement = () => {
   const { data: session, isPending: isSessionLoading } = authClient.useSession()
@@ -31,12 +32,8 @@ export const SettingsManagement = () => {
   // Active Tab State
   const [activeSubTab, setActiveSubTab] = useState('profile')
 
-  // Payout/Bank Settings States
-  const [bankName, setBankName] = useState('')
-  const [accountNumber, setAccountNumber] = useState('')
-  const [ifscCode, setIfscCode] = useState('')
-  const [upiId, setUpiId] = useState('')
-  const [accountHolder, setAccountHolder] = useState('')
+  // Payout Settings Store Actions
+  const initializePayout = usePayoutSettingsStore((state) => state.initialize)
 
   // Notification Preferences States
   const [bookingAlerts, setBookingAlerts] = useState(true)
@@ -48,29 +45,24 @@ export const SettingsManagement = () => {
   // Load user session details dynamically
   useEffect(() => {
     if (activeUser) {
-      setBankName((activeUser as any).bankName || '')
-      setAccountNumber((activeUser as any).accountNumber || '')
-      setIfscCode((activeUser as any).ifscCode || '')
-      setUpiId((activeUser as any).upiId || '')
-      setAccountHolder(
-        (activeUser as any).accountHolder || activeUser.name || '',
-      )
+      initializePayout(activeUser)
       setBookingAlerts((activeUser as any).bookingAlerts !== false)
       setSettlementAlerts((activeUser as any).settlementAlerts !== false)
       setMarketingAlerts((activeUser as any).marketingAlerts === true)
     }
-  }, [activeUser])
+  }, [activeUser, initializePayout])
 
   // Handle Bank Account Save via API Mutation
   const handleSaveBankDetails = (e: React.FormEvent) => {
     e.preventDefault()
+    const state = usePayoutSettingsStore.getState()
     updateSettings.mutate(
       {
-        bankName,
-        accountNumber,
-        ifscCode,
-        upiId,
-        accountHolder,
+        bankName: state.bankName,
+        accountNumber: state.accountNumber,
+        ifscCode: state.ifscCode,
+        upiId: state.upiId,
+        accountHolder: state.accountHolder,
       },
       {
         onSuccess: () => {
@@ -81,8 +73,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-              err.message ||
-              'Failed to save bank details',
+            err.message ||
+            'Failed to save bank details',
           )
         },
       },
@@ -111,8 +103,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-              err.message ||
-              'Failed to update notification settings',
+            err.message ||
+            'Failed to update notification settings',
           )
         },
       },
@@ -155,13 +147,13 @@ export const SettingsManagement = () => {
     },
     ...(isAdminOrSuper
       ? [
-          {
-            id: 'site-content',
-            label: 'Site Content Settings',
-            desc: 'Customize contact, pricing, trust, and terms',
-            icon: Settings,
-          },
-        ]
+        {
+          id: 'site-content',
+          label: 'Site Content Settings',
+          desc: 'Customize contact, pricing, trust, and terms',
+          icon: Settings,
+        },
+      ]
       : []),
     {
       id: 'security',
@@ -210,18 +202,16 @@ export const SettingsManagement = () => {
               key={item.id}
               variant="ghost"
               onClick={() => setActiveSubTab(item.id)}
-              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
-                activeSubTab === item.id
+              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${activeSubTab === item.id
                   ? 'bg-[#e6f4ea] text-[#0a5c36] hover:bg-[#e6f4ea] hover:text-[#0a5c36]'
                   : 'text-slate-600 hover:bg-slate-50'
-              }`}
+                }`}
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${
-                  activeSubTab === item.id
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${activeSubTab === item.id
                     ? 'bg-white text-[#0a5c36] border-emerald-100 shadow-sm'
                     : 'bg-slate-100 border-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm'
-                }`}
+                  }`}
               >
                 <item.icon
                   size={18}
@@ -229,17 +219,15 @@ export const SettingsManagement = () => {
                 />
               </div>
               <div className="min-w-0 text-left">
-                <p className={`font-sans text-[13px] leading-snug font-bold ${
-                  activeSubTab === item.id ? 'text-[#0a5c36]' : 'text-slate-800'
-                }`}>
+                <p className={`font-sans text-[13px] leading-snug font-bold ${activeSubTab === item.id ? 'text-[#0a5c36]' : 'text-slate-800'
+                  }`}>
                   {item.label}
                 </p>
                 <p
-                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
-                    activeSubTab === item.id
+                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${activeSubTab === item.id
                       ? 'text-[#0a5c36]/80'
                       : 'text-slate-400'
-                  }`}
+                    }`}
                 >
                   {item.desc}
                 </p>
@@ -259,23 +247,9 @@ export const SettingsManagement = () => {
           {activeSubTab === 'payment' && (
             <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
               <PayoutSettingsForm
-                upiId={upiId}
-                setUpiId={setUpiId}
-                accountHolder={accountHolder}
-                setAccountHolder={setAccountHolder}
-                bankName={bankName}
-                setBankName={setBankName}
-                accountNumber={accountNumber}
-                setAccountNumber={setAccountNumber}
-                ifscCode={ifscCode}
-                setIfscCode={setIfscCode}
                 handleSaveBankDetails={handleSaveBankDetails}
                 isSaving={updateSettings.isPending}
-                initialUpiId={(activeUser as any)?.upiId || ''}
-                initialAccountHolder={(activeUser as any)?.accountHolder || activeUser?.name || ''}
-                initialBankName={(activeUser as any)?.bankName || ''}
-                initialAccountNumber={(activeUser as any)?.accountNumber || ''}
-                initialIfscCode={(activeUser as any)?.ifscCode || ''}
+                activeUser={activeUser}
               />
             </div>
           )}

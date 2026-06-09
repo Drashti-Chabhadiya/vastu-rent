@@ -1,52 +1,34 @@
 import { AlertCircle, Smartphone, User, Building2, CreditCard, Key, Pencil, Save } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { usePayoutSettingsStore } from '../../../../../store/usePayoutSettingsStore'
 
 interface PayoutSettingsFormProps {
-  upiId: string
-  setUpiId: (id: string) => void
-  accountHolder: string
-  setAccountHolder: (holder: string) => void
-  bankName: string
-  setBankName: (name: string) => void
-  accountNumber: string
-  setAccountNumber: (num: string) => void
-  ifscCode: string
-  setIfscCode: (code: string) => void
   handleSaveBankDetails: (e: React.FormEvent) => void
   isSaving: boolean
-  initialUpiId: string
-  initialAccountHolder: string
-  initialBankName: string
-  initialAccountNumber: string
-  initialIfscCode: string
+  activeUser: any
 }
 
 export const PayoutSettingsForm = ({
-  upiId,
-  setUpiId,
-  accountHolder,
-  setAccountHolder,
-  bankName,
-  setBankName,
-  accountNumber,
-  setAccountNumber,
-  ifscCode,
-  setIfscCode,
   handleSaveBankDetails,
   isSaving,
-  initialUpiId,
-  initialAccountHolder,
-  initialBankName,
-  initialAccountNumber,
-  initialIfscCode,
+  activeUser,
 }: PayoutSettingsFormProps) => {
-  const hasChanges =
-    upiId !== initialUpiId ||
-    accountHolder !== initialAccountHolder ||
-    bankName !== initialBankName ||
-    accountNumber !== initialAccountNumber ||
-    ifscCode !== initialIfscCode
+  const {
+    upiId,
+    setUpiId,
+    accountHolder,
+    setAccountHolder,
+    bankName,
+    setBankName,
+    accountNumber,
+    setAccountNumber,
+    ifscCode,
+    setIfscCode,
+    hasChanges: checkHasChanges,
+  } = usePayoutSettingsStore()
+
+  const hasChanges = checkHasChanges(activeUser)
 
   return (
     <form onSubmit={handleSaveBankDetails} className="space-y-8 animate-in fade-in duration-300">

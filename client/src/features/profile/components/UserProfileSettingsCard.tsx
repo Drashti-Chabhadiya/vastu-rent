@@ -9,12 +9,12 @@ import {
   Pencil,
   Sparkles,
 } from 'lucide-react'
-import { useProfileData } from '../hooks/useProfileData'
 import { PersonalInfoForm } from './PersonalInfoForm'
 import { ImageEditorModal } from './ImageEditorModal'
 import { LoadingOverlay } from '#/components/ui/loader'
 import { toast } from 'sonner'
 import { useTranslation, normalizeLanguage } from '#/context/TranslationContext'
+import { useProfileData } from '#/hook'
 
 export function UserProfileSettingsCard() {
   const {
@@ -128,9 +128,9 @@ export function UserProfileSettingsCard() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Jan 2024'
 
   const fields = [
