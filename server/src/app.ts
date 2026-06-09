@@ -108,8 +108,8 @@ app.register(categoryRoutes, { prefix: "/api/admin/categories" });
 app.register(reviewRoutes, { prefix: "/api/admin/reviews" });
 
 // Legacy redirects
-app.get("/api/my-rentals", async (req, reply) => reply.redirect("/api/rentals/my"));
-app.get("/api/my-listings", async (req, reply) => reply.redirect("/api/products/my-listings"));
+app.get("/api/my-rentals", async (_req, reply) => reply.redirect("/api/rentals/my"));
+app.get("/api/my-listings", async (_req, reply) => reply.redirect("/api/products/my-listings"));
 
 // Health check
 app.get("/api/health", async () => ({ status: "ok", timestamp: new Date().toISOString() }));
@@ -128,7 +128,7 @@ app.get("/", async () => ({ message: "Vastu-Rent API is running" }));
  *
  * On web (non-mobile) the page falls back to redirecting to the Vercel client.
  */
-app.get("/oauth-callback", async (req, reply) => {
+app.get("/oauth-callback", async (_req, reply) => {
   reply.type("text/html").send(`<!DOCTYPE html>
 <html lang="en">
 <head>

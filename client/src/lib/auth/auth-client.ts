@@ -46,7 +46,6 @@ const getAuthBaseUrl = (): string => {
   return url
 }
 
-
 /**
  * Better Auth client — single source of truth for all auth actions.
  *
@@ -85,7 +84,8 @@ export const authClient = createAuthClient({
         }
 
         // 2. Fallback: Authorization header
-        const authHeader = ctx.response.headers.get('Authorization') ||
+        const authHeader =
+          ctx.response.headers.get('Authorization') ||
           ctx.response.headers.get('authorization')
         if (authHeader?.startsWith('Bearer ')) {
           localStorage.setItem('bearer_token', authHeader.slice(7))
@@ -101,7 +101,10 @@ export const authClient = createAuthClient({
             body?.data?.token ||
             body?.data?.session?.token
           if (token) {
-            localStorage.setItem('bearer_token', decodeURIComponent(String(token)))
+            localStorage.setItem(
+              'bearer_token',
+              decodeURIComponent(String(token)),
+            )
           }
         } catch {
           // Ignore parse errors

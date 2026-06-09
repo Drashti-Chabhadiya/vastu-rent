@@ -24,7 +24,7 @@ export class LikeController {
     return result;
   }
 
-  async getLikedProductIds(request: FastifyRequest, reply: FastifyReply) {
+  async getLikedProductIds(request: FastifyRequest, _reply: FastifyReply) {
     const userId = (request as any).user?.id;
     if (!userId) return { productIds: [] };
 
@@ -32,7 +32,7 @@ export class LikeController {
     return { productIds };
   }
 
-  async getLikedProducts(request: FastifyRequest, reply: FastifyReply) {
+  async getLikedProducts(request: FastifyRequest, _reply: FastifyReply) {
     const userId = (request as any).user?.id;
     if (!userId) return { products: [] };
 

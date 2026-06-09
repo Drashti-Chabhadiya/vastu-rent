@@ -60,7 +60,7 @@ export function HelpPage() {
           </h1>
           <div className="relative max-w-2xl mx-auto group">
             <Search
-              className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:bg-primary transition-colors"
+              className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:text-primary transition-colors"
               size={24}
             />
             <Input

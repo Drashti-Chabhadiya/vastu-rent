@@ -16,10 +16,6 @@ export async function productRoutes(fastify: FastifyInstance) {
     request.user = session.user;
   };
 
-  const ownerOrAdmin = async (request: any, reply: any) => {
-    await authHandler(request, reply);
-  };
-
   // Owner/Admin Management
   fastify.post("/", { preHandler: [authHandler] }, productController.createProduct);
   fastify.get("/my-listings", { preHandler: [authHandler] }, productController.getMyListings);

@@ -27,6 +27,8 @@ import { getSocketUrl } from '#/lib/socket-url'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 
+import { TranslationProvider } from '#/context/TranslationContext'
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -291,10 +293,12 @@ function RootDocument() {
   return (
     <div className={cn('bg-card', 'font-sans', 'antialiased')}>
       <QueryClientProvider client={queryClient}>
-        <NotificationListener />
-        {!isAuthPage && !isAdminPage && !isOwnerPage && <Navbar />}
-        <Outlet />
-        {!isAuthPage && !isAdminPage && !isOwnerPage && <Footer />}
+        <TranslationProvider>
+          <NotificationListener />
+          {!isAuthPage && !isAdminPage && !isOwnerPage && <Navbar />}
+          <Outlet />
+          {!isAuthPage && !isAdminPage && !isOwnerPage && <Footer />}
+        </TranslationProvider>
       </QueryClientProvider>
       <Toaster position="top-right" />
       <TanStackDevtools

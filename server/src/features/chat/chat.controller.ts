@@ -235,6 +235,33 @@ export class ChatController {
       return reply.status(500).send({ message: error.message || "Upload failed" });
     }
   }
+
+  async deleteConversation(request: FastifyRequest, reply: FastifyReply) {
+    const { id: conversationId } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+    const userId = session.user.id;
+
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+    });
+
+    if (!conversation) {
+      return reply.status(404).send({ message: "Conversation not found" });
+    }
+
+    if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    // Delete all messages first, then the conversation (cascade is set, but being explicit)
+    await prisma.message.deleteMany({ where: { conversationId } });
+    await prisma.conversation.delete({ where: { id: conversationId } });
+
+    return { message: "Conversation deleted" };
+  }
 }
 
 export const chatController = new ChatController();

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ChevronRight,
   Calendar,
@@ -6,44 +6,24 @@ import {
   Bell,
   CreditCard,
   ShieldCheck,
-  Upload,
   Settings,
+  Lock,
+  Cpu,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
 import { authClient } from '#/lib/auth/auth-client'
-import {
-  useUploadProfileImage,
-  useUpdateUserSettings,
-  useCloudinaryUsage,
-} from '#/hook'
-import { apiClient } from '#/lib/api'
+import { useUpdateUserSettings } from '#/hook'
+import { Link } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 
 // Import extracted sub-components
-import { ProfileSettingsForm } from './components/ProfileSettingsForm'
+import { UserProfileSettingsCard } from '#/features/profile'
 import { PayoutSettingsForm } from './components/PayoutSettingsForm'
 import { NotificationSettingsForm } from './components/NotificationSettingsForm'
-import { CloudinarySettingsForm } from './components/CloudinarySettingsForm'
 import { SiteSettingsForm } from './components/SiteSettingsForm'
-import { StorageDetailsDialog } from './components/StorageDetailsDialog'
-
-// Pure helper — lives outside the component so it never changes reference.
-const formatBytes = (
-  bytes: number,
-  decimals: number = 1,
-): { value: string; unit: string } => {
-  if (bytes === 0) return { value: '0', unit: 'GB' }
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return {
-    value: parseFloat((bytes / Math.pow(k, i)).toFixed(dm)).toString(),
-    unit: sizes[i],
-  }
-}
+import { usePayoutSettingsStore } from '../../../../store/usePayoutSettingsStore'
 
 export const SettingsManagement = () => {
   const { data: session, isPending: isSessionLoading } = authClient.useSession()
@@ -52,236 +32,37 @@ export const SettingsManagement = () => {
   // Active Tab State
   const [activeSubTab, setActiveSubTab] = useState('profile')
 
-  // Profile Edit States
-  const [profileName, setProfileName] = useState('')
-  const [profileImage, setProfileImage] = useState('')
-  const [isSavingProfile, setIsSavingProfile] = useState(false)
-
-  // Payout/Bank Settings States
-  const [bankName, setBankName] = useState('')
-  const [accountNumber, setAccountNumber] = useState('')
-  const [ifscCode, setIfscCode] = useState('')
-  const [upiId, setUpiId] = useState('')
-  const [accountHolder, setAccountHolder] = useState('')
+  // Payout Settings Store Actions
+  const initializePayout = usePayoutSettingsStore((state) => state.initialize)
 
   // Notification Preferences States
   const [bookingAlerts, setBookingAlerts] = useState(true)
   const [settlementAlerts, setSettlementAlerts] = useState(true)
   const [marketingAlerts, setMarketingAlerts] = useState(false)
 
-  // Cloudinary Integration States
-  const [cloudinaryCloudName, setCloudinaryCloudName] = useState('')
-  const [cloudinaryApiKey, setCloudinaryApiKey] = useState('')
-  const [cloudinaryApiSecret, setCloudinaryApiSecret] = useState('')
-  const [cloudinaryUploadPreset, setCloudinaryUploadPreset] = useState('')
-  const [cloudinaryHasSecret, setCloudinaryHasSecret] = useState(false)
-  const [isTestingCloudinary, setIsTestingCloudinary] = useState(false)
-  const [isSavingCloudinary, setIsSavingCloudinary] = useState(false)
-  const [isLoadingCloudinary, setIsLoadingCloudinary] = useState(false)
-
-  // Profile Image Upload Hook & Settings Update Hook
-  const uploadProfileImg = useUploadProfileImage()
   const updateSettings = useUpdateUserSettings()
-
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
-
-  // Fetch real-time Cloudinary usage metrics — staleTime prevents
-  // session re-polls from causing the storage value to flicker.
-  const isCloudinaryTabActive =
-    activeSubTab === 'cloudinary' && activeUser !== undefined
-  const { data: usageData, refetch: refetchUsage } = useCloudinaryUsage({
-    enabled: isCloudinaryTabActive,
-    staleTime: 60_000, // treat data as fresh for 60 s
-    refetchOnWindowFocus: false, // avoid refetch noise on focus
-  })
-
-  // Memoize derived storage stats so they only recompute when usageData changes,
-  // not on every parent render (which was causing the blink).
-  const { formattedUsed, formattedLimit, usedPercent } = useMemo(() => {
-    const stats = usageData?.storage || {
-      usage: 0,
-      limit: 10485760000,
-      used_percent: 0,
-    }
-    return {
-      formattedUsed: formatBytes(stats.usage),
-      formattedLimit: formatBytes(stats.limit),
-      usedPercent: Math.min(100, Math.max(0, stats.used_percent)),
-    }
-  }, [usageData])
-
-  // Load Cloudinary config when active tab is selected
-  useEffect(() => {
-    if (activeSubTab === 'cloudinary' && activeUser) {
-      setIsLoadingCloudinary(true)
-      apiClient
-        .get('/users/settings/cloudinary')
-        .then((res) => {
-          const config = res.data.config
-          if (config) {
-            setCloudinaryCloudName(config.cloudName || '')
-            setCloudinaryApiKey(config.apiKey || '')
-            setCloudinaryUploadPreset(config.uploadPreset || '')
-            setCloudinaryHasSecret(config.hasSecret || false)
-          } else {
-            setCloudinaryCloudName('')
-            setCloudinaryApiKey('')
-            setCloudinaryUploadPreset('')
-            setCloudinaryHasSecret(false)
-          }
-        })
-        .catch(() => {
-          toast.error('Failed to load Cloudinary settings')
-        })
-        .finally(() => {
-          setIsLoadingCloudinary(false)
-        })
-    }
-  }, [activeSubTab, activeUser])
-
-  // Handle Save Cloudinary Config
-  const handleSaveCloudinary = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!cloudinaryCloudName.trim() || !cloudinaryApiKey.trim()) {
-      toast.error('Cloud Name and API Key are required')
-      return
-    }
-    if (!cloudinaryHasSecret && !cloudinaryApiSecret.trim()) {
-      toast.error('API Secret is required for new configurations')
-      return
-    }
-
-    setIsSavingCloudinary(true)
-    try {
-      const payload: any = {
-        cloudName: cloudinaryCloudName.trim(),
-        apiKey: cloudinaryApiKey.trim(),
-        uploadPreset: cloudinaryUploadPreset.trim() || undefined,
-      }
-      if (cloudinaryApiSecret.trim()) {
-        payload.apiSecret = cloudinaryApiSecret.trim()
-      }
-
-      await apiClient.post('/users/settings/cloudinary', payload)
-      toast.success('Cloudinary credentials successfully saved and secured! ☁️')
-      setCloudinaryHasSecret(true)
-      setCloudinaryApiSecret('')
-      refetchUsage()
-    } catch (err: any) {
-      toast.error(
-        err.response?.data?.message ||
-          err.message ||
-          'Failed to save Cloudinary settings',
-      )
-    } finally {
-      setIsSavingCloudinary(false)
-    }
-  }
-
-  // Handle Test Cloudinary Connection
-  const handleTestCloudinary = async () => {
-    if (!cloudinaryCloudName.trim() || !cloudinaryApiKey.trim()) {
-      toast.error('Cloud Name and API Key are required to test')
-      return
-    }
-    if (!cloudinaryHasSecret && !cloudinaryApiSecret.trim()) {
-      toast.error('API Secret is required to test')
-      return
-    }
-
-    setIsTestingCloudinary(true)
-    const promise = apiClient.post('/users/settings/cloudinary/test', {
-      cloudName: cloudinaryCloudName.trim(),
-      apiKey: cloudinaryApiKey.trim(),
-      apiSecret: cloudinaryApiSecret.trim() || undefined,
-    })
-
-    toast.promise(promise, {
-      loading: 'Testing Cloudinary connection...',
-      success: () => {
-        setIsTestingCloudinary(false)
-        refetchUsage()
-        return 'Successfully connected to Cloudinary! ☁️🎉'
-      },
-      error: (err) => {
-        setIsTestingCloudinary(false)
-        return (
-          err.response?.data?.message ||
-          err.message ||
-          'Failed to connect. Please verify keys.'
-        )
-      },
-    })
-  }
 
   // Load user session details dynamically
   useEffect(() => {
     if (activeUser) {
-      setProfileName(activeUser.name || '')
-      setProfileImage(activeUser.image || '')
-      setBankName((activeUser as any).bankName || '')
-      setAccountNumber((activeUser as any).accountNumber || '')
-      setIfscCode((activeUser as any).ifscCode || '')
-      setUpiId((activeUser as any).upiId || '')
-      setAccountHolder(
-        (activeUser as any).accountHolder || activeUser.name || '',
-      )
+      initializePayout(activeUser)
       setBookingAlerts((activeUser as any).bookingAlerts !== false)
       setSettlementAlerts((activeUser as any).settlementAlerts !== false)
       setMarketingAlerts((activeUser as any).marketingAlerts === true)
     }
-  }, [activeUser])
-
-  // Handle Profile Update
-  const handleSaveProfile = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!profileName.trim()) {
-      toast.error('Name cannot be empty')
-      return
-    }
-
-    setIsSavingProfile(true)
-    try {
-      await authClient.updateUser({
-        name: profileName,
-        image: profileImage,
-      })
-      toast.success('Profile successfully updated in database! 🎉')
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update profile info')
-    } finally {
-      setIsSavingProfile(false)
-    }
-  }
-
-  // Handle Profile Picture Picker Upload
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const promise = uploadProfileImg.mutateAsync(file)
-    toast.promise(promise, {
-      loading: 'Uploading new profile photo to Cloudinary...',
-      success: (data) => {
-        // Direct response returns user image
-        const imgUrl = data.user?.image || profileImage
-        setProfileImage(imgUrl)
-        return 'Profile picture successfully uploaded!'
-      },
-      error: 'Failed to upload photo.',
-    })
-  }
+  }, [activeUser, initializePayout])
 
   // Handle Bank Account Save via API Mutation
   const handleSaveBankDetails = (e: React.FormEvent) => {
     e.preventDefault()
+    const state = usePayoutSettingsStore.getState()
     updateSettings.mutate(
       {
-        bankName,
-        accountNumber,
-        ifscCode,
-        upiId,
-        accountHolder,
+        bankName: state.bankName,
+        accountNumber: state.accountNumber,
+        ifscCode: state.ifscCode,
+        upiId: state.upiId,
+        accountHolder: state.accountHolder,
       },
       {
         onSuccess: () => {
@@ -292,42 +73,42 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-              err.message ||
-              'Failed to save bank details',
+            err.message ||
+            'Failed to save bank details',
           )
         },
       },
     )
   }
 
-  // Handle Notifications Switch Changes via API Mutation
-  const handleNotificationToggle = (key: string, val: boolean) => {
-    const payload: any = {}
-    if (key === 'bookingAlerts') {
-      setBookingAlerts(val)
-      payload.bookingAlerts = val
-    }
-    if (key === 'settlementAlerts') {
-      setSettlementAlerts(val)
-      payload.settlementAlerts = val
-    }
-    if (key === 'marketingAlerts') {
-      setMarketingAlerts(val)
-      payload.marketingAlerts = val
-    }
-
-    updateSettings.mutate(payload, {
-      onSuccess: () => {
-        toast.success('Notification preferences updated in database!')
+  // Handle Notifications Save via API Mutation
+  const handleSaveNotifications = (
+    bookingAlertsVal: boolean,
+    settlementAlertsVal: boolean,
+    marketingAlertsVal: boolean,
+  ) => {
+    updateSettings.mutate(
+      {
+        bookingAlerts: bookingAlertsVal,
+        settlementAlerts: settlementAlertsVal,
+        marketingAlerts: marketingAlertsVal,
       },
-      onError: (err: any) => {
-        toast.error(
-          err.response?.data?.message ||
+      {
+        onSuccess: () => {
+          setBookingAlerts(bookingAlertsVal)
+          setSettlementAlerts(settlementAlertsVal)
+          setMarketingAlerts(marketingAlertsVal)
+          toast.success('Notification preferences successfully saved in Database! 🔔')
+        },
+        onError: (err: any) => {
+          toast.error(
+            err.response?.data?.message ||
             err.message ||
             'Failed to update notification settings',
-        )
+          )
+        },
       },
-    })
+    )
   }
 
   if (isSessionLoading) {
@@ -341,11 +122,6 @@ export const SettingsManagement = () => {
       </div>
     )
   }
-
-  const isDashboardRole =
-    activeUser?.role === 'owner' ||
-    activeUser?.role === 'admin' ||
-    activeUser?.role === 'superAdmin'
 
   const isAdminOrSuper =
     activeUser?.role === 'admin' || activeUser?.role === 'superAdmin'
@@ -369,26 +145,28 @@ export const SettingsManagement = () => {
       desc: 'Control your alert preferences',
       icon: Bell,
     },
-    ...(isDashboardRole
-      ? [
-          {
-            id: 'cloudinary',
-            label: 'Cloudinary Storage',
-            desc: 'Manage your custom storage keys',
-            icon: Upload,
-          },
-        ]
-      : []),
     ...(isAdminOrSuper
       ? [
-          {
-            id: 'site-content',
-            label: 'Site Content Settings',
-            desc: 'Customize contact, pricing, trust, and terms pages',
-            icon: Settings,
-          },
-        ]
+        {
+          id: 'site-content',
+          label: 'Site Content Settings',
+          desc: 'Customize contact, pricing, trust, and terms',
+          icon: Settings,
+        },
+      ]
       : []),
+    {
+      id: 'security',
+      label: 'Security & Access',
+      desc: 'Manage password and access',
+      icon: Lock,
+    },
+    {
+      id: 'api-integrations',
+      label: 'API & Integrations',
+      desc: 'Manage third-party integrations',
+      icon: Cpu,
+    },
   ]
 
   return (
@@ -413,42 +191,43 @@ export const SettingsManagement = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
         {/* Left Sidebar: Settings Navigation */}
-        <div className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm h-fit space-y-1">
+        <div className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm space-y-1.5 xl:sticky xl:top-24">
+          <h2 className="text-[10px] font-extrabold tracking-widest text-muted-foreground/50 mb-3 px-3 uppercase">
+            Settings Menu
+          </h2>
           {sidebarItems.map((item) => (
             <Button
               key={item.id}
               variant="ghost"
               onClick={() => setActiveSubTab(item.id)}
-              className={`w-full flex items-center justify-start gap-4 p-4 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
-                activeSubTab === item.id
-                  ? 'bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light hover:text-dash-brand'
-                  : 'text-muted-foreground/85 hover:bg-muted-light hover:text-foreground/80'
-              }`}
+              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${activeSubTab === item.id
+                  ? 'bg-[#e6f4ea] text-[#0a5c36] hover:bg-[#e6f4ea] hover:text-[#0a5c36]'
+                  : 'text-slate-600 hover:bg-slate-50'
+                }`}
             >
               <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
-                  activeSubTab === item.id
-                    ? 'bg-card shadow-sm text-dash-brand'
-                    : 'bg-muted-light text-muted-dark group-hover:bg-card group-hover:shadow-sm'
-                }`}
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${activeSubTab === item.id
+                    ? 'bg-white text-[#0a5c36] border-emerald-100 shadow-sm'
+                    : 'bg-slate-100 border-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm'
+                  }`}
               >
                 <item.icon
-                  size={16}
+                  size={18}
                   strokeWidth={activeSubTab === item.id ? 2.5 : 2}
                 />
               </div>
               <div className="min-w-0 text-left">
-                <p className="font-sans text-[13px] font-bold leading-snug text-foreground/80 group-hover:text-foreground">
+                <p className={`font-sans text-[13px] leading-snug font-bold ${activeSubTab === item.id ? 'text-[#0a5c36]' : 'text-slate-800'
+                  }`}>
                   {item.label}
                 </p>
                 <p
-                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
-                    activeSubTab === item.id
-                      ? 'text-dash-brand/90'
-                      : 'text-muted-foreground/80'
-                  }`}
+                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${activeSubTab === item.id
+                      ? 'text-[#0a5c36]/80'
+                      : 'text-slate-400'
+                    }`}
                 >
                   {item.desc}
                 </p>
@@ -458,75 +237,70 @@ export const SettingsManagement = () => {
         </div>
 
         {/* Middle Column: Dynamic Forms */}
-        <div className="xl:col-span-2 bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm">
+        <div className="xl:col-span-2 space-y-6">
           {activeSubTab === 'profile' && (
-            <ProfileSettingsForm
-              profileName={profileName}
-              setProfileName={setProfileName}
-              profileImage={profileImage}
-              setProfileImage={setProfileImage}
-              isSavingProfile={isSavingProfile}
-              activeUser={activeUser}
-              handleSaveProfile={handleSaveProfile}
-              handleImageUpload={handleImageUpload}
-            />
+            <div className="max-h-[calc(100vh-12rem)] overflow-y-auto rounded-[32px] scrollbar-thin">
+              <UserProfileSettingsCard />
+            </div>
           )}
 
           {activeSubTab === 'payment' && (
-            <PayoutSettingsForm
-              upiId={upiId}
-              setUpiId={setUpiId}
-              accountHolder={accountHolder}
-              setAccountHolder={setAccountHolder}
-              bankName={bankName}
-              setBankName={setBankName}
-              accountNumber={accountNumber}
-              setAccountNumber={setAccountNumber}
-              ifscCode={ifscCode}
-              setIfscCode={setIfscCode}
-              handleSaveBankDetails={handleSaveBankDetails}
-            />
+            <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
+              <PayoutSettingsForm
+                handleSaveBankDetails={handleSaveBankDetails}
+                isSaving={updateSettings.isPending}
+                activeUser={activeUser}
+              />
+            </div>
           )}
 
           {activeSubTab === 'notifications' && (
-            <NotificationSettingsForm
-              bookingAlerts={bookingAlerts}
-              settlementAlerts={settlementAlerts}
-              marketingAlerts={marketingAlerts}
-              handleNotificationToggle={handleNotificationToggle}
-            />
-          )}
-
-          {activeSubTab === 'cloudinary' && (
-            <CloudinarySettingsForm
-              cloudinaryCloudName={cloudinaryCloudName}
-              setCloudinaryCloudName={setCloudinaryCloudName}
-              cloudinaryApiKey={cloudinaryApiKey}
-              setCloudinaryApiKey={setCloudinaryApiKey}
-              cloudinaryApiSecret={cloudinaryApiSecret}
-              setCloudinaryApiSecret={setCloudinaryApiSecret}
-              cloudinaryUploadPreset={cloudinaryUploadPreset}
-              setCloudinaryUploadPreset={setCloudinaryUploadPreset}
-              cloudinaryHasSecret={cloudinaryHasSecret}
-              isTestingCloudinary={isTestingCloudinary}
-              isSavingCloudinary={isSavingCloudinary}
-              isLoadingCloudinary={isLoadingCloudinary}
-              handleTestCloudinary={handleTestCloudinary}
-              handleSaveCloudinary={handleSaveCloudinary}
-              formattedUsed={formattedUsed}
-              formattedLimit={formattedLimit}
-              usedPercent={usedPercent}
-              setIsDetailsModalOpen={setIsDetailsModalOpen}
-            />
+            <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
+              <NotificationSettingsForm
+                bookingAlerts={bookingAlerts}
+                settlementAlerts={settlementAlerts}
+                marketingAlerts={marketingAlerts}
+                handleNotificationSave={handleSaveNotifications}
+                isSaving={updateSettings.isPending}
+              />
+            </div>
           )}
 
           {activeSubTab === 'site-content' && isAdminOrSuper && (
-            <SiteSettingsForm />
+            <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm max-h-[calc(100vh-12rem)] flex flex-col">
+              <SiteSettingsForm />
+            </div>
+          )}
+
+          {activeSubTab === 'security' && (
+            <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
+              <h3 className="text-[16px] font-black text-foreground/90">Security & Access</h3>
+              <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
+                Security controls, password changes, two-factor authentication, active login sessions, and trusted devices are managed securely under your main Account Settings page.
+              </p>
+              <Link to="/account">
+                <Button className="mt-2 bg-[#0a5c36] hover:bg-[#084a2b] text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm">
+                  Go to Profile Security
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {activeSubTab === 'api-integrations' && (
+            <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
+              <h3 className="text-[16px] font-black text-foreground/90">API & Integrations</h3>
+              <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
+                Configure third-party API webhooks, web services, rental syndication channels, and application credentials.
+              </p>
+              <Button disabled className="mt-2 bg-muted-light text-muted-dark font-black text-[11px] px-6 h-10 rounded-full cursor-not-allowed">
+                Coming Soon
+              </Button>
+            </div>
           )}
         </div>
 
         {/* Right Column: Account Summary Info */}
-        <div className="space-y-6">
+        <div className="space-y-6 xl:sticky xl:top-24">
           {/* Account Details summary */}
           <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
             <h3 className="text-[13px] font-black text-foreground/90 mb-6 uppercase tracking-widest">
@@ -586,17 +360,6 @@ export const SettingsManagement = () => {
           </div>
         </div>
       </div>
-
-      {/* Storage Details Dialog */}
-      <StorageDetailsDialog
-        isOpen={isDetailsModalOpen}
-        onOpenChange={setIsDetailsModalOpen}
-        usageData={usageData}
-        cloudinaryCloudName={cloudinaryCloudName}
-        usedPercent={usedPercent}
-        formattedUsed={formattedUsed}
-        formattedLimit={formattedLimit}
-      />
     </div>
   )
 }

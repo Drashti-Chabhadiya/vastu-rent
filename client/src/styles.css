@@ -261,3 +261,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-primary);
 }
+
+/* Hide the Google Translate banner and widget UI */
+.skiptranslate, 
+.goog-te-banner-frame, 
+.goog-te-banner-frame.skiptranslate, 
+#goog-gt-tt, 
+.goog-te-balloon-frame,
+iframe.goog-te-menu-frame {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}

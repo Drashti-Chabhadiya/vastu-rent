@@ -1,131 +1,197 @@
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Smartphone, User, Building2, CreditCard, Key, Pencil, Save } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { usePayoutSettingsStore } from '../../../../../store/usePayoutSettingsStore'
 
 interface PayoutSettingsFormProps {
-  upiId: string
-  setUpiId: (id: string) => void
-  accountHolder: string
-  setAccountHolder: (holder: string) => void
-  bankName: string
-  setBankName: (name: string) => void
-  accountNumber: string
-  setAccountNumber: (num: string) => void
-  ifscCode: string
-  setIfscCode: (code: string) => void
   handleSaveBankDetails: (e: React.FormEvent) => void
+  isSaving: boolean
+  activeUser: any
 }
 
 export const PayoutSettingsForm = ({
-  upiId,
-  setUpiId,
-  accountHolder,
-  setAccountHolder,
-  bankName,
-  setBankName,
-  accountNumber,
-  setAccountNumber,
-  ifscCode,
-  setIfscCode,
   handleSaveBankDetails,
+  isSaving,
+  activeUser,
 }: PayoutSettingsFormProps) => {
+  const {
+    upiId,
+    setUpiId,
+    accountHolder,
+    setAccountHolder,
+    bankName,
+    setBankName,
+    accountNumber,
+    setAccountNumber,
+    ifscCode,
+    setIfscCode,
+    hasChanges: checkHasChanges,
+  } = usePayoutSettingsStore()
+
+  const hasChanges = checkHasChanges(activeUser)
+
   return (
-    <form onSubmit={handleSaveBankDetails} className="space-y-8">
-      <div className="flex items-center justify-between">
+    <form onSubmit={handleSaveBankDetails} className="space-y-8 animate-in fade-in duration-300">
+      {/* Title Header */}
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
         <div>
-          <h3 className="text-[16px] font-black text-foreground/90">
+          <h3 className="text-xl font-extrabold text-dash-brand font-display tracking-tight leading-none">
             Payout Settlements
           </h3>
-          <p className="text-[11px] font-bold text-muted-dark">
+          <p className="text-[12px] font-semibold text-muted-dark mt-2">
             Configure bank accounts or UPI IDs to receive earnings settlements.
           </p>
         </div>
         <Button
           type="submit"
-          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] px-6 h-11 rounded-full transition-all shadow-md shadow-dash-brand/10 active:scale-95 cursor-pointer"
+          disabled={!hasChanges || isSaving}
+          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand"
         >
-          Save Payout Details
+          <Save size={13} />
+          {isSaving ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
 
-      <div className="bg-warning/50 p-4 rounded-2xl border border-amber-100/50 flex items-start gap-2.5">
-        <AlertCircle
-          size={16}
-          className="text-warning-foreground shrink-0 mt-0.5"
-        />
-        <p className="text-[10px] font-semibold text-warning-foreground leading-relaxed">
-          Settlements are processed via bank accounts or UPI within 24-48 hours
-          of approved payout withdrawal requests. Ensure details are fully
-          accurate.
-        </p>
+      {/* Styled Bottom Alert */}
+      <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4.5 flex items-start gap-3.5 mt-8">
+        <div className="w-9 h-9 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+          <AlertCircle size={18} />
+        </div>
+        <div>
+          <span className="text-sm font-bold text-amber-700 block">
+            Verify Payout Details
+          </span>
+          <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
+            Settlements are processed via bank accounts or UPI within 24-48 hours of approved payout withdrawal requests. Ensure details are fully accurate.
+          </span>
+        </div>
       </div>
 
       {/* UPI Option */}
       <div className="space-y-6">
-        <div className="space-y-2">
-          <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
             UPI ID / Address (Recommended)
           </label>
-          <Input
-            value={upiId}
-            onChange={(e) => setUpiId(e.target.value)}
-            placeholder="e.g. name@upi"
-            className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-black text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-          />
+          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+            <div className="flex items-center gap-3.5 flex-1 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                <Smartphone size={16} />
+              </div>
+              <Input
+                type="text"
+                value={upiId}
+                onChange={(e) => setUpiId(e.target.value)}
+                placeholder="e.g. name@upi"
+                className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+              />
+            </div>
+            <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+              <Pencil size={12} />
+            </div>
+          </div>
         </div>
 
         <div className="border-t border-border/30 pt-6">
-          <h4 className="text-xs font-black text-foreground/90 mb-4 uppercase tracking-wider">
+          <h4 className="text-xs font-black text-foreground/90 mb-6 uppercase tracking-wider">
             Or Bank Account Transfer
           </h4>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+            {/* Account Holder Name */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Account Holder Name
               </label>
-              <Input
-                value={accountHolder}
-                onChange={(e) => setAccountHolder(e.target.value)}
-                placeholder="Enter bank account name"
-                className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-black text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-              />
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                    <User size={16} />
+                  </div>
+                  <Input
+                    type="text"
+                    value={accountHolder}
+                    onChange={(e) => setAccountHolder(e.target.value)}
+                    placeholder="Enter bank account name"
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+            {/* Bank Name */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Bank Name
               </label>
-              <Input
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-                placeholder="e.g. HDFC Bank"
-                className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-black text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-              />
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                    <Building2 size={16} />
+                  </div>
+                  <Input
+                    type="text"
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    placeholder="e.g. HDFC Bank"
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+            {/* Account Number */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Account Number
               </label>
-              <Input
-                value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
-                placeholder="Enter Account Number"
-                className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-black text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-              />
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                    <CreditCard size={16} />
+                  </div>
+                  <Input
+                    type="text"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value)}
+                    placeholder="Enter Account Number"
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+            {/* IFSC Code */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 IFSC Code
               </label>
-              <Input
-                value={ifscCode}
-                onChange={(e) => setIfscCode(e.target.value)}
-                placeholder="e.g. HDFC0000123"
-                className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-black text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-              />
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                    <Key size={16} />
+                  </div>
+                  <Input
+                    type="text"
+                    value={ifscCode}
+                    onChange={(e) => setIfscCode(e.target.value)}
+                    placeholder="e.g. HDFC0000123"
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
+              </div>
             </div>
           </div>
         </div>

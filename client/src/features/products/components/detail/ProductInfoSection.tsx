@@ -13,26 +13,15 @@ import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { cn } from '#/lib/utils'
 
+import { useProductBookingStore } from '../../../../store/useProductBookingStore'
+
 interface ProductInfoSectionProps {
   product: any
   productInfo: { label: string; value: string }[]
-  paymentMethod: 'online' | 'cash'
-  setPaymentMethod: (method: 'online' | 'cash') => void
   handleRentNow: () => void
   createRentalIsPending: boolean
-  isPaying: boolean
-  startDate: Date | null
-  endDate: Date | null
-  rentalDays: number
-  totalPrice: number
-
-  // Coupon Props
-  couponCode: string
-  setCouponCode: (code: string) => void
   handleApplyCoupon: () => void
-  appliedCoupon: { id: string; code: string; discountAmount: number } | null
   handleRemoveCoupon: () => void
-  couponError: string
   applyCouponIsPending: boolean
   availabilityCalendar: React.ReactNode
 }
@@ -40,24 +29,31 @@ interface ProductInfoSectionProps {
 export const ProductInfoSection = ({
   product,
   productInfo,
-  paymentMethod,
-  setPaymentMethod,
   handleRentNow,
   createRentalIsPending,
-  isPaying,
-  startDate,
-  endDate,
-  rentalDays,
-  totalPrice,
-  couponCode,
-  setCouponCode,
   handleApplyCoupon,
-  appliedCoupon,
   handleRemoveCoupon,
-  couponError,
   applyCouponIsPending,
   availabilityCalendar,
 }: ProductInfoSectionProps) => {
+  const {
+    paymentMethod,
+    setPaymentMethod,
+    startDate,
+    endDate,
+    couponCode,
+    setCouponCode,
+    appliedCoupon,
+    couponError,
+    isPaying,
+  } = useProductBookingStore()
+
+  const rentalDays =
+    startDate && endDate
+      ? Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000) + 1
+      : 0
+  const totalPrice = rentalDays * product.price
+
   const discountAmount = appliedCoupon?.discountAmount || 0
   const finalPayable = Math.max(
     0,

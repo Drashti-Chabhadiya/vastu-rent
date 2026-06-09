@@ -1,4 +1,11 @@
-import { Heart, Share2, ChevronLeft, ChevronRight, Check, Maximize2 } from 'lucide-react'
+import {
+  Heart,
+  Share2,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  Maximize2,
+} from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import { useState } from 'react'
@@ -38,7 +45,7 @@ export const ProductImageGallery = ({
 
   return (
     <div className="space-y-4">
-      <div 
+      <div
         className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card border border-border/30 shadow-sm group cursor-zoom-in"
         onClick={() => setIsViewerOpen(true)}
         onMouseEnter={() => setIsHovered(true)}
@@ -49,7 +56,9 @@ export const ProductImageGallery = ({
           src={images[selectedImage]}
           alt={title}
           style={{
-            transformOrigin: isHovered ? `${hoverPos.x}% ${hoverPos.y}%` : 'center',
+            transformOrigin: isHovered
+              ? `${hoverPos.x}% ${hoverPos.y}%`
+              : 'center',
           }}
           className={cn(
             'w-full h-full object-cover transition-transform duration-300 ease-out pointer-events-none',
