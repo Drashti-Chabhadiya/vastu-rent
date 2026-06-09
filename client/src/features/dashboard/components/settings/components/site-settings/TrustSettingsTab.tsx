@@ -3,36 +3,20 @@ import { Input } from '#/components/ui/input'
 import { Textarea } from '#/components/ui/textarea'
 import { Button } from '#/components/ui/button'
 import { TabsContent } from '#/components/ui/tabs'
+import { useSiteSettingsStore } from '../../../../../../store/useSiteSettingsStore'
 
-interface TrustSettingsTabProps {
-  commitments: Array<{ iconName: string; title: string; description: string }>
-  addCommitment: () => void
-  removeCommitment: (index: number) => void
-  updateCommitment: (
-    index: number,
-    field: 'iconName' | 'title' | 'description',
-    value: string,
-  ) => void
-  safetyTips: Array<{ iconName: string; title: string; description: string }>
-  addSafetyTip: () => void
-  removeSafetyTip: (index: number) => void
-  updateSafetyTip: (
-    index: number,
-    field: 'iconName' | 'title' | 'description',
-    value: string,
-  ) => void
-}
+export function TrustSettingsTab() {
+  const {
+    commitments,
+    addCommitment,
+    removeCommitment,
+    updateCommitment,
+    safetyTips,
+    addSafetyTip,
+    removeSafetyTip,
+    updateSafetyTip,
+  } = useSiteSettingsStore()
 
-export function TrustSettingsTab({
-  commitments,
-  addCommitment,
-  removeCommitment,
-  updateCommitment,
-  safetyTips,
-  addSafetyTip,
-  removeSafetyTip,
-  updateSafetyTip,
-}: TrustSettingsTabProps) {
   return (
     <TabsContent
       value="trust"

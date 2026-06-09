@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Save } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { useSettings, useUpdateSettings } from '#/hook'
@@ -9,109 +9,51 @@ import { ContactSettingsTab } from './site-settings/ContactSettingsTab'
 import { PricingSettingsTab } from './site-settings/PricingSettingsTab'
 import { TrustSettingsTab } from './site-settings/TrustSettingsTab'
 import { TermsSettingsTab } from './site-settings/TermsSettingsTab'
+import { useSiteSettingsStore } from '../../../../../store/useSiteSettingsStore'
 
 export const SiteSettingsForm = () => {
   const { data: settings, isLoading } = useSettings()
   const updateSettings = useUpdateSettings()
 
-  const [activeTab, setActiveTab] = useState<
-    'contact' | 'pricing' | 'trust' | 'terms'
-  >('contact')
-
-  // Contact States
-  const [contactEmail, setContactEmail] = useState('')
-  const [contactPhone, setContactPhone] = useState('')
-  const [contactAddress, setContactAddress] = useState('')
-  const [contactDescription, setContactDescription] = useState('')
-
-  // Pricing States
-  const [starterPrice, setStarterPrice] = useState<number | string>(0)
-  const [proPrice, setProPrice] = useState<number | string>(499)
-  const [businessPrice, setBusinessPrice] = useState<number | string>(999)
-
-  const [starterFeatures, setStarterFeatures] = useState<string[]>([])
-  const [proFeatures, setProFeatures] = useState<string[]>([])
-  const [businessFeatures, setBusinessFeatures] = useState<string[]>([])
-
-  // Trust States
-  const [commitments, setCommitments] = useState<
-    Array<{ iconName: string; title: string; description: string }>
-  >([])
-  const [safetyTips, setSafetyTips] = useState<
-    Array<{ iconName: string; title: string; description: string }>
-  >([])
-
-  // Terms States
-  const [termsLastUpdated, setTermsLastUpdated] = useState('')
-  const [termsSections, setTermsSections] = useState<
-    Array<{ id: string; title: string; content: string }>
-  >([])
+  const initialize = useSiteSettingsStore((state) => state.initialize)
+  const activeTab = useSiteSettingsStore((state) => state.activeTab)
+  const setActiveTab = useSiteSettingsStore((state) => state.setActiveTab)
+  const hasChanges = useSiteSettingsStore((state) => state.hasChanges(settings))
 
   // Initialize fields once settings data loads
   useEffect(() => {
     if (settings) {
-      // Contact
-      setContactEmail(settings.contact?.email || 'support@vastu.com')
-      setContactPhone(settings.contact?.phone || '+91 98765 43210')
-      setContactAddress(settings.contact?.address || '')
-      setContactDescription(settings.contact?.description || '')
-
-      // Pricing
-      setStarterPrice(
-        settings.pricing?.starterPrice !== undefined
-          ? settings.pricing.starterPrice
-          : 0,
-      )
-      setProPrice(
-        settings.pricing?.proPrice !== undefined
-          ? settings.pricing.proPrice
-          : 499,
-      )
-      setBusinessPrice(
-        settings.pricing?.businessPrice !== undefined
-          ? settings.pricing.businessPrice
-          : 999,
-      )
-
-      setStarterFeatures(settings.pricing?.starterFeatures || [])
-      setProFeatures(settings.pricing?.proFeatures || [])
-      setBusinessFeatures(settings.pricing?.businessFeatures || [])
-
-      // Trust
-      setCommitments(settings.trust?.commitments || [])
-      setSafetyTips(settings.trust?.safetyTips || [])
-
-      // Terms
-      setTermsLastUpdated(settings.terms?.lastUpdated || '')
-      setTermsSections(settings.terms?.sections || [])
+      initialize(settings)
     }
-  }, [settings])
+  }, [settings, initialize])
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
 
+    const state = useSiteSettingsStore.getState()
+
     const payload = {
       contact: {
-        email: contactEmail,
-        phone: contactPhone,
-        address: contactAddress,
-        description: contactDescription,
+        email: state.contactEmail,
+        phone: state.contactPhone,
+        address: state.contactAddress,
+        description: state.contactDescription,
       },
       pricing: {
-        starterPrice: Number(starterPrice),
-        proPrice: Number(proPrice),
-        businessPrice: Number(businessPrice),
-        starterFeatures: starterFeatures.filter((f) => f.trim() !== ''),
-        proFeatures: proFeatures.filter((f) => f.trim() !== ''),
-        businessFeatures: businessFeatures.filter((f) => f.trim() !== ''),
+        starterPrice: Number(state.starterPrice),
+        proPrice: Number(state.proPrice),
+        businessPrice: Number(state.businessPrice),
+        starterFeatures: state.starterFeatures.filter((f) => f.trim() !== ''),
+        proFeatures: state.proFeatures.filter((f) => f.trim() !== ''),
+        businessFeatures: state.businessFeatures.filter((f) => f.trim() !== ''),
       },
       trust: {
-        commitments,
-        safetyTips,
+        commitments: state.commitments,
+        safetyTips: state.safetyTips,
       },
       terms: {
-        lastUpdated: termsLastUpdated,
-        sections: termsSections,
+        lastUpdated: state.termsLastUpdated,
+        sections: state.termsSections,
       },
     }
 
@@ -122,180 +64,12 @@ export const SiteSettingsForm = () => {
       onError: (err: any) => {
         toast.error(
           err.response?.data?.message ||
-            err.message ||
-            'Failed to save settings. Please try again.',
+          err.message ||
+          'Failed to save settings. Please try again.',
         )
       },
     })
   }
-
-  // Feature Helpers
-  const addFeature = (plan: 'starter' | 'pro' | 'business') => {
-    if (plan === 'starter') setStarterFeatures([...starterFeatures, ''])
-    if (plan === 'pro') setProFeatures([...proFeatures, ''])
-    if (plan === 'business') setBusinessFeatures([...businessFeatures, ''])
-  }
-
-  const removeFeature = (
-    plan: 'starter' | 'pro' | 'business',
-    index: number,
-  ) => {
-    if (plan === 'starter')
-      setStarterFeatures(starterFeatures.filter((_, i) => i !== index))
-    if (plan === 'pro')
-      setProFeatures(proFeatures.filter((_, i) => i !== index))
-    if (plan === 'business')
-      setBusinessFeatures(businessFeatures.filter((_, i) => i !== index))
-  }
-
-  const updateFeatureText = (
-    plan: 'starter' | 'pro' | 'business',
-    index: number,
-    value: string,
-  ) => {
-    if (plan === 'starter') {
-      const updated = [...starterFeatures]
-      updated[index] = value
-      setStarterFeatures(updated)
-    }
-    if (plan === 'pro') {
-      const updated = [...proFeatures]
-      updated[index] = value
-      setProFeatures(updated)
-    }
-    if (plan === 'business') {
-      const updated = [...businessFeatures]
-      updated[index] = value
-      setBusinessFeatures(updated)
-    }
-  }
-
-  // Trust/Commitments Helpers
-  const addCommitment = () => {
-    setCommitments([
-      ...commitments,
-      { iconName: 'Shield', title: '', description: '' },
-    ])
-  }
-
-  const removeCommitment = (index: number) => {
-    setCommitments(commitments.filter((_, i) => i !== index))
-  }
-
-  const updateCommitment = (
-    index: number,
-    field: 'iconName' | 'title' | 'description',
-    value: string,
-  ) => {
-    const updated = [...commitments]
-    updated[index] = { ...updated[index], [field]: value }
-    setCommitments(updated)
-  }
-
-  // Safety Tips Helpers
-  const addSafetyTip = () => {
-    setSafetyTips([
-      ...safetyTips,
-      { iconName: 'MessageSquare', title: '', description: '' },
-    ])
-  }
-
-  const removeSafetyTip = (index: number) => {
-    setSafetyTips(safetyTips.filter((_, i) => i !== index))
-  }
-
-  const updateSafetyTip = (
-    index: number,
-    field: 'iconName' | 'title' | 'description',
-    value: string,
-  ) => {
-    const updated = [...safetyTips]
-    updated[index] = { ...updated[index], [field]: value }
-    setSafetyTips(updated)
-  }
-
-  // Terms Section Helpers
-  const addTermsSection = () => {
-    const randomId = `section_${Math.random().toString(36).substr(2, 9)}`
-    setTermsSections([
-      ...termsSections,
-      { id: randomId, title: '', content: '' },
-    ])
-  }
-
-  const removeTermsSection = (index: number) => {
-    setTermsSections(termsSections.filter((_, i) => i !== index))
-  }
-
-  const updateTermsSection = (
-    index: number,
-    field: 'id' | 'title' | 'content',
-    value: string,
-  ) => {
-    const updated = [...termsSections]
-    updated[index] = { ...updated[index], [field]: value }
-    setTermsSections(updated)
-  }
-
-  const hasChanges = (() => {
-    if (!settings) return false
-
-    // Contact details check
-    if (contactEmail !== (settings.contact?.email || 'support@vastu.com'))
-      return true
-    if (contactPhone !== (settings.contact?.phone || '+91 98765 43210'))
-      return true
-    if (contactAddress !== (settings.contact?.address || '')) return true
-    if (contactDescription !== (settings.contact?.description || ''))
-      return true
-
-    // Pricing details check
-    if (Number(starterPrice) !== Number(settings.pricing?.starterPrice ?? 0))
-      return true
-    if (Number(proPrice) !== Number(settings.pricing?.proPrice ?? 499))
-      return true
-    if (
-      Number(businessPrice) !== Number(settings.pricing?.businessPrice ?? 999)
-    )
-      return true
-
-    // Features check (shallow array comparison)
-    const initStarter = settings.pricing?.starterFeatures || []
-    if (
-      starterFeatures.length !== initStarter.length ||
-      starterFeatures.some((f, i) => f !== initStarter[i])
-    )
-      return true
-
-    const initPro = settings.pricing?.proFeatures || []
-    if (
-      proFeatures.length !== initPro.length ||
-      proFeatures.some((f, i) => f !== initPro[i])
-    )
-      return true
-
-    const initBusiness = settings.pricing?.businessFeatures || []
-    if (
-      businessFeatures.length !== initBusiness.length ||
-      businessFeatures.some((f, i) => f !== initBusiness[i])
-    )
-      return true
-
-    // Trust check
-    const initCommitments = settings.trust?.commitments || []
-    if (JSON.stringify(commitments) !== JSON.stringify(initCommitments))
-      return true
-
-    const initSafety = settings.trust?.safetyTips || []
-    if (JSON.stringify(safetyTips) !== JSON.stringify(initSafety)) return true
-
-    // Terms check
-    if (termsLastUpdated !== (settings.terms?.lastUpdated || '')) return true
-    const initTerms = settings.terms?.sections || []
-    if (JSON.stringify(termsSections) !== JSON.stringify(initTerms)) return true
-
-    return false
-  })()
 
   if (isLoading) {
     return (
@@ -375,51 +149,10 @@ export const SiteSettingsForm = () => {
           </TabsTrigger>
         </TabsList>
 
-        <ContactSettingsTab
-          contactEmail={contactEmail}
-          setContactEmail={setContactEmail}
-          contactPhone={contactPhone}
-          setContactPhone={setContactPhone}
-          contactAddress={contactAddress}
-          setContactAddress={setContactAddress}
-          contactDescription={contactDescription}
-          setContactDescription={setContactDescription}
-        />
-
-        <PricingSettingsTab
-          starterPrice={starterPrice}
-          setStarterPrice={setStarterPrice}
-          proPrice={proPrice}
-          setProPrice={setProPrice}
-          businessPrice={businessPrice}
-          setBusinessPrice={setBusinessPrice}
-          starterFeatures={starterFeatures}
-          proFeatures={proFeatures}
-          businessFeatures={businessFeatures}
-          addFeature={addFeature}
-          removeFeature={removeFeature}
-          updateFeatureText={updateFeatureText}
-        />
-
-        <TrustSettingsTab
-          commitments={commitments}
-          addCommitment={addCommitment}
-          removeCommitment={removeCommitment}
-          updateCommitment={updateCommitment}
-          safetyTips={safetyTips}
-          addSafetyTip={addSafetyTip}
-          removeSafetyTip={removeSafetyTip}
-          updateSafetyTip={updateSafetyTip}
-        />
-
-        <TermsSettingsTab
-          termsLastUpdated={termsLastUpdated}
-          setTermsLastUpdated={setTermsLastUpdated}
-          termsSections={termsSections}
-          addTermsSection={addTermsSection}
-          removeTermsSection={removeTermsSection}
-          updateTermsSection={updateTermsSection}
-        />
+        <ContactSettingsTab />
+        <PricingSettingsTab />
+        <TrustSettingsTab />
+        <TermsSettingsTab />
       </Tabs>
     </form>
   )

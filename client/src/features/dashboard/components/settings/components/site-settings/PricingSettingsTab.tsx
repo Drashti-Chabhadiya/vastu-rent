@@ -2,40 +2,24 @@ import { Info, Pencil, Sparkles, Plus, Trash2 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import { TabsContent } from '#/components/ui/tabs'
+import { useSiteSettingsStore } from '../../../../../../store/useSiteSettingsStore'
 
-interface PricingSettingsTabProps {
-  starterPrice: number | string
-  setStarterPrice: (val: number | string) => void
-  proPrice: number | string
-  setProPrice: (val: number | string) => void
-  businessPrice: number | string
-  setBusinessPrice: (val: number | string) => void
-  starterFeatures: string[]
-  proFeatures: string[]
-  businessFeatures: string[]
-  addFeature: (plan: 'starter' | 'pro' | 'business') => void
-  removeFeature: (plan: 'starter' | 'pro' | 'business', index: number) => void
-  updateFeatureText: (
-    plan: 'starter' | 'pro' | 'business',
-    index: number,
-    value: string,
-  ) => void
-}
+export function PricingSettingsTab() {
+  const {
+    starterPrice,
+    setStarterPrice,
+    proPrice,
+    setProPrice,
+    businessPrice,
+    setBusinessPrice,
+    starterFeatures,
+    proFeatures,
+    businessFeatures,
+    addFeature,
+    removeFeature,
+    updateFeatureText,
+  } = useSiteSettingsStore()
 
-export function PricingSettingsTab({
-  starterPrice,
-  setStarterPrice,
-  proPrice,
-  setProPrice,
-  businessPrice,
-  setBusinessPrice,
-  starterFeatures,
-  proFeatures,
-  businessFeatures,
-  addFeature,
-  removeFeature,
-  updateFeatureText,
-}: PricingSettingsTabProps) {
   return (
     <TabsContent
       value="pricing"

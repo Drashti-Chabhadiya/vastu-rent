@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
+import { useTranslationStore } from '#/store/useTranslationStore'
 
 export type LanguageCode = 'en' | 'hi' | 'gu'
 
@@ -14,7 +15,7 @@ export const translations = {
     // Header
     'My Profile': 'My Profile',
     'Manage your personal information and account preferences.': 'Manage your personal information and account preferences.',
-    
+
     // Member completeness
     'Verified Member': 'Verified Member',
     'Completeness': 'Completeness',
@@ -22,7 +23,7 @@ export const translations = {
     'Profile fully complete!': 'Profile fully complete!',
     'Member since': 'Member since',
     'Not specified': 'Not specified',
-    
+
     // Buttons & Actions
     'Personal Information': 'Personal Information',
     'Edit Profile': 'Edit Profile',
@@ -32,7 +33,7 @@ export const translations = {
     'View': 'View',
     'Change': 'Change',
     'Manage': 'Manage',
-    
+
     // Form Labels
     'Full Name': 'Full Name',
     'Gender': 'Gender',
@@ -41,7 +42,7 @@ export const translations = {
     'Phone Number': 'Phone Number',
     'Preferred Language': 'Preferred Language',
     'Date of Birth': 'Date of Birth',
-    
+
     // Genders & Options
     'Male': 'Male',
     'Female': 'Female',
@@ -49,7 +50,7 @@ export const translations = {
     'Select Gender': 'Select Gender',
     'Select Language': 'Select Language',
     'Select Currency': 'Select Currency',
-    
+
     // Account Security
     'Account Security': 'Account Security',
     'Manage your password and account security settings.': 'Manage your password and account security settings.',
@@ -61,7 +62,7 @@ export const translations = {
     'Manage your active sessions': 'Manage your active sessions',
     'Devices': 'Devices',
     'Manage your trusted devices': 'Manage your trusted devices',
-    
+
     // Preferences
     'Preferences': 'Preferences',
     'Customize your experience on Vastu.': 'Customize your experience on Vastu.',
@@ -72,7 +73,7 @@ export const translations = {
     'Marketing Emails': 'Marketing Emails',
     'Receive offers and promotions': 'Receive offers and promotions',
     'Currency': 'Currency',
-    
+
     // Subscription
     'Subscription Plan': 'Subscription Plan',
     'Manage your current plan, check limits, and view options.': 'Manage your current plan, check limits, and view options.',
@@ -90,13 +91,13 @@ export const translations = {
     'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.': 'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.',
     'You have unlimited listing capacity with your Business plan!': 'You have unlimited listing capacity with your Business plan!',
     'You have reached your listing limit. Upgrade your subscription plan to create new listings.': 'You have reached your listing limit. Upgrade your subscription plan to create new listings.',
-    
+
     // Impact Banner
     'Green Member': 'Green Member',
     'You\'re saving the planet!': 'You\'re saving the planet!',
     'Thank you for being a part of our sustainable community.': 'Thank you for being a part of our sustainable community.',
     'View Impact': 'View Impact',
-    
+
     // Notifications toasts
     'Profile changes saved successfully!': 'Profile changes saved successfully!',
     'Failed to save changes. Please try again.': 'Failed to save changes. Please try again.',
@@ -172,7 +173,7 @@ export const translations = {
     // Header
     'My Profile': 'मेरी प्रोफ़ाइल',
     'Manage your personal information and account preferences.': 'अपनी व्यक्तिगत जानकारी और खाता प्राथमिकताओं को प्रबंधित करें।',
-    
+
     // Member completeness
     'Verified Member': 'सत्यापित सदस्य',
     'Completeness': 'पूर्णता',
@@ -180,7 +181,7 @@ export const translations = {
     'Profile fully complete!': 'प्रोफ़ाइल पूरी तरह से पूर्ण है!',
     'Member since': 'सदस्यता की तिथि',
     'Not specified': 'निर्दिष्ट नहीं है',
-    
+
     // Buttons & Actions
     'Personal Information': 'व्यक्तिगत जानकारी',
     'Edit Profile': 'प्रोफ़ाइल संपादित करें',
@@ -190,7 +191,7 @@ export const translations = {
     'View': 'देखें',
     'Change': 'बदलें',
     'Manage': 'प्रबंधित करें',
-    
+
     // Form Labels
     'Full Name': 'पूरा नाम',
     'Gender': 'लिंग',
@@ -199,7 +200,7 @@ export const translations = {
     'Phone Number': 'फ़ोन नंबर',
     'Preferred Language': 'पसंदीदा भाषा',
     'Date of Birth': 'जन्म तिथि',
-    
+
     // Genders & Options
     'Male': 'पुरुष',
     'Female': 'महिला',
@@ -207,7 +208,7 @@ export const translations = {
     'Select Gender': 'लिंग चुनें',
     'Select Language': 'भाषा चुनें',
     'Select Currency': 'मुद्रा चुनें',
-    
+
     // Account Security
     'Account Security': 'खाता सुरक्षा',
     'Manage your password and account security settings.': 'अपने पासवर्ड और खाता सुरक्षा सेटिंग्स प्रबंधित करें।',
@@ -219,7 +220,7 @@ export const translations = {
     'Manage your active sessions': 'अपने सक्रिय सत्रों को प्रबंधित करें',
     'Devices': 'उपकरण',
     'Manage your trusted devices': 'अपने विश्वसनीय उपकरणों को प्रबंधित करें',
-    
+
     // Preferences
     'Preferences': 'प्राथमिकताएं',
     'Customize your experience on Vastu.': 'वास्तु पर अपने अनुभव को अनुकूलित करें।',
@@ -230,7 +231,7 @@ export const translations = {
     'Marketing Emails': 'विपणन ईमेल',
     'Receive offers and promotions': 'ऑफ़र और प्रचार प्राप्त करें',
     'Currency': 'मुद्रा',
-    
+
     // Subscription
     'Subscription Plan': 'सदस्यता योजना',
     'Manage your current plan, check limits, and view options.': 'अपनी वर्तमान योजना प्रबंधित करें, सीमाएं जांचें और विकल्प देखें।',
@@ -248,13 +249,13 @@ export const translations = {
     'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.': 'प्रो सदस्य 50 वस्तुओं तक सूचीबद्ध कर सकते हैं। असीमित वस्तुओं के लिए बिजनेस योजना में अपग्रेड करें।',
     'You have unlimited listing capacity with your Business plan!': 'आपके पास अपनी व्यावसायिक (बिजनेस) योजना के साथ असीमित लिस्टिंग क्षमता है!',
     'You have reached your listing limit. Upgrade your subscription plan to create new listings.': 'आप अपनी लिस्टिंग सीमा तक पहुँच चुके हैं। नई लिस्टिंग बनाने के लिए अपनी सदस्यता योजना अपग्रेड करें।',
-    
+
     // Impact Banner
     'Green Member': 'हरित सदस्य',
     'You\'re saving the planet!': 'आप ग्रह को बचा रहे हैं!',
     'Thank you for being a part of our sustainable community.': 'हमारे टिकाऊ समुदाय का हिस्सा बनने के लिए धन्यवाद।',
     'View Impact': 'प्रभाव देखें',
-    
+
     // Notifications toasts
     'Profile changes saved successfully!': 'प्रोफ़ाइल परिवर्तन सफलतापूर्वक सहेजे गए!',
     'Failed to save changes. Please try again.': 'बदलाव सहेजने में विफल। कृपया पुन: प्रयास करें।',
@@ -330,7 +331,7 @@ export const translations = {
     // Header
     'My Profile': 'મારી પ્રોફાઇલ',
     'Manage your personal information and account preferences.': 'તમારી વ્યક્તિગત માહિતી અને એકાઉન્ટ પસંદગીઓનું સંચાલન કરો.',
-    
+
     // Member completeness
     'Verified Member': 'પ્રમાણિત સભ્ય',
     'Completeness': 'પૂર્ણતા',
@@ -338,7 +339,7 @@ export const translations = {
     'Profile fully complete!': 'પ્રોફાઇલ સંપૂર્ણપણે પૂર્ણ છે!',
     'Member since': 'સભ્યપદ તારીખ',
     'Not specified': 'સ્પષ્ટ કરેલ નથી',
-    
+
     // Buttons & Actions
     'Personal Information': 'વ્યક્તિગત માહિતી',
     'Edit Profile': 'પ્રોફાઇલ સંપાદિત કરો',
@@ -348,7 +349,7 @@ export const translations = {
     'View': 'જુઓ',
     'Change': 'બદલો',
     'Manage': 'સંચાલન કરો',
-    
+
     // Form Labels
     'Full Name': 'પૂરું નામ',
     'Gender': 'જાતિ',
@@ -357,7 +358,7 @@ export const translations = {
     'Phone Number': 'ફોન નંબર',
     'Preferred Language': 'પસંદગીની ભાષા',
     'Date of Birth': 'જન્મ તારીખ',
-    
+
     // Genders & Options
     'Male': 'પુરુષ',
     'Female': 'મહિલા',
@@ -365,7 +366,7 @@ export const translations = {
     'Select Gender': 'જાતિ પસંદ કરો',
     'Select Language': 'ભાષા પસંદ કરો',
     'Select Currency': 'ચલણ પસંદ કરો',
-    
+
     // Account Security
     'Account Security': 'એકાઉન્ટ સુરક્ષા',
     'Manage your password and account security settings.': 'તમારા પાસવર્ડ અને એકાઉન્ટ સુરક્ષા સેટિંગ્સનું સંચાલન કરો.',
@@ -377,7 +378,7 @@ export const translations = {
     'Manage your active sessions': 'તમારા સક્રિય સત્રોનું સંચાલન કરો',
     'Devices': 'ઉપકરણો',
     'Manage your trusted devices': 'તમારા વિશ્વસનીય ઉપકરણોનું સંચાલન કરો',
-    
+
     // Preferences
     'Preferences': 'પસંદગીઓ',
     'Customize your experience on Vastu.': 'વાસ્તુ પર તમારા અનુભવને અનુકૂળ બનાવો.',
@@ -388,7 +389,7 @@ export const translations = {
     'Marketing Emails': 'માર્કેટિંગ ઇમેઇલ્સ',
     'Receive offers and promotions': 'ઑફર્સ અને પ્રમોશન પ્રાપ્ત કરો',
     'Currency': 'ચલણ',
-    
+
     // Subscription
     'Subscription Plan': 'સબ્સ્ક્રિપ્શન પ્લાન',
     'Manage your current plan, check limits, and view options.': 'તમારા વર્તમાન પ્લાનનું સંચાલન કરો, મર્યાદાઓ તપાસો અને વિકલ્પો જુઓ.',
@@ -406,13 +407,13 @@ export const translations = {
     'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.': 'પ્રો સભ્યો 50 વસ્તુઓ સુધી સૂચિબદ્ધ કરી શકે છે. અમર્યાદિત વસ્તુઓ માટે બિઝનેસ પ્લાન પર અપગ્રેડ કરો.',
     'You have unlimited listing capacity with your Business plan!': 'તમારી પાસે તમારા બિઝનેસ પ્લાન સાથે અમર્યાદિત લિસ્ટિંગ ક્ષમતા છે!',
     'You have reached your listing limit. Upgrade your subscription plan to create new listings.': 'તમે તમારી લિસ્ટિંગ મર્યાદા પર પહોંચી ગયા છો. નવી સૂચિઓ બનાવવા માટે તમારા સબ્સ્ક્રિપ્શન પ્લાનને અપગ્રેડ કરો.',
-    
+
     // Impact Banner
     'Green Member': 'ગ્રીન મેમ્બર',
     'You\'re saving the planet!': 'તમે પૃથ્વીને બચાવી રહ્યા છો!',
     'Thank you for being a part of our sustainable community.': 'અમારા ટકાઉ સમુદાયનો ભાગ બનવા બદલ આભાર.',
     'View Impact': 'અસર જુઓ',
-    
+
     // Notifications toasts
     'Profile changes saved successfully!': 'પ્રોફાઇલ ફેરફારો સફળતાપૂર્વક સાચવવામાં આવ્યા!',
     'Failed to save changes. Please try again.': 'કૃપા કરીને ફરીથી પ્રયાસ કરો.',
@@ -541,7 +542,7 @@ const loadGoogleTranslateScript = () => {
   }
 
   // Set up global init callback
-  ;(window as any).googleTranslateElementInit = () => {
+  ; (window as any).googleTranslateElementInit = () => {
     new (window as any).google.translate.TranslateElement({
       pageLanguage: 'en',
       includedLanguages: 'en,hi,gu',
@@ -558,31 +559,29 @@ const loadGoogleTranslateScript = () => {
 
 export function TranslationProvider({ children }: { children: React.ReactNode }) {
   const { data: session } = authClient.useSession()
-  
-  // 1. Initial State from localStorage
-  const [language, setLanguageState] = useState<LanguageCode>(() => {
-    const saved = localStorage.getItem('app_language')
-    return normalizeLanguage(saved)
-  })
+  const language = useTranslationStore((state) => state.language)
+  const setLanguageState = useTranslationStore((state) => state.setLanguageState)
 
-  // 2. Keep state in sync with authenticated user preference on session change
+  // Keep state in sync with authenticated user preference on session change
   useEffect(() => {
     if (session?.user) {
       const userLang = (session.user as any).language
       if (userLang) {
         const normalized = normalizeLanguage(userLang)
-        setLanguageState(normalized)
-        localStorage.setItem('app_language', normalized)
+        if (normalized !== language) {
+          setLanguageState(normalized)
+          localStorage.setItem('app_language', normalized)
+        }
       }
     }
-  }, [session])
+  }, [session, language, setLanguageState])
 
-  // 3. Dynamically set cookie and load translate widget script on mount/language changes
+  // Dynamically set cookie and load translate widget script on mount/language changes
   useEffect(() => {
     if (typeof window === 'undefined') return
     const targetCookieVal = language === 'en' ? null : `/en/${language}`
     const currentCookie = getCookie('googtrans')
-    
+
     if (language !== 'en' && currentCookie !== targetCookieVal) {
       setCookie('googtrans', `/en/${language}`)
       loadGoogleTranslateScript()
@@ -595,34 +594,17 @@ export function TranslationProvider({ children }: { children: React.ReactNode })
     }
   }, [language])
 
-  const changeLanguage = (lang: LanguageCode) => {
-    setLanguageState(lang)
-    localStorage.setItem('app_language', lang)
-    if (lang === 'en') {
-      eraseCookie('googtrans')
-    } else {
-      setCookie('googtrans', `/en/${lang}`)
-    }
-    // Reload page to apply google translate script immediately
-    window.location.reload()
-  }
+  return <>{children}</>
+}
+
+export function useTranslation() {
+  const language = useTranslationStore((state) => state.language)
+  const changeLanguage = useTranslationStore((state) => state.changeLanguage)
 
   const t = (key: TranslationKey | string): string => {
     const dict = translations[language] as Record<string, string>
     return dict[key] || translations.en[key as TranslationKey] || key
   }
 
-  return (
-    <TranslationContext.Provider value={{ language, changeLanguage, t }}>
-      {children}
-    </TranslationContext.Provider>
-  )
-}
-
-export function useTranslation() {
-  const context = useContext(TranslationContext)
-  if (context === undefined) {
-    throw new Error('useTranslation must be used within a TranslationProvider')
-  }
-  return context
+  return { language, changeLanguage, t }
 }

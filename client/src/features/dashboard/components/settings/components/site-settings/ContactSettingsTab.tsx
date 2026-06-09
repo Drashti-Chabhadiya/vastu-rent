@@ -2,28 +2,20 @@ import { Mail, Phone, MapPin, Pencil, Info } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Textarea } from '#/components/ui/textarea'
 import { TabsContent } from '#/components/ui/tabs'
+import { useSiteSettingsStore } from '../../../../../../store/useSiteSettingsStore'
 
-interface ContactSettingsTabProps {
-  contactEmail: string
-  setContactEmail: (val: string) => void
-  contactPhone: string
-  setContactPhone: (val: string) => void
-  contactAddress: string
-  setContactAddress: (val: string) => void
-  contactDescription: string
-  setContactDescription: (val: string) => void
-}
+export function ContactSettingsTab() {
+  const {
+    contactEmail,
+    setContactEmail,
+    contactPhone,
+    setContactPhone,
+    contactAddress,
+    setContactAddress,
+    contactDescription,
+    setContactDescription,
+  } = useSiteSettingsStore()
 
-export function ContactSettingsTab({
-  contactEmail,
-  setContactEmail,
-  contactPhone,
-  setContactPhone,
-  contactAddress,
-  setContactAddress,
-  contactDescription,
-  setContactDescription,
-}: ContactSettingsTabProps) {
   return (
     <TabsContent
       value="contact"
