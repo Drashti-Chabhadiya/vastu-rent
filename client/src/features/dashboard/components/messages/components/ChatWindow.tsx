@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   Phone,
   Video,
-  MoreVertical,
   MessageSquare,
   Loader2,
   CheckCheck,
@@ -21,9 +20,13 @@ import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
+import { useNavigate } from '@tanstack/react-router'
+import { toast } from 'sonner'
+import { apiClient } from '#/lib/api'
 import type { Conversation, Message } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
 import { TypingBubble } from './TypingBubble'
+import { ConversationOptionsMenu } from './ConversationOptionsMenu'
 import { useChatStore } from '../../../../../store/useChatStore'
 
 import { parseMessage, formatMsgTime } from '#/lib/chat-utils'
@@ -47,7 +50,6 @@ interface ChatWindowProps {
   inputRef: React.RefObject<HTMLInputElement | null>
   onCallSuccess?: (name: string) => void
   onVideoSuccess?: (name: string) => void
-  onMoreInfo?: () => void
 }
 
 export function ChatWindow({
@@ -68,8 +70,8 @@ export function ChatWindow({
   inputRef,
   onCallSuccess,
   onVideoSuccess,
-  onMoreInfo,
 }: ChatWindowProps) {
+  const navigate = useNavigate()
   const {
     showMobileChat,
     setShowMobileChat,
@@ -294,23 +296,20 @@ export function ChatWindow({
           >
             <Video size={16} />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onMoreInfo}
-            className={cn(
-              'w-9',
-              'h-9',
-              'hover:bg-muted-light',
-              'rounded-xl',
-              'text-muted-dark',
-              'hover:text-muted-foreground',
-              'cursor-pointer',
-              'transition-colors',
-            )}
-          >
-            <MoreVertical size={16} />
-          </Button>
+          <ConversationOptionsMenu
+            onViewProfile={() =>
+              navigate({ to: '/users/$id', params: { id: activeConversation.otherParticipant.id } })
+            }
+            onArchive={() => toast.info('Archive feature coming soon')}
+            onDelete={async () => {
+              try {
+                await apiClient.delete(`/chat/conversations/${activeConversation.id}`)
+                toast.success('Conversation deleted')
+              } catch {
+                toast.error('Failed to delete conversation')
+              }
+            }}
+          />
         </div>
       </div>
 

@@ -376,7 +376,6 @@ export const MessagesManagement = () => {
             inputRef={inputRef}
             onCallSuccess={(name) => toast.success(`Calling ${name}...`)}
             onVideoSuccess={(name) => toast.success(`Starting video call with ${name}...`)}
-            onMoreInfo={() => toast.info('Conversation options coming soon')}
           />
         </div>
       </div>
