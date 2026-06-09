@@ -2,12 +2,12 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { productService } from "./product.service.js";
 
 export class ProductController {
-  async getAllProducts(request: FastifyRequest, reply: FastifyReply) {
+  async getAllProducts(request: FastifyRequest, _reply: FastifyReply) {
     const products = await productService.getAllProducts(request.query as any);
     return { products };
   }
 
-  async getRecentProducts(request: FastifyRequest, reply: FastifyReply) {
+  async getRecentProducts(_request: FastifyRequest, _reply: FastifyReply) {
     const products = await productService.getRecentProducts();
     return { products };
   }
@@ -58,7 +58,7 @@ export class ProductController {
     }
   }
 
-  async toggleAvailability(request: FastifyRequest, reply: FastifyReply) {
+  async toggleAvailability(request: FastifyRequest, _reply: FastifyReply) {
     const { id } = request.params as any;
     const body = (request.body || {}) as any;
     const query = (request.query || {}) as any;
@@ -69,7 +69,7 @@ export class ProductController {
     return { product };
   }
 
-  async getMyListings(request: FastifyRequest, reply: FastifyReply) {
+  async getMyListings(request: FastifyRequest, _reply: FastifyReply) {
     const userId = (request as any).user.id;
     const products = await productService.getOwnerListings(userId);
     return { products };

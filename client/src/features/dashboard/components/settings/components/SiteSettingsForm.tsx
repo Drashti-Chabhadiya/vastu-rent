@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react'
-import { Plus, Trash2, Mail, AlignLeft, Info, HelpCircle } from 'lucide-react'
+import {
+  Plus,
+  Trash2,
+  Mail,
+  AlignLeft,
+  Info,
+  HelpCircle,
+  Phone,
+  MapPin,
+  Pencil,
+  Save,
+  Calendar,
+  Sparkles,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { Textarea } from '#/components/ui/textarea'
@@ -234,6 +247,45 @@ export const SiteSettingsForm = () => {
     setTermsSections(updated)
   }
 
+  const hasChanges = (() => {
+    if (!settings) return false
+    
+    // Contact details check
+    if (contactEmail !== (settings.contact?.email || 'support@vastu.com')) return true
+    if (contactPhone !== (settings.contact?.phone || '+91 98765 43210')) return true
+    if (contactAddress !== (settings.contact?.address || '')) return true
+    if (contactDescription !== (settings.contact?.description || '')) return true
+
+    // Pricing details check
+    if (Number(starterPrice) !== Number(settings.pricing?.starterPrice ?? 0)) return true
+    if (Number(proPrice) !== Number(settings.pricing?.proPrice ?? 499)) return true
+    if (Number(businessPrice) !== Number(settings.pricing?.businessPrice ?? 999)) return true
+
+    // Features check (shallow array comparison)
+    const initStarter = settings.pricing?.starterFeatures || []
+    if (starterFeatures.length !== initStarter.length || starterFeatures.some((f, i) => f !== initStarter[i])) return true
+
+    const initPro = settings.pricing?.proFeatures || []
+    if (proFeatures.length !== initPro.length || proFeatures.some((f, i) => f !== initPro[i])) return true
+
+    const initBusiness = settings.pricing?.businessFeatures || []
+    if (businessFeatures.length !== initBusiness.length || businessFeatures.some((f, i) => f !== initBusiness[i])) return true
+
+    // Trust check
+    const initCommitments = settings.trust?.commitments || []
+    if (JSON.stringify(commitments) !== JSON.stringify(initCommitments)) return true
+
+    const initSafety = settings.trust?.safetyTips || []
+    if (JSON.stringify(safetyTips) !== JSON.stringify(initSafety)) return true
+
+    // Terms check
+    if (termsLastUpdated !== (settings.terms?.lastUpdated || '')) return true
+    const initTerms = settings.terms?.sections || []
+    if (JSON.stringify(termsSections) !== JSON.stringify(initTerms)) return true
+
+    return false
+  })()
+
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse">
@@ -257,24 +309,25 @@ export const SiteSettingsForm = () => {
   return (
     <form
       onSubmit={handleSave}
-      className="space-y-8 animate-in fade-in duration-300"
+      className="flex flex-col h-full space-y-6 animate-in fade-in duration-300"
     >
       {/* Title Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
         <div>
-          <h3 className="text-[16px] font-black text-foreground/90">
+          <h3 className="text-xl font-extrabold text-dash-brand font-display tracking-tight leading-none">
             Site Content Settings
           </h3>
-          <p className="text-[11px] font-bold text-muted-dark">
+          <p className="text-[12px] font-semibold text-muted-dark mt-2">
             Manage public-facing marketing copy dynamically.
           </p>
         </div>
         <Button
           type="submit"
-          disabled={updateSettings.isPending}
-          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] px-6 h-11 rounded-full transition-all shadow-md shadow-dash-brand/10 active:scale-95 cursor-pointer"
+          disabled={!hasChanges || updateSettings.isPending}
+          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand"
         >
-          {updateSettings.isPending ? 'Saving...' : 'Save Settings'}
+          <Save size={13} />
+          {updateSettings.isPending ? 'Saving...' : 'Save Changes'}
         </Button>
       </div>
 
@@ -282,30 +335,30 @@ export const SiteSettingsForm = () => {
       <Tabs
         value={activeTab}
         onValueChange={(val: any) => setActiveTab(val)}
-        className="w-full space-y-8"
+        className="w-full flex flex-col flex-1 min-h-0 space-y-6"
       >
-        <TabsList className="w-full flex p-1.5 rounded-2xl bg-muted-light/80 border border-border/30 h-auto">
+        <TabsList className="w-full flex p-1 rounded-full bg-[#f8fafc] border border-[#e2e8f0] h-auto justify-between mb-8">
           <TabsTrigger
             value="contact"
-            className="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-dash-brand data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-border/10 text-muted-dark hover:text-foreground/80 cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
           >
             Contact
           </TabsTrigger>
           <TabsTrigger
             value="pricing"
-            className="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-dash-brand data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-border/10 text-muted-dark hover:text-foreground/80 cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
           >
             Pricing
           </TabsTrigger>
           <TabsTrigger
             value="trust"
-            className="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-dash-brand data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-border/10 text-muted-dark hover:text-foreground/80 cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
           >
             Trust
           </TabsTrigger>
           <TabsTrigger
             value="terms"
-            className="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-card data-[state=active]:text-dash-brand data-[state=active]:shadow-sm border border-transparent data-[state=active]:border-border/10 text-muted-dark hover:text-foreground/80 cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
           >
             Terms
           </TabsTrigger>
@@ -314,277 +367,353 @@ export const SiteSettingsForm = () => {
         {/* Content for CONTACT Tab */}
         <TabsContent
           value="contact"
-          className="space-y-6 animate-in fade-in duration-300 outline-none"
+          className="space-y-6 animate-in fade-in duration-300 outline-none overflow-y-auto flex-1 pr-2 max-h-[calc(100vh-27rem)] scrollbar-thin"
         >
-          <div className="space-y-4">
-            <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
-              <Mail size={15} className="text-dash-brand" />
+          <div className="space-y-1">
+            <h4 className="text-[14px] font-extrabold text-dash-brand flex items-center gap-2">
+              <Mail size={16} className="text-dash-brand" />
               Contact Information Details
             </h4>
-            <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              These details are loaded dynamically on the public Contact Us
-              page. Ensure support communication channels are valid.
+            <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
+              These details appear on the public Contact Us page.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+            {/* Support Email Address */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Support Email Address
               </label>
-              <Input
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
-                placeholder="support@vastu.com"
-                className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-              />
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                    <Mail size={16} />
+                  </div>
+                  <Input
+                    type="email"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    placeholder="support@vastu.com"
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+            {/* Support Phone Number */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Support Phone Number
               </label>
-              <Input
-                value={contactPhone}
-                onChange={(e) => setContactPhone(e.target.value)}
-                placeholder="+91 98765 43210"
-                className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-              />
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                    <Phone size={16} />
+                  </div>
+                  <Input
+                    type="text"
+                    value={contactPhone}
+                    onChange={(e) => setContactPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
-              Contact Page Hero Description
+          {/* Contact Page Hero Description */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block flex items-center gap-1">
+              ✨ Contact Page Hero Description
             </label>
-            <Textarea
-              value={contactDescription}
-              onChange={(e) => setContactDescription(e.target.value)}
-              placeholder="Have a question, suggestion, or need help? Our team is here to support you."
-              rows={3}
-              className="bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground p-5 focus:ring-2 focus:ring-emerald-500/20 resize-none leading-relaxed"
-            />
+            <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-start justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+              <Textarea
+                value={contactDescription}
+                onChange={(e) => setContactDescription(e.target.value)}
+                placeholder="Have a question, suggestion, or need help? Our team is here to support you."
+                rows={3}
+                className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full resize-y leading-relaxed min-h-0"
+              />
+              <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0 ml-3">
+                <Pencil size={12} />
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+          {/* Office Address */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
               Office Address
             </label>
-            <Textarea
-              value={contactAddress}
-              onChange={(e) => setContactAddress(e.target.value)}
-              placeholder="Vastu HQ, 123 Harmony Lane, Bengaluru, Karnataka 560001, India"
-              rows={3}
-              className="bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground p-5 focus:ring-2 focus:ring-emerald-500/20 resize-none leading-relaxed"
-            />
+            <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+              <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                  <MapPin size={16} />
+                </div>
+                <Input
+                  type="text"
+                  value={contactAddress}
+                  onChange={(e) => setContactAddress(e.target.value)}
+                  placeholder="Vastu HQ, 123 Harmony Lane, Bengaluru, Karnataka 560001, India"
+                  className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                />
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                <Pencil size={12} />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Info Banner */}
+          <div className="bg-dash-brand-light/30 border border-dash-brand/10 rounded-2xl p-4.5 flex items-start gap-3.5 mt-8">
+            <div className="w-9 h-9 rounded-full bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0 mt-0.5">
+              <Info size={18} />
+            </div>
+            <div>
+              <span className="text-sm font-bold text-dash-brand block">
+                Changes Reflect Instantly
+              </span>
+              <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
+                Any updates you make here will be visible on the live site immediately.
+              </span>
+            </div>
           </div>
         </TabsContent>
 
         {/* Content for PRICING Tab */}
         <TabsContent
           value="pricing"
-          className="space-y-8 animate-in fade-in duration-300 outline-none"
+          className="space-y-8 animate-in fade-in duration-300 outline-none overflow-y-auto flex-1 pr-2 max-h-[calc(100vh-27rem)] scrollbar-thin"
         >
-          <div className="space-y-4">
-            <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
-              <Info size={15} className="text-dash-brand" />
+          <div className="space-y-1">
+            <h4 className="text-[14px] font-extrabold text-dash-brand flex items-center gap-2">
+              <Info size={16} className="text-dash-brand" />
               Upgrade Plans & Billing Tiers
             </h4>
-            <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              Define the price for each monthly tier (in INR). Add or edit plan
-              features dynamically.
+            <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
+              Define the price for each monthly tier (in INR) and configure features.
             </p>
           </div>
 
           {/* Pricing Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Starter tier */}
-            <div className="p-5 rounded-2xl bg-muted-light/40 border border-border/30 space-y-4">
-              <span className="text-[9px] font-black bg-muted-light text-muted-dark px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Starter Tier
-              </span>
-              <div className="space-y-2 pt-2">
-                <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
-                  Starter Price (INR)
-                </label>
-                <Input
-                  type="number"
-                  value={starterPrice}
-                  onChange={(e) => setStarterPrice(e.target.value)}
-                  className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-                />
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
+                Starter Price (INR)
+              </label>
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0 font-extrabold text-sm">
+                    ₹
+                  </div>
+                  <Input
+                    type="number"
+                    value={starterPrice}
+                    onChange={(e) => setStarterPrice(e.target.value)}
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
               </div>
             </div>
 
             {/* Pro tier */}
-            <div className="p-5 rounded-2xl bg-muted-light/40 border border-border/30 space-y-4">
-              <span className="text-[9px] font-black bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Pro Tier
-              </span>
-              <div className="space-y-2 pt-2">
-                <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
-                  Pro Price (INR)
-                </label>
-                <Input
-                  type="number"
-                  value={proPrice}
-                  onChange={(e) => setProPrice(e.target.value)}
-                  className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-                />
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
+                Pro Price (INR)
+              </label>
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0 font-extrabold text-sm">
+                    ₹
+                  </div>
+                  <Input
+                    type="number"
+                    value={proPrice}
+                    onChange={(e) => setProPrice(e.target.value)}
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
               </div>
             </div>
 
             {/* Business tier */}
-            <div className="p-5 rounded-2xl bg-muted-light/40 border border-border/30 space-y-4">
-              <span className="text-[9px] font-black bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Business Tier
-              </span>
-              <div className="space-y-2 pt-2">
-                <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
-                  Business Price (INR)
-                </label>
-                <Input
-                  type="number"
-                  value={businessPrice}
-                  onChange={(e) => setBusinessPrice(e.target.value)}
-                  className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-                />
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
+                Business Price (INR)
+              </label>
+              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0 font-extrabold text-sm">
+                    ₹
+                  </div>
+                  <Input
+                    type="number"
+                    value={businessPrice}
+                    onChange={(e) => setBusinessPrice(e.target.value)}
+                    className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                  />
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                  <Pencil size={12} />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Dynamic Features List */}
-          <div className="space-y-6">
-            <h4 className="text-[12px] font-black text-foreground/80 uppercase tracking-wider border-b border-border/30 pb-2">
+          <div className="space-y-6 pt-2">
+            <h4 className="text-[12px] font-extrabold text-dash-brand uppercase tracking-wider border-b border-border/20 pb-2 flex items-center gap-2">
+              <Sparkles size={14} className="text-dash-brand" />
               Plan Feature Matrices
             </h4>
 
-            {/* 1. Starter features */}
-            <div className="space-y-4">
+            {/* Starter Features */}
+            <div className="space-y-3.5">
               <div className="flex items-center justify-between">
-                <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
+                <label className="text-[10px] font-extrabold text-muted-dark uppercase tracking-wider">
                   Starter Plan Features ({starterFeatures.length})
                 </label>
                 <Button
                   type="button"
                   onClick={() => addFeature('starter')}
-                  className="h-8 px-3 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/80 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95"
+                  className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
                 >
-                  <Plus size={10} /> Add Feature
+                  <Plus size={12} /> Add Feature
                 </Button>
               </div>
 
               <div className="space-y-2.5">
                 {starterFeatures.map((feat, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <Input
-                      value={feat}
-                      onChange={(e) =>
-                        updateFeatureText('starter', index, e.target.value)
-                      }
-                      placeholder="e.g. List up to 5 items"
-                      className="h-10 bg-muted-light border-none rounded-xl text-[11px] font-bold text-foreground px-4 focus:ring-2 focus:ring-emerald-500/20 flex-1"
-                    />
+                  <div key={index} className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-2.5 pl-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                      <span className="w-2 h-2 rounded-full bg-dash-brand shrink-0" />
+                      <Input
+                        type="text"
+                        value={feat}
+                        onChange={(e) => updateFeatureText('starter', index, e.target.value)}
+                        placeholder="e.g. List up to 5 items"
+                        className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/50 w-full h-auto"
+                      />
+                    </div>
                     <Button
                       type="button"
                       onClick={() => removeFeature('starter', index)}
                       variant="ghost"
-                      className="h-10 w-10 p-0 rounded-xl text-destructive hover:bg-danger shrink-0 active:scale-95"
+                      className="h-9 w-9 p-0 rounded-xl text-destructive hover:bg-danger shrink-0 active:scale-95 transition-colors"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={15} />
                     </Button>
                   </div>
                 ))}
                 {starterFeatures.length === 0 && (
-                  <p className="text-[10px] font-bold text-muted-dark italic text-center py-2 bg-muted-light/20 rounded-xl">
+                  <p className="text-[10px] font-bold text-muted-dark italic text-center py-3.5 bg-muted-light/20 rounded-xl">
                     No features configured. Click 'Add Feature' to start.
                   </p>
                 )}
               </div>
             </div>
 
-            {/* 2. Pro features */}
-            <div className="space-y-4 pt-4 border-t border-border/20">
+            {/* Pro Features */}
+            <div className="space-y-3.5 pt-4 border-t border-border/10">
               <div className="flex items-center justify-between">
-                <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
+                <label className="text-[10px] font-extrabold text-muted-dark uppercase tracking-wider">
                   Pro Plan Features ({proFeatures.length})
                 </label>
                 <Button
                   type="button"
                   onClick={() => addFeature('pro')}
-                  className="h-8 px-3 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/80 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95"
+                  className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
                 >
-                  <Plus size={10} /> Add Feature
+                  <Plus size={12} /> Add Feature
                 </Button>
               </div>
 
               <div className="space-y-2.5">
                 {proFeatures.map((feat, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <Input
-                      value={feat}
-                      onChange={(e) =>
-                        updateFeatureText('pro', index, e.target.value)
-                      }
-                      placeholder="e.g. Priority support"
-                      className="h-10 bg-muted-light border-none rounded-xl text-[11px] font-bold text-foreground px-4 focus:ring-2 focus:ring-emerald-500/20 flex-1"
-                    />
+                  <div key={index} className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-2.5 pl-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                      <span className="w-2 h-2 rounded-full bg-dash-brand shrink-0" />
+                      <Input
+                        type="text"
+                        value={feat}
+                        onChange={(e) => updateFeatureText('pro', index, e.target.value)}
+                        placeholder="e.g. Priority support"
+                        className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/50 w-full h-auto"
+                      />
+                    </div>
                     <Button
                       type="button"
                       onClick={() => removeFeature('pro', index)}
                       variant="ghost"
-                      className="h-10 w-10 p-0 rounded-xl text-destructive hover:bg-danger shrink-0 active:scale-95"
+                      className="h-9 w-9 p-0 rounded-xl text-destructive hover:bg-danger shrink-0 active:scale-95 transition-colors"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={15} />
                     </Button>
                   </div>
                 ))}
                 {proFeatures.length === 0 && (
-                  <p className="text-[10px] font-bold text-muted-dark italic text-center py-2 bg-muted-light/20 rounded-xl">
+                  <p className="text-[10px] font-bold text-muted-dark italic text-center py-3.5 bg-muted-light/20 rounded-xl">
                     No features configured. Click 'Add Feature' to start.
                   </p>
                 )}
               </div>
             </div>
 
-            {/* 3. Business features */}
-            <div className="space-y-4 pt-4 border-t border-border/20">
+            {/* Business Features */}
+            <div className="space-y-3.5 pt-4 border-t border-border/10">
               <div className="flex items-center justify-between">
-                <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
+                <label className="text-[10px] font-extrabold text-muted-dark uppercase tracking-wider">
                   Business Plan Features ({businessFeatures.length})
                 </label>
                 <Button
                   type="button"
                   onClick={() => addFeature('business')}
-                  className="h-8 px-3 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/80 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95"
+                  className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
                 >
-                  <Plus size={10} /> Add Feature
+                  <Plus size={12} /> Add Feature
                 </Button>
               </div>
 
               <div className="space-y-2.5">
                 {businessFeatures.map((feat, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <Input
-                      value={feat}
-                      onChange={(e) =>
-                        updateFeatureText('business', index, e.target.value)
-                      }
-                      placeholder="e.g. Unlimited listings"
-                      className="h-10 bg-muted-light border-none rounded-xl text-[11px] font-bold text-foreground px-4 focus:ring-2 focus:ring-emerald-500/20 flex-1"
-                    />
+                  <div key={index} className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-2.5 pl-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                      <span className="w-2 h-2 rounded-full bg-dash-brand shrink-0" />
+                      <Input
+                        type="text"
+                        value={feat}
+                        onChange={(e) => updateFeatureText('business', index, e.target.value)}
+                        placeholder="e.g. Unlimited listings"
+                        className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/50 w-full h-auto"
+                      />
+                    </div>
                     <Button
                       type="button"
                       onClick={() => removeFeature('business', index)}
                       variant="ghost"
-                      className="h-10 w-10 p-0 rounded-xl text-destructive hover:bg-danger shrink-0 active:scale-95"
+                      className="h-9 w-9 p-0 rounded-xl text-destructive hover:bg-danger shrink-0 active:scale-95 transition-colors"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={15} />
                     </Button>
                   </div>
                 ))}
                 {businessFeatures.length === 0 && (
-                  <p className="text-[10px] font-bold text-muted-dark italic text-center py-2 bg-muted-light/20 rounded-xl">
+                  <p className="text-[10px] font-bold text-muted-dark italic text-center py-3.5 bg-muted-light/20 rounded-xl">
                     No features configured. Click 'Add Feature' to start.
                   </p>
                 )}
@@ -596,32 +725,30 @@ export const SiteSettingsForm = () => {
         {/* Content for TRUST Tab */}
         <TabsContent
           value="trust"
-          className="space-y-8 animate-in fade-in duration-300 outline-none"
+          className="space-y-8 animate-in fade-in duration-300 outline-none overflow-y-auto flex-1 pr-2 max-h-[calc(100vh-27rem)] scrollbar-thin"
         >
-          <div className="space-y-4">
-            <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
-              <HelpCircle size={15} className="text-dash-brand" />
+          <div className="space-y-1">
+            <h4 className="text-[14px] font-extrabold text-dash-brand flex items-center gap-2">
+              <HelpCircle size={16} className="text-dash-brand" />
               Trust & Community Commitments
             </h4>
-            <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              Configure trust badges, platform commitments, and community safety
-              guidelines. Lucide icon keywords: Shield, UserCheck,
-              MessageSquare, Headphones, MapPin, FileText, Flag.
+            <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
+              Configure trust badges, platform commitments, and community safety guidelines. Icon Keywords: Shield, UserCheck, MessageSquare, Headphones, MapPin, FileText, Flag.
             </p>
           </div>
 
           {/* Commitments List */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] font-black text-foreground/80 uppercase tracking-widest">
+              <label className="text-[11px] font-extrabold text-foreground/80 uppercase tracking-widest">
                 Platform Commitments ({commitments.length})
               </label>
               <Button
                 type="button"
                 onClick={addCommitment}
-                className="h-8 px-3 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/80 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95"
+                className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
               >
-                <Plus size={10} /> Add Item
+                <Plus size={12} /> Add Item
               </Button>
             </div>
 
@@ -629,59 +756,61 @@ export const SiteSettingsForm = () => {
               {commitments.map((comm, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group"
+                  className="p-5 rounded-2xl bg-[#f8fafc]/30 border border-[#e2e8f0] space-y-4 relative group"
                 >
                   <Button
                     type="button"
                     onClick={() => removeCommitment(index)}
                     variant="ghost"
-                    className="absolute top-2 right-2 h-8 w-8 p-0 rounded-lg text-destructive hover:bg-danger active:scale-95"
+                    className="absolute top-2 right-2 h-8 w-8 p-0 rounded-lg text-destructive hover:bg-danger active:scale-95 transition-colors"
                   >
                     <Trash2 size={13} />
                   </Button>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                         Icon Keyword
                       </label>
-                      <Input
-                        value={comm.iconName}
-                        onChange={(e) =>
-                          updateCommitment(index, 'iconName', e.target.value)
-                        }
-                        placeholder="Shield / UserCheck / MessageSquare"
-                        className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
-                      />
+                      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                        <Input
+                          type="text"
+                          value={comm.iconName}
+                          onChange={(e) => updateCommitment(index, 'iconName', e.target.value)}
+                          placeholder="Shield / UserCheck"
+                          className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full h-auto"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-1 md:col-span-2">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                    <div className="space-y-1.5 md:col-span-2">
+                      <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                         Title
                       </label>
-                      <Input
-                        value={comm.title}
-                        onChange={(e) =>
-                          updateCommitment(index, 'title', e.target.value)
-                        }
-                        placeholder="e.g. Secure payments"
-                        className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
-                      />
+                      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                        <Input
+                          type="text"
+                          value={comm.title}
+                          onChange={(e) => updateCommitment(index, 'title', e.target.value)}
+                          placeholder="e.g. Secure payments"
+                          className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full h-auto"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                       Description
                     </label>
-                    <Textarea
-                      value={comm.description}
-                      onChange={(e) =>
-                        updateCommitment(index, 'description', e.target.value)
-                      }
-                      placeholder="Enter description explaining this commitment."
-                      rows={2}
-                      className="bg-muted-light border-none rounded-xl text-[10px] font-semibold text-foreground p-3 leading-normal"
-                    />
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3 flex items-start">
+                      <Textarea
+                        value={comm.description}
+                        onChange={(e) => updateCommitment(index, 'description', e.target.value)}
+                        placeholder="Enter description explaining this commitment."
+                        rows={2}
+                        className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full resize-y leading-normal min-h-0"
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -694,17 +823,17 @@ export const SiteSettingsForm = () => {
           </div>
 
           {/* Safety Tips List */}
-          <div className="space-y-4 pt-6 border-t border-border/20">
+          <div className="space-y-4 pt-6 border-t border-border/10">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] font-black text-foreground/80 uppercase tracking-widest">
+              <label className="text-[11px] font-extrabold text-foreground/80 uppercase tracking-widest">
                 Community Safety Guidelines ({safetyTips.length})
               </label>
               <Button
                 type="button"
                 onClick={addSafetyTip}
-                className="h-8 px-3 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/80 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95"
+                className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
               >
-                <Plus size={10} /> Add Tip
+                <Plus size={12} /> Add Tip
               </Button>
             </div>
 
@@ -712,59 +841,61 @@ export const SiteSettingsForm = () => {
               {safetyTips.map((tip, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group"
+                  className="p-5 rounded-2xl bg-[#f8fafc]/30 border border-[#e2e8f0] space-y-4 relative group"
                 >
                   <Button
                     type="button"
                     onClick={() => removeSafetyTip(index)}
                     variant="ghost"
-                    className="absolute top-2 right-2 h-8 w-8 p-0 rounded-lg text-destructive hover:bg-danger active:scale-95"
+                    className="absolute top-2 right-2 h-8 w-8 p-0 rounded-lg text-destructive hover:bg-danger active:scale-95 transition-colors"
                   >
                     <Trash2 size={13} />
                   </Button>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                         Icon Keyword
                       </label>
-                      <Input
-                        value={tip.iconName}
-                        onChange={(e) =>
-                          updateSafetyTip(index, 'iconName', e.target.value)
-                        }
-                        placeholder="MapPin / MessageSquare / Flag"
-                        className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
-                      />
+                      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                        <Input
+                          type="text"
+                          value={tip.iconName}
+                          onChange={(e) => updateSafetyTip(index, 'iconName', e.target.value)}
+                          placeholder="MapPin / Flag"
+                          className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full h-auto"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-1 md:col-span-2">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                    <div className="space-y-1.5 md:col-span-2">
+                      <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                         Title
                       </label>
-                      <Input
-                        value={tip.title}
-                        onChange={(e) =>
-                          updateSafetyTip(index, 'title', e.target.value)
-                        }
-                        placeholder="e.g. Meet safely"
-                        className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
-                      />
+                      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                        <Input
+                          type="text"
+                          value={tip.title}
+                          onChange={(e) => updateSafetyTip(index, 'title', e.target.value)}
+                          placeholder="e.g. Meet safely"
+                          className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full h-auto"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                       Description
                     </label>
-                    <Textarea
-                      value={tip.description}
-                      onChange={(e) =>
-                        updateSafetyTip(index, 'description', e.target.value)
-                      }
-                      placeholder="Enter safety tip instructions."
-                      rows={2}
-                      className="bg-muted-light border-none rounded-xl text-[10px] font-semibold text-foreground p-3 leading-normal"
-                    />
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3 flex items-start">
+                      <Textarea
+                        value={tip.description}
+                        onChange={(e) => updateSafetyTip(index, 'description', e.target.value)}
+                        placeholder="Enter safety tip instructions."
+                        rows={2}
+                        className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full resize-y leading-normal min-h-0"
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -780,45 +911,54 @@ export const SiteSettingsForm = () => {
         {/* Content for TERMS Tab */}
         <TabsContent
           value="terms"
-          className="space-y-8 animate-in fade-in duration-300 outline-none"
+          className="space-y-8 animate-in fade-in duration-300 outline-none overflow-y-auto flex-1 pr-2 max-h-[calc(100vh-27rem)] scrollbar-thin"
         >
-          <div className="space-y-4">
-            <h4 className="text-[13px] font-black text-foreground/80 flex items-center gap-1.5">
-              <AlignLeft size={15} className="text-dash-brand" />
+          <div className="space-y-1">
+            <h4 className="text-[14px] font-extrabold text-dash-brand flex items-center gap-2">
+              <AlignLeft size={16} className="text-dash-brand" />
               Terms of Service Sections
             </h4>
-            <p className="text-[10px] font-semibold text-muted-dark leading-relaxed">
-              Configure formal legal agreements and documentation sections
-              dynamically. Use standard linebreaks (`\n` or Enter key) to create
-              paragraphs in document content.
+            <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
+              Configure formal legal agreements and documentation sections dynamically. Use standard Enter key to create paragraph breaks.
             </p>
           </div>
 
           {/* Last updated field */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
               Document Last Updated Date
             </label>
-            <Input
-              value={termsLastUpdated}
-              onChange={(e) => setTermsLastUpdated(e.target.value)}
-              placeholder="e.g. 28 May 2026"
-              className="h-12 bg-muted-light border-none rounded-2xl text-[12px] font-bold text-foreground px-5 focus:ring-2 focus:ring-emerald-500/20"
-            />
+            <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+              <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
+                  <Calendar size={16} />
+                </div>
+                <Input
+                  type="text"
+                  value={termsLastUpdated}
+                  onChange={(e) => setTermsLastUpdated(e.target.value)}
+                  placeholder="e.g. 28 May 2026"
+                  className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-semibold text-slate-800 placeholder:text-muted-foreground/60 w-full h-auto"
+                />
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-slate-100/80 text-dash-brand flex items-center justify-center shrink-0">
+                <Pencil size={12} />
+              </div>
+            </div>
           </div>
 
           {/* Dynamic Legal Sections */}
-          <div className="space-y-4">
+          <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between">
-              <label className="text-[11px] font-black text-foreground/80 uppercase tracking-widest">
+              <label className="text-[11px] font-extrabold text-foreground/80 uppercase tracking-widest">
                 Legal Content Sections ({termsSections.length})
               </label>
               <Button
                 type="button"
                 onClick={addTermsSection}
-                className="h-8 px-3 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/80 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 active:scale-95"
+                className="h-8 px-3.5 rounded-full bg-[#e6f4ea] text-[#0a5c36] hover:bg-[#d0eed8] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
               >
-                <Plus size={10} /> Add Section
+                <Plus size={12} /> Add Section
               </Button>
             </div>
 
@@ -826,59 +966,61 @@ export const SiteSettingsForm = () => {
               {termsSections.map((sec, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-2xl bg-muted-light/30 border border-border/30 space-y-3 relative group"
+                  className="p-5 rounded-2xl bg-[#f8fafc]/30 border border-[#e2e8f0] space-y-4 relative group"
                 >
                   <Button
                     type="button"
                     onClick={() => removeTermsSection(index)}
                     variant="ghost"
-                    className="absolute top-2 right-2 h-8 w-8 p-0 rounded-lg text-destructive hover:bg-danger active:scale-95"
+                    className="absolute top-2 right-2 h-8 w-8 p-0 rounded-lg text-destructive hover:bg-danger active:scale-95 transition-colors"
                   >
                     <Trash2 size={13} />
                   </Button>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                         Unique Anchor ID
                       </label>
-                      <Input
-                        value={sec.id}
-                        onChange={(e) =>
-                          updateTermsSection(index, 'id', e.target.value)
-                        }
-                        placeholder="e.g. refunds"
-                        className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
-                      />
+                      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                        <Input
+                          type="text"
+                          value={sec.id}
+                          onChange={(e) => updateTermsSection(index, 'id', e.target.value)}
+                          placeholder="e.g. refunds"
+                          className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full h-auto"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-1 md:col-span-2">
-                      <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                    <div className="space-y-1.5 md:col-span-2">
+                      <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                         Section Title
                       </label>
-                      <Input
-                        value={sec.title}
-                        onChange={(e) =>
-                          updateTermsSection(index, 'title', e.target.value)
-                        }
-                        placeholder="e.g. 5. Refund Policy"
-                        className="h-9 bg-muted-light border-none rounded-xl text-[10px] font-bold text-foreground px-3"
-                      />
+                      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                        <Input
+                          type="text"
+                          value={sec.title}
+                          onChange={(e) => updateTermsSection(index, 'title', e.target.value)}
+                          placeholder="e.g. 5. Refund Policy"
+                          className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full h-auto"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[9px] font-black text-muted-dark uppercase tracking-wider">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                       Content Body
                     </label>
-                    <Textarea
-                      value={sec.content}
-                      onChange={(e) =>
-                        updateTermsSection(index, 'content', e.target.value)
-                      }
-                      placeholder="Insert paragraph block content here. Hit enter for linebreaks."
-                      rows={5}
-                      className="bg-muted-light border-none rounded-xl text-[10px] font-semibold text-foreground p-3 leading-normal"
-                    />
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3 flex items-start">
+                      <Textarea
+                        value={sec.content}
+                        onChange={(e) => updateTermsSection(index, 'content', e.target.value)}
+                        placeholder="Insert paragraph block content here. Hit enter for linebreaks."
+                        rows={5}
+                        className="border-none bg-transparent shadow-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-semibold text-slate-800 w-full resize-y leading-relaxed min-h-0"
+                      />
+                    </div>
                   </div>
                 </div>
               ))}

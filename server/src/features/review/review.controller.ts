@@ -3,7 +3,7 @@ import { reviewService } from "./review.service.js";
 import { auth } from "../../config/auth.js";
 
 export class ReviewController {
-  async getAllReviews(request: FastifyRequest, reply: FastifyReply) {
+  async getAllReviews(request: FastifyRequest, _reply: FastifyReply) {
     const { search, productId } = request.query as any;
     
     // Get session to check roles and filter
@@ -20,7 +20,7 @@ export class ReviewController {
     return { reviews };
   }
 
-  async deleteReview(request: FastifyRequest, reply: FastifyReply) {
+  async deleteReview(request: FastifyRequest, _reply: FastifyReply) {
     const { id } = request.params as any;
     await reviewService.deleteReview(id);
     return { success: true };

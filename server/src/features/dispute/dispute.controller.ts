@@ -3,7 +3,7 @@ import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
 
 export class DisputeController {
-  async getAllDisputes(request: FastifyRequest, reply: FastifyReply) {
+  async getAllDisputes(_request: FastifyRequest, _reply: FastifyReply) {
     const disputes = await prisma.dispute.findMany({
       orderBy: { createdAt: "desc" },
       include: {

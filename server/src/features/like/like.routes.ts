@@ -11,7 +11,7 @@ export async function likeRoutes(fastify: FastifyInstance) {
 
   // Get liked product IDs (can be public, returns empty if not logged in)
   fastify.get("/ids", {
-    preHandler: async (request: any, reply: any) => {
+    preHandler: async (request: any, _reply: any) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
       if (session) request.user = session.user;
     }
@@ -19,7 +19,7 @@ export async function likeRoutes(fastify: FastifyInstance) {
 
   // Get full liked products list
   fastify.get("/", {
-    preHandler: async (request: any, reply: any) => {
+    preHandler: async (request: any, _reply: any) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
       if (session) request.user = session.user;
     }

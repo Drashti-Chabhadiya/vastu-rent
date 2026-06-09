@@ -23,7 +23,7 @@ interface SendVerificationEmailOptions {
 export async function sendVerificationEmail({
   email,
   name,
-  url,
+  url: _url,
   token,
 }: SendVerificationEmailOptions): Promise<void> {
   const smtpHost = process.env.SMTP_HOST;
@@ -106,7 +106,7 @@ interface SendResetPasswordEmailOptions {
 export async function sendResetPasswordEmail({
   email,
   name,
-  url,
+  url: _url,
   token,
 }: SendResetPasswordEmailOptions): Promise<void> {
   const smtpHost = process.env.SMTP_HOST;
@@ -185,7 +185,7 @@ export async function sendBookingAlertEmail({
   name,
   title,
   message,
-  type,
+  type: _type,
 }: SendBookingAlertOptions): Promise<void> {
   const smtpHost = process.env.SMTP_HOST;
   const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;

@@ -4,7 +4,7 @@ import { auth } from '../../config/auth.js'
 import { isAdminRole } from '../../config/roles.js'
 
 export const StoryController = {
-  async getAllStories(request: FastifyRequest, reply: FastifyReply) {
+  async getAllStories(_request: FastifyRequest, reply: FastifyReply) {
     try {
       const stories = await StoryService.getAllStories()
       return { success: true, stories }

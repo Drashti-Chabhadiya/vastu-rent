@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { toast } from 'sonner'
+import { useTranslation } from '#/context/TranslationContext'
 import {
   Instagram,
   Facebook,
@@ -26,6 +27,7 @@ import {
 import { apiClient } from '#/lib/api'
 
 export function Footer() {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [region, setRegion] = useState('India (English)')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -36,13 +38,13 @@ export function Footer() {
 
     const trimmedEmail = email.trim()
     if (!trimmedEmail) {
-      toast.error('Please enter a valid email address.')
+      toast.error(t('Please enter a valid email address.'))
       return
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(trimmedEmail)) {
-      toast.error('Please enter a valid email address.')
+      toast.error(t('Please enter a valid email address.'))
       return
     }
 
@@ -50,18 +52,18 @@ export function Footer() {
     try {
       // Attempt actual API call, fallback gracefully if endpoint is not built yet
       await apiClient.post('/newsletter/subscribe', { email: trimmedEmail })
-      toast.success('Thank you for subscribing to stay in the loop!')
+      toast.success(t('Thank you for subscribing to stay in the loop!'))
       setEmail('')
     } catch (error: any) {
       if (error.response?.status === 404) {
         // Fallback simulation for offline/preview environments
         await new Promise((resolve) => setTimeout(resolve, 1000))
-        toast.success('Thank you for subscribing to stay in the loop!')
+        toast.success(t('Thank you for subscribing to stay in the loop!'))
         setEmail('')
       } else {
         toast.error(
           error.response?.data?.message ||
-            'Subscription failed. Please try again.',
+            t('Subscription failed. Please try again.'),
         )
       }
     } finally {
@@ -71,7 +73,7 @@ export function Footer() {
 
   const handleRegionChange = (newRegion: string) => {
     setRegion(newRegion)
-    toast.success(`Country/region switched to ${newRegion}`)
+    toast.success(`${t('Country/region switched to')} ${newRegion}`)
   }
 
   const companyLinks = [
@@ -103,9 +105,9 @@ export function Footer() {
               <Headphones className="h-7 w-7 text-primary animate-pulse" />
             </div>
             <div>
-              <h3 className="font-bold text-[#0F291B] text-lg">Need help?</h3>
+              <h3 className="font-bold text-[#0F291B] text-lg">{t('Need help?')}</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Our support team is here for you 24/7.
+                {t('Our support team is here for you 24/7.')}
               </p>
             </div>
           </div>
@@ -114,14 +116,14 @@ export function Footer() {
               to="/help"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-[#0F291B] shadow-sm transition-all hover:bg-[#faf9f5] hover:border-primary active:scale-[0.98] w-full sm:w-auto"
             >
-              Visit Help Center
+              {t('Visit Help Center')}
               <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
             </Link>
             <Link
               to="/contact"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary/95 px-6 py-3.5 text-sm font-bold text-primary-foreground active:scale-[0.98] transition-all w-full sm:w-auto"
             >
-              Contact Support
+              {t('Contact Support')}
               <Send className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -134,8 +136,7 @@ export function Footer() {
             <div>
               <Logo />
               <p className="mt-6 max-w-none xl:max-w-xs text-sm leading-relaxed text-muted-foreground">
-                A trusted community marketplace for renting and hosting quality
-                items. Live simply. Live in harmony.
+                {t('A trusted community marketplace for renting and hosting quality items. Live simply. Live in harmony.')}
               </p>
             </div>
 
@@ -175,7 +176,7 @@ export function Footer() {
           {/* Column 2: Company Navigation */}
           <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
-              Company
+              {t('Company')}
             </h4>
             <ul className="mt-6 space-y-3.5">
               {companyLinks.map((link, idx) => (
@@ -184,7 +185,7 @@ export function Footer() {
                     to={link.to}
                     className="text-[13.5px] text-muted-foreground transition-colors hover:text-primary"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -194,7 +195,7 @@ export function Footer() {
           {/* Column 3: Explore Navigation */}
           <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
-              Explore
+              {t('Explore')}
             </h4>
             <ul className="mt-6 space-y-3.5">
               {exploreLinks.map((link, idx) => (
@@ -203,7 +204,7 @@ export function Footer() {
                     to={link.to}
                     className="text-[13.5px] text-muted-foreground transition-colors hover:text-primary"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -213,7 +214,7 @@ export function Footer() {
           {/* Column 4: Support Navigation */}
           <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
-              Support
+              {t('Support')}
             </h4>
             <ul className="mt-6 space-y-3.5">
               {supportLinks.map((link, idx) => (
@@ -222,7 +223,7 @@ export function Footer() {
                     to={link.to}
                     className="text-[13.5px] text-muted-foreground transition-colors hover:text-primary"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -232,10 +233,10 @@ export function Footer() {
           {/* Column 5: Stay in the loop */}
           <div className="col-span-1 min-[375px]:col-span-2 sm:col-span-3 lg:col-span-1 xl:col-span-2">
             <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
-              Stay in the loop
+              {t('Stay in the loop')}
             </h4>
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              Get tips, updates, and inspiration straight to your inbox.
+              {t('Get tips, updates, and inspiration straight to your inbox.')}
             </p>
 
             {/* Newsletter input form */}
@@ -245,7 +246,7 @@ export function Footer() {
             >
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t('Enter your email')}
                 value={email}
                 disabled={isSubmitting}
                 onChange={(e) => setEmail(e.target.value)}
@@ -268,7 +269,7 @@ export function Footer() {
             {/* Guarantee check text */}
             <div className="mt-4 flex items-center gap-2 text-[10.5px] text-muted-foreground">
               <ShieldCheck className="h-3.5 w-3.5 text-primary shrink-0" />
-              <span>No spam, unsubscribe anytime.</span>
+              <span>{t('No spam, unsubscribe anytime.')}</span>
             </div>
           </div>
         </div>
@@ -284,15 +285,15 @@ export function Footer() {
           <div className="flex flex-wrap items-center gap-6 font-medium text-[#0F291B]/80">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-primary" />
-              <span className="text-[11.5px]">Secure Payments</span>
+              <span className="text-[11.5px]">{t('Secure Payments')}</span>
             </div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-primary" />
-              <span className="text-[11.5px]">Data Protection</span>
+              <span className="text-[11.5px]">{t('Data Protection')}</span>
             </div>
             <div className="flex items-center gap-2">
               <Headphones className="h-4 w-4 text-primary" />
-              <span className="text-[11.5px]">24/7 Support</span>
+              <span className="text-[11.5px]">{t('24/7 Support')}</span>
             </div>
 
             {/* Interactive Dropdown for region selection */}

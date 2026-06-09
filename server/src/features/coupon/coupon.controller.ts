@@ -4,7 +4,7 @@ import { auth } from "../../config/auth.js";
 import { isAdminRole } from "../../config/roles.js";
 
 export class CouponController {
-  async getAllCoupons(request: FastifyRequest, reply: FastifyReply) {
+  async getAllCoupons(request: FastifyRequest, _reply: FastifyReply) {
     const session = await auth.api.getSession({ headers: request.headers as any });
     
     let whereClause: any = { isActive: true, endDate: { gte: new Date() } };

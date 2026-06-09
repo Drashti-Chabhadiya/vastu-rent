@@ -4,13 +4,13 @@ import { prisma } from "../../config/prisma.js";
 import { isAdminRole, isDashboardRole } from "../../config/roles.js";
 
 export class RentalController {
-  async createRental(request: FastifyRequest, reply: FastifyReply) {
+  async createRental(request: FastifyRequest, _reply: FastifyReply) {
     const userId = (request as any).user.id;
     const rental = await rentalService.createRental({ ...request.body as any, renterId: userId });
     return { rental };
   }
 
-  async getMyRentals(request: FastifyRequest, reply: FastifyReply) {
+  async getMyRentals(request: FastifyRequest, _reply: FastifyReply) {
     const userId = (request as any).user.id;
     const rentals = await rentalService.getMyRentals(userId);
     return { rentals };
@@ -72,7 +72,7 @@ export class RentalController {
     return { rental };
   }
 
-  async getProductRentals(request: FastifyRequest, reply: FastifyReply) {
+  async getProductRentals(request: FastifyRequest, _reply: FastifyReply) {
     const { productId } = request.params as { productId: string };
     const rentals = await rentalService.getProductRentals(productId);
     return { rentals };

@@ -4,17 +4,17 @@ import { auth } from "../../config/auth.js";
 import { isAdminRole, isDashboardRole } from "../../config/roles.js";
 
 export class UserController {
-  async getRecentUsers(request: FastifyRequest, reply: FastifyReply) {
+  async getRecentUsers(_request: FastifyRequest, _reply: FastifyReply) {
     const users = await userService.getRecentUsers();
     return { users };
   }
 
-  async getAllUsers(request: FastifyRequest, reply: FastifyReply) {
+  async getAllUsers(request: FastifyRequest, _reply: FastifyReply) {
     const users = await userService.getAllUsers(request.query as any);
     return { users };
   }
 
-  async banUser(request: FastifyRequest, reply: FastifyReply) {
+  async banUser(request: FastifyRequest, _reply: FastifyReply) {
     const { id } = request.params as any;
     const { banned, reason } = request.body as any;
     const user = await userService.banUser(id, banned, reason);

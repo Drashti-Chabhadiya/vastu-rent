@@ -2,23 +2,38 @@ import { useState, useEffect } from 'react'
 import { Switch } from '#/components/ui/switch'
 import { registerDeviceForPush } from '#/lib/fcm'
 import { toast } from 'sonner'
-import { BellRing } from 'lucide-react'
+import { BellRing, Save } from 'lucide-react'
+import { Button } from '#/components/ui/button'
 
 interface NotificationSettingsFormProps {
   bookingAlerts: boolean
   settlementAlerts: boolean
   marketingAlerts: boolean
-  handleNotificationToggle: (key: string, val: boolean) => void
+  handleNotificationSave: (booking: boolean, settlement: boolean, marketing: boolean) => void
+  isSaving: boolean
 }
 
 export const NotificationSettingsForm = ({
   bookingAlerts,
   settlementAlerts,
   marketingAlerts,
-  handleNotificationToggle,
+  handleNotificationSave,
+  isSaving,
 }: NotificationSettingsFormProps) => {
   const [pushEnabled, setPushEnabled] = useState(false)
   const [hasPermissionSupport, setHasPermissionSupport] = useState(false)
+
+  // Local switch states for buffering
+  const [localBookingAlerts, setLocalBookingAlerts] = useState(bookingAlerts)
+  const [localSettlementAlerts, setLocalSettlementAlerts] = useState(settlementAlerts)
+  const [localMarketingAlerts, setLocalMarketingAlerts] = useState(marketingAlerts)
+
+  // Synchronize local states when baseline props change from database
+  useEffect(() => {
+    setLocalBookingAlerts(bookingAlerts)
+    setLocalSettlementAlerts(settlementAlerts)
+    setLocalMarketingAlerts(marketingAlerts)
+  }, [bookingAlerts, settlementAlerts, marketingAlerts])
 
   // Initialize current browser permission status
   useEffect(() => {
@@ -63,15 +78,36 @@ export const NotificationSettingsForm = ({
     }
   }
 
+  const hasChanges =
+    localBookingAlerts !== bookingAlerts ||
+    localSettlementAlerts !== settlementAlerts ||
+    localMarketingAlerts !== marketingAlerts
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    handleNotificationSave(localBookingAlerts, localSettlementAlerts, localMarketingAlerts)
+  }
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      <div>
-        <h3 className="text-[16px] font-black text-foreground/90">
-          Notification Preferences
-        </h3>
-        <p className="text-[11px] font-bold text-muted-dark">
-          Control when and how you receive alerts.
-        </p>
+    <form onSubmit={onSubmit} className="space-y-8 animate-in fade-in duration-300">
+      {/* Title Header */}
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
+        <div>
+          <h3 className="text-xl font-extrabold text-dash-brand font-display tracking-tight leading-none">
+            Notification Preferences
+          </h3>
+          <p className="text-[12px] font-semibold text-muted-dark mt-2">
+            Control when and how you receive alerts.
+          </p>
+        </div>
+        <Button
+          type="submit"
+          disabled={!hasChanges || isSaving}
+          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand"
+        >
+          <Save size={13} />
+          {isSaving ? 'Saving...' : 'Save Changes'}
+        </Button>
       </div>
 
       <div className="space-y-6">
@@ -79,14 +115,14 @@ export const NotificationSettingsForm = ({
         {hasPermissionSupport && (
           <div className="flex items-center justify-between p-5 rounded-2xl border border-emerald-500/25 bg-emerald-500/5 hover:bg-emerald-500/10 transition-all duration-300 shadow-sm">
             <div className="space-y-1 pr-4">
-              <h4 className="text-xs font-black text-foreground/90 flex items-center gap-1.5">
+              <h4 className="text-sm font-bold text-[#0a5c36] flex items-center gap-1.5">
                 <BellRing
                   size={14}
                   className="text-emerald-600 animate-bounce"
                 />
                 Browser Push Notifications
               </h4>
-              <p className="text-[10px] font-semibold text-muted-dark leading-normal">
+              <p className="text-[11px] font-semibold text-[#0a5c36]/90 leading-normal">
                 Receive instant real-time updates for bookings, payments, and
                 messaging directly on this device.
               </p>
@@ -94,65 +130,59 @@ export const NotificationSettingsForm = ({
             <Switch
               checked={pushEnabled}
               onCheckedChange={handlePushToggle}
-              className="data-[state=checked]:bg-emerald-600 shrink-0"
+              className="data-[state=checked]:bg-[#0a5c36] cursor-pointer"
             />
           </div>
         )}
 
-        <div className="flex items-center justify-between p-4 rounded-2xl border border-border/30 hover:bg-muted-light/20">
+        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc]/30 hover:bg-[#f8fafc]/80 transition-all duration-200">
           <div className="space-y-0.5">
-            <h4 className="text-xs font-black text-foreground/90">
+            <h4 className="text-sm font-bold text-slate-800">
               New Booking Alerts
             </h4>
-            <p className="text-[10px] font-semibold text-muted-dark">
+            <p className="text-[11px] font-semibold text-slate-500 leading-normal">
               Receive alert when renter requests a product booking.
             </p>
           </div>
           <Switch
-            checked={bookingAlerts}
-            onCheckedChange={(val) =>
-              handleNotificationToggle('bookingAlerts', val)
-            }
-            className="data-[state=checked]:bg-emerald-600"
+            checked={localBookingAlerts}
+            onCheckedChange={setLocalBookingAlerts}
+            className="data-[state=checked]:bg-dash-brand cursor-pointer"
           />
         </div>
 
-        <div className="flex items-center justify-between p-4 rounded-2xl border border-border/30 hover:bg-muted-light/20">
+        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc]/30 hover:bg-[#f8fafc]/80 transition-all duration-200">
           <div className="space-y-0.5">
-            <h4 className="text-xs font-black text-foreground/90">
+            <h4 className="text-sm font-bold text-slate-800">
               Payout Settlements
             </h4>
-            <p className="text-[10px] font-semibold text-muted-dark">
+            <p className="text-[11px] font-semibold text-slate-500 leading-normal">
               Get notified when money settles to your bank.
             </p>
           </div>
           <Switch
-            checked={settlementAlerts}
-            onCheckedChange={(val) =>
-              handleNotificationToggle('settlementAlerts', val)
-            }
-            className="data-[state=checked]:bg-emerald-600"
+            checked={localSettlementAlerts}
+            onCheckedChange={setLocalSettlementAlerts}
+            className="data-[state=checked]:bg-dash-brand cursor-pointer"
           />
         </div>
 
-        <div className="flex items-center justify-between p-4 rounded-2xl border border-border/30 hover:bg-muted-light/20">
+        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc]/30 hover:bg-[#f8fafc]/80 transition-all duration-200">
           <div className="space-y-0.5">
-            <h4 className="text-xs font-black text-foreground/90">
+            <h4 className="text-sm font-bold text-slate-800">
               Marketing Updates
             </h4>
-            <p className="text-[10px] font-semibold text-muted-dark">
+            <p className="text-[11px] font-semibold text-slate-500 leading-normal">
               Receive monthly platform optimization guides.
             </p>
           </div>
           <Switch
-            checked={marketingAlerts}
-            onCheckedChange={(val) =>
-              handleNotificationToggle('marketingAlerts', val)
-            }
-            className="data-[state=checked]:bg-emerald-600"
+            checked={localMarketingAlerts}
+            onCheckedChange={setLocalMarketingAlerts}
+            className="data-[state=checked]:bg-dash-brand cursor-pointer"
           />
         </div>
       </div>
-    </div>
+    </form>
   )
 }
