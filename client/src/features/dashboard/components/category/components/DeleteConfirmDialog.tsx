@@ -21,17 +21,18 @@ export const DeleteConfirmDialog = ({
   itemName,
 }: DeleteConfirmDialogProps) => {
   const defaultDescription = (
-    <>
-      Are you sure you want to delete{' '}
-      <span className="text-foreground/90 font-black">
-        "{itemName || 'this item'}"
+    <div className="text-center w-full">
+      <span className="inline-block">
+        Are you sure you want to delete{' '}
+        <span className="text-foreground/90 font-black">
+          "{itemName || 'this item'}"
+        </span>
+        ?
       </span>
-      ?
-      <br />
       <span className="text-muted-dark text-xs font-bold mt-4 block bg-muted-light py-2.5 px-4 rounded-xl border border-border/30">
         This action is permanent and cannot be reversed.
       </span>
-    </>
+    </div>
   )
 
   return (

@@ -4,7 +4,7 @@ import { Button } from '#/components/ui/button'
 
 interface CategoryCardProps {
   category: any
-  isAdmin: boolean
+  currentUser: any
   onManageCategory?: (categoryId: string) => void
   onOpenEdit: (category: any) => void
   onOpenDelete: (category: any) => void
@@ -12,11 +12,14 @@ interface CategoryCardProps {
 
 export const CategoryCard = ({
   category,
-  isAdmin,
+  currentUser,
   onManageCategory,
   onOpenEdit,
   onOpenDelete,
 }: CategoryCardProps) => {
+  const isAdmin = currentUser?.role === 'admin'
+  const isOwner = category.userId === currentUser?.id
+
   const renderCategoryIcon = () => {
     if (category.image) {
       return (
@@ -87,16 +90,18 @@ export const CategoryCard = ({
           </div>
         </div>
 
-        {isAdmin && (
+        {(isAdmin || isOwner) && (
           <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenEdit(category)}
-              className="h-9 w-9 text-muted-foreground/70 hover:text-dash-brand hover:bg-dash-brand/10 rounded-xl cursor-pointer"
-            >
-              <Edit2 size={18} />
-            </Button>
+            {isAdmin && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onOpenEdit(category)}
+                className="h-9 w-9 text-muted-foreground/70 hover:text-dash-brand hover:bg-dash-brand/10 rounded-xl cursor-pointer"
+              >
+                <Edit2 size={18} />
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"

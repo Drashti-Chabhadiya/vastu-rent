@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { X, Check } from 'lucide-react'
-import { Button } from '#/components/ui/button'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { Textarea } from '#/components/ui/textarea'
+import { toast } from 'sonner'
 
 interface CategoryRequestActionModalsProps {
   rejectingRequest: any
@@ -26,122 +26,70 @@ export const CategoryRequestActionModals = ({
 }: CategoryRequestActionModalsProps) => {
   const [rejectReason, setRejectReason] = useState('')
 
-  const handleRejectSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!rejectReason.trim()) return
+  const handleRejectConfirmClick = () => {
+    if (!rejectReason.trim()) {
+      toast.error('Rejection feedback is required')
+      return
+    }
     onRejectConfirm(rejectReason)
     setRejectReason('')
   }
 
+  const rejectionDescription = (
+    <div className="space-y-4 text-left">
+      <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
+        State the reason for rejecting "{rejectingRequest?.name}".
+      </p>
+      <div className="space-y-2">
+        <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
+          Rejection Feedback
+        </label>
+        <Textarea
+          placeholder="State why this category is rejected (e.g. Duplicated category name, not relevant, etc.)"
+          value={rejectReason}
+          onChange={(e) => setRejectReason(e.target.value)}
+          className="min-h-[100px] rounded-xl border-border/30 bg-muted-light/50 focus-visible:ring-dash-brand text-foreground w-full p-3 text-sm"
+          required
+        />
+      </div>
+    </div>
+  )
+
+  const approvalDescription = approvingRequest
+    ? `Are you sure you want to approve and create the category "${approvingRequest.name}"? This will automatically add it to the active category database catalog for all platform users.`
+    : ''
+
   return (
     <>
       {/* Admin Rejection Dialog */}
-      {rejectingRequest && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-card rounded-3xl max-w-md w-full p-8 border border-border/30 shadow-2xl relative">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={onRejectClose}
-              className="absolute top-6 right-6 text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/50/50 rounded-full h-8 w-8 active:scale-[0.98] transition-all cursor-pointer"
-            >
-              <X size={20} />
-            </Button>
-
-            <h3 className="text-xl font-black text-foreground tracking-tight mb-2">
-              Reject Proposed Category
-            </h3>
-            <p className="text-sm text-muted-foreground/85 mb-6">
-              State the reason for rejecting "{rejectingRequest.name}".
-            </p>
-
-            <form onSubmit={handleRejectSubmit} className="space-y-5">
-              <div>
-                <label className="text-xs font-bold text-muted-foreground/70 uppercase tracking-wider block mb-2">
-                  Rejection Feedback
-                </label>
-                <Textarea
-                  placeholder="State why this category is rejected (e.g. Duplicated category name, not relevant, etc.)"
-                  value={rejectReason}
-                  onChange={(e) => setRejectReason(e.target.value)}
-                  className="w-full border border-border rounded-xl p-3 h-28 focus:ring-1 focus:ring-dash-brand text-sm"
-                  required
-                />
-              </div>
-
-              <div className="flex gap-3 justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onRejectClose}
-                  className="rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="bg-destructive/90 hover:bg-destructive/90 text-destructive-foreground rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
-                >
-                  {isPending ? 'Rejecting...' : 'Reject Request'}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ReusableAlertDialog
+        isOpen={!!rejectingRequest}
+        onOpenChange={(open) => !open && onRejectClose()}
+        onConfirm={handleRejectConfirmClick}
+        onCancel={onRejectClose}
+        title="Reject Proposed Category"
+        description={rejectionDescription}
+        confirmText="Reject Request"
+        cancelText="Cancel"
+        variant="danger"
+        isPending={isPending}
+        pendingText="Rejecting..."
+      />
 
       {/* Admin Approval Confirmation Dialog */}
-      {approvingRequest && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-card rounded-3xl max-w-md w-full p-8 border border-border/30 shadow-2xl relative">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={onApproveClose}
-              className="absolute top-6 right-6 text-muted-foreground/70 hover:text-muted-foreground hover:bg-muted/50/50 rounded-full h-8 w-8 active:scale-[0.98] transition-all cursor-pointer"
-            >
-              <X size={20} />
-            </Button>
-
-            <div className="w-12 h-12 bg-primary-soft rounded-2xl flex items-center justify-center mb-4 text-primary border border-primary-border">
-              <Check size={28} />
-            </div>
-
-            <h3 className="text-xl font-black text-foreground tracking-tight mb-2">
-              Approve Category Proposal
-            </h3>
-            <p className="text-sm text-muted-foreground/85 mb-6">
-              Are you sure you want to approve and create the category{' '}
-              <strong className="text-foreground">
-                "{approvingRequest.name}"
-              </strong>
-              ? This will automatically add it to the active category database
-              catalog for all platform users.
-            </p>
-
-            <div className="flex gap-3 justify-end">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onApproveClose}
-                className="rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={onApproveConfirm}
-                disabled={isPending}
-                className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl h-12 px-6 font-bold cursor-pointer active:scale-[0.98] transition-all"
-              >
-                {isPending ? 'Approving...' : 'Confirm Approval'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ReusableAlertDialog
+        isOpen={!!approvingRequest}
+        onOpenChange={(open) => !open && onApproveClose()}
+        onConfirm={onApproveConfirm}
+        onCancel={onApproveClose}
+        title="Approve Category Proposal"
+        description={approvalDescription}
+        confirmText="Confirm Approval"
+        cancelText="Cancel"
+        variant="success"
+        isPending={isPending}
+        pendingText="Approving..."
+      />
     </>
   )
 }

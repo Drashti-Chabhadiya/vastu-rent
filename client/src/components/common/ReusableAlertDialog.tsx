@@ -149,8 +149,15 @@ export const ReusableAlertDialog = ({
             </AlertDialogTitle>
 
             {description && (
-              <AlertDialogDescription className="text-muted-foreground/85 font-semibold text-center text-[13px] leading-relaxed mt-4 px-2">
-                {description}
+              <AlertDialogDescription
+                asChild={typeof description !== 'string'}
+                className="text-muted-foreground/85 font-semibold text-[13px] leading-relaxed mt-4 px-2"
+              >
+                {typeof description === 'string' ? (
+                  <span className="text-center block">{description}</span>
+                ) : (
+                  description
+                )}
               </AlertDialogDescription>
             )}
           </AlertDialogHeader>

@@ -19,6 +19,7 @@ import {
   BookOpen,
   Ticket,
   TrendingUp,
+  Trash2,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
@@ -132,6 +133,12 @@ const SIDEBAR_MENU_CONFIG: Record<
       id: 'disputes',
       label: 'Handle Disputes',
       icon: AlertCircle,
+      hasSub: true,
+    },
+    {
+      id: 'delete-requests',
+      label: 'Deletion Requests',
+      icon: Trash2,
       hasSub: true,
     },
     { id: 'coupons', label: 'Manage Coupons', icon: Ticket },

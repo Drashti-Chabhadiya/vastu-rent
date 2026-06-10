@@ -31,7 +31,7 @@ export class DeleteRequestService {
       include: {
         product: {
           include: {
-            owner: { select: { name: true, email: true } }
+            user: { select: { name: true, email: true } }
           }
         },
         admin: { select: { name: true, email: true } },

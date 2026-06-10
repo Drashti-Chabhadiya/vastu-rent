@@ -138,13 +138,12 @@ export const DeleteRequestsManagement = () => {
                         variant="outline"
                         className={`
                         rounded-full px-3 py-1 font-bold text-[10px] uppercase tracking-widest
-                        ${
-                          req.status === 'pending'
+                        ${req.status === 'pending'
                             ? 'bg-orange-50 text-orange-500 border-orange-200'
                             : req.status === 'approved'
                               ? 'bg-primary-soft text-primary border-primary-border/80'
                               : 'bg-danger text-destructive border-danger/50'
-                        }
+                          }
                       `}
                       >
                         {req.status}
@@ -185,7 +184,7 @@ export const DeleteRequestsManagement = () => {
       <ReusableAlertDialog
         isOpen={pendingAction !== null}
         onOpenChange={(open) => {
-          if (!open) setPendingAction(null)
+          if (!open && !processMutation.isPending) setPendingAction(null)
         }}
         onConfirm={() => {
           if (pendingAction) {
@@ -193,12 +192,16 @@ export const DeleteRequestsManagement = () => {
             processMutation.mutate(
               { id, status },
               {
-                onSuccess: () =>
-                  toast.success(`Request processed successfully`),
-                onError: () => toast.error(`Failed to process request`),
+                onSuccess: () => {
+                  toast.success(`Request processed successfully`)
+                  setPendingAction(null)
+                },
+                onError: () => {
+                  toast.error(`Failed to process request`)
+                  setPendingAction(null)
+                },
               },
             )
-            setPendingAction(null)
           }
         }}
         title={
@@ -215,6 +218,7 @@ export const DeleteRequestsManagement = () => {
           pendingAction?.status === 'approved' ? 'Approve' : 'Reject'
         }
         variant={pendingAction?.status === 'approved' ? 'danger' : 'warning'}
+        isPending={processMutation.isPending}
       />
     </div>
   )

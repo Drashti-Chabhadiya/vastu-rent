@@ -25,6 +25,8 @@ import { chatRoutes } from "./features/chat/chat.routes.js";
 import { supportRoutes } from "./features/support/support.routes.js";
 import { billingRoutes } from "./features/billing/billing.routes.js";
 import { settingsRoutes } from "./features/settings/settings.routes.js";
+import { deleteRequestRoutes } from "./features/delete-request/delete-request.routes.js";
+import { categoryDeleteRequestRoutes } from "./features/category-delete-request/category-delete-request.routes.js";
 
 
 export const app = Fastify({ logger: true, trustProxy: true });
@@ -99,6 +101,8 @@ app.register(chatRoutes, { prefix: "/api/chat" });
 app.register(supportRoutes, { prefix: "/api" });
 app.register(billingRoutes, { prefix: "/api/billing" });
 app.register(settingsRoutes, { prefix: "/api/settings" });
+app.register(deleteRequestRoutes, { prefix: "/api/delete-requests" });
+app.register(categoryDeleteRequestRoutes, { prefix: "/api/category-delete-requests" });
 
 // Aliases for backward compatibility with the frontend
 app.register(productRoutes, { prefix: "/api/admin/products" });

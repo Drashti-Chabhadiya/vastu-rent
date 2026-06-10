@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, PackagePlus } from 'lucide-react'
+import { Plus, PackagePlus, Trash2 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { isAdminRole } from '#/lib/auth/roles'
 
@@ -8,6 +8,7 @@ import { ListingsTable } from './ListingsTable'
 import { ListingDialog } from './ListingDialog'
 import { ListingsFilters } from './ListingsFilters'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { Textarea } from '#/components/ui/textarea'
 import {
   useAdminCategories,
   useAdminUsers,
@@ -17,6 +18,7 @@ import {
   useToggleProductStatus,
   useDeleteProduct,
   useMyListings,
+  useCreateDeleteRequest,
 } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
@@ -38,6 +40,8 @@ export const ListingsManagement = ({
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [productToEdit, setProductToEdit] = useState<any>(null)
   const [productToDelete, setProductToDelete] = useState<any>(null)
+  const [isDeleteRequestOpen, setIsDeleteRequestOpen] = useState(false)
+  const [deleteReason, setDeleteReason] = useState('')
 
   // Sync initial filter if it changes
   useEffect(() => {
@@ -95,32 +99,64 @@ export const ListingsManagement = ({
   const updateMutation = useUpdateProduct()
   const toggleStatusMutation = useToggleProductStatus()
   const deleteMutation = useDeleteProduct()
+  const createDeleteRequestMutation = useCreateDeleteRequest()
 
   const handleDelete = (product: any) => {
     if (!currentUser) return
-    setProductToDelete(product)
+    const isProductLister = product.userId === currentUser.id
+    const isAdmin = currentUser.role === 'admin'
+
+    if (isProductLister) {
+      setProductToDelete(product)
+    } else if (isAdmin) {
+      setProductToDelete(product)
+      setDeleteReason('')
+      setIsDeleteRequestOpen(true)
+    } else {
+      toast.error("You don't have permission to delete this listing")
+    }
   }
 
   const handleConfirmDelete = () => {
     if (!currentUser || !productToDelete) return
 
-    const isProductLister = productToDelete.userId === currentUser.id
-    const isAdmin = currentUser.role === 'admin'
+    deleteMutation.mutate(productToDelete.id, {
+      onSuccess: () => {
+        toast.success('Listing deleted successfully')
+        setProductToDelete(null)
+      },
+      onError: (err: any) => {
+        toast.error(err.response?.data?.message || 'Failed to delete listing')
+      },
+    })
+  }
 
-    if (isAdmin || isProductLister) {
-      deleteMutation.mutate(productToDelete.id, {
+  const handleConfirmDeleteRequest = () => {
+    if (!currentUser || !productToDelete) return
+
+    if (!deleteReason.trim()) {
+      toast.error('Please provide a reason for deletion')
+      return
+    }
+
+    createDeleteRequestMutation.mutate(
+      {
+        productId: productToDelete.id,
+        reason: deleteReason,
+      },
+      {
         onSuccess: () => {
-          toast.success('Listing deleted successfully')
+          toast.success('Deletion request submitted successfully')
+          setIsDeleteRequestOpen(false)
           setProductToDelete(null)
         },
         onError: (err: any) => {
-          toast.error(err.response?.data?.message || 'Failed to delete listing')
+          toast.error(
+            err.response?.data?.message || 'Failed to submit deletion request',
+          )
         },
-      })
-    } else {
-      toast.error("You don't have permission to delete this listing")
-      setProductToDelete(null)
-    }
+      },
+    )
   }
 
   const deleteTitle = 'Delete Listing permanently?'
@@ -128,6 +164,25 @@ export const ListingsManagement = ({
   const deleteDescription = productToDelete
     ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
     : ''
+
+  const deleteRequestDialogDescription = (
+    <div className="space-y-4 text-left">
+      <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
+        Since you do not own "{productToDelete?.title}", you must submit a deletion request with a valid reason.
+      </p>
+      <div className="space-y-2">
+        <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
+          Reason for Deletion
+        </label>
+        <Textarea
+          placeholder="Please explain why this listing should be deleted (e.g., violation of policies, outdated, duplicate)..."
+          value={deleteReason}
+          onChange={(e) => setDeleteReason(e.target.value)}
+          className="min-h-[100px] rounded-xl border-border/30 bg-muted-light/50 focus-visible:ring-dash-brand text-foreground w-full p-3 text-sm"
+        />
+      </div>
+    </div>
+  )
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -271,7 +326,7 @@ export const ListingsManagement = ({
 
       {/* Delete Confirmation Alert Dialog */}
       <ReusableAlertDialog
-        isOpen={!!productToDelete}
+        isOpen={!!productToDelete && !isDeleteRequestOpen}
         onOpenChange={(open) => !open && setProductToDelete(null)}
         onConfirm={handleConfirmDelete}
         onCancel={() => setProductToDelete(null)}
@@ -280,6 +335,24 @@ export const ListingsManagement = ({
         confirmText="Delete"
         variant="danger"
         isPending={deleteMutation.isPending}
+      />
+
+      {/* Request Deletion Dialog */}
+      <ReusableAlertDialog
+        isOpen={isDeleteRequestOpen}
+        onOpenChange={setIsDeleteRequestOpen}
+        onConfirm={handleConfirmDeleteRequest}
+        onCancel={() => {
+          setIsDeleteRequestOpen(false)
+          setProductToDelete(null)
+        }}
+        title="Request Listing Deletion"
+        description={deleteRequestDialogDescription}
+        confirmText="Submit Request"
+        cancelText="Cancel"
+        variant="danger"
+        isPending={createDeleteRequestMutation.isPending}
+        pendingText="Submitting..."
       />
     </div>
   )

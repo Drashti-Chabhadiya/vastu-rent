@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { categoryService } from "./category.service.js";
+import { prisma } from "../../config/prisma.js";
 
 export class CategoryController {
   async getAllCategories(_request: FastifyRequest, _reply: FastifyReply) {
@@ -22,7 +23,25 @@ export class CategoryController {
 
   async deleteCategory(request: FastifyRequest, _reply: FastifyReply) {
     const { id } = request.params as any;
+
+    // Find the approved deletion request for this category
+    const deleteRequest = await prisma.deleteCategoryRequest.findFirst({
+      where: {
+        categoryId: id,
+        status: "approved",
+      },
+    });
+
     await categoryService.deleteCategory(id);
+
+    // If there was an approved delete request, update its status to "deleted"
+    if (deleteRequest) {
+      await prisma.deleteCategoryRequest.update({
+        where: { id: deleteRequest.id },
+        data: { status: "deleted" },
+      });
+    }
+
     return { success: true };
   }
 }

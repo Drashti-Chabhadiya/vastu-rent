@@ -92,7 +92,8 @@ export class CategoryRequestController {
           name: categoryReq.name,
           icon: categoryReq.icon,
           color: categoryReq.color,
-          image: categoryReq.image
+          image: categoryReq.image,
+          userId: categoryReq.userId
         }
       });
 

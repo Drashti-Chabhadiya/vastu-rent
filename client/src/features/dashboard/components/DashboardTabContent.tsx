@@ -3,6 +3,7 @@ import { useDashboardContext } from './DashboardPage'
 import { DashboardOverview } from './overview/DashboardOverview'
 import { UsersManagement } from './user/UsersManagement'
 import { ListingsManagement } from './listing/ListingsManagement'
+import { DeleteRequestsManagement } from './listing/DeleteRequestsManagement'
 import { CategoryManagement } from './category/CategoryManagement'
 import { ReviewsManagement } from './review/ReviewsManagement'
 import { OrdersManagement } from './order/OrdersManagement'
@@ -52,6 +53,8 @@ export const DashboardTabContent = () => {
       return <PaymentsManagement />
     case 'disputes':
       return <DisputesManagement />
+    case 'delete-requests':
+      return <DeleteRequestsManagement />
     case 'coupons':
       return <CouponsManagement />
     case 'notifications':
