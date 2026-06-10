@@ -48,17 +48,27 @@ export class CategoryRequestController {
       }
     });
 
-    // Create system notification for admins (and persist + deliver)
+    // Create system notification for admins and requester (persist + deliver)
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js')
+      const { createAndDeliverNotification, notifyAllAdmins } = await import('../../lib/notification.js')
+      
+      // Notify requester
       await createAndDeliverNotification({
         userId: session.user.id,
-        title: 'New Category Request',
-        message: `User ${session.user.name || session.user.email} requested new category "${name}"`,
+        title: 'Category Proposal Submitted',
+        message: `Your proposal for the category "${name}" has been submitted and is pending admin review.`,
+        type: 'info',
+      })
+
+      // Notify all admins
+      await notifyAllAdmins({
+        title: 'New Category Proposal',
+        message: `User ${session.user.name || session.user.email} proposed a new category "${name}"`,
         type: 'alert',
+        url: '/dashboard?tab=requests',
       })
     } catch (err) {
-      console.error('Failed to deliver category-request notification:', err)
+      console.error('Failed to deliver category request notification:', err)
     }
 
     return { categoryRequest };

@@ -31,7 +31,7 @@ export class CategoryDeleteRequestService {
       }
     }
 
-    return prisma.deleteCategoryRequest.create({
+    const request = await prisma.deleteCategoryRequest.create({
       data: {
         categoryId,
         userId,
@@ -46,6 +46,31 @@ export class CategoryDeleteRequestService {
         user: { select: { name: true, email: true } },
       },
     });
+
+    // Send notifications to admins and requester
+    try {
+      const { createAndDeliverNotification, notifyAllAdmins } = await import('../../lib/notification.js');
+      
+      // Notify requester
+      await createAndDeliverNotification({
+        userId,
+        title: 'Category Deletion Submitted',
+        message: `Your request to delete category "${category.name}" has been submitted and is pending admin review.`,
+        type: 'info',
+      });
+
+      // Notify all admins
+      await notifyAllAdmins({
+        title: 'New Deletion Request',
+        message: `User ${request.user?.name || request.user?.email || 'Unknown'} requested deletion of category "${category.name}".`,
+        type: 'alert',
+        url: '/dashboard?tab=requests&sub=deletions',
+      });
+    } catch (err) {
+      console.error('Failed to deliver deletion request notification:', err);
+    }
+
+    return request;
   }
 
   async getAllRequests(userId: string, role: string) {
@@ -128,18 +153,50 @@ export class CategoryDeleteRequestService {
       }
 
       // Update status to approved and set approval timestamp
-      return prisma.deleteCategoryRequest.update({
+      const updated = await prisma.deleteCategoryRequest.update({
         where: { id: requestId },
         data: { 
           status: "approved",
           approvedAt: new Date(),
         },
       });
+
+      // Notify the requesting user
+      try {
+        const { createAndDeliverNotification } = await import('../../lib/notification.js')
+        await createAndDeliverNotification({
+          userId: request.userId,
+          title: 'Category Deletion Approved',
+          message: `Your request to delete the category "${request.categoryName}" has been approved! You have 24 hours to complete the deletion.`,
+          type: 'booking',
+          url: '/dashboard?tab=requests&sub=deletions',
+        })
+      } catch (err) {
+        console.error('Failed to deliver deletion approval notification:', err)
+      }
+
+      return updated;
     } else {
-      return prisma.deleteCategoryRequest.update({
+      const updated = await prisma.deleteCategoryRequest.update({
         where: { id: requestId },
         data: { status: "rejected" },
       });
+
+      // Notify the requesting user of rejection
+      try {
+        const { createAndDeliverNotification } = await import('../../lib/notification.js')
+        await createAndDeliverNotification({
+          userId: request.userId,
+          title: 'Category Deletion Rejected',
+          message: `Your request to delete the category "${request.categoryName}" was rejected by the admin.`,
+          type: 'alert',
+          url: '/dashboard?tab=requests&sub=deletions',
+        })
+      } catch (err) {
+        console.error('Failed to deliver deletion rejection notification:', err)
+      }
+
+      return updated;
     }
   }
 

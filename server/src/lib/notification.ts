@@ -29,7 +29,8 @@ export async function createAndDeliverNotification({
 
     // Emit via socket.io to user's room (foreground real-time update)
     try {
-      io?.to(`user_${userId}`).emit('notification', notif)
+      console.log(`[Socket] Emitting notification to user_${userId}:`, { ...notif, url })
+      io?.to(`user_${userId}`).emit('notification', { ...notif, url })
     } catch (err) {
       console.error('Socket emit failed for notification:', err)
     }
@@ -54,5 +55,35 @@ export async function createAndDeliverNotification({
   } catch (err) {
     console.error('Failed to create notification:', err)
     throw err
+  }
+}
+
+export async function notifyAllAdmins({
+  title,
+  message,
+  type = 'info',
+  url = '/notifications',
+}: Omit<NotificationOptions, 'userId'>) {
+  try {
+    const admins = await prisma.user.findMany({
+      where: { role: 'admin' },
+      select: { id: true },
+    })
+
+    await Promise.all(
+      admins.map((admin) =>
+        createAndDeliverNotification({
+          userId: admin.id,
+          title,
+          message,
+          type,
+          url,
+        }).catch((err) =>
+          console.error(`Failed to deliver notification to admin ${admin.id}:`, err)
+        )
+      )
+    )
+  } catch (err) {
+    console.error('Failed to notify admins:', err)
   }
 }
