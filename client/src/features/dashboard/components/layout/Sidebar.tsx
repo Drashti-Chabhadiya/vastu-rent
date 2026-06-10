@@ -13,13 +13,12 @@ import {
   X,
   ChevronRight,
   ChevronDown,
-  TrendingUp,
-  Trash2,
   LogOut,
   ExternalLink,
   User,
   BookOpen,
   Ticket,
+  TrendingUp,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
@@ -98,7 +97,7 @@ const SIDEBAR_MENU_CONFIG: Record<
   string,
   { id: string; label: string; icon: React.ElementType; hasSub?: boolean }[]
 > = {
-  owner: [
+  user: [
     { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'listings', label: 'My Listings', icon: List, hasSub: true },
     { id: 'categories', label: 'Propose Categories', icon: Grid, hasSub: true },
@@ -139,33 +138,6 @@ const SIDEBAR_MENU_CONFIG: Record<
     { id: 'notifications', label: 'Platform Alerts', icon: Bell },
     { id: 'settings', label: 'Settings', icon: Settings },
   ],
-  superAdmin: [
-    { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'users', label: 'Manage Admins', icon: Users, hasSub: true },
-    { id: 'listings', label: 'Manage Listings', icon: List, hasSub: true },
-    { id: 'categories', label: 'Manage Categories', icon: Grid, hasSub: true },
-    {
-      id: 'stories',
-      label: 'Stories (Catalogue)',
-      icon: BookOpen,
-      hasSub: true,
-    },
-    { id: 'delete-requests', label: 'Delete Requests', icon: Trash2 },
-    {
-      id: 'disputes',
-      label: 'Handle Disputes',
-      icon: AlertCircle,
-      hasSub: true,
-    },
-    {
-      id: 'payments',
-      label: 'Earnings & Payouts',
-      icon: CreditCard,
-      hasSub: true,
-    },
-    { id: 'coupons', label: 'Manage Coupons', icon: Ticket },
-    { id: 'settings', label: 'Settings', icon: Settings },
-  ],
 }
 
 interface SidebarProps {
@@ -183,7 +155,7 @@ export const Sidebar = ({
 }: SidebarProps) => {
   const { data: session, isPending: isSessionLoading } = authClient.useSession()
   const user = session?.user
-  const role = user?.role || 'owner'
+  const role = user?.role || 'user'
   const navigate = useNavigate()
 
   const [isProfileOpen, setIsProfileOpen] = useState(false)
@@ -208,8 +180,8 @@ export const Sidebar = ({
     navigate({ to: '/' })
   }
 
-  // Retrieve menus dynamically based on role; fallback if role is basic 'user' to owner stats
-  const menuItems = SIDEBAR_MENU_CONFIG[role] || SIDEBAR_MENU_CONFIG.owner
+  // Retrieve menus dynamically based on role; fallback if role is basic 'user' to standard user stats
+  const menuItems = SIDEBAR_MENU_CONFIG[role] || SIDEBAR_MENU_CONFIG.user
 
   return (
     <aside
@@ -255,8 +227,8 @@ export const Sidebar = ({
         )}
       </div>
 
-      {/* Upgrade Promotional Widget for Owners/Listers */}
-      {role === 'owner' && (
+      {/* Upgrade Promotional Widget for Users/Listers */}
+      {role === 'user' && (
         <div className="p-4">
           <div className="bg-primary/5 rounded-2xl p-4 text-primary relative overflow-hidden group border border-primary/10 transition-all duration-300 hover:shadow-md hover:shadow-primary/5">
             <div className="relative z-10">

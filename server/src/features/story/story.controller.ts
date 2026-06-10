@@ -28,7 +28,7 @@ export const StoryController = {
 
   async createStory(request: any, reply: FastifyReply) {
     try {
-      // Require admin or superAdmin
+      // Require admin
       const session = await auth.api.getSession({ headers: request.headers as any })
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
@@ -55,7 +55,7 @@ export const StoryController = {
 
   async updateStory(request: any, reply: FastifyReply) {
     try {
-      // Require admin or superAdmin
+      // Require admin
       const session = await auth.api.getSession({ headers: request.headers as any })
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
@@ -82,7 +82,7 @@ export const StoryController = {
 
   async deleteStory(request: any, reply: FastifyReply) {
     try {
-      // Require admin or superAdmin
+      // Require admin
       const session = await auth.api.getSession({ headers: request.headers as any })
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })

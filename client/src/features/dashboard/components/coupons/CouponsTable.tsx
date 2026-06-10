@@ -18,7 +18,7 @@ interface CouponsTableProps {
   coupons: Coupon[]
   isLoading: boolean
   isAdmin: boolean
-  isOwner: boolean
+  isUser: boolean
   activeTab: 'my' | 'global'
   onDelete: (id: string) => void
   onApprove?: (id: string) => void
@@ -29,7 +29,7 @@ export function CouponsTable({
   coupons,
   isLoading,
   isAdmin,
-  isOwner,
+  isUser,
   activeTab,
   onDelete,
   onApprove,
@@ -48,7 +48,7 @@ export function CouponsTable({
     c.code.toLowerCase().includes(search.toLowerCase()),
   )
 
-  const canManage = isAdmin || (isOwner && activeTab === 'my')
+  const canManage = isAdmin || (isUser && activeTab === 'my')
 
   return (
     <div className="lg:col-span-2 bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-hidden">
@@ -56,12 +56,12 @@ export function CouponsTable({
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <h3 className="text-[15px] font-black text-foreground">
-            {isOwner && activeTab === 'global'
+            {isUser && activeTab === 'global'
               ? 'Global Platform Promo Codes'
               : 'All Coupons'}
           </h3>
           <p className="text-[11px] font-bold text-muted-dark">
-            {isOwner && activeTab === 'global'
+            {isUser && activeTab === 'global'
               ? 'Active voucher offers created by Vastu Rent Admins.'
               : 'View, query, and audit active/inactive discount policies.'}
           </p>
@@ -186,9 +186,9 @@ export function CouponsTable({
                           <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
                             Listing: {coupon.product.title}
                           </span>
-                        ) : coupon.ownerId ? (
+                        ) : coupon.userId ? (
                           <span className="text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
-                            Owner Specific
+                            User Specific
                           </span>
                         ) : (
                           <span className="text-muted-foreground/85 bg-muted-light px-2 py-0.5 rounded border border-border/30">

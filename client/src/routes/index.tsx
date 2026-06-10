@@ -5,7 +5,7 @@ import {
   HeroSection,
   HowItWorks,
   Journal,
-  OwnerCTA,
+  HostCTA,
   // PopularItems,
   RecentProducts,
 } from '#/features/home'
@@ -24,7 +24,7 @@ function HomePage() {
       <Editorial />
       <HowItWorks />
       <Journal />
-      <OwnerCTA />
+      <HostCTA />
     </main>
   )
 }

@@ -121,11 +121,9 @@ export const MessagesManagement = () => {
     let matchesTab = true
     if (activeSubTab === 'unread') matchesTab = conv.unreadCount > 0
     else if (activeSubTab === 'bookings')
-      matchesTab = conv.otherParticipant.role === 'owner'
+      matchesTab = conv.otherParticipant.role === 'user'
     else if (activeSubTab === 'support')
-      matchesTab =
-        conv.otherParticipant.role === 'admin' ||
-        conv.otherParticipant.role === 'superAdmin'
+      matchesTab = conv.otherParticipant.role === 'admin'
 
     return matchesSearch && matchesTab
   })

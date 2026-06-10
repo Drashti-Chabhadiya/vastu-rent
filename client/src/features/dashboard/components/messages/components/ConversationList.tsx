@@ -4,16 +4,8 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import type { Conversation } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
+import { formatMsgTime } from '#/lib/chat-utils'
 
-function formatMsgTime(dateStr: string) {
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffHrs = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-  const { format } = require('date-fns')
-  if (diffHrs < 24) return format(date, 'h:mm a')
-  if (diffHrs < 48) return 'Yesterday'
-  return format(date, 'dd MMM')
-}
 
 interface ConversationListProps {
   conversations: Conversation[]
@@ -119,16 +111,14 @@ export function ConversationList({
                 : tab === 'all'
                   ? totalUnread
                   : conversations
-                      .filter((c) => {
-                        if (tab === 'bookings')
-                          return c.otherParticipant.role === 'owner'
-                        if (tab === 'support')
-                          return ['admin', 'superAdmin'].includes(
-                            c.otherParticipant.role,
-                          )
-                        return false
-                      })
-                      .reduce((s, c) => s + c.unreadCount, 0)
+                    .filter((c) => {
+                      if (tab === 'bookings')
+                        return c.otherParticipant.role === 'user'
+                      if (tab === 'support')
+                        return c.otherParticipant.role === 'admin'
+                      return false
+                    })
+                    .reduce((s, c) => s + c.unreadCount, 0)
 
             return (
               <Button

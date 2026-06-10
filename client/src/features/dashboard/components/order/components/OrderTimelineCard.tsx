@@ -29,7 +29,7 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
                 order.status === 'active' ||
                 order.status === 'completed'
               ? 'Booking confirmed and active.'
-              : 'Waiting for owner approval & confirmation.',
+              : 'Waiting for lister approval & confirmation.',
         date:
           order.status === 'confirmed' ||
           order.status === 'active' ||

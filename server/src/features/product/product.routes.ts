@@ -16,13 +16,13 @@ export async function productRoutes(fastify: FastifyInstance) {
     request.user = session.user;
   };
 
-  // Owner/Admin Management
+  // User/Admin Management
   fastify.post("/", { preHandler: [authHandler] }, productController.createProduct);
   fastify.get("/my-listings", { preHandler: [authHandler] }, productController.getMyListings);
   fastify.put("/:id", { preHandler: [authHandler] }, productController.updateProduct);
   fastify.delete("/:id", { preHandler: [authHandler] }, productController.deleteProduct);
 
-  // Toggle product availability (Owner of the product, or Admin/SuperAdmin)
+  // Toggle product availability (Creator of the product, or Admin)
   fastify.post("/:id/available", {
     preHandler: async (request: any, reply: any) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
@@ -31,14 +31,14 @@ export async function productRoutes(fastify: FastifyInstance) {
       const role = session.user.role;
       const { id } = request.params as any;
 
-      if (role === "admin" || role === "superAdmin") {
+      if (role === "admin") {
         request.user = session.user;
         return;
       }
 
       const product = await prisma.product.findUnique({ where: { id } });
       if (!product) return reply.status(404).send({ message: "Product not found" });
-      if (product.ownerId !== session.user.id) {
+      if (product.userId !== session.user.id) {
         return reply.status(403).send({ message: "Forbidden: You do not own this listing" });
       }
       request.user = session.user;

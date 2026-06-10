@@ -33,11 +33,11 @@ const faqs = [
     questions: [
       {
         q: 'How does payment work?',
-        a: 'All payments are processed securely through our platform. We hold the funds until the rental is successfully completed to protect both the renter and the owner.',
+        a: 'All payments are processed securely through our platform. We hold the funds until the rental is successfully completed to protect both the renter and the lister.',
       },
       {
         q: 'Is there a security deposit?',
-        a: "Depending on the item and the owner's preference, some rentals may require a security deposit which is fully refunded once the item is returned in good condition.",
+        a: "Depending on the item and the lister's preference, some rentals may require a security deposit which is fully refunded once the item is returned in good condition.",
       },
     ],
   },

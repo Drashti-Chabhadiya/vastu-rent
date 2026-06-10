@@ -26,11 +26,11 @@ export function UserProfilePage() {
   const navigate = useNavigate()
   const createConversation = useCreateConversation()
 
-  const handleMessageOwner = async () => {
+  const handleMessageUser = async () => {
     if (!profile) return
 
     if (!session?.user) {
-      toast.error('Please sign in to contact the owner.')
+      toast.error('Please sign in to contact this user.')
       navigate({ to: '/login' })
       return
     }
@@ -198,14 +198,14 @@ export function UserProfilePage() {
 
               <div className="flex flex-wrap justify-center md:justify-start gap-4">
                 <Button
-                  onClick={handleMessageOwner}
+                  onClick={handleMessageUser}
                   disabled={createConversation.isPending}
                   className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-lg shadow-brand/20 transition-all active:scale-95 flex items-center gap-2"
                 >
                   <MessageCircle size={18} />
                   {createConversation.isPending
                     ? 'Connecting...'
-                    : 'Message Owner'}
+                    : 'Message User'}
                 </Button>
                 <Button
                   onClick={handleShareProfile}

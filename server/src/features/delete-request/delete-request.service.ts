@@ -40,7 +40,7 @@ export class DeleteRequestService {
     });
   }
 
-  async updateRequestStatus(requestId: string, status: "approved" | "rejected", superAdminId: string) {
+  async updateRequestStatus(requestId: string, status: "approved" | "rejected", adminId: string) {
     const request = await prisma.deleteProductRequest.findUnique({
       where: { id: requestId },
       include: { product: true },
@@ -51,7 +51,7 @@ export class DeleteRequestService {
 
     if (status === "approved") {
       // Delete the product
-      await productService.deleteProduct(request.productId, superAdminId, "superAdmin");
+      await productService.deleteProduct(request.productId, adminId, "admin");
       
       // Update request status
       return prisma.deleteProductRequest.update({

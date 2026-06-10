@@ -21,7 +21,7 @@ import { ProductBreadcrumbs } from './detail/ProductBreadcrumbs'
 import { ProductImageGallery } from './detail/ProductImageGallery'
 import { ProductTabs } from './detail/ProductTabs'
 import { ProductInfoSection } from './detail/ProductInfoSection'
-import { ProductOwnerCard } from './detail/ProductOwnerCard'
+import { ProductUserCard } from './detail/ProductUserCard'
 import { AvailabilityCalendar } from './detail/AvailabilityCalendar'
 import { BookingConfirmationModal } from './detail/BookingConfirmationModal'
 import { useProductBookingStore } from '../../../store/useProductBookingStore'
@@ -51,14 +51,12 @@ export function ProductDetail({ id }: { id: string }) {
     setEndDate,
     showBookingConfirm,
     setShowBookingConfirm,
-    isPaying,
     setIsPaying,
     paymentMethod,
     couponCode,
     setCouponCode,
     appliedCoupon,
     setAppliedCoupon,
-    couponError,
     setCouponError,
     resetBooking,
   } = useProductBookingStore()
@@ -398,9 +396,9 @@ export function ProductDetail({ id }: { id: string }) {
             />
           </div>
 
-          {/* Sidebar: Owner & Calendar (Desktop Only) */}
+          {/* Sidebar: Lister & Calendar (Desktop Only) */}
           <div className="col-span-1 lg:col-span-7 xl:col-span-3 order-3 lg:order-4 xl:order-3 space-y-6">
-            <ProductOwnerCard owner={product.owner} />
+            <ProductUserCard user={product.user} />
 
             <div className="hidden xl:block">
               <AvailabilityCalendar

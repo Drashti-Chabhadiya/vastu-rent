@@ -14,7 +14,7 @@ export interface Coupon {
   usageLimit?: number | null
   usedCount: number
   perUserLimit?: number | null
-  ownerId?: string | null
+  userId?: string | null
   productId?: string | null
   product?: { title: string } | null
   createdAt: string

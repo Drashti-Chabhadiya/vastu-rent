@@ -44,9 +44,9 @@ export class PaymentController {
           url: `/journal`,
         });
 
-        // 2. Notify Product Owner
+        // 2. Notify Product Lister
         await createAndDeliverNotification({
-          userId: rental.product.ownerId,
+          userId: rental.product.userId,
           title: "Payment Received! 💰",
           message: `Payment of ₹${rental.totalPrice} for your product "${rental.product.title}" has been received.`,
           type: "payment",

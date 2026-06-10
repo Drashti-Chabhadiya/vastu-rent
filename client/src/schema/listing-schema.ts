@@ -14,7 +14,7 @@ export const listingSchema = z.object({
   city: z.string().min(2, 'City is required'),
   location: z.string().min(2, 'Location is required'),
   categoryId: z.string().min(1, 'Please select a category'),
-  ownerId: z.string().min(1, 'Please assign an owner'),
+  userId: z.string().min(1, 'Please assign a provider'),
   images: z.array(z.string()).min(1, 'At least one image is required'),
 
   // New Enhanced Fields

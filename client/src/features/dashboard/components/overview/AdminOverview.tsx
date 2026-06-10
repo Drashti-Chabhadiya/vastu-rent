@@ -17,6 +17,8 @@ interface AdminOverviewProps {
   usersLoading: boolean
   recentProducts: any[]
   productsLoading: boolean
+  onViewAllUsers?: () => void
+  onViewAllListings?: () => void
 }
 
 export const AdminOverview = ({
@@ -26,6 +28,8 @@ export const AdminOverview = ({
   usersLoading,
   recentProducts,
   productsLoading,
+  onViewAllUsers,
+  onViewAllListings,
 }: AdminOverviewProps) => {
   const usersChange = statsData?.usersChange ?? 0
   const listingsChange = statsData?.listingsChange ?? 0
@@ -139,7 +143,11 @@ export const AdminOverview = ({
         )}
       >
         <div className={cn('md:col-span-full', 'xl:col-span-1')}>
-          <UsersOverviewTable users={recentUsers} isLoading={usersLoading} />
+          <UsersOverviewTable
+            users={recentUsers}
+            isLoading={usersLoading}
+            onViewAll={onViewAllUsers}
+          />
         </div>
         <div className={cn('md:col-span-1', 'xl:col-span-1')}>
           <RevenueChart />
@@ -154,6 +162,7 @@ export const AdminOverview = ({
         <RecentListingsTable
           products={recentProducts}
           isLoading={productsLoading}
+          onViewAll={onViewAllListings}
         />
         <RecentReviews />
       </div>

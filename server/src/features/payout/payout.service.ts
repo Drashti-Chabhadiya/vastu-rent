@@ -1,11 +1,11 @@
 import { prisma } from "../../config/prisma.js";
 
 export class PayoutService {
-  async getEarningsDashboard(ownerId: string) {
-    // 1. Get all rentals of listings owned by this owner
+  async getEarningsDashboard(userId: string) {
+    // 1. Get all rentals of listings owned by this lister/user
     const orders = await prisma.rental.findMany({
       where: {
-        product: { ownerId: ownerId },
+        product: { userId: userId },
         status: { in: ["confirmed", "active", "completed"] }
       },
       include: {
@@ -14,9 +14,9 @@ export class PayoutService {
       orderBy: { createdAt: "desc" }
     });
 
-    // 2. Get all payout requests by this owner
+    // 2. Get all payout requests by this user
     const payouts = await prisma.payout.findMany({
-      where: { ownerId },
+      where: { userId },
       orderBy: { createdAt: "desc" }
     });
 
@@ -91,29 +91,29 @@ export class PayoutService {
     };
   }
 
-  async createPayoutRequest(ownerId: string, amount: number) {
+  async createPayoutRequest(userId: string, amount: number) {
     if (amount <= 0) {
       throw new Error("Payout amount must be greater than zero");
     }
 
     // Retrieve earnings stats to verify withdrawable balance
-    const dashboard = await this.getEarningsDashboard(ownerId);
+    const dashboard = await this.getEarningsDashboard(userId);
     if (amount > dashboard.stats.withdrawableBalance) {
       throw new Error(`Insufficient balance! Your maximum withdrawable balance is ₹${dashboard.stats.withdrawableBalance.toLocaleString()}`);
     }
 
     return prisma.payout.create({
       data: {
-        ownerId,
+        userId,
         amount,
         status: "pending"
       }
     });
   }
 
-  async getPayoutsByOwner(ownerId: string) {
+  async getPayoutsByUser(userId: string) {
     return prisma.payout.findMany({
-      where: { ownerId },
+      where: { userId },
       orderBy: { createdAt: "desc" }
     });
   }
@@ -121,7 +121,7 @@ export class PayoutService {
   async getAllPayoutRequests() {
     return prisma.payout.findMany({
       include: {
-        owner: { select: { id: true, name: true, email: true, image: true } }
+        user: { select: { id: true, name: true, email: true, image: true } }
       },
       orderBy: { createdAt: "desc" }
     });
@@ -140,11 +140,11 @@ export class PayoutService {
         notes: notes || undefined
       },
       include: {
-        owner: true
+        user: true
       }
     });
 
-    // Create DB notifications for the owner regarding status change
+    // Create DB notifications for the user regarding status change
     try {
       let title = "Payout Request Update 🔔";
       let message = `Your payout request for ₹${updatedPayout.amount.toLocaleString()} is now "${status}".`;
@@ -167,7 +167,7 @@ export class PayoutService {
       try {
         const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
-          userId: updatedPayout.ownerId,
+          userId: updatedPayout.userId,
           title,
           message,
           type,

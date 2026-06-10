@@ -39,10 +39,12 @@ import { Route as ProductsIdRouteImport } from './routes/products.$id'
 import { Route as JournalIdRouteImport } from './routes/journal.$id'
 import { Route as CategoriesIdRouteImport } from './routes/categories.$id'
 import { Route as AuthenticatedWishlistRouteImport } from './routes/_authenticated/wishlist'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
-import { Route as AuthenticatedOwnerRouteImport } from './routes/_authenticated/_owner'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/_admin'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedAccountIndexRouteImport } from './routes/_authenticated/account.index'
+import { Route as AuthenticatedDashboardTabRouteImport } from './routes/_authenticated/dashboard.$tab'
 import { Route as AuthenticatedAccountReviewsRouteImport } from './routes/_authenticated/account.reviews'
 import { Route as AuthenticatedAccountProfileRouteImport } from './routes/_authenticated/account.profile'
 import { Route as AuthenticatedAccountPaymentsRouteImport } from './routes/_authenticated/account.payments'
@@ -52,9 +54,9 @@ import { Route as AuthenticatedAccountMessagesRouteImport } from './routes/_auth
 import { Route as AuthenticatedAccountListingsRouteImport } from './routes/_authenticated/account.listings'
 import { Route as AuthenticatedAccountCouponsRouteImport } from './routes/_authenticated/account.coupons'
 import { Route as AuthenticatedAccountBookingsRouteImport } from './routes/_authenticated/account.bookings'
-import { Route as AuthenticatedOwnerOwnerDashboardRouteImport } from './routes/_authenticated/_owner/owner.dashboard'
-import { Route as AuthenticatedAdminSuperadminDashboardRouteImport } from './routes/_authenticated/_admin/superadmin.dashboard'
 import { Route as AuthenticatedAdminAdminDashboardRouteImport } from './routes/_authenticated/_admin/admin.dashboard'
+import { Route as AuthenticatedAdminAdminDashboardIndexRouteImport } from './routes/_authenticated/_admin/admin.dashboard.index'
+import { Route as AuthenticatedAdminAdminDashboardTabRouteImport } from './routes/_authenticated/_admin/admin.dashboard.$tab'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -205,24 +207,37 @@ const AuthenticatedWishlistRoute = AuthenticatedWishlistRouteImport.update({
   path: '/wishlist',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
   id: '/account',
   path: '/account',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedOwnerRoute = AuthenticatedOwnerRouteImport.update({
-  id: '/_owner',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/_admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedAccountIndexRoute =
   AuthenticatedAccountIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAccountRoute,
+  } as any)
+const AuthenticatedDashboardTabRoute =
+  AuthenticatedDashboardTabRouteImport.update({
+    id: '/$tab',
+    path: '/$tab',
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedAccountReviewsRoute =
   AuthenticatedAccountReviewsRouteImport.update({
@@ -278,23 +293,23 @@ const AuthenticatedAccountBookingsRoute =
     path: '/bookings',
     getParentRoute: () => AuthenticatedAccountRoute,
   } as any)
-const AuthenticatedOwnerOwnerDashboardRoute =
-  AuthenticatedOwnerOwnerDashboardRouteImport.update({
-    id: '/owner/dashboard',
-    path: '/owner/dashboard',
-    getParentRoute: () => AuthenticatedOwnerRoute,
-  } as any)
-const AuthenticatedAdminSuperadminDashboardRoute =
-  AuthenticatedAdminSuperadminDashboardRouteImport.update({
-    id: '/superadmin/dashboard',
-    path: '/superadmin/dashboard',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedAdminAdminDashboardRoute =
   AuthenticatedAdminAdminDashboardRouteImport.update({
     id: '/admin/dashboard',
     path: '/admin/dashboard',
     getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAdminDashboardIndexRoute =
+  AuthenticatedAdminAdminDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminAdminDashboardRoute,
+  } as any)
+const AuthenticatedAdminAdminDashboardTabRoute =
+  AuthenticatedAdminAdminDashboardTabRouteImport.update({
+    id: '/$tab',
+    path: '/$tab',
+    getParentRoute: () => AuthenticatedAdminAdminDashboardRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -318,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/trust-safety': typeof TrustSafetyRoute
   '/verify-email': typeof VerifyEmailRoute
   '/account': typeof AuthenticatedAccountRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/journal/$id': typeof JournalIdRoute
@@ -337,10 +353,12 @@ export interface FileRoutesByFullPath {
   '/account/payments': typeof AuthenticatedAccountPaymentsRoute
   '/account/profile': typeof AuthenticatedAccountProfileRoute
   '/account/reviews': typeof AuthenticatedAccountReviewsRoute
+  '/dashboard/$tab': typeof AuthenticatedDashboardTabRoute
   '/account/': typeof AuthenticatedAccountIndexRoute
-  '/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRoute
-  '/superadmin/dashboard': typeof AuthenticatedAdminSuperadminDashboardRoute
-  '/owner/dashboard': typeof AuthenticatedOwnerOwnerDashboardRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRouteWithChildren
+  '/admin/dashboard/$tab': typeof AuthenticatedAdminAdminDashboardTabRoute
+  '/admin/dashboard/': typeof AuthenticatedAdminAdminDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -378,10 +396,11 @@ export interface FileRoutesByTo {
   '/account/payments': typeof AuthenticatedAccountPaymentsRoute
   '/account/profile': typeof AuthenticatedAccountProfileRoute
   '/account/reviews': typeof AuthenticatedAccountReviewsRoute
+  '/dashboard/$tab': typeof AuthenticatedDashboardTabRoute
   '/account': typeof AuthenticatedAccountIndexRoute
-  '/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRoute
-  '/superadmin/dashboard': typeof AuthenticatedAdminSuperadminDashboardRoute
-  '/owner/dashboard': typeof AuthenticatedOwnerOwnerDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/admin/dashboard/$tab': typeof AuthenticatedAdminAdminDashboardTabRoute
+  '/admin/dashboard': typeof AuthenticatedAdminAdminDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -406,8 +425,8 @@ export interface FileRoutesById {
   '/trust-safety': typeof TrustSafetyRoute
   '/verify-email': typeof VerifyEmailRoute
   '/_authenticated/_admin': typeof AuthenticatedAdminRouteWithChildren
-  '/_authenticated/_owner': typeof AuthenticatedOwnerRouteWithChildren
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/wishlist': typeof AuthenticatedWishlistRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/journal/$id': typeof JournalIdRoute
@@ -427,10 +446,12 @@ export interface FileRoutesById {
   '/_authenticated/account/payments': typeof AuthenticatedAccountPaymentsRoute
   '/_authenticated/account/profile': typeof AuthenticatedAccountProfileRoute
   '/_authenticated/account/reviews': typeof AuthenticatedAccountReviewsRoute
+  '/_authenticated/dashboard/$tab': typeof AuthenticatedDashboardTabRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexRoute
-  '/_authenticated/_admin/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRoute
-  '/_authenticated/_admin/superadmin/dashboard': typeof AuthenticatedAdminSuperadminDashboardRoute
-  '/_authenticated/_owner/owner/dashboard': typeof AuthenticatedOwnerOwnerDashboardRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/_admin/admin/dashboard': typeof AuthenticatedAdminAdminDashboardRouteWithChildren
+  '/_authenticated/_admin/admin/dashboard/$tab': typeof AuthenticatedAdminAdminDashboardTabRoute
+  '/_authenticated/_admin/admin/dashboard/': typeof AuthenticatedAdminAdminDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -455,6 +476,7 @@ export interface FileRouteTypes {
     | '/trust-safety'
     | '/verify-email'
     | '/account'
+    | '/dashboard'
     | '/wishlist'
     | '/categories/$id'
     | '/journal/$id'
@@ -474,10 +496,12 @@ export interface FileRouteTypes {
     | '/account/payments'
     | '/account/profile'
     | '/account/reviews'
+    | '/dashboard/$tab'
     | '/account/'
+    | '/dashboard/'
     | '/admin/dashboard'
-    | '/superadmin/dashboard'
-    | '/owner/dashboard'
+    | '/admin/dashboard/$tab'
+    | '/admin/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -515,10 +539,11 @@ export interface FileRouteTypes {
     | '/account/payments'
     | '/account/profile'
     | '/account/reviews'
+    | '/dashboard/$tab'
     | '/account'
+    | '/dashboard'
+    | '/admin/dashboard/$tab'
     | '/admin/dashboard'
-    | '/superadmin/dashboard'
-    | '/owner/dashboard'
   id:
     | '__root__'
     | '/'
@@ -542,8 +567,8 @@ export interface FileRouteTypes {
     | '/trust-safety'
     | '/verify-email'
     | '/_authenticated/_admin'
-    | '/_authenticated/_owner'
     | '/_authenticated/account'
+    | '/_authenticated/dashboard'
     | '/_authenticated/wishlist'
     | '/categories/$id'
     | '/journal/$id'
@@ -563,10 +588,12 @@ export interface FileRouteTypes {
     | '/_authenticated/account/payments'
     | '/_authenticated/account/profile'
     | '/_authenticated/account/reviews'
+    | '/_authenticated/dashboard/$tab'
     | '/_authenticated/account/'
+    | '/_authenticated/dashboard/'
     | '/_authenticated/_admin/admin/dashboard'
-    | '/_authenticated/_admin/superadmin/dashboard'
-    | '/_authenticated/_owner/owner/dashboard'
+    | '/_authenticated/_admin/admin/dashboard/$tab'
+    | '/_authenticated/_admin/admin/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -805,18 +832,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWishlistRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/account': {
       id: '/_authenticated/account'
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AuthenticatedAccountRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/_owner': {
-      id: '/_authenticated/_owner'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedOwnerRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/_admin': {
@@ -826,12 +853,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/account/': {
       id: '/_authenticated/account/'
       path: '/'
       fullPath: '/account/'
       preLoaderRoute: typeof AuthenticatedAccountIndexRouteImport
       parentRoute: typeof AuthenticatedAccountRoute
+    }
+    '/_authenticated/dashboard/$tab': {
+      id: '/_authenticated/dashboard/$tab'
+      path: '/$tab'
+      fullPath: '/dashboard/$tab'
+      preLoaderRoute: typeof AuthenticatedDashboardTabRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/account/reviews': {
       id: '/_authenticated/account/reviews'
@@ -896,20 +937,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountBookingsRouteImport
       parentRoute: typeof AuthenticatedAccountRoute
     }
-    '/_authenticated/_owner/owner/dashboard': {
-      id: '/_authenticated/_owner/owner/dashboard'
-      path: '/owner/dashboard'
-      fullPath: '/owner/dashboard'
-      preLoaderRoute: typeof AuthenticatedOwnerOwnerDashboardRouteImport
-      parentRoute: typeof AuthenticatedOwnerRoute
-    }
-    '/_authenticated/_admin/superadmin/dashboard': {
-      id: '/_authenticated/_admin/superadmin/dashboard'
-      path: '/superadmin/dashboard'
-      fullPath: '/superadmin/dashboard'
-      preLoaderRoute: typeof AuthenticatedAdminSuperadminDashboardRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/_admin/admin/dashboard': {
       id: '/_authenticated/_admin/admin/dashboard'
       path: '/admin/dashboard'
@@ -917,33 +944,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminDashboardRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/_admin/admin/dashboard/': {
+      id: '/_authenticated/_admin/admin/dashboard/'
+      path: '/'
+      fullPath: '/admin/dashboard/'
+      preLoaderRoute: typeof AuthenticatedAdminAdminDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminDashboardRoute
+    }
+    '/_authenticated/_admin/admin/dashboard/$tab': {
+      id: '/_authenticated/_admin/admin/dashboard/$tab'
+      path: '/$tab'
+      fullPath: '/admin/dashboard/$tab'
+      preLoaderRoute: typeof AuthenticatedAdminAdminDashboardTabRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminDashboardRoute
+    }
   }
 }
 
+interface AuthenticatedAdminAdminDashboardRouteChildren {
+  AuthenticatedAdminAdminDashboardTabRoute: typeof AuthenticatedAdminAdminDashboardTabRoute
+  AuthenticatedAdminAdminDashboardIndexRoute: typeof AuthenticatedAdminAdminDashboardIndexRoute
+}
+
+const AuthenticatedAdminAdminDashboardRouteChildren: AuthenticatedAdminAdminDashboardRouteChildren =
+  {
+    AuthenticatedAdminAdminDashboardTabRoute:
+      AuthenticatedAdminAdminDashboardTabRoute,
+    AuthenticatedAdminAdminDashboardIndexRoute:
+      AuthenticatedAdminAdminDashboardIndexRoute,
+  }
+
+const AuthenticatedAdminAdminDashboardRouteWithChildren =
+  AuthenticatedAdminAdminDashboardRoute._addFileChildren(
+    AuthenticatedAdminAdminDashboardRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminAdminDashboardRoute: typeof AuthenticatedAdminAdminDashboardRoute
-  AuthenticatedAdminSuperadminDashboardRoute: typeof AuthenticatedAdminSuperadminDashboardRoute
+  AuthenticatedAdminAdminDashboardRoute: typeof AuthenticatedAdminAdminDashboardRouteWithChildren
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminAdminDashboardRoute: AuthenticatedAdminAdminDashboardRoute,
-  AuthenticatedAdminSuperadminDashboardRoute:
-    AuthenticatedAdminSuperadminDashboardRoute,
+  AuthenticatedAdminAdminDashboardRoute:
+    AuthenticatedAdminAdminDashboardRouteWithChildren,
 }
 
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
-
-interface AuthenticatedOwnerRouteChildren {
-  AuthenticatedOwnerOwnerDashboardRoute: typeof AuthenticatedOwnerOwnerDashboardRoute
-}
-
-const AuthenticatedOwnerRouteChildren: AuthenticatedOwnerRouteChildren = {
-  AuthenticatedOwnerOwnerDashboardRoute: AuthenticatedOwnerOwnerDashboardRoute,
-}
-
-const AuthenticatedOwnerRouteWithChildren =
-  AuthenticatedOwnerRoute._addFileChildren(AuthenticatedOwnerRouteChildren)
 
 interface AuthenticatedAccountRouteChildren {
   AuthenticatedAccountBookingsRoute: typeof AuthenticatedAccountBookingsRoute
@@ -975,17 +1021,33 @@ const AuthenticatedAccountRouteChildren: AuthenticatedAccountRouteChildren = {
 const AuthenticatedAccountRouteWithChildren =
   AuthenticatedAccountRoute._addFileChildren(AuthenticatedAccountRouteChildren)
 
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardTabRoute: typeof AuthenticatedDashboardTabRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardTabRoute: AuthenticatedDashboardTabRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
-  AuthenticatedOwnerRoute: typeof AuthenticatedOwnerRouteWithChildren
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRouteWithChildren
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedWishlistRoute: typeof AuthenticatedWishlistRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
-  AuthenticatedOwnerRoute: AuthenticatedOwnerRouteWithChildren,
   AuthenticatedAccountRoute: AuthenticatedAccountRouteWithChildren,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedWishlistRoute: AuthenticatedWishlistRoute,
 }
 

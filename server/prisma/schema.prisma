@@ -61,7 +61,7 @@ model User {
   // Relations
   sessions      Session[]
   accounts      Account[]
-  products      Product[] // User એ લિસ્ટ કરેલી વસ્તુઓ (Owner)
+  products      Product[] // User એ લિસ્ટ કરેલી વસ્તુઓ (Lister)
   rentals       Rental[]  // User એ ભાડે લીધેલી વસ્તુઓ (Renter)
   reviews       Review[]  // User એ આપેલા Reviews
   likes         Like[]    // User એ લાઈક કરેલી વસ્તુઓ
@@ -174,8 +174,8 @@ model Product {
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   
-  ownerId     String
-  owner       User     @relation(fields: [ownerId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
   
   rentals     Rental[]
   reviews     Review[]
@@ -282,8 +282,8 @@ model CategoryRequest {
   reason        String?  // reason for rejection
   description   String?
   requestReason String?
-  ownerId       String
-  owner         User     @relation(fields: [ownerId], references: [id])
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -303,8 +303,8 @@ model Coupon {
   usageLimit  Int?      // Max global redemptions (null = unlimited) — FCFS
   usedCount   Int       @default(0)
   perUserLimit Int?     // Max redemptions per individual user (null = unlimited, 1 = once per user)
-  ownerId     String?
-  owner       User?     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId   String?
   product     Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
   rentals     Rental[]
@@ -356,8 +356,8 @@ model DeviceToken {
 
 model Payout {
   id            String   @id @default(cuid())
-  ownerId       String
-  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount        Float
   status        String   @default("pending") // pending, approved, rejected, paid
   notes         String?

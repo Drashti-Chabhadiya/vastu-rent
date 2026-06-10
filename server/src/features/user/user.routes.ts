@@ -7,7 +7,7 @@ export async function userRoutes(fastify: FastifyInstance) {
   // Public Profile Route
   fastify.get("/profile/:id", userController.getPublicProfile);
 
-  // User & Owner Settings Route
+  // User Settings Route
   fastify.patch("/settings", userController.updateSettings);
 
   // User Sessions Routes

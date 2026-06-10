@@ -54,7 +54,7 @@ export const CategoryManagement = ({
 
   const user = session?.user
   const isAdmin = isAdminRole(user?.role)
-  const isOwner = isUserRole(user?.role)
+  const isUser = isUserRole(user?.role)
 
   const createMutation = useCreateCategory()
   const updateMutation = useUpdateCategory()
@@ -146,8 +146,8 @@ export const CategoryManagement = ({
     cat.name.toLowerCase().includes(search.toLowerCase()),
   )
 
-  const ownerRequests = requests?.filter((req: any) =>
-    isAdmin ? true : req.ownerId === user?.id,
+  const userRequests = requests?.filter((req: any) =>
+    isAdmin ? true : req.userId === user?.id,
   )
 
   return (
@@ -178,12 +178,12 @@ export const CategoryManagement = ({
           }`}
         >
           Category Requests
-          {ownerRequests &&
-            ownerRequests.filter((r: any) => r.status === 'pending').length >
+          {userRequests &&
+            userRequests.filter((r: any) => r.status === 'pending').length >
               0 && (
               <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
                 {
-                  ownerRequests.filter((r: any) => r.status === 'pending')
+                  userRequests.filter((r: any) => r.status === 'pending')
                     .length
                 }
               </span>
@@ -222,7 +222,7 @@ export const CategoryManagement = ({
               </Button>
             )}
 
-            {isOwner && (
+            {isUser && (
               <Button
                 onClick={() => setIsRequestDialogOpen(true)}
                 className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
@@ -271,9 +271,9 @@ export const CategoryManagement = ({
       ) : (
         /* Requests Tab View */
         <CategoryRequestList
-          requests={ownerRequests || []}
+          requests={userRequests || []}
           isAdmin={isAdmin}
-          isOwner={isOwner}
+          isUser={isUser}
           onApproveRequest={(req) => setApprovingRequest(req)}
           onRejectRequest={(req) => setRejectingRequest(req)}
           onRequestCreate={() => setIsRequestDialogOpen(true)}
@@ -298,7 +298,7 @@ export const CategoryManagement = ({
         isPending={deleteMutation.isPending}
       />
 
-      {/* Category Request Dialog for Owners */}
+      {/* Category Request Dialog for Users */}
       <CategoryFormDialog
         isOpen={isRequestDialogOpen}
         onOpenChange={setIsRequestDialogOpen}

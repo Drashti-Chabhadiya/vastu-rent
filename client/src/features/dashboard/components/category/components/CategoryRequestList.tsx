@@ -12,7 +12,7 @@ import { Button } from '#/components/ui/button'
 interface CategoryRequestListProps {
   requests: any[]
   isAdmin: boolean
-  isOwner: boolean
+  isUser: boolean
   onApproveRequest: (request: any) => void
   onRejectRequest: (request: any) => void
   onRequestCreate?: () => void
@@ -22,7 +22,7 @@ interface CategoryRequestListProps {
 export const CategoryRequestList = ({
   requests = [],
   isAdmin,
-  isOwner,
+  isUser,
   onApproveRequest,
   onRejectRequest,
   onRequestCreate,
@@ -32,7 +32,7 @@ export const CategoryRequestList = ({
     <div className="bg-card rounded-xl border border-border/30 shadow-sm overflow-hidden animate-in fade-in duration-300">
       <div className="p-6 border-b border-border/30 flex items-center justify-between">
         <h3 className="font-bold text-foreground">Category Request Pipeline</h3>
-        {isOwner && onRequestCreate && (
+        {isUser && onRequestCreate && (
           <Button
             onClick={onRequestCreate}
             className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-xl h-10 px-6 font-bold flex items-center gap-2 cursor-pointer"
@@ -75,7 +75,7 @@ export const CategoryRequestList = ({
                           alt={req.name}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            ;(e.target as any).src =
+                            ; (e.target as any).src =
                               'https://via.placeholder.com/100?text=Category'
                           }}
                         />
@@ -102,7 +102,7 @@ export const CategoryRequestList = ({
                     <h4 className="font-bold text-foreground">{req.name}</h4>
                     <p className="text-xs text-muted-foreground/70 mt-1">
                       Requested by{' '}
-                      {req.owner?.name || req.owner?.email || 'Unknown Owner'} •{' '}
+                      {req.user?.name || req.user?.email || 'Unknown User'} •{' '}
                       {new Date(req.createdAt).toLocaleDateString()}
                     </p>
                     {req.description && (
@@ -133,13 +133,12 @@ export const CategoryRequestList = ({
                 <div className="flex items-center gap-3">
                   {/* Status badge */}
                   <span
-                    className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${
-                      req.status === 'approved'
+                    className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${req.status === 'approved'
                         ? 'bg-primary-soft text-primary-hover'
                         : req.status === 'rejected'
                           ? 'bg-danger text-destructive'
                           : 'bg-yellow-50 text-yellow-700'
-                    }`}
+                      }`}
                   >
                     {req.status}
                   </span>

@@ -7,33 +7,33 @@ import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
 import { useState } from 'react'
 
-interface ProductOwnerCardProps {
-  owner: any
+interface ProductUserCardProps {
+  user: any
 }
 
-export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
+export const ProductUserCard = ({ user }: ProductUserCardProps) => {
   const { data: session } = authClient.useSession()
   const navigate = useNavigate()
   const [isStartingChat, setIsStartingChat] = useState(false)
 
-  if (!owner) return null
+  if (!user) return null
 
   const handleContactHost = async () => {
     if (!session?.user) {
-      toast.error('Please sign in to contact the host.')
+      toast.error('Please sign in to contact the lister.')
       navigate({ to: '/login' })
       return
     }
 
-    if (session.user.id === owner.id) {
+    if (session.user.id === user.id) {
       toast.info('This is your own listing.')
       return
     }
 
     setIsStartingChat(true)
     try {
-      await apiClient.post('/chat/conversations', { targetUserId: owner.id })
-      toast.success(`Chat started with ${owner.name}!`)
+      await apiClient.post('/chat/conversations', { targetUserId: user.id })
+      toast.success(`Chat started with ${user.name}!`)
       navigate({ to: '/account/messages' })
     } catch (err: any) {
       toast.error(
@@ -50,29 +50,29 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
       <h3 className="text-base font-bold text-foreground">Listed by</h3>
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-muted/50 overflow-hidden shrink-0">
-          {owner.image ? (
+          {user.image ? (
             <img
-              src={owner.image}
-              alt={owner.name}
+              src={user.image}
+              alt={user.name}
               className="w-full h-full object-cover"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-primary text-primary-foreground font-bold text-lg">
-              {owner.name?.[0] || 'U'}
+              {user.name?.[0] || 'U'}
             </div>
           )}
         </div>
         <div>
           <p className="font-bold text-foreground text-sm">
-            {owner.name || 'Verified Owner'}
+            {user.name || 'Verified Lister'}
           </p>
           <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
             <Star size={12} className="text-primary fill-brand" />
             <span className="text-xs font-bold text-foreground">
-              {owner.rating || '0.0'}
+              {user.rating || '0.0'}
             </span>
             <span className="text-xs text-muted-foreground/85">
-              ({owner.listingsCount || 0} Listings)
+              ({user.listingsCount || 0} Listings)
             </span>
             <Badge className="bg-primary-soft text-primary-hover border-none px-1 py-0 rounded flex items-center gap-0.5 font-bold text-[8px] uppercase ml-1">
               <CheckCircle2 size={8} /> Verified
@@ -84,8 +84,8 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">
           <Calendar size={14} className="shrink-0" />
           Member since{' '}
-          {owner.createdAt
-            ? new Date(owner.createdAt).toLocaleDateString('en-IN', {
+          {user.createdAt
+            ? new Date(user.createdAt).toLocaleDateString('en-IN', {
                 month: 'long',
                 year: 'numeric',
               })
@@ -98,7 +98,7 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Link to="/users/$id" params={{ id: owner.id || '' }}>
+        <Link to="/users/$id" params={{ id: user.id || '' }}>
           <Button
             variant="outline"
             className="w-full h-10 rounded-xl border-border font-bold text-primary hover:bg-primary/5 hover:border-brand transition-colors"
@@ -113,7 +113,7 @@ export const ProductOwnerCard = ({ owner }: ProductOwnerCardProps) => {
           className="w-full h-10 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold flex items-center justify-center gap-2 transition-colors"
         >
           <MessageCircle size={15} />
-          {isStartingChat ? 'Opening Chat...' : 'Contact Host'}
+          {isStartingChat ? 'Opening Chat...' : 'Contact Lister'}
         </Button>
       </div>
     </div>

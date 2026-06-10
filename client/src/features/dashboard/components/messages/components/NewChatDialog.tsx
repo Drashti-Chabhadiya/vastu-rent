@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   Dialog,
   DialogContent,
@@ -26,6 +27,7 @@ export function NewChatDialog({
   switchConversation,
   setShowMobileChat,
 }: NewChatDialogProps) {
+  const queryClient = useQueryClient()
   const [userSearch, setUserSearch] = useState('')
   const [userResults, setUserResults] = useState<any[]>([])
   const [isSearchingUsers, setIsSearchingUsers] = useState(false)
@@ -63,6 +65,7 @@ export function NewChatDialog({
     setStartingChatWith(targetUserId)
     try {
       const res = await apiClient.post('/chat/conversations', { targetUserId })
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
       onOpenChange(false)
       await switchConversation(res.data.id)
       setShowMobileChat(true)

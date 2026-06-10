@@ -222,9 +222,9 @@ export const ReviewsManagement = () => {
         dates: formatStayDates(r.createdAt),
         comment: r.comment || 'Perfect rental experience!',
         host: {
-          name: r.product?.owner?.name || 'Vastu Host',
+          name: r.product?.user?.name || 'Vastu Lister',
           avatar:
-            r.product?.owner?.image ||
+            r.product?.user?.image ||
             'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
         },
         postedDate: formatPostedDate(r.createdAt),
@@ -483,13 +483,13 @@ export const ReviewsManagement = () => {
                         </div>
                       )}
 
-                      {/* Render Owner's Reply */}
+                      {/* Render Lister's Reply */}
                       {reply && (
                         <div className="bg-background border border-primary/10 p-4 rounded-2xl max-w-xl mt-3 space-y-1 relative">
                           <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-full animate-pulse" />
                           <div className="pl-3.5 space-y-1">
                             <p className="text-[10px] text-primary font-black uppercase tracking-wider">
-                              Host Reply
+                              Lister Reply
                             </p>
                             <p className="text-xs text-muted-foreground font-medium leading-relaxed">
                               {reply}
@@ -531,8 +531,8 @@ export const ReviewsManagement = () => {
                     </div>
                   </div>
 
-                  {/* Actions Dropdown (Admins & SuperAdmins Only) */}
-                  {(role === 'admin' || role === 'superAdmin') && (
+                  {/* Actions Dropdown (Admins Only) */}
+                  {role === 'admin' && (
                     <div className="relative">
                       <Button
                         variant="ghost"
@@ -602,13 +602,13 @@ export const ReviewsManagement = () => {
                   </Button>
                 )}
 
-                {/* Reply to Review Option (Owners Only) */}
-                {(role === 'owner' || role === 'user') && (
+                {/* Reply to Review Option (Listers Only) */}
+                {role === 'user' && (
                   <div className="w-full mt-2 space-y-2">
                     {replyingReviewId === review.id ? (
                       <div className="space-y-2">
                         <Textarea
-                          placeholder="Write your response as the host..."
+                          placeholder="Write your response..."
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
                           className="w-full p-2 border border-border rounded-xl text-xs outline-none focus:border-primary/50 font-medium min-h-[60px] resize-none"
@@ -650,7 +650,7 @@ export const ReviewsManagement = () => {
                             review.comment,
                           )
                           return parsed.reply
-                            ? 'Edit Host Reply'
+                            ? 'Edit Reply'
                             : 'Reply to Review'
                         })()}
                       </Button>

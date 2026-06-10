@@ -288,16 +288,16 @@ function RootDocument() {
     routerState.location.pathname.startsWith('/login') ||
     routerState.location.pathname.startsWith('/signup')
   const isAdminPage = routerState.location.pathname.startsWith('/admin')
-  const isOwnerPage = routerState.location.pathname.startsWith('/owner')
+  const isDashboardPage = routerState.location.pathname.startsWith('/dashboard')
 
   return (
     <div className={cn('bg-card', 'font-sans', 'antialiased')}>
       <QueryClientProvider client={queryClient}>
         <TranslationProvider>
           <NotificationListener />
-          {!isAuthPage && !isAdminPage && !isOwnerPage && <Navbar />}
+          {!isAuthPage && !isAdminPage && !isDashboardPage && <Navbar />}
           <Outlet />
-          {!isAuthPage && !isAdminPage && !isOwnerPage && <Footer />}
+          {!isAuthPage && !isAdminPage && !isDashboardPage && <Footer />}
         </TranslationProvider>
       </QueryClientProvider>
       <Toaster position="top-right" />

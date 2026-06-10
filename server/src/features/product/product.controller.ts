@@ -21,8 +21,8 @@ export class ProductController {
 
   async createProduct(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const userId = (request as any).user?.id || (request.body as any).ownerId;
-      const product = await productService.createProduct({ ...request.body as any, ownerId: userId });
+      const userId = (request as any).user?.id || (request.body as any).userId;
+      const product = await productService.createProduct({ ...request.body as any, userId });
       return { product };
     } catch (error: any) {
       if (error.message?.includes("Forbidden") || error.message?.includes("limit")) {
@@ -71,7 +71,7 @@ export class ProductController {
 
   async getMyListings(request: FastifyRequest, _reply: FastifyReply) {
     const userId = (request as any).user.id;
-    const products = await productService.getOwnerListings(userId);
+    const products = await productService.getUserListings(userId);
     return { products };
   }
 }

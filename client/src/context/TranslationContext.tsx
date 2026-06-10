@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { useTranslationStore } from '#/store/useTranslationStore'
 
@@ -489,13 +489,9 @@ export const translations = {
 
 type TranslationKey = keyof typeof translations.en
 
-interface TranslationContextProps {
-  language: LanguageCode
-  changeLanguage: (lang: LanguageCode) => void
-  t: (key: TranslationKey | string) => string
-}
 
-const TranslationContext = createContext<TranslationContextProps | undefined>(undefined)
+
+
 
 export function normalizeLanguage(lang: string | null | undefined): LanguageCode {
   if (!lang) return 'en'

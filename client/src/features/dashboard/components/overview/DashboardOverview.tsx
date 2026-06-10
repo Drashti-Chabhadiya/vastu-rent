@@ -12,6 +12,8 @@ interface DashboardOverviewProps {
   usersLoading: boolean
   recentProducts: any[]
   productsLoading: boolean
+  onViewAllUsers?: () => void
+  onViewAllListings?: () => void
 }
 
 export const DashboardOverview = ({
@@ -21,6 +23,8 @@ export const DashboardOverview = ({
   usersLoading,
   recentProducts,
   productsLoading,
+  onViewAllUsers,
+  onViewAllListings,
 }: DashboardOverviewProps) => {
   const { data: session, isPending: isSessionLoading } = authClient.useSession()
   const role = session?.user.role
@@ -54,6 +58,8 @@ export const DashboardOverview = ({
         usersLoading={usersLoading}
         recentProducts={recentProducts}
         productsLoading={productsLoading}
+        onViewAllUsers={onViewAllUsers}
+        onViewAllListings={onViewAllListings}
       />
     )
   }

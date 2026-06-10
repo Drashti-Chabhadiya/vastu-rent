@@ -37,14 +37,14 @@ import { LoadingOverlay } from '#/components/ui/loader'
 
 interface CreateCouponModalProps {
   isOpen: boolean
-  isOwner: boolean
+  isUser: boolean
   isAdmin: boolean
   onClose: () => void
 }
 
 export function CreateCouponModal({
   isOpen,
-  isOwner,
+  isUser,
   isAdmin,
   onClose,
 }: CreateCouponModalProps) {
@@ -241,8 +241,8 @@ export function CreateCouponModal({
             </div>
           </div>
 
-          {/* Target listing (owners only) */}
-          {isOwner && myListings && myListings.length > 0 && (
+          {/* Target listing (users only) */}
+          {isUser && myListings && myListings.length > 0 && (
             <div className="space-y-2.5">
               <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Package size={14} className="text-dash-brand" />

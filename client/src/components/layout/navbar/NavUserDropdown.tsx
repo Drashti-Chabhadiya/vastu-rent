@@ -347,7 +347,7 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
           )}
 
           {session.user && !isAdminRole(session.user.role) && (
-            <Link to="/owner/dashboard">
+            <Link to="/dashboard">
               <DropdownMenuItem
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',

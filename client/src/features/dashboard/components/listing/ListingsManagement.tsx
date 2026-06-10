@@ -16,7 +16,6 @@ import {
   useUpdateProduct,
   useToggleProductStatus,
   useDeleteProduct,
-  useCreateDeleteRequest,
   useMyListings,
 } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
@@ -96,7 +95,6 @@ export const ListingsManagement = ({
   const updateMutation = useUpdateProduct()
   const toggleStatusMutation = useToggleProductStatus()
   const deleteMutation = useDeleteProduct()
-  const createDeleteRequestMutation = useCreateDeleteRequest()
 
   const handleDelete = (product: any) => {
     if (!currentUser) return
@@ -106,11 +104,10 @@ export const ListingsManagement = ({
   const handleConfirmDelete = () => {
     if (!currentUser || !productToDelete) return
 
-    const isProductOwner = productToDelete.ownerId === currentUser.id
-    const isSuperAdmin = currentUser.role === 'superAdmin'
-    const isRegularAdmin = currentUser.role === 'admin'
+    const isProductLister = productToDelete.userId === currentUser.id
+    const isAdmin = currentUser.role === 'admin'
 
-    if (isSuperAdmin || isProductOwner) {
+    if (isAdmin || isProductLister) {
       deleteMutation.mutate(productToDelete.id, {
         onSuccess: () => {
           toast.success('Listing deleted successfully')
@@ -120,41 +117,16 @@ export const ListingsManagement = ({
           toast.error(err.response?.data?.message || 'Failed to delete listing')
         },
       })
-    } else if (isRegularAdmin) {
-      createDeleteRequestMutation.mutate(
-        {
-          productId: productToDelete.id,
-          reason: `Admin ${currentUser.name} requested deletion`,
-        },
-        {
-          onSuccess: () => {
-            toast.success('Deletion request sent to SuperAdmin')
-            setProductToDelete(null)
-          },
-          onError: (err: any) => {
-            toast.error(err.response?.data?.message || 'Failed to send request')
-          },
-        },
-      )
     } else {
       toast.error("You don't have permission to delete this listing")
       setProductToDelete(null)
     }
   }
 
-  const isOwnerOrSuperAdmin =
-    productToDelete &&
-    (currentUser?.role === 'superAdmin' ||
-      productToDelete.ownerId === currentUser?.id)
-
-  const deleteTitle = isOwnerOrSuperAdmin
-    ? 'Delete Listing permanently?'
-    : 'Request Deletion?'
+  const deleteTitle = 'Delete Listing permanently?'
 
   const deleteDescription = productToDelete
-    ? isOwnerOrSuperAdmin
-      ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
-      : `You don't own "${productToDelete.title}". Sending this request will notify the SuperAdmin to review and approve the deletion. Do you want to proceed?`
+    ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
     : ''
 
   return (
@@ -305,11 +277,9 @@ export const ListingsManagement = ({
         onCancel={() => setProductToDelete(null)}
         title={deleteTitle}
         description={deleteDescription}
-        confirmText={isOwnerOrSuperAdmin ? 'Delete' : 'Request'}
+        confirmText="Delete"
         variant="danger"
-        isPending={
-          deleteMutation.isPending || createDeleteRequestMutation.isPending
-        }
+        isPending={deleteMutation.isPending}
       />
     </div>
   )

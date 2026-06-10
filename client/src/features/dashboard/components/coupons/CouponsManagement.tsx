@@ -22,8 +22,8 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
   const { data: session } = authClient.useSession()
   const user = session?.user
   const role = user?.role || 'user'
-  const isAdmin = role === 'admin' || role === 'superAdmin'
-  const isOwner = role === 'owner' || role === 'user'
+  const isAdmin = role === 'admin'
+  const isUser = role === 'user'
   const renderAsRenter = isRenterView
 
   const [activeTab, setActiveTab] = useState<'my' | 'global'>('my')
@@ -40,14 +40,14 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
     })
   })()
 
-  // ── Admin/Owner: filter by tab ──
+  // ── Admin/User: filter by tab ──
   const dashboardCoupons = (() => {
     if (!coupons) return []
     if (isAdmin) return coupons
-    if (isOwner) {
+    if (isUser) {
       return activeTab === 'my'
-        ? coupons.filter((c) => c.ownerId === user?.id)
-        : coupons.filter((c) => c.ownerId === null)
+        ? coupons.filter((c) => c.userId === user?.id)
+        : coupons.filter((c) => c.userId === null)
     }
     return coupons
   })()
@@ -65,7 +65,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
     )
   }
 
-  // ── Admin / Owner Stats ───────────────────────────────────────
+  // ── Admin / User Stats ───────────────────────────────────────
   const adminStats = [
     {
       label: 'Active Coupons',
@@ -138,8 +138,8 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
         </div>
       )}
 
-      {/* Owner Tabs */}
-      {isOwner && (
+      {/* User Tabs */}
+      {isUser && (
         <div className="flex items-center gap-2 border-b border-border/30 pb-px">
           {(['my', 'global'] as const).map((tab) => (
             <Button
@@ -165,7 +165,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
           coupons={dashboardCoupons}
           isLoading={isLoading}
           isAdmin={isAdmin}
-          isOwner={isOwner}
+          isUser={isUser}
           activeTab={activeTab}
           onDelete={handleDelete}
           onApprove={(id) => approveMutation.mutate(id)}
@@ -174,7 +174,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
 
         <CouponSidebar
           isAdmin={isAdmin}
-          isOwner={isOwner}
+          isUser={isUser}
           activeTab={activeTab}
           onCreateClick={() => setIsFormOpen(true)}
         />
@@ -184,7 +184,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       <CreateCouponModal
         isOpen={isFormOpen}
         isAdmin={isAdmin}
-        isOwner={isOwner}
+        isUser={isUser}
         onClose={() => setIsFormOpen(false)}
       />
 

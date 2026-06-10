@@ -10,13 +10,13 @@ export class CategoryRequestController {
     }
 
     const { role, id: userId } = session.user;
-    const isSearchAdmin = role === 'admin' || role === 'superAdmin';
+    const isSearchAdmin = role === 'admin';
 
     const requests = await prisma.categoryRequest.findMany({
-      where: isSearchAdmin ? {} : { ownerId: userId },
+      where: isSearchAdmin ? {} : { userId: userId },
       orderBy: { createdAt: "desc" },
       include: {
-        owner: {
+        user: {
           select: { id: true, name: true, email: true }
         }
       }
@@ -43,7 +43,7 @@ export class CategoryRequestController {
         image,
         description,
         requestReason,
-        ownerId: session.user.id,
+        userId: session.user.id,
         status: "pending"
       }
     });
@@ -54,7 +54,7 @@ export class CategoryRequestController {
       await createAndDeliverNotification({
         userId: session.user.id,
         title: 'New Category Request',
-        message: `Owner ${session.user.name || session.user.email} requested new category "${name}"`,
+        message: `User ${session.user.name || session.user.email} requested new category "${name}"`,
         type: 'alert',
       })
     } catch (err) {
@@ -96,11 +96,11 @@ export class CategoryRequestController {
         }
       });
 
-      // Notify the requesting Owner
+      // Notify the requesting User
       try {
         const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
-          userId: categoryReq.ownerId,
+          userId: categoryReq.userId,
           title: 'Category Request Approved',
           message: `Your request to add category "${categoryReq.name}" has been approved!`,
           type: 'booking',
@@ -109,11 +109,11 @@ export class CategoryRequestController {
         console.error('Failed to deliver approval notification:', err)
       }
     } else {
-      // Notify Owner of Rejection
+      // Notify User of Rejection
       try {
         const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
-          userId: categoryReq.ownerId,
+          userId: categoryReq.userId,
           title: 'Category Request Rejected',
           message: `Your request for "${categoryReq.name}" was rejected. Reason: ${reason || 'Not specified.'}`,
           type: 'alert',

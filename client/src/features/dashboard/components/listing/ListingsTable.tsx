@@ -41,7 +41,7 @@ export const ListingsTable = ({
                 Category
               </TableHead>
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                Owner
+                Provider
               </TableHead>
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-center h-auto">
                 Price / Day
@@ -141,10 +141,10 @@ export const ListingsTable = ({
                   <TableCell className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="text-xs font-extrabold text-dash-text">
-                        {item.owner?.name || 'Vastu System'}
+                        {item.user?.name || 'Vastu System'}
                       </span>
                       <span className="text-[10px] text-dash-text-soft font-bold">
-                        {item.owner?.email}
+                        {item.user?.email}
                       </span>
                     </div>
                   </TableCell>
@@ -214,17 +214,16 @@ export const ListingsTable = ({
                         onClick={() => onDelete(item)}
                         className={cn(
                           'w-8 h-8 rounded-lg transition-all active:scale-[0.98] shadow-none',
-                          currentUser?.role === 'superAdmin' ||
-                            item.ownerId === currentUser?.id
+                          currentUser?.role === 'admin' ||
+                            item.userId === currentUser?.id
                             ? 'text-dash-text-soft hover:bg-danger hover:text-destructive'
-                            : 'text-dash-text-soft hover:bg-orange-50 hover:text-orange-500',
+                            : 'text-dash-text-soft opacity-30 cursor-not-allowed',
                         )}
-                        title={
-                          currentUser?.role === 'superAdmin' ||
-                          item.ownerId === currentUser?.id
-                            ? 'Delete Listing'
-                            : 'Request Deletion'
+                        disabled={
+                          currentUser?.role !== 'admin' &&
+                          item.userId !== currentUser?.id
                         }
+                        title="Delete Listing"
                       >
                         <Trash2 size={14} />
                       </Button>

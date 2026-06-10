@@ -9,14 +9,14 @@ export class ReviewService {
       where.productId = productId;
     } else if (userId && userRole) {
       // 2. If it is a dashboard reviews request (no productId), apply strict role-based filtering:
-      if (userRole === 'admin' || userRole === 'superAdmin') {
-        // Admin & SuperAdmin can see all reviews (no additional filter)
-      } else if (userRole === 'owner') {
-        // Owners can see reviews ONLY for their own listings/products
-        where.product = { ownerId: userId };
+      if (userRole === 'admin') {
+        // Admin can see all reviews (no additional filter)
       } else {
-        // Standard users can see all reviews they submitted
-        where.userId = userId;
+        // Regular users can see reviews for their own listings/products OR reviews they submitted
+        where.OR = [
+          { product: { userId: userId } },
+          { userId: userId }
+        ];
       }
     }
 
@@ -39,7 +39,7 @@ export class ReviewService {
             title: true,
             location: true,
             images: true,
-            owner: { select: { id: true, name: true, image: true } }
+            user: { select: { id: true, name: true, image: true } }
           }
         },
       },
@@ -53,18 +53,18 @@ export class ReviewService {
   async createReview(data: { rating: number; comment?: string; productId: string; userId: string }) {
     const { productId, userId } = data;
 
-    // Rule 3: Owner Cannot Review Their Own Listing
+    // Rule 3: Lister Cannot Review Their Own Listing
     const product = await prisma.product.findUnique({
       where: { id: productId },
-      select: { ownerId: true }
+      select: { userId: true }
     });
 
     if (!product) {
       throw new Error("Product listing not found");
     }
 
-    if (product.ownerId === userId) {
-      throw new Error("Owners are not allowed to review their own listings.");
+    if (product.userId === userId) {
+      throw new Error("Listers are not allowed to review their own listings.");
     }
 
     // Rule 2: One Booking = One Review (Enforce exactly one review per listing per user, but allow updates within 7 days)
@@ -112,11 +112,11 @@ export class ReviewService {
       },
     });
 
-    // Notify listing owner
+    // Notify listing provider
     try {
       const { createAndDeliverNotification } = await import('../../lib/notification.js');
       await createAndDeliverNotification({
-        userId: createdReview.product.ownerId,
+        userId: createdReview.product.userId,
         title: "New Review Received! ⭐",
         message: `${createdReview.user.name} rated your product "${createdReview.product.title}" with ${createdReview.rating} stars.`,
         type: "alert",
@@ -134,8 +134,8 @@ export class ReviewService {
       include: { product: true }
     });
     if (!review) throw new Error("Review not found");
-    if (review.product.ownerId !== userId) {
-      throw new Error("Only the listing owner can reply to this review.");
+    if (review.product.userId !== userId) {
+      throw new Error("Only the listing provider can reply to this review.");
     }
     
     // Append the reply to the comment
@@ -158,7 +158,7 @@ export class ReviewService {
       await createAndDeliverNotification({
         userId: updatedReview.userId,
         title: "New Reply to Your Review! 💬",
-        message: `The owner replied to your review on "${updatedReview.product.title}".`,
+        message: `The host replied to your review on "${updatedReview.product.title}".`,
         type: "info",
       });
     } catch (err) {

@@ -63,7 +63,7 @@ export const ListingDialog = ({
       city: '',
       location: '',
       categoryId: '',
-      ownerId: '',
+      userId: '',
       images: [],
       securityDeposit: 0,
     },
@@ -82,7 +82,7 @@ export const ListingDialog = ({
           city: product.city || '',
           location: product.location || '',
           categoryId: product.categoryId || '',
-          ownerId: product.ownerId || '',
+          userId: product.userId || '',
           images: product.images || [],
           condition: product.condition || 'Good',
           features: product.features || [],
@@ -101,8 +101,8 @@ export const ListingDialog = ({
           city: '',
           location: '',
           categoryId: '',
-          ownerId:
-            currentUser?.role !== 'admin' && currentUser?.role !== 'superAdmin'
+          userId:
+            currentUser?.role !== 'admin'
               ? currentUser?.id || ''
               : '',
           images: [],

@@ -45,7 +45,7 @@ export class LikeService {
         product: {
           include: {
             category: true,
-            owner: { select: { id: true, name: true, email: true, image: true } },
+            user: { select: { id: true, name: true, email: true, image: true } },
           },
         },
       },

@@ -123,8 +123,8 @@ export const SettingsManagement = () => {
     )
   }
 
-  const isAdminOrSuper =
-    activeUser?.role === 'admin' || activeUser?.role === 'superAdmin'
+  const isAdmin =
+    activeUser?.role === 'admin'
 
   const sidebarItems = [
     {
@@ -145,7 +145,7 @@ export const SettingsManagement = () => {
       desc: 'Control your alert preferences',
       icon: Bell,
     },
-    ...(isAdminOrSuper
+    ...(isAdmin
       ? [
         {
           id: 'site-content',
@@ -266,7 +266,7 @@ export const SettingsManagement = () => {
             </div>
           )}
 
-          {activeSubTab === 'site-content' && isAdminOrSuper && (
+          {activeSubTab === 'site-content' && isAdmin && (
             <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm max-h-[calc(100vh-12rem)] flex flex-col">
               <SiteSettingsForm />
             </div>

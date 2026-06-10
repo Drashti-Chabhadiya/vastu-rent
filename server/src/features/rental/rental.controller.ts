@@ -29,7 +29,7 @@ export class RentalController {
     const user = (request as any).user;
     
     if (!isDashboardRole(user.role)) {
-      return reply.status(403).send({ message: "Forbidden: Access restricted to Owners and Admins" });
+      return reply.status(403).send({ message: "Forbidden: Access restricted to Users and Admins" });
     }
     
     if (isAdminRole(user.role)) {
@@ -37,7 +37,7 @@ export class RentalController {
       return { rentals };
     }
     
-    const rentals = await rentalService.getOwnerOrders(user.id);
+    const rentals = await rentalService.getUserOrders(user.id);
     return { rentals };
 
     return { rentals: [] };
@@ -58,12 +58,12 @@ export class RentalController {
       return reply.status(404).send({ message: "Booking request not found" });
     }
 
-    // Role-based permissions validation: Only admin or the actual listed product's owner can update status
+    // Role-based permissions validation: Only admin or the actual listing user can update status
     if (!isAdminRole(user.role)) {
       if (!isDashboardRole(user.role)) {
-        return reply.status(403).send({ message: "Forbidden: Owner permissions required" });
+        return reply.status(403).send({ message: "Forbidden: User permissions required" });
       }
-      if (rentalExists.product.ownerId !== user.id) {
+      if (rentalExists.product.userId !== user.id) {
         return reply.status(403).send({ message: "Forbidden: You are not authorized to manage bookings for this product" });
       }
     }
