@@ -1,4 +1,13 @@
-import { AlertCircle, Smartphone, User, Building2, CreditCard, Key, Pencil, Save } from 'lucide-react'
+import {
+  AlertCircle,
+  Smartphone,
+  User,
+  Building2,
+  CreditCard,
+  Key,
+  Pencil,
+  Save,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { usePayoutSettingsStore } from '../../../../../store/usePayoutSettingsStore'
@@ -31,7 +40,10 @@ export const PayoutSettingsForm = ({
   const hasChanges = checkHasChanges(activeUser)
 
   return (
-    <form onSubmit={handleSaveBankDetails} className="space-y-8 animate-in fade-in duration-300">
+    <form
+      onSubmit={handleSaveBankDetails}
+      className="space-y-8 animate-in fade-in duration-300"
+    >
       {/* Title Header */}
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
         <div>
@@ -62,7 +74,9 @@ export const PayoutSettingsForm = ({
             Verify Payout Details
           </span>
           <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
-            Settlements are processed via bank accounts or UPI within 24-48 hours of approved payout withdrawal requests. Ensure details are fully accurate.
+            Settlements are processed via bank accounts or UPI within 24-48
+            hours of approved payout withdrawal requests. Ensure details are
+            fully accurate.
           </span>
         </div>
       </div>

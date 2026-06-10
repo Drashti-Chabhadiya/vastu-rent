@@ -57,10 +57,7 @@ export const useProcessDeleteRequest = () => {
 export const useCreateDeleteRequest = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: {
-      productId: string
-      reason?: string
-    }) => {
+    mutationFn: async (data: { productId: string; reason?: string }) => {
       const res = await apiClient.post('/delete-requests', data)
       return res.data.deleteRequest
     },

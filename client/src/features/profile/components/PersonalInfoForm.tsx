@@ -227,9 +227,15 @@ export function PersonalInfoForm({
               <SelectValue placeholder={t('Select Language')} />
             </SelectTrigger>
             <SelectContent className="notranslate" translate="no">
-              <SelectItem value="English" className="notranslate">English</SelectItem>
-              <SelectItem value="Hindi" className="notranslate">हिन्दी (Hindi)</SelectItem>
-              <SelectItem value="Gujarati" className="notranslate">ગુજરાતી (Gujarati)</SelectItem>
+              <SelectItem value="English" className="notranslate">
+                English
+              </SelectItem>
+              <SelectItem value="Hindi" className="notranslate">
+                हिन्दी (Hindi)
+              </SelectItem>
+              <SelectItem value="Gujarati" className="notranslate">
+                ગુજરાતી (Gujarati)
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>

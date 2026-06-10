@@ -92,13 +92,7 @@ export function NewChatDialog({
         )}
       >
         <DialogHeader
-          className={cn(
-            'px-6',
-            'pt-6',
-            'pb-4',
-            'border-b',
-            'border-border/30',
-          )}
+          className={cn('px-6', 'pt-6', 'pb-4', 'border-b', 'border-border/30')}
         >
           <DialogTitle
             className={cn(
@@ -120,7 +114,12 @@ export function NewChatDialog({
           <div className="relative">
             <Search
               size={13}
-              className={cn('absolute', 'left-3', 'top-[13px]', 'text-muted-dark')}
+              className={cn(
+                'absolute',
+                'left-3',
+                'top-[13px]',
+                'text-muted-dark',
+              )}
             />
             <Input
               autoFocus
@@ -156,14 +155,12 @@ export function NewChatDialog({
         >
           {isSearchingUsers ? (
             <div
-              className={cn(
-                'flex',
-                'items-center',
-                'justify-center',
-                'py-8',
-              )}
+              className={cn('flex', 'items-center', 'justify-center', 'py-8')}
             >
-              <Loader2 size={18} className={cn('animate-spin', 'text-primary')} />
+              <Loader2
+                size={18}
+                className={cn('animate-spin', 'text-primary')}
+              />
             </div>
           ) : userResults.length === 0 ? (
             <div
@@ -177,13 +174,7 @@ export function NewChatDialog({
               )}
             >
               <MessageSquare size={24} className="text-muted-foreground/30" />
-              <p
-                className={cn(
-                  'text-[11px]',
-                  'font-bold',
-                  'text-muted-dark',
-                )}
-              >
+              <p className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}>
                 {userSearch ? 'No users found' : 'Start typing to search users'}
               </p>
             </div>
@@ -240,11 +231,7 @@ export function NewChatDialog({
                 {startingChatWith === u.id ? (
                   <Loader2
                     size={14}
-                    className={cn(
-                      'animate-spin',
-                      'text-primary',
-                      'shrink-0',
-                    )}
+                    className={cn('animate-spin', 'text-primary', 'shrink-0')}
                   />
                 ) : (
                   <span

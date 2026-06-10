@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Plus, PackagePlus, Trash2 } from 'lucide-react'
+import { Plus, PackagePlus } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { isAdminRole } from '#/lib/auth/roles'
-
 // Sub-components
 import { ListingsTable } from './ListingsTable'
 import { ListingDialog } from './ListingDialog'
@@ -104,11 +103,11 @@ export const ListingsManagement = ({
   const handleDelete = (product: any) => {
     if (!currentUser) return
     const isProductLister = product.userId === currentUser.id
-    const isAdmin = currentUser.role === 'admin'
+    const isCurrentUserAdmin = currentUser.role === 'admin'
 
     if (isProductLister) {
       setProductToDelete(product)
-    } else if (isAdmin) {
+    } else if (isCurrentUserAdmin) {
       setProductToDelete(product)
       setDeleteReason('')
       setIsDeleteRequestOpen(true)
@@ -168,7 +167,8 @@ export const ListingsManagement = ({
   const deleteRequestDialogDescription = (
     <div className="space-y-4 text-left">
       <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
-        Since you do not own "{productToDelete?.title}", you must submit a deletion request with a valid reason.
+        Since you do not own "{productToDelete?.title}", you must submit a
+        deletion request with a valid reason.
       </p>
       <div className="space-y-2">
         <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">

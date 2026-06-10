@@ -26,7 +26,8 @@ export function TermsSettingsTab() {
           Terms of Service Sections
         </h4>
         <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
-          Configure formal legal agreements and documentation sections dynamically. Use standard Enter key to create paragraph breaks.
+          Configure formal legal agreements and documentation sections
+          dynamically. Use standard Enter key to create paragraph breaks.
         </p>
       </div>
 

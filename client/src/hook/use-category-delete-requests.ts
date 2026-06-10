@@ -35,10 +35,7 @@ export const useCategoryDeleteRequests = () => {
 export const useCreateCategoryDeleteRequest = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: {
-      categoryId: string
-      reason?: string
-    }) => {
+    mutationFn: async (data: { categoryId: string; reason?: string }) => {
       const res = await apiClient.post('/category-delete-requests', data)
       return res.data.deleteRequest
     },
@@ -58,9 +55,12 @@ export const useProcessCategoryDeleteRequest = () => {
       id: string
       status: 'approved' | 'rejected'
     }) => {
-      const res = await apiClient.patch(`/category-delete-requests/${id}/process`, {
-        status,
-      })
+      const res = await apiClient.patch(
+        `/category-delete-requests/${id}/process`,
+        {
+          status,
+        },
+      )
       return res.data.deleteRequest
     },
     onSuccess: () => {

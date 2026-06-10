@@ -64,8 +64,8 @@ export const SiteSettingsForm = () => {
       onError: (err: any) => {
         toast.error(
           err.response?.data?.message ||
-          err.message ||
-          'Failed to save settings. Please try again.',
+            err.message ||
+            'Failed to save settings. Please try again.',
         )
       },
     })

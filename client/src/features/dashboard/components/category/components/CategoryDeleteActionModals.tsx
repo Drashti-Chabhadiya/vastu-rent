@@ -25,7 +25,8 @@ export const CategoryDeleteActionModals = ({
 }: CategoryDeleteActionModalsProps) => {
   const renderRequestDetails = (req: any, type: 'approve' | 'reject') => {
     if (!req) return null
-    const categoryName = req.categoryName || req.category?.name || 'Unknown Category'
+    const categoryName =
+      req.categoryName || req.category?.name || 'Unknown Category'
     const categoryIcon = req.categoryIcon || req.category?.icon || 'Folder'
     const categoryColor = req.categoryColor || req.category?.color || '#3b82f6'
     const categoryImage = req.category?.image
@@ -53,7 +54,8 @@ export const CategoryDeleteActionModals = ({
                 alt={categoryName}
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  ;(e.target as any).src = 'https://via.placeholder.com/100?text=Category'
+                  ;(e.target as any).src =
+                    'https://via.placeholder.com/100?text=Category'
                 }}
               />
             </div>
@@ -81,20 +83,28 @@ export const CategoryDeleteActionModals = ({
         {/* Request & Category Metadata */}
         <div className="space-y-2.5 bg-muted-light/25 border border-border/15 p-3.5 rounded-xl text-xs">
           <div className="flex justify-between items-center pb-2 border-b border-border/10">
-            <span className="text-muted-foreground font-semibold">Requested By</span>
+            <span className="text-muted-foreground font-semibold">
+              Requested By
+            </span>
             <span className="font-bold text-foreground">{proposerName}</span>
           </div>
 
           <div className="flex justify-between items-center pb-2 border-b border-border/10">
-            <span className="text-muted-foreground font-semibold">Request Date</span>
+            <span className="text-muted-foreground font-semibold">
+              Request Date
+            </span>
             <span className="font-bold text-foreground">
               {new Date(req.createdAt).toLocaleDateString()}
             </span>
           </div>
 
           <div className="flex justify-between items-center pb-2 border-b border-border/10">
-            <span className="text-muted-foreground font-semibold">Category Created</span>
-            <span className="font-bold text-foreground">{categoryCreatedAt}</span>
+            <span className="text-muted-foreground font-semibold">
+              Category Created
+            </span>
+            <span className="font-bold text-foreground">
+              {categoryCreatedAt}
+            </span>
           </div>
 
           {req.reason && (
@@ -119,25 +129,33 @@ export const CategoryDeleteActionModals = ({
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
                 Total Listings
               </span>
-              <span className="text-sm font-black text-foreground">{productsCount}</span>
+              <span className="text-sm font-black text-foreground">
+                {productsCount}
+              </span>
             </div>
             <div className="bg-card border border-border/20 p-2.5 rounded-lg text-center shadow-xs">
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
                 Listing Owners
               </span>
-              <span className="text-sm font-black text-foreground">{listingsUsersCount}</span>
+              <span className="text-sm font-black text-foreground">
+                {listingsUsersCount}
+              </span>
             </div>
             <div className="bg-card border border-border/20 p-2.5 rounded-lg text-center shadow-xs">
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
                 Total Bookings
               </span>
-              <span className="text-sm font-black text-foreground">{rentalsCount}</span>
+              <span className="text-sm font-black text-foreground">
+                {rentalsCount}
+              </span>
             </div>
             <div className="bg-card border border-border/20 p-2.5 rounded-lg text-center shadow-xs">
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
                 Renter Users
               </span>
-              <span className="text-sm font-black text-foreground">{distinctRentersCount}</span>
+              <span className="text-sm font-black text-foreground">
+                {distinctRentersCount}
+              </span>
             </div>
           </div>
         </div>
@@ -155,7 +173,10 @@ export const CategoryDeleteActionModals = ({
             </div>
             <div className="bg-muted-light/20 border border-border/10 rounded-xl overflow-hidden divide-y divide-border/10">
               {sampleProducts.map((prod: any) => (
-                <div key={prod.id} className="p-2.5 flex justify-between items-center gap-2 text-xs">
+                <div
+                  key={prod.id}
+                  className="p-2.5 flex justify-between items-center gap-2 text-xs"
+                >
                   <div className="min-w-0 flex-1">
                     <span className="font-extrabold text-foreground truncate block">
                       {prod.title}

@@ -649,9 +649,7 @@ export const ReviewsManagement = () => {
                           const parsed = parseCommentImagesAndReply(
                             review.comment,
                           )
-                          return parsed.reply
-                            ? 'Edit Reply'
-                            : 'Reply to Review'
+                          return parsed.reply ? 'Edit Reply' : 'Reply to Review'
                         })()}
                       </Button>
                     )}

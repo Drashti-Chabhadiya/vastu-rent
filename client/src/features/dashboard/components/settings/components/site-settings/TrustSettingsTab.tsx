@@ -28,7 +28,9 @@ export function TrustSettingsTab() {
           Trust & Community Commitments
         </h4>
         <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
-          Configure trust badges, platform commitments, and community safety guidelines. Icon Keywords: Shield, UserCheck, MessageSquare, Headphones, MapPin, FileText, Flag.
+          Configure trust badges, platform commitments, and community safety
+          guidelines. Icon Keywords: Shield, UserCheck, MessageSquare,
+          Headphones, MapPin, FileText, Flag.
         </p>
       </div>
 

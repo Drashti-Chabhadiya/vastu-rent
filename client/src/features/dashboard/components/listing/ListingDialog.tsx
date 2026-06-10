@@ -101,10 +101,7 @@ export const ListingDialog = ({
           city: '',
           location: '',
           categoryId: '',
-          userId:
-            currentUser?.role !== 'admin'
-              ? currentUser?.id || ''
-              : '',
+          userId: currentUser?.role !== 'admin' ? currentUser?.id || '' : '',
           images: [],
           condition: 'Good',
           features: [],

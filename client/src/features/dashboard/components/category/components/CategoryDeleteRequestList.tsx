@@ -54,19 +54,35 @@ export const CategoryDeleteRequestList = ({
           </div>
         ) : (
           requests.map((req: any) => {
-            const categoryName = req.categoryName || req.category?.name || 'Unknown Category'
-            const categoryIcon = req.categoryIcon || req.category?.icon || 'Folder'
-            const categoryColor = req.categoryColor || req.category?.color || 'var(--color-primary)'
+            const categoryName =
+              req.categoryName || req.category?.name || 'Unknown Category'
+            const categoryIcon =
+              req.categoryIcon || req.category?.icon || 'Folder'
+            const categoryColor =
+              req.categoryColor || req.category?.color || 'var(--color-primary)'
             const categoryImage = req.category?.image
 
-            const Icon = (LucideIcons as any)[categoryIcon] || LucideIcons.Folder
+            const Icon =
+              (LucideIcons as any)[categoryIcon] || LucideIcons.Folder
             const isApproved = req.status === 'approved'
-            const approvedAtTime = req.approvedAt ? new Date(req.approvedAt).getTime() : 0
-            const isExpired = isApproved && (!req.approvedAt || (Date.now() - approvedAtTime > 24 * 60 * 60 * 1000))
+            const approvedAtTime = req.approvedAt
+              ? new Date(req.approvedAt).getTime()
+              : 0
+            const isExpired =
+              isApproved &&
+              (!req.approvedAt ||
+                Date.now() - approvedAtTime > 24 * 60 * 60 * 1000)
 
-            const msRemaining = approvedAtTime + 24 * 60 * 60 * 1000 - Date.now()
-            const hoursRemaining = Math.max(0, Math.floor(msRemaining / (1000 * 60 * 60)))
-            const minutesRemaining = Math.max(0, Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60)))
+            const msRemaining =
+              approvedAtTime + 24 * 60 * 60 * 1000 - Date.now()
+            const hoursRemaining = Math.max(
+              0,
+              Math.floor(msRemaining / (1000 * 60 * 60)),
+            )
+            const minutesRemaining = Math.max(
+              0,
+              Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60)),
+            )
             const timeRemainingStr = `${hoursRemaining}h ${minutesRemaining}m`
 
             return (
@@ -84,7 +100,7 @@ export const CategoryDeleteRequestList = ({
                           alt={categoryName}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            ; (e.target as any).src =
+                            ;(e.target as any).src =
                               'https://via.placeholder.com/100?text=Category'
                           }}
                         />
@@ -127,27 +143,46 @@ export const CategoryDeleteRequestList = ({
 
                     {isApproved && !isExpired && (
                       <div className="text-xs text-amber-700 bg-amber-500/10 border border-amber-500/20 px-3.5 py-2.5 rounded-xl w-full max-w-lg mt-3 flex items-start gap-2.5 animate-in fade-in duration-300">
-                        <AlertTriangle className="flex-shrink-0 mt-0.5 text-amber-600 animate-pulse" size={15} />
+                        <AlertTriangle
+                          className="flex-shrink-0 mt-0.5 text-amber-600 animate-pulse"
+                          size={15}
+                        />
                         <div className="space-y-0.5">
                           <p className="font-extrabold text-[10px] uppercase tracking-wider text-amber-800 font-black">
-                            {isAdmin ? 'Approved: 24-Hour Deletion Window' : 'Action Required: 24-Hour Delete Permission'}
+                            {isAdmin
+                              ? 'Approved: 24-Hour Deletion Window'
+                              : 'Action Required: 24-Hour Delete Permission'}
                           </p>
                           <p className="font-semibold text-amber-700/95 leading-relaxed">
                             {isAdmin ? (
                               <>
-                                This deletion request has been approved. The proposing user has until{' '}
+                                This deletion request has been approved. The
+                                proposing user has until{' '}
                                 <span className="font-black text-amber-900">
-                                  {new Date(approvedAtTime + 24 * 60 * 60 * 1000).toLocaleString()}
+                                  {new Date(
+                                    approvedAtTime + 24 * 60 * 60 * 1000,
+                                  ).toLocaleString()}
                                 </span>{' '}
-                                to complete the deletion (Expires in <span className="font-black text-amber-900 underline">{timeRemainingStr}</span>).
+                                to complete the deletion (Expires in{' '}
+                                <span className="font-black text-amber-900 underline">
+                                  {timeRemainingStr}
+                                </span>
+                                ).
                               </>
                             ) : (
                               <>
-                                Admin approved this deletion. You must complete the deletion before the permission expires on{' '}
+                                Admin approved this deletion. You must complete
+                                the deletion before the permission expires on{' '}
                                 <span className="font-black text-amber-900">
-                                  {new Date(approvedAtTime + 24 * 60 * 60 * 1000).toLocaleString()}
+                                  {new Date(
+                                    approvedAtTime + 24 * 60 * 60 * 1000,
+                                  ).toLocaleString()}
                                 </span>{' '}
-                                (Expires in <span className="font-black text-amber-900 underline">{timeRemainingStr}</span>).
+                                (Expires in{' '}
+                                <span className="font-black text-amber-900 underline">
+                                  {timeRemainingStr}
+                                </span>
+                                ).
                               </>
                             )}
                           </p>
@@ -157,7 +192,10 @@ export const CategoryDeleteRequestList = ({
 
                     {isApproved && isExpired && (
                       <div className="text-xs text-muted-foreground bg-muted-light border border-border/30 px-3.5 py-2.5 rounded-xl w-full max-w-lg mt-3 flex items-start gap-2.5 animate-in fade-in duration-300">
-                        <AlertCircle className="flex-shrink-0 mt-0.5 text-muted-dark" size={15} />
+                        <AlertCircle
+                          className="flex-shrink-0 mt-0.5 text-muted-dark"
+                          size={15}
+                        />
                         <div className="space-y-0.5">
                           <p className="font-extrabold text-[10px] uppercase tracking-wider text-muted-dark font-black">
                             Delete Permission Expired
@@ -167,15 +205,20 @@ export const CategoryDeleteRequestList = ({
                               <>
                                 The 24-hour deletion window expired on{' '}
                                 <span className="font-bold text-foreground">
-                                  {new Date(approvedAtTime + 24 * 60 * 60 * 1000).toLocaleString()}
+                                  {new Date(
+                                    approvedAtTime + 24 * 60 * 60 * 1000,
+                                  ).toLocaleString()}
                                 </span>{' '}
-                                without action. The proposing user must submit a new request.
+                                without action. The proposing user must submit a
+                                new request.
                               </>
                             ) : (
                               <>
                                 The 24-hour deletion window expired on{' '}
                                 <span className="font-bold text-foreground">
-                                  {new Date(approvedAtTime + 24 * 60 * 60 * 1000).toLocaleString()}
+                                  {new Date(
+                                    approvedAtTime + 24 * 60 * 60 * 1000,
+                                  ).toLocaleString()}
                                 </span>
                                 . You must submit a new deletion request.
                               </>
@@ -190,7 +233,8 @@ export const CategoryDeleteRequestList = ({
                 <div className="flex items-center gap-3">
                   {/* Status badge */}
                   <span
-                    className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${req.status === 'deleted'
+                    className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${
+                      req.status === 'deleted'
                         ? 'bg-muted/60 text-muted-foreground'
                         : req.status === 'approved'
                           ? isExpired
@@ -199,9 +243,11 @@ export const CategoryDeleteRequestList = ({
                           : req.status === 'rejected'
                             ? 'bg-danger text-destructive'
                             : 'bg-yellow-50 text-yellow-700'
-                      }`}
+                    }`}
                   >
-                    {req.status === 'approved' && isExpired ? 'expired' : req.status}
+                    {req.status === 'approved' && isExpired
+                      ? 'expired'
+                      : req.status}
                   </span>
 
                   {/* User Delete action */}

@@ -47,7 +47,8 @@ export const useProductBookingStore = create<ProductBookingState>((set) => ({
 
   setCalMonth: (calMonth) =>
     set((state) => ({
-      calMonth: typeof calMonth === 'function' ? calMonth(state.calMonth) : calMonth,
+      calMonth:
+        typeof calMonth === 'function' ? calMonth(state.calMonth) : calMonth,
     })),
   setCalYear: (calYear) =>
     set((state) => ({

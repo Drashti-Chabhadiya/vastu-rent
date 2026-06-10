@@ -1,13 +1,13 @@
-import { Button } from '#/components/ui/button';
+import { Button } from '#/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '#/components/ui/dropdown-menu';
-import { MoreVertical } from 'lucide-react';
-import { cn } from '#/lib/utils';
+} from '#/components/ui/dropdown-menu'
+import { MoreVertical } from 'lucide-react'
+import { cn } from '#/lib/utils'
 
 /**
  * A dropdown menu providing common actions for a conversation.
@@ -19,9 +19,9 @@ export function ConversationOptionsMenu({
   onArchive,
   onDelete,
 }: {
-  onViewProfile?: () => void;
-  onArchive?: () => void;
-  onDelete?: () => void;
+  onViewProfile?: () => void
+  onArchive?: () => void
+  onDelete?: () => void
 }) {
   return (
     <DropdownMenu>
@@ -44,13 +44,17 @@ export function ConversationOptionsMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={4} className={cn('w-48')}>
-        <DropdownMenuItem onSelect={onViewProfile}>View Profile</DropdownMenuItem>
-        <DropdownMenuItem onSelect={onArchive}>Archive Conversation</DropdownMenuItem>
+        <DropdownMenuItem onSelect={onViewProfile}>
+          View Profile
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onArchive}>
+          Archive Conversation
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onDelete} className="text-destructive">
           Delete Conversation
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

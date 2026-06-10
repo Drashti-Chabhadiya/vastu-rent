@@ -26,10 +26,21 @@ if (typeof window !== 'undefined') {
   }
 
   const originalInsertBefore = Node.prototype.insertBefore
-  Node.prototype.insertBefore = function <T extends Node>(newNode: T, referenceNode: Node | null): T {
+  Node.prototype.insertBefore = function <T extends Node>(
+    newNode: T,
+    referenceNode: Node | null,
+  ): T {
     // If Google Translate moved the reference node to a different parent, follow it
-    if (referenceNode && referenceNode.parentNode && referenceNode.parentNode !== this) {
-      return originalInsertBefore.call(referenceNode.parentNode, newNode, referenceNode) as T
+    if (
+      referenceNode &&
+      referenceNode.parentNode &&
+      referenceNode.parentNode !== this
+    ) {
+      return originalInsertBefore.call(
+        referenceNode.parentNode,
+        newNode,
+        referenceNode,
+      ) as T
     }
     try {
       return originalInsertBefore.call(this, newNode, referenceNode) as T

@@ -61,8 +61,7 @@ export const ProductForm = ({
   currentUser,
   onUploadStatusChange,
 }: ProductFormProps) => {
-  const isLister =
-    currentUser?.role !== 'admin'
+  const isLister = currentUser?.role !== 'admin'
   const [requestCategoryOpen, setRequestCategoryOpen] = useState(false)
   const createRequestMutation = useCreateCategoryRequest()
   return (
@@ -322,7 +321,9 @@ export const ProductForm = ({
                 <FormControl>
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all disabled:opacity-100 disabled:bg-muted-light">
                     <SelectValue
-                      placeholder={isLister ? currentUser.name : 'Select Provider'}
+                      placeholder={
+                        isLister ? currentUser.name : 'Select Provider'
+                      }
                     />
                   </SelectTrigger>
                 </FormControl>

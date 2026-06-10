@@ -2,7 +2,9 @@ import { create } from 'zustand'
 
 export type LanguageCode = 'en' | 'hi' | 'gu'
 
-export function normalizeLanguage(lang: string | null | undefined): LanguageCode {
+export function normalizeLanguage(
+  lang: string | null | undefined,
+): LanguageCode {
   if (!lang) return 'en'
   const lower = lang.toLowerCase()
   if (lower === 'hi' || lower === 'hindi') return 'hi'
@@ -12,13 +14,13 @@ export function normalizeLanguage(lang: string | null | undefined): LanguageCode
 
 function setCookie(name: string, value: string, days?: number) {
   if (typeof document === 'undefined') return
-  let expires = ""
+  let expires = ''
   if (days) {
     const date = new Date()
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
-    expires = "; expires=" + date.toUTCString()
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
+    expires = '; expires=' + date.toUTCString()
   }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/"
+  document.cookie = name + '=' + (value || '') + expires + '; path=/'
 }
 
 function eraseCookie(name: string) {

@@ -7,7 +7,10 @@ interface NotificationsSectionProps {
   smsN: boolean
   mktN: boolean
   pushN: boolean
-  handleTogglePreference: (key: 'email' | 'sms' | 'marketing' | 'push', val: boolean) => void
+  handleTogglePreference: (
+    key: 'email' | 'sms' | 'marketing' | 'push',
+    val: boolean,
+  ) => void
 }
 
 export function NotificationsSection({

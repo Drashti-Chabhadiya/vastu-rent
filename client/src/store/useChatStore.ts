@@ -92,18 +92,23 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   setPendingPreviews: (pendingPreviews) => set({ pendingPreviews }),
   setIsUploading: (isUploading) => set({ isUploading }),
 
-  addPendingFiles: (files) => set((state) => ({ pendingFiles: [...state.pendingFiles, ...files] })),
-  addPendingPreviews: (previews) => set((state) => ({ pendingPreviews: [...state.pendingPreviews, ...previews] })),
+  addPendingFiles: (files) =>
+    set((state) => ({ pendingFiles: [...state.pendingFiles, ...files] })),
+  addPendingPreviews: (previews) =>
+    set((state) => ({
+      pendingPreviews: [...state.pendingPreviews, ...previews],
+    })),
 
-  removeFile: (index) => set((state) => {
-    if (state.pendingPreviews[index]) {
-      URL.revokeObjectURL(state.pendingPreviews[index])
-    }
-    return {
-      pendingFiles: state.pendingFiles.filter((_, i) => i !== index),
-      pendingPreviews: state.pendingPreviews.filter((_, i) => i !== index),
-    }
-  }),
+  removeFile: (index) =>
+    set((state) => {
+      if (state.pendingPreviews[index]) {
+        URL.revokeObjectURL(state.pendingPreviews[index])
+      }
+      return {
+        pendingFiles: state.pendingFiles.filter((_, i) => i !== index),
+        pendingPreviews: state.pendingPreviews.filter((_, i) => i !== index),
+      }
+    }),
 
   clearAttachments: () => {
     const { pendingPreviews } = get()
@@ -126,11 +131,12 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
           : lightboxIndex,
     })),
   setShowLightbox: (showLightbox) => set({ showLightbox }),
-  openLightbox: (lightboxImages, lightboxIndex) => set({
-    lightboxImages,
-    lightboxIndex,
-    showLightbox: true,
-  }),
+  openLightbox: (lightboxImages, lightboxIndex) =>
+    set({
+      lightboxImages,
+      lightboxIndex,
+      showLightbox: true,
+    }),
 
   setShowNewChat: (showNewChat) => set({ showNewChat }),
 }))

@@ -138,12 +138,13 @@ export const DeleteRequestsManagement = () => {
                         variant="outline"
                         className={`
                         rounded-full px-3 py-1 font-bold text-[10px] uppercase tracking-widest
-                        ${req.status === 'pending'
+                        ${
+                          req.status === 'pending'
                             ? 'bg-orange-50 text-orange-500 border-orange-200'
                             : req.status === 'approved'
                               ? 'bg-primary-soft text-primary border-primary-border/80'
                               : 'bg-danger text-destructive border-danger/50'
-                          }
+                        }
                       `}
                       >
                         {req.status}

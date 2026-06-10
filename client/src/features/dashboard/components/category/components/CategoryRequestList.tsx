@@ -75,7 +75,7 @@ export const CategoryRequestList = ({
                           alt={req.name}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            ; (e.target as any).src =
+                            ;(e.target as any).src =
                               'https://via.placeholder.com/100?text=Category'
                           }}
                         />
@@ -133,12 +133,13 @@ export const CategoryRequestList = ({
                 <div className="flex items-center gap-3">
                   {/* Status badge */}
                   <span
-                    className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${req.status === 'approved'
+                    className={`text-[10px] px-3 py-1 rounded-full font-black uppercase tracking-wider ${
+                      req.status === 'approved'
                         ? 'bg-primary-soft text-primary-hover'
                         : req.status === 'rejected'
                           ? 'bg-danger text-destructive'
                           : 'bg-yellow-50 text-yellow-700'
-                      }`}
+                    }`}
                   >
                     {req.status}
                   </span>

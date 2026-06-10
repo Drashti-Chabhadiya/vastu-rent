@@ -1,7 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-} from '#/components/ui/dialog'
+import { Dialog, DialogContent } from '#/components/ui/dialog'
 import { Button } from '#/components/ui/button'
 import { IndianRupee, Users, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
@@ -182,9 +179,7 @@ export function BookingDetailsDialog({
               >
                 Booking Status
               </span>
-              <div
-                className={cn('flex', 'gap-1.5', 'items-center', 'pt-0.5')}
-              >
+              <div className={cn('flex', 'gap-1.5', 'items-center', 'pt-0.5')}>
                 <BookingStatusBadge status={rental.status} />
               </div>
               <span
@@ -208,60 +203,70 @@ export function BookingDetailsDialog({
             rental.status === 'confirmed' ||
             rental.status === 'picked_up' ||
             rental.status === 'in_use') && (
-              <div
+            <div
+              className={cn(
+                'bg-[#fcfdfa]',
+                'p-4.5',
+                'rounded-2xl',
+                'border',
+                'border-primary-border',
+                'space-y-2',
+              )}
+            >
+              <span
                 className={cn(
-                  'bg-[#fcfdfa]',
-                  'p-4.5',
-                  'rounded-2xl',
-                  'border',
-                  'border-primary-border',
-                  'space-y-2',
+                  'text-[8px]',
+                  'font-black',
+                  'text-primary',
+                  'uppercase',
+                  'tracking-widest',
+                  'block',
                 )}
               >
-                <span
-                  className={cn(
-                    'text-[8px]',
-                    'font-black',
-                    'text-primary',
-                    'uppercase',
-                    'tracking-widest',
-                    'block',
-                  )}
-                >
-                  🛡️ Verification Security OTP
-                </span>
-                <div className={cn('flex', 'items-center', 'justify-between')}>
-                  <div>
-                    <p className={cn('text-xs', 'font-bold', 'text-foreground/80')}>
-                      {rental.status === 'pending' || rental.status === 'confirmed'
-                        ? 'Pickup Verification OTP'
-                        : 'Return Verification OTP'}
-                    </p>
-                    <p className={cn('text-[10px]', 'text-muted-dark', 'font-medium', 'mt-0.5')}>
-                      Share this OTP with the host upon physical verification.
-                    </p>
-                  </div>
-                  <div
+                🛡️ Verification Security OTP
+              </span>
+              <div className={cn('flex', 'items-center', 'justify-between')}>
+                <div>
+                  <p
+                    className={cn('text-xs', 'font-bold', 'text-foreground/80')}
+                  >
+                    {rental.status === 'pending' ||
+                    rental.status === 'confirmed'
+                      ? 'Pickup Verification OTP'
+                      : 'Return Verification OTP'}
+                  </p>
+                  <p
                     className={cn(
-                      'bg-primary/5',
-                      'border',
-                      'border-primary/20',
-                      'px-3.5',
-                      'py-1.5',
-                      'rounded-xl',
-                      'font-mono',
-                      'font-black',
-                      'text-sm',
-                      'text-primary',
+                      'text-[10px]',
+                      'text-muted-dark',
+                      'font-medium',
+                      'mt-0.5',
                     )}
                   >
-                    {rental.status === 'pending' || rental.status === 'confirmed'
-                      ? rental.pickupOTP || '123456'
-                      : rental.returnOTP || '654321'}
-                  </div>
+                    Share this OTP with the host upon physical verification.
+                  </p>
+                </div>
+                <div
+                  className={cn(
+                    'bg-primary/5',
+                    'border',
+                    'border-primary/20',
+                    'px-3.5',
+                    'py-1.5',
+                    'rounded-xl',
+                    'font-mono',
+                    'font-black',
+                    'text-sm',
+                    'text-primary',
+                  )}
+                >
+                  {rental.status === 'pending' || rental.status === 'confirmed'
+                    ? rental.pickupOTP || '123456'
+                    : rental.returnOTP || '654321'}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
           {/* Rental Period */}
           <div
@@ -297,7 +302,9 @@ export function BookingDetailsDialog({
               )}
             >
               <div className={cn('flex', 'flex-col')}>
-                <span className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}>
+                <span
+                  className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
+                >
                   From
                 </span>
                 <span className="mt-0.5">
@@ -305,9 +312,14 @@ export function BookingDetailsDialog({
                     format(new Date(rental.startDate), 'dd MMM yyyy')}
                 </span>
               </div>
-              <ChevronRight size={14} className={cn('text-muted-dark', 'mt-2')} />
+              <ChevronRight
+                size={14}
+                className={cn('text-muted-dark', 'mt-2')}
+              />
               <div className={cn('flex', 'flex-col', 'text-right')}>
-                <span className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}>
+                <span
+                  className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
+                >
                   To
                 </span>
                 <span className="mt-0.5">
@@ -338,7 +350,7 @@ export function BookingDetailsDialog({
                     Math.ceil(
                       (new Date(rental.endDate).getTime() -
                         new Date(rental.startDate).getTime()) /
-                      (1000 * 60 * 60 * 24),
+                        (1000 * 60 * 60 * 24),
                     ),
                   )}{' '}
                 Nights
@@ -443,7 +455,9 @@ export function BookingDetailsDialog({
               <span>
                 Payment Mode:{' '}
                 <span className={cn('text-muted-foreground/85', 'uppercase')}>
-                  {rental.paymentMethod === 'cash' ? 'Cash/COD' : 'Online Payment'}
+                  {rental.paymentMethod === 'cash'
+                    ? 'Cash/COD'
+                    : 'Online Payment'}
                 </span>
               </span>
               <span>

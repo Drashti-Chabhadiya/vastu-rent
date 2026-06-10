@@ -17,16 +17,13 @@ import type {
 import { cn } from '#/lib/utils'
 import { apiClient } from '#/lib/api'
 import { useChat } from '#/hook'
-
+import { parseMessage, buildReplyContent } from '#/lib/chat-utils'
 import { NewChatDialog } from './components/NewChatDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
 import { useChatStore } from '../../../../store/useChatStore'
 
 type Message = BaseMessage
-
-import { parseMessage, buildReplyContent } from '#/lib/chat-utils'
-
 
 export const MessagesManagement = () => {
   const {
@@ -373,7 +370,9 @@ export const MessagesManagement = () => {
             messagesContainerRef={messagesContainerRef}
             inputRef={inputRef}
             onCallSuccess={(name) => toast.success(`Calling ${name}...`)}
-            onVideoSuccess={(name) => toast.success(`Starting video call with ${name}...`)}
+            onVideoSuccess={(name) =>
+              toast.success(`Starting video call with ${name}...`)
+            }
           />
         </div>
       </div>

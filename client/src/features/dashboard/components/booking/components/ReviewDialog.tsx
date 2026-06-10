@@ -217,7 +217,10 @@ export function ReviewDialog({
                           },
                         )
                         if (res.data.url) {
-                          setUploadedImages((prev: string[]) => [...prev, res.data.url])
+                          setUploadedImages((prev: string[]) => [
+                            ...prev,
+                            res.data.url,
+                          ])
                         }
                       } catch {
                         toast.error('Image upload failed.')

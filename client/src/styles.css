@@ -263,10 +263,10 @@
 }
 
 /* Hide the Google Translate banner and widget UI */
-.skiptranslate, 
-.goog-te-banner-frame, 
-.goog-te-banner-frame.skiptranslate, 
-#goog-gt-tt, 
+.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+#goog-gt-tt,
 .goog-te-balloon-frame,
 iframe.goog-te-menu-frame {
   display: none !important;

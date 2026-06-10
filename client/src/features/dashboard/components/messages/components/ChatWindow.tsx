@@ -31,7 +31,6 @@ import { useChatStore } from '../../../../../store/useChatStore'
 
 import { parseMessage, formatMsgTime } from '#/lib/chat-utils'
 
-
 interface ChatWindowProps {
   activeConversation: Conversation | null
   checkOnline: (id: string) => boolean
@@ -120,7 +119,11 @@ export function ChatWindow({
               'justify-center',
             )}
           >
-            <MessageSquare size={28} className="text-primary" fill="currentColor" />
+            <MessageSquare
+              size={28}
+              className="text-primary"
+              fill="currentColor"
+            />
           </div>
           <div>
             <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
@@ -212,23 +215,10 @@ export function ChatWindow({
           />
 
           <div>
-            <h3
-              className={cn(
-                'text-[13px]',
-                'font-black',
-                'text-foreground',
-              )}
-            >
+            <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
               {activeConversation.otherParticipant.name}
             </h3>
-            <div
-              className={cn(
-                'flex',
-                'items-center',
-                'gap-1.5',
-                'mt-0.5',
-              )}
-            >
+            <div className={cn('flex', 'items-center', 'gap-1.5', 'mt-0.5')}>
               <div
                 className={cn(
                   'w-1.5 h-1.5 rounded-full',
@@ -236,11 +226,7 @@ export function ChatWindow({
                 )}
               />
               <span
-                className={cn(
-                  'text-[9px]',
-                  'font-bold',
-                  'text-muted-dark',
-                )}
+                className={cn('text-[9px]', 'font-bold', 'text-muted-dark')}
               >
                 {otherPersonOnline ? 'Online' : 'Offline'}
               </span>
@@ -265,7 +251,9 @@ export function ChatWindow({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => onCallSuccess?.(activeConversation.otherParticipant.name)}
+            onClick={() =>
+              onCallSuccess?.(activeConversation.otherParticipant.name)
+            }
             className={cn(
               'w-9',
               'h-9',
@@ -282,7 +270,9 @@ export function ChatWindow({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => onVideoSuccess?.(activeConversation.otherParticipant.name)}
+            onClick={() =>
+              onVideoSuccess?.(activeConversation.otherParticipant.name)
+            }
             className={cn(
               'w-9',
               'h-9',
@@ -298,12 +288,17 @@ export function ChatWindow({
           </Button>
           <ConversationOptionsMenu
             onViewProfile={() =>
-              navigate({ to: '/users/$id', params: { id: activeConversation.otherParticipant.id } })
+              navigate({
+                to: '/users/$id',
+                params: { id: activeConversation.otherParticipant.id },
+              })
             }
             onArchive={() => toast.info('Archive feature coming soon')}
             onDelete={async () => {
               try {
-                await apiClient.delete(`/chat/conversations/${activeConversation.id}`)
+                await apiClient.delete(
+                  `/chat/conversations/${activeConversation.id}`,
+                )
                 toast.success('Conversation deleted')
               } catch {
                 toast.error('Failed to delete conversation')
@@ -328,32 +323,14 @@ export function ChatWindow({
       >
         {isLoadingMessages ? (
           <div
-            className={cn(
-              'flex',
-              'items-center',
-              'justify-center',
-              'h-full',
-            )}
+            className={cn('flex', 'items-center', 'justify-center', 'h-full')}
           >
-            <div
-              className={cn(
-                'flex',
-                'flex-col',
-                'items-center',
-                'gap-3',
-              )}
-            >
+            <div className={cn('flex', 'flex-col', 'items-center', 'gap-3')}>
               <Loader2
                 size={24}
                 className={cn('animate-spin', 'text-primary')}
               />
-              <p
-                className={cn(
-                  'text-[11px]',
-                  'font-bold',
-                  'text-muted-dark',
-                )}
-              >
+              <p className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}>
                 Loading messages...
               </p>
             </div>
@@ -420,9 +397,7 @@ export function ChatWindow({
               {/* Messages */}
               {group.msgs.map((msg) => {
                 const isMe = msg.senderId === currentUserId
-                const { replyQuote, text: msgText } = parseMessage(
-                  msg.content,
-                )
+                const { replyQuote, text: msgText } = parseMessage(msg.content)
                 const isHovered = hoveredMsgId === msg.id
                 return (
                   <div
@@ -440,61 +415,50 @@ export function ChatWindow({
                     {!isMe && (
                       <div className={cn('self-end', 'shrink-0')}>
                         <UserAvatar
-                          image={
-                            activeConversation.otherParticipant.image
-                          }
-                          name={
-                            activeConversation.otherParticipant.name
-                          }
+                          image={activeConversation.otherParticipant.image}
+                          name={activeConversation.otherParticipant.name}
                           size="sm"
                         />
                       </div>
                     )}
 
-                    <div
-                      className={cn('flex flex-col gap-1 min-w-0')}
-                    >
+                    <div className={cn('flex flex-col gap-1 min-w-0')}>
                       {/* Image attachments grid */}
-                      {msg.attachments &&
-                        msg.attachments.length > 0 && (
-                          <div
-                            className={cn(
-                              'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm',
-                              msg.attachments.length === 1
-                                ? 'grid-cols-1 max-w-[220px]'
-                                : msg.attachments.length === 2
-                                  ? 'grid-cols-2 max-w-[280px]'
-                                  : 'grid-cols-3 max-w-[320px]',
-                              isMe
-                                ? 'rounded-tr-sm'
-                                : 'rounded-tl-sm',
-                            )}
-                          >
-                            {msg.attachments.map((src, i) => (
-                              <Button
-                                key={i}
-                                type="button"
-                                variant="ghost"
-                                onClick={() =>
-                                  openLightbox(msg.attachments, i)
-                                }
-                                className="relative group/img block overflow-hidden focus:outline-none p-0 h-auto rounded-none hover:bg-transparent"
-                              >
-                                <img
-                                  src={src}
-                                  alt={`attachment-${i + 1}`}
-                                  className="w-full h-28 object-cover transition-transform duration-200 group-hover/img:scale-105"
+                      {msg.attachments && msg.attachments.length > 0 && (
+                        <div
+                          className={cn(
+                            'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm',
+                            msg.attachments.length === 1
+                              ? 'grid-cols-1 max-w-[220px]'
+                              : msg.attachments.length === 2
+                                ? 'grid-cols-2 max-w-[280px]'
+                                : 'grid-cols-3 max-w-[320px]',
+                            isMe ? 'rounded-tr-sm' : 'rounded-tl-sm',
+                          )}
+                        >
+                          {msg.attachments.map((src, i) => (
+                            <Button
+                              key={i}
+                              type="button"
+                              variant="ghost"
+                              onClick={() => openLightbox(msg.attachments, i)}
+                              className="relative group/img block overflow-hidden focus:outline-none p-0 h-auto rounded-none hover:bg-transparent"
+                            >
+                              <img
+                                src={src}
+                                alt={`attachment-${i + 1}`}
+                                className="w-full h-28 object-cover transition-transform duration-200 group-hover/img:scale-105"
+                              />
+                              <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+                                <ZoomIn
+                                  size={20}
+                                  className="text-white opacity-0 group-hover/img:opacity-100 drop-shadow-lg transition-opacity duration-200"
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-200 flex items-center justify-center">
-                                  <ZoomIn
-                                    size={20}
-                                    className="text-white opacity-0 group-hover/img:opacity-100 drop-shadow-lg transition-opacity duration-200"
-                                  />
-                                </div>
-                              </Button>
-                            ))}
-                          </div>
-                        )}
+                              </div>
+                            </Button>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Bubble */}
                       {msg.content && (
@@ -520,17 +484,13 @@ export function ChatWindow({
                                 size={10}
                                 className={cn(
                                   'shrink-0 mt-0.5',
-                                  isMe
-                                    ? 'text-primary/60'
-                                    : 'text-muted-dark',
+                                  isMe ? 'text-primary/60' : 'text-muted-dark',
                                 )}
                               />
                               <p
                                 className={cn(
                                   'text-[9.5px] leading-snug truncate',
-                                  isMe
-                                    ? 'text-primary/70'
-                                    : 'text-muted-dark',
+                                  isMe ? 'text-primary/70' : 'text-muted-dark',
                                 )}
                               >
                                 {replyQuote}
@@ -602,9 +562,7 @@ export function ChatWindow({
       </div>
 
       {/* Input Dock */}
-      <div
-        className={cn('border-t border-border/30 bg-card shrink-0')}
-      >
+      <div className={cn('border-t border-border/30 bg-card shrink-0')}>
         {/* Reply Preview Bar */}
         {replyTarget && (
           <div
@@ -614,10 +572,7 @@ export function ChatWindow({
               'animate-in slide-in-from-bottom-1 duration-150',
             )}
           >
-            <CornerUpLeft
-              size={13}
-              className="text-primary shrink-0"
-            />
+            <CornerUpLeft size={13} className="text-primary shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[9px] font-black text-primary uppercase tracking-wider mb-0.5">
                 Replying to {replyTarget.senderName}
@@ -655,11 +610,7 @@ export function ChatWindow({
                   onClick={() => removeFile(i)}
                   className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-0 rounded-none hover:bg-black/50 w-full h-full"
                 >
-                  <X
-                    size={14}
-                    className="text-white"
-                    strokeWidth={2.5}
-                  />
+                  <X size={14} className="text-white" strokeWidth={2.5} />
                 </Button>
               </div>
             ))}
@@ -688,10 +639,7 @@ export function ChatWindow({
           <Button
             variant="ghost"
             size="icon"
-            disabled={
-              !isConnected ||
-              pendingFiles.length >= 5
-            }
+            disabled={!isConnected || pendingFiles.length >= 5}
             onClick={() => fileInputRef.current?.click()}
             className={cn(
               'w-10',
@@ -705,8 +653,7 @@ export function ChatWindow({
               'cursor-pointer',
               'shrink-0',
               'disabled:opacity-40',
-              pendingFiles.length > 0 &&
-              'text-primary bg-primary-soft/40',
+              pendingFiles.length > 0 && 'text-primary bg-primary-soft/40',
             )}
             title={`Attach images (${pendingFiles.length}/5)`}
           >

@@ -46,24 +46,30 @@ export const CategoryManagement = ({
   const [editingCategory, setEditingCategory] = useState<any>(null)
   const [categoryToDelete, setCategoryToDelete] = useState<any>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [isDeleteRequestDialogOpen, setIsDeleteRequestDialogOpen] = useState(false)
+  const [isDeleteRequestDialogOpen, setIsDeleteRequestDialogOpen] =
+    useState(false)
   const [deleteRequestReason, setDeleteRequestReason] = useState('')
 
   // Category Request states
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false)
-  const [requestsSubTab, setRequestsSubTab] = useState<'proposals' | 'deletions'>('proposals')
+  const [requestsSubTab, setRequestsSubTab] = useState<
+    'proposals' | 'deletions'
+  >('proposals')
 
   // Rejection state
   const [rejectingRequest, setRejectingRequest] = useState<any>(null)
-  const [rejectingDeleteRequest, setRejectingDeleteRequest] = useState<any>(null)
+  const [rejectingDeleteRequest, setRejectingDeleteRequest] =
+    useState<any>(null)
 
   // Approval state
   const [approvingRequest, setApprovingRequest] = useState<any>(null)
-  const [approvingDeleteRequest, setApprovingDeleteRequest] = useState<any>(null)
+  const [approvingDeleteRequest, setApprovingDeleteRequest] =
+    useState<any>(null)
 
   const { data: categories, isLoading } = useAdminCategories()
   const { data: requests, isLoading: requestsLoading } = useCategoryRequests()
-  const { data: deleteRequests, isLoading: deleteRequestsLoading } = useCategoryDeleteRequests()
+  const { data: deleteRequests, isLoading: deleteRequestsLoading } =
+    useCategoryDeleteRequests()
   const { data: session } = authClient.useSession()
 
   const user = session?.user
@@ -196,7 +202,9 @@ export const CategoryManagement = ({
           toast.success('Category deletion request approved')
         },
         onError: (err: any) => {
-          toast.error(err.response?.data?.message || 'Failed to approve deletion')
+          toast.error(
+            err.response?.data?.message || 'Failed to approve deletion',
+          )
         },
       },
     )
@@ -233,7 +241,8 @@ export const CategoryManagement = ({
   const deleteRequestDialogDescription = (
     <div className="space-y-4 text-left">
       <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
-        You cannot delete "{categoryToDelete?.name}" directly because it is approved. Please submit a request to the platform admins.
+        You cannot delete "{categoryToDelete?.name}" directly because it is
+        approved. Please submit a request to the platform admins.
       </p>
       <div className="space-y-2">
         <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
@@ -256,10 +265,11 @@ export const CategoryManagement = ({
         <Button
           variant="ghost"
           onClick={() => setActiveTab('categories')}
-          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'categories'
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${
+            activeTab === 'categories'
               ? 'text-primary font-black hover:text-primary'
               : 'text-muted-foreground/70 hover:text-muted-foreground'
-            }`}
+          }`}
         >
           Active Categories
           {activeTab === 'categories' && (
@@ -269,20 +279,18 @@ export const CategoryManagement = ({
         <Button
           variant="ghost"
           onClick={() => setActiveTab('requests')}
-          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'requests'
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${
+            activeTab === 'requests'
               ? 'text-primary font-black hover:text-primary'
               : 'text-muted-foreground/70 hover:text-muted-foreground'
-            }`}
+          }`}
         >
           Category Requests
           {userRequests &&
             userRequests.filter((r: any) => r.status === 'pending').length >
-            0 && (
+              0 && (
               <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
-                {
-                  userRequests.filter((r: any) => r.status === 'pending')
-                    .length
-                }
+                {userRequests.filter((r: any) => r.status === 'pending').length}
               </span>
             )}
           {activeTab === 'requests' && (
@@ -377,27 +385,33 @@ export const CategoryManagement = ({
             <Button
               variant="ghost"
               onClick={() => setRequestsSubTab('proposals')}
-              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${requestsSubTab === 'proposals'
+              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${
+                requestsSubTab === 'proposals'
                   ? 'text-primary border-b-2 border-primary font-black'
                   : 'text-muted-foreground/70'
-                }`}
+              }`}
             >
               Proposals
             </Button>
             <Button
               variant="ghost"
               onClick={() => setRequestsSubTab('deletions')}
-              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${requestsSubTab === 'deletions'
+              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${
+                requestsSubTab === 'deletions'
                   ? 'text-primary border-b-2 border-primary font-black'
                   : 'text-muted-foreground/70'
-                }`}
+              }`}
             >
               Deletion Requests
               {userDeleteRequests &&
-                userDeleteRequests.filter((r: any) => r.status === 'pending').length >
-                0 && (
+                userDeleteRequests.filter((r: any) => r.status === 'pending')
+                  .length > 0 && (
                   <span className="ml-1.5 bg-destructive text-destructive-foreground text-[9px] px-1.5 py-0.5 rounded-full font-black animate-pulse">
-                    {userDeleteRequests.filter((r: any) => r.status === 'pending').length}
+                    {
+                      userDeleteRequests.filter(
+                        (r: any) => r.status === 'pending',
+                      ).length
+                    }
                   </span>
                 )}
             </Button>
@@ -422,7 +436,12 @@ export const CategoryManagement = ({
               onRejectRequest={(req) => setRejectingDeleteRequest(req)}
               requestsLoading={deleteRequestsLoading}
               onDeleteConfirm={(req) => {
-                setCategoryToDelete(req.category || { id: req.categoryId, name: req.categoryName })
+                setCategoryToDelete(
+                  req.category || {
+                    id: req.categoryId,
+                    name: req.categoryName,
+                  },
+                )
                 setIsDeleteDialogOpen(true)
               }}
             />

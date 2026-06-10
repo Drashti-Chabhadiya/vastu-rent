@@ -125,17 +125,18 @@ function NotificationListener() {
       if (typeof window !== 'undefined' && 'Notification' in window) {
         if (Notification.permission === 'denied') {
           toast.warning('Notifications Blocked', {
-            description: 'Please enable notifications in your browser address bar settings to receive real-time updates.',
+            description:
+              'Please enable notifications in your browser address bar settings to receive real-time updates.',
             duration: 8000,
           })
         } else if (Notification.permission === 'default') {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
-              registerDeviceForPush().catch(() => { })
+              registerDeviceForPush().catch(() => {})
             }
           })
         } else if (Notification.permission === 'granted') {
-          registerDeviceForPush().catch(() => { })
+          registerDeviceForPush().catch(() => {})
         }
       }
     }
@@ -192,34 +193,39 @@ function NotificationListener() {
           'serviceWorker' in navigator &&
           Notification.permission === 'granted'
         ) {
-          navigator.serviceWorker.ready.then((reg) => {
-            reg.showNotification(notif.title, {
-              body: notif.message,
-              icon: '/logo192.png',
-              badge: '/logo192.png',
-              image: notif.image,
-              data: {
-                url: notif.url || '/account/notifications',
-              },
-            } as any)
-          }).catch((err) => {
-            console.error('Failed to trigger native notification via service worker:', err)
-            // Fallback to main thread Notification
-            try {
-              const notification = new Notification(notif.title, {
+          navigator.serviceWorker.ready
+            .then((reg) => {
+              reg.showNotification(notif.title, {
                 body: notif.message,
                 icon: '/logo192.png',
+                badge: '/logo192.png',
                 image: notif.image,
+                data: {
+                  url: notif.url || '/account/notifications',
+                },
               } as any)
-              notification.onclick = (e) => {
-                e.preventDefault()
-                window.focus()
-                navigate({ to: notif.url || '/account/notifications' })
+            })
+            .catch((err) => {
+              console.error(
+                'Failed to trigger native notification via service worker:',
+                err,
+              )
+              // Fallback to main thread Notification
+              try {
+                const notification = new Notification(notif.title, {
+                  body: notif.message,
+                  icon: '/logo192.png',
+                  image: notif.image,
+                } as any)
+                notification.onclick = (e) => {
+                  e.preventDefault()
+                  window.focus()
+                  navigate({ to: notif.url || '/account/notifications' })
+                }
+              } catch (fallbackErr) {
+                console.error('Fallback notification also failed:', fallbackErr)
               }
-            } catch (fallbackErr) {
-              console.error('Fallback notification also failed:', fallbackErr)
-            }
-          })
+            })
         }
       }
     })
@@ -262,33 +268,38 @@ function NotificationListener() {
         'serviceWorker' in navigator &&
         Notification.permission === 'granted'
       ) {
-        navigator.serviceWorker.ready.then((reg) => {
-          reg.showNotification(notif.title, {
-            body: notif.message,
-            icon: '/logo192.png',
-            badge: '/logo192.png',
-            image: notif.image,
-            data: {
-              url: notif.url || '/account/notifications',
-            },
-          } as any)
-        }).catch((err) => {
-          console.error('Failed to trigger native notification via service worker:', err)
-          try {
-            const notification = new Notification(notif.title, {
+        navigator.serviceWorker.ready
+          .then((reg) => {
+            reg.showNotification(notif.title, {
               body: notif.message,
               icon: '/logo192.png',
+              badge: '/logo192.png',
               image: notif.image,
+              data: {
+                url: notif.url || '/account/notifications',
+              },
             } as any)
-            notification.onclick = (e) => {
-              e.preventDefault()
-              window.focus()
-              navigate({ to: notif.url || '/account/notifications' })
+          })
+          .catch((err) => {
+            console.error(
+              'Failed to trigger native notification via service worker:',
+              err,
+            )
+            try {
+              const notification = new Notification(notif.title, {
+                body: notif.message,
+                icon: '/logo192.png',
+                image: notif.image,
+              } as any)
+              notification.onclick = (e) => {
+                e.preventDefault()
+                window.focus()
+                navigate({ to: notif.url || '/account/notifications' })
+              }
+            } catch (fallbackErr) {
+              console.error('Fallback notification also failed:', fallbackErr)
             }
-          } catch (fallbackErr) {
-            console.error('Fallback notification also failed:', fallbackErr)
-          }
-        })
+          })
       }
     })
     return () => off && off()

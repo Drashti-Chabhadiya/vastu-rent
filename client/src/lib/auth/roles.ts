@@ -13,4 +13,3 @@ export const isUserRole = (role?: string | null) =>
   normalizeRole(role) === 'user'
 export const isDashboardRole = (role?: string | null) =>
   isAdminRole(role) || isUserRole(role)
-

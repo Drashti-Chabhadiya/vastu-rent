@@ -134,7 +134,8 @@ export function ContactSettingsTab() {
             Changes Reflect Instantly
           </span>
           <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
-            Any updates you make here will be visible on the live site immediately.
+            Any updates you make here will be visible on the live site
+            immediately.
           </span>
         </div>
       </div>

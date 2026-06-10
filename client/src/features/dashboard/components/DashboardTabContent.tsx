@@ -38,9 +38,15 @@ export const DashboardTabContent = () => {
     case 'users':
       return <UsersManagement />
     case 'listings':
-      return <ListingsManagement initialCategoryFilter={context.activeCategoryFilter} />
+      return (
+        <ListingsManagement
+          initialCategoryFilter={context.activeCategoryFilter}
+        />
+      )
     case 'categories':
-      return <CategoryManagement onManageCategory={context.handleManageCategory} />
+      return (
+        <CategoryManagement onManageCategory={context.handleManageCategory} />
+      )
     case 'stories':
       return <StoriesManagement />
     case 'reviews':
