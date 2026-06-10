@@ -3,7 +3,7 @@ import { categoryRequestController } from "./category-request.controller.js";
 import { auth } from "../../config/auth.js";
 
 export async function categoryRequestRoutes(fastify: FastifyInstance) {
-  // Owner Route
+  // User Route
   fastify.post("/", {
     preHandler: async (request, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
@@ -25,7 +25,7 @@ export async function categoryRequestRoutes(fastify: FastifyInstance) {
   fastify.put("/:id/status", {
     preHandler: async (request, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || (session.user.role !== "admin" && session.user.role !== "superAdmin")) {
+      if (!session || session.user.role !== "admin") {
         return reply.status(403).send({ message: "Forbidden: Admin access required" });
       }
     }

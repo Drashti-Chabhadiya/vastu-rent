@@ -9,8 +9,8 @@ export interface CategoryRequest {
   image?: string
   status: 'pending' | 'approved' | 'rejected'
   reason?: string
-  ownerId: string
-  owner?: {
+  userId: string
+  user?: {
     id: string
     name: string
     email: string

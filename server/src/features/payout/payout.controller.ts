@@ -5,19 +5,14 @@ export class PayoutController {
   async getEarningsDashboard(request: FastifyRequest, reply: FastifyReply) {
     const user = (request as any).user;
 
-    if (user.role !== "owner" && user.role !== "admin" && user.role !== "superAdmin") {
-      return reply.status(403).send({ message: "Forbidden: Access restricted to listing owners and admins" });
-    }
-
-    // Admins can query dashboard stats of other owners, fallback to active user
-    let targetOwnerId = user.id;
-    const { ownerId } = request.query as { ownerId?: string };
-    if (ownerId && (user.role === "admin" || user.role === "superAdmin")) {
-      targetOwnerId = ownerId;
+    let targetUserId = user.id;
+    const { userId } = request.query as { userId?: string };
+    if (userId && user.role === "admin") {
+      targetUserId = userId;
     }
 
     try {
-      const data = await payoutService.getEarningsDashboard(targetOwnerId);
+      const data = await payoutService.getEarningsDashboard(targetUserId);
       return data;
     } catch (error: any) {
       return reply.status(500).send({ message: error.message || "Failed to fetch earnings analytics" });
@@ -39,7 +34,7 @@ export class PayoutController {
   async getAllPayoutRequests(request: FastifyRequest, reply: FastifyReply) {
     const user = (request as any).user;
 
-    if (user.role !== "admin" && user.role !== "superAdmin") {
+    if (user.role !== "admin") {
       return reply.status(403).send({ message: "Forbidden: Admin access required" });
     }
 
@@ -56,7 +51,7 @@ export class PayoutController {
     const { id } = request.params as { id: string };
     const { status, notes } = request.body as { status: string; notes?: string };
 
-    if (user.role !== "admin" && user.role !== "superAdmin") {
+    if (user.role !== "admin") {
       return reply.status(403).send({ message: "Forbidden: Admin access required" });
     }
 

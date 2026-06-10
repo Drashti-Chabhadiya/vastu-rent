@@ -32,8 +32,8 @@ import { ProductEarningsBreakdown } from './components/ProductEarningsBreakdown'
 
 export const PaymentsManagement = () => {
   const { data: session } = authClient.useSession()
-  const role = session?.user.role || 'owner'
-  const isAdmin = role === 'admin' || role === 'superAdmin'
+  const role = session?.user.role || 'user'
+  const isAdmin = role === 'admin'
 
   // Fetch queries
   const { data: dashboardData, isLoading: isDashboardLoading } =
@@ -214,7 +214,7 @@ export const PaymentsManagement = () => {
         </Button>
       </div>
 
-      {/* ADMIN PENDING ACTIONS PORTAL (Admin/SuperAdmin only) */}
+      {/* ADMIN PENDING ACTIONS PORTAL (Admin only) */}
       {isAdmin && (
         <AdminPayoutApprovals
           allAdminPayouts={allAdminPayouts || []}

@@ -12,7 +12,7 @@ import { scenarioColorMap } from '#/lib/coupon-utils'
 
 interface CouponSidebarProps {
   isAdmin: boolean
-  isOwner: boolean
+  isUser: boolean
   activeTab: 'my' | 'global'
   onCreateClick: () => void
 }
@@ -49,7 +49,7 @@ const SCENARIOS = [
 ]
 
 const RULES = [
-  'Owner coupons apply only to listings created by that owner.',
+  'User coupons apply only to listings created by that user.',
   'Listing-restricted coupons apply solely to that specific item.',
   'usedCount auto-increments on booking and decrements on cancellation/rejection.',
   'Per-user redemption count is verified at checkout atomically.',
@@ -57,11 +57,11 @@ const RULES = [
 
 export function CouponSidebar({
   isAdmin,
-  isOwner,
+  isUser,
   activeTab,
   onCreateClick,
 }: CouponSidebarProps) {
-  const canCreate = isAdmin || (isOwner && activeTab === 'my')
+  const canCreate = isAdmin || (isUser && activeTab === 'my')
 
   return (
     <div className="space-y-6">

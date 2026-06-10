@@ -1,4 +1,11 @@
-import { Calendar, MapPin, IndianRupee, ChevronRight, CheckCircle2, Users } from 'lucide-react'
+import {
+  Calendar,
+  MapPin,
+  IndianRupee,
+  ChevronRight,
+  CheckCircle2,
+  Users,
+} from 'lucide-react'
 import { format } from 'date-fns'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
@@ -63,8 +70,7 @@ export function BookingCard({
       >
         <img
           src={
-            rental.product?.images?.[0] ||
-            'https://placehold.co/128?text=Vastu'
+            rental.product?.images?.[0] || 'https://placehold.co/128?text=Vastu'
           }
           alt={rental.product?.title}
           className={cn(
@@ -142,9 +148,7 @@ export function BookingCard({
             )}
           >
             <Users size={13} className="text-muted-dark" />
-            <span>
-              {rental.product?.category?.name || 'Vastu Rental'}
-            </span>
+            <span>{rental.product?.category?.name || 'Vastu Rental'}</span>
           </div>
         </div>
       </div>
@@ -235,12 +239,7 @@ export function BookingCard({
             <>
               {rental.product?.reviews && rental.product.reviews.length > 0 ? (
                 <div
-                  className={cn(
-                    'flex',
-                    'items-center',
-                    'gap-2',
-                    'flex-wrap',
-                  )}
+                  className={cn('flex', 'items-center', 'gap-2', 'flex-wrap')}
                 >
                   <Badge
                     className={cn(
@@ -378,7 +377,10 @@ export function BookingCard({
             )}
           >
             View Details
-            <ChevronRight size={14} className={cn('text-primary', 'stroke-[3]')} />
+            <ChevronRight
+              size={14}
+              className={cn('text-primary', 'stroke-[3]')}
+            />
           </Button>
         </div>
       </div>

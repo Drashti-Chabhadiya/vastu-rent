@@ -11,30 +11,32 @@ import {
 interface UsersOverviewTableProps {
   users?: any[]
   isLoading: boolean
+  onViewAll?: () => void
 }
 
 export const UsersOverviewTable = ({
   users = [],
   isLoading,
+  onViewAll,
 }: UsersOverviewTableProps) => {
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Users</h3>
-        <ExploreLink to="/account/users">View All</ExploreLink>
+        <ExploreLink onClick={onViewAll}>View All</ExploreLink>
       </div>
 
       <div className="overflow-x-auto scrollbar-hide">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-border/30 hover:bg-transparent">
-              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase pr-2 h-auto">
                 Name
               </TableHead>
-              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase pr-2 h-auto">
                 Email
               </TableHead>
-              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right whitespace-nowrap pl-4 h-auto">
+              <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right pl-2 h-auto">
                 Role
               </TableHead>
             </TableRow>
@@ -59,25 +61,33 @@ export const UsersOverviewTable = ({
                 </TableCell>
               </TableRow>
             ) : (
-              users.map((user) => (
+              users.slice(0, 5).map((user) => (
                 <TableRow
                   key={user.id}
                   className="group border-b-0 hover:bg-muted-light/30"
                 >
-                  <TableCell className="py-4 whitespace-nowrap pr-4">
+                  <TableCell className="py-4 pr-2 max-w-[110px] truncate">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-dash-brand-light flex items-center justify-center text-[10px] font-bold text-dash-brand uppercase">
-                        {user.name?.[0] || user.email[0]}
+                      <div className="w-6 h-6 rounded-full bg-dash-brand-light flex items-center justify-center text-[10px] font-bold text-dash-brand uppercase overflow-hidden shrink-0">
+                        {user.image ? (
+                          <img
+                            src={user.image}
+                            alt={user.name || 'avatar'}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          user.name?.[0] || user.email[0]
+                        )}
                       </div>
-                      <span className="text-xs font-bold text-dash-text-soft">
+                      <span className="text-xs font-bold text-dash-text-soft truncate">
                         {user.name || 'Anonymous'}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4 text-xs text-dash-text-muted whitespace-nowrap pr-4">
+                  <TableCell className="py-4 text-xs text-dash-text-muted pr-2 max-w-[130px] truncate">
                     {user.email}
                   </TableCell>
-                  <TableCell className="py-4 text-right whitespace-nowrap pl-4">
+                  <TableCell className="py-4 text-right pl-2">
                     <span className="text-[10px] font-bold px-2 py-1 rounded bg-muted-light text-dash-text-soft uppercase">
                       {user.role}
                     </span>

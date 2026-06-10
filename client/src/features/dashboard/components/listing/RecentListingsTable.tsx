@@ -12,17 +12,19 @@ import {
 interface RecentListingsTableProps {
   products?: any[]
   isLoading: boolean
+  onViewAll?: () => void
 }
 
 export const RecentListingsTable = ({
   products = [],
   isLoading,
+  onViewAll,
 }: RecentListingsTableProps) => {
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-dash-text">Recent Listings</h3>
-        <ExploreLink to="/account/listings">View All</ExploreLink>
+        <ExploreLink onClick={onViewAll}>View All</ExploreLink>
       </div>
 
       <div className="overflow-x-auto scrollbar-hide">
@@ -36,7 +38,7 @@ export const RecentListingsTable = ({
                 Category
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
-                Owner
+                Provider
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center whitespace-nowrap px-4 h-auto">
                 Price / Day
@@ -93,7 +95,7 @@ export const RecentListingsTable = ({
                     {item.category?.name || 'Uncategorized'}
                   </TableCell>
                   <TableCell className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
-                    {item.owner?.name || 'Unknown'}
+                    {item.user?.name || 'Unknown'}
                   </TableCell>
                   <TableCell className="py-3 text-xs font-bold text-dash-text text-center whitespace-nowrap px-4">
                     ₹{item.price}

@@ -10,16 +10,24 @@ import {
   useCategoryRequests,
   useCreateCategoryRequest,
   useUpdateCategoryRequestStatus,
+  useCategoryDeleteRequests,
+  useCreateCategoryDeleteRequest,
+  useProcessCategoryDeleteRequest,
 } from '#/hook'
 import { isAdminRole, isUserRole } from '#/lib/auth/roles'
 import { CategoryFormDialog } from './components/CategoryFormDialog'
 import { DeleteConfirmDialog } from './components/DeleteConfirmDialog'
 import { authClient } from '#/lib/auth/auth-client'
+import { toast } from 'sonner'
+import { Textarea } from '#/components/ui/textarea'
 
 // Import extracted sub-components
 import { CategoryCard } from './components/CategoryCard'
 import { CategoryRequestList } from './components/CategoryRequestList'
 import { CategoryRequestActionModals } from './components/CategoryRequestActionModals'
+import { CategoryDeleteRequestList } from './components/CategoryDeleteRequestList'
+import { CategoryDeleteActionModals } from './components/CategoryDeleteActionModals'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
 interface CategoryManagementProps {
   onManageCategory?: (categoryId: string) => void
@@ -38,23 +46,35 @@ export const CategoryManagement = ({
   const [editingCategory, setEditingCategory] = useState<any>(null)
   const [categoryToDelete, setCategoryToDelete] = useState<any>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isDeleteRequestDialogOpen, setIsDeleteRequestDialogOpen] =
+    useState(false)
+  const [deleteRequestReason, setDeleteRequestReason] = useState('')
 
   // Category Request states
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false)
+  const [requestsSubTab, setRequestsSubTab] = useState<
+    'proposals' | 'deletions'
+  >('proposals')
 
   // Rejection state
   const [rejectingRequest, setRejectingRequest] = useState<any>(null)
+  const [rejectingDeleteRequest, setRejectingDeleteRequest] =
+    useState<any>(null)
 
   // Approval state
   const [approvingRequest, setApprovingRequest] = useState<any>(null)
+  const [approvingDeleteRequest, setApprovingDeleteRequest] =
+    useState<any>(null)
 
   const { data: categories, isLoading } = useAdminCategories()
   const { data: requests, isLoading: requestsLoading } = useCategoryRequests()
+  const { data: deleteRequests, isLoading: deleteRequestsLoading } =
+    useCategoryDeleteRequests()
   const { data: session } = authClient.useSession()
 
   const user = session?.user
   const isAdmin = isAdminRole(user?.role)
-  const isOwner = isUserRole(user?.role)
+  const isUser = isUserRole(user?.role)
 
   const createMutation = useCreateCategory()
   const updateMutation = useUpdateCategory()
@@ -62,6 +82,9 @@ export const CategoryManagement = ({
 
   const createRequestMutation = useCreateCategoryRequest()
   const updateRequestStatusMutation = useUpdateCategoryRequestStatus()
+
+  const createDeleteRequestMutation = useCreateCategoryDeleteRequest()
+  const processDeleteRequestMutation = useProcessCategoryDeleteRequest()
 
   const handleOpenAdd = () => {
     if (!isAdmin) return
@@ -142,12 +165,97 @@ export const CategoryManagement = ({
     )
   }
 
+  const handleCreateDeleteRequest = () => {
+    if (!categoryToDelete) return
+    if (!deleteRequestReason.trim()) {
+      toast.error('Please specify a reason for deletion')
+      return
+    }
+
+    createDeleteRequestMutation.mutate(
+      {
+        categoryId: categoryToDelete.id,
+        reason: deleteRequestReason,
+      },
+      {
+        onSuccess: () => {
+          setIsDeleteRequestDialogOpen(false)
+          setCategoryToDelete(null)
+          toast.success('Category deletion request submitted successfully')
+        },
+        onError: (err: any) => {
+          toast.error(
+            err.response?.data?.message || 'Failed to submit deletion request',
+          )
+        },
+      },
+    )
+  }
+
+  const handleApproveDeleteConfirm = () => {
+    if (!approvingDeleteRequest) return
+    processDeleteRequestMutation.mutate(
+      { id: approvingDeleteRequest.id, status: 'approved' },
+      {
+        onSuccess: () => {
+          setApprovingDeleteRequest(null)
+          toast.success('Category deletion request approved')
+        },
+        onError: (err: any) => {
+          toast.error(
+            err.response?.data?.message || 'Failed to approve deletion',
+          )
+        },
+      },
+    )
+  }
+
+  const handleRejectDeleteConfirm = () => {
+    if (!rejectingDeleteRequest) return
+    processDeleteRequestMutation.mutate(
+      { id: rejectingDeleteRequest.id, status: 'rejected' },
+      {
+        onSuccess: () => {
+          setRejectingDeleteRequest(null)
+          toast.success('Category deletion request rejected')
+        },
+        onError: (err: any) => {
+          toast.error(err.response?.data?.message || 'Failed to reject request')
+        },
+      },
+    )
+  }
+
   const filteredCategories = categories?.filter((cat: any) =>
     cat.name.toLowerCase().includes(search.toLowerCase()),
   )
 
-  const ownerRequests = requests?.filter((req: any) =>
-    isAdmin ? true : req.ownerId === user?.id,
+  const userRequests = requests?.filter((req: any) =>
+    isAdmin ? true : req.userId === user?.id,
+  )
+
+  const userDeleteRequests = deleteRequests?.filter((req: any) =>
+    isAdmin ? true : req.userId === user?.id,
+  )
+
+  const deleteRequestDialogDescription = (
+    <div className="space-y-4 text-left">
+      <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
+        You cannot delete "{categoryToDelete?.name}" directly because it is
+        approved. Please submit a request to the platform admins.
+      </p>
+      <div className="space-y-2">
+        <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
+          Reason for Deletion
+        </label>
+        <Textarea
+          placeholder="Explain why this category is no longer needed or should be removed..."
+          value={deleteRequestReason}
+          onChange={(e) => setDeleteRequestReason(e.target.value)}
+          className="min-h-[90px] rounded-xl border-border/30 bg-muted-light/50 focus-visible:ring-dash-brand text-foreground w-full p-3 text-sm"
+        />
+      </div>
+    </div>
   )
 
   return (
@@ -178,14 +286,11 @@ export const CategoryManagement = ({
           }`}
         >
           Category Requests
-          {ownerRequests &&
-            ownerRequests.filter((r: any) => r.status === 'pending').length >
+          {userRequests &&
+            userRequests.filter((r: any) => r.status === 'pending').length >
               0 && (
               <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
-                {
-                  ownerRequests.filter((r: any) => r.status === 'pending')
-                    .length
-                }
+                {userRequests.filter((r: any) => r.status === 'pending').length}
               </span>
             )}
           {activeTab === 'requests' && (
@@ -222,7 +327,7 @@ export const CategoryManagement = ({
               </Button>
             )}
 
-            {isOwner && (
+            {isUser && (
               <Button
                 onClick={() => setIsRequestDialogOpen(true)}
                 className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
@@ -256,12 +361,17 @@ export const CategoryManagement = ({
                 <CategoryCard
                   key={category.id}
                   category={category}
-                  isAdmin={isAdmin}
+                  currentUser={user}
                   onManageCategory={onManageCategory}
                   onOpenEdit={handleOpenEdit}
                   onOpenDelete={(cat) => {
                     setCategoryToDelete(cat)
-                    setIsDeleteDialogOpen(true)
+                    if (isAdmin) {
+                      setIsDeleteDialogOpen(true)
+                    } else if (cat.userId === user?.id) {
+                      setDeleteRequestReason('')
+                      setIsDeleteRequestDialogOpen(true)
+                    }
                   }}
                 />
               ))
@@ -270,15 +380,73 @@ export const CategoryManagement = ({
         </>
       ) : (
         /* Requests Tab View */
-        <CategoryRequestList
-          requests={ownerRequests || []}
-          isAdmin={isAdmin}
-          isOwner={isOwner}
-          onApproveRequest={(req) => setApprovingRequest(req)}
-          onRejectRequest={(req) => setRejectingRequest(req)}
-          onRequestCreate={() => setIsRequestDialogOpen(true)}
-          requestsLoading={requestsLoading}
-        />
+        <div className="space-y-6">
+          <div className="flex border-b border-border/20 gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => setRequestsSubTab('proposals')}
+              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${
+                requestsSubTab === 'proposals'
+                  ? 'text-primary border-b-2 border-primary font-black'
+                  : 'text-muted-foreground/70'
+              }`}
+            >
+              Proposals
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setRequestsSubTab('deletions')}
+              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${
+                requestsSubTab === 'deletions'
+                  ? 'text-primary border-b-2 border-primary font-black'
+                  : 'text-muted-foreground/70'
+              }`}
+            >
+              Deletion Requests
+              {userDeleteRequests &&
+                userDeleteRequests.filter((r: any) => r.status === 'pending')
+                  .length > 0 && (
+                  <span className="ml-1.5 bg-destructive text-destructive-foreground text-[9px] px-1.5 py-0.5 rounded-full font-black animate-pulse">
+                    {
+                      userDeleteRequests.filter(
+                        (r: any) => r.status === 'pending',
+                      ).length
+                    }
+                  </span>
+                )}
+            </Button>
+          </div>
+
+          {requestsSubTab === 'proposals' ? (
+            <CategoryRequestList
+              requests={userRequests || []}
+              isAdmin={isAdmin}
+              isUser={isUser}
+              onApproveRequest={(req) => setApprovingRequest(req)}
+              onRejectRequest={(req) => setRejectingRequest(req)}
+              onRequestCreate={() => setIsRequestDialogOpen(true)}
+              requestsLoading={requestsLoading}
+            />
+          ) : (
+            <CategoryDeleteRequestList
+              requests={userDeleteRequests || []}
+              isAdmin={isAdmin}
+              isUser={isUser}
+              onApproveRequest={(req) => setApprovingDeleteRequest(req)}
+              onRejectRequest={(req) => setRejectingDeleteRequest(req)}
+              requestsLoading={deleteRequestsLoading}
+              onDeleteConfirm={(req) => {
+                setCategoryToDelete(
+                  req.category || {
+                    id: req.categoryId,
+                    name: req.categoryName,
+                  },
+                )
+                setIsDeleteDialogOpen(true)
+              }}
+            />
+          )}
+        </div>
       )}
 
       {/* Forms & Dialogs */}
@@ -298,7 +466,22 @@ export const CategoryManagement = ({
         isPending={deleteMutation.isPending}
       />
 
-      {/* Category Request Dialog for Owners */}
+      {/* Category Deletion Request Dialog for Users */}
+      <ReusableAlertDialog
+        isOpen={isDeleteRequestDialogOpen}
+        onOpenChange={setIsDeleteRequestDialogOpen}
+        onConfirm={handleCreateDeleteRequest}
+        onCancel={() => setCategoryToDelete(null)}
+        title="Request Category Deletion"
+        description={deleteRequestDialogDescription}
+        confirmText="Submit Request"
+        cancelText="Cancel"
+        variant="danger"
+        isPending={createDeleteRequestMutation.isPending}
+        pendingText="Submitting..."
+      />
+
+      {/* Category Request Dialog for Users */}
       <CategoryFormDialog
         isOpen={isRequestDialogOpen}
         onOpenChange={setIsRequestDialogOpen}
@@ -317,6 +500,17 @@ export const CategoryManagement = ({
         onApproveClose={() => setApprovingRequest(null)}
         onApproveConfirm={handleApproveConfirm}
         isPending={updateRequestStatusMutation.isPending}
+      />
+
+      {/* Category Deletion Request Action Modals for Admin */}
+      <CategoryDeleteActionModals
+        rejectingRequest={rejectingDeleteRequest}
+        onRejectClose={() => setRejectingDeleteRequest(null)}
+        onRejectConfirm={handleRejectDeleteConfirm}
+        approvingRequest={approvingDeleteRequest}
+        onApproveClose={() => setApprovingDeleteRequest(null)}
+        onApproveConfirm={handleApproveDeleteConfirm}
+        isPending={processDeleteRequestMutation.isPending}
       />
     </div>
   )

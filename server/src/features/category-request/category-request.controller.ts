@@ -10,13 +10,13 @@ export class CategoryRequestController {
     }
 
     const { role, id: userId } = session.user;
-    const isSearchAdmin = role === 'admin' || role === 'superAdmin';
+    const isSearchAdmin = role === 'admin';
 
     const requests = await prisma.categoryRequest.findMany({
-      where: isSearchAdmin ? {} : { ownerId: userId },
+      where: isSearchAdmin ? {} : { userId: userId },
       orderBy: { createdAt: "desc" },
       include: {
-        owner: {
+        user: {
           select: { id: true, name: true, email: true }
         }
       }
@@ -43,22 +43,32 @@ export class CategoryRequestController {
         image,
         description,
         requestReason,
-        ownerId: session.user.id,
+        userId: session.user.id,
         status: "pending"
       }
     });
 
-    // Create system notification for admins (and persist + deliver)
+    // Create system notification for admins and requester (persist + deliver)
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js')
+      const { createAndDeliverNotification, notifyAllAdmins } = await import('../../lib/notification.js')
+      
+      // Notify requester
       await createAndDeliverNotification({
         userId: session.user.id,
-        title: 'New Category Request',
-        message: `Owner ${session.user.name || session.user.email} requested new category "${name}"`,
+        title: 'Category Proposal Submitted',
+        message: `Your proposal for the category "${name}" has been submitted and is pending admin review.`,
+        type: 'info',
+      })
+
+      // Notify all admins
+      await notifyAllAdmins({
+        title: 'New Category Proposal',
+        message: `User ${session.user.name || session.user.email} proposed a new category "${name}"`,
         type: 'alert',
+        url: '/dashboard?tab=requests',
       })
     } catch (err) {
-      console.error('Failed to deliver category-request notification:', err)
+      console.error('Failed to deliver category request notification:', err)
     }
 
     return { categoryRequest };
@@ -92,15 +102,16 @@ export class CategoryRequestController {
           name: categoryReq.name,
           icon: categoryReq.icon,
           color: categoryReq.color,
-          image: categoryReq.image
+          image: categoryReq.image,
+          userId: categoryReq.userId
         }
       });
 
-      // Notify the requesting Owner
+      // Notify the requesting User
       try {
         const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
-          userId: categoryReq.ownerId,
+          userId: categoryReq.userId,
           title: 'Category Request Approved',
           message: `Your request to add category "${categoryReq.name}" has been approved!`,
           type: 'booking',
@@ -109,11 +120,11 @@ export class CategoryRequestController {
         console.error('Failed to deliver approval notification:', err)
       }
     } else {
-      // Notify Owner of Rejection
+      // Notify User of Rejection
       try {
         const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
-          userId: categoryReq.ownerId,
+          userId: categoryReq.userId,
           title: 'Category Request Rejected',
           message: `Your request for "${categoryReq.name}" was rejected. Reason: ${reason || 'Not specified.'}`,
           type: 'alert',

@@ -1,7 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-} from '#/components/ui/dialog'
+import { Dialog, DialogContent } from '#/components/ui/dialog'
 import { Button } from '#/components/ui/button'
 import { IndianRupee, Users, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
@@ -109,7 +106,7 @@ export function BookingDetailsDialog({
             'custom-scrollbar',
           )}
         >
-          {/* Owner & Status */}
+          {/* Status */}
           <div className={cn('grid', 'grid-cols-2', 'gap-4')}>
             <div
               className={cn(
@@ -131,7 +128,7 @@ export function BookingDetailsDialog({
                   'block',
                 )}
               >
-                Host Details
+                Lister Details
               </span>
               <div
                 className={cn(
@@ -145,7 +142,7 @@ export function BookingDetailsDialog({
                 )}
               >
                 <Users size={12} className="text-muted-dark" />
-                <span>{rental.product?.owner?.name || 'Vastu Host'}</span>
+                <span>{rental.product?.user?.name || 'Vastu Lister'}</span>
               </div>
               <span
                 className={cn(
@@ -182,9 +179,7 @@ export function BookingDetailsDialog({
               >
                 Booking Status
               </span>
-              <div
-                className={cn('flex', 'gap-1.5', 'items-center', 'pt-0.5')}
-              >
+              <div className={cn('flex', 'gap-1.5', 'items-center', 'pt-0.5')}>
                 <BookingStatusBadge status={rental.status} />
               </div>
               <span
@@ -232,12 +227,22 @@ export function BookingDetailsDialog({
               </span>
               <div className={cn('flex', 'items-center', 'justify-between')}>
                 <div>
-                  <p className={cn('text-xs', 'font-bold', 'text-foreground/80')}>
-                    {rental.status === 'pending' || rental.status === 'confirmed'
+                  <p
+                    className={cn('text-xs', 'font-bold', 'text-foreground/80')}
+                  >
+                    {rental.status === 'pending' ||
+                    rental.status === 'confirmed'
                       ? 'Pickup Verification OTP'
                       : 'Return Verification OTP'}
                   </p>
-                  <p className={cn('text-[10px]', 'text-muted-dark', 'font-medium', 'mt-0.5')}>
+                  <p
+                    className={cn(
+                      'text-[10px]',
+                      'text-muted-dark',
+                      'font-medium',
+                      'mt-0.5',
+                    )}
+                  >
                     Share this OTP with the host upon physical verification.
                   </p>
                 </div>
@@ -297,7 +302,9 @@ export function BookingDetailsDialog({
               )}
             >
               <div className={cn('flex', 'flex-col')}>
-                <span className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}>
+                <span
+                  className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
+                >
                   From
                 </span>
                 <span className="mt-0.5">
@@ -305,9 +312,14 @@ export function BookingDetailsDialog({
                     format(new Date(rental.startDate), 'dd MMM yyyy')}
                 </span>
               </div>
-              <ChevronRight size={14} className={cn('text-muted-dark', 'mt-2')} />
+              <ChevronRight
+                size={14}
+                className={cn('text-muted-dark', 'mt-2')}
+              />
               <div className={cn('flex', 'flex-col', 'text-right')}>
-                <span className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}>
+                <span
+                  className={cn('text-[9px]', 'text-muted-dark', 'uppercase')}
+                >
                   To
                 </span>
                 <span className="mt-0.5">
@@ -443,7 +455,9 @@ export function BookingDetailsDialog({
               <span>
                 Payment Mode:{' '}
                 <span className={cn('text-muted-foreground/85', 'uppercase')}>
-                  {rental.paymentMethod === 'cash' ? 'Cash/COD' : 'Online Payment'}
+                  {rental.paymentMethod === 'cash'
+                    ? 'Cash/COD'
+                    : 'Online Payment'}
                 </span>
               </span>
               <span>

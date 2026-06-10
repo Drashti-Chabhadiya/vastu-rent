@@ -102,11 +102,7 @@ export function NavDesktopMenu({ categories, t }: NavDesktopMenuProps) {
                 ))}
                 {!categories?.length && (
                   <div
-                    className={cn(
-                      'p-4',
-                      'text-sm',
-                      'text-muted-foreground/85',
-                    )}
+                    className={cn('p-4', 'text-sm', 'text-muted-foreground/85')}
                   >
                     {t('Loading categories...')}
                   </div>

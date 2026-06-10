@@ -63,7 +63,7 @@ export function ProductDetailSkeleton() {
 
               {/* Sidebar Section */}
               <div className="xl:col-span-5 space-y-6">
-                {/* Owner Card Skeleton */}
+                {/*  Card Skeleton */}
                 <div className="bg-white rounded-2xl p-6 border border-gray-100 space-y-4">
                   <Skeleton className="h-5 w-24 rounded" />
                   <div className="flex items-center gap-3">

@@ -16,7 +16,6 @@ import { Footer, Navbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
 import { useEffect, useRef } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
-import { isAdminRole, isUserRole } from '#/lib/auth/roles'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
 import { isNative, initNativePush } from '#/lib/push-notifications'
 // import { playNotificationSound } from '#/lib/sound'
@@ -108,7 +107,6 @@ function NotificationListener() {
   const { data: session } = authClient.useSession()
   const token = session?.session.token
   const userRole = session?.user.role || 'user'
-  const isAdmin = isAdminRole(userRole)
   const socketRef = useRef<Socket | null>(null)
 
   useAppResumeRefresh()
@@ -124,12 +122,22 @@ function NotificationListener() {
         })
       })
     } else {
-      if (
-        typeof window !== 'undefined' &&
-        'Notification' in window &&
-        Notification.permission === 'granted'
-      ) {
-        registerDeviceForPush().catch(() => {})
+      if (typeof window !== 'undefined' && 'Notification' in window) {
+        if (Notification.permission === 'denied') {
+          toast.warning('Notifications Blocked', {
+            description:
+              'Please enable notifications in your browser address bar settings to receive real-time updates.',
+            duration: 8000,
+          })
+        } else if (Notification.permission === 'default') {
+          Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+              registerDeviceForPush().catch(() => {})
+            }
+          })
+        } else if (Notification.permission === 'granted') {
+          registerDeviceForPush().catch(() => {})
+        }
       }
     }
   }, [token, navigate])
@@ -179,53 +187,45 @@ function NotificationListener() {
       // Play alert chime
       // playNotificationSound()
 
-      // Trigger a beautiful in-app toast alert immediately (only on web, not inside the native mobile app)
       if (!isNative) {
-        toast.info(notif.title, {
-          description: notif.message,
-          action: {
-            label: 'View',
-            onClick: () => {
-              // Dynamic deep-link navigation
-              switch (notif.type) {
-                case 'booking':
-                  if (isUserRole(userRole)) {
-                    navigate({ to: '/account/orders' })
-                  } else if (isAdmin) {
-                    navigate({ to: '/account/bookings' })
-                  } else {
-                    navigate({ to: '/account/bookings' })
-                  }
-                  break
-                case 'payment':
-                  navigate({ to: '/account/payments' })
-                  break
-                case 'info':
-                  navigate({ to: '/account/messages' })
-                  break
-                default:
-                  navigate({ to: '/account/notifications' })
-                  break
+        if (
+          typeof window !== 'undefined' &&
+          'serviceWorker' in navigator &&
+          Notification.permission === 'granted'
+        ) {
+          navigator.serviceWorker.ready
+            .then((reg) => {
+              reg.showNotification(notif.title, {
+                body: notif.message,
+                icon: '/logo192.png',
+                badge: '/logo192.png',
+                image: notif.image,
+                data: {
+                  url: notif.url || '/account/notifications',
+                },
+              } as any)
+            })
+            .catch((err) => {
+              console.error(
+                'Failed to trigger native notification via service worker:',
+                err,
+              )
+              // Fallback to main thread Notification
+              try {
+                const notification = new Notification(notif.title, {
+                  body: notif.message,
+                  icon: '/logo192.png',
+                  image: notif.image,
+                } as any)
+                notification.onclick = (e) => {
+                  e.preventDefault()
+                  window.focus()
+                  navigate({ to: notif.url || '/account/notifications' })
+                }
+              } catch (fallbackErr) {
+                console.error('Fallback notification also failed:', fallbackErr)
               }
-            },
-          },
-          duration: 6000,
-        })
-      }
-
-      // Trigger native browser desktop notification if supported
-      if (
-        typeof window !== 'undefined' &&
-        'Notification' in window &&
-        Notification.permission === 'granted'
-      ) {
-        try {
-          new Notification(notif.title, {
-            body: notif.message,
-            icon: '/images/icons/icon-192.png',
-          })
-        } catch (err) {
-          console.error('Failed to trigger native notification:', err)
+            })
         }
       }
     })
@@ -246,6 +246,8 @@ function NotificationListener() {
         title: payload?.notification?.title || 'Notification',
         message: payload?.notification?.body || payload?.data?.message || '',
         type: payload?.data?.type || 'info',
+        url: payload?.data?.url || payload?.fcmOptions?.link || '',
+        image: payload?.notification?.image || payload?.data?.image || '',
         isRead: false,
         createdAt: new Date().toISOString(),
       }
@@ -263,21 +265,45 @@ function NotificationListener() {
       // Trigger native browser desktop notification immediately like WhatsApp!
       if (
         typeof window !== 'undefined' &&
-        'Notification' in window &&
+        'serviceWorker' in navigator &&
         Notification.permission === 'granted'
       ) {
-        try {
-          new Notification(notif.title, {
-            body: notif.message,
-            icon: '/images/icons/icon-192.png',
+        navigator.serviceWorker.ready
+          .then((reg) => {
+            reg.showNotification(notif.title, {
+              body: notif.message,
+              icon: '/logo192.png',
+              badge: '/logo192.png',
+              image: notif.image,
+              data: {
+                url: notif.url || '/account/notifications',
+              },
+            } as any)
           })
-        } catch (err) {
-          console.error('Failed to trigger native notification:', err)
-        }
+          .catch((err) => {
+            console.error(
+              'Failed to trigger native notification via service worker:',
+              err,
+            )
+            try {
+              const notification = new Notification(notif.title, {
+                body: notif.message,
+                icon: '/logo192.png',
+                image: notif.image,
+              } as any)
+              notification.onclick = (e) => {
+                e.preventDefault()
+                window.focus()
+                navigate({ to: notif.url || '/account/notifications' })
+              }
+            } catch (fallbackErr) {
+              console.error('Fallback notification also failed:', fallbackErr)
+            }
+          })
       }
     })
     return () => off && off()
-  }, [rqClient, token])
+  }, [rqClient, token, navigate])
 
   return null
 }
@@ -288,16 +314,16 @@ function RootDocument() {
     routerState.location.pathname.startsWith('/login') ||
     routerState.location.pathname.startsWith('/signup')
   const isAdminPage = routerState.location.pathname.startsWith('/admin')
-  const isOwnerPage = routerState.location.pathname.startsWith('/owner')
+  const isDashboardPage = routerState.location.pathname.startsWith('/dashboard')
 
   return (
     <div className={cn('bg-card', 'font-sans', 'antialiased')}>
       <QueryClientProvider client={queryClient}>
         <TranslationProvider>
           <NotificationListener />
-          {!isAuthPage && !isAdminPage && !isOwnerPage && <Navbar />}
+          {!isAuthPage && !isAdminPage && !isDashboardPage && <Navbar />}
           <Outlet />
-          {!isAuthPage && !isAdminPage && !isOwnerPage && <Footer />}
+          {!isAuthPage && !isAdminPage && !isDashboardPage && <Footer />}
         </TranslationProvider>
       </QueryClientProvider>
       <Toaster position="top-right" />

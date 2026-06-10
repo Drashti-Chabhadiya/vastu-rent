@@ -66,27 +66,27 @@ export const AdminPayoutApprovals = ({
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-muted/50 overflow-hidden flex-shrink-0">
-                  {payout.owner?.image ? (
+                  {payout.user?.image ? (
                     <img
-                      src={payout.owner.image}
+                      src={payout.user.image}
                       alt=""
                       className="w-full h-full object-cover"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center font-bold text-muted-foreground/85 bg-muted uppercase text-sm">
-                      {payout.owner?.name?.slice(0, 2) || 'OW'}
+                      {payout.user?.name?.slice(0, 2) || 'US'}
                     </div>
                   )}
                 </div>
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-black text-foreground/90">
-                    {payout.owner?.name}
+                    {payout.user?.name}
                   </h4>
                   <p
                     className="text-[10px] text-muted-dark font-bold truncate max-w-[120px]"
-                    title={payout.owner?.email}
+                    title={payout.user?.email}
                   >
-                    {payout.owner?.email}
+                    {payout.user?.email}
                   </p>
                 </div>
               </div>
@@ -150,7 +150,7 @@ export const AdminPayoutApprovals = ({
                     : 'Approve & Mark as Paid'}
                 </h3>
                 <p className="text-[11px] font-bold text-muted-dark">
-                  Request by <strong>{selectedAdminPayout.owner?.name}</strong>{' '}
+                  Request by <strong>{selectedAdminPayout.user?.name}</strong>{' '}
                   for{' '}
                   <strong>
                     ₹{selectedAdminPayout.amount.toLocaleString()}

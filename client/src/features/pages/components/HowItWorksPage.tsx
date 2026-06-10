@@ -33,7 +33,7 @@ const steps = [
     icon: <UserCheck className="w-10 h-10 text-primary" />,
     title: '4. Meet and Collect',
     description:
-      "Coordinate with the owner to pick up the item. Verify its condition and you're good to go!",
+      "Coordinate with the lister to pick up the item. Verify its condition and you're good to go!",
   },
 ]
 

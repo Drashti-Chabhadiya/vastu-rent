@@ -47,11 +47,23 @@ export function ProfileInfoSection({
       title="Profile Information"
       description="Update your personal details and how others see you."
     >
-      <div className={cn('grid', 'grid-cols-1', 'sm:grid-cols-2', 'gap-x-6', 'gap-y-5')}>
+      <div
+        className={cn(
+          'grid',
+          'grid-cols-1',
+          'sm:grid-cols-2',
+          'gap-x-6',
+          'gap-y-5',
+        )}
+      >
         <div className="space-y-1.5">
           <Label
             htmlFor="s-name"
-            className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+            className={cn(
+              'text-xs',
+              'font-semibold',
+              'text-muted-foreground/85',
+            )}
           >
             Full Name
           </Label>
@@ -73,7 +85,11 @@ export function ProfileInfoSection({
         <div className="space-y-1.5">
           <Label
             htmlFor="s-email"
-            className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+            className={cn(
+              'text-xs',
+              'font-semibold',
+              'text-muted-foreground/85',
+            )}
           >
             Email Address
           </Label>
@@ -96,7 +112,11 @@ export function ProfileInfoSection({
         <div className="space-y-1.5">
           <Label
             htmlFor="s-phone"
-            className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+            className={cn(
+              'text-xs',
+              'font-semibold',
+              'text-muted-foreground/85',
+            )}
           >
             Phone Number
           </Label>
@@ -118,7 +138,11 @@ export function ProfileInfoSection({
         <div className="space-y-1.5">
           <Label
             htmlFor="s-loc"
-            className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+            className={cn(
+              'text-xs',
+              'font-semibold',
+              'text-muted-foreground/85',
+            )}
           >
             Location
           </Label>
@@ -140,7 +164,11 @@ export function ProfileInfoSection({
         <div className={cn('space-y-1.5', 'sm:col-span-2')}>
           <Label
             htmlFor="s-bio"
-            className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
+            className={cn(
+              'text-xs',
+              'font-semibold',
+              'text-muted-foreground/85',
+            )}
           >
             Bio
           </Label>

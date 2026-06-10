@@ -15,7 +15,7 @@ export function useProfileData() {
   const [language, setLanguage] = useState('')
   const [dob, setDob] = useState('')
   const [currency, setCurrency] = useState('INR')
-  
+
   // Notification states
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [smsNotifications, setSmsNotifications] = useState(false)
@@ -138,7 +138,7 @@ export function useProfileData() {
     t,
     changeLanguage,
     normalizeLanguage,
-    
+
     // States
     name,
     setName,
@@ -156,7 +156,7 @@ export function useProfileData() {
     setDob,
     currency,
     setCurrency,
-    
+
     // Notifications preferences
     emailNotifications,
     setEmailNotifications,
@@ -166,7 +166,7 @@ export function useProfileData() {
     setMarketingEmails,
     pushNotifications,
     setPushNotifications,
-    
+
     // Modal controls
     pwOpen,
     setPwOpen,
@@ -178,7 +178,7 @@ export function useProfileData() {
     setDevOpen,
     twoFactorEnabled,
     setTwoFactorEnabled,
-    
+
     // Image cropping & upload
     imagePreview,
     setImagePreview,
@@ -188,14 +188,14 @@ export function useProfileData() {
     setCroppedFile,
     isEditorOpen,
     setIsEditorOpen,
-    
+
     // Loading/Session states
     session,
     refetch,
     busy,
     uploadImage,
     updateSettings,
-    
+
     // Handlers
     handleTogglePreference,
     handleCurrencyChange,

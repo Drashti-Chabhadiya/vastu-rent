@@ -77,7 +77,7 @@ export const RentalsCalendar = () => {
     ),
   )
 
-  // Filter orders based on owner filters
+  // Filter orders based on provider filters
   const filteredOrders = (orders || []).filter((order: any) => {
     const matchProduct =
       selectedProduct === 'all' || order.product?.title === selectedProduct

@@ -12,7 +12,7 @@ import { Button } from '#/components/ui/button'
 interface CategoryRequestListProps {
   requests: any[]
   isAdmin: boolean
-  isOwner: boolean
+  isUser: boolean
   onApproveRequest: (request: any) => void
   onRejectRequest: (request: any) => void
   onRequestCreate?: () => void
@@ -22,7 +22,7 @@ interface CategoryRequestListProps {
 export const CategoryRequestList = ({
   requests = [],
   isAdmin,
-  isOwner,
+  isUser,
   onApproveRequest,
   onRejectRequest,
   onRequestCreate,
@@ -32,7 +32,7 @@ export const CategoryRequestList = ({
     <div className="bg-card rounded-xl border border-border/30 shadow-sm overflow-hidden animate-in fade-in duration-300">
       <div className="p-6 border-b border-border/30 flex items-center justify-between">
         <h3 className="font-bold text-foreground">Category Request Pipeline</h3>
-        {isOwner && onRequestCreate && (
+        {isUser && onRequestCreate && (
           <Button
             onClick={onRequestCreate}
             className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-xl h-10 px-6 font-bold flex items-center gap-2 cursor-pointer"
@@ -102,7 +102,7 @@ export const CategoryRequestList = ({
                     <h4 className="font-bold text-foreground">{req.name}</h4>
                     <p className="text-xs text-muted-foreground/70 mt-1">
                       Requested by{' '}
-                      {req.owner?.name || req.owner?.email || 'Unknown Owner'} •{' '}
+                      {req.user?.name || req.user?.email || 'Unknown User'} •{' '}
                       {new Date(req.createdAt).toLocaleDateString()}
                     </p>
                     {req.description && (

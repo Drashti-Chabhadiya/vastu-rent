@@ -164,8 +164,17 @@ export const MyBookings = () => {
                 )}
               />
               <div className={cn('flex-1', 'space-y-3')}>
-                <div className={cn('h-5', 'bg-muted', 'rounded-full', 'w-48')} />
-                <div className={cn('h-4', 'bg-muted-light/80', 'rounded-full', 'w-32')} />
+                <div
+                  className={cn('h-5', 'bg-muted', 'rounded-full', 'w-48')}
+                />
+                <div
+                  className={cn(
+                    'h-4',
+                    'bg-muted-light/80',
+                    'rounded-full',
+                    'w-32',
+                  )}
+                />
               </div>
             </div>
           ))}
@@ -493,7 +502,10 @@ export const MyBookings = () => {
             'cursor-pointer',
           )}
         >
-          <MessageSquare size={15} className={cn('text-muted-dark', 'shrink-0')} />
+          <MessageSquare
+            size={15}
+            className={cn('text-muted-dark', 'shrink-0')}
+          />
           Contact Support
         </Button>
       </div>

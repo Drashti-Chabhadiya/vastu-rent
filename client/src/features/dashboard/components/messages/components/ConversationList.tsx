@@ -1,19 +1,16 @@
-import { Search, MessageSquare, SlidersHorizontal, ChevronRight, Loader2 } from 'lucide-react'
+import {
+  Search,
+  MessageSquare,
+  SlidersHorizontal,
+  ChevronRight,
+  Loader2,
+} from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import type { Conversation } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
-
-function formatMsgTime(dateStr: string) {
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffHrs = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-  const { format } = require('date-fns')
-  if (diffHrs < 24) return format(date, 'h:mm a')
-  if (diffHrs < 48) return 'Yesterday'
-  return format(date, 'dd MMM')
-}
+import { formatMsgTime } from '#/lib/chat-utils'
 
 interface ConversationListProps {
   conversations: Conversation[]
@@ -121,11 +118,9 @@ export function ConversationList({
                   : conversations
                       .filter((c) => {
                         if (tab === 'bookings')
-                          return c.otherParticipant.role === 'owner'
+                          return c.otherParticipant.role === 'user'
                         if (tab === 'support')
-                          return ['admin', 'superAdmin'].includes(
-                            c.otherParticipant.role,
-                          )
+                          return c.otherParticipant.role === 'admin'
                         return false
                       })
                       .reduce((s, c) => s + c.unreadCount, 0)
@@ -191,13 +186,8 @@ export function ConversationList({
         )}
       >
         {isLoadingConversations ? (
-          <div
-            className={cn('flex', 'items-center', 'justify-center', 'h-32')}
-          >
-            <Loader2
-              size={20}
-              className={cn('animate-spin', 'text-primary')}
-            />
+          <div className={cn('flex', 'items-center', 'justify-center', 'h-32')}>
+            <Loader2 size={20} className={cn('animate-spin', 'text-primary')} />
           </div>
         ) : filteredConversations.length === 0 ? (
           <div
@@ -211,10 +201,7 @@ export function ConversationList({
               'py-10',
             )}
           >
-            <MessageSquare
-              size={32}
-              className="text-muted-foreground/30"
-            />
+            <MessageSquare size={32} className="text-muted-foreground/30" />
             <p
               className={cn(
                 'text-[11px]',
@@ -250,11 +237,7 @@ export function ConversationList({
                 />
                 <div className={cn('flex-1', 'min-w-0')}>
                   <div
-                    className={cn(
-                      'flex',
-                      'items-center',
-                      'justify-between',
-                    )}
+                    className={cn('flex', 'items-center', 'justify-between')}
                   >
                     <h4
                       className={cn(
@@ -369,8 +352,7 @@ export function ConversationList({
             'hover:bg-transparent',
           )}
         >
-          View archived messages{' '}
-          <ChevronRight size={10} strokeWidth={3} />
+          View archived messages <ChevronRight size={10} strokeWidth={3} />
         </Button>
       </div>
     </div>

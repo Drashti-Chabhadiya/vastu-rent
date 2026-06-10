@@ -1,13 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
 
-// Fetch owner's earnings dashboard analytics
-export const usePayoutDashboard = (ownerId?: string) => {
+// Fetch provider's earnings dashboard analytics
+export const usePayoutDashboard = (userId?: string) => {
   return useQuery({
-    queryKey: ['payout-dashboard', ownerId],
+    queryKey: ['payout-dashboard', userId],
     queryFn: async () => {
       const res = await apiClient.get('/payouts/dashboard', {
-        params: ownerId ? { ownerId } : undefined,
+        params: userId ? { userId } : undefined,
       })
       return res.data
     },

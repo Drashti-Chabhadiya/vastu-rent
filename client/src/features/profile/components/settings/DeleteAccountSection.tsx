@@ -74,7 +74,8 @@ export function DeleteAccountSection({
             )}
           >
             Deleting your account will permanently remove all your listings,
-            bookings, reviews, messages, and personal data. This cannot be undone.
+            bookings, reviews, messages, and personal data. This cannot be
+            undone.
           </p>
         </div>
       </div>
@@ -121,9 +122,13 @@ export function DeleteAccountSection({
 
       {/* Confirmation input */}
       <div className="space-y-2">
-        <Label className={cn('text-xs', 'font-semibold', 'text-muted-foreground')}>
+        <Label
+          className={cn('text-xs', 'font-semibold', 'text-muted-foreground')}
+        >
           Type{' '}
-          <span className={cn('font-black', 'text-destructive', 'tracking-widest')}>
+          <span
+            className={cn('font-black', 'text-destructive', 'tracking-widest')}
+          >
             DELETE
           </span>{' '}
           to confirm

@@ -3,7 +3,7 @@ import { prisma } from "../../config/prisma.js";
 export class UserService {
   async getRecentUsers() {
     return prisma.user.findMany({
-      take: 10,
+      take: 5,
       orderBy: { createdAt: "desc" },
       select: {
         id: true,

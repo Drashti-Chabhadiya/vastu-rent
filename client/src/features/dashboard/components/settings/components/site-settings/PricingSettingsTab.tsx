@@ -31,7 +31,8 @@ export function PricingSettingsTab() {
           Upgrade Plans & Billing Tiers
         </h4>
         <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
-          Define the price for each monthly tier (in INR) and configure features.
+          Define the price for each monthly tier (in INR) and configure
+          features.
         </p>
       </div>
 

@@ -301,12 +301,15 @@ export const useSiteSettingsStore = create<SiteSettingsState>((set, get) => ({
       return true
 
     // Pricing details check
-    if (Number(state.starterPrice) !== Number(settings.pricing?.starterPrice ?? 0))
+    if (
+      Number(state.starterPrice) !== Number(settings.pricing?.starterPrice ?? 0)
+    )
       return true
     if (Number(state.proPrice) !== Number(settings.pricing?.proPrice ?? 499))
       return true
     if (
-      Number(state.businessPrice) !== Number(settings.pricing?.businessPrice ?? 999)
+      Number(state.businessPrice) !==
+      Number(settings.pricing?.businessPrice ?? 999)
     )
       return true
 

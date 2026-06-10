@@ -16,7 +16,7 @@ export class RentalService {
     const endDate = new Date(data.endDate);
 
     const rental = await prisma.$transaction(async (tx) => {
-      // Check if product exists and get its owner
+      // Check if product exists and get its user
       const product = await tx.product.findUnique({
         where: { id: data.productId }
       });
@@ -82,7 +82,7 @@ export class RentalService {
         });
       }
 
-      // For COD (Cash), we set status to pending initially so the owner can confirm/reject it
+      // For COD (Cash), we set status to pending initially so the lister can confirm/reject it
       const initialStatus = "pending";
 
       return tx.rental.create({
@@ -106,39 +106,39 @@ export class RentalService {
       });
     });
 
-    // Generate real-time DB notification for the product owner
+    // Generate real-time DB notification for the product lister
     try {
       const { createAndDeliverNotification } = await import('../../lib/notification.js');
       await createAndDeliverNotification({
-        userId: rental.product.ownerId,
+        userId: rental.product.userId,
         title: "New Booking Request! 📦",
         message: `You have received a new booking request from ${rental.renter.name} for "${rental.product.title}".`,
         type: "booking",
         url: `/journal`,
       });
     } catch (err) {
-      console.error("Failed to deliver booking request notification to owner:", err);
+      console.error("Failed to deliver booking request notification to lister:", err);
     }
 
-    // Send email alert to product owner if preference is enabled
+    // Send email alert to product lister if preference is enabled
     try {
-      const owner = await prisma.user.findUnique({
-        where: { id: rental.product.ownerId },
+      const userObj = await prisma.user.findUnique({
+        where: { id: rental.product.userId },
         select: { name: true, email: true, bookingAlerts: true }
       });
 
-      if (owner && owner.bookingAlerts !== false) {
+      if (userObj && userObj.bookingAlerts !== false) {
         const { sendBookingAlertEmail } = await import('../../lib/mail.js');
         await sendBookingAlertEmail({
-          email: owner.email,
-          name: owner.name || "Owner",
+          email: userObj.email,
+          name: userObj.name || "Lister",
           title: "New Booking Request! 📦",
           message: `You have received a new booking request from ${rental.renter.name} for "${rental.product.title}". Please log in to your dashboard to review and manage this request.`,
           type: "booking_request",
         });
       }
     } catch (err) {
-      console.error("Failed to send booking alert email to owner:", err);
+      console.error("Failed to send booking alert email to lister:", err);
     }
 
     return rental;
@@ -186,10 +186,10 @@ export class RentalService {
       totalRevenue: totalRevenue._sum.totalPrice || 0,
     };
   }
-  async getOwnerOrders(ownerId: string) {
+  async getUserOrders(userId: string) {
     return prisma.rental.findMany({
       where: {
-        product: { ownerId: ownerId }
+        product: { userId }
       },
       include: {
         product: { include: { category: true } },
@@ -268,7 +268,7 @@ export class RentalService {
         await createAndDeliverNotification({
           userId: updatedRental.renterId,
           title: "Booking Rejected ❌",
-          message: `Your booking request for "${updatedRental.product.title}" was rejected by the owner.`,
+          message: `Your booking request for "${updatedRental.product.title}" was rejected by the lister.`,
           type: "alert",
           url: `/journal`,
         })
@@ -298,7 +298,7 @@ export class RentalService {
           message = `Your booking request for "${updatedRental.product.title}" has been successfully confirmed.`;
         } else if (status === "cancelled" || status === "rejected") {
           title = "Booking Rejected ❌";
-          message = `Your booking request for "${updatedRental.product.title}" was rejected by the owner.`;
+          message = `Your booking request for "${updatedRental.product.title}" was rejected by the lister.`;
         } else if (status === "completed" || status === "returned") {
           title = "Rental Completed! 🎉";
           message = `Your rental period for "${updatedRental.product.title}" has ended. Please leave a review!`;

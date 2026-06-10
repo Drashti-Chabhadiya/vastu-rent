@@ -13,7 +13,10 @@ interface PreferencesCardProps {
   smsNotifications: boolean
   marketingEmails: boolean
   currency: string
-  handleTogglePreference: (key: 'email' | 'sms' | 'marketing' | 'push', checked: boolean) => Promise<void>
+  handleTogglePreference: (
+    key: 'email' | 'sms' | 'marketing' | 'push',
+    checked: boolean,
+  ) => Promise<void>
   handleCurrencyChange: (newCurrency: string) => Promise<void>
 }
 

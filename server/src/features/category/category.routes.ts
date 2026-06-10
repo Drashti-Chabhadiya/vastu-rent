@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { categoryController } from "./category.controller.js";
 import { auth } from "../../config/auth.js";
 import { isAdminRole } from "../../config/roles.js";
+import { categoryDeleteRequestService } from "../category-delete-request/category-delete-request.service.js";
 
 export async function categoryRoutes(fastify: FastifyInstance) {
   // Public Routes
@@ -28,11 +29,23 @@ export async function categoryRoutes(fastify: FastifyInstance) {
   }, categoryController.updateCategory);
 
   fastify.delete("/:id", {
-    preHandler: async (request, reply) => {
+    preHandler: async (request: any, reply) => {
       const session = await auth.api.getSession({ headers: request.headers as any });
-      if (!session || !isAdminRole(session.user.role)) {
-        return reply.status(403).send({ message: "Forbidden: Admin access required" });
+      if (!session) {
+        return reply.status(401).send({ message: "Unauthorized" });
       }
+
+      const isAuthorized = await categoryDeleteRequestService.verifyDeletePermission(
+        request.params.id,
+        session.user.id || "",
+        session.user.role || ""
+      );
+
+      if (!isAuthorized) {
+        return reply.status(403).send({ message: "Forbidden: You do not have permission to delete this category" });
+      }
+
+      request.user = session.user;
     }
   }, categoryController.deleteCategory);
 }

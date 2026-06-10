@@ -61,8 +61,7 @@ export const ProductForm = ({
   currentUser,
   onUploadStatusChange,
 }: ProductFormProps) => {
-  const isOwner =
-    currentUser?.role !== 'admin' && currentUser?.role !== 'superAdmin'
+  const isLister = currentUser?.role !== 'admin'
   const [requestCategoryOpen, setRequestCategoryOpen] = useState(false)
   const createRequestMutation = useCreateCategoryRequest()
   return (
@@ -307,7 +306,7 @@ export const ProductForm = ({
 
         <FormField<ListingSchema>
           control={form.control}
-          name="ownerId"
+          name="userId"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
@@ -317,17 +316,19 @@ export const ProductForm = ({
               <Select
                 onValueChange={field.onChange}
                 value={field.value as string}
-                disabled={isOwner}
+                disabled={isLister}
               >
                 <FormControl>
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all disabled:opacity-100 disabled:bg-muted-light">
                     <SelectValue
-                      placeholder={isOwner ? currentUser.name : 'Select Owner'}
+                      placeholder={
+                        isLister ? currentUser.name : 'Select Provider'
+                      }
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
-                  {isOwner ? (
+                  {isLister ? (
                     <SelectItem
                       key={currentUser.id}
                       value={currentUser.id}

@@ -185,7 +185,7 @@ export const DeleteRequestsManagement = () => {
       <ReusableAlertDialog
         isOpen={pendingAction !== null}
         onOpenChange={(open) => {
-          if (!open) setPendingAction(null)
+          if (!open && !processMutation.isPending) setPendingAction(null)
         }}
         onConfirm={() => {
           if (pendingAction) {
@@ -193,12 +193,16 @@ export const DeleteRequestsManagement = () => {
             processMutation.mutate(
               { id, status },
               {
-                onSuccess: () =>
-                  toast.success(`Request processed successfully`),
-                onError: () => toast.error(`Failed to process request`),
+                onSuccess: () => {
+                  toast.success(`Request processed successfully`)
+                  setPendingAction(null)
+                },
+                onError: () => {
+                  toast.error(`Failed to process request`)
+                  setPendingAction(null)
+                },
               },
             )
-            setPendingAction(null)
           }
         }}
         title={
@@ -215,6 +219,7 @@ export const DeleteRequestsManagement = () => {
           pendingAction?.status === 'approved' ? 'Approve' : 'Reject'
         }
         variant={pendingAction?.status === 'approved' ? 'danger' : 'warning'}
+        isPending={processMutation.isPending}
       />
     </div>
   )

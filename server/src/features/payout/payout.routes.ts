@@ -10,7 +10,7 @@ export async function payoutRoutes(fastify: FastifyInstance) {
     (request as any).user = session.user;
   });
 
-  // Owner Routes
+  // User Routes
   fastify.get("/dashboard", payoutController.getEarningsDashboard);
   fastify.post("/request", payoutController.createPayoutRequest);
 

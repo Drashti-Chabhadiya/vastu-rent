@@ -1,14 +1,7 @@
 import { useState, useRef } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { cn } from '#/lib/utils'
-import {
-  Mail,
-  Calendar,
-  Camera,
-  Phone,
-  Pencil,
-  Sparkles,
-} from 'lucide-react'
+import { Mail, Calendar, Camera, Phone, Pencil, Sparkles } from 'lucide-react'
 import { PersonalInfoForm } from './PersonalInfoForm'
 import { ImageEditorModal } from './ImageEditorModal'
 import { LoadingOverlay } from '#/components/ui/loader'
@@ -18,20 +11,30 @@ import { useProfileData } from '#/hook'
 
 export function UserProfileSettingsCard() {
   const {
-    name, setName,
-    phone, setPhone,
-    location, setLocation,
-    gender, setGender,
-    language, setLanguage,
-    dob, setDob,
+    name,
+    setName,
+    phone,
+    setPhone,
+    location,
+    setLocation,
+    gender,
+    setGender,
+    language,
+    setLanguage,
+    dob,
+    setDob,
     currency,
     emailNotifications,
     smsNotifications,
     marketingEmails,
-    imagePreview, setImagePreview,
-    editorImageSrc, setEditorImageSrc,
-    croppedFile, setCroppedFile,
-    isEditorOpen, setIsEditorOpen,
+    imagePreview,
+    setImagePreview,
+    editorImageSrc,
+    setEditorImageSrc,
+    croppedFile,
+    setCroppedFile,
+    isEditorOpen,
+    setIsEditorOpen,
     session,
     refetch,
     busy,
@@ -128,9 +131,9 @@ export function UserProfileSettingsCard() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      year: 'numeric',
-    })
+        month: 'short',
+        year: 'numeric',
+      })
     : 'Jan 2024'
 
   const fields = [
@@ -253,9 +256,7 @@ export function UserProfileSettingsCard() {
               <div
                 className={cn(
                   'h-full transition-all duration-500 rounded-full',
-                  completenessPercent === 100
-                    ? 'bg-primary'
-                    : 'bg-amber-500',
+                  completenessPercent === 100 ? 'bg-primary' : 'bg-amber-500',
                 )}
                 style={{ width: `${completenessPercent}%` }}
               />
@@ -293,20 +294,12 @@ export function UserProfileSettingsCard() {
           {/* Dynamic Contact Details */}
           <div className="mt-6 space-y-4 text-left w-full max-w-[240px]">
             <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-              <Mail
-                size={16}
-                className="text-muted-foreground/70 shrink-0"
-              />
+              <Mail size={16} className="text-muted-foreground/70 shrink-0" />
               <span className="truncate">{session.user.email}</span>
             </div>
             <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-              <Phone
-                size={16}
-                className="text-muted-foreground/70 shrink-0"
-              />
-              <span
-                className={cn(!phone && 'italic text-muted-foreground/50')}
-              >
+              <Phone size={16} className="text-muted-foreground/70 shrink-0" />
+              <span className={cn(!phone && 'italic text-muted-foreground/50')}>
                 {phone || t('Not specified')}
               </span>
             </div>
@@ -315,7 +308,9 @@ export function UserProfileSettingsCard() {
                 size={16}
                 className="text-muted-foreground/70 shrink-0"
               />
-              <span>{t('Member since')} {joinDate}</span>
+              <span>
+                {t('Member since')} {joinDate}
+              </span>
             </div>
           </div>
         </div>

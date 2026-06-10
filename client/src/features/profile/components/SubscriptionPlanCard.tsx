@@ -126,7 +126,7 @@ export function SubscriptionPlanCard({
                 ? 'Starter members can list up to 5 items. Upgrade to a paid plan to list up to 50 or unlimited items.'
                 : activeTier.toLowerCase() === 'pro'
                   ? 'Pro members can list up to 50 items. Upgrade to the Business plan for unlimited items.'
-                  : 'You have unlimited listing capacity with your Business plan!'
+                  : 'You have unlimited listing capacity with your Business plan!',
             )}
           </p>
         </div>
@@ -136,7 +136,9 @@ export function SubscriptionPlanCard({
           <div className="bg-danger border border-destructive/20 text-destructive rounded-xl p-3.5 flex items-start gap-2.5 mt-6">
             <AlertTriangle size={15} className="shrink-0 mt-0.5" />
             <p className="text-[10px] font-bold leading-normal">
-              {t('You have reached your listing limit. Upgrade your subscription plan to create new listings.')}
+              {t(
+                'You have reached your listing limit. Upgrade your subscription plan to create new listings.',
+              )}
             </p>
           </div>
         )}

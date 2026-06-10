@@ -1,9 +1,7 @@
-export type AuthRole = 'user' | 'admin' | 'owner' | 'superAdmin'
+export type AuthRole = 'user' | 'admin'
 
 export const normalizeRole = (role?: string | null): 'user' | 'admin' | undefined => {
   if (!role) return undefined
-  if (role === 'owner') return 'user'
-  if (role === 'superAdmin') return 'admin'
   if (role === 'user' || role === 'admin') return role
   return undefined
 }

@@ -9,7 +9,11 @@ interface NotificationSettingsFormProps {
   bookingAlerts: boolean
   settlementAlerts: boolean
   marketingAlerts: boolean
-  handleNotificationSave: (booking: boolean, settlement: boolean, marketing: boolean) => void
+  handleNotificationSave: (
+    booking: boolean,
+    settlement: boolean,
+    marketing: boolean,
+  ) => void
   isSaving: boolean
 }
 
@@ -25,8 +29,10 @@ export const NotificationSettingsForm = ({
 
   // Local switch states for buffering
   const [localBookingAlerts, setLocalBookingAlerts] = useState(bookingAlerts)
-  const [localSettlementAlerts, setLocalSettlementAlerts] = useState(settlementAlerts)
-  const [localMarketingAlerts, setLocalMarketingAlerts] = useState(marketingAlerts)
+  const [localSettlementAlerts, setLocalSettlementAlerts] =
+    useState(settlementAlerts)
+  const [localMarketingAlerts, setLocalMarketingAlerts] =
+    useState(marketingAlerts)
 
   // Synchronize local states when baseline props change from database
   useEffect(() => {
@@ -85,11 +91,18 @@ export const NotificationSettingsForm = ({
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    handleNotificationSave(localBookingAlerts, localSettlementAlerts, localMarketingAlerts)
+    handleNotificationSave(
+      localBookingAlerts,
+      localSettlementAlerts,
+      localMarketingAlerts,
+    )
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-8 animate-in fade-in duration-300">
+    <form
+      onSubmit={onSubmit}
+      className="space-y-8 animate-in fade-in duration-300"
+    >
       {/* Title Header */}
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
         <div>

@@ -244,11 +244,11 @@ export const ProductInfoSection = ({
           className="w-full sm:flex-1 h-12 rounded-xl border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all gap-2"
           onClick={() =>
             window.open(
-              `mailto:${product.owner?.email || ''}?subject=Inquiry about ${product.title || product.name}`,
+              `mailto:${product.user?.email || ''}?subject=Inquiry about ${product.title || product.name}`,
             )
           }
         >
-          <MessageCircle size={18} /> Chat with Owner
+          <MessageCircle size={18} /> Chat with User
         </Button>
       </div>
 

@@ -114,14 +114,14 @@ export const OrderInvoiceDialog = ({
 
             <div className="space-y-3 p-6 bg-muted-light/50 rounded-2xl border border-border/30">
               <span className="text-[10px] font-black text-muted-dark uppercase tracking-widest block">
-                Billed By (Owner)
+                Billed By (Provider)
               </span>
               <div className="space-y-1 font-semibold text-foreground/80">
                 <div className="text-[14px] font-black text-foreground/90">
-                  {order.product?.owner?.name || 'Vastu Lister'}
+                  {order.product?.user?.name || 'Vastu Lister'}
                 </div>
-                <div>Email: {order.product?.owner?.email || 'N/A'}</div>
-                <div>Phone: {order.product?.owner?.phone || 'N/A'}</div>
+                <div>Email: {order.product?.user?.email || 'N/A'}</div>
+                <div>Phone: {order.product?.user?.phone || 'N/A'}</div>
               </div>
             </div>
           </div>

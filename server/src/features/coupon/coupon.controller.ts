@@ -14,11 +14,11 @@ export class CouponController {
       if (isAdminRole(role)) {
         whereClause = {}; // Admins see everything
       } else {
-        // Regular users (including owners) can see their own coupons and active global coupons.
+        // Regular users can see their own coupons and active global coupons.
         whereClause = {
           OR: [
-            { ownerId: session.user.id },
-            { ownerId: null, isActive: true, endDate: { gte: new Date() } }
+            { userId: session.user.id },
+            { userId: null, isActive: true, endDate: { gte: new Date() } }
           ]
         };
       }
@@ -41,32 +41,31 @@ export class CouponController {
       return reply.status(401).send({ message: "Unauthorized" });
     }
 
-        const { code, discount, type, maxDiscount, minBooking, startDate, endDate, usageLimit, perUserLimit, productId } = request.body as any;
+    const role = session.user.role;
+    const { code, discount, type, maxDiscount, minBooking, startDate, endDate, usageLimit, perUserLimit, productId } = request.body as any;
 
     if (!code || !discount) {
       return reply.status(400).send({ message: "Code and discount value are required" });
     }
 
-    let couponOwnerId: string | null = null;
+    let couponUserId: string | null = null;
     let couponProductId: string | null = null;
 
-    const role = session.user.role;
-
-    if (role === "owner" || role === "user") {
-      couponOwnerId = session.user.id;
-      // If a product restriction is requested, verify ownership
+    if (role === "user") {
+      couponUserId = session.user.id;
+      // If a product restriction is requested, verify listing creator
       if (productId) {
         const product = await prisma.product.findUnique({
           where: { id: productId }
         });
-        if (!product || product.ownerId !== session.user.id) {
+        if (!product || product.userId !== session.user.id) {
           return reply.status(403).send({ message: "You can only create coupons for your own listings" });
         }
         couponProductId = productId;
       }
     } else if (isAdminRole(role)) {
-      // Admins can set ownerId or productId arbitrarily
-      couponOwnerId = (request.body as any).ownerId || null;
+      // Admins can set userId or productId arbitrarily
+      couponUserId = (request.body as any).userId || null;
       couponProductId = productId || null;
     } else {
       return reply.status(403).send({ message: "Forbidden" });
@@ -92,7 +91,7 @@ export class CouponController {
         isActive: isAdminRole(role),
         usageLimit: usageLimit ? parseInt(usageLimit) : null,
         perUserLimit: perUserLimit ? parseInt(perUserLimit) : null,
-        ownerId: couponOwnerId,
+        userId: couponUserId,
         productId: couponProductId
       }
     });
@@ -114,8 +113,8 @@ export class CouponController {
     }
 
     const role = session.user.role;
-    if (role !== "admin" && role !== "superAdmin") {
-      if (coupon.ownerId !== session.user.id) {
+    if (role !== "admin") {
+      if (coupon.userId !== session.user.id) {
         return reply.status(403).send({ message: "You can only delete your own coupons" });
       }
     }
@@ -173,15 +172,15 @@ export class CouponController {
       return reply.status(400).send({ message: `Minimum booking value of ₹${coupon.minBooking} required` });
     }
 
-    // Owner or Product specific validation
-    if (coupon.ownerId || coupon.productId) {
+    // User or Product specific validation
+    if (coupon.userId || coupon.productId) {
       if (!productId) {
         return reply.status(400).send({ message: "Product context is required to apply this coupon" });
       }
       
       const product = await prisma.product.findUnique({
         where: { id: productId },
-        include: { owner: { select: { name: true } } }
+        include: { user: { select: { name: true } } }
       });
 
       if (!product) {
@@ -192,8 +191,8 @@ export class CouponController {
         return reply.status(400).send({ message: "This coupon is only valid for a specific listing" });
       }
 
-      if (coupon.ownerId && product.ownerId !== coupon.ownerId) {
-        return reply.status(400).send({ message: `This coupon is only valid for listings from ${product.owner?.name || 'this owner'}` });
+      if (coupon.userId && product.userId !== coupon.userId) {
+        return reply.status(400).send({ message: `This coupon is only valid for listings from ${product.user?.name || 'this user'}` });
       }
     }
 

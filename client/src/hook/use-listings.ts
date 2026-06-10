@@ -139,55 +139,6 @@ export const useDeleteProduct = () => {
   })
 }
 
-// Create delete request mutation (for admins)
-export const useCreateDeleteRequest = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async ({
-      productId,
-      reason,
-    }: {
-      productId: string
-      reason?: string
-    }) => {
-      await apiClient.post('/delete-requests', { productId, reason })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['delete-requests'] })
-    },
-  })
-}
-
-// Fetch all delete requests (for superAdmins)
-export const useDeleteRequests = () => {
-  return useQuery({
-    queryKey: ['delete-requests'],
-    queryFn: async () => {
-      const res = await apiClient.get('/delete-requests')
-      return res.data.requests
-    },
-  })
-}
-
-// Process delete request (for superAdmins)
-export const useProcessDeleteRequest = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: async ({
-      id,
-      status,
-    }: {
-      id: string
-      status: 'approved' | 'rejected'
-    }) => {
-      await apiClient.patch(`/delete-requests/${id}/process`, { status })
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['delete-requests'] })
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-    },
-  })
-}
 // Create rental (Rent Now)
 export const useCreateRental = () => {
   const queryClient = useQueryClient()
@@ -233,7 +184,7 @@ export const useMyListings = () => {
     },
   })
 }
-// Fetch orders (for Owners/Admins)
+// Fetch orders (for Providers/Admins)
 export const useOrders = () => {
   return useQuery({
     queryKey: ['orders'],

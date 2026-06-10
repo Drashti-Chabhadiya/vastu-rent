@@ -37,7 +37,7 @@ export class ProductService {
       orderBy: { createdAt: "desc" },
       include: {
         category: true,
-        owner: {
+        user: {
           select: { id: true, name: true, email: true, image: true },
         },
         reviews: {
@@ -64,7 +64,7 @@ export class ProductService {
       orderBy: { createdAt: "desc" },
       include: {
         category: true,
-        owner: { select: { name: true } },
+        user: { select: { name: true } },
       },
     });
   }
@@ -74,7 +74,7 @@ export class ProductService {
       where: { id },
       include: {
         category: true,
-        owner: {
+        user: {
           include: {
             products: {
               include: {
@@ -100,16 +100,15 @@ export class ProductService {
 
     if (!product) return null;
 
-    // Calculate owner's average rating
-    let ownerTotalRating = 0;
-    let ownerReviewCount = 0;
-    product.owner.products.forEach((p: any) => {
+    let userTotalRating = 0;
+    let userReviewCount = 0;
+    product.user.products.forEach((p: any) => {
       p.reviews.forEach((r: any) => {
-        ownerTotalRating += r.rating;
-        ownerReviewCount++;
+        userTotalRating += r.rating;
+        userReviewCount++;
       });
     });
-    const ownerRating = ownerReviewCount > 0 ? (ownerTotalRating / ownerReviewCount).toFixed(1) : "5.0";
+    const userRating = userReviewCount > 0 ? (userTotalRating / userReviewCount).toFixed(1) : "5.0";
 
     return {
       ...product,
@@ -117,38 +116,38 @@ export class ProductService {
       rating: product.reviews.length > 0
         ? (product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length).toFixed(1)
         : "5.0",
-      owner: {
-        id: product.owner.id,
-        name: product.owner.name,
-        image: product.owner.image,
-        createdAt: product.owner.createdAt,
-        rating: ownerRating,
-        listingsCount: product.owner._count.products
+      user: {
+        id: product.user.id,
+        name: product.user.name,
+        image: product.user.image,
+        createdAt: product.user.createdAt,
+        rating: userRating,
+        listingsCount: product.user._count.products
       }
     };
   }
 
   async createProduct(data: any) {
-    if (!data.ownerId) {
-      throw new Error("Owner ID is required to create a listing");
+    if (!data.userId) {
+      throw new Error("User ID is required to create a listing");
     }
 
-    const owner = await prisma.user.findUnique({
-      where: { id: data.ownerId },
+    const user = await prisma.user.findUnique({
+      where: { id: data.userId },
       select: { subscriptionTier: true, subscriptionExpiresAt: true },
     });
 
-    if (!owner) {
-      throw new Error("Owner not found");
+    if (!user) {
+      throw new Error("User not found");
     }
 
-    let tier = (owner.subscriptionTier || "Starter").toLowerCase();
-    if (owner.subscriptionExpiresAt && owner.subscriptionExpiresAt < new Date()) {
+    let tier = (user.subscriptionTier || "Starter").toLowerCase();
+    if (user.subscriptionExpiresAt && user.subscriptionExpiresAt < new Date()) {
       tier = "starter";
     }
 
     const listingCount = await prisma.product.count({
-      where: { ownerId: data.ownerId },
+      where: { userId: data.userId },
     });
 
     if (tier === "starter" && listingCount >= 5) {
@@ -174,7 +173,7 @@ export class ProductService {
     const product = await prisma.product.findUnique({ where: { id } });
     if (!product) throw new Error("Product not found");
 
-    if (userId && role && product.ownerId !== userId && role !== "admin" && role !== "superAdmin") {
+    if (userId && role && product.userId !== userId && role !== "admin") {
       throw new Error("Forbidden: You do not own this listing");
     }
 
@@ -191,14 +190,10 @@ export class ProductService {
     const product = await prisma.product.findUnique({ where: { id } });
     if (!product) throw new Error("Product not found");
 
-    const isOwner = userId && product.ownerId === userId;
-    const isSuperAdmin = role === "superAdmin";
+    const isCreator = userId && product.userId === userId;
     const isAdmin = role === "admin";
 
-    if (!isOwner && !isSuperAdmin) {
-      if (isAdmin) {
-        throw new Error("Forbidden: Admin must request SuperAdmin approval to delete products they do not own");
-      }
+    if (!isCreator && !isAdmin) {
       throw new Error("Forbidden: You do not own this listing");
     }
 
@@ -208,7 +203,7 @@ export class ProductService {
       for (const imageUrl of product.images) {
         const publicId = cloudinaryService.extractPublicId(imageUrl);
         if (publicId) {
-          await cloudinaryService.deleteImage(publicId, product.ownerId);
+          await cloudinaryService.deleteImage(publicId, product.userId);
         }
       }
     }
@@ -226,9 +221,9 @@ export class ProductService {
     });
   }
 
-  async getOwnerListings(ownerId: string) {
+  async getUserListings(userId: string) {
     return prisma.product.findMany({
-      where: { ownerId },
+      where: { userId },
       include: { category: true },
       orderBy: { createdAt: "desc" },
     });

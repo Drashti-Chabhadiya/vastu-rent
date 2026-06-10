@@ -14,14 +14,8 @@ export const AvailabilityCalendar = ({
   productRentals,
   handleDayClick,
 }: AvailabilityCalendarProps) => {
-  const {
-    calMonth,
-    calYear,
-    setCalMonth,
-    setCalYear,
-    startDate,
-    endDate,
-  } = useProductBookingStore()
+  const { calMonth, calYear, setCalMonth, setCalYear, startDate, endDate } =
+    useProductBookingStore()
 
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate()
   const firstDay = new Date(calYear, calMonth, 1).getDay()

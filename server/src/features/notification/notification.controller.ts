@@ -50,8 +50,8 @@ export class NotificationController {
     const session = await auth.api.getSession({ headers: request.headers as any });
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
 
-    // Restrict access to admin / superAdmin
-    if (session.user.role !== "admin" && session.user.role !== "superAdmin") {
+    // Restrict access to admin 
+    if (session.user.role !== "admin") {
       return reply.status(403).send({ message: "Forbidden: Admin access required" });
     }
 
@@ -67,7 +67,7 @@ export class NotificationController {
 
       // Create and deliver notifications to everyone in parallel
       await Promise.all(
-        users.map((u) => 
+        users.map((u) =>
           createAndDeliverNotification({
             userId: u.id,
             title,

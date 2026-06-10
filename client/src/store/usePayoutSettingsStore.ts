@@ -17,46 +17,49 @@ export interface PayoutSettingsState {
   hasChanges: (activeUser: any) => boolean
 }
 
-export const usePayoutSettingsStore = create<PayoutSettingsState>((set, get) => ({
-  bankName: '',
-  accountNumber: '',
-  ifscCode: '',
-  upiId: '',
-  accountHolder: '',
+export const usePayoutSettingsStore = create<PayoutSettingsState>(
+  (set, get) => ({
+    bankName: '',
+    accountNumber: '',
+    ifscCode: '',
+    upiId: '',
+    accountHolder: '',
 
-  setBankName: (bankName) => set({ bankName }),
-  setAccountNumber: (accountNumber) => set({ accountNumber }),
-  setIfscCode: (ifscCode) => set({ ifscCode }),
-  setUpiId: (upiId) => set({ upiId }),
-  setAccountHolder: (accountHolder) => set({ accountHolder }),
+    setBankName: (bankName) => set({ bankName }),
+    setAccountNumber: (accountNumber) => set({ accountNumber }),
+    setIfscCode: (ifscCode) => set({ ifscCode }),
+    setUpiId: (upiId) => set({ upiId }),
+    setAccountHolder: (accountHolder) => set({ accountHolder }),
 
-  initialize: (activeUser) => {
-    if (!activeUser) return
-    set({
-      bankName: activeUser.bankName || '',
-      accountNumber: activeUser.accountNumber || '',
-      ifscCode: activeUser.ifscCode || '',
-      upiId: activeUser.upiId || '',
-      accountHolder: activeUser.accountHolder || activeUser.name || '',
-    })
-  },
+    initialize: (activeUser) => {
+      if (!activeUser) return
+      set({
+        bankName: activeUser.bankName || '',
+        accountNumber: activeUser.accountNumber || '',
+        ifscCode: activeUser.ifscCode || '',
+        upiId: activeUser.upiId || '',
+        accountHolder: activeUser.accountHolder || activeUser.name || '',
+      })
+    },
 
-  hasChanges: (activeUser) => {
-    if (!activeUser) return false
-    const state = get()
+    hasChanges: (activeUser) => {
+      if (!activeUser) return false
+      const state = get()
 
-    const initialBankName = activeUser.bankName || ''
-    const initialAccountNumber = activeUser.accountNumber || ''
-    const initialIfscCode = activeUser.ifscCode || ''
-    const initialUpiId = activeUser.upiId || ''
-    const initialAccountHolder = activeUser.accountHolder || activeUser.name || ''
+      const initialBankName = activeUser.bankName || ''
+      const initialAccountNumber = activeUser.accountNumber || ''
+      const initialIfscCode = activeUser.ifscCode || ''
+      const initialUpiId = activeUser.upiId || ''
+      const initialAccountHolder =
+        activeUser.accountHolder || activeUser.name || ''
 
-    return (
-      state.upiId !== initialUpiId ||
-      state.accountHolder !== initialAccountHolder ||
-      state.bankName !== initialBankName ||
-      state.accountNumber !== initialAccountNumber ||
-      state.ifscCode !== initialIfscCode
-    )
-  },
-}))
+      return (
+        state.upiId !== initialUpiId ||
+        state.accountHolder !== initialAccountHolder ||
+        state.bankName !== initialBankName ||
+        state.accountNumber !== initialAccountNumber ||
+        state.ifscCode !== initialIfscCode
+      )
+    },
+  }),
+)

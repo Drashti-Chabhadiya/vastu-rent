@@ -62,7 +62,7 @@ export function BecomeListerPage() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-2xl">
             <Badge className="mb-6 bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-1.5 rounded-full font-bold text-sm">
-              JOIN 5,000+ OWNERS
+              JOIN 5,000+ LISTERS
             </Badge>
             <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-8 leading-tight">
               Turn Your Things Into{' '}
@@ -137,11 +137,11 @@ export function BecomeListerPage() {
             <div className="lg:w-1/2 bg-muted/50">
               <img
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"
-                alt="Happy Owner"
+                alt="Happy Lister"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   ;(e.target as any).src =
-                    'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Owner'
+                    'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Lister'
                 }}
               />
             </div>

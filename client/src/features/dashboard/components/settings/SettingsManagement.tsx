@@ -73,8 +73,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            err.message ||
-            'Failed to save bank details',
+              err.message ||
+              'Failed to save bank details',
           )
         },
       },
@@ -98,13 +98,15 @@ export const SettingsManagement = () => {
           setBookingAlerts(bookingAlertsVal)
           setSettlementAlerts(settlementAlertsVal)
           setMarketingAlerts(marketingAlertsVal)
-          toast.success('Notification preferences successfully saved in Database! 🔔')
+          toast.success(
+            'Notification preferences successfully saved in Database! 🔔',
+          )
         },
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            err.message ||
-            'Failed to update notification settings',
+              err.message ||
+              'Failed to update notification settings',
           )
         },
       },
@@ -123,8 +125,7 @@ export const SettingsManagement = () => {
     )
   }
 
-  const isAdminOrSuper =
-    activeUser?.role === 'admin' || activeUser?.role === 'superAdmin'
+  const isAdmin = activeUser?.role === 'admin'
 
   const sidebarItems = [
     {
@@ -145,15 +146,15 @@ export const SettingsManagement = () => {
       desc: 'Control your alert preferences',
       icon: Bell,
     },
-    ...(isAdminOrSuper
+    ...(isAdmin
       ? [
-        {
-          id: 'site-content',
-          label: 'Site Content Settings',
-          desc: 'Customize contact, pricing, trust, and terms',
-          icon: Settings,
-        },
-      ]
+          {
+            id: 'site-content',
+            label: 'Site Content Settings',
+            desc: 'Customize contact, pricing, trust, and terms',
+            icon: Settings,
+          },
+        ]
       : []),
     {
       id: 'security',
@@ -202,16 +203,18 @@ export const SettingsManagement = () => {
               key={item.id}
               variant="ghost"
               onClick={() => setActiveSubTab(item.id)}
-              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${activeSubTab === item.id
+              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
+                activeSubTab === item.id
                   ? 'bg-[#e6f4ea] text-[#0a5c36] hover:bg-[#e6f4ea] hover:text-[#0a5c36]'
                   : 'text-slate-600 hover:bg-slate-50'
-                }`}
+              }`}
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${activeSubTab === item.id
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${
+                  activeSubTab === item.id
                     ? 'bg-white text-[#0a5c36] border-emerald-100 shadow-sm'
                     : 'bg-slate-100 border-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm'
-                  }`}
+                }`}
               >
                 <item.icon
                   size={18}
@@ -219,15 +222,21 @@ export const SettingsManagement = () => {
                 />
               </div>
               <div className="min-w-0 text-left">
-                <p className={`font-sans text-[13px] leading-snug font-bold ${activeSubTab === item.id ? 'text-[#0a5c36]' : 'text-slate-800'
-                  }`}>
+                <p
+                  className={`font-sans text-[13px] leading-snug font-bold ${
+                    activeSubTab === item.id
+                      ? 'text-[#0a5c36]'
+                      : 'text-slate-800'
+                  }`}
+                >
                   {item.label}
                 </p>
                 <p
-                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${activeSubTab === item.id
+                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
+                    activeSubTab === item.id
                       ? 'text-[#0a5c36]/80'
                       : 'text-slate-400'
-                    }`}
+                  }`}
                 >
                   {item.desc}
                 </p>
@@ -266,7 +275,7 @@ export const SettingsManagement = () => {
             </div>
           )}
 
-          {activeSubTab === 'site-content' && isAdminOrSuper && (
+          {activeSubTab === 'site-content' && isAdmin && (
             <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm max-h-[calc(100vh-12rem)] flex flex-col">
               <SiteSettingsForm />
             </div>
@@ -274,9 +283,13 @@ export const SettingsManagement = () => {
 
           {activeSubTab === 'security' && (
             <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
-              <h3 className="text-[16px] font-black text-foreground/90">Security & Access</h3>
+              <h3 className="text-[16px] font-black text-foreground/90">
+                Security & Access
+              </h3>
               <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-                Security controls, password changes, two-factor authentication, active login sessions, and trusted devices are managed securely under your main Account Settings page.
+                Security controls, password changes, two-factor authentication,
+                active login sessions, and trusted devices are managed securely
+                under your main Account Settings page.
               </p>
               <Link to="/account">
                 <Button className="mt-2 bg-[#0a5c36] hover:bg-[#084a2b] text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm">
@@ -288,11 +301,17 @@ export const SettingsManagement = () => {
 
           {activeSubTab === 'api-integrations' && (
             <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
-              <h3 className="text-[16px] font-black text-foreground/90">API & Integrations</h3>
+              <h3 className="text-[16px] font-black text-foreground/90">
+                API & Integrations
+              </h3>
               <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-                Configure third-party API webhooks, web services, rental syndication channels, and application credentials.
+                Configure third-party API webhooks, web services, rental
+                syndication channels, and application credentials.
               </p>
-              <Button disabled className="mt-2 bg-muted-light text-muted-dark font-black text-[11px] px-6 h-10 rounded-full cursor-not-allowed">
+              <Button
+                disabled
+                className="mt-2 bg-muted-light text-muted-dark font-black text-[11px] px-6 h-10 rounded-full cursor-not-allowed"
+              >
                 Coming Soon
               </Button>
             </div>

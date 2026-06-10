@@ -21,7 +21,7 @@ export class DeleteRequestController {
   async getAllRequests(request: FastifyRequest, reply: FastifyReply) {
     try {
       const user = (request as any).user;
-      if (user.role !== "superAdmin") {
+      if (user.role !== "admin") {
         return reply.status(403).send({ message: "Forbidden" });
       }
 
@@ -38,7 +38,7 @@ export class DeleteRequestController {
       const { status } = request.body as any;
       const user = (request as any).user;
 
-      if (user.role !== "superAdmin") {
+      if (user.role !== "admin") {
         return reply.status(403).send({ message: "Forbidden" });
       }
 

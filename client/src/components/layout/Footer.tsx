@@ -105,7 +105,9 @@ export function Footer() {
               <Headphones className="h-7 w-7 text-primary animate-pulse" />
             </div>
             <div>
-              <h3 className="font-bold text-[#0F291B] text-lg">{t('Need help?')}</h3>
+              <h3 className="font-bold text-[#0F291B] text-lg">
+                {t('Need help?')}
+              </h3>
               <p className="text-sm text-muted-foreground mt-1">
                 {t('Our support team is here for you 24/7.')}
               </p>
@@ -136,7 +138,9 @@ export function Footer() {
             <div>
               <Logo />
               <p className="mt-6 max-w-none xl:max-w-xs text-sm leading-relaxed text-muted-foreground">
-                {t('A trusted community marketplace for renting and hosting quality items. Live simply. Live in harmony.')}
+                {t(
+                  'A trusted community marketplace for renting and hosting quality items. Live simply. Live in harmony.',
+                )}
               </p>
             </div>
 

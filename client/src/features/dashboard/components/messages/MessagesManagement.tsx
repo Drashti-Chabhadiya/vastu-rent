@@ -17,16 +17,13 @@ import type {
 import { cn } from '#/lib/utils'
 import { apiClient } from '#/lib/api'
 import { useChat } from '#/hook'
-
+import { parseMessage, buildReplyContent } from '#/lib/chat-utils'
 import { NewChatDialog } from './components/NewChatDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
 import { useChatStore } from '../../../../store/useChatStore'
 
 type Message = BaseMessage
-
-import { parseMessage, buildReplyContent } from '#/lib/chat-utils'
-
 
 export const MessagesManagement = () => {
   const {
@@ -121,11 +118,9 @@ export const MessagesManagement = () => {
     let matchesTab = true
     if (activeSubTab === 'unread') matchesTab = conv.unreadCount > 0
     else if (activeSubTab === 'bookings')
-      matchesTab = conv.otherParticipant.role === 'owner'
+      matchesTab = conv.otherParticipant.role === 'user'
     else if (activeSubTab === 'support')
-      matchesTab =
-        conv.otherParticipant.role === 'admin' ||
-        conv.otherParticipant.role === 'superAdmin'
+      matchesTab = conv.otherParticipant.role === 'admin'
 
     return matchesSearch && matchesTab
   })
@@ -375,7 +370,9 @@ export const MessagesManagement = () => {
             messagesContainerRef={messagesContainerRef}
             inputRef={inputRef}
             onCallSuccess={(name) => toast.success(`Calling ${name}...`)}
-            onVideoSuccess={(name) => toast.success(`Starting video call with ${name}...`)}
+            onVideoSuccess={(name) =>
+              toast.success(`Starting video call with ${name}...`)
+            }
           />
         </div>
       </div>

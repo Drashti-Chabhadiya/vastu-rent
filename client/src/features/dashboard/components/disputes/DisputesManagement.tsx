@@ -26,8 +26,7 @@ export const DisputesManagement = () => {
   const resolveMutation = useResolveDispute()
   const { data: session } = authClient.useSession()
 
-  const user = session?.user
-  const isAdmin = user?.role === 'admin' || user?.role === 'superAdmin'
+  const isAdmin = session?.user?.role === 'admin'
 
   const [activeDispute, setActiveDispute] = useState<any>(null)
   const [resolutionText, setResolutionText] = useState('')
@@ -310,7 +309,7 @@ export const DisputesManagement = () => {
               Dispute Management Center
             </h4>
             <p className="text-[11px] font-bold text-muted-foreground/85">
-              Admins verify facts from both renters and owners to guarantee
+              Admins verify facts from both renters and hosts to guarantee
               payouts and transaction safety.
             </p>
           </div>

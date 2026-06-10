@@ -65,7 +65,10 @@ export function AccountSecuritySection({
             }}
           />
         </Row>
-        <Row label="Login Sessions" desc="View and manage your active sessions.">
+        <Row
+          label="Login Sessions"
+          desc="View and manage your active sessions."
+        >
           <Button
             variant="ghost"
             onClick={() => setSessOpen(true)}

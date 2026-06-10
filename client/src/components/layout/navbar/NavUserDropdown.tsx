@@ -31,7 +31,11 @@ interface NavUserDropdownProps {
   t: (key: string) => string
 }
 
-export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps) {
+export function NavUserDropdown({
+  session,
+  onSignOut,
+  t,
+}: NavUserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -133,14 +137,7 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
               'hover:bg-muted-light',
             )}
           >
-            <Avatar
-              className={cn(
-                'h-12',
-                'w-12',
-                'border',
-                'border-border',
-              )}
-            >
+            <Avatar className={cn('h-12', 'w-12', 'border', 'border-border')}>
               <AvatarImage
                 src={session.user.image || ''}
                 alt={session.user.name}
@@ -158,12 +155,7 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
             </Avatar>
             <div className={cn('flex-1', 'min-w-0')}>
               <div
-                className={cn(
-                  'flex',
-                  'items-center',
-                  'gap-1.5',
-                  'flex-wrap',
-                )}
+                className={cn('flex', 'items-center', 'gap-1.5', 'flex-wrap')}
               >
                 <span
                   className={cn(
@@ -229,12 +221,7 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
               </span>
             </div>
             <ChevronRight
-              className={cn(
-                'h-4',
-                'w-4',
-                'text-muted-dark',
-                'shrink-0',
-              )}
+              className={cn('h-4', 'w-4', 'text-muted-dark', 'shrink-0')}
             />
           </Link>
 
@@ -267,18 +254,10 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
                 <Leaf className={cn('h-4', 'w-4')} />
               </div>
               <div className="flex-1">
-                <p
-                  className={cn(
-                    'text-xs',
-                    'font-bold',
-                    'text-green-900',
-                  )}
-                >
+                <p className={cn('text-xs', 'font-bold', 'text-green-900')}>
                   {t('Green Member')}
                 </p>
-                <p
-                  className={cn('text-[11px]', 'text-primary-hover')}
-                >
+                <p className={cn('text-[11px]', 'text-primary-hover')}>
                   {t("You're saving the planet!")} 🌍
                 </p>
               </div>
@@ -314,7 +293,9 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
                 'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
               )}
             >
-              <Calendar className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+              <Calendar
+                className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+              />
               <div>
                 <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
                   {t('My Bookings')}
@@ -333,9 +314,13 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
                   'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
                 )}
               >
-                <Percent className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                <Percent
+                  className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                />
                 <div>
-                  <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
+                  <p
+                    className={cn('text-sm', 'font-medium', 'text-foreground')}
+                  >
                     {t('My Listings')}
                   </p>
                   <p className={cn('text-xs', 'text-muted-foreground/85')}>
@@ -347,15 +332,19 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
           )}
 
           {session.user && !isAdminRole(session.user.role) && (
-            <Link to="/owner/dashboard">
+            <Link to="/dashboard">
               <DropdownMenuItem
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
                 )}
               >
-                <LayoutDashboard className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                <LayoutDashboard
+                  className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                />
                 <div>
-                  <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
+                  <p
+                    className={cn('text-sm', 'font-medium', 'text-foreground')}
+                  >
                     {t('Dashboard')}
                   </p>
                   <p className={cn('text-xs', 'text-muted-foreground/85')}>
@@ -373,9 +362,13 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
                   'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
                 )}
               >
-                <LayoutDashboard className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                <LayoutDashboard
+                  className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                />
                 <div>
-                  <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
+                  <p
+                    className={cn('text-sm', 'font-medium', 'text-foreground')}
+                  >
                     {t('Admin')}
                   </p>
                   <p className={cn('text-xs', 'text-muted-foreground/85')}>
@@ -428,7 +421,9 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
                 'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
               )}
             >
-              <MessageSquare className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+              <MessageSquare
+                className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+              />
               <div>
                 <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
                   {t('Messages')}
@@ -450,7 +445,9 @@ export function NavUserDropdown({ session, onSignOut, t }: NavUserDropdownProps)
                 'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
               )}
             >
-              <HelpCircle className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+              <HelpCircle
+                className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+              />
               <div>
                 <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
                   {t('Help & Support')}

@@ -257,7 +257,7 @@ export const RenterOverview = ({
                         </div>
                       </TableCell>
                       <TableCell className="py-4 font-bold text-foreground">
-                        {rental.product?.owner?.name || 'Owner lister'}
+                        {rental.product?.user?.name || 'Lister'}
                       </TableCell>
                       <TableCell className="py-4 text-xs font-semibold text-muted-foreground/85">
                         {new Date(rental.startDate).toLocaleDateString()} -{' '}
