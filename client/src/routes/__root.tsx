@@ -197,10 +197,11 @@ function NotificationListener() {
               body: notif.message,
               icon: '/logo192.png',
               badge: '/logo192.png',
+              image: notif.image,
               data: {
                 url: notif.url || '/account/notifications',
               },
-            })
+            } as any)
           }).catch((err) => {
             console.error('Failed to trigger native notification via service worker:', err)
             // Fallback to main thread Notification
@@ -208,7 +209,8 @@ function NotificationListener() {
               const notification = new Notification(notif.title, {
                 body: notif.message,
                 icon: '/logo192.png',
-              })
+                image: notif.image,
+              } as any)
               notification.onclick = (e) => {
                 e.preventDefault()
                 window.focus()
@@ -239,6 +241,7 @@ function NotificationListener() {
         message: payload?.notification?.body || payload?.data?.message || '',
         type: payload?.data?.type || 'info',
         url: payload?.data?.url || payload?.fcmOptions?.link || '',
+        image: payload?.notification?.image || payload?.data?.image || '',
         isRead: false,
         createdAt: new Date().toISOString(),
       }
@@ -264,17 +267,19 @@ function NotificationListener() {
             body: notif.message,
             icon: '/logo192.png',
             badge: '/logo192.png',
+            image: notif.image,
             data: {
               url: notif.url || '/account/notifications',
             },
-          })
+          } as any)
         }).catch((err) => {
           console.error('Failed to trigger native notification via service worker:', err)
           try {
             const notification = new Notification(notif.title, {
               body: notif.message,
               icon: '/logo192.png',
-            })
+              image: notif.image,
+            } as any)
             notification.onclick = (e) => {
               e.preventDefault()
               window.focus()

@@ -13,6 +13,10 @@ export interface NotificationOptions {
    * Defaults to '/notifications'.
    */
   url?: string
+  /**
+   * Optional image URL to display in notification banners
+   */
+  image?: string
 }
 
 export async function createAndDeliverNotification({
@@ -21,6 +25,7 @@ export async function createAndDeliverNotification({
   message,
   type = 'info',
   url = '/notifications',
+  image,
 }: NotificationOptions) {
   try {
     const notif = await prisma.notification.create({
@@ -29,8 +34,8 @@ export async function createAndDeliverNotification({
 
     // Emit via socket.io to user's room (foreground real-time update)
     try {
-      console.log(`[Socket] Emitting notification to user_${userId}:`, { ...notif, url })
-      io?.to(`user_${userId}`).emit('notification', { ...notif, url })
+      console.log(`[Socket] Emitting notification to user_${userId}:`, { ...notif, url, image })
+      io?.to(`user_${userId}`).emit('notification', { ...notif, url, image })
     } catch (err) {
       console.error('Socket emit failed for notification:', err)
     }
@@ -41,10 +46,12 @@ export async function createAndDeliverNotification({
         title,
         body: message,
         url,
+        image,
         data: {
           id: notif.id,
           type,
           url,
+          image: image || '',
         },
       })
     } catch (err) {
@@ -85,5 +92,38 @@ export async function notifyAllAdmins({
     )
   } catch (err) {
     console.error('Failed to notify admins:', err)
+  }
+}
+
+export async function notifyAllUsers({
+  title,
+  message,
+  type = 'info',
+  url = '/notifications',
+  image,
+  excludeUserId,
+}: Omit<NotificationOptions, 'userId'> & { image?: string; excludeUserId?: string }) {
+  try {
+    const users = await prisma.user.findMany({
+      where: excludeUserId ? { id: { not: excludeUserId } } : {},
+      select: { id: true },
+    })
+
+    await Promise.all(
+      users.map((u) =>
+        createAndDeliverNotification({
+          userId: u.id,
+          title,
+          message,
+          type,
+          url,
+          image,
+        }).catch((err) =>
+          console.error(`Failed to deliver notification to user ${u.id}:`, err)
+        )
+      )
+    )
+  } catch (err) {
+    console.error('Failed to notify all users:', err)
   }
 }

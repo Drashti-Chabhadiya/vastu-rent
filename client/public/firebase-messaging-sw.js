@@ -43,6 +43,7 @@ messaging.onBackgroundMessage(function (payload) {
     },
     icon: '/logo192.png',
     badge: '/logo192.png',
+    image: payload.notification?.image || payload.data?.image || '',
     vibrate: [200, 100, 200],
     tag: payload.data?.id || 'vastu-rent-notification', // prevents duplicates
     requireInteraction: false,

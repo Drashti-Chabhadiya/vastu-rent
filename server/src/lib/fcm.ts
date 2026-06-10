@@ -27,6 +27,8 @@ export interface PushPayload {
   body: string
   /** URL path to navigate to when notification is tapped, e.g. "/notifications" */
   url?: string
+  /** Optional image URL to display inside the notification banner */
+  image?: string
   /** Extra arbitrary data */
   data?: Record<string, string>
 }
@@ -50,7 +52,8 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
       notification: {
         title: payload.title,
         body: payload.body,
-      },
+        image: payload.image,
+      } as any,
       data: {
         ...(payload.data ?? {}),
         url: payload.url ?? '/notifications',
@@ -85,7 +88,8 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
         notification: {
           title: payload.title,
           body: payload.body,
-          icon: '/images/icons/icon-192.png',
+          icon: '/logo192.png',
+          image: payload.image,
         },
         fcmOptions: {
           link: payload.url ?? '/notifications',

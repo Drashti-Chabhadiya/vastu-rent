@@ -23,6 +23,24 @@ export class ProductController {
     try {
       const userId = (request as any).user?.id || (request.body as any).userId;
       const product = await productService.createProduct({ ...request.body as any, userId });
+
+      // Notify all users about new product listing
+      try {
+        const { notifyAllUsers } = await import('../../lib/notification.js');
+        const creatorName = (request as any).user?.name || (request as any).user?.email || "Someone";
+        const productImage = product.images?.[0] || "";
+        await notifyAllUsers({
+          title: "New Listing Added! 🚀",
+          message: `${creatorName} listed a new item: "${product.title}"`,
+          type: "info",
+          url: `/products/${product.id}`,
+          image: productImage,
+          excludeUserId: userId,
+        });
+      } catch (err) {
+        console.error("Failed to notify users of new product:", err);
+      }
+
       return { product };
     } catch (error: any) {
       if (error.message?.includes("Forbidden") || error.message?.includes("limit")) {
