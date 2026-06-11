@@ -17,3 +17,8 @@ export * from './use-mobile'
 export * from './use-profile-data'
 export * from './use-delete-requests'
 export * from './use-category-delete-requests'
+export * from './use-newsletter'
+export * from './use-billing'
+export * from './use-payments'
+export * from './use-contact'
+

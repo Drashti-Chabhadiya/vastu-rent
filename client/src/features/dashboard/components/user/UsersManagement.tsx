@@ -26,6 +26,8 @@ import {
   useUpdateUserRole,
 } from '#/hook'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const UsersManagement = () => {
   const [search, setSearch] = useState('')
@@ -44,9 +46,17 @@ export const UsersManagement = () => {
   const roleMutation = useUpdateUserRole()
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       {/* Header & Filters */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card p-4 rounded-2xl border border-border/30 shadow-sm">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card p-4 rounded-2xl border border-border/30 shadow-sm"
+      >
         <div className="relative flex-1 max-w-md">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 text-dash-text-muted z-10"
@@ -114,10 +124,13 @@ export const UsersManagement = () => {
             </SelectContent>
           </Select>
         </div>
-      </div>
+      </motion.div>
 
       {/* Users Table */}
-      <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden">
+      <motion.div
+        variants={fadeUp}
+        className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden"
+      >
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -281,7 +294,7 @@ export const UsersManagement = () => {
             </TableBody>
           </Table>
         </div>
-      </div>
+      </motion.div>
 
       <ReusableAlertDialog
         isOpen={userToDelete !== null}
@@ -299,6 +312,6 @@ export const UsersManagement = () => {
         confirmText="Delete"
         variant="danger"
       />
-    </div>
+    </motion.div>
   )
 }

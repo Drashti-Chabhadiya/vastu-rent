@@ -3,7 +3,7 @@ import {
   MessageSquare,
   SlidersHorizontal,
   ChevronRight,
-  Loader2,
+  Leaf,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -11,6 +11,9 @@ import { cn } from '#/lib/utils'
 import type { Conversation } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
 import { formatMsgTime } from '#/lib/chat-utils'
+import { authClient } from '#/lib/auth/auth-client'
+import { Skeleton } from '#/components/ui/skeleton'
+
 
 interface ConversationListProps {
   conversations: Conversation[]
@@ -41,6 +44,9 @@ export function ConversationList({
   totalUnread,
   showMobileChat,
 }: ConversationListProps) {
+  const { data: session } = authClient.useSession()
+  const myShowOnline = (session?.user as any)?.showOnline !== false
+
   return (
     <div
       className={cn(
@@ -186,8 +192,19 @@ export function ConversationList({
         )}
       >
         {isLoadingConversations ? (
-          <div className={cn('flex', 'items-center', 'justify-center', 'h-32')}>
-            <Loader2 size={20} className={cn('animate-spin', 'text-primary')} />
+          <div className="space-y-2.5 p-1 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 p-3 rounded-2xl border border-transparent">
+                <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+                <div className="flex-1 space-y-2 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <Skeleton className="h-4 w-24 rounded" />
+                    <Skeleton className="h-3 w-8 rounded" />
+                  </div>
+                  <Skeleton className="h-3 w-3/4 rounded" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredConversations.length === 0 ? (
           <div
@@ -233,22 +250,33 @@ export function ConversationList({
                 <UserAvatar
                   image={conv.otherParticipant.image}
                   name={conv.otherParticipant.name}
-                  isOnline={conv.otherParticipant.isOnline}
+                  isOnline={
+                    myShowOnline &&
+                    conv.otherParticipant.lastActive !== null &&
+                    conv.otherParticipant.lastActive !== undefined
+                      ? conv.otherParticipant.isOnline
+                      : undefined
+                  }
                 />
                 <div className={cn('flex-1', 'min-w-0')}>
                   <div
                     className={cn('flex', 'items-center', 'justify-between')}
                   >
-                    <h4
-                      className={cn(
-                        'text-[12px] truncate',
-                        conv.unreadCount > 0
-                          ? 'font-black text-foreground'
-                          : 'font-bold text-foreground/90',
+                    <div className="flex items-center gap-1 min-w-0">
+                      <h4
+                        className={cn(
+                          'text-[12px] truncate',
+                          conv.unreadCount > 0
+                            ? 'font-black text-foreground'
+                            : 'font-bold text-foreground/90',
+                        )}
+                      >
+                        {conv.otherParticipant.name}
+                      </h4>
+                      {conv.otherParticipant.isGreenMember && (
+                        <Leaf className="w-3.5 h-3.5 text-emerald-500 fill-emerald-500 shrink-0" />
                       )}
-                    >
-                      {conv.otherParticipant.name}
-                    </h4>
+                    </div>
                     <span
                       className={cn(
                         'text-[9px]',

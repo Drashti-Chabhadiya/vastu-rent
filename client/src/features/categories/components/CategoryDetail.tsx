@@ -7,6 +7,8 @@ import { useState } from 'react'
 import { CategoryDetailSkeleton } from '#/components/skeletons'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { motion } from 'motion/react'
+import { EASE, fadeUp, stagger } from '#/lib/animations'
 
 export function CategoryDetail() {
   const { id } = useParams({ from: '/categories/$id' })
@@ -31,35 +33,54 @@ export function CategoryDetail() {
     <div className="min-h-screen bg-background">
       {/* Category Header */}
       <div className="bg-card border-b border-border/30 pb-12 pt-8">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <Link
-            to={'/categories'}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground/85 hover:text-primary transition-colors mb-8"
-          >
-            <ArrowLeft size={16} />
-            Back to All Categories
-          </Link>
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8"
+        >
+          <motion.div variants={fadeUp}>
+            <Link
+              to={'/categories'}
+              className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground/85 hover:text-primary transition-colors mb-8"
+            >
+              <ArrowLeft size={16} />
+              Back to All Categories
+            </Link>
+          </motion.div>
 
           <div className="flex flex-col md:flex-row md:items-center gap-8">
             {category && (
-              <CategoryIcon
-                category={category}
-                size="xl"
-                className="shadow-lg"
-              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.7, ease: EASE }}
+              >
+                <CategoryIcon
+                  category={category}
+                  size="xl"
+                  className="shadow-lg"
+                />
+              </motion.div>
             )}
             <div className="flex-1">
-              <h1 className="text-4xl font-extrabold text-foreground tracking-tight mb-3">
+              <motion.h1
+                variants={fadeUp}
+                className="text-4xl font-extrabold text-foreground tracking-tight mb-3"
+              >
                 {category?.name || 'Category Items'}
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl">
+              </motion.h1>
+              <motion.p
+                variants={fadeUp}
+                className="text-lg text-muted-foreground max-w-2xl"
+              >
                 Explore our curated collection of{' '}
                 {category?.name?.toLowerCase() || 'items'} available for rent.
                 High quality, affordable, and ready for you.
-              </p>
+              </motion.p>
             </div>
 
-            <div className="flex items-center gap-4">
+            <motion.div variants={fadeUp} className="flex items-center gap-4">
               <div className="text-center px-6 py-3 bg-primary/5 rounded-2xl border border-brand/10">
                 <p className="text-2xl font-bold text-primary">
                   {products?.length || 0}
@@ -68,9 +89,9 @@ export function CategoryDetail() {
                   Items
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 py-10">
@@ -112,11 +133,18 @@ export function CategoryDetail() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
             {filteredProducts?.map((product: any) => (
-              <ProductCard key={product.id} product={product} />
+              <motion.div key={product.id} variants={fadeUp} className="flex">
+                <ProductCard product={product} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

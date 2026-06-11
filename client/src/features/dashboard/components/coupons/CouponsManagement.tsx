@@ -9,6 +9,8 @@ import { CouponsTable } from './CouponsTable'
 import { CouponSidebar } from './CouponSidebar'
 import { CreateCouponModal } from './CreateCouponModal'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 interface CouponsManagementProps {
   isRenterView?: boolean
@@ -59,9 +61,16 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
   // ── Renter View ───────────────────────────────────────────────
   if (renderAsRenter) {
     return (
-      <div className="space-y-6">
-        <CouponRenterView coupons={renterCoupons} isLoading={isLoading} />
-      </div>
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="space-y-6"
+      >
+        <motion.div variants={fadeUp}>
+          <CouponRenterView coupons={renterCoupons} isLoading={isLoading} />
+        </motion.div>
+      </motion.div>
     )
   }
 
@@ -93,9 +102,14 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
 
   // ── Dashboard View ────────────────────────────────────────────
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       {/* Breadcrumb */}
-      <div className="flex flex-col gap-1">
+      <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
           <span>Dashboard</span>
           <ChevronRight size={10} className="text-muted-dark" />
@@ -104,11 +118,11 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
           </span>
         </div>
         <h1 className="text-xl font-black text-foreground">Coupons</h1>
-      </div>
+      </motion.div>
 
       {/* Admin Stats */}
       {isAdmin && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {adminStats.map((stat, i) => {
             const Icon = stat.icon
             return (
@@ -135,12 +149,12 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
               </div>
             )
           })}
-        </div>
+        </motion.div>
       )}
 
       {/* User Tabs */}
       {isUser && (
-        <div className="flex items-center gap-2 border-b border-border/30 pb-px">
+        <motion.div variants={fadeUp} className="flex items-center gap-2 border-b border-border/30 pb-px">
           {(['my', 'global'] as const).map((tab) => (
             <Button
               key={tab}
@@ -156,11 +170,11 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
               {tab === 'my' ? 'My Listings Coupons' : 'Platform Wide Coupons'}
             </Button>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <CouponsTable
           coupons={dashboardCoupons}
           isLoading={isLoading}
@@ -178,7 +192,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
           activeTab={activeTab}
           onCreateClick={() => setIsFormOpen(true)}
         />
-      </div>
+      </motion.div>
 
       {/* Create Coupon Modal */}
       <CreateCouponModal
@@ -209,6 +223,6 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
           }
         }}
       />
-    </div>
+    </motion.div>
   )
 }

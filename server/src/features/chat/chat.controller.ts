@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
-import { isUserOnline } from "../../lib/socket.js";
+import { isUserOnline, io } from "../../lib/socket.js";
 import { cloudinaryService } from "../upload/cloudinary.service.js";
 
 export class ChatController {
@@ -21,9 +21,16 @@ export class ChatController {
         ]
       },
       include: {
-        participantOne: { select: { id: true, name: true, image: true, role: true } },
-        participantTwo: { select: { id: true, name: true, image: true, role: true } },
+        participantOne: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true } },
+        participantTwo: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true } },
         messages: {
+          where: {
+            NOT: {
+              deletedBy: {
+                has: userId
+              }
+            }
+          },
           orderBy: { createdAt: "desc" },
           take: 1,
         }
@@ -31,10 +38,12 @@ export class ChatController {
       orderBy: { updatedAt: "desc" }
     });
 
+    const userShowOnline = (session.user as any).showOnline !== false;
+
     // Format conversations with participant metadata, last message, unread count, and online status
     const formatted = await Promise.all(conversations.map(async (conv) => {
       const otherUser = conv.participantOneId === userId ? conv.participantTwo : conv.participantOne;
-      
+
       const unreadCount = await prisma.message.count({
         where: {
           conversationId: conv.id,
@@ -45,12 +54,24 @@ export class ChatController {
 
       const lastMessage = conv.messages[0] || null;
 
+      // Reciprocal Online/Last Seen status rules
+      const otherUserShowOnline = (otherUser as any).showOnline !== false;
+      const canSeeStatus = userShowOnline && otherUserShowOnline;
+
+      const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false;
+      const lastActive = canSeeStatus ? (otherUser as any).lastActive : null;
+
       return {
         id: conv.id,
         updatedAt: conv.updatedAt,
         otherParticipant: {
-          ...otherUser,
-          isOnline: isUserOnline(otherUser.id),
+          id: otherUser.id,
+          name: otherUser.name,
+          role: otherUser.role,
+          image: (otherUser as any).showProfile === false ? null : otherUser.image,
+          isOnline,
+          lastActive,
+          isGreenMember: (otherUser as any).isGreenMember === true,
         },
         unreadCount,
         lastMessage: lastMessage ? {
@@ -89,14 +110,26 @@ export class ChatController {
 
     // Load historical messages
     const messages = await prisma.message.findMany({
-      where: { conversationId },
+      where: {
+        conversationId,
+        NOT: {
+          deletedBy: {
+            has: userId
+          }
+        }
+      },
       include: {
-        sender: { select: { id: true, name: true, image: true } }
+        sender: { select: { id: true, name: true, image: true, showProfile: true } }
       },
       orderBy: { createdAt: "asc" }
     });
 
-    return messages;
+    return messages.map((m) => {
+      if (m.sender.id !== userId && (m.sender as any).showProfile === false) {
+        m.sender.image = null;
+      }
+      return m;
+    });
   }
 
   async getOrCreateConversation(request: FastifyRequest, reply: FastifyReply) {
@@ -137,8 +170,8 @@ export class ChatController {
         }
       },
       include: {
-        participantOne: { select: { id: true, name: true, image: true, role: true } },
-        participantTwo: { select: { id: true, name: true, image: true, role: true } },
+        participantOne: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true } },
+        participantTwo: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true } },
       }
     });
 
@@ -150,20 +183,37 @@ export class ChatController {
           participantTwoId: p2
         },
         include: {
-          participantOne: { select: { id: true, name: true, image: true, role: true } },
-          participantTwo: { select: { id: true, name: true, image: true, role: true } },
+          participantOne: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true } },
+          participantTwo: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true } },
         }
       });
     }
 
+    if (!conversation) {
+      return reply.status(500).send({ message: "Failed to establish conversation" });
+    }
+
+    const userShowOnline = (session.user as any).showOnline !== false;
     const otherUser = conversation.participantOneId === userId ? conversation.participantTwo : conversation.participantOne;
+
+    // Reciprocal Online/Last Seen status rules
+    const otherUserShowOnline = (otherUser as any).showOnline !== false;
+    const canSeeStatus = userShowOnline && otherUserShowOnline;
+
+    const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false;
+    const lastActive = canSeeStatus ? (otherUser as any).lastActive : null;
 
     return {
       id: conversation.id,
       updatedAt: conversation.updatedAt,
       otherParticipant: {
-        ...otherUser,
-        isOnline: isUserOnline(otherUser.id)
+        id: otherUser.id,
+        name: otherUser.name,
+        role: otherUser.role,
+        image: (otherUser as any).showProfile === false ? null : otherUser.image,
+        isOnline,
+        lastActive,
+        isGreenMember: (otherUser as any).isGreenMember === true,
       }
     };
   }
@@ -174,6 +224,7 @@ export class ChatController {
       return reply.status(401).send({ message: "Unauthorized" });
     }
     const userId = session.user.id;
+    const userShowOnline = (session.user as any).showOnline !== false;
 
     const users = await prisma.user.findMany({
       where: {
@@ -181,12 +232,25 @@ export class ChatController {
         banned: false,
         name: q ? { contains: q, mode: "insensitive" } : undefined,
       },
-      select: { id: true, name: true, image: true, role: true },
+      select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true },
       take: 15,
       orderBy: { name: "asc" },
     });
 
-    return users.map((u) => ({ ...u, isOnline: isUserOnline(u.id) }));
+    return users.map((u) => {
+      const otherUserShowOnline = u.showOnline !== false;
+      const canSeeStatus = userShowOnline && otherUserShowOnline;
+
+      return {
+        id: u.id,
+        name: u.name,
+        role: u.role,
+        image: u.showProfile === false ? null : u.image,
+        isOnline: canSeeStatus ? isUserOnline(u.id) : false,
+        lastActive: canSeeStatus ? u.lastActive : null,
+        isGreenMember: u.isGreenMember === true,
+      };
+    });
   }
   async uploadChatAttachment(request: FastifyRequest, reply: FastifyReply) {
     try {
@@ -261,6 +325,253 @@ export class ChatController {
     await prisma.conversation.delete({ where: { id: conversationId } });
 
     return { message: "Conversation deleted" };
+  }
+
+  async editMessage(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as any;
+    const { content } = request.body as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+    const userId = session.user.id;
+
+    if (!content || !content.trim()) {
+      return reply.status(400).send({ message: "Content is required" });
+    }
+
+    const message = await prisma.message.findUnique({
+      where: { id },
+    });
+
+    if (!message) {
+      return reply.status(404).send({ message: "Message not found" });
+    }
+
+    if (message.senderId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    if (message.isDeleted) {
+      return reply.status(400).send({ message: "Cannot edit a deleted message" });
+    }
+
+    const updated = await prisma.message.update({
+      where: { id },
+      data: {
+        content: content.trim(),
+        isEdited: true,
+      },
+      include: {
+        sender: { select: { id: true, name: true, image: true, showProfile: true } }
+      }
+    });
+
+    // Broadcast update via sockets
+    const payload = {
+      ...updated,
+      sender: {
+        ...updated.sender,
+        image: updated.sender.showProfile === false ? null : updated.sender.image,
+      }
+    };
+    io?.to(`conversation_${updated.conversationId}`).emit("message_edited", payload);
+
+    return updated;
+  }
+
+  async deleteMessage(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as any;
+    const { mode } = request.query as any; // "me" or "everyone"
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+    const userId = session.user.id;
+
+    const message = await prisma.message.findUnique({
+      where: { id },
+    });
+
+    if (!message) {
+      return reply.status(404).send({ message: "Message not found" });
+    }
+
+    // Verify user is in conversation
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: message.conversationId }
+    });
+    if (!conversation || (conversation.participantOneId !== userId && conversation.participantTwoId !== userId)) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    if (mode === "everyone") {
+      if (message.senderId !== userId && session.user.role !== "admin") {
+        return reply.status(403).send({ message: "Only the sender or an admin can delete for everyone" });
+      }
+
+      // 15-minute time limit for non-admin
+      const fifteenMinutes = 15 * 60 * 1000;
+      const isWithinTimeLimit = Date.now() - new Date(message.createdAt).getTime() < fifteenMinutes;
+      if (!isWithinTimeLimit && session.user.role !== "admin") {
+        return reply.status(400).send({ message: "Time limit to delete this message has expired (15 minutes)" });
+      }
+
+      const updated = await prisma.message.update({
+        where: { id },
+        data: {
+          isDeleted: true,
+          content: "This message was deleted",
+          attachments: [],
+        },
+        include: {
+          sender: { select: { id: true, name: true, image: true, showProfile: true } }
+        }
+      });
+
+      // Broadcast update via sockets
+      const payload = {
+        id: updated.id,
+        conversationId: updated.conversationId,
+        isDeleted: true,
+        content: updated.content,
+        attachments: updated.attachments,
+        updatedAt: updated.updatedAt
+      };
+      io?.to(`conversation_${updated.conversationId}`).emit("message_deleted", payload);
+
+      return updated;
+    } else {
+      // mode === "me"
+      const deletedBy = Array.from(new Set([...message.deletedBy, userId]));
+      await prisma.message.update({
+        where: { id },
+        data: { deletedBy },
+      });
+      return { message: "Message deleted for me" };
+    }
+  }
+
+  async forwardMessage(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as any;
+    const { targetConversationIds } = request.body as any; // string[]
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+    const userId = session.user.id;
+
+    if (!Array.isArray(targetConversationIds) || targetConversationIds.length === 0) {
+      return reply.status(400).send({ message: "targetConversationIds must be a non-empty array" });
+    }
+
+    const message = await prisma.message.findUnique({
+      where: { id },
+    });
+
+    if (!message) {
+      return reply.status(404).send({ message: "Message not found" });
+    }
+
+    const results = [];
+
+    for (const convId of targetConversationIds) {
+      const conversation = await prisma.conversation.findUnique({
+        where: { id: convId }
+      });
+
+      if (!conversation) continue;
+      if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) continue;
+
+      const otherParticipantId = conversation.participantOneId === userId
+        ? conversation.participantTwoId
+        : conversation.participantOneId;
+
+      // Smart delivery status
+      const socketsInRoom = await io?.in(`conversation_${convId}`).fetchSockets();
+      const isOtherUserActiveInChat = socketsInRoom?.some((s) => s.data?.user?.id === otherParticipantId);
+
+      let isRead = false;
+      let readAt: Date | null = null;
+      let deliveredAt: Date | null = null;
+
+      if (isOtherUserActiveInChat) {
+        isRead = true;
+        readAt = new Date();
+        deliveredAt = new Date();
+      } else if (isUserOnline(otherParticipantId)) {
+        deliveredAt = new Date();
+      }
+
+      // Strip reply prefix if present, forward only main message text
+      let contentToForward = message.content;
+      if (contentToForward.startsWith('>>REPLY_TO::')) {
+        const separator = '\u200B\u{1F4AC}\u200B';
+        const sepIdx = contentToForward.indexOf(separator);
+        if (sepIdx !== -1) {
+          contentToForward = contentToForward.slice(sepIdx + separator.length);
+        }
+      }
+
+      const forwarded = await prisma.message.create({
+        data: {
+          conversationId: convId,
+          senderId: userId,
+          content: contentToForward,
+          attachments: message.attachments, // copy attachments
+          isForwarded: true,
+          isRead,
+          readAt,
+          deliveredAt
+        },
+        include: {
+          sender: { select: { id: true, name: true, image: true, showProfile: true } }
+        }
+      });
+
+      // Update conversation timestamp
+      const updatedConv = await prisma.conversation.update({
+        where: { id: convId },
+        data: { updatedAt: new Date() },
+        include: {
+          participantOne: { select: { id: true, name: true, image: true, showProfile: true } },
+          participantTwo: { select: { id: true, name: true, image: true, showProfile: true } },
+        }
+      });
+
+      const payloadMessage = {
+        ...forwarded,
+        sender: {
+          ...forwarded.sender,
+          image: forwarded.sender.showProfile === false ? null : forwarded.sender.image,
+        }
+      };
+
+      // Broadcast to room
+      io?.to(`conversation_${convId}`).emit("new_message", payloadMessage);
+
+      // Direct emit conversation update to other participant
+      const sanitizedConv = {
+        ...updatedConv,
+        participantOne: {
+          ...updatedConv.participantOne,
+          image: (updatedConv.participantOne as any).showProfile === false ? null : updatedConv.participantOne.image,
+        },
+        participantTwo: {
+          ...updatedConv.participantTwo,
+          image: (updatedConv.participantTwo as any).showProfile === false ? null : updatedConv.participantTwo.image,
+        }
+      };
+
+      io?.to(`user_${otherParticipantId}`).emit("conversation_updated", {
+        conversation: sanitizedConv,
+        lastMessage: payloadMessage,
+      });
+
+      results.push(forwarded);
+    }
+
+    return results;
   }
 }
 

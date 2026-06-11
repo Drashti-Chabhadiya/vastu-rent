@@ -1,4 +1,4 @@
-import { useMyRentals, useCreateDispute } from '#/hook'
+import { useMyRentals, useCreateDispute, useCreateReview } from '#/hook'
 import {
   Calendar,
   SlidersHorizontal,
@@ -8,8 +8,6 @@ import {
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import { useState } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { apiClient } from '#/lib/api'
 import { toast } from 'sonner'
 import {
   DropdownMenu,
@@ -49,39 +47,7 @@ export const MyBookings = () => {
   const [disputeDescription, setDisputeDescription] = useState('')
   const disputeMutation = useCreateDispute()
 
-  const queryClient = useQueryClient()
-  const reviewMutation = useMutation({
-    mutationFn: async (params: {
-      productId: string
-      rating: number
-      comment: string
-    }) => {
-      const { productId, rating: reviewRating, comment: reviewComment } = params
-      const res = await apiClient.post('/reviews', {
-        rating: reviewRating,
-        comment: reviewComment,
-        productId,
-      })
-      return res.data.review
-    },
-    onSuccess: (_, variables) => {
-      toast.success('Review submitted successfully!')
-      queryClient.invalidateQueries({
-        queryKey: ['product-reviews', variables.productId],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['product', variables.productId],
-      })
-      queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
-      setIsReviewDialogOpen(false)
-      setRating(5)
-      setComment('')
-      setUploadedImages([])
-    },
-    onError: () => {
-      toast.error('Failed to submit review. Please try again.')
-    },
-  })
+  const reviewMutation = useCreateReview()
 
   const handleCreateDispute = () => {
     if (!selectedRental || !disputeReason || !disputeDescription.trim()) return
@@ -540,6 +506,17 @@ export const MyBookings = () => {
             productId: selectedRental.productId,
             rating,
             comment: finalComment,
+          }, {
+            onSuccess: () => {
+              toast.success('Review submitted successfully!')
+              setIsReviewDialogOpen(false)
+              setRating(5)
+              setComment('')
+              setUploadedImages([])
+            },
+            onError: () => {
+              toast.error('Failed to submit review. Please try again.')
+            }
           })
         }}
         isPending={reviewMutation.isPending}

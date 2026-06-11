@@ -14,6 +14,8 @@ export interface ChatUser {
   image: string | null
   role: string
   isOnline?: boolean
+  lastActive?: string | null
+  isGreenMember?: boolean
 }
 
 export interface Message {
@@ -23,6 +25,12 @@ export interface Message {
   content: string
   attachments: string[]
   isRead: boolean
+  isEdited?: boolean
+  isDeleted?: boolean
+  deletedBy?: string[]
+  deliveredAt?: string | null
+  readAt?: string | null
+  isForwarded?: boolean
   createdAt: string
   updatedAt: string
   sender: Pick<ChatUser, 'id' | 'name' | 'image'>
@@ -38,6 +46,8 @@ export interface Conversation {
     content: string
     senderId: string
     isRead: boolean
+    deliveredAt?: string | null
+    readAt?: string | null
     createdAt: string
   } | null
 }
@@ -150,9 +160,11 @@ export function useChat() {
       ({
         userId: uid,
         status,
+        lastActive,
       }: {
         userId: string
         status: 'online' | 'offline'
+        lastActive?: string | null
       }) => {
         setOnlineUsers((prev) => {
           const updated = new Set(prev)
@@ -171,6 +183,7 @@ export function useChat() {
                     otherParticipant: {
                       ...conv.otherParticipant,
                       isOnline: status === 'online',
+                      lastActive: lastActive !== undefined ? lastActive : conv.otherParticipant.lastActive,
                     },
                   }
                 : conv,
@@ -204,6 +217,8 @@ export function useChat() {
                 content: msg.content,
                 senderId: msg.senderId,
                 isRead: msg.isRead,
+                deliveredAt: msg.deliveredAt,
+                readAt: msg.readAt,
                 createdAt: msg.createdAt,
               },
               unreadCount: isActiveConv
@@ -219,6 +234,87 @@ export function useChat() {
         )
       })
     })
+
+    // Real-time message edit from socket
+    socket.on('message_edited', (msg: Message) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === msg.id
+            ? { ...m, content: msg.content, isEdited: true, updatedAt: msg.updatedAt }
+            : m,
+        ),
+      )
+      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
+        old?.map((conv) =>
+          conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
+            ? {
+                ...conv,
+                lastMessage: {
+                  ...conv.lastMessage,
+                  content: msg.content,
+                },
+              }
+            : conv,
+        ) || [],
+      )
+    })
+
+    // Real-time message delete from socket
+    socket.on('message_deleted', (msg: { id: string; conversationId: string; isDeleted: boolean; content: string; attachments: string[]; updatedAt: string }) => {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === msg.id
+            ? {
+                ...m,
+                content: msg.content,
+                attachments: msg.attachments,
+                isDeleted: msg.isDeleted,
+                updatedAt: msg.updatedAt,
+              }
+            : m,
+        ),
+      )
+      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
+        old?.map((conv) =>
+          conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
+            ? {
+                ...conv,
+                lastMessage: {
+                  ...conv.lastMessage,
+                  content: msg.content,
+                },
+              }
+            : conv,
+        ) || [],
+      )
+    })
+
+    // Real-time message delivery from socket
+    socket.on(
+      'messages_delivered',
+      ({ messageIds, deliveredAt }: { messageIds: string[]; deliveredAt: string }) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            messageIds.includes(m.id)
+              ? { ...m, deliveredAt }
+              : m,
+          ),
+        )
+        queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
+          old?.map((conv) =>
+            conv.lastMessage && messageIds.includes(conv.lastMessage.id)
+              ? {
+                  ...conv,
+                  lastMessage: {
+                    ...conv.lastMessage,
+                    deliveredAt,
+                  },
+                }
+              : conv,
+          ) || [],
+        )
+      },
+    )
 
     // Other user's notification — just refresh the list
     socket.on('conversation_updated', () => {
@@ -242,11 +338,11 @@ export function useChat() {
     // Read receipts
     socket.on(
       'messages_read',
-      ({ conversationId }: { conversationId: string }) => {
+      ({ conversationId, readAt }: { conversationId: string; readAt: string }) => {
         setMessages((prev) =>
           prev.map((m) =>
             m.conversationId === conversationId && m.senderId === userId
-              ? { ...m, isRead: true }
+              ? { ...m, isRead: true, readAt, deliveredAt: m.deliveredAt || readAt }
               : m,
           ),
         )
@@ -257,7 +353,12 @@ export function useChat() {
               conv.id === conversationId && conv.lastMessage
                 ? {
                     ...conv,
-                    lastMessage: { ...conv.lastMessage, isRead: true },
+                    lastMessage: {
+                      ...conv.lastMessage,
+                      isRead: true,
+                      readAt,
+                      deliveredAt: conv.lastMessage.deliveredAt || readAt,
+                    },
                   }
                 : conv,
             ) || [],
@@ -379,6 +480,47 @@ export function useChat() {
     [onlineUsers],
   )
 
+  // ── Edit message ───────────────────────────────────────────────────────────
+  const editMessageMutation = useMutation({
+    mutationFn: async ({ messageId, content }: { messageId: string; content: string }) => {
+      const res = await apiClient.put(`/chat/messages/${messageId}`, { content })
+      return res.data as Message
+    },
+    onSuccess: (updatedMsg) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === updatedMsg.id ? updatedMsg : m)),
+      )
+    },
+  })
+
+  // ── Delete message ─────────────────────────────────────────────────────────
+  const deleteMessageMutation = useMutation({
+    mutationFn: async ({ messageId, mode }: { messageId: string; mode: 'me' | 'everyone' }) => {
+      await apiClient.delete(`/chat/messages/${messageId}`, {
+        params: { mode },
+      })
+      return { messageId, mode }
+    },
+    onSuccess: ({ messageId, mode }) => {
+      if (mode === 'me') {
+        setMessages((prev) => prev.filter((m) => m.id !== messageId))
+      }
+    },
+  })
+
+  // ── Forward message ────────────────────────────────────────────────────────
+  const forwardMessageMutation = useMutation({
+    mutationFn: async ({ messageId, targetConversationIds }: { messageId: string; targetConversationIds: string[] }) => {
+      const res = await apiClient.post(`/chat/messages/${messageId}/forward`, {
+        targetConversationIds,
+      })
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
   return {
     isConnected,
     conversations,
@@ -396,6 +538,9 @@ export function useChat() {
     checkOnline,
     currentUserId: userId,
     session,
+    editMessage: editMessageMutation.mutateAsync,
+    deleteMessage: deleteMessageMutation.mutateAsync,
+    forwardMessage: forwardMessageMutation.mutateAsync,
   }
 }
 
@@ -411,3 +556,32 @@ export const useCreateConversation = () => {
     },
   })
 }
+
+// Search users for new chat
+export const useSearchChatUsers = (query: string, options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ['chat-users-search', query],
+    queryFn: async () => {
+      const res = await apiClient.get('/chat/users/search', {
+        params: { q: query || undefined },
+      })
+      return res.data as any[]
+    },
+    ...options,
+  })
+}
+
+// Delete a conversation
+export const useDeleteConversation = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (conversationId: string) => {
+      await apiClient.delete(`/chat/conversations/${conversationId}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+}
+
+

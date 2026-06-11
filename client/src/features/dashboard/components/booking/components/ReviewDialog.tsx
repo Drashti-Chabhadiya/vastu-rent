@@ -11,7 +11,7 @@ import { Textarea } from '#/components/ui/textarea'
 import { Label } from '#/components/ui/label'
 import { Star } from 'lucide-react'
 import { cn } from '#/lib/utils'
-import { apiClient } from '#/lib/api'
+import { useUploadProductImage } from '#/hook'
 import { toast } from 'sonner'
 
 interface ReviewDialogProps {
@@ -42,6 +42,7 @@ export function ReviewDialog({
   isPending,
 }: ReviewDialogProps) {
   const [isUploading, setIsUploading] = useState(false)
+  const uploadProductImage = useUploadProductImage()
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -205,23 +206,11 @@ export function ReviewDialog({
                       if (!file) return
                       try {
                         setIsUploading(true)
-                        const formData = new FormData()
-                        formData.append('file', file)
-                        const res = await apiClient.post(
-                          '/upload/product',
-                          formData,
-                          {
-                            headers: {
-                              'Content-Type': 'multipart/form-data',
-                            },
-                          },
-                        )
-                        if (res.data.url) {
-                          setUploadedImages((prev: string[]) => [
-                            ...prev,
-                            res.data.url,
-                          ])
-                        }
+                        const url = await uploadProductImage.mutateAsync(file)
+                        setUploadedImages((prev: string[]) => [
+                          ...prev,
+                          url,
+                        ])
                       } catch {
                         toast.error('Image upload failed.')
                       } finally {

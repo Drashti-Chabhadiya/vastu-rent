@@ -46,8 +46,35 @@ export class UserController {
 
   async getPublicProfile(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
     const profile = await userService.getPublicProfile(id);
     if (!profile) return reply.status(404).send({ message: "Profile not found" });
+
+    const isOwner = session?.user?.id === id;
+    if (profile.showProfile === false && !isOwner) {
+      profile.image = null;
+    }
+
+    // Apply reciprocal check for showOnline / lastActive
+    const loggedInUserShowOnline = session ? (session.user as any).showOnline !== false : false;
+    const otherUserShowOnline = (profile as any).showOnline !== false;
+    const canSeeStatus = isOwner || (loggedInUserShowOnline && otherUserShowOnline);
+
+    const { isUserOnline } = await import("../../lib/socket.js");
+    (profile as any).isOnline = canSeeStatus ? isUserOnline(id) : false;
+    if (!canSeeStatus) {
+      (profile as any).lastActive = null;
+    }
+
+    // Lazy sync Green Member status on profile load to ensure accuracy
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      const isGreen = await syncGreenMemberStatus(id);
+      (profile as any).isGreenMember = isGreen;
+    } catch (err) {
+      console.error("Failed to sync Green Member status in getPublicProfile:", err);
+    }
+
     return profile;
   }
 
@@ -56,7 +83,25 @@ export class UserController {
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
 
     try {
-      const user = await userService.updateUserSettings(session.user.id, request.body as any);
+      const body = request.body as any;
+      const user = await userService.updateUserSettings(session.user.id, body);
+
+      // If showOnline was updated, broadcast presence update to other clients if user is online
+      if (body.showOnline !== undefined) {
+        try {
+          const { io, isUserOnline } = await import("../../lib/socket.js");
+          if (isUserOnline(session.user.id)) {
+            if (body.showOnline === false) {
+              io?.emit("user_status", { userId: session.user.id, status: "offline" });
+            } else {
+              io?.emit("user_status", { userId: session.user.id, status: "online" });
+            }
+          }
+        } catch (err) {
+          console.error("Failed to broadcast presence update after settings change:", err);
+        }
+      }
+
       return { user };
     } catch (error: any) {
       return reply.status(400).send({ message: error.message || "Failed to update settings" });

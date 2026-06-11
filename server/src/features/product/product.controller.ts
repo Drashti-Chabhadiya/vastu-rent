@@ -1,9 +1,20 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { productService } from "./product.service.js";
+import { auth } from "../../config/auth.js";
 
 export class ProductController {
   async getAllProducts(request: FastifyRequest, _reply: FastifyReply) {
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    const currentUserId = session?.user?.id;
+
     const products = await productService.getAllProducts(request.query as any);
+
+    products.forEach((p: any) => {
+      if (p.user && p.user.showProfile === false && p.user.id !== currentUserId) {
+        p.user.image = null;
+      }
+    });
+
     return { products };
   }
 
@@ -14,8 +25,26 @@ export class ProductController {
 
   async getProductById(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    const currentUserId = session?.user?.id;
+
     const product = await productService.getProductById(id);
     if (!product) return reply.status(404).send({ message: "Product not found" });
+
+    // Sanitize listing owner's image
+    if (product.user && product.user.showProfile === false && product.user.id !== currentUserId) {
+      product.user.image = null;
+    }
+
+    // Sanitize reviews authors' images
+    if (product.reviews) {
+      product.reviews.forEach((r: any) => {
+        if (r.user && r.user.showProfile === false && r.user.id !== currentUserId) {
+          r.user.image = null;
+        }
+      });
+    }
+
     return { product };
   }
 

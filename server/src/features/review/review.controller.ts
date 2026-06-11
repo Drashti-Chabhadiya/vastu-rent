@@ -17,6 +17,17 @@ export class ReviewController {
     }
     
     const reviews = await reviewService.getAllReviews(search, productId, userId, userRole);
+    
+    const currentUserId = session?.user?.id;
+    reviews.forEach((r: any) => {
+      if (r.user && r.user.showProfile === false && r.user.id !== currentUserId) {
+        r.user.image = null;
+      }
+      if (r.product && r.product.user && r.product.user.showProfile === false && r.product.user.id !== currentUserId) {
+        r.product.user.image = null;
+      }
+    });
+
     return { reviews };
   }
 

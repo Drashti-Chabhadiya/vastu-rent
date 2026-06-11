@@ -28,6 +28,8 @@ import { CategoryRequestActionModals } from './components/CategoryRequestActionM
 import { CategoryDeleteRequestList } from './components/CategoryDeleteRequestList'
 import { CategoryDeleteActionModals } from './components/CategoryDeleteActionModals'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 interface CategoryManagementProps {
   onManageCategory?: (categoryId: string) => void
@@ -259,9 +261,14 @@ export const CategoryManagement = ({
   )
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       {/* Tab Switcher */}
-      <div className="flex border-b border-border/30 gap-6">
+      <motion.div variants={fadeUp} className="flex border-b border-border/30 gap-6">
         <Button
           variant="ghost"
           onClick={() => setActiveTab('categories')}
@@ -297,10 +304,10 @@ export const CategoryManagement = ({
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full" />
           )}
         </Button>
-      </div>
+      </motion.div>
 
       {activeTab === 'categories' ? (
-        <>
+        <motion.div key="categories-tab" variants={fadeUp} className="space-y-6">
           {/* Categories List Controls */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card p-6 rounded-xl border border-border/30 shadow-sm">
             <div className="relative flex-1 max-w-md">
@@ -377,10 +384,10 @@ export const CategoryManagement = ({
               ))
             )}
           </div>
-        </>
+        </motion.div>
       ) : (
         /* Requests Tab View */
-        <div className="space-y-6">
+        <motion.div key="requests-tab" variants={fadeUp} className="space-y-6">
           <div className="flex border-b border-border/20 gap-4">
             <Button
               variant="ghost"
@@ -446,7 +453,7 @@ export const CategoryManagement = ({
               }}
             />
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Forms & Dialogs */}
@@ -512,6 +519,6 @@ export const CategoryManagement = ({
         onApproveConfirm={handleApproveDeleteConfirm}
         isPending={processDeleteRequestMutation.isPending}
       />
-    </div>
+    </motion.div>
   )
 }

@@ -17,7 +17,13 @@ import {
   Package,
   Languages,
   Phone,
+  Leaf,
 } from 'lucide-react'
+import { cn } from '#/lib/utils'
+import { UserAvatar } from '#/features/dashboard/components/messages/components/UserAvatar'
+import { formatLastActive } from '#/lib/chat-utils'
+
+
 
 export function UserProfilePage() {
   const { id } = useParams({ from: '/users/$id' })
@@ -48,7 +54,7 @@ export function UserProfilePage() {
       onError: (err: any) => {
         toast.error(
           err?.response?.data?.message ||
-            'Could not start conversation. Try again.',
+          'Could not start conversation. Try again.',
         )
       },
     })
@@ -95,23 +101,16 @@ export function UserProfilePage() {
 
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
             <div className="relative">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-muted/50 overflow-hidden border-4 border-card shadow-lg">
-                {profile.image ? (
-                  <img
-                    src={profile.image}
-                    alt={profile.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-primary text-primary-foreground text-4xl font-black">
-                    {profile.name?.[0] || 'U'}
-                  </div>
-                )}
-              </div>
-              {/* Online/active green dot */}
-              <span
-                className="absolute bottom-3 right-3 w-5 h-5 bg-primary border-[3px] border-card rounded-full shadow-md"
-                title="Online"
+              <UserAvatar
+                image={profile.image}
+                name={profile.name}
+                isOnline={
+                  profile.lastActive !== null && profile.lastActive !== undefined
+                    ? profile.isOnline
+                    : undefined
+                }
+                size="xl"
+                className="border-4 border-card shadow-lg bg-muted/50 rounded-full"
               />
               {profile.emailVerified ? (
                 <Badge className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground border-2 border-card px-2 py-1 rounded-lg whitespace-nowrap">
@@ -127,9 +126,17 @@ export function UserProfilePage() {
 
             <div className="flex-1 text-center md:text-left">
               <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-                  {profile.name}
-                </h1>
+                <div className="flex items-center justify-center md:justify-start gap-2">
+                  <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+                    {profile.name}
+                  </h1>
+                  {profile.isGreenMember && (
+                    <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-0 gap-1 rounded-xl px-2.5 py-1 text-xs font-bold shrink-0">
+                      <Leaf className="w-3.5 h-3.5 fill-current" />
+                      Green Member
+                    </Badge>
+                  )}
+                </div>
                 <div className="flex items-center justify-center md:justify-start gap-3">
                   <Badge
                     variant="outline"
@@ -167,6 +174,19 @@ export function UserProfilePage() {
                     })}
                   </span>
                 </div>
+                {profile.lastActive !== null && profile.lastActive !== undefined && (
+                  <div className="flex items-center gap-2">
+                    <span className={cn(
+                      "w-2.5 h-2.5 rounded-full",
+                      profile.isOnline ? "bg-emerald-500 animate-pulse" : "bg-muted-dark/40"
+                    )} />
+                    <span>
+                      {profile.isOnline 
+                        ? 'Online' 
+                        : `Active ${formatLastActive(profile.lastActive)}`}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <MessageCircle
                     size={18}

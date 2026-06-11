@@ -10,12 +10,10 @@ import {
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import { Textarea } from '#/components/ui/textarea'
-import { useAdminReviews, useDeleteReview } from '#/hook'
+import { useAdminReviews, useDeleteReview, useReplyToReview } from '#/hook'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
 import { authClient } from '#/lib/auth/auth-client'
-import { apiClient } from '#/lib/api'
-import { useQueryClient } from '@tanstack/react-query'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +21,8 @@ import {
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 // Custom StarRating component to handle full stars, fractional stars (half-filled), and empty stars high-fidelity
 const StarRating = ({ rating }: { rating: number }) => {
@@ -173,7 +173,7 @@ export const ReviewsManagement = () => {
   const [ratingFilter, setRatingFilter] = useState<number | 'all'>('all')
   const [reviewToDelete, setReviewToDelete] = useState<string | null>(null)
 
-  const queryClient = useQueryClient()
+  const replyToReview = useReplyToReview()
 
   useEffect(() => {
     authClient.getSession().then((res) => {
@@ -190,11 +190,10 @@ export const ReviewsManagement = () => {
     }
     try {
       setIsSubmittingReply(true)
-      await apiClient.post(`/reviews/${reviewId}/reply`, { replyText })
+      await replyToReview.mutateAsync({ reviewId, replyText })
       toast.success('Reply submitted successfully!')
       setReplyingReviewId(null)
       setReplyText('')
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
     } catch (err: any) {
       const errMsg =
         err?.response?.data?.message ||
@@ -307,9 +306,17 @@ export const ReviewsManagement = () => {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
       {/* Top Header Block */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
         <div className="space-y-1">
           <h1 className="text-3xl font-black text-foreground tracking-tight">
             Reviews
@@ -363,10 +370,13 @@ export const ReviewsManagement = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </motion.div>
 
       {/* Tabs Filter Navigation */}
-      <div className="flex gap-6 border-b border-border/30 pb-px overflow-x-auto custom-scrollbar">
+      <motion.div
+        variants={fadeUp}
+        className="flex gap-6 border-b border-border/30 pb-px overflow-x-auto custom-scrollbar"
+      >
         {[
           { id: 'all', label: 'All Reviews' },
           { id: 'listings', label: 'Listings' },
@@ -394,11 +404,14 @@ export const ReviewsManagement = () => {
             </Button>
           )
         })}
-      </div>
+      </motion.div>
 
       {/* Reviews Card List */}
       {filteredReviews.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-card rounded-[2rem] border border-dashed border-border">
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-col items-center justify-center py-20 bg-card rounded-[2rem] border border-dashed border-border"
+        >
           <div className="w-16 h-16 bg-muted-light rounded-full flex items-center justify-center mb-4">
             <Star className="text-muted-dark fill-slate-300" size={32} />
           </div>
@@ -408,11 +421,12 @@ export const ReviewsManagement = () => {
           <p className="text-muted-dark text-xs mt-1.5 max-w-xs text-center font-bold">
             You don't have any reviews listed under this category right now.
           </p>
-        </div>
+        </motion.div>
       ) : (
         <div className="grid gap-6">
           {filteredReviews.map((review: any) => (
-            <div
+            <motion.div
+              variants={fadeUp}
               key={review.id}
               className="group bg-card p-6 rounded-3xl border border-border/30 shadow-[0_4px_20px_rgba(0,0,0,0.015)] hover:shadow-[0_4px_30px_rgba(0,0,0,0.035)] transition-all duration-300 flex flex-col md:grid md:grid-cols-[auto_1fr_auto] gap-8 items-start relative"
             >
@@ -661,13 +675,16 @@ export const ReviewsManagement = () => {
                   Posted on {review.postedDate}
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
 
       {/* That's All Confirmation Footer */}
-      <div className="flex flex-col items-center justify-center py-6 border-t border-border/30 mt-8">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col items-center justify-center py-6 border-t border-border/30 mt-8"
+      >
         <div className="text-primary font-black text-xs flex items-center gap-1.5">
           <Leaf size={14} fill="currentColor" className="stroke-[2.5]" />
           That's all your reviews!
@@ -675,7 +692,7 @@ export const ReviewsManagement = () => {
         <p className="text-muted-dark text-[10px] font-bold text-center mt-1">
           Keep sharing your experience and help our community.
         </p>
-      </div>
+      </motion.div>
 
       <ReusableAlertDialog
         isOpen={reviewToDelete !== null}
@@ -700,6 +717,6 @@ export const ReviewsManagement = () => {
         confirmText="Delete"
         variant="danger"
       />
-    </div>
+    </motion.div>
   )
 }

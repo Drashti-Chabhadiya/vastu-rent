@@ -11,9 +11,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from '#/components/ui/dialog'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { authClient } from '#/lib/auth/auth-client'
-import { apiClient } from '#/lib/api'
+import { useUserSessions, useRevokeSession } from '#/hook'
 
 interface SessionsDialogProps {
   open: boolean
@@ -91,7 +91,6 @@ function getLastActive(dateStr: string) {
 }
 
 export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
-  const queryClient = useQueryClient()
   const [revokingId, setRevokingId] = useState<string | null>(null)
 
   // Fetch current session details to mark current session
@@ -104,32 +103,10 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
   })
 
   // Fetch active sessions dynamically
-  const { data: sessions = [], isLoading } = useQuery({
-    queryKey: ['user-sessions'],
-    queryFn: async () => {
-      const res = await apiClient.get('/users/settings/sessions')
-      return res.data.sessions as any[]
-    },
-    enabled: open,
-  })
+  const { data: sessions = [], isLoading } = useUserSessions({ enabled: open })
 
   // Revoke session mutation
-  const revokeMutation = useMutation({
-    mutationFn: async (id: string) => {
-      setRevokingId(id)
-      await apiClient.delete(`/users/settings/sessions/${id}`)
-    },
-    onSuccess: () => {
-      toast.success('Session revoked successfully!')
-      queryClient.invalidateQueries({ queryKey: ['user-sessions'] })
-    },
-    onError: () => {
-      toast.error('Failed to revoke session.')
-    },
-    onSettled: () => {
-      setRevokingId(null)
-    },
-  })
+  const revokeMutation = useRevokeSession()
 
   const currentSessionId = session?.session.id
 
@@ -228,7 +205,20 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
                       variant="ghost"
                       size="sm"
                       disabled={revokingId === sessionItem.id}
-                      onClick={() => revokeMutation.mutate(sessionItem.id)}
+                      onClick={() => {
+                        setRevokingId(sessionItem.id)
+                        revokeMutation.mutate(sessionItem.id, {
+                          onSuccess: () => {
+                            toast.success('Session revoked successfully!')
+                          },
+                          onError: () => {
+                            toast.error('Failed to revoke session.')
+                          },
+                          onSettled: () => {
+                            setRevokingId(null)
+                          }
+                        })
+                      }}
                       className="h-8 rounded-lg px-3 text-[10px] font-black uppercase tracking-wider text-destructive hover:bg-danger hover:text-destructive shadow-none cursor-pointer shrink-0"
                     >
                       {revokingId === sessionItem.id ? (

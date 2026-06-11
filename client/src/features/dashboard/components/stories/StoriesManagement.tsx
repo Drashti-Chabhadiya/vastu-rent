@@ -13,6 +13,8 @@ import { Label } from '#/components/ui/label'
 import { useUploadProductImage } from '#/hook'
 import { Loader, LoadingOverlay } from '#/components/ui/loader'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export function StoriesManagement() {
   const { data: stories, isLoading } = useStories()
@@ -98,8 +100,13 @@ export function StoriesManagement() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
+      <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-black text-dash-text tracking-tight">
             Stories Management
@@ -115,9 +122,12 @@ export function StoriesManagement() {
           <Plus size={16} strokeWidth={2.5} />
           Add Story
         </Button>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <motion.div
+        variants={fadeUp}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
         {stories?.map((story: any) => (
           <div
             key={story.id}
@@ -176,7 +186,7 @@ export function StoriesManagement() {
             </div>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
@@ -352,6 +362,6 @@ export function StoriesManagement() {
         confirmText="Delete"
         variant="danger"
       />
-    </div>
+    </motion.div>
   )
 }

@@ -21,6 +21,7 @@ import {
   useUpdatePayoutStatus,
 } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
+import { PaymentsManagementSkeleton } from '#/components/skeletons'
 import { toast } from 'sonner'
 
 // Import extracted sub-components
@@ -29,6 +30,8 @@ import { WithdrawalRequestModal } from './components/WithdrawalRequestModal'
 import { AdminPayoutApprovals } from './components/AdminPayoutApprovals'
 import { RevenueTransactionsTable } from './components/RevenueTransactionsTable'
 import { ProductEarningsBreakdown } from './components/ProductEarningsBreakdown'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const PaymentsManagement = () => {
   const { data: session } = authClient.useSession()
@@ -94,15 +97,7 @@ export const PaymentsManagement = () => {
   }
 
   if (isDashboardLoading || (isAdmin && isAdminPayoutsLoading)) {
-    return (
-      <div className="space-y-6 animate-pulse">
-        <div className="space-y-2">
-          <div className="h-3 bg-muted/40 rounded-md w-32" />
-          <div className="h-6 bg-muted rounded-lg w-48" />
-        </div>
-        <div className="h-[400px] bg-card border border-border/30 rounded-[2rem] shadow-sm" />
-      </div>
-    )
+    return <PaymentsManagementSkeleton />
   }
 
   const stats = dashboardData?.stats || {
@@ -149,9 +144,17 @@ export const PaymentsManagement = () => {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
       {/* Breadcrumbs / Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col md:flex-row md:items-center justify-between gap-4"
+      >
         <div className="space-y-1">
           <div className="flex items-center gap-1.5 text-[10px] font-black text-muted-dark uppercase tracking-widest">
             <span>Dashboard</span>
@@ -173,13 +176,18 @@ export const PaymentsManagement = () => {
             {format(new Date(), 'MMMM yyyy')}
           </span>
         </div>
-      </div>
+      </motion.div>
 
       {/* CORE EARNINGS ANALYTICS CARDS */}
-      <EarningStatsCards stats={stats} />
+      <motion.div variants={fadeUp}>
+        <EarningStatsCards stats={stats} />
+      </motion.div>
 
       {/* WITHDRAWABLE BALANCE HEADER & TRIGGER BUTTON */}
-      <div className="bg-foreground p-8 rounded-[2.5rem] text-primary-foreground flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
+      <motion.div
+        variants={fadeUp}
+        className="bg-foreground p-8 rounded-[2.5rem] text-primary-foreground flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl relative overflow-hidden"
+      >
         <div className="absolute right-0 top-0 opacity-10 translate-x-1/4 -translate-y-1/4 text-primary-foreground">
           <Zap size={250} strokeWidth={1} />
         </div>
@@ -212,15 +220,17 @@ export const PaymentsManagement = () => {
         >
           <Plus size={16} /> Request Withdrawal
         </Button>
-      </div>
+      </motion.div>
 
       {/* ADMIN PENDING ACTIONS PORTAL (Admin only) */}
       {isAdmin && (
-        <AdminPayoutApprovals
-          allAdminPayouts={allAdminPayouts || []}
-          onAdminAction={handleAdminAction}
-          isUpdating={updatePayoutStatus.isPending}
-        />
+        <motion.div variants={fadeUp}>
+          <AdminPayoutApprovals
+            allAdminPayouts={allAdminPayouts || []}
+            onAdminAction={handleAdminAction}
+            isUpdating={updatePayoutStatus.isPending}
+          />
+        </motion.div>
       )}
 
       {/* CORE PAYMENT TRANSACTIONS & SUMMARY GRID */}
@@ -228,16 +238,23 @@ export const PaymentsManagement = () => {
         {/* Left Column: Recent Transactions & Product Breakdown */}
         <div className="lg:col-span-2 space-y-8">
           {/* Payment History & Transactions */}
-          <RevenueTransactionsTable recentTransactions={recentTransactions} />
+          <motion.div variants={fadeUp}>
+            <RevenueTransactionsTable recentTransactions={recentTransactions} />
+          </motion.div>
 
           {/* Earnings Breakdown by Product */}
-          <ProductEarningsBreakdown productBreakdown={productBreakdown} />
+          <motion.div variants={fadeUp}>
+            <ProductEarningsBreakdown productBreakdown={productBreakdown} />
+          </motion.div>
         </div>
 
         {/* Right Column: Payout History Requests */}
         <div className="space-y-8">
           {/* Payout Requests History list */}
-          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-6">
+          <motion.div
+            variants={fadeUp}
+            className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-6"
+          >
             <div>
               <h3 className="text-[15px] font-black text-foreground/90">
                 Payout Settlement History
@@ -289,10 +306,13 @@ export const PaymentsManagement = () => {
                 ))
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Secure details safety card */}
-          <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4">
+          <motion.div
+            variants={fadeUp}
+            className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4"
+          >
             <h3 className="text-[15px] font-black text-foreground/90 flex items-center gap-2">
               <ShieldCheck size={18} className="text-emerald-600" />
               Safety Settlement Guarantee
@@ -306,7 +326,7 @@ export const PaymentsManagement = () => {
               <Lock size={12} className="text-emerald-600" /> BANK-LEVEL SSL
               ENCRYPTED
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -319,6 +339,6 @@ export const PaymentsManagement = () => {
         onRequestSubmit={handleRequestPayout}
         isPending={createPayout.isPending}
       />
-    </div>
+    </motion.div>
   )
 }

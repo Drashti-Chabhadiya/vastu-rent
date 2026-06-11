@@ -6,6 +6,8 @@ import {
   useCreateRental,
   useProductRentals,
   useApplyCoupon,
+  useCreateOrder,
+  useVerifyPayment,
 } from '#/hook'
 import { useProductReviews, useCreateReview } from '#/hook/use-reviews'
 import { ProductCard } from '#/components/common/ProductCard'
@@ -13,7 +15,6 @@ import { ProductDetailSkeleton } from '#/components/skeletons'
 import { Button } from '#/components/ui/button'
 import { AlertCircle } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
-import { apiClient } from '#/lib/api'
 import { authClient } from '#/lib/auth/auth-client'
 
 // Subcomponents import
@@ -38,6 +39,8 @@ export function ProductDetail({ id }: { id: string }) {
   const { data: productRentals = [] } = useProductRentals(id)
   const createRental = useCreateRental()
   const createReview = useCreateReview(id)
+  const createOrder = useCreateOrder()
+  const verifyPayment = useVerifyPayment()
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('description')
 
@@ -244,9 +247,7 @@ export function ProductDetail({ id }: { id: string }) {
       }
 
       // 2. Create Razorpay Order (Only for online)
-      const {
-        data: { order },
-      } = await apiClient.post('/payments/create-order', {
+      const { order } = await createOrder.mutateAsync({
         rentalId: rental.id,
       })
 
@@ -261,7 +262,7 @@ export function ProductDetail({ id }: { id: string }) {
         handler: async (response: any) => {
           // 4. Verify Payment
           try {
-            await apiClient.post('/payments/verify-payment', {
+            await verifyPayment.mutateAsync({
               ...response,
               rentalId: rental.id,
             })

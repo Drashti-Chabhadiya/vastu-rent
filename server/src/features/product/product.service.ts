@@ -38,7 +38,7 @@ export class ProductService {
       include: {
         category: true,
         user: {
-          select: { id: true, name: true, email: true, image: true },
+          select: { id: true, name: true, email: true, image: true, showProfile: true },
         },
         reviews: {
           select: { rating: true }
@@ -89,7 +89,7 @@ export class ProductService {
           }
         },
         reviews: {
-          include: { user: { select: { name: true, image: true } } },
+          include: { user: { select: { id: true, name: true, image: true, showProfile: true } } },
           orderBy: { createdAt: "desc" }
         },
         _count: {
@@ -122,7 +122,8 @@ export class ProductService {
         image: product.user.image,
         createdAt: product.user.createdAt,
         rating: userRating,
-        listingsCount: product.user._count.products
+        listingsCount: product.user._count.products,
+        showProfile: product.user.showProfile
       }
     };
   }
@@ -158,7 +159,7 @@ export class ProductService {
       throw new Error("Forbidden: You have reached the limit of 50 listings for the Pro plan. Please upgrade to the Business plan to list more items.");
     }
 
-    return prisma.product.create({
+    const product = await prisma.product.create({
       data: {
         ...data,
         price: parseFloat(data.price),
@@ -167,6 +168,15 @@ export class ProductService {
         isAvailable: true,
       },
     });
+
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      await syncGreenMemberStatus(data.userId);
+    } catch (err) {
+      console.error("Failed to sync Green Member status on product creation:", err);
+    }
+
+    return product;
   }
 
   async updateProduct(id: string, data: any, userId?: string, role?: string) {
@@ -211,7 +221,16 @@ export class ProductService {
     // Delete associated rentals (which cascades to disputes)
     await prisma.rental.deleteMany({ where: { productId: id } });
 
-    return prisma.product.delete({ where: { id } });
+    const deletedProduct = await prisma.product.delete({ where: { id } });
+
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      await syncGreenMemberStatus(product.userId);
+    } catch (err) {
+      console.error("Failed to sync Green Member status on product deletion:", err);
+    }
+
+    return deletedProduct;
   }
 
   async toggleAvailability(id: string, isAvailable: boolean) {

@@ -17,6 +17,8 @@ import { useUpdateUserSettings } from '#/hook'
 import { Link } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 // Import extracted sub-components
 import { UserProfileSettingsCard } from '#/features/profile'
@@ -171,9 +173,14 @@ export const SettingsManagement = () => {
   ]
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       {/* Breadcrumbs */}
-      <div className="flex flex-col gap-1">
+      <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
           <span>Dashboard</span>
           <ChevronRight size={10} className="text-muted-foreground/60" />
@@ -190,9 +197,9 @@ export const SettingsManagement = () => {
             </span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
+      <motion.div variants={fadeUp} className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
         {/* Left Sidebar: Settings Navigation */}
         <div className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm space-y-1.5 xl:sticky xl:top-24">
           <h2 className="text-[10px] font-extrabold tracking-widest text-muted-foreground/50 mb-3 px-3 uppercase">
@@ -378,7 +385,7 @@ export const SettingsManagement = () => {
             </p>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

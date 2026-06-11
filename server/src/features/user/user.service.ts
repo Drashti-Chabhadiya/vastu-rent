@@ -121,10 +121,15 @@ export class UserService {
       emailVerified: user.emailVerified,
       location: user.location,
       language: user.language,
-      phone: user.phone
+      phone: user.phone,
+      showProfile: user.showProfile,
+      showOnline: user.showOnline,
+      lastActive: user.lastActive,
+      isGreenMember: user.isGreenMember,
     };
   }
 
+  // Update user settings in the database (synced with Prisma client)
   async updateUserSettings(id: string, data: {
     upiId?: string;
     bankName?: string;
@@ -141,6 +146,9 @@ export class UserService {
     dob?: string;
     currency?: string;
     twoFactorEnabled?: boolean;
+    showProfile?: boolean;
+    showOnline?: boolean;
+    allowData?: boolean;
   }) {
     const userBefore = await prisma.user.findUnique({
       where: { id },
@@ -165,6 +173,9 @@ export class UserService {
         dob: data.dob !== undefined ? data.dob : undefined,
         currency: data.currency !== undefined ? data.currency : undefined,
         twoFactorEnabled: data.twoFactorEnabled !== undefined ? data.twoFactorEnabled : undefined,
+        showProfile: data.showProfile !== undefined ? data.showProfile : undefined,
+        showOnline: data.showOnline !== undefined ? data.showOnline : undefined,
+        allowData: data.allowData !== undefined ? data.allowData : undefined,
       }
     });
 
@@ -191,6 +202,14 @@ export class UserService {
           console.error("Failed to send marketing welcome email:", err);
         }
       }
+    }
+
+    // Sync Green Member status when user preferences or settings change
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      await syncGreenMemberStatus(id);
+    } catch (err) {
+      console.error("Failed to sync Green Member status on settings update:", err);
     }
 
     return updatedUser;

@@ -62,6 +62,11 @@ export const auth = betterAuth({
       subscriptionExpiresAt: { type: "date", required: false },
       stripeCustomerId: { type: "string", required: false },
       stripeSubscriptionId: { type: "string", required: false },
+      showProfile: { type: "boolean", required: false },
+      showOnline: { type: "boolean", required: false },
+      allowData: { type: "boolean", required: false },
+      lastActive: { type: "date", required: false },
+      isGreenMember: { type: "boolean", required: false },
     }
   },
 

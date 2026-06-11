@@ -24,6 +24,8 @@ import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
 import { CalendarFilters } from './components/CalendarFilters'
 import { DetailedBookingDialog } from './components/DetailedBookingDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const RentalsCalendar = () => {
   const { data: orders, isLoading } = useOrders()
@@ -143,9 +145,17 @@ export const RentalsCalendar = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col md:flex-row md:items-center justify-between gap-4"
+      >
         <div className="space-y-1">
           <h2 className="text-2xl font-extrabold text-dash-text flex items-center gap-3">
             <CalendarIcon className="text-primary" size={28} />
@@ -179,19 +189,24 @@ export const RentalsCalendar = () => {
             <ChevronRight size={16} />
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* FILTERS CONTAINER */}
-      <CalendarFilters
-        selectedProduct={selectedProduct}
-        setSelectedProduct={setSelectedProduct}
-        selectedStatus={selectedStatus}
-        setSelectedStatus={setSelectedStatus}
-        uniqueProducts={uniqueProducts}
-      />
+      <motion.div variants={fadeUp}>
+        <CalendarFilters
+          selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+          uniqueProducts={uniqueProducts}
+        />
+      </motion.div>
 
       {/* CALENDAR VIEW GRID */}
-      <div className="bg-card border border-border/30 rounded-[2rem] shadow-sm overflow-hidden font-sans">
+      <motion.div
+        variants={fadeUp}
+        className="bg-card border border-border/30 rounded-[2rem] shadow-sm overflow-hidden font-sans"
+      >
         {/* Days of the Week headers */}
         <div className="grid grid-cols-7 border-b border-border/30 bg-muted-light/50 text-center py-4 text-[10px] font-black text-muted-dark uppercase tracking-widest">
           <div>Sun</div>
@@ -268,10 +283,13 @@ export const RentalsCalendar = () => {
             )
           })}
         </div>
-      </div>
+      </motion.div>
 
       {/* DOUBLE-BOOKING date occupancy protection alert banner */}
-      <div className="bg-muted-light p-5 rounded-[2rem] border border-border/30 flex items-start gap-4">
+      <motion.div
+        variants={fadeUp}
+        className="bg-muted-light p-5 rounded-[2rem] border border-border/30 flex items-start gap-4"
+      >
         <div className="p-3 bg-card rounded-2xl shadow-sm text-primary shrink-0 border border-border/30">
           <Info size={20} />
         </div>
@@ -285,7 +303,7 @@ export const RentalsCalendar = () => {
             Rejected/Cancelled requests immediately free the dates.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* DETAILED BOOKING DIALOG CARD OVERLAY */}
       <DetailedBookingDialog
@@ -294,6 +312,6 @@ export const RentalsCalendar = () => {
         onStatusUpdate={handleStatusUpdate}
         isPendingStatusUpdate={updateStatus.isPending}
       />
-    </div>
+    </motion.div>
   )
 }

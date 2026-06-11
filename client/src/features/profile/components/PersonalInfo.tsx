@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { ChevronRight, Leaf } from 'lucide-react'
-import { useMyListings, useProfileData } from '#/hook'
+import { useMyListings, useProfileData, useVerifyCheckoutSession } from '#/hook'
 import { LoadingOverlay } from '#/components/ui/loader'
+import { ProfileSkeleton } from '#/components/skeletons'
 import { Link } from '@tanstack/react-router'
-import { apiClient } from '#/lib/api'
 import { toast } from 'sonner'
 import { SecurityDialogs } from './SecurityDialogs'
 import { useTranslation } from '#/context/TranslationContext'
@@ -32,11 +32,13 @@ export function PersonalInfo() {
     handleTogglePreference,
     handleCurrencyChange,
     handleToggleTwoFactor,
+    isPending: isProfileLoading,
   } = useProfileData()
 
   const { t } = useTranslation()
   const [isVerifying, setIsVerifying] = useState(false)
-  const { data: myListings } = useMyListings()
+  const { data: myListings, isLoading: isListingsLoading } = useMyListings()
+  const verifyCheckoutSession = useVerifyCheckoutSession()
 
   // Verify Stripe Checkout session on mount/redirect
   useEffect(() => {
@@ -49,10 +51,10 @@ export function PersonalInfo() {
           'Verifying your payment and updating your plan...',
         )
         try {
-          const res = await apiClient.post('/billing/verify-session', {
+          const res = await verifyCheckoutSession.mutateAsync({
             sessionId,
           })
-          if (res.data?.success) {
+          if (res?.success) {
             toast.success('🎉 Plan upgraded successfully!', { id: toastId })
             await refetch()
             window.history.replaceState(
@@ -79,7 +81,9 @@ export function PersonalInfo() {
     }
   }, [refetch])
 
-  if (!session) return null
+  if (isProfileLoading || isListingsLoading || !session) {
+    return <ProfileSkeleton />
+  }
 
   const usedCount = myListings?.length || 0
   const rawTier = (session?.user as any)?.subscriptionTier || 'Starter'

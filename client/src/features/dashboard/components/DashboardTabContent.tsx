@@ -15,65 +15,82 @@ import { ReportsManagement } from './reports/ReportsManagement'
 import { SettingsManagement } from './settings/SettingsManagement'
 import { StoriesManagement } from './stories/StoriesManagement'
 import { RentalsCalendar } from './order/RentalsCalendar'
+import { motion } from 'motion/react'
+import { stagger } from '#/lib/animations'
 
 export const DashboardTabContent = () => {
   const { tab } = useParams({ strict: false }) as any
   const context = useDashboardContext()
   const currentTab = tab || 'overview'
 
-  switch (currentTab) {
-    case 'overview':
-      return (
-        <DashboardOverview
-          statsData={context.statsData}
-          statsLoading={context.statsLoading}
-          recentUsers={context.recentUsers}
-          usersLoading={context.usersLoading}
-          recentProducts={context.recentProducts}
-          productsLoading={context.productsLoading}
-          onViewAllUsers={() => context.setCurrentTab('users')}
-          onViewAllListings={() => context.setCurrentTab('listings')}
-        />
-      )
-    case 'users':
-      return <UsersManagement />
-    case 'listings':
-      return (
-        <ListingsManagement
-          initialCategoryFilter={context.activeCategoryFilter}
-        />
-      )
-    case 'categories':
-      return (
-        <CategoryManagement onManageCategory={context.handleManageCategory} />
-      )
-    case 'stories':
-      return <StoriesManagement />
-    case 'reviews':
-      return <ReviewsManagement />
-    case 'bookings':
-      return <RentalsCalendar />
-    case 'orders':
-      return <OrdersManagement />
-    case 'payments':
-      return <PaymentsManagement />
-    case 'disputes':
-      return <DisputesManagement />
-    case 'delete-requests':
-      return <DeleteRequestsManagement />
-    case 'coupons':
-      return <CouponsManagement />
-    case 'notifications':
-      return <NotificationsManagement />
-    case 'reports':
-      return <ReportsManagement />
-    case 'settings':
-      return <SettingsManagement />
-    default:
-      return (
-        <div className="flex items-center justify-center h-64 text-dash-text-muted">
-          Content for {currentTab} is coming soon...
-        </div>
-      )
+  const renderContent = () => {
+    switch (currentTab) {
+      case 'overview':
+        return (
+          <DashboardOverview
+            statsData={context.statsData}
+            statsLoading={context.statsLoading}
+            recentUsers={context.recentUsers}
+            usersLoading={context.usersLoading}
+            recentProducts={context.recentProducts}
+            productsLoading={context.productsLoading}
+            onViewAllUsers={() => context.setCurrentTab('users')}
+            onViewAllListings={() => context.setCurrentTab('listings')}
+          />
+        )
+      case 'users':
+        return <UsersManagement />
+      case 'listings':
+        return (
+          <ListingsManagement
+            initialCategoryFilter={context.activeCategoryFilter}
+          />
+        )
+      case 'categories':
+        return (
+          <CategoryManagement onManageCategory={context.handleManageCategory} />
+        )
+      case 'stories':
+        return <StoriesManagement />
+      case 'reviews':
+        return <ReviewsManagement />
+      case 'bookings':
+        return <RentalsCalendar />
+      case 'orders':
+        return <OrdersManagement />
+      case 'payments':
+        return <PaymentsManagement />
+      case 'disputes':
+        return <DisputesManagement />
+      case 'delete-requests':
+        return <DeleteRequestsManagement />
+      case 'coupons':
+        return <CouponsManagement />
+      case 'notifications':
+        return <NotificationsManagement />
+      case 'reports':
+        return <ReportsManagement />
+      case 'settings':
+        return <SettingsManagement />
+      default:
+        return (
+          <div className="flex items-center justify-center h-64 text-dash-text-muted">
+            Content for {currentTab} is coming soon...
+          </div>
+        )
+    }
   }
+
+  return (
+    <motion.div
+      key={currentTab}
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="w-full"
+    >
+      {renderContent()}
+    </motion.div>
+  )
 }
+

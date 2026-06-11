@@ -13,7 +13,8 @@ interface UserAvatarProps {
   image: string | null
   name: string
   isOnline?: boolean
-  size?: 'sm' | 'md'
+  size?: 'sm' | 'md' | 'xl'
+  className?: string
 }
 
 export function UserAvatar({
@@ -21,14 +22,26 @@ export function UserAvatar({
   name,
   isOnline,
   size = 'md',
+  className,
 }: UserAvatarProps) {
-  const dim = size === 'sm' ? 'w-8 h-8 text-[10px]' : 'w-11 h-11 text-xs'
+  const dim =
+    size === 'sm'
+      ? 'w-8 h-8 text-[10px]'
+      : size === 'xl'
+        ? 'w-32 h-32 md:w-40 md:h-40 text-4xl'
+        : 'w-11 h-11 text-xs'
   const dotSize =
-    size === 'sm' ? 'w-2.5 h-2.5 border-[2px]' : 'w-3 h-3 border-[2.5px]'
-  const radius = size === 'sm' ? 'rounded-lg' : 'rounded-xl'
+    size === 'sm'
+      ? 'w-2.5 h-2.5 border-[2px]'
+      : size === 'xl'
+        ? 'w-5 h-5 border-[3px]'
+        : 'w-3 h-3 border-[2.5px]'
+  const radius =
+    size === 'xl' ? 'rounded-full' : size === 'sm' ? 'rounded-lg' : 'rounded-xl'
+  const dotPos = size === 'xl' ? 'bottom-2 right-2' : '-bottom-0.5 -right-0.5'
 
   return (
-    <div className={cn('relative', 'shrink-0')}>
+    <div className={cn('relative', 'shrink-0', className)}>
       {image ? (
         <img
           src={image}
@@ -40,7 +53,7 @@ export function UserAvatar({
           className={cn(
             dim,
             radius,
-            'bg-primary/10 flex items-center justify-center font-black text-primary',
+            'bg-primary flex items-center justify-center font-black text-primary-foreground',
           )}
         >
           {getInitials(name)}
@@ -50,8 +63,9 @@ export function UserAvatar({
         <div
           className={cn(
             dotSize,
-            'absolute -bottom-0.5 -right-0.5 rounded-full border-card',
-            isOnline ? 'bg-emerald-500' : 'bg-muted-dark/20',
+            'absolute rounded-full border-card',
+            dotPos,
+            isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-muted-dark/20',
           )}
         />
       )}

@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
-import { apiClient } from '#/lib/api'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
+import { SettingsPageSkeleton } from '#/components/skeletons'
 import { toast } from 'sonner'
 import {
   User,
@@ -22,7 +22,7 @@ import { PaymentMethodsSection } from './settings/PaymentMethodsSection'
 import { PrivacySection } from './settings/PrivacySection'
 import { ConnectedAccountsSection } from './settings/ConnectedAccountsSection'
 import { DeleteAccountSection } from './settings/DeleteAccountSection'
-import { useProfileData } from '#/hook'
+import { useProfileData, useDeleteAccountRequest } from '#/hook'
 
 const subNavItems = [
   { id: 'profile', label: 'Profile Information', icon: User },
@@ -36,6 +36,7 @@ const subNavItems = [
 
 export function SettingsPage() {
   const [section, setSection] = useState('profile')
+  const deleteAccountRequest = useDeleteAccountRequest()
 
   const {
     name,
@@ -68,20 +69,22 @@ export function SettingsPage() {
     updateSettings: saveSettings,
     handleTogglePreference,
     handleToggleTwoFactor,
+    showProfile,
+    showOnline,
+    allowData,
+    handleTogglePrivacy,
+    isPending: isProfileLoading,
   } = useProfileData()
 
   const fileRef = useRef<HTMLInputElement>(null)
-
-  // privacy
-  const [showProf, setShowProf] = useState(true)
-  const [showOnline, setShowOnline] = useState(true)
-  const [allowData, setAllowData] = useState(true)
 
   // delete
   const [delInput, setDelInput] = useState('')
   const [delLoading, setDelLoading] = useState(false)
 
-  if (!session?.user) return null
+  if (isProfileLoading || !session?.user) {
+    return <SettingsPageSkeleton />
+  }
   const user = session.user as any
   const avatar = imgPreview || user.image || null
   const initials = (user.name || 'U').charAt(0).toUpperCase()
@@ -104,15 +107,7 @@ export function SettingsPage() {
     }
   }
 
-  const handleTogglePrivacy = async (
-    key: 'prof' | 'online' | 'data',
-    val: boolean,
-  ) => {
-    if (key === 'prof') setShowProf(val)
-    if (key === 'online') setShowOnline(val)
-    if (key === 'data') setAllowData(val)
-    toast.success('Privacy setting updated.')
-  }
+
 
   const handleDeleteAccount = async () => {
     if (delInput !== 'DELETE') {
@@ -121,7 +116,7 @@ export function SettingsPage() {
     }
     setDelLoading(true)
     try {
-      await apiClient.post('/users/settings/delete-request')
+      await deleteAccountRequest.mutateAsync()
       toast.success(
         'Account deletion request submitted. Our team will process it within 48 hours.',
       )
@@ -288,7 +283,7 @@ export function SettingsPage() {
           {/* ── PRIVACY ── */}
           {section === 'privacy' && (
             <PrivacySection
-              showProf={showProf}
+              showProf={showProfile}
               showOnline={showOnline}
               allowData={allowData}
               handleTogglePrivacy={handleTogglePrivacy}

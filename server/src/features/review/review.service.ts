@@ -32,14 +32,14 @@ export class ReviewService {
       where,
       orderBy: { createdAt: "desc" },
       include: {
-        user: { select: { id: true, name: true, email: true, image: true } },
+        user: { select: { id: true, name: true, email: true, image: true, showProfile: true } },
         product: {
           select: {
             id: true,
             title: true,
             location: true,
             images: true,
-            user: { select: { id: true, name: true, image: true } }
+            user: { select: { id: true, name: true, image: true, showProfile: true } }
           }
         },
       },
@@ -87,7 +87,7 @@ export class ReviewService {
           rating: data.rating,
           comment: data.comment,
         },
-        include: { user: { select: { id: true, name: true, image: true } } },
+        include: { user: { select: { id: true, name: true, image: true, showProfile: true } } },
       });
     }
 
@@ -107,7 +107,7 @@ export class ReviewService {
     const createdReview = await prisma.review.create({
       data,
       include: { 
-        user: { select: { id: true, name: true, image: true } },
+        user: { select: { id: true, name: true, image: true, showProfile: true } },
         product: true
       },
     });

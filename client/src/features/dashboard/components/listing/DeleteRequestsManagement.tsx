@@ -20,6 +20,8 @@ import {
 import { useDeleteRequests, useProcessDeleteRequest } from '#/hook'
 import { toast } from 'sonner'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const DeleteRequestsManagement = () => {
   const { data: requests, isLoading } = useDeleteRequests()
@@ -34,8 +36,13 @@ export const DeleteRequestsManagement = () => {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="space-y-1">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
+      <motion.div variants={fadeUp} className="space-y-1">
         <h1 className="text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
           <Trash2 className="text-destructive" size={32} />
           Deletion Requests
@@ -43,9 +50,12 @@ export const DeleteRequestsManagement = () => {
         <p className="text-dash-text-soft font-medium text-sm ml-1">
           Review and process product deletion requests from admins.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden">
+      <motion.div
+        variants={fadeUp}
+        className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden"
+      >
         <div className="overflow-x-auto custom-scrollbar">
           <Table>
             <TableHeader>
@@ -180,7 +190,7 @@ export const DeleteRequestsManagement = () => {
             </TableBody>
           </Table>
         </div>
-      </div>
+      </motion.div>
 
       <ReusableAlertDialog
         isOpen={pendingAction !== null}
@@ -221,6 +231,6 @@ export const DeleteRequestsManagement = () => {
         variant={pendingAction?.status === 'approved' ? 'danger' : 'warning'}
         isPending={processMutation.isPending}
       />
-    </div>
+    </motion.div>
   )
 }

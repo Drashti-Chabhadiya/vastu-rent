@@ -57,6 +57,11 @@ model User {
   dob               String?
   currency          String?   @default("INR")
   twoFactorEnabled  Boolean   @default(false)
+  showProfile       Boolean   @default(true)
+  showOnline        Boolean   @default(true)
+  allowData         Boolean   @default(true)
+  lastActive        DateTime  @default(now())
+  isGreenMember     Boolean   @default(false)
   
   // Relations
   sessions      Session[]
@@ -433,12 +438,23 @@ model Message {
   content        String
   attachments    String[]     @default([])
   isRead         Boolean      @default(false)
+  isEdited       Boolean      @default(false)
+  isDeleted      Boolean      @default(false)
+  deletedBy      String[]     @default([])
+  deliveredAt    DateTime?
+  readAt         DateTime?
+  isForwarded    Boolean      @default(false)
+
+  replyToId      String?
+  replyTo        Message?     @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies        Message[]    @relation("MessageReplies")
 
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
   @@map("message")
 }
+
 
 model RecentSearch {
   id        String   @id @default(cuid())
