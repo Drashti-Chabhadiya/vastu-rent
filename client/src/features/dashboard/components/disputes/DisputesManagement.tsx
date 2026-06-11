@@ -20,6 +20,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '#/components/ui/dialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const DisputesManagement = () => {
   const { data: disputes, isLoading } = useDisputes()
@@ -58,9 +60,14 @@ export const DisputesManagement = () => {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       {/* Breadcrumbs */}
-      <div className="flex flex-col gap-1">
+      <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
           <span>Dashboard</span>
           <ChevronRight size={10} className="text-muted-dark" />
@@ -73,10 +80,10 @@ export const DisputesManagement = () => {
             Disputes & Disputes Reports
           </h1>
         </div>
-      </div>
+      </motion.div>
 
       {/* Main Grid: Disputes List & Details Sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: All Disputes Table */}
         <div className="lg:col-span-2 bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-hidden">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -296,10 +303,10 @@ export const DisputesManagement = () => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Support Footer */}
-      <div className="bg-emerald-50 p-8 px-12 rounded-[2.5rem] border border-emerald-100 flex items-center justify-between group">
+      <motion.div variants={fadeUp} className="bg-emerald-50 p-8 px-12 rounded-[2.5rem] border border-emerald-100 flex items-center justify-between group">
         <div className="flex items-center gap-6">
           <div className="w-12 h-12 rounded-2xl bg-card flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-50">
             <ShieldCheck size={24} />
@@ -314,7 +321,7 @@ export const DisputesManagement = () => {
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Resolution Dialog Modal using Shadcn Dialog */}
       <Dialog open={isResolveModalOpen} onOpenChange={setIsResolveModalOpen}>
@@ -361,6 +368,6 @@ export const DisputesManagement = () => {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </motion.div>
   )
 }

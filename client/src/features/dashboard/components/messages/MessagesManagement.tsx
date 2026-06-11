@@ -15,13 +15,14 @@ import type {
   Message as BaseMessage,
 } from '../../../../hook/use-chat'
 import { cn } from '#/lib/utils'
-import { apiClient } from '#/lib/api'
-import { useChat } from '#/hook'
+import { useChat, useUploadChatFile } from '#/hook'
 import { parseMessage, buildReplyContent } from '#/lib/chat-utils'
 import { NewChatDialog } from './components/NewChatDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
 import { useChatStore } from '../../../../store/useChatStore'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 type Message = BaseMessage
 
@@ -39,7 +40,12 @@ export const MessagesManagement = () => {
     isOtherPersonTyping,
     checkOnline,
     currentUserId,
+    editMessage,
+    deleteMessage,
+    forwardMessage,
   } = useChat()
+
+  const uploadChatFile = useUploadChatFile()
 
   const {
     searchQuery,
@@ -153,12 +159,7 @@ export const MessagesManagement = () => {
       if (hasFiles) {
         const uploads = await Promise.all(
           pendingFiles.map(async (file) => {
-            const formData = new FormData()
-            formData.append('file', file)
-            const res = await apiClient.post('/chat/upload', formData, {
-              headers: { 'Content-Type': 'multipart/form-data' },
-            })
-            return res.data.url as string
+            return await uploadChatFile.mutateAsync(file)
           }),
         )
         uploadedUrls = uploads
@@ -226,9 +227,15 @@ export const MessagesManagement = () => {
 
   return (
     <>
-      <div className="space-y-5">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="space-y-5"
+      >
         {/* Header */}
-        <div
+        <motion.div
+          variants={fadeUp}
           className={cn(
             'flex',
             'flex-col',
@@ -315,7 +322,7 @@ export const MessagesManagement = () => {
             <PenSquare size={14} strokeWidth={2.5} />
             New Message
           </Button>
-        </div>
+        </motion.div>
 
         {/* ── New Message Dialog ── */}
         <NewChatDialog
@@ -326,7 +333,8 @@ export const MessagesManagement = () => {
         />
 
         {/* Dual Panel */}
-        <div
+        <motion.div
+          variants={fadeUp}
           className={cn(
             'flex',
             'flex-col',
@@ -373,9 +381,13 @@ export const MessagesManagement = () => {
             onVideoSuccess={(name) =>
               toast.success(`Starting video call with ${name}...`)
             }
+            editMessage={editMessage}
+            deleteMessage={deleteMessage}
+            forwardMessage={forwardMessage}
+            conversations={conversations}
           />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* ── Image Lightbox Modal ── */}
       {showLightbox && lightboxImages.length > 0 && (

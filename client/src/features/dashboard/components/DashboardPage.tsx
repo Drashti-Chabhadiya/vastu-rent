@@ -97,7 +97,7 @@ const DashboardPage = () => {
         setCurrentTab,
       }}
     >
-      <div className="min-h-screen bg-dash-bg flex overflow-x-hidden">
+      <div className="min-h-screen bg-dash-bg flex overflow-x-clip">
         <Sidebar
           currentTab={currentTab}
           onTabChange={(tab) => {

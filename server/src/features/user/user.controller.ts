@@ -66,6 +66,15 @@ export class UserController {
       (profile as any).lastActive = null;
     }
 
+    // Lazy sync Green Member status on profile load to ensure accuracy
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      const isGreen = await syncGreenMemberStatus(id);
+      (profile as any).isGreenMember = isGreen;
+    } catch (err) {
+      console.error("Failed to sync Green Member status in getPublicProfile:", err);
+    }
+
     return profile;
   }
 

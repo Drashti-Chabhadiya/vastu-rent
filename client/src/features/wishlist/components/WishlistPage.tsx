@@ -21,6 +21,8 @@ import {
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { useState, useMemo, useRef, useEffect } from 'react'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export function WishlistPage() {
   const { wishlist, dislike, isLoading: wishlistLoading } = useWishlist()
@@ -88,9 +90,14 @@ export function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16 font-sans">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8"
+      >
         {/* Back navigation */}
-        <div className="mb-6">
+        <motion.div variants={fadeUp} className="mb-6">
           <Link
             to="/"
             className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground/85 hover:text-foreground transition-colors group"
@@ -101,10 +108,10 @@ export function WishlistPage() {
             />
             Back to Home
           </Link>
-        </div>
+        </motion.div>
 
         {/* Hero Header */}
-        <div className="mb-10">
+        <motion.div variants={fadeUp} className="mb-10">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -153,7 +160,7 @@ export function WishlistPage() {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Toolbar — shown whenever products have loaded, regardless of filter results */}
         {!isPageLoading && products && products.length > 0 && (
@@ -301,9 +308,14 @@ export function WishlistPage() {
             )}
 
             {viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              >
                 {filteredProducts.map((product: any) => (
-                  <div key={product.id} className="relative group">
+                  <motion.div key={product.id} variants={fadeUp} className="relative group">
                     <ProductCard product={product} />
                     {clearConfirmId === product.id ? (
                       <div className="absolute inset-0 bg-card/95 rounded-3xl flex flex-col items-center justify-center gap-3 z-10 animate-in fade-in duration-150">
@@ -343,14 +355,20 @@ export function WishlistPage() {
                         />
                       </Button>
                     )}
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             ) : (
-              <div className="space-y-3">
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                animate="show"
+                className="space-y-3"
+              >
                 {filteredProducts.map((product: any) => (
-                  <div
+                  <motion.div
                     key={product.id}
+                    variants={fadeUp}
                     className="bg-card border border-border/30 rounded-2xl shadow-sm flex items-center gap-4 p-4 hover:shadow-md hover:border-primary/20 transition-all group"
                   >
                     <Link
@@ -408,9 +426,9 @@ export function WishlistPage() {
                         </Button>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
           </>
         ) : searchQuery ? (
@@ -502,7 +520,7 @@ export function WishlistPage() {
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }

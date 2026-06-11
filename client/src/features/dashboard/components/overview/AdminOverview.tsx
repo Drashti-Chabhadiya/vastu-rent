@@ -9,6 +9,8 @@ import { RecentListingsTable } from '../listing/RecentListingsTable'
 import { RecentReviews } from '../review/RecentReviews'
 import { Users, Tag, ShoppingBag, IndianRupee } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 interface AdminOverviewProps {
   statsData: any
@@ -41,9 +43,15 @@ export const AdminOverview = ({
   }
 
   return (
-    <div className={cn('space-y-6', 'md:space-y-8')}>
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className={cn('space-y-6', 'md:space-y-8')}
+    >
       {/* Top Stats Row */}
-      <div
+      <motion.div
+        variants={fadeUp}
         className={cn(
           'grid',
           'grid-cols-1',
@@ -109,10 +117,11 @@ export const AdminOverview = ({
           iconColor="bg-primary-light-alt"
           sparklineData={[50, 60, 55, 70, 65, 80, 75]}
         />
-      </div>
+      </motion.div>
 
       {/* Second Row: Bookings, Categories, Recent Orders */}
-      <div
+      <motion.div
+        variants={fadeUp}
         className={cn(
           'grid',
           'grid-cols-1',
@@ -130,10 +139,11 @@ export const AdminOverview = ({
         <div className={cn('md:col-span-full', 'xl:col-span-1')}>
           <RecentOrders />
         </div>
-      </div>
+      </motion.div>
 
       {/* Third Row: Users Overview, Revenue Overview, Top Cities */}
-      <div
+      <motion.div
+        variants={fadeUp}
         className={cn(
           'grid',
           'grid-cols-1',
@@ -155,17 +165,20 @@ export const AdminOverview = ({
         <div className={cn('md:col-span-1', 'xl:col-span-1')}>
           <TopCities />
         </div>
-      </div>
+      </motion.div>
 
       {/* Fourth Row: Recent Listings, Recent Reviews */}
-      <div className={cn('grid', 'grid-cols-1', 'xl:grid-cols-2', 'gap-6')}>
+      <motion.div
+        variants={fadeUp}
+        className={cn('grid', 'grid-cols-1', 'xl:grid-cols-2', 'gap-6')}
+      >
         <RecentListingsTable
           products={recentProducts}
           isLoading={productsLoading}
           onViewAll={onViewAllListings}
         />
         <RecentReviews />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

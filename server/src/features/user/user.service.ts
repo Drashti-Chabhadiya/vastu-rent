@@ -124,7 +124,8 @@ export class UserService {
       phone: user.phone,
       showProfile: user.showProfile,
       showOnline: user.showOnline,
-      lastActive: user.lastActive
+      lastActive: user.lastActive,
+      isGreenMember: user.isGreenMember,
     };
   }
 
@@ -201,6 +202,14 @@ export class UserService {
           console.error("Failed to send marketing welcome email:", err);
         }
       }
+    }
+
+    // Sync Green Member status when user preferences or settings change
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      await syncGreenMemberStatus(id);
+    } catch (err) {
+      console.error("Failed to sync Green Member status on settings update:", err);
     }
 
     return updatedUser;

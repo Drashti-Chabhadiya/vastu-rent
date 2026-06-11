@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { Star, Calendar, MessageCircle, CheckCircle2 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
-import { apiClient } from '#/lib/api'
+import { useCreateConversation } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
 import { useState } from 'react'
@@ -15,6 +15,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
   const { data: session } = authClient.useSession()
   const navigate = useNavigate()
   const [isStartingChat, setIsStartingChat] = useState(false)
+  const createConversation = useCreateConversation()
 
   if (!user) return null
 
@@ -32,7 +33,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
 
     setIsStartingChat(true)
     try {
-      await apiClient.post('/chat/conversations', { targetUserId: user.id })
+      await createConversation.mutateAsync(user.id)
       toast.success(`Chat started with ${user.name}!`)
       navigate({ to: '/account/messages' })
     } catch (err: any) {

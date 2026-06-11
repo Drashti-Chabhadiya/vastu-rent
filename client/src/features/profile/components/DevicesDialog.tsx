@@ -12,9 +12,9 @@ import {
   DialogDescription,
 } from '#/components/ui/dialog'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { authClient } from '#/lib/auth/auth-client'
-import { apiClient } from '#/lib/api'
+import { useUserSessions, useRenameSession, useRevokeSession } from '#/hook'
 
 interface DevicesDialogProps {
   open: boolean
@@ -79,7 +79,6 @@ function parseUserAgent(userAgent: string | null) {
 }
 
 export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
-  const queryClient = useQueryClient()
   const [editingDeviceId, setEditingDeviceId] = useState<string | null>(null)
   const [editingDeviceName, setEditingDeviceName] = useState('')
   const [removingId, setRemovingId] = useState<string | null>(null)
@@ -95,50 +94,13 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
   })
 
   // Fetch dynamic sessions as devices
-  const { data: sessions = [], isLoading } = useQuery({
-    queryKey: ['user-sessions'],
-    queryFn: async () => {
-      const res = await apiClient.get('/users/settings/sessions')
-      return res.data.sessions as any[]
-    },
-    enabled: open,
-  })
+  const { data: sessions = [], isLoading } = useUserSessions({ enabled: open })
 
   // Rename device mutation
-  const renameMutation = useMutation({
-    mutationFn: async ({ id, name }: { id: string; name: string }) => {
-      await apiClient.patch(`/users/settings/sessions/${id}`, {
-        deviceName: name,
-      })
-    },
-    onSuccess: () => {
-      toast.success('Device renamed successfully!')
-      queryClient.invalidateQueries({ queryKey: ['user-sessions'] })
-      setEditingDeviceId(null)
-      setEditingDeviceName('')
-    },
-    onError: () => {
-      toast.error('Failed to rename device.')
-    },
-  })
+  const renameMutation = useRenameSession()
 
   // Untrust / Revoke device session mutation
-  const removeMutation = useMutation({
-    mutationFn: async (id: string) => {
-      setRemovingId(id)
-      await apiClient.delete(`/users/settings/sessions/${id}`)
-    },
-    onSuccess: () => {
-      toast.success('Device untrusted successfully.')
-      queryClient.invalidateQueries({ queryKey: ['user-sessions'] })
-    },
-    onError: () => {
-      toast.error('Failed to remove device.')
-    },
-    onSettled: () => {
-      setRemovingId(null)
-    },
-  })
+  const removeMutation = useRevokeSession()
 
   const handleRemoveDevice = (deviceId: string) => {
     setDeviceToRemove(deviceId)
@@ -154,6 +116,15 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
     renameMutation.mutate({
       id: editingDeviceId,
       name: editingDeviceName.trim(),
+    }, {
+      onSuccess: () => {
+        toast.success('Device renamed successfully!')
+        setEditingDeviceId(null)
+        setEditingDeviceName('')
+      },
+      onError: () => {
+        toast.error('Failed to rename device.')
+      }
     })
   }
 
@@ -313,7 +284,18 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
         }}
         onConfirm={() => {
           if (deviceToRemove) {
-            removeMutation.mutate(deviceToRemove)
+            setRemovingId(deviceToRemove)
+            removeMutation.mutate(deviceToRemove, {
+              onSuccess: () => {
+                toast.success('Device untrusted successfully.')
+              },
+              onError: () => {
+                toast.error('Failed to remove device.')
+              },
+              onSettled: () => {
+                setRemovingId(null)
+              }
+            })
             setDeviceToRemove(null)
           }
         }}

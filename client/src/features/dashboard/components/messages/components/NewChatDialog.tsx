@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -8,9 +7,9 @@ import {
 } from '#/components/ui/dialog'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
-import { Search, MessageSquare, UserPlus, Loader2 } from 'lucide-react'
+import { Search, MessageSquare, UserPlus, Loader2, Leaf } from 'lucide-react'
 import { cn } from '#/lib/utils'
-import { apiClient } from '#/lib/api'
+import { useSearchChatUsers, useCreateConversation } from '#/hook'
 import { toast } from 'sonner'
 import { UserAvatar } from './UserAvatar'
 import { authClient } from '#/lib/auth/auth-client'
@@ -29,50 +28,43 @@ export function NewChatDialog({
   switchConversation,
   setShowMobileChat,
 }: NewChatDialogProps) {
-  const queryClient = useQueryClient()
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
 
   const [userSearch, setUserSearch] = useState('')
-  const [userResults, setUserResults] = useState<any[]>([])
-  const [isSearchingUsers, setIsSearchingUsers] = useState(false)
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [startingChatWith, setStartingChatWith] = useState<string | null>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Debounced user search
   useEffect(() => {
     if (!open) return
-    if (timerRef.current) clearTimeout(timerRef.current)
-    setIsSearchingUsers(true)
-    timerRef.current = setTimeout(async () => {
-      try {
-        const res = await apiClient.get('/chat/users/search', {
-          params: { q: userSearch || undefined },
-        })
-        setUserResults(res.data)
-      } catch {
-        setUserResults([])
-      } finally {
-        setIsSearchingUsers(false)
-      }
+    const timer = setTimeout(() => {
+      setDebouncedSearch(userSearch)
     }, 300)
+    return () => clearTimeout(timer)
   }, [userSearch, open])
+
+  const { data: userResults = [], isLoading: isSearchingUsers } = useSearchChatUsers(
+    debouncedSearch,
+    { enabled: open }
+  )
+
+  const createConversation = useCreateConversation()
 
   // Reset state on close
   useEffect(() => {
     if (!open) {
       setUserSearch('')
-      setUserResults([])
+      setDebouncedSearch('')
     }
   }, [open])
 
   const handleStartChat = async (targetUserId: string, targetName: string) => {
     setStartingChatWith(targetUserId)
     try {
-      const res = await apiClient.post('/chat/conversations', { targetUserId })
-      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+      const conv = await createConversation.mutateAsync(targetUserId)
       onOpenChange(false)
-      await switchConversation(res.data.id)
+      await switchConversation(conv.id)
       setShowMobileChat(true)
       toast.success(`Chat opened with ${targetName}!`)
     } catch (err: any) {
@@ -216,16 +208,21 @@ export function NewChatDialog({
                   size="sm"
                 />
                 <div className={cn('flex-1', 'min-w-0', 'text-left')}>
-                  <p
-                    className={cn(
-                      'text-[12px]',
-                      'font-black',
-                      'text-foreground',
-                      'truncate',
+                  <div className="flex items-center gap-1 min-w-0">
+                    <p
+                      className={cn(
+                        'text-[12px]',
+                        'font-black',
+                        'text-foreground',
+                        'truncate',
+                      )}
+                    >
+                      {u.name}
+                    </p>
+                    {u.isGreenMember && (
+                      <Leaf className="w-3.5 h-3.5 text-emerald-500 fill-emerald-500 shrink-0" />
                     )}
-                  >
-                    {u.name}
-                  </p>
+                  </div>
                   <p
                     className={cn(
                       'text-[9px]',

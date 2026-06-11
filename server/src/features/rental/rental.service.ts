@@ -141,6 +141,13 @@ export class RentalService {
       console.error("Failed to send booking alert email to lister:", err);
     }
 
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      await syncGreenMemberStatus(data.renterId);
+    } catch (err) {
+      console.error("Failed to sync Green Member status on booking creation:", err);
+    }
+
     return rental;
   }
 
@@ -317,6 +324,13 @@ export class RentalService {
       }
     } catch (err) {
       console.error("Failed to send booking alert email to renter:", err);
+    }
+
+    try {
+      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
+      await syncGreenMemberStatus(updatedRental.renterId);
+    } catch (err) {
+      console.error("Failed to sync Green Member status on booking status update:", err);
     }
 
     return updatedRental;

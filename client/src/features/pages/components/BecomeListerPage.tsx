@@ -11,6 +11,8 @@ import {
   LayoutDashboard,
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { motion } from 'motion/react'
+import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { authClient } from '#/lib/auth/auth-client'
 
 const features = [
@@ -52,95 +54,140 @@ export function BecomeListerPage() {
     <div className="min-h-screen bg-card pb-20">
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center overflow-hidden bg-foreground text-primary-foreground">
-        <div className="absolute inset-0 opacity-40">
+        <motion.div
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 0.4, scale: 1 }}
+          transition={{ duration: 1.2, ease: EASE }}
+          className="absolute inset-0"
+        >
           <img
             src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=1600&q=80"
             alt="Hero Background"
             className="w-full h-full object-cover"
           />
-        </div>
+        </motion.div>
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-2xl">
-            <Badge className="mb-6 bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-1.5 rounded-full font-bold text-sm">
-              JOIN 5,000+ LISTERS
-            </Badge>
-            <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-8 leading-tight">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="max-w-2xl"
+          >
+            <motion.div variants={fadeUp}>
+              <Badge className="mb-6 bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-1.5 rounded-full font-bold text-sm">
+                JOIN 5,000+ LISTERS
+              </Badge>
+            </motion.div>
+            <motion.h1
+              variants={fadeUp}
+              className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-8 leading-tight"
+            >
               Turn Your Things Into{' '}
               <span className="text-primary">Earnings</span>
-            </h1>
-            <p className="text-xl text-muted-dark mb-10 leading-relaxed">
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="text-xl text-muted-dark mb-10 leading-relaxed"
+            >
               Don't let your items gather dust. List them on Vastu-Rent and
               start earning money today. It's safe, easy, and free to get
               started.
-            </p>
-            <Link to={ctaHref}>
-              <Button size="lg" className="flex items-center gap-3">
-                {isLoggedIn ? (
-                  <>
-                    Go to My Listings
-                    <LayoutDashboard size={20} />
-                  </>
-                ) : (
-                  <>
-                    Start Listing Now
-                    <ArrowRight size={20} />
-                  </>
-                )}
-              </Button>
-            </Link>
-          </div>
+            </motion.p>
+            <motion.div variants={fadeUp}>
+              <Link to={ctaHref}>
+                <Button size="lg" className="flex items-center gap-3">
+                  {isLoggedIn ? (
+                    <>
+                      Go to My Listings
+                      <LayoutDashboard size={20} />
+                    </>
+                  ) : (
+                    <>
+                      Start Listing Now
+                      <ArrowRight size={20} />
+                    </>
+                  )}
+                </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Why List Section */}
       <section className="py-24 bg-background">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.h2
+              variants={fadeUp}
+              className="text-4xl font-bold text-foreground mb-4"
+            >
               Why list on Vastu-Rent?
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              className="text-muted-foreground text-lg max-w-2xl mx-auto"
+            >
               We provide the tools and security you need to share your items
               with confidence.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
             {features.map((feature, i) => (
-              <Card
-                key={i}
-                className="bg-card border border-border/30 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl p-6 group"
-              >
-                <CardHeader className="p-0 mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center transition-transform group-hover:scale-110">
-                    {feature.icon}
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <CardTitle className="text-xl font-bold text-foreground mb-3">
-                    {feature.title}
-                  </CardTitle>
-                  <p className="text-muted-foreground leading-relaxed text-sm">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
+              <motion.div key={i} variants={fadeUp} className="flex">
+                <Card
+                  className="w-full bg-card border border-border/30 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl p-6 group"
+                >
+                  <CardHeader className="p-0 mb-6">
+                    <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center transition-transform group-hover:scale-110">
+                      {feature.icon}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <CardTitle className="text-xl font-bold text-foreground mb-3">
+                      {feature.title}
+                    </CardTitle>
+                    <p className="text-muted-foreground leading-relaxed text-sm">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Testimonial Section */}
       <section className="py-24">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <div className="bg-primary/5 rounded-[40px] overflow-hidden flex flex-col lg:flex-row border border-brand/10">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="bg-primary/5 rounded-[40px] overflow-hidden flex flex-col lg:flex-row border border-brand/10"
+          >
             <div className="lg:w-1/2 bg-muted/50">
               <img
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"
                 alt="Happy Lister"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  ;(e.target as any).src =
+                  ; (e.target as any).src =
                     'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Lister'
                 }}
               />
@@ -166,27 +213,41 @@ export function BecomeListerPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Final CTA */}
       <section className="py-24 text-center">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-foreground mb-8">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8"
+        >
+          <motion.h2
+            variants={fadeUp}
+            className="text-4xl font-bold text-foreground mb-8"
+          >
             Your items could be earning for you right now.
-          </h2>
-          <Link to={ctaHref}>
-            <Button size="lg">
-              {isLoggedIn ? 'Go to My Listings' : 'Get Started for Free'}
-            </Button>
-          </Link>
-          <p className="mt-6 text-muted-foreground/85">
+          </motion.h2>
+          <motion.div variants={fadeUp}>
+            <Link to={ctaHref}>
+              <Button size="lg">
+                {isLoggedIn ? 'Go to My Listings' : 'Get Started for Free'}
+              </Button>
+            </Link>
+          </motion.div>
+          <motion.p
+            variants={fadeUp}
+            className="mt-6 text-muted-foreground/85"
+          >
             {isLoggedIn
               ? 'Create your first listing in under 2 minutes.'
               : 'No hidden fees. No listing costs. Just earnings.'}
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </section>
     </div>
   )

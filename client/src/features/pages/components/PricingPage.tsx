@@ -10,17 +10,19 @@ import {
   Lock,
   Headphones,
 } from 'lucide-react'
+import { motion } from 'motion/react'
+import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { Button } from '#/components/ui/button'
 import { Card, CardContent } from '#/components/ui/card'
 import { Switch } from '#/components/ui/switch'
 import { authClient } from '#/lib/auth/auth-client'
-import { apiClient } from '#/lib/api'
-import { useSettings } from '#/hook'
+import { useSettings, useCreateCheckoutSession } from '#/hook'
 
 export function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
   const { data: session } = authClient.useSession()
   const { data: settings } = useSettings()
+  const createCheckoutSession = useCreateCheckoutSession()
 
   const rawStarterPrice =
     settings?.pricing?.starterPrice !== undefined
@@ -79,14 +81,14 @@ export function PricingPage() {
       `Initiating checkout for the ${planName} plan...`,
     )
     try {
-      const res = await apiClient.post('/billing/create-checkout-session', {
+      const res = await createCheckoutSession.mutateAsync({
         planName,
         interval: isYearly ? 'yearly' : 'monthly',
       })
 
-      if (res.data?.url) {
+      if (res?.url) {
         toast.success('Redirecting to secure payment page...', { id: toastId })
-        window.location.href = res.data.url
+        window.location.href = res.url
       } else {
         toast.error('Failed to create checkout session.', { id: toastId })
       }
@@ -105,37 +107,59 @@ export function PricingPage() {
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
-          <div className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16">
-            <div>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16"
+          >
+            <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 Pricing Plans
               </div>
-            </div>
-            <h1 className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]">
+            </motion.div>
+            <motion.h1
+              variants={fadeUp}
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+            >
               Simple, transparent <br />
               <span className="italic text-primary">pricing.</span>
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
               Choose the perfect plan to rent your items and start earning with
               Vastu.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {/* Right Hero Image */}
-          <div className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: EASE }}
+            className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
+          >
             <img
               src="/assets/contact-hero.png"
               alt="Beautiful Vastu Arched Room"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Billing Switch Toggle */}
-      <section className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10 flex justify-center">
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10 flex justify-center"
+      >
         <div className="flex items-center gap-4 bg-muted/30 p-2 px-5 rounded-full border border-border/40 shadow-sm">
           <span
             className={`text-sm font-semibold transition-colors ${!isYearly ? 'text-[#0F291B]' : 'text-muted-foreground'}`}
@@ -158,210 +182,228 @@ export function PricingPage() {
             Save up to 20%
           </span>
         </div>
-      </section>
+      </motion.section>
 
       {/* Pricing Cards Grid */}
       <section className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch"
+        >
           {/* Starter Plan */}
-          <Card className="border border-border/30 rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-            <CardContent className="p-0 flex flex-col h-full justify-between">
-              <div>
-                {/* Header info */}
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
-                    <Sprout className="h-6 w-6 text-primary" />
+          <motion.div variants={fadeUp} className="flex flex-col h-full">
+            <Card className="border border-border/30 rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 h-full">
+              <CardContent className="p-0 flex flex-col h-full justify-between">
+                <div>
+                  {/* Header info */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
+                      <Sprout className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#0F291B] text-lg">
+                        Starter
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        Perfect for getting started.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[#0F291B] text-lg">
-                      Starter
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Perfect for getting started.
+
+                  {/* Price */}
+                  <div className="mt-8">
+                    <div className="flex items-baseline text-[#0F291B]">
+                      <span className="text-4xl font-extrabold tracking-tight">
+                        ₹{rawStarterPrice}
+                      </span>
+                      <span className="ml-1 text-sm font-semibold text-muted-foreground">
+                        /month
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      No setup fees. No hidden charges.
                     </p>
                   </div>
                 </div>
 
-                {/* Price */}
+                {/* Action */}
                 <div className="mt-8">
-                  <div className="flex items-baseline text-[#0F291B]">
-                    <span className="text-4xl font-extrabold tracking-tight">
-                      ₹{rawStarterPrice}
-                    </span>
-                    <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                      /month
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    No setup fees. No hidden charges.
-                  </p>
+                  <Button
+                    onClick={() => handleSelectPlan('Starter')}
+                    variant="outline"
+                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98]"
+                  >
+                    Get Started
+                  </Button>
                 </div>
-              </div>
 
-              {/* Action */}
-              <div className="mt-8">
-                <Button
-                  onClick={() => handleSelectPlan('Starter')}
-                  variant="outline"
-                  className="w-full rounded-full border border-border py-6 text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98]"
-                >
-                  Get Started
-                </Button>
-              </div>
+                {/* Separator */}
+                <div className="my-8 border-t border-border/30" />
 
-              {/* Separator */}
-              <div className="my-8 border-t border-border/30" />
-
-              {/* Features */}
-              <ul className="space-y-4">
-                {starterFeatures.map((f, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                    <span className="text-[13.5px] text-muted-foreground leading-relaxed">
-                      {f}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+                {/* Features */}
+                <ul className="space-y-4">
+                  {starterFeatures.map((f, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
+                      <span className="text-[13.5px] text-muted-foreground leading-relaxed">
+                        {f}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Pro Plan (MOST POPULAR) */}
-          <Card className="relative border-2 border-primary rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-md flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
-            {/* Most Popular Badge */}
-            <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
-              Most Popular
-            </span>
+          <motion.div variants={fadeUp} className="flex flex-col h-full">
+            <Card className="relative border-2 border-primary rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-md flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 h-full">
+              {/* Most Popular Badge */}
+              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
+                Most Popular
+              </span>
 
-            <CardContent className="p-0 flex flex-col h-full justify-between">
-              <div>
-                {/* Header info */}
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
-                    <Home className="h-6 w-6 text-primary" />
+              <CardContent className="p-0 flex flex-col h-full justify-between">
+                <div>
+                  {/* Header info */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
+                      <Home className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#0F291B] text-lg">Pro</h3>
+                      <p className="text-xs text-muted-foreground">
+                        For growing renters.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[#0F291B] text-lg">Pro</h3>
-                    <p className="text-xs text-muted-foreground">
-                      For growing renters.
+
+                  {/* Price */}
+                  <div className="mt-8">
+                    <div className="flex items-baseline text-[#0F291B]">
+                      <span className="text-4xl font-extrabold tracking-tight">
+                        ₹{getProPrice()}
+                      </span>
+                      <span className="ml-1 text-sm font-semibold text-muted-foreground">
+                        /month
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {isYearly
+                        ? `Billed annually as ₹${getProPrice() * 12} (Save ₹${(rawProPrice - getProPrice()) * 12})`
+                        : `Billed monthly as ₹${rawProPrice}`}
                     </p>
                   </div>
                 </div>
 
-                {/* Price */}
+                {/* Action */}
                 <div className="mt-8">
-                  <div className="flex items-baseline text-[#0F291B]">
-                    <span className="text-4xl font-extrabold tracking-tight">
-                      ₹{getProPrice()}
-                    </span>
-                    <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                      /month
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {isYearly
-                      ? `Billed annually as ₹${getProPrice() * 12} (Save ₹${(rawProPrice - getProPrice()) * 12})`
-                      : `Billed monthly as ₹${rawProPrice}`}
-                  </p>
+                  <Button
+                    onClick={() => handleSelectPlan('Pro')}
+                    className="w-full rounded-full bg-primary py-6 text-sm font-bold text-primary-foreground hover:bg-primary/95 active:scale-[0.98]"
+                  >
+                    Choose Pro
+                  </Button>
                 </div>
-              </div>
 
-              {/* Action */}
-              <div className="mt-8">
-                <Button
-                  onClick={() => handleSelectPlan('Pro')}
-                  className="w-full rounded-full bg-primary py-6 text-sm font-bold text-primary-foreground hover:bg-primary/95 active:scale-[0.98]"
-                >
-                  Choose Pro
-                </Button>
-              </div>
+                {/* Separator */}
+                <div className="my-8 border-t border-border/30" />
 
-              {/* Separator */}
-              <div className="my-8 border-t border-border/30" />
-
-              {/* Features */}
-              <ul className="space-y-4">
-                {proFeatures.map((f, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                    <span className="text-[13.5px] text-[#0F291B] font-medium leading-relaxed">
-                      {f}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+                {/* Features */}
+                <ul className="space-y-4">
+                  {proFeatures.map((f, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
+                      <span className="text-[13.5px] text-[#0F291B] font-medium leading-relaxed">
+                        {f}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Business Plan */}
-          <Card className="border border-border/30 rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-            <CardContent className="p-0 flex flex-col h-full justify-between">
-              <div>
-                {/* Header info */}
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
-                    <Building2 className="h-6 w-6 text-primary" />
+          <motion.div variants={fadeUp} className="flex flex-col h-full">
+            <Card className="border border-border/30 rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 h-full">
+              <CardContent className="p-0 flex flex-col h-full justify-between">
+                <div>
+                  {/* Header info */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
+                      <Building2 className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#0F291B] text-lg">
+                        Business
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        For serious sellers & businesses.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[#0F291B] text-lg">
-                      Business
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      For serious sellers & businesses.
+
+                  {/* Price */}
+                  <div className="mt-8">
+                    <div className="flex items-baseline text-[#0F291B]">
+                      <span className="text-4xl font-extrabold tracking-tight">
+                        ₹{getBusinessPrice()}
+                      </span>
+                      <span className="ml-1 text-sm font-semibold text-muted-foreground">
+                        /month
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {isYearly
+                        ? `Billed annually as ₹${getBusinessPrice() * 12} (Save ₹${(rawBusinessPrice - getBusinessPrice()) * 12})`
+                        : `Billed monthly as ₹${rawBusinessPrice}`}
                     </p>
                   </div>
                 </div>
 
-                {/* Price */}
+                {/* Action */}
                 <div className="mt-8">
-                  <div className="flex items-baseline text-[#0F291B]">
-                    <span className="text-4xl font-extrabold tracking-tight">
-                      ₹{getBusinessPrice()}
-                    </span>
-                    <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                      /month
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {isYearly
-                      ? `Billed annually as ₹${getBusinessPrice() * 12} (Save ₹${(rawBusinessPrice - getBusinessPrice()) * 12})`
-                      : `Billed monthly as ₹${rawBusinessPrice}`}
-                  </p>
+                  <Button
+                    onClick={() => handleSelectPlan('Business')}
+                    variant="outline"
+                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98]"
+                  >
+                    Choose Business
+                  </Button>
                 </div>
-              </div>
 
-              {/* Action */}
-              <div className="mt-8">
-                <Button
-                  onClick={() => handleSelectPlan('Business')}
-                  variant="outline"
-                  className="w-full rounded-full border border-border py-6 text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98]"
-                >
-                  Choose Business
-                </Button>
-              </div>
+                {/* Separator */}
+                <div className="my-8 border-t border-border/30" />
 
-              {/* Separator */}
-              <div className="my-8 border-t border-border/30" />
-
-              {/* Features */}
-              <ul className="space-y-4">
-                {businessFeatures.map((f, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                    <span className="text-[13.5px] text-muted-foreground leading-relaxed">
-                      {f}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+                {/* Features */}
+                <ul className="space-y-4">
+                  {businessFeatures.map((f, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
+                      <span className="text-[13.5px] text-muted-foreground leading-relaxed">
+                        {f}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Trust Panel Bottom */}
-      <section className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10">
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10"
+      >
         <div className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 border border-primary/10 shrink-0">
@@ -391,7 +433,7 @@ export function PricingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   )
 }

@@ -66,6 +66,7 @@ export const auth = betterAuth({
       showOnline: { type: "boolean", required: false },
       allowData: { type: "boolean", required: false },
       lastActive: { type: "date", required: false },
+      isGreenMember: { type: "boolean", required: false },
     }
   },
 

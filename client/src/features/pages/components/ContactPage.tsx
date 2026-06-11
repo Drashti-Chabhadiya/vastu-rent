@@ -19,13 +19,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
+import { motion } from 'motion/react'
+import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { authClient } from '#/lib/auth/auth-client'
-import { apiClient } from '#/lib/api'
-import { useSettings } from '#/hook'
+import { useSettings, useSubmitContactMessage } from '#/hook'
 
 export function ContactPage() {
   const { data: session } = authClient.useSession()
   const { data: settings } = useSettings()
+  const submitContactMessage = useSubmitContactMessage()
 
   const contactEmail = settings?.contact?.email || 'support@vastu.com'
   const contactPhone = settings?.contact?.phone || '+91 98765 43210'
@@ -87,7 +89,7 @@ export function ContactPage() {
     setIsSubmitting(true)
     try {
       // Attempt actual API call, fallback gracefully if endpoint is not built yet
-      await apiClient.post('/contact', {
+      await submitContactMessage.mutateAsync({
         name: trimmedName,
         email: trimmedEmail,
         subject,
@@ -120,21 +122,32 @@ export function ContactPage() {
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
-          <div className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16">
-            <div>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16"
+          >
+            <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 Get in touch
               </div>
-            </div>
-            <h1 className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]">
+            </motion.div>
+            <motion.h1
+              variants={fadeUp}
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+            >
               We’d love to <br />
               <span className="italic text-primary">hear from you.</span>
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
               {contactDescription}
-            </p>
-            <div className="mt-8">
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-8">
               <Button
                 onClick={() =>
                   document
@@ -148,23 +161,32 @@ export function ContactPage() {
                   <ArrowRight className="h-3 w-3" />
                 </span>
               </Button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Hero Image */}
-          <div className="md:col-span-5 relative min-h-[380px] md:min-h-full overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: EASE }}
+            className="md:col-span-5 relative min-h-[380px] md:min-h-full overflow-hidden"
+          >
             <img
               src="/assets/contact-hero.png"
               alt="Beautiful Vastu Interior"
               className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-[4000ms] hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Forms and Details Container */}
-      <section
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
         id="contact-form"
         className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10"
       >
@@ -394,7 +416,7 @@ export function ContactPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   )
 }

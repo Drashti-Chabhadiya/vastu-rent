@@ -48,3 +48,18 @@ export const useUploadProfileImage = () => {
     },
   })
 }
+
+// Upload a chat file attachment
+export const useUploadChatFile = () => {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await apiClient.post('/chat/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return res.data.url as string
+    },
+  })
+}
+

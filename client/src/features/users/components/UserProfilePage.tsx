@@ -17,6 +17,7 @@ import {
   Package,
   Languages,
   Phone,
+  Leaf,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { UserAvatar } from '#/features/dashboard/components/messages/components/UserAvatar'
@@ -125,9 +126,17 @@ export function UserProfilePage() {
 
             <div className="flex-1 text-center md:text-left">
               <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-                  {profile.name}
-                </h1>
+                <div className="flex items-center justify-center md:justify-start gap-2">
+                  <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
+                    {profile.name}
+                  </h1>
+                  {profile.isGreenMember && (
+                    <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white border-0 gap-1 rounded-xl px-2.5 py-1 text-xs font-bold shrink-0">
+                      <Leaf className="w-3.5 h-3.5 fill-current" />
+                      Green Member
+                    </Badge>
+                  )}
+                </div>
                 <div className="flex items-center justify-center md:justify-start gap-3">
                   <Badge
                     variant="outline"

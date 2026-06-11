@@ -22,6 +22,8 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const ReportsManagement = () => {
   const stats = [
@@ -106,9 +108,14 @@ export const ReportsManagement = () => {
   ]
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
       {/* Breadcrumbs */}
-      <div className="flex flex-col gap-1">
+      <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
           <span>Dashboard</span>
           <ChevronRight size={10} className="text-muted-dark" />
@@ -133,10 +140,10 @@ export const ReportsManagement = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Overview Stats */}
-      <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-x-auto scrollbar-hide">
+      <motion.div variants={fadeUp} className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-x-auto scrollbar-hide">
         <div className="mb-8">
           <h3 className="text-[15px] font-black text-foreground">Overview</h3>
         </div>
@@ -165,10 +172,10 @@ export const ReportsManagement = () => {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Chart & Table */}
         <div className="lg:col-span-2 space-y-6">
           {/* Revenue Overview Chart */}
@@ -504,7 +511,7 @@ export const ReportsManagement = () => {
             </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

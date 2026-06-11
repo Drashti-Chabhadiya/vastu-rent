@@ -21,6 +21,8 @@ import {
 } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 interface ListingsManagementProps {
   initialCategoryFilter?: string | null
@@ -185,9 +187,17 @@ export const ListingsManagement = ({
   )
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
         <div className="space-y-1">
           <h1 className="text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
             <PackagePlus className="text-dash-brand" size={32} />
@@ -230,47 +240,51 @@ export const ListingsManagement = ({
           <Plus size={20} strokeWidth={3} />
           Create Listing
         </Button>
-      </div>
+      </motion.div>
 
       {/* Filters Bar */}
-      <ListingsFilters
-        search={search}
-        setSearch={setSearch}
-        categoryFilter={categoryFilter}
-        setCategoryFilter={setCategoryFilter}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        categories={categories}
-      />
+      <motion.div variants={fadeUp}>
+        <ListingsFilters
+          search={search}
+          setSearch={setSearch}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          categories={categories}
+        />
+      </motion.div>
 
       {/* Listings Table Component */}
-      <ListingsTable
-        products={products}
-        isLoading={isLoading}
-        onToggleStatus={(id, isAvailable) => {
-          toggleStatusMutation.mutate(
-            { id, isAvailable },
-            {
-              onSuccess: () => {
-                toast.success(
-                  `Listing is now ${isAvailable ? 'public' : 'hidden'}`,
-                )
+      <motion.div variants={fadeUp}>
+        <ListingsTable
+          products={products}
+          isLoading={isLoading}
+          onToggleStatus={(id, isAvailable) => {
+            toggleStatusMutation.mutate(
+              { id, isAvailable },
+              {
+                onSuccess: () => {
+                  toast.success(
+                    `Listing is now ${isAvailable ? 'public' : 'hidden'}`,
+                  )
+                },
+                onError: (err: any) => {
+                  toast.error(
+                    err.response?.data?.message || 'Failed to update visibility',
+                  )
+                },
               },
-              onError: (err: any) => {
-                toast.error(
-                  err.response?.data?.message || 'Failed to update visibility',
-                )
-              },
-            },
-          )
-        }}
-        onDelete={handleDelete}
-        onEdit={(item) => {
-          setProductToEdit(item)
-          setIsEditOpen(true)
-        }}
-        currentUser={currentUser}
-      />
+            )
+          }}
+          onDelete={handleDelete}
+          onEdit={(item) => {
+            setProductToEdit(item)
+            setIsEditOpen(true)
+          }}
+          currentUser={currentUser}
+        />
+      </motion.div>
 
       {/* Add Listing Dialog Component */}
       <ListingDialog
@@ -354,6 +368,6 @@ export const ListingsManagement = ({
         isPending={createDeleteRequestMutation.isPending}
         pendingText="Submitting..."
       />
-    </div>
+    </motion.div>
   )
 }

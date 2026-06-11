@@ -13,6 +13,8 @@ import { useState } from 'react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 const faqs = [
   {
@@ -54,11 +56,19 @@ export function HelpPage() {
     <div className="min-h-screen bg-background pb-20">
       {/* Search Header */}
       <section className="bg-primary py-20 px-4">
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-primary-foreground mb-8">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="mx-auto max-w-4xl text-center"
+        >
+          <motion.h1
+            variants={fadeUp}
+            className="text-3xl sm:text-4xl font-extrabold text-primary-foreground mb-8"
+          >
             How can we help you today?
-          </h1>
-          <div className="relative max-w-2xl mx-auto group">
+          </motion.h1>
+          <motion.div variants={fadeUp} className="relative max-w-2xl mx-auto group">
             <Search
               className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:text-primary transition-colors"
               size={24}
@@ -68,13 +78,18 @@ export function HelpPage() {
               placeholder="Search for answers..."
               className="w-full h-16 pl-16 pr-8 bg-card rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-lg shadow-xl"
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Quick Links */}
       <section className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 -mt-10 mb-16 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {[
             {
               icon: <HelpCircle className="text-info-foreground" />,
@@ -97,28 +112,43 @@ export function HelpPage() {
               count: '10 articles',
             },
           ].map((item, i) => (
-            <div
+            <motion.div
+              variants={fadeUp}
               key={i}
-              className="bg-card p-6 rounded-3xl shadow-sm border border-border/30 hover:shadow-lg transition-all cursor-pointer group"
+              className="bg-card p-6 rounded-3xl shadow-sm border border-border/30 hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
             >
-              <div className="w-12 h-12 rounded-2xl bg-muted-light flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                {item.icon}
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-muted-light flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  {item.icon}
+                </div>
+                <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
               </div>
-              <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
               <p className="text-sm text-muted-foreground/85">{item.count}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* FAQ Section */}
       <section className="mx-auto max-w-4xl px-4 mb-20">
-        <h2 className="text-2xl font-bold text-foreground mb-8 px-2">
+        <motion.h2
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="text-2xl font-bold text-foreground mb-8 px-2"
+        >
           Frequently Asked Questions
-        </h2>
-        <div className="space-y-12">
+        </motion.h2>
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="space-y-12"
+        >
           {faqs.map((cat, catIdx) => (
-            <div key={catIdx}>
+            <motion.div variants={fadeUp} key={catIdx}>
               <h3 className="text-lg font-bold text-muted-foreground/70 uppercase tracking-widest mb-6 px-2">
                 {cat.category}
               </h3>
@@ -163,13 +193,19 @@ export function HelpPage() {
                   )
                 })}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Contact Support */}
-      <section className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8"
+      >
         <div className="bg-primary/5 border border-brand/10 rounded-[40px] p-10 sm:p-16 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
             Still need help?
@@ -218,7 +254,7 @@ export function HelpPage() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   )
 }

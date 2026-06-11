@@ -18,6 +18,8 @@ import { Button } from '#/components/ui/button'
 import { OrderDetailsView } from './components/OrderDetailsView'
 import { toast } from 'sonner'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const OrdersManagement = () => {
   const { data: orders, isLoading } = useOrders()
@@ -166,8 +168,13 @@ export const OrdersManagement = () => {
     }
   }
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-6"
+    >
+      <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div className="space-y-1">
           <h2 className="text-2xl font-extrabold text-dash-text flex items-center gap-3">
             <ShoppingCart className="text-dash-brand" size={28} />
@@ -178,11 +185,12 @@ export const OrdersManagement = () => {
             performance.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid gap-4">
         {orders.map((order: any) => (
-          <div
+          <motion.div
+            variants={fadeUp}
             key={order.id}
             className="group bg-card p-6 rounded-[2rem] border border-border/30 shadow-sm hover:shadow-xl hover:border-dash-brand/20 transition-all duration-300"
           >
@@ -309,7 +317,7 @@ export const OrdersManagement = () => {
                 </Button>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -347,6 +355,6 @@ export const OrdersManagement = () => {
         variant={pendingAction?.action === 'confirm' ? 'success' : 'danger'}
         isPending={updateStatus.isPending}
       />
-    </div>
+    </motion.div>
   )
 }

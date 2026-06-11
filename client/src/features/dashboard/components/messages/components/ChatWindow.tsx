@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import EmojiPicker from 'emoji-picker-react'
 import {
   ArrowLeft,
@@ -15,6 +16,14 @@ import {
   Smile,
   Send,
   ZoomIn,
+  Leaf,
+  MoreVertical,
+  Copy,
+  Edit3,
+  Trash2,
+  Forward,
+  Info,
+  ArrowRightLeft,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
@@ -23,12 +32,22 @@ import { format } from 'date-fns'
 import { authClient } from '#/lib/auth/auth-client'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { apiClient } from '#/lib/api'
+import { useDeleteConversation } from '#/hook'
 import type { Conversation, Message } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
 import { TypingBubble } from './TypingBubble'
 import { ConversationOptionsMenu } from './ConversationOptionsMenu'
 import { useChatStore } from '../../../../../store/useChatStore'
+import { Skeleton } from '#/components/ui/skeleton'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '#/components/ui/dropdown-menu'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '#/components/ui/dialog'
+import { ForwardDialog } from './ForwardDialog'
+import { MessageInfoDialog } from './MessageInfoDialog'
 
 import { parseMessage, formatMsgTime, formatLastActive } from '#/lib/chat-utils'
 
@@ -50,6 +69,10 @@ interface ChatWindowProps {
   inputRef: React.RefObject<HTMLInputElement | null>
   onCallSuccess?: (name: string) => void
   onVideoSuccess?: (name: string) => void
+  editMessage: (params: { messageId: string; content: string }) => Promise<any>
+  deleteMessage: (params: { messageId: string; mode: 'me' | 'everyone' }) => Promise<any>
+  forwardMessage: (params: { messageId: string; targetConversationIds: string[] }) => Promise<any>
+  conversations: Conversation[]
 }
 
 
@@ -71,10 +94,15 @@ export function ChatWindow({
   inputRef,
   onCallSuccess,
   onVideoSuccess,
+  editMessage,
+  deleteMessage,
+  forwardMessage,
+  conversations,
 }: ChatWindowProps) {
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
+  const deleteConversation = useDeleteConversation()
 
   const {
     showMobileChat,
@@ -93,6 +121,74 @@ export function ChatWindow({
     setShowEmojiPicker,
     isUploading,
   } = useChatStore()
+
+  const [editingMsgId, setEditingMsgId] = useState<string | null>(null)
+  const [editingText, setEditingText] = useState('')
+
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [canDeleteForEveryone, setCanDeleteForEveryone] = useState(false)
+
+  const [forwardTargetId, setForwardTargetId] = useState<string | null>(null)
+  const [showForwardDialog, setShowForwardDialog] = useState(false)
+
+  const [infoTargetMsg, setInfoTargetMsg] = useState<Message | null>(null)
+  const [showInfoDialog, setShowInfoDialog] = useState(false)
+
+  const handleOpenDelete = (msgId: string) => {
+    const msg = messages.find((m) => m.id === msgId)
+    if (!msg) return
+    setDeleteTargetId(msgId)
+
+    const fifteenMinutes = 15 * 60 * 1000
+    const isWithinTimeLimit = Date.now() - new Date(msg.createdAt).getTime() < fifteenMinutes
+    const isSender = msg.senderId === currentUserId
+    const isAdmin = session?.user?.role === 'admin'
+    setCanDeleteForEveryone((isSender && isWithinTimeLimit) || isAdmin)
+
+    setShowDeleteDialog(true)
+  }
+
+  const handleDeleteConfirm = async (mode: 'me' | 'everyone') => {
+    if (!deleteTargetId) return
+    try {
+      await deleteMessage({ messageId: deleteTargetId, mode })
+      setShowDeleteDialog(false)
+      setDeleteTargetId(null)
+      toast.success(
+        mode === 'everyone' ? 'Message deleted for everyone' : 'Message deleted for you',
+      )
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to delete message')
+    }
+  }
+
+  const handleUpdateMessage = async (msgId: string) => {
+    if (!editingText.trim()) return
+    try {
+      await editMessage({ messageId: msgId, content: editingText.trim() })
+      setEditingMsgId(null)
+      setEditingText('')
+      toast.success('Message updated!')
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to update message')
+    }
+  }
+
+  const handleCopyText = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast.success('Message text copied to clipboard!')
+  }
+
+  const handleOpenForward = (msgId: string) => {
+    setForwardTargetId(msgId)
+    setShowForwardDialog(true)
+  }
+
+  const handleOpenInfo = (msg: Message) => {
+    setInfoTargetMsg(msg)
+    setShowInfoDialog(true)
+  }
   if (!activeConversation) {
     return (
       <div
@@ -223,9 +319,14 @@ export function ChatWindow({
           />
 
           <div>
-            <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
-              {activeConversation.otherParticipant.name}
-            </h3>
+            <div className="flex items-center gap-1">
+              <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
+                {activeConversation.otherParticipant.name}
+              </h3>
+              {activeConversation.otherParticipant.isGreenMember && (
+                <Leaf className="w-3.5 h-3.5 text-emerald-500 fill-emerald-500 shrink-0" />
+              )}
+            </div>
             {canSeeStatus ? (
               <div className={cn('flex', 'items-center', 'gap-1.5', 'mt-0.5')}>
                 <div
@@ -326,9 +427,7 @@ export function ChatWindow({
             onArchive={() => toast.info('Archive feature coming soon')}
             onDelete={async () => {
               try {
-                await apiClient.delete(
-                  `/chat/conversations/${activeConversation.id}`,
-                )
+                await deleteConversation.mutateAsync(activeConversation.id)
                 toast.success('Conversation deleted')
               } catch {
                 toast.error('Failed to delete conversation')
@@ -352,18 +451,30 @@ export function ChatWindow({
         )}
       >
         {isLoadingMessages ? (
-          <div
-            className={cn('flex', 'items-center', 'justify-center', 'h-full')}
-          >
-            <div className={cn('flex', 'flex-col', 'items-center', 'gap-3')}>
-              <Loader2
-                size={24}
-                className={cn('animate-spin', 'text-primary')}
-              />
-              <p className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}>
-                Loading messages...
-              </p>
-            </div>
+          <div className="space-y-6 px-1 py-2 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => {
+              const isMe = i % 2 === 1
+              return (
+                <div
+                  key={i}
+                  className={cn(
+                    'flex gap-2.5 max-w-[70%]',
+                    isMe ? 'ml-auto flex-row-reverse' : 'mr-auto',
+                  )}
+                >
+                  {!isMe && <Skeleton className="w-8 h-8 rounded-full shrink-0 self-end" />}
+                  <div className="space-y-1.5">
+                    <Skeleton
+                      className={cn(
+                        'h-9 rounded-2xl px-4 py-2.5',
+                        isMe ? 'bg-primary/20 rounded-tr-sm w-36' : 'bg-muted rounded-tl-sm w-44',
+                      )}
+                    />
+                    <Skeleton className={cn('h-2.5 w-10 rounded', isMe ? 'ml-auto' : '')} />
+                  </div>
+                </div>
+              )
+            })}
           </div>
         ) : messages.length === 0 ? (
           <div
@@ -454,7 +565,7 @@ export function ChatWindow({
 
                     <div className={cn('flex flex-col gap-1 min-w-0')}>
                       {/* Image attachments grid */}
-                      {msg.attachments && msg.attachments.length > 0 && (
+                      {!msg.isDeleted && msg.attachments && msg.attachments.length > 0 && (
                         <div
                           className={cn(
                             'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm',
@@ -491,7 +602,19 @@ export function ChatWindow({
                       )}
 
                       {/* Bubble */}
-                      {msg.content && (
+                      {msg.isDeleted ? (
+                        <div
+                          className={cn(
+                            'px-4 py-3 text-[11px] font-semibold leading-relaxed shadow-sm relative italic text-muted-dark/70 flex items-center gap-1.5',
+                            isMe
+                              ? 'bg-primary-soft/20 rounded-2xl rounded-tr-sm'
+                              : 'bg-muted/45 border border-border/20 rounded-2xl rounded-tl-sm',
+                          )}
+                        >
+                          <span className="opacity-60 shrink-0"><X size={11} strokeWidth={3} /></span>
+                          This message was deleted
+                        </div>
+                      ) : editingMsgId === msg.id ? (
                         <div
                           className={cn(
                             'px-4 py-3 text-[11px] font-semibold leading-relaxed shadow-sm relative',
@@ -500,41 +623,86 @@ export function ChatWindow({
                               : 'bg-card text-foreground/80 border border-border/30 rounded-2xl rounded-tl-sm',
                           )}
                         >
-                          {/* Quoted reply block */}
-                          {replyQuote && (
-                            <div
-                              className={cn(
-                                'flex items-start gap-1.5 mb-2 px-2 py-1.5 rounded-lg',
-                                isMe
-                                  ? 'bg-primary/10 border-l-2 border-primary/40'
-                                  : 'bg-muted/40 border-l-2 border-muted-foreground/30',
-                              )}
-                            >
-                              <CornerUpLeft
-                                size={10}
+                          <div className="flex flex-col gap-2 min-w-[200px]">
+                            <textarea
+                              value={editingText}
+                              onChange={(e) => setEditingText(e.target.value)}
+                              className="w-full text-[11px] font-bold bg-muted-light/50 text-foreground border border-border/20 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none h-14"
+                              autoFocus
+                            />
+                            <div className="flex justify-end gap-1.5">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setEditingMsgId(null)}
+                                className="h-6 px-2 text-[9px] font-black text-muted-dark rounded-md hover:bg-muted-light cursor-pointer shadow-none"
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={() => handleUpdateMessage(msg.id)}
+                                className="h-6 px-2.5 text-[9px] font-black text-white bg-primary hover:bg-primary-hover rounded-md shadow-sm cursor-pointer"
+                              >
+                                Save
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        msg.content && (
+                          <div
+                            className={cn(
+                              'px-4 py-3 text-[11px] font-semibold leading-relaxed shadow-sm relative',
+                              isMe
+                                ? 'bg-primary-soft/40 text-primary rounded-2xl rounded-tr-sm'
+                                : 'bg-card text-foreground/80 border border-border/30 rounded-2xl rounded-tl-sm',
+                            )}
+                          >
+                            {/* Forwarded label */}
+                            {msg.isForwarded && (
+                              <div className="flex items-center gap-1 text-[8.5px] font-black text-muted-dark/85 uppercase tracking-wider mb-1">
+                                <ArrowRightLeft size={9} strokeWidth={3.5} className="text-muted-dark/75" />
+                                Forwarded
+                              </div>
+                            )}
+
+                            {/* Quoted reply block */}
+                            {replyQuote && (
+                              <div
                                 className={cn(
-                                  'shrink-0 mt-0.5',
-                                  isMe ? 'text-primary/60' : 'text-muted-dark',
-                                )}
-                              />
-                              <p
-                                className={cn(
-                                  'text-[9.5px] leading-snug truncate',
-                                  isMe ? 'text-primary/70' : 'text-muted-dark',
+                                  'flex items-start gap-1.5 mb-2 px-2 py-1.5 rounded-lg',
+                                  isMe
+                                    ? 'bg-primary/10 border-l-2 border-primary/40'
+                                    : 'bg-muted/40 border-l-2 border-muted-foreground/30',
                                 )}
                               >
-                                {replyQuote}
-                              </p>
-                            </div>
-                          )}
-                          {msgText}
-                        </div>
+                                <CornerUpLeft
+                                  size={10}
+                                  className={cn(
+                                    'shrink-0 mt-0.5',
+                                    isMe ? 'text-primary/60' : 'text-muted-dark',
+                                  )}
+                                />
+                                <p
+                                  className={cn(
+                                    'text-[9.5px] leading-snug truncate',
+                                    isMe ? 'text-primary/70' : 'text-muted-dark',
+                                  )}
+                                >
+                                  {replyQuote}
+                                </p>
+                              </div>
+                            )}
+                            {msgText}
+                          </div>
+                        )
                       )}
 
                       {/* Time + read receipt */}
                       <div
                         className={cn(
-                          'flex items-center gap-1',
+                          'flex items-center gap-1.5',
                           isMe ? 'justify-end' : 'justify-start',
                         )}
                       >
@@ -547,11 +715,22 @@ export function ChatWindow({
                         >
                           {formatMsgTime(msg.createdAt)}
                         </span>
-                        {isMe &&
-                          (msg.isRead ? (
+                        {msg.isEdited && !msg.isDeleted && (
+                          <span className="text-[8px] font-bold text-muted-dark/65 italic">
+                            edited
+                          </span>
+                        )}
+                        {isMe && !msg.isDeleted &&
+                          (msg.isRead || !!msg.readAt ? (
                             <CheckCheck
                               size={11}
-                              className="text-emerald-600"
+                              className="text-emerald-600 fill-transparent"
+                              strokeWidth={2.5}
+                            />
+                          ) : msg.deliveredAt ? (
+                            <CheckCheck
+                              size={11}
+                              className="text-muted-dark/50 fill-transparent"
                               strokeWidth={2.5}
                             />
                           ) : (
@@ -564,22 +743,103 @@ export function ChatWindow({
                       </div>
                     </div>
 
-                    {/* Hover Reply Action */}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleReply(msg, isMe)}
-                      className={cn(
-                        'self-center shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
-                        'bg-muted/60 hover:bg-primary/10 text-muted-dark hover:text-primary border border-border/30',
-                        isHovered
-                          ? 'opacity-100 scale-100'
-                          : 'opacity-0 scale-75 pointer-events-none',
+                    {/* Hover Dropdown & Reply Actions */}
+                    <div className="flex items-center gap-1 self-center shrink-0">
+                      {/* Quick Reply */}
+                      {!msg.isDeleted && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleReply(msg, isMe)}
+                          className={cn(
+                            'w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
+                            'bg-muted/60 hover:bg-primary/10 text-muted-dark hover:text-primary border border-border/30',
+                            isHovered
+                              ? 'opacity-100 scale-100'
+                              : 'opacity-0 scale-75 pointer-events-none',
+                          )}
+                          title="Reply"
+                        >
+                          <Reply size={12} strokeWidth={2.5} />
+                        </Button>
                       )}
-                      title="Reply"
-                    >
-                      <Reply size={12} strokeWidth={2.5} />
-                    </Button>
+
+                      {/* Context Dropdown Menu */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                              'w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
+                              'bg-muted/60 hover:bg-primary/10 text-muted-dark hover:text-primary border border-border/30',
+                              isHovered
+                                ? 'opacity-100 scale-100'
+                                : 'opacity-0 scale-75 pointer-events-none',
+                            )}
+                            title="Message Actions"
+                          >
+                            <MoreVertical size={12} strokeWidth={2.5} />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align={isMe ? 'end' : 'start'}
+                          className="rounded-xl border border-border/30 shadow-lg min-w-[120px]"
+                        >
+                          {!msg.isDeleted && (
+                            <DropdownMenuItem
+                              onClick={() => handleReply(msg, isMe)}
+                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
+                            >
+                              <Reply size={12} /> Reply
+                            </DropdownMenuItem>
+                          )}
+                          {!msg.isDeleted && (
+                            <DropdownMenuItem
+                              onClick={() => handleCopyText(msgText)}
+                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
+                            >
+                              <Copy size={12} /> Copy
+                            </DropdownMenuItem>
+                          )}
+                          {!msg.isDeleted && (
+                            <DropdownMenuItem
+                              onClick={() => handleOpenForward(msg.id)}
+                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
+                            >
+                              <Forward size={12} /> Forward
+                            </DropdownMenuItem>
+                          )}
+                          {isMe && !msg.isDeleted && (
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setEditingMsgId(msg.id)
+                                setEditingText(msgText)
+                              }}
+                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
+                            >
+                              <Edit3 size={12} /> Edit
+                            </DropdownMenuItem>
+                          )}
+                          {isMe && (
+                            <DropdownMenuItem
+                              onClick={() => handleOpenInfo(msg)}
+                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
+                            >
+                              <Info size={12} /> Info
+                            </DropdownMenuItem>
+                          )}
+                          {!msg.isDeleted && (
+                            <DropdownMenuItem
+                              onClick={() => handleOpenDelete(msg.id)}
+                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-red-600 focus:text-red-600 focus:bg-red-50"
+                            >
+                              <Trash2 size={12} /> Delete
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
                 )
               })}
@@ -781,6 +1041,57 @@ export function ChatWindow({
           </Button>
         </div>
       </div>
+
+      {/* Dialogue windows */}
+      <ForwardDialog
+        open={showForwardDialog}
+        onOpenChange={setShowForwardDialog}
+        messageId={forwardTargetId}
+        conversations={conversations}
+        onForward={(messageId, targetConversationIds) =>
+          forwardMessage({ messageId, targetConversationIds })
+        }
+      />
+
+      <MessageInfoDialog
+        open={showInfoDialog}
+        onOpenChange={setShowInfoDialog}
+        message={infoTargetMsg}
+      />
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="max-w-xs rounded-3xl p-5 border border-border/30 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-[13px] font-black text-foreground text-center">
+              Delete Message?
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-2.5 mt-3">
+            <Button
+              onClick={() => handleDeleteConfirm('me')}
+              className="w-full text-[11px] font-bold h-9 rounded-xl border border-border/30 hover:bg-muted-light cursor-pointer shadow-none"
+              variant="ghost"
+            >
+              Delete for me
+            </Button>
+            {canDeleteForEveryone && (
+              <Button
+                onClick={() => handleDeleteConfirm('everyone')}
+                className="w-full text-[11px] font-bold h-9 bg-red-600 hover:bg-red-700 text-white rounded-xl cursor-pointer shadow-sm"
+              >
+                Delete for everyone
+              </Button>
+            )}
+            <Button
+              onClick={() => setShowDeleteDialog(false)}
+              className="w-full text-[11px] font-bold h-9 hover:bg-muted/40 cursor-pointer shadow-none text-muted-dark"
+              variant="ghost"
+            >
+              Cancel
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

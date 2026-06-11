@@ -19,6 +19,8 @@ import { useState, useEffect } from 'react'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
 import { Button } from '#/components/ui/button'
+import { motion } from 'motion/react'
+import { EASE } from '#/lib/animations'
 
 // ─── Logout Confirmation Dialog ───────────────────────────────────────────────
 function LogoutDialog({
@@ -153,7 +155,12 @@ export function AccountLayout() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
             {/* Sidebar */}
-            <aside className="w-full lg:w-[190px] shrink-0 bg-card rounded-2xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden">
+            <motion.aside
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="w-full lg:w-[190px] shrink-0 bg-card rounded-2xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden"
+            >
               <div>
                 {/* User Profile Card */}
                 <div className="flex flex-col items-center gap-2 pt-5 pb-4 px-2 mb-2 border-b border-border/30">
@@ -246,10 +253,15 @@ export function AccountLayout() {
                   </Link>
                 </div>
               </div>
-            </aside>
+            </motion.aside>
 
             {/* Main Content */}
-            <main className="flex-1 min-w-0 w-full">
+            <motion.main
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="flex-1 min-w-0 w-full"
+            >
               {activeTab === 'personal' ||
               activeTab === 'bookings' ||
               activeTab === 'listings' ||
@@ -263,7 +275,7 @@ export function AccountLayout() {
                   <Outlet />
                 </div>
               )}
-            </main>
+            </motion.main>
           </div>
         </div>
       </div>

@@ -49,7 +49,7 @@ export function useProfileData() {
   const busy = isUploadingImage || isSavingSettings
 
   // Fetch session via React Query for consistency
-  const { data: session, refetch } = useQuery({
+  const { data: session, refetch, isPending } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
       const res = await authClient.getSession()
@@ -238,6 +238,7 @@ export function useProfileData() {
     // Loading/Session states
     session,
     refetch,
+    isPending,
     busy,
     uploadImage,
     updateSettings,

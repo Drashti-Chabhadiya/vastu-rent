@@ -18,4 +18,7 @@ export async function chatRoutes(fastify: FastifyInstance) {
   fastify.delete("/conversations/:id", chatController.deleteConversation);
   fastify.get("/users/search", chatController.searchUsers);
   fastify.post("/upload", chatController.uploadChatAttachment);
+  fastify.put("/messages/:id", chatController.editMessage);
+  fastify.delete("/messages/:id", chatController.deleteMessage);
+  fastify.post("/messages/:id/forward", chatController.forwardMessage);
 }

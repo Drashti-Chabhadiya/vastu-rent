@@ -24,13 +24,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
-import { apiClient } from '#/lib/api'
+import { useSubscribeNewsletter } from '#/hook'
 
 export function Footer() {
   const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [region, setRegion] = useState('India (English)')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const subscribeNewsletter = useSubscribeNewsletter()
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,7 +52,7 @@ export function Footer() {
     setIsSubmitting(true)
     try {
       // Attempt actual API call, fallback gracefully if endpoint is not built yet
-      await apiClient.post('/newsletter/subscribe', { email: trimmedEmail })
+      await subscribeNewsletter.mutateAsync(trimmedEmail)
       toast.success(t('Thank you for subscribing to stay in the loop!'))
       setEmail('')
     } catch (error: any) {

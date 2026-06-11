@@ -148,7 +148,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   }
 
   return (
-    <header className="h-20 bg-card border-b border-border/30 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
+    <header className="h-20 bg-card/80 backdrop-blur-lg supports-backdrop-filter:bg-card/60 border-b border-border/30/50 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
       <div className="flex items-center gap-2 md:gap-6">
         <Button
           variant="ghost"

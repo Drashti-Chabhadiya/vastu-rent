@@ -11,11 +11,7 @@ export function initSocket(httpServer: any) {
   const allowedOrigins = [
     clientUrl,
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
     "https://new-vastu-rent-client.vercel.app",
-    "https://new-vastu-rent-client.vercel.app/",
   ];
 
   io = new SocketIOServer(httpServer, {
@@ -53,7 +49,7 @@ export function initSocket(httpServer: any) {
   io.use(async (socket, next) => {
     try {
       const token = socket.handshake.auth?.token || socket.handshake.query?.token;
-      
+
       if (!token || typeof token !== "string") {
         return next(new Error("Authentication token missing"));
       }
@@ -100,6 +96,55 @@ export function initSocket(httpServer: any) {
     // Join user's personal room for direct notifications
     socket.join(`user_${userId}`);
 
+    // Offline-to-Online Delivery updates
+    (async () => {
+      try {
+        const undeliveredMessages = await prisma.message.findMany({
+          where: {
+            conversation: {
+              OR: [
+                { participantOneId: userId },
+                { participantTwoId: userId }
+              ]
+            },
+            senderId: { not: userId },
+            deliveredAt: null,
+            readAt: null
+          },
+          select: {
+            id: true,
+            conversationId: true,
+            senderId: true
+          }
+        });
+
+        if (undeliveredMessages.length > 0) {
+          const now = new Date();
+          await prisma.message.updateMany({
+            where: {
+              id: { in: undeliveredMessages.map(m => m.id) }
+            },
+            data: {
+              deliveredAt: now
+            }
+          });
+
+          // Group by sender and notify them
+          const sendersToNotify = new Set(undeliveredMessages.map(m => m.senderId));
+          sendersToNotify.forEach(senderId => {
+            const senderMsgs = undeliveredMessages.filter(m => m.senderId === senderId).map(m => m.id);
+            io?.to(`user_${senderId}`).emit("messages_delivered", {
+              recipientId: userId,
+              messageIds: senderMsgs,
+              deliveredAt: now.toISOString()
+            });
+          });
+        }
+      } catch (err) {
+        console.error("Error setting delivered status for pending messages:", err);
+      }
+    })();
+
     // --- SOCKET ROOM / CONVERSATION CHAT EVENTS ---
 
     // Join a conversation room
@@ -111,17 +156,25 @@ export function initSocket(httpServer: any) {
 
       // Automatically mark all messages in this conversation sent by other participant as read
       try {
+        const now = new Date();
         await prisma.message.updateMany({
           where: {
             conversationId,
             senderId: { not: userId },
             isRead: false,
           },
-          data: { isRead: true },
+          data: {
+            isRead: true,
+            readAt: now,
+            deliveredAt: now
+          },
         });
 
         // Notify other participants in the room that their messages have been read
-        socket.to(`conversation_${conversationId}`).emit("messages_read", { conversationId });
+        socket.to(`conversation_${conversationId}`).emit("messages_read", {
+          conversationId,
+          readAt: now.toISOString()
+        });
       } catch (err) {
         console.error("Error marking messages as read on join:", err);
       }
@@ -148,6 +201,26 @@ export function initSocket(httpServer: any) {
           return socket.emit("error", { message: "Unauthorized in this conversation" });
         }
 
+        const otherParticipantId = conversation.participantOneId === userId
+          ? conversation.participantTwoId
+          : conversation.participantOneId;
+
+        // Check if recipient is active in this room
+        const socketsInRoom = await io?.in(`conversation_${conversationId}`).fetchSockets();
+        const isOtherUserActiveInChat = socketsInRoom?.some((s) => s.data?.user?.id === otherParticipantId);
+
+        let isRead = false;
+        let readAt: Date | null = null;
+        let deliveredAt: Date | null = null;
+
+        if (isOtherUserActiveInChat) {
+          isRead = true;
+          readAt = new Date();
+          deliveredAt = new Date();
+        } else if (isUserOnline(otherParticipantId)) {
+          deliveredAt = new Date();
+        }
+
         // Store chat message in the database
         const message = await prisma.message.create({
           data: {
@@ -155,6 +228,9 @@ export function initSocket(httpServer: any) {
             senderId: userId,
             content: hasContent ? content.trim() : "",
             attachments: hasAttachments ? attachments : [],
+            isRead,
+            readAt,
+            deliveredAt,
           },
           include: {
             sender: {
@@ -188,11 +264,6 @@ export function initSocket(httpServer: any) {
         };
         io?.to(`conversation_${conversationId}`).emit("new_message", payloadMessage);
 
-        // Notify participant of conversation updates if they are not in the room currently
-        const otherParticipantId = conversation.participantOneId === userId 
-          ? conversation.participantTwoId 
-          : conversation.participantOneId;
-
         // Emit conversation_updated directly to other participant's personal room with sanitized images
         const sanitizedConv = {
           ...updatedConv,
@@ -213,9 +284,6 @@ export function initSocket(httpServer: any) {
 
         // Smart Notification Trigger: only notify recipient if they are not currently in the chat room
         try {
-          const socketsInRoom = await io?.in(`conversation_${conversationId}`).fetchSockets();
-          const isOtherUserActiveInChat = socketsInRoom?.some((s) => s.data?.user?.id === otherParticipantId);
-
           if (!isOtherUserActiveInChat) {
             const { createAndDeliverNotification } = await import('./notification.js');
             const notifMessage = hasAttachments && !hasContent
@@ -253,16 +321,24 @@ export function initSocket(httpServer: any) {
       if (!conversationId) return;
 
       try {
+        const now = new Date();
         await prisma.message.updateMany({
           where: {
             conversationId,
             senderId: { not: userId },
             isRead: false,
           },
-          data: { isRead: true },
+          data: {
+            isRead: true,
+            readAt: now,
+            deliveredAt: now
+          },
         });
 
-        io?.to(`conversation_${conversationId}`).emit("messages_read", { conversationId });
+        io?.to(`conversation_${conversationId}`).emit("messages_read", {
+          conversationId,
+          readAt: now.toISOString()
+        });
       } catch (err) {
         console.error("Error marking messages read:", err);
       }
@@ -279,7 +355,7 @@ export function initSocket(httpServer: any) {
         onlineUsers.set(userId, updatedSockets);
       } else {
         onlineUsers.delete(userId);
-        
+
         try {
           // Update lastActive timestamp in database
           const now = new Date();
@@ -293,7 +369,7 @@ export function initSocket(httpServer: any) {
             where: { id: userId },
             select: { showOnline: true }
           });
-          
+
           if (dbUser?.showOnline !== false) {
             // Broadcast offline status update
             io?.emit("user_status", { userId, status: "offline", lastActive: now });

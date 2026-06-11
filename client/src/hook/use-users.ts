@@ -185,3 +185,53 @@ export const useClearRecentSearches = () => {
     },
   })
 }
+
+// Fetch user sessions
+export const useUserSessions = (options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: ['user-sessions'],
+    queryFn: async () => {
+      const res = await apiClient.get('/users/settings/sessions')
+      return res.data.sessions as any[]
+    },
+    ...options,
+  })
+}
+
+// Rename device session mutation
+export const useRenameSession = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, name }: { id: string; name: string }) => {
+      await apiClient.patch(`/users/settings/sessions/${id}`, {
+        deviceName: name,
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-sessions'] })
+    },
+  })
+}
+
+// Revoke user session mutation
+export const useRevokeSession = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete(`/users/settings/sessions/${id}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user-sessions'] })
+    },
+  })
+}
+
+// Submit account deletion request mutation
+export const useDeleteAccountRequest = () => {
+  return useMutation({
+    mutationFn: async () => {
+      await apiClient.post('/users/settings/delete-request')
+    },
+  })
+}
+
