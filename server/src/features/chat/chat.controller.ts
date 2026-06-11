@@ -21,8 +21,8 @@ export class ChatController {
         ]
       },
       include: {
-        participantOne: { select: { id: true, name: true, image: true, role: true } },
-        participantTwo: { select: { id: true, name: true, image: true, role: true } },
+        participantOne: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true } },
+        participantTwo: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true } },
         messages: {
           orderBy: { createdAt: "desc" },
           take: 1,
@@ -31,10 +31,12 @@ export class ChatController {
       orderBy: { updatedAt: "desc" }
     });
 
+    const userShowOnline = (session.user as any).showOnline !== false;
+
     // Format conversations with participant metadata, last message, unread count, and online status
     const formatted = await Promise.all(conversations.map(async (conv) => {
       const otherUser = conv.participantOneId === userId ? conv.participantTwo : conv.participantOne;
-      
+
       const unreadCount = await prisma.message.count({
         where: {
           conversationId: conv.id,
@@ -45,12 +47,23 @@ export class ChatController {
 
       const lastMessage = conv.messages[0] || null;
 
+      // Reciprocal Online/Last Seen status rules
+      const otherUserShowOnline = (otherUser as any).showOnline !== false;
+      const canSeeStatus = userShowOnline && otherUserShowOnline;
+
+      const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false;
+      const lastActive = canSeeStatus ? (otherUser as any).lastActive : null;
+
       return {
         id: conv.id,
         updatedAt: conv.updatedAt,
         otherParticipant: {
-          ...otherUser,
-          isOnline: isUserOnline(otherUser.id),
+          id: otherUser.id,
+          name: otherUser.name,
+          role: otherUser.role,
+          image: (otherUser as any).showProfile === false ? null : otherUser.image,
+          isOnline,
+          lastActive,
         },
         unreadCount,
         lastMessage: lastMessage ? {
@@ -91,12 +104,17 @@ export class ChatController {
     const messages = await prisma.message.findMany({
       where: { conversationId },
       include: {
-        sender: { select: { id: true, name: true, image: true } }
+        sender: { select: { id: true, name: true, image: true, showProfile: true } }
       },
       orderBy: { createdAt: "asc" }
     });
 
-    return messages;
+    return messages.map((m) => {
+      if (m.sender.id !== userId && (m.sender as any).showProfile === false) {
+        m.sender.image = null;
+      }
+      return m;
+    });
   }
 
   async getOrCreateConversation(request: FastifyRequest, reply: FastifyReply) {
@@ -137,8 +155,8 @@ export class ChatController {
         }
       },
       include: {
-        participantOne: { select: { id: true, name: true, image: true, role: true } },
-        participantTwo: { select: { id: true, name: true, image: true, role: true } },
+        participantOne: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true } },
+        participantTwo: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true } },
       }
     });
 
@@ -150,20 +168,36 @@ export class ChatController {
           participantTwoId: p2
         },
         include: {
-          participantOne: { select: { id: true, name: true, image: true, role: true } },
-          participantTwo: { select: { id: true, name: true, image: true, role: true } },
+          participantOne: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true } },
+          participantTwo: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true } },
         }
       });
     }
 
+    if (!conversation) {
+      return reply.status(500).send({ message: "Failed to establish conversation" });
+    }
+
+    const userShowOnline = (session.user as any).showOnline !== false;
     const otherUser = conversation.participantOneId === userId ? conversation.participantTwo : conversation.participantOne;
+
+    // Reciprocal Online/Last Seen status rules
+    const otherUserShowOnline = (otherUser as any).showOnline !== false;
+    const canSeeStatus = userShowOnline && otherUserShowOnline;
+
+    const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false;
+    const lastActive = canSeeStatus ? (otherUser as any).lastActive : null;
 
     return {
       id: conversation.id,
       updatedAt: conversation.updatedAt,
       otherParticipant: {
-        ...otherUser,
-        isOnline: isUserOnline(otherUser.id)
+        id: otherUser.id,
+        name: otherUser.name,
+        role: otherUser.role,
+        image: (otherUser as any).showProfile === false ? null : otherUser.image,
+        isOnline,
+        lastActive,
       }
     };
   }
@@ -174,6 +208,7 @@ export class ChatController {
       return reply.status(401).send({ message: "Unauthorized" });
     }
     const userId = session.user.id;
+    const userShowOnline = (session.user as any).showOnline !== false;
 
     const users = await prisma.user.findMany({
       where: {
@@ -181,12 +216,24 @@ export class ChatController {
         banned: false,
         name: q ? { contains: q, mode: "insensitive" } : undefined,
       },
-      select: { id: true, name: true, image: true, role: true },
+      select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true },
       take: 15,
       orderBy: { name: "asc" },
     });
 
-    return users.map((u) => ({ ...u, isOnline: isUserOnline(u.id) }));
+    return users.map((u) => {
+      const otherUserShowOnline = u.showOnline !== false;
+      const canSeeStatus = userShowOnline && otherUserShowOnline;
+
+      return {
+        id: u.id,
+        name: u.name,
+        role: u.role,
+        image: u.showProfile === false ? null : u.image,
+        isOnline: canSeeStatus ? isUserOnline(u.id) : false,
+        lastActive: canSeeStatus ? u.lastActive : null,
+      };
+    });
   }
   async uploadChatAttachment(request: FastifyRequest, reply: FastifyReply) {
     try {

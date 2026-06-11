@@ -68,14 +68,13 @@ export function SettingsPage() {
     updateSettings: saveSettings,
     handleTogglePreference,
     handleToggleTwoFactor,
+    showProfile,
+    showOnline,
+    allowData,
+    handleTogglePrivacy,
   } = useProfileData()
 
   const fileRef = useRef<HTMLInputElement>(null)
-
-  // privacy
-  const [showProf, setShowProf] = useState(true)
-  const [showOnline, setShowOnline] = useState(true)
-  const [allowData, setAllowData] = useState(true)
 
   // delete
   const [delInput, setDelInput] = useState('')
@@ -104,15 +103,7 @@ export function SettingsPage() {
     }
   }
 
-  const handleTogglePrivacy = async (
-    key: 'prof' | 'online' | 'data',
-    val: boolean,
-  ) => {
-    if (key === 'prof') setShowProf(val)
-    if (key === 'online') setShowOnline(val)
-    if (key === 'data') setAllowData(val)
-    toast.success('Privacy setting updated.')
-  }
+
 
   const handleDeleteAccount = async () => {
     if (delInput !== 'DELETE') {
@@ -288,7 +279,7 @@ export function SettingsPage() {
           {/* ── PRIVACY ── */}
           {section === 'privacy' && (
             <PrivacySection
-              showProf={showProf}
+              showProf={showProfile}
               showOnline={showOnline}
               allowData={allowData}
               handleTogglePrivacy={handleTogglePrivacy}

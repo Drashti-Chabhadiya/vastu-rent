@@ -11,6 +11,8 @@ import { cn } from '#/lib/utils'
 import type { Conversation } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
 import { formatMsgTime } from '#/lib/chat-utils'
+import { authClient } from '#/lib/auth/auth-client'
+
 
 interface ConversationListProps {
   conversations: Conversation[]
@@ -41,6 +43,9 @@ export function ConversationList({
   totalUnread,
   showMobileChat,
 }: ConversationListProps) {
+  const { data: session } = authClient.useSession()
+  const myShowOnline = (session?.user as any)?.showOnline !== false
+
   return (
     <div
       className={cn(
@@ -233,7 +238,13 @@ export function ConversationList({
                 <UserAvatar
                   image={conv.otherParticipant.image}
                   name={conv.otherParticipant.name}
-                  isOnline={conv.otherParticipant.isOnline}
+                  isOnline={
+                    myShowOnline &&
+                    conv.otherParticipant.lastActive !== null &&
+                    conv.otherParticipant.lastActive !== undefined
+                      ? conv.otherParticipant.isOnline
+                      : undefined
+                  }
                 />
                 <div className={cn('flex-1', 'min-w-0')}>
                   <div

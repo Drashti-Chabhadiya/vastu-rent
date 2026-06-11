@@ -92,8 +92,10 @@ export function initSocket(httpServer: any) {
     userSockets.push(socket.id);
     onlineUsers.set(userId, userSockets);
 
-    // Broadcast online status update to all connected clients
-    io?.emit("user_status", { userId, status: "online" });
+    // Broadcast online status update to all connected clients (only if they allow online status)
+    if (user.showOnline !== false) {
+      io?.emit("user_status", { userId, status: "online", lastActive: user.lastActive });
+    }
 
     // Join user's personal room for direct notifications
     socket.join(`user_${userId}`);
@@ -160,6 +162,7 @@ export function initSocket(httpServer: any) {
                 id: true,
                 name: true,
                 image: true,
+                showProfile: true,
               },
             },
           },
@@ -170,23 +173,42 @@ export function initSocket(httpServer: any) {
           where: { id: conversationId },
           data: { updatedAt: new Date() },
           include: {
-            participantOne: { select: { id: true, name: true, image: true } },
-            participantTwo: { select: { id: true, name: true, image: true } },
+            participantOne: { select: { id: true, name: true, image: true, showProfile: true } },
+            participantTwo: { select: { id: true, name: true, image: true, showProfile: true } },
           }
         });
 
-        // Broadcast message to conversation room
-        io?.to(`conversation_${conversationId}`).emit("new_message", message);
+        // Broadcast sanitized message to conversation room (so other user doesn't see image if showProfile is false)
+        const payloadMessage = {
+          ...message,
+          sender: {
+            ...message.sender,
+            image: message.sender.showProfile === false ? null : message.sender.image,
+          }
+        };
+        io?.to(`conversation_${conversationId}`).emit("new_message", payloadMessage);
 
         // Notify participant of conversation updates if they are not in the room currently
         const otherParticipantId = conversation.participantOneId === userId 
           ? conversation.participantTwoId 
           : conversation.participantOneId;
 
-        // Emit conversation_updated directly to other participant's personal room
+        // Emit conversation_updated directly to other participant's personal room with sanitized images
+        const sanitizedConv = {
+          ...updatedConv,
+          participantOne: {
+            ...updatedConv.participantOne,
+            image: (updatedConv.participantOne as any).showProfile === false ? null : updatedConv.participantOne.image,
+          },
+          participantTwo: {
+            ...updatedConv.participantTwo,
+            image: (updatedConv.participantTwo as any).showProfile === false ? null : updatedConv.participantTwo.image,
+          }
+        };
+
         io?.to(`user_${otherParticipantId}`).emit("conversation_updated", {
-          conversation: updatedConv,
-          lastMessage: message,
+          conversation: sanitizedConv,
+          lastMessage: payloadMessage,
         });
 
         // Smart Notification Trigger: only notify recipient if they are not currently in the chat room
@@ -247,7 +269,7 @@ export function initSocket(httpServer: any) {
     });
 
     // Socket disconnection presence tracking
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       console.log(`🔌 Socket disconnected: ${socket.id}`);
 
       const userSockets = onlineUsers.get(userId) || [];
@@ -257,8 +279,28 @@ export function initSocket(httpServer: any) {
         onlineUsers.set(userId, updatedSockets);
       } else {
         onlineUsers.delete(userId);
-        // Broadcast offline status update
-        io?.emit("user_status", { userId, status: "offline" });
+        
+        try {
+          // Update lastActive timestamp in database
+          const now = new Date();
+          await prisma.user.update({
+            where: { id: userId },
+            data: { lastActive: now }
+          });
+
+          // Fetch current setting from database to ensure fresh state
+          const dbUser = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { showOnline: true }
+          });
+          
+          if (dbUser?.showOnline !== false) {
+            // Broadcast offline status update
+            io?.emit("user_status", { userId, status: "offline", lastActive: now });
+          }
+        } catch (err) {
+          console.error("Error setting offline presence/lastActive:", err);
+        }
       }
     });
   });

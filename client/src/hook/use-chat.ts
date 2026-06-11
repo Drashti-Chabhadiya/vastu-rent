@@ -14,6 +14,7 @@ export interface ChatUser {
   image: string | null
   role: string
   isOnline?: boolean
+  lastActive?: string | null
 }
 
 export interface Message {
@@ -150,9 +151,11 @@ export function useChat() {
       ({
         userId: uid,
         status,
+        lastActive,
       }: {
         userId: string
         status: 'online' | 'offline'
+        lastActive?: string | null
       }) => {
         setOnlineUsers((prev) => {
           const updated = new Set(prev)
@@ -171,6 +174,7 @@ export function useChat() {
                     otherParticipant: {
                       ...conv.otherParticipant,
                       isOnline: status === 'online',
+                      lastActive: lastActive !== undefined ? lastActive : conv.otherParticipant.lastActive,
                     },
                   }
                 : conv,

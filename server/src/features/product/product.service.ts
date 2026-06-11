@@ -38,7 +38,7 @@ export class ProductService {
       include: {
         category: true,
         user: {
-          select: { id: true, name: true, email: true, image: true },
+          select: { id: true, name: true, email: true, image: true, showProfile: true },
         },
         reviews: {
           select: { rating: true }
@@ -89,7 +89,7 @@ export class ProductService {
           }
         },
         reviews: {
-          include: { user: { select: { name: true, image: true } } },
+          include: { user: { select: { id: true, name: true, image: true, showProfile: true } } },
           orderBy: { createdAt: "desc" }
         },
         _count: {
@@ -122,7 +122,8 @@ export class ProductService {
         image: product.user.image,
         createdAt: product.user.createdAt,
         rating: userRating,
-        listingsCount: product.user._count.products
+        listingsCount: product.user._count.products,
+        showProfile: product.user.showProfile
       }
     };
   }

@@ -13,6 +13,8 @@ import { cn } from '#/lib/utils'
 import { apiClient } from '#/lib/api'
 import { toast } from 'sonner'
 import { UserAvatar } from './UserAvatar'
+import { authClient } from '#/lib/auth/auth-client'
+
 
 interface NewChatDialogProps {
   open: boolean
@@ -28,6 +30,9 @@ export function NewChatDialog({
   setShowMobileChat,
 }: NewChatDialogProps) {
   const queryClient = useQueryClient()
+  const { data: session } = authClient.useSession()
+  const myShowOnline = (session?.user as any)?.showOnline !== false
+
   const [userSearch, setUserSearch] = useState('')
   const [userResults, setUserResults] = useState<any[]>([])
   const [isSearchingUsers, setIsSearchingUsers] = useState(false)
@@ -203,7 +208,11 @@ export function NewChatDialog({
                 <UserAvatar
                   image={u.image}
                   name={u.name}
-                  isOnline={u.isOnline}
+                  isOnline={
+                    myShowOnline && u.lastActive !== null && u.lastActive !== undefined
+                      ? u.isOnline
+                      : undefined
+                  }
                   size="sm"
                 />
                 <div className={cn('flex-1', 'min-w-0', 'text-left')}>

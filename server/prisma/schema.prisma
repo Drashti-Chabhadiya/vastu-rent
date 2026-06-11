@@ -57,6 +57,10 @@ model User {
   dob               String?
   currency          String?   @default("INR")
   twoFactorEnabled  Boolean   @default(false)
+  showProfile       Boolean   @default(true)
+  showOnline        Boolean   @default(true)
+  allowData         Boolean   @default(true)
+  lastActive        DateTime  @default(now())
   
   // Relations
   sessions      Session[]

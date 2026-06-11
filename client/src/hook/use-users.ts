@@ -102,6 +102,9 @@ export const useUpdateUserSettings = () => {
       currency?: string
       bio?: string
       twoFactorEnabled?: boolean
+      showProfile?: boolean
+      showOnline?: boolean
+      allowData?: boolean
     }) => {
       const res = await apiClient.patch('/users/settings', data)
       return res.data.user

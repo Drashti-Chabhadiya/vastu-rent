@@ -131,9 +131,9 @@ export function UserProfileSettingsCard() {
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Jan 2024'
 
   const fields = [

@@ -22,6 +22,11 @@ export function useProfileData() {
   const [marketingEmails, setMarketingEmails] = useState(true)
   const [pushNotifications, setPushNotifications] = useState(true)
 
+  // Privacy states
+  const [showProfile, setShowProfile] = useState(true)
+  const [showOnline, setShowOnline] = useState(true)
+  const [allowData, setAllowData] = useState(true)
+
   // Modal visibility states
   const [pwOpen, setPwOpen] = useState(false)
   const [tfaOpen, setTfaOpen] = useState(false)
@@ -72,6 +77,12 @@ export function useProfileData() {
         setMarketingEmails(u.marketingAlerts)
       if (u.twoFactorEnabled !== undefined && u.twoFactorEnabled !== null)
         setTwoFactorEnabled(u.twoFactorEnabled)
+      if (u.showProfile !== undefined && u.showProfile !== null)
+        setShowProfile(u.showProfile)
+      if (u.showOnline !== undefined && u.showOnline !== null)
+        setShowOnline(u.showOnline)
+      if (u.allowData !== undefined && u.allowData !== null)
+        setAllowData(u.allowData)
     }
   }, [session])
 
@@ -106,6 +117,36 @@ export function useProfileData() {
       if (key === 'sms') setSmsNotifications(prev.sms)
       if (key === 'marketing') setMarketingEmails(prev.marketing)
       if (key === 'push') setPushNotifications(prev.push)
+    }
+  }
+
+  const handleTogglePrivacy = async (
+    key: 'prof' | 'online' | 'data',
+    newValue: boolean,
+  ) => {
+    const prev = {
+      prof: showProfile,
+      online: showOnline,
+      data: allowData,
+    }
+
+    if (key === 'prof') setShowProfile(newValue)
+    if (key === 'online') setShowOnline(newValue)
+    if (key === 'data') setAllowData(newValue)
+
+    try {
+      await updateSettings({
+        showProfile: key === 'prof' ? newValue : prev.prof,
+        showOnline: key === 'online' ? newValue : prev.online,
+        allowData: key === 'data' ? newValue : prev.data,
+      })
+      toast.success(t('Privacy setting updated.'))
+    } catch (error) {
+      console.error('Failed to update privacy settings:', error)
+      toast.error(t('Failed to update privacy settings.'))
+      if (key === 'prof') setShowProfile(prev.prof)
+      if (key === 'online') setShowOnline(prev.online)
+      if (key === 'data') setAllowData(prev.data)
     }
   }
 
@@ -167,6 +208,11 @@ export function useProfileData() {
     pushNotifications,
     setPushNotifications,
 
+    // Privacy preferences
+    showProfile,
+    showOnline,
+    allowData,
+
     // Modal controls
     pwOpen,
     setPwOpen,
@@ -200,5 +246,6 @@ export function useProfileData() {
     handleTogglePreference,
     handleCurrencyChange,
     handleToggleTwoFactor,
+    handleTogglePrivacy,
   }
 }

@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, isToday, isYesterday } from 'date-fns'
 
 export const REPLY_SEP = '\u200B\u{1F4AC}\u200B' // zero-width + speech bubble + zero-width (invisible separator)
 
@@ -33,4 +33,21 @@ export function formatMsgTime(dateStr: string) {
   if (diffHrs < 24) return format(date, 'h:mm a')
   if (diffHrs < 48) return 'Yesterday'
   return format(date, 'dd MMM')
+}
+
+export function formatLastActive(lastActiveStr: string | null | undefined): string {
+  if (!lastActiveStr) return 'Offline'
+  try {
+    const date = new Date(lastActiveStr)
+    const timeStr = format(date, 'h:mm a')
+    if (isToday(date)) {
+      return `today at ${timeStr}`
+    }
+    if (isYesterday(date)) {
+      return `yesterday at ${timeStr}`
+    }
+    return `${format(date, 'dd MMM yyyy')} at ${timeStr}`
+  } catch {
+    return 'Offline'
+  }
 }

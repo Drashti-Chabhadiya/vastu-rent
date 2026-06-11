@@ -20,6 +20,7 @@ import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
+import { authClient } from '#/lib/auth/auth-client'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { apiClient } from '#/lib/api'
@@ -29,7 +30,7 @@ import { TypingBubble } from './TypingBubble'
 import { ConversationOptionsMenu } from './ConversationOptionsMenu'
 import { useChatStore } from '../../../../../store/useChatStore'
 
-import { parseMessage, formatMsgTime } from '#/lib/chat-utils'
+import { parseMessage, formatMsgTime, formatLastActive } from '#/lib/chat-utils'
 
 interface ChatWindowProps {
   activeConversation: Conversation | null
@@ -51,6 +52,7 @@ interface ChatWindowProps {
   onVideoSuccess?: (name: string) => void
 }
 
+
 export function ChatWindow({
   activeConversation,
   checkOnline,
@@ -71,6 +73,9 @@ export function ChatWindow({
   onVideoSuccess,
 }: ChatWindowProps) {
   const navigate = useNavigate()
+  const { data: session } = authClient.useSession()
+  const myShowOnline = (session?.user as any)?.showOnline !== false
+
   const {
     showMobileChat,
     setShowMobileChat,
@@ -161,9 +166,12 @@ export function ChatWindow({
     [],
   )
 
-  const otherPersonOnline =
-    checkOnline(activeConversation.otherParticipant.id) ||
-    activeConversation.otherParticipant.isOnline
+  const otherPersonOnline = checkOnline(activeConversation.otherParticipant.id)
+  const canSeeStatus =
+    myShowOnline &&
+    activeConversation.otherParticipant.lastActive !== null &&
+    activeConversation.otherParticipant.lastActive !== undefined
+  const showOnlineStatus = canSeeStatus && otherPersonOnline
 
   return (
     <div
@@ -211,39 +219,61 @@ export function ChatWindow({
           <UserAvatar
             image={activeConversation.otherParticipant.image}
             name={activeConversation.otherParticipant.name}
-            isOnline={otherPersonOnline}
+            isOnline={canSeeStatus ? showOnlineStatus : undefined}
           />
 
           <div>
             <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
               {activeConversation.otherParticipant.name}
             </h3>
-            <div className={cn('flex', 'items-center', 'gap-1.5', 'mt-0.5')}>
-              <div
-                className={cn(
-                  'w-1.5 h-1.5 rounded-full',
-                  otherPersonOnline ? 'bg-emerald-500' : 'bg-muted-dark/20',
-                )}
-              />
-              <span
-                className={cn('text-[9px]', 'font-bold', 'text-muted-dark')}
-              >
-                {otherPersonOnline ? 'Online' : 'Offline'}
-              </span>
-              {isOtherPersonTyping && (
-                <span
+            {canSeeStatus ? (
+              <div className={cn('flex', 'items-center', 'gap-1.5', 'mt-0.5')}>
+                <div
                   className={cn(
-                    'text-[9px]',
-                    'font-black',
-                    'text-primary',
-                    'animate-pulse',
-                    'ml-1',
+                    'w-1.5 h-1.5 rounded-full',
+                    showOnlineStatus ? 'bg-emerald-500' : 'bg-muted-dark/20',
                   )}
+                />
+                <span
+                  className={cn('text-[9px]', 'font-bold', 'text-muted-dark')}
                 >
-                  • typing...
+                  {showOnlineStatus
+                    ? 'Online'
+                    : (() => {
+                        const formatted = formatLastActive(activeConversation.otherParticipant.lastActive)
+                        return formatted === 'Offline' ? 'Offline' : `last seen ${formatted}`
+                      })()}
                 </span>
-              )}
-            </div>
+                {isOtherPersonTyping && (
+                  <span
+                    className={cn(
+                      'text-[9px]',
+                      'font-black',
+                      'text-primary',
+                      'animate-pulse',
+                      'ml-1',
+                    )}
+                  >
+                    • typing...
+                  </span>
+                )}
+              </div>
+            ) : (
+              isOtherPersonTyping && (
+                <div className={cn('flex', 'items-center', 'gap-1.5', 'mt-0.5')}>
+                  <span
+                    className={cn(
+                      'text-[9px]',
+                      'font-black',
+                      'text-primary',
+                      'animate-pulse',
+                    )}
+                  >
+                    typing...
+                  </span>
+                </div>
+              )
+            )}
           </div>
         </div>
 

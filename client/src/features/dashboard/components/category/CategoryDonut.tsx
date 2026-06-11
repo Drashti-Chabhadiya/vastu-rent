@@ -12,24 +12,32 @@ export const CategoryDonut = () => {
       0,
     )
 
+    // Filter to only categories that have products (non-zero count)
+    // If no categories have products, fall back to displaying all categories (with 0.0%)
+    const activeCategories = categories.filter(
+      (item: any) => (item._count?.products || 0) > 0,
+    )
+    const displayCategories = activeCategories.length > 0 ? activeCategories : categories
+
     let cumulative = 0
 
-    return categories.map((item: any, index: number) => {
+    return displayCategories.map((item: any) => {
       const value = item._count?.products || 0
-
       const percentage = total ? (value / total) * 100 : 0
 
+      // Find stable index from original categories to keep colors consistent
+      const originalIndex = categories.findIndex((c: any) => c.id === item.id)
+      const indexToUse = originalIndex !== -1 ? originalIndex : 0
+
       // Dynamically generate a distinct, vibrant, and high-contrast HSL color using the golden angle
-      const generatedColor = `hsl(${(index * 137.5) % 360}, 65%, 45%)`
+      const generatedColor = `hsl(${(indexToUse * 137.5) % 360}, 65%, 45%)`
 
       const data = {
         name: item.name,
         count: value,
         percentage: percentage.toFixed(1),
         color: item.color || generatedColor,
-
         strokeDasharray: `${percentage} ${100 - percentage}`,
-
         strokeDashoffset: -cumulative,
       }
 
@@ -76,20 +84,22 @@ export const CategoryDonut = () => {
             />
 
             {/* Dynamic Segments */}
-            {chartData.map((item: any, index: number) => (
-              <circle
-                key={index}
-                cx="18"
-                cy="18"
-                r="15.9"
-                fill="transparent"
-                stroke={item.color}
-                strokeWidth="4"
-                strokeDasharray={item.strokeDasharray}
-                strokeDashoffset={item.strokeDashoffset}
-                strokeLinecap="round"
-              />
-            ))}
+            {chartData
+              .filter((item: any) => item.count > 0)
+              .map((item: any, index: number) => (
+                <circle
+                  key={index}
+                  cx="18"
+                  cy="18"
+                  r="15.9"
+                  fill="transparent"
+                  stroke={item.color}
+                  strokeWidth="4"
+                  strokeDasharray={item.strokeDasharray}
+                  strokeDashoffset={item.strokeDashoffset}
+                  strokeLinecap="round"
+                />
+              ))}
           </svg>
 
           {/* Center Text */}
@@ -105,7 +115,7 @@ export const CategoryDonut = () => {
         </div>
 
         {/* Category List */}
-        <div className="w-full space-y-3">
+        <div className="w-full space-y-3 max-h-40 overflow-y-auto pr-1">
           {chartData.map((cat: any) => (
             <div key={cat.name} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
