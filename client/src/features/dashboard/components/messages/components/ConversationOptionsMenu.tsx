@@ -14,14 +14,27 @@ import { cn } from '#/lib/utils'
  * Placeholder handlers are provided – replace with actual logic as needed.
  */
 export function ConversationOptionsMenu({
-  // You can pass callbacks for each action if you need to handle them externally.
   onViewProfile,
   onArchive,
+  onClearChat,
   onDelete,
+  onToggleHideMedia,
+  hideMedia,
+  onToggleSelectMode,
+  isMultiSelectMode,
+  onShowSharedMedia,
+  isArchived,
 }: {
   onViewProfile?: () => void
   onArchive?: () => void
+  onClearChat?: () => void
   onDelete?: () => void
+  onToggleHideMedia?: () => void
+  hideMedia?: boolean
+  onToggleSelectMode?: () => void
+  isMultiSelectMode?: boolean
+  onShowSharedMedia?: () => void
+  isArchived?: boolean
 }) {
   return (
     <DropdownMenu>
@@ -43,13 +56,33 @@ export function ConversationOptionsMenu({
           <MoreVertical size={16} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={4} className={cn('w-48')}>
+      <DropdownMenuContent align="end" sideOffset={4} className={cn('w-52')}>
         <DropdownMenuItem onSelect={onViewProfile}>
           View Profile
         </DropdownMenuItem>
+        {onToggleHideMedia && (
+          <DropdownMenuItem onSelect={onToggleHideMedia}>
+            {hideMedia ? 'Show Media' : 'Hide Media'}
+          </DropdownMenuItem>
+        )}
+        {onToggleSelectMode && (
+          <DropdownMenuItem onSelect={onToggleSelectMode}>
+            {isMultiSelectMode ? 'Exit Select Mode' : 'Select Messages'}
+          </DropdownMenuItem>
+        )}
+        {onShowSharedMedia && (
+          <DropdownMenuItem onSelect={onShowSharedMedia}>
+            Shared Media Browser
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onSelect={onArchive}>
-          Archive Conversation
+          {isArchived ? 'Unarchive Conversation' : 'Archive Conversation'}
         </DropdownMenuItem>
+        {onClearChat && (
+          <DropdownMenuItem onSelect={onClearChat}>
+            Clear Chat
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onDelete} className="text-destructive">
           Delete Conversation

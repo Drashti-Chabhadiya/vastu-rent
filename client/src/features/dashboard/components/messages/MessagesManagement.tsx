@@ -1,84 +1,92 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect } from 'react'
 import {
-  MessageSquare,
-  PenSquare,
   ChevronLeft,
   ChevronRight,
-  Wifi,
-  WifiOff,
   X,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
-import { toast } from 'sonner'
-import type {
-  Conversation,
-  Message as BaseMessage,
-} from '../../../../hook/use-chat'
 import { cn } from '#/lib/utils'
-import { useChat, useUploadChatFile } from '#/hook'
-import { parseMessage, buildReplyContent } from '#/lib/chat-utils'
+import { useChat } from '#/hook'
 import { NewChatDialog } from './components/NewChatDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
+import { AboutPanel } from './components/AboutPanel'
 import { useChatStore } from '../../../../store/useChatStore'
-import { motion } from 'motion/react'
-import { fadeUp, stagger } from '#/lib/animations'
-
-type Message = BaseMessage
 
 export const MessagesManagement = () => {
-  const {
-    isConnected,
-    conversations,
-    isLoadingConversations,
-    activeConversationId,
-    switchConversation,
-    messages,
-    isLoadingMessages,
-    sendMessage,
-    emitTyping,
-    isOtherPersonTyping,
-    checkOnline,
-    currentUserId,
-    editMessage,
-    deleteMessage,
-    forwardMessage,
-  } = useChat()
+  const chatData = useChat()
+  const setChatData = useChatStore((state) => state.setChatData)
 
-  const uploadChatFile = useUploadChatFile()
+  const showLightbox = useChatStore((state) => state.showLightbox)
+  const setShowLightbox = useChatStore((state) => state.setShowLightbox)
+  const lightboxImages = useChatStore((state) => state.lightboxImages)
+  const lightboxIndex = useChatStore((state) => state.lightboxIndex)
+  const setLightboxIndex = useChatStore((state) => state.setLightboxIndex)
+  const showDetailsPanel = useChatStore((state) => state.showDetailsPanel)
+  const activeConversationId = useChatStore((state) => state.activeConversationId)
 
-  const {
-    searchQuery,
-    setSearchQuery,
-    activeSubTab,
-    setActiveSubTab,
-    inputText,
-    setInputText,
-    showMobileChat,
-    setShowMobileChat,
-    replyTarget,
-    setReplyTarget,
-    pendingFiles,
-    setIsUploading,
-    lightboxImages,
-    lightboxIndex,
-    setLightboxIndex,
-    showLightbox,
-    setShowLightbox,
-    showNewChat,
-    setShowNewChat,
-    addPendingFiles,
-    addPendingPreviews,
-    clearAttachments,
-  } = useChatStore()
+  // Sync useChat hook data with global Zustand store
+  useEffect(() => {
+    setChatData({
+      isConnected: chatData.isConnected,
+      conversations: chatData.conversations,
+      isLoadingConversations: chatData.isLoadingConversations,
+      activeConversationId: chatData.activeConversationId,
+      switchConversation: chatData.switchConversation,
+      messages: chatData.messages,
+      isLoadingMessages: chatData.isLoadingMessages,
+      sendMessage: chatData.sendMessage,
+      emitTyping: chatData.emitTyping,
+      isOtherPersonTyping: chatData.isOtherPersonTyping,
+      checkOnline: chatData.checkOnline,
+      currentUserId: chatData.currentUserId,
+      editMessage: chatData.editMessage,
+      deleteMessage: chatData.deleteMessage,
+      forwardMessage: chatData.forwardMessage,
+      togglePinConversation: chatData.togglePinConversation,
+      toggleMuteConversation: chatData.toggleMuteConversation,
+      clearChat: chatData.clearChat,
+      setDisappearingMessages: (id: string, duration: number) =>
+        chatData.setDisappearingMessages({ conversationId: id, duration }),
+      toggleStarMessage: chatData.toggleStarMessage,
+      togglePinMessage: chatData.togglePinMessage,
+      reactToMessage: chatData.reactToMessage,
+      removeReaction: chatData.removeReaction,
+      archiveConversation: chatData.archiveConversation,
+      unarchiveConversation: chatData.unarchiveConversation,
+      updateConversationSettings: chatData.updateConversationSettings,
+    })
+  }, [
+    chatData.isConnected,
+    chatData.conversations,
+    chatData.isLoadingConversations,
+    chatData.activeConversationId,
+    chatData.switchConversation,
+    chatData.messages,
+    chatData.isLoadingMessages,
+    chatData.sendMessage,
+    chatData.emitTyping,
+    chatData.isOtherPersonTyping,
+    chatData.checkOnline,
+    chatData.currentUserId,
+    chatData.editMessage,
+    chatData.deleteMessage,
+    chatData.forwardMessage,
+    chatData.togglePinConversation,
+    chatData.toggleMuteConversation,
+    chatData.clearChat,
+    chatData.setDisappearingMessages,
+    chatData.toggleStarMessage,
+    chatData.togglePinMessage,
+    chatData.reactToMessage,
+    chatData.removeReaction,
+    chatData.archiveConversation,
+    chatData.unarchiveConversation,
+    chatData.updateConversationSettings,
+    setChatData,
+  ])
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const prevConversationIdRef = useRef<string | null>(null)
-
-  // ── Keyboard: ESC closes lightbox ────────────────────────────────────────
+  // Keyboard controls for lightbox
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!showLightbox) return
@@ -94,300 +102,33 @@ export const MessagesManagement = () => {
     return () => window.removeEventListener('keydown', onKey)
   }, [showLightbox, lightboxImages.length, setLightboxIndex, setShowLightbox])
 
-  // Auto-scroll to bottom when messages change or conversation switches
-  useEffect(() => {
-    const el = messagesContainerRef.current
-    if (el) {
-      const isSameConv = prevConversationIdRef.current === activeConversationId
-      el.scrollTo({
-        top: el.scrollHeight,
-        behavior: isSameConv ? 'smooth' : 'auto',
-      })
-    }
-    prevConversationIdRef.current = activeConversationId
-  }, [messages, isOtherPersonTyping, activeConversationId])
-
-  // Find the active conversation object
-  const activeConversation =
-    conversations.find((c) => c.id === activeConversationId) || null
-
-  // ── Filter conversations ─────────────────────────────────────────────────
-  const filteredConversations = conversations.filter((conv) => {
-    const matchesSearch =
-      conv.otherParticipant.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      (conv.lastMessage?.content || '')
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-
-    let matchesTab = true
-    if (activeSubTab === 'unread') matchesTab = conv.unreadCount > 0
-    else if (activeSubTab === 'bookings')
-      matchesTab = conv.otherParticipant.role === 'user'
-    else if (activeSubTab === 'support')
-      matchesTab = conv.otherParticipant.role === 'admin'
-
-    return matchesSearch && matchesTab
-  })
-
-  // Total unread across all conversations
-  const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
-
-  // ── Handle typing indicator ──────────────────────────────────────────────
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(e.target.value)
-    emitTyping(true)
-    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
-    typingTimeoutRef.current = setTimeout(() => emitTyping(false), 2000)
-  }
-
-  // ── Handle send ──────────────────────────────────────────────────────────
-  const handleSend = async () => {
-    const hasText = inputText.trim().length > 0
-    const hasFiles = pendingFiles.length > 0
-    if (!hasText && !hasFiles) return
-    if (!activeConversationId) {
-      toast.error('Please select a conversation first')
-      return
-    }
-
-    setIsUploading(true)
-    try {
-      // 1. Upload any pending file attachments
-      let uploadedUrls: string[] = []
-      if (hasFiles) {
-        const uploads = await Promise.all(
-          pendingFiles.map(async (file) => {
-            return await uploadChatFile.mutateAsync(file)
-          }),
-        )
-        uploadedUrls = uploads
-      }
-
-      // 2. Build final message content
-      const finalContent = replyTarget
-        ? buildReplyContent(replyTarget.content, inputText.trim())
-        : inputText.trim()
-
-      // 3. Send via socket
-      sendMessage(finalContent, uploadedUrls)
-
-      // 4. Reset state
-      setInputText('')
-      setReplyTarget(null)
-      clearAttachments()
-      emitTyping(false)
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'Failed to upload attachment')
-    } finally {
-      setIsUploading(false)
-    }
-  }
-
-  // ── Handle file selection ─────────────────────────────────────────
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    if (files.length === 0) return
-    // Limit to 5 images
-    const allowed = files.slice(0, 5 - pendingFiles.length)
-    const newPreviews = allowed.map((f) => URL.createObjectURL(f))
-    addPendingFiles(allowed)
-    addPendingPreviews(newPreviews)
-    // Reset input so same file can be re-selected
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }
-
-  // ── Handle reply ─────────────────────────────────────────────────────────
-  const handleReply = useCallback(
-    (msg: Message, isMe: boolean) => {
-      const { text } = parseMessage(msg.content)
-      const senderName = isMe
-        ? 'You'
-        : (activeConversation?.otherParticipant.name ?? 'Them')
-      setReplyTarget({ id: msg.id, content: text, senderName, isMe })
-      setTimeout(() => inputRef.current?.focus(), 50)
-    },
-    [activeConversation, setReplyTarget],
-  )
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
-  }
-
-  // ── Handle conversation select ───────────────────────────────────────────
-  const handleSelectConversation = (conv: Conversation) => {
-    switchConversation(conv.id)
-    setShowMobileChat(true)
-  }
-
   return (
     <>
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        animate="show"
-        className="space-y-5"
-      >
-        {/* Header */}
-        <motion.div
-          variants={fadeUp}
-          className={cn(
-            'flex',
-            'flex-col',
-            'sm:flex-row',
-            'sm:items-center',
-            'justify-between',
-            'gap-4',
-          )}
-        >
-          <div className={cn('flex', 'items-center', 'gap-3')}>
-            <div
-              className={cn(
-                'w-10',
-                'h-10',
-                'rounded-xl',
-                'bg-primary/10',
-                'flex',
-                'items-center',
-                'justify-center',
-                'text-primary',
-                'shrink-0',
-              )}
-            >
-              <MessageSquare size={20} fill="currentColor" />
-            </div>
-            <div>
-              <div className={cn('flex', 'items-center', 'gap-2')}>
-                <h1 className={cn('text-xl', 'font-black', 'text-foreground')}>
-                  Messages
-                </h1>
-                {/* Socket connection badge */}
-                <div
-                  className={cn(
-                    'flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black',
-                    isConnected
-                      ? 'bg-emerald-50 text-emerald-600'
-                      : 'bg-muted/50 text-muted-dark',
-                  )}
-                >
-                  {isConnected ? (
-                    <>
-                      <Wifi size={8} strokeWidth={3} /> Live
-                    </>
-                  ) : (
-                    <>
-                      <WifiOff size={8} strokeWidth={3} /> Connecting...
-                    </>
-                  )}
-                </div>
-              </div>
-              <p
-                className={cn(
-                  'text-[11px]',
-                  'text-muted-foreground/70',
-                  'font-bold',
-                  'leading-normal',
-                )}
-              >
-                Chat with hosts, buyers and our support team.
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => setShowNewChat(true)}
-            className={cn(
-              'border-primary',
-              'text-primary',
-              'hover:bg-primary-soft',
-              'rounded-xl',
-              'text-xs',
-              'font-bold',
-              'flex',
-              'items-center',
-              'gap-2',
-              'h-9',
-              'px-4',
-              'self-start',
-              'sm:self-auto',
-              'cursor-pointer',
-              'shadow-none',
-            )}
-          >
-            <PenSquare size={14} strokeWidth={2.5} />
-            New Message
-          </Button>
-        </motion.div>
+      <div className="space-y-4">
+        {/* Dynamic Header */}
+        <div>
+          <h1 className="text-xl font-black text-foreground font-display">
+            Messages
+          </h1>
+          <p className="text-[10px] text-muted-dark/80 font-bold mt-1.5">
+            Chat with hosts, buyers and our support team.
+          </p>
+        </div>
 
-        {/* ── New Message Dialog ── */}
-        <NewChatDialog
-          open={showNewChat}
-          onOpenChange={setShowNewChat}
-          switchConversation={switchConversation}
-          setShowMobileChat={setShowMobileChat}
-        />
-
-        {/* Dual Panel */}
-        <motion.div
-          variants={fadeUp}
-          className={cn(
-            'flex',
-            'flex-col',
-            'lg:flex-row',
-            'gap-5',
-            'h-[720px]',
-            'max-h-[calc(100vh-220px)]',
-          )}
-        >
+        <div className="flex flex-col lg:flex-row gap-5 h-[700px] max-h-[calc(100vh-280px)] overflow-hidden">
           {/* ── LEFT COLUMN: Conversations List ── */}
-          <ConversationList
-            conversations={conversations}
-            filteredConversations={filteredConversations}
-            activeConversationId={activeConversationId}
-            onSelect={handleSelectConversation}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            activeSubTab={activeSubTab}
-            setActiveSubTab={setActiveSubTab}
-            isLoadingConversations={isLoadingConversations}
-            currentUserId={currentUserId}
-            totalUnread={totalUnread}
-            showMobileChat={showMobileChat}
-          />
+          <ConversationList />
 
-          {/* ── RIGHT COLUMN: Active Chat ── */}
-          <ChatWindow
-            activeConversation={activeConversation}
-            checkOnline={checkOnline}
-            isOtherPersonTyping={isOtherPersonTyping}
-            isLoadingMessages={isLoadingMessages}
-            messages={messages}
-            currentUserId={currentUserId}
-            handleReply={handleReply}
-            fileInputRef={fileInputRef}
-            handleFileSelect={handleFileSelect}
-            isConnected={isConnected}
-            handleInputChange={handleInputChange}
-            handleKeyDown={handleKeyDown}
-            handleSend={handleSend}
-            messagesContainerRef={messagesContainerRef}
-            inputRef={inputRef}
-            onCallSuccess={(name) => toast.success(`Calling ${name}...`)}
-            onVideoSuccess={(name) =>
-              toast.success(`Starting video call with ${name}...`)
-            }
-            editMessage={editMessage}
-            deleteMessage={deleteMessage}
-            forwardMessage={forwardMessage}
-            conversations={conversations}
-          />
-        </motion.div>
-      </motion.div>
+          {/* ── MIDDLE COLUMN: Active Chat ── */}
+          <ChatWindow />
+
+          {/* ── RIGHT COLUMN: Details Sidebar (About Panel) ── */}
+          {showDetailsPanel && activeConversationId && <AboutPanel />}
+        </div>
+      </div>
+
+      {/* ── New Message Dialog ── */}
+      <NewChatDialog />
 
       {/* ── Image Lightbox Modal ── */}
       {showLightbox && lightboxImages.length > 0 && (

@@ -31,6 +31,9 @@ export interface Message {
   deliveredAt?: string | null
   readAt?: string | null
   isForwarded?: boolean
+  starredBy?: string[]
+  pinnedBy?: string[]
+  reactions?: { userId: string; name: string; emoji: string }[] | null
   createdAt: string
   updatedAt: string
   sender: Pick<ChatUser, 'id' | 'name' | 'image'>
@@ -41,6 +44,12 @@ export interface Conversation {
   updatedAt: string
   otherParticipant: ChatUser
   unreadCount: number
+  pinnedBy?: string[]
+  mutedBy?: string[]
+  archivedBy?: string[]
+  isArchived?: boolean
+  disappearingDuration?: number
+  settings?: Record<string, { wallpaper?: string; theme?: string }>
   lastMessage: {
     id: string
     content: string
@@ -321,6 +330,37 @@ export function useChat() {
       queryClient.invalidateQueries({ queryKey: ['conversations'] })
     })
 
+    // Starred, Pinned, Reactions, Settings and Clear events
+    socket.on('message_starred_updated', ({ id, starredBy }: any) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, starredBy } : m)),
+      )
+    })
+
+    socket.on('message_pinned_updated', ({ id, pinnedBy }: any) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, pinnedBy } : m)),
+      )
+    })
+
+    socket.on('message_reactions_updated', ({ id, reactions }: any) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, reactions } : m)),
+      )
+    })
+
+    socket.on('conversation_settings_updated', () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    })
+
+    socket.on('chat_cleared', ({ conversationId }: any) => {
+      const currentConvId = activeConversationIdRef.current
+      if (conversationId === currentConvId) {
+        setMessages([])
+      }
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    })
+
     // Typing events
     socket.on(
       'typing',
@@ -521,6 +561,139 @@ export function useChat() {
     },
   })
 
+  // ── Star message ───────────────────────────────────────────────────────────
+  const toggleStarMessageMutation = useMutation({
+    mutationFn: async (messageId: string) => {
+      const res = await apiClient.post(`/chat/messages/${messageId}/star`)
+      return res.data as Message
+    },
+    onSuccess: (updated) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === updated.id ? updated : m)),
+      )
+    },
+  })
+
+  // ── Pin message ────────────────────────────────────────────────────────────
+  const togglePinMessageMutation = useMutation({
+    mutationFn: async (messageId: string) => {
+      const res = await apiClient.post(`/chat/messages/${messageId}/pin`)
+      return res.data as Message
+    },
+    onSuccess: (updated) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === updated.id ? updated : m)),
+      )
+    },
+  })
+
+  // ── React to message ───────────────────────────────────────────────────────
+  const reactToMessageMutation = useMutation({
+    mutationFn: async ({ messageId, emoji }: { messageId: string; emoji: string }) => {
+      const res = await apiClient.post(`/chat/messages/${messageId}/react`, { emoji })
+      return res.data as Message
+    },
+    onSuccess: (updated) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === updated.id ? updated : m)),
+      )
+    },
+  })
+
+  // ── Remove message reaction ────────────────────────────────────────────────
+  const removeReactionMutation = useMutation({
+    mutationFn: async (messageId: string) => {
+      const res = await apiClient.delete(`/chat/messages/${messageId}/react`)
+      return res.data as Message
+    },
+    onSuccess: (updated) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === updated.id ? updated : m)),
+      )
+    },
+  })
+
+  // ── Pin conversation ───────────────────────────────────────────────────────
+  const togglePinConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/pin`)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Mute conversation ──────────────────────────────────────────────────────
+  const toggleMuteConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/mute`)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Clear conversation chat ────────────────────────────────────────────────
+  const clearChatMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/clear`)
+      return res.data
+    },
+    onSuccess: (_, conversationId) => {
+      const currentConvId = activeConversationIdRef.current
+      if (conversationId === currentConvId) {
+        setMessages([])
+      }
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Set disappearing messages duration ─────────────────────────────────────
+  const setDisappearingMessagesMutation = useMutation({
+    mutationFn: async ({ conversationId, duration }: { conversationId: string; duration: number }) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/disappearing`, { duration })
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Archive conversation ────────────────────────────────────────────────
+  const archiveConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/archive`)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Unarchive conversation ──────────────────────────────────────────────
+  const unarchiveConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/unarchive`)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Update conversation appearance settings ───────────────────────────────
+  const updateConversationSettingsMutation = useMutation({
+    mutationFn: async ({ conversationId, settings }: { conversationId: string; settings: { wallpaper?: string; theme?: string } }) => {
+      const res = await apiClient.patch(`/chat/conversations/${conversationId}/settings`, settings)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
   return {
     isConnected,
     conversations,
@@ -541,6 +714,17 @@ export function useChat() {
     editMessage: editMessageMutation.mutateAsync,
     deleteMessage: deleteMessageMutation.mutateAsync,
     forwardMessage: forwardMessageMutation.mutateAsync,
+    toggleStarMessage: toggleStarMessageMutation.mutateAsync,
+    togglePinMessage: togglePinMessageMutation.mutateAsync,
+    reactToMessage: reactToMessageMutation.mutateAsync,
+    removeReaction: removeReactionMutation.mutateAsync,
+    togglePinConversation: togglePinConversationMutation.mutateAsync,
+    toggleMuteConversation: toggleMuteConversationMutation.mutateAsync,
+    clearChat: clearChatMutation.mutateAsync,
+    setDisappearingMessages: setDisappearingMessagesMutation.mutateAsync,
+    archiveConversation: archiveConversationMutation.mutateAsync,
+    unarchiveConversation: unarchiveConversationMutation.mutateAsync,
+    updateConversationSettings: updateConversationSettingsMutation.mutateAsync,
   }
 }
 

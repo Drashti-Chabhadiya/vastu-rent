@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import { UserAvatar } from '#/components/common/UserAvatar'
 import { Button } from '#/components/ui/button'
 import { Heart, Smartphone, User, LogOut, ChevronRight } from 'lucide-react'
 import { cn } from '#/lib/utils'
@@ -156,15 +156,12 @@ export function NavMobileMenu({
                 onClick={onClose}
                 className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted-light transition-colors"
               >
-                <Avatar className="h-9 w-9 border border-border">
-                  <AvatarImage
-                    src={session.user.image || ''}
-                    alt={session.user.name}
-                  />
-                  <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary">
-                    {session.user.name?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  image={session.user.image}
+                  name={session.user.name}
+                  size="trigger"
+                  avatarClassName="border border-border"
+                />
                 <div className="min-w-0">
                   <p className="font-bold text-foreground text-xs truncate">
                     {session.user.name}

@@ -423,6 +423,12 @@ model Conversation {
 
   messages         Message[]
 
+  pinnedBy             String[]  @default([])
+  mutedBy              String[]  @default([])
+  archivedBy           String[]  @default([])
+  disappearingDuration Int       @default(0)
+  settings             Json?
+
   @@unique([participantOneId, participantTwoId])
   @@map("conversation")
 }
@@ -448,6 +454,10 @@ model Message {
   replyToId      String?
   replyTo        Message?     @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
   replies        Message[]    @relation("MessageReplies")
+
+  starredBy            String[]  @default([])
+  pinnedBy             String[]  @default([])
+  reactions            Json?
 
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

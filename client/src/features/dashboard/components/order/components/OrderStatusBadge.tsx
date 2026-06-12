@@ -13,6 +13,12 @@ export const OrderStatusBadge = ({ status }: OrderStatusBadgeProps) => {
           <CheckCircle2 size={12} /> Confirmed
         </Badge>
       )
+    case 'picked_up':
+      return (
+        <Badge className="bg-info text-info-foreground border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">
+          <Clock size={12} /> Picked Up
+        </Badge>
+      )
     case 'active':
       return (
         <Badge className="bg-info text-info-foreground border-none px-3 py-1 rounded-lg font-bold flex items-center gap-1.5">

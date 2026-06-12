@@ -9,10 +9,11 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
+  Clock,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Button } from '#/components/ui/button'
-import { useUpdateRentalStatus } from '#/hook'
+import { useUpdateRentalStatus, useVerifyPickupOTP, useVerifyReturnOTP } from '#/hook'
 import { toast } from 'sonner'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
@@ -31,10 +32,62 @@ interface OrderDetailsViewProps {
 
 export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
   const updateStatus = useUpdateRentalStatus()
+  const verifyPickup = useVerifyPickupOTP()
+  const verifyReturn = useVerifyReturnOTP()
+  const [otpInput, setOtpInput] = useState('')
+  const [isVerifying, setIsVerifying] = useState(false)
   const [pendingAction, setPendingAction] = useState<
     'confirm' | 'reject' | 'complete' | null
   >(null)
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false)
+
+  const handleVerifyPickup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!otpInput || otpInput.length !== 6) {
+      toast.error('Please enter a valid 6-digit OTP code')
+      return
+    }
+    setIsVerifying(true)
+    verifyPickup.mutate(
+      { id: order.id, otp: otpInput },
+      {
+        onSuccess: () => {
+          toast.success('Pickup verified successfully! Rental is now in progress.')
+          setOtpInput('')
+        },
+        onError: (err: any) => {
+          toast.error(err.response?.data?.message || 'Failed to verify Pickup OTP')
+        },
+        onSettled: () => {
+          setIsVerifying(false)
+        }
+      }
+    )
+  }
+
+  const handleVerifyReturn = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!otpInput || otpInput.length !== 6) {
+      toast.error('Please enter a valid 6-digit OTP code')
+      return
+    }
+    setIsVerifying(true)
+    verifyReturn.mutate(
+      { id: order.id, otp: otpInput },
+      {
+        onSuccess: () => {
+          toast.success('Return verified successfully! Rental has been completed.')
+          setOtpInput('')
+        },
+        onError: (err: any) => {
+          toast.error(err.response?.data?.message || 'Failed to verify Return OTP')
+        },
+        onSettled: () => {
+          setIsVerifying(false)
+        }
+      }
+    )
+  }
 
   const getActionTitle = () => {
     if (pendingAction === 'complete') return 'Complete Rental?'
@@ -234,37 +287,85 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                     <span className="text-xs font-black text-muted-foreground/85 uppercase tracking-widest block mb-1">
                       Request Handled
                     </span>
-                    <div className="flex items-center justify-center gap-2 text-sm font-bold text-foreground/80">
-                      {(order.status === 'confirmed' ||
-                        order.status === 'active') && (
-                        <span className="text-primary flex items-center gap-1">
-                          <CheckCircle2 size={16} /> Confirmed
+                    <div className="flex items-center justify-center gap-2 text-sm font-bold text-foreground/80 font-sans">
+                      {order.status === 'confirmed' && (
+                        <span className="text-amber-600 flex items-center gap-1 justify-center">
+                          <CheckCircle2 size={16} /> Confirmed (Awaiting Pickup)
+                        </span>
+                      )}
+                      {(order.status === 'picked_up' || order.status === 'active') && (
+                        <span className="text-info-foreground flex items-center gap-1 justify-center">
+                          <Clock size={16} /> Rental Ongoing (Picked Up)
                         </span>
                       )}
                       {order.status === 'completed' && (
-                        <span className="text-primary flex items-center gap-1">
+                        <span className="text-primary flex items-center gap-1 justify-center">
                           <CheckCircle2 size={16} /> Completed
                         </span>
                       )}
                       {(order.status === 'cancelled' ||
                         order.status === 'rejected') && (
-                        <span className="text-destructive flex items-center gap-1">
+                        <span className="text-destructive flex items-center gap-1 justify-center">
                           <XCircle size={16} /> Rejected / Cancelled
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {(order.status === 'confirmed' ||
-                    order.status === 'active') && (
-                    <Button
-                      onClick={() => setPendingAction('complete')}
-                      disabled={updateStatus.isPending}
-                      className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                    >
-                      <CheckCircle2 size={16} />
-                      Complete Rental (Returned)
-                    </Button>
+                  {order.status === 'confirmed' && (
+                    <form onSubmit={handleVerifyPickup} className="bg-card p-5 rounded-2xl border border-border/30 space-y-4 shadow-inner">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-muted-dark uppercase tracking-wider block">
+                          Pickup OTP Verification
+                        </label>
+                        <p className="text-[10px] text-muted-foreground font-medium">
+                          Renter must provide their 6-digit Pickup OTP to verify physical hand-off.
+                        </p>
+                      </div>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        placeholder="• • • • • •"
+                        value={otpInput}
+                        onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
+                        className="w-full text-center tracking-[0.3em] font-mono font-black text-xl h-12 bg-muted-light/50 border border-border/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-foreground"
+                      />
+                      <Button
+                        type="submit"
+                        disabled={isVerifying || otpInput.length !== 6}
+                        className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-black text-xs active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                      >
+                        {isVerifying ? 'Verifying...' : 'Verify Pickup Hand-off'}
+                      </Button>
+                    </form>
+                  )}
+
+                  {(order.status === 'picked_up' || order.status === 'active') && (
+                    <form onSubmit={handleVerifyReturn} className="bg-card p-5 rounded-2xl border border-border/30 space-y-4 shadow-inner">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-muted-dark uppercase tracking-wider block">
+                          Return OTP Verification
+                        </label>
+                        <p className="text-[10px] text-muted-foreground font-medium">
+                          Renter must provide their 6-digit Return OTP to verify physical return.
+                        </p>
+                      </div>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        placeholder="• • • • • •"
+                        value={otpInput}
+                        onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
+                        className="w-full text-center tracking-[0.3em] font-mono font-black text-xl h-12 bg-muted-light/50 border border-border/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-foreground"
+                      />
+                      <Button
+                        type="submit"
+                        disabled={isVerifying || otpInput.length !== 6}
+                        className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-black text-xs active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+                      >
+                        {isVerifying ? 'Verifying...' : 'Verify Return & Complete'}
+                      </Button>
+                    </form>
                   )}
                 </div>
               )}

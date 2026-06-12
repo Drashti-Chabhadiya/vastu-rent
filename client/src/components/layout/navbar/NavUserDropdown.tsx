@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import { UserAvatar } from '#/components/common/UserAvatar'
 import { Button } from '#/components/ui/button'
 import {
   User,
@@ -54,49 +54,13 @@ export function NavUserDropdown({
             'active:scale-95',
           )}
         >
-          <div
-            className={cn(
-              'relative',
-              'h-9',
-              'w-9',
-              'rounded-full',
-              'border-2',
-              'border-border',
-            )}
-          >
-            <Avatar className={cn('h-full', 'w-full')}>
-              <AvatarImage
-                src={session.user.image || ''}
-                alt={session.user.name}
-              />
-              <AvatarFallback
-                className={cn(
-                  'bg-primary/10',
-                  'text-sm',
-                  'font-bold',
-                  'text-primary',
-                )}
-              >
-                {session.user.name?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span
-              className={cn(
-                'absolute',
-                '-bottom-0.5',
-                '-right-0.5',
-                'h-3',
-                'w-3',
-                'rounded-full',
-                'bg-primary',
-                'border-2',
-                'border-card',
-                'shadow-sm',
-              )}
-            >
-              <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-75" />
-            </span>
-          </div>
+          <UserAvatar
+            image={session.user.image}
+            name={session.user.name}
+            isOnline={true}
+            showPing={false}
+            avatarClassName="border-2 border-border"
+          />
           <ChevronDown
             className={cn(
               'hidden',
@@ -137,22 +101,12 @@ export function NavUserDropdown({
               'hover:bg-muted-light',
             )}
           >
-            <Avatar className={cn('h-12', 'w-12', 'border', 'border-border')}>
-              <AvatarImage
-                src={session.user.image || ''}
-                alt={session.user.name}
-              />
-              <AvatarFallback
-                className={cn(
-                  'bg-primary/10',
-                  'text-sm',
-                  'font-bold',
-                  'text-primary',
-                )}
-              >
-                {session.user.name?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              image={session.user.image}
+              name={session.user.name}
+              size="lg"
+              avatarClassName="border border-border"
+            />
             <div className={cn('flex-1', 'min-w-0')}>
               <div
                 className={cn('flex', 'items-center', 'gap-1.5', 'flex-wrap')}
@@ -295,7 +249,7 @@ export function NavUserDropdown({
                     {t('Become a Green Member')}
                   </p>
                 </div>
-                
+
                 <p className="text-[10px] text-muted-foreground leading-relaxed">
                   {t('List items and verify your details to earn the green badge and stand out!')}
                 </p>

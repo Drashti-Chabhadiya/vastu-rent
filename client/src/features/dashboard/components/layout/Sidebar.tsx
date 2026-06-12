@@ -25,7 +25,7 @@ import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
 import { Button } from '#/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import { UserAvatar } from '#/components/common/UserAvatar'
 import { Logo } from '#/components/layout'
 
 interface NavItemProps {
@@ -123,6 +123,19 @@ const SIDEBAR_MENU_CONFIG: Record<
     { id: 'users', label: 'Manage Users', icon: Users, hasSub: true },
     { id: 'listings', label: 'Manage Listings', icon: List, hasSub: true },
     { id: 'categories', label: 'Manage Categories', icon: Grid, hasSub: true },
+    {
+      id: 'orders',
+      label: 'Booking Requests',
+      icon: ShoppingCart,
+      hasSub: true,
+    },
+    { id: 'bookings', label: 'Rentals Calendar', icon: Calendar, hasSub: true },
+    {
+      id: 'payments',
+      label: 'Earnings Payouts',
+      icon: CreditCard,
+      hasSub: true,
+    },
     {
       id: 'stories',
       label: 'Stories (Catalogue)',
@@ -269,19 +282,15 @@ export const Sidebar = ({
             {/* User info header */}
             <div className="px-4 pt-4 pb-3 border-b border-border/30">
               <div className="flex items-center gap-3">
-                <div className="relative shrink-0">
-                  <Avatar className="w-10 h-10 rounded-xl border border-border/30 bg-muted-light">
-                    <AvatarImage
-                      src={user?.image || ''}
-                      alt={user?.name || 'User'}
-                      className="object-cover"
-                    />
-                    <AvatarFallback className="bg-primary/5 text-xs font-bold text-primary">
-                      {user?.name?.slice(0, 2).toUpperCase() || 'US'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-card rounded-full" />
-                </div>
+                <UserAvatar
+                  image={user?.image}
+                  name={user?.name || 'User'}
+                  isOnline={true}
+                  size="sidebar"
+                  shape="square"
+                  avatarClassName="border border-border/30 bg-muted-light"
+                  showPing={false}
+                />
                 <div className="overflow-hidden">
                   <p className="text-sm font-black text-dash-text truncate">
                     {user?.name || '—'}
@@ -355,19 +364,15 @@ export const Sidebar = ({
           )}
         >
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="relative shrink-0">
-              <Avatar className="w-9 h-9 rounded-xl bg-muted-light border border-border/30">
-                <AvatarImage
-                  src={user?.image || ''}
-                  alt={user?.name || 'User'}
-                  className="object-cover"
-                />
-                <AvatarFallback className="bg-primary/5 text-[11px] font-bold text-primary">
-                  {user?.name?.slice(0, 2).toUpperCase() || 'US'}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-primary border-2 border-card rounded-full" />
-            </div>
+            <UserAvatar
+              image={user?.image}
+              name={user?.name || 'User'}
+              isOnline={true}
+              size="trigger"
+              shape="square"
+              avatarClassName="bg-muted-light border border-border/30"
+              showPing={false}
+            />
             <div className="overflow-hidden text-left">
               <p className="text-sm font-black text-dash-text truncate group-hover:text-primary transition-colors">
                 {user?.name || 'Loading...'}

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { Conversation, Message } from '#/hook'
 
 export interface ReplyTarget {
   id: string
@@ -9,7 +10,7 @@ export interface ReplyTarget {
 
 export interface ChatStoreState {
   searchQuery: string
-  activeSubTab: 'all' | 'unread' | 'bookings' | 'support'
+  activeSubTab: 'all' | 'unread' | 'bookings' | 'support' | 'archived'
   inputText: string
   showEmojiPicker: boolean
   showMobileChat: boolean
@@ -28,9 +29,61 @@ export interface ChatStoreState {
 
   // Dialog state
   showNewChat: boolean
+  showDetailsPanel: boolean
+  chatWallpaper: string
+  showConversationSearch: boolean
+
+  // New UI States
+  isMultiSelectMode: boolean
+  selectedMsgIds: string[]
+  editingMsgId: string | null
+  editingText: string
+  activeReactMsgId: string | null
+  fullReactMsgId: string | null
+  hideMedia: boolean
+  revealedMediaMsgs: string[]
+  searchText: string
+  currentMatchIndex: number
+  deleteTargetId: string | null
+  showDeleteDialog: boolean
+  canDeleteForEveryone: boolean
+  forwardTargetId: string | string[] | null
+  showForwardDialog: boolean
+  infoTargetMsg: Message | null
+  showInfoDialog: boolean
+
+  // useChat Synced State
+  isConnected: boolean
+  conversations: Conversation[]
+  isLoadingConversations: boolean
+  activeConversationId: string | null
+  messages: Message[]
+  isLoadingMessages: boolean
+  isOtherPersonTyping: boolean
+  currentUserId: string | null | undefined
+
+  // useChat Synced Actions
+  switchConversation: (id: string) => void
+  sendMessage: (content: string, attachments?: string[]) => void
+  emitTyping: (isTyping: boolean) => void
+  checkOnline: (id: string) => boolean
+  editMessage: (params: { messageId: string; content: string }) => Promise<any>
+  deleteMessage: (params: { messageId: string; mode: 'me' | 'everyone' }) => Promise<any>
+  forwardMessage: (params: { messageId: string; targetConversationIds: string[] }) => Promise<any>
+  togglePinConversation: (id: string) => Promise<any>
+  toggleMuteConversation: (id: string) => Promise<any>
+  clearChat: (id: string) => Promise<any>
+  setDisappearingMessages: (id: string, duration: number) => Promise<any>
+  archiveConversation: (id: string) => Promise<any>
+  unarchiveConversation: (id: string) => Promise<any>
+  toggleStarMessage: (id: string) => Promise<any>
+  togglePinMessage: (id: string) => Promise<any>
+  reactToMessage: (params: { messageId: string; emoji: string }) => Promise<any>
+  removeReaction: (id: string) => Promise<any>
+  updateConversationSettings: (params: { conversationId: string; settings: { wallpaper?: string; theme?: string } }) => Promise<any>
 
   setSearchQuery: (q: string) => void
-  setActiveSubTab: (tab: 'all' | 'unread' | 'bookings' | 'support') => void
+  setActiveSubTab: (tab: 'all' | 'unread' | 'bookings' | 'support' | 'archived') => void
   setInputText: (text: string | ((prev: string) => string)) => void
   setShowEmojiPicker: (show: boolean) => void
   setShowMobileChat: (show: boolean) => void
@@ -53,7 +106,33 @@ export interface ChatStoreState {
 
   // Dialog Actions
   setShowNewChat: (show: boolean) => void
+  setShowDetailsPanel: (show: boolean) => void
+  setShowConversationSearch: (show: boolean) => void
+  setChatWallpaper: (wallpaper: string) => void
+
+  // New UI Actions
+  setIsMultiSelectMode: (mode: boolean) => void
+  setSelectedMsgIds: (ids: string[] | ((prev: string[]) => string[])) => void
+  setEditingMsgId: (id: string | null) => void
+  setEditingText: (text: string) => void
+  setActiveReactMsgId: (id: string | null) => void
+  setFullReactMsgId: (id: string | null) => void
+  setHideMedia: (hide: boolean) => void
+  setRevealedMediaMsgs: (ids: string[] | ((prev: string[]) => string[])) => void
+  setSearchText: (text: string) => void
+  setCurrentMatchIndex: (index: number) => void
+  setDeleteTargetId: (id: string | null) => void
+  setShowDeleteDialog: (show: boolean) => void
+  setCanDeleteForEveryone: (canDelete: boolean) => void
+  setForwardTargetId: (id: string | string[] | null) => void
+  setShowForwardDialog: (show: boolean) => void
+  setInfoTargetMsg: (msg: Message | null) => void
+  setShowInfoDialog: (show: boolean) => void
+
+  // Synced state updater
+  setChatData: (data: Partial<ChatStoreState>) => void
 }
+
 
 export const useChatStore = create<ChatStoreState>((set, get) => ({
   searchQuery: '',
@@ -73,6 +152,59 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   showLightbox: false,
 
   showNewChat: false,
+  showDetailsPanel: true,
+
+  // New UI states defaults
+  isMultiSelectMode: false,
+  selectedMsgIds: [],
+  editingMsgId: null,
+  editingText: '',
+  activeReactMsgId: null,
+  fullReactMsgId: null,
+  hideMedia: false,
+  revealedMediaMsgs: [],
+  searchText: '',
+  currentMatchIndex: 0,
+  deleteTargetId: null,
+  showDeleteDialog: false,
+  canDeleteForEveryone: false,
+  forwardTargetId: null,
+  showForwardDialog: false,
+  infoTargetMsg: null,
+  showInfoDialog: false,
+
+  // Synced defaults
+  isConnected: false,
+  conversations: [],
+  isLoadingConversations: false,
+  activeConversationId: null,
+  messages: [],
+  isLoadingMessages: false,
+  isOtherPersonTyping: false,
+  currentUserId: null,
+
+  // Synced default actions (noop)
+  switchConversation: () => {},
+  sendMessage: () => {},
+  emitTyping: () => {},
+  checkOnline: () => false,
+  editMessage: async () => {},
+  deleteMessage: async () => {},
+  forwardMessage: async () => {},
+  togglePinConversation: async () => {},
+  toggleMuteConversation: async () => {},
+  clearChat: async () => {},
+  setDisappearingMessages: async () => {},
+  archiveConversation: async () => {},
+  unarchiveConversation: async () => {},
+  toggleStarMessage: async () => {},
+  togglePinMessage: async () => {},
+  reactToMessage: async () => {},
+  removeReaction: async () => {},
+  updateConversationSettings: async () => {},
+
+  chatWallpaper: 'classic',
+  setChatWallpaper: (wallpaper: string) => set({ chatWallpaper: wallpaper }),
 
   setSearchQuery: (searchQuery) => set({ searchQuery }),
   setActiveSubTab: (activeSubTab) => set({ activeSubTab }),
@@ -139,4 +271,41 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
     }),
 
   setShowNewChat: (showNewChat) => set({ showNewChat }),
+  setShowDetailsPanel: (showDetailsPanel) => set({ showDetailsPanel }),
+
+  showConversationSearch: false,
+  setShowConversationSearch: (showConversationSearch: boolean) => set({ showConversationSearch }),
+
+  // New UI Setters
+  setIsMultiSelectMode: (isMultiSelectMode) => set({ isMultiSelectMode }),
+  setSelectedMsgIds: (selectedMsgIds) =>
+    set((state) => ({
+      selectedMsgIds:
+        typeof selectedMsgIds === 'function'
+          ? selectedMsgIds(state.selectedMsgIds)
+          : selectedMsgIds,
+    })),
+  setEditingMsgId: (editingMsgId) => set({ editingMsgId }),
+  setEditingText: (editingText) => set({ editingText }),
+  setActiveReactMsgId: (activeReactMsgId) => set({ activeReactMsgId }),
+  setFullReactMsgId: (fullReactMsgId) => set({ fullReactMsgId }),
+  setHideMedia: (hideMedia) => set({ hideMedia }),
+  setRevealedMediaMsgs: (revealedMediaMsgs) =>
+    set((state) => ({
+      revealedMediaMsgs:
+        typeof revealedMediaMsgs === 'function'
+          ? revealedMediaMsgs(state.revealedMediaMsgs)
+          : revealedMediaMsgs,
+    })),
+  setSearchText: (searchText) => set({ searchText }),
+  setCurrentMatchIndex: (currentMatchIndex) => set({ currentMatchIndex }),
+  setDeleteTargetId: (deleteTargetId) => set({ deleteTargetId }),
+  setShowDeleteDialog: (showDeleteDialog) => set({ showDeleteDialog }),
+  setCanDeleteForEveryone: (canDeleteForEveryone) => set({ canDeleteForEveryone }),
+  setForwardTargetId: (forwardTargetId) => set({ forwardTargetId }),
+  setShowForwardDialog: (showForwardDialog) => set({ showForwardDialog }),
+  setInfoTargetMsg: (infoTargetMsg) => set({ infoTargetMsg }),
+  setShowInfoDialog: (showInfoDialog) => set({ showInfoDialog }),
+
+  setChatData: (data) => set(data),
 }))

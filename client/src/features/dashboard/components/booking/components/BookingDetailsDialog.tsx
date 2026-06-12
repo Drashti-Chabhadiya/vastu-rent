@@ -261,8 +261,8 @@ export function BookingDetailsDialog({
                   )}
                 >
                   {rental.status === 'pending' || rental.status === 'confirmed'
-                    ? rental.pickupOTP || '123456'
-                    : rental.returnOTP || '654321'}
+                    ? rental.pickupOTP || '— — —'
+                    : rental.returnOTP || '— — —'}
                 </div>
               </div>
             </div>

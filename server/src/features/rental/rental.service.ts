@@ -85,6 +85,9 @@ export class RentalService {
       // For COD (Cash), we set status to pending initially so the lister can confirm/reject it
       const initialStatus = "pending";
 
+      const pickupOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      const returnOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
       return tx.rental.create({
         data: {
           productId: data.productId,
@@ -98,6 +101,8 @@ export class RentalService {
           status: initialStatus,
           paymentStatus: "pending",
           couponId,
+          pickupOTP,
+          returnOTP,
         } as any,
         include: {
           product: true,
@@ -334,6 +339,58 @@ export class RentalService {
     }
 
     return updatedRental;
+  }
+
+  async verifyPickupOTP(id: string, otp: string, userId: string, userRole: string) {
+    const rental = await prisma.rental.findUnique({
+      where: { id },
+      include: { product: true }
+    });
+
+    if (!rental) {
+      throw new Error("Rental booking not found");
+    }
+
+    if (rental.status !== "confirmed") {
+      throw new Error("Rental booking is not in a confirmed state");
+    }
+
+    const isAdmin = userRole === "admin";
+    if (!isAdmin && rental.product.userId !== userId) {
+      throw new Error("You are not authorized to manage bookings for this product");
+    }
+
+    if (rental.pickupOTP !== otp) {
+      throw new Error("Incorrect Pickup OTP code");
+    }
+
+    return this.updateRentalStatus(id, "picked_up", "paid");
+  }
+
+  async verifyReturnOTP(id: string, otp: string, userId: string, userRole: string) {
+    const rental = await prisma.rental.findUnique({
+      where: { id },
+      include: { product: true }
+    });
+
+    if (!rental) {
+      throw new Error("Rental booking not found");
+    }
+
+    if (rental.status !== "picked_up") {
+      throw new Error("Rental booking is not in a picked up state");
+    }
+
+    const isAdmin = userRole === "admin";
+    if (!isAdmin && rental.product.userId !== userId) {
+      throw new Error("You are not authorized to manage bookings for this product");
+    }
+
+    if (rental.returnOTP !== otp) {
+      throw new Error("Incorrect Return OTP code");
+    }
+
+    return this.updateRentalStatus(id, "completed");
   }
 }
 
