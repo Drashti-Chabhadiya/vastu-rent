@@ -20,6 +20,8 @@ import { BookingDetailsDialog } from './components/BookingDetailsDialog'
 import { ReviewDialog } from './components/ReviewDialog'
 import { DisputeDialog } from './components/DisputeDialog'
 import { getBookingGroup } from './components/BookingStatusBadge'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export const MyBookings = () => {
   const { data: rentals, isLoading } = useMyRentals()
@@ -173,9 +175,15 @@ export const MyBookings = () => {
     }) || []
 
   return (
-    <div className={cn('space-y-8', 'animate-in', 'fade-in', 'duration-500')}>
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
       {/* Header */}
-      <div
+      <motion.div
+        variants={fadeUp}
         className={cn(
           'flex',
           'flex-col',
@@ -267,10 +275,11 @@ export const MyBookings = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </motion.div>
 
       {/* Tabs */}
-      <div
+      <motion.div
+        variants={fadeUp}
         className={cn(
           'flex',
           'gap-6',
@@ -316,11 +325,12 @@ export const MyBookings = () => {
             )
           },
         )}
-      </div>
+      </motion.div>
 
       {/* Bookings List */}
       {filteredRentals.length === 0 ? (
-        <div
+        <motion.div
+          variants={fadeUp}
           className={cn(
             'flex',
             'flex-col',
@@ -363,44 +373,52 @@ export const MyBookings = () => {
           >
             You don't have any bookings matching this status right now.
           </p>
-        </div>
+        </motion.div>
       ) : (
-        <div className={cn('grid', 'gap-5')}>
+        <motion.div
+          key={activeTab}
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className={cn('grid', 'gap-5')}
+        >
           {filteredRentals.map((rental: any) => (
-            <BookingCard
-              key={rental.id}
-              rental={rental}
-              onOpenReview={(r) => {
-                setSelectedRental(r)
-                const existingReview = r.product?.reviews?.[0]
-                if (existingReview) {
-                  setRating(existingReview.rating)
-                  setComment(
-                    existingReview.comment
-                      ? existingReview.comment.split('\n\n[Images:')[0]
-                      : '',
-                  )
-                } else {
-                  setRating(5)
-                  setComment('')
-                }
-                setIsReviewDialogOpen(true)
-              }}
-              onOpenDispute={(r) => {
-                setSelectedRental(r)
-                setIsDisputeDialogOpen(true)
-              }}
-              onOpenDetails={(r) => {
-                setSelectedDetailsRental(r)
-                setIsDetailsDialogOpen(true)
-              }}
-            />
+            <motion.div key={rental.id} variants={fadeUp}>
+              <BookingCard
+                rental={rental}
+                onOpenReview={(r) => {
+                  setSelectedRental(r)
+                  const existingReview = r.product?.reviews?.[0]
+                  if (existingReview) {
+                    setRating(existingReview.rating)
+                    setComment(
+                      existingReview.comment
+                        ? existingReview.comment.split('\n\n[Images:')[0]
+                        : '',
+                    )
+                  } else {
+                    setRating(5)
+                    setComment('')
+                  }
+                  setIsReviewDialogOpen(true)
+                }}
+                onOpenDispute={(r) => {
+                  setSelectedRental(r)
+                  setIsDisputeDialogOpen(true)
+                }}
+                onOpenDetails={(r) => {
+                  setSelectedDetailsRental(r)
+                  setIsDetailsDialogOpen(true)
+                }}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Need Help Banner */}
-      <div
+      <motion.div
+        variants={fadeUp}
         className={cn(
           'bg-background',
           'rounded-[2.5rem]',
@@ -474,7 +492,7 @@ export const MyBookings = () => {
           />
           Contact Support
         </Button>
-      </div>
+      </motion.div>
 
       {/* Dialogs */}
       <BookingDetailsDialog
@@ -538,6 +556,6 @@ export const MyBookings = () => {
         onSubmit={handleCreateDispute}
         isPending={disputeMutation.isPending}
       />
-    </div>
+    </motion.div>
   )
 }

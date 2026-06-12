@@ -35,6 +35,8 @@ import {
 } from '#/hook'
 import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export function ProfileListings() {
   const [session, setSession] = useState<any>(null)
@@ -175,9 +177,17 @@ export function ProfileListings() {
     : '4.8'
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
       {/* Title Header Block */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <motion.div
+        variants={fadeUp}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
         <div className="space-y-1">
           <h1 className="text-3xl font-black text-foreground tracking-tight">
             My Listings
@@ -198,7 +208,17 @@ export function ProfileListings() {
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
-              'rounded-full border-border font-black h-10 px-5 flex items-center gap-2 shadow-sm shrink-0 transition-colors',
+              'rounded-full',
+              'border-border',
+              'font-black',
+              'h-10',
+              'px-5',
+              'flex',
+              'items-center',
+              'gap-2',
+              'shadow-sm',
+              'shrink-0',
+              'transition-colors',
               showFilters
                 ? 'bg-muted/50 text-primary border-border/120'
                 : 'text-foreground/80 hover:bg-muted-light',
@@ -208,11 +228,14 @@ export function ProfileListings() {
             Filter
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Slide down Filter Panel */}
       {showFilters && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted-light/50 rounded-3xl border border-border/30 animate-in slide-in-from-top-3 duration-200">
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted-light/50 rounded-3xl border border-border/30"
+        >
           <div className="relative">
             <Search
               size={16}
@@ -274,11 +297,14 @@ export function ProfileListings() {
               </SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </motion.div>
       )}
 
       {/* Tabs Filter Navigation */}
-      <div className="flex gap-6 border-b border-border/30 pb-px overflow-x-auto custom-scrollbar">
+      <motion.div
+        variants={fadeUp}
+        className="flex gap-6 border-b border-border/30 pb-px overflow-x-auto custom-scrollbar"
+      >
         {(
           [
             { id: 'all', label: 'All Listings' },
@@ -309,11 +335,14 @@ export function ProfileListings() {
             </Button>
           )
         })}
-      </div>
+      </motion.div>
 
       {/* Listings Card List */}
       {filteredListings.length === 0 ? (
-        <div className="bg-background border border-dashed border-border rounded-[2.5rem] p-12 text-center">
+        <motion.div
+          variants={fadeUp}
+          className="bg-background border border-dashed border-border rounded-[2.5rem] p-12 text-center"
+        >
           <div className="w-16 h-16 bg-muted-light rounded-full flex items-center justify-center mx-auto mb-4">
             <Package className="w-8 h-8 text-muted-dark" />
           </div>
@@ -330,141 +359,157 @@ export function ProfileListings() {
           >
             Create First Listing
           </Button>
-        </div>
+        </motion.div>
       ) : (
-        <div className="grid gap-5">
+        <motion.div
+          key={activeTab}
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="grid gap-5"
+        >
           {filteredListings.map((item: any) => (
-            <div
-              key={item.id}
-              className="group bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row gap-6 items-start md:items-center relative"
-            >
-              {/* Left Side Image */}
-              <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 bg-muted-light shadow-inner relative">
-                <img
-                  src={
-                    item.images?.[0] || 'https://placehold.co/128?text=Vastu'
-                  }
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
+            <motion.div key={item.id} variants={fadeUp}>
+              <div className="group bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row gap-6 items-start md:items-center relative">
+                {/* Left Side Image */}
+                <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 bg-muted-light shadow-inner relative">
+                  <img
+                    src={
+                      item.images?.[0] || 'https://placehold.co/128?text=Vastu'
+                    }
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
 
-              {/* Middle details column */}
-              <div className="flex-1 space-y-4">
-                <div className="space-y-1.5">
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    {item.isAvailable ? (
-                      <span className="bg-primary-soft/50 text-primary px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="bg-muted/50 text-muted-foreground/85 px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider">
-                        Inactive
-                      </span>
-                    )}
-                    <h3 className="text-[17px] font-black text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-1">
-                      {item.title}
-                    </h3>
+                {/* Middle details column */}
+                <div className="flex-1 space-y-4">
+                  <div className="space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {item.isAvailable ? (
+                        <span className="bg-primary-soft/50 text-primary px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="bg-muted/50 text-muted-foreground/85 px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider">
+                          Inactive
+                        </span>
+                      )}
+                      <h3 className="text-[17px] font-black text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-1">
+                        {item.title}
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-1 text-[11px] font-bold text-muted-dark">
+                      <MapPin size={12} className="text-primary" />
+                      <span>{item.location}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 text-[11px] font-bold text-muted-dark">
-                    <MapPin size={12} className="text-primary" />
-                    <span>{item.location}</span>
+
+                  {/* Performance Stats inline */}
+                  <div className="flex flex-wrap items-center gap-4 text-[11px] font-extrabold text-muted-dark mt-4">
+                    <div className="flex items-center gap-1.5">
+                      <Eye size={13} className="text-muted-dark stroke-[2.5]" />
+                      <span>{item.views || 120} Views</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar
+                        size={13}
+                        className="text-muted-dark stroke-[2.5]"
+                      />
+                      <span>{item.bookingsCount || 24} Bookings</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Star
+                        size={13}
+                        className="text-muted-dark stroke-[2.5]"
+                      />
+                      <span>
+                        {parseFloat(item.rating || '4.8').toFixed(1)} Rating
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Performance Stats inline */}
-                <div className="flex flex-wrap items-center gap-4 text-[11px] font-extrabold text-muted-dark mt-4">
-                  <div className="flex items-center gap-1.5">
-                    <Eye size={13} className="text-muted-dark stroke-[2.5]" />
-                    <span>{item.views || 120} Views</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Calendar
-                      size={13}
-                      className="text-muted-dark stroke-[2.5]"
-                    />
-                    <span>{item.bookingsCount || 24} Bookings</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Star size={13} className="text-muted-dark stroke-[2.5]" />
-                    <span>
-                      {parseFloat(item.rating || '4.8').toFixed(1)} Rating
+                {/* Pricing Column */}
+                <div className="flex flex-col items-start md:items-end min-w-[90px] self-stretch justify-between py-1 shrink-0 border-t md:border-t-0 border-border/30 pt-4 md:pt-0 w-full md:w-auto">
+                  <div className="flex items-baseline gap-0.5">
+                    <span className="text-lg font-black text-foreground flex items-center">
+                      <IndianRupee size={15} className="stroke-[3] mt-0.5" />
+                      {item.price}
+                    </span>
+                    <span className="text-muted-dark text-[10px] font-bold">
+                      / day
                     </span>
                   </div>
-                </div>
-              </div>
 
-              {/* Pricing Column */}
-              <div className="flex flex-col items-start md:items-end min-w-[90px] self-stretch justify-between py-1 shrink-0 border-t md:border-t-0 border-border/30 pt-4 md:pt-0 w-full md:w-auto">
-                <div className="flex items-baseline gap-0.5">
-                  <span className="text-lg font-black text-foreground flex items-center">
-                    <IndianRupee size={15} className="stroke-[3] mt-0.5" />
-                    {item.price}
-                  </span>
-                  <span className="text-muted-dark text-[10px] font-bold">
-                    / day
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2.5 w-full md:w-auto mt-4 md:mt-0 relative">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setProductToEdit(item)
-                      setIsEditOpen(true)
-                    }}
-                    className="rounded-full border-border text-foreground/80 font-black text-xs px-5 h-9 w-full md:w-auto flex items-center justify-center hover:bg-muted-light cursor-pointer shadow-sm active:scale-95"
-                  >
-                    Edit
-                  </Button>
-
-                  {/* Dropdown container */}
-                  <div className="relative">
+                  <div className="flex items-center gap-2.5 w-full md:w-auto mt-4 md:mt-0 relative">
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full border border-border text-muted-dark hover:text-muted-foreground h-9 w-9 flex items-center justify-center shadow-sm cursor-pointer"
-                      onClick={() =>
-                        setOpenDropdownId(
-                          openDropdownId === item.id ? null : item.id,
-                        )
-                      }
+                      variant="outline"
+                      onClick={() => {
+                        setProductToEdit(item)
+                        setIsEditOpen(true)
+                      }}
+                      className="rounded-full border-border text-foreground/80 font-black text-xs px-5 h-9 w-full md:w-auto flex items-center justify-center hover:bg-muted-light cursor-pointer shadow-sm active:scale-95"
                     >
-                      <MoreVertical size={16} />
+                      Edit
                     </Button>
 
-                    {/* Simple Custom React Dropdown */}
-                    {openDropdownId === item.id && (
-                      <>
-                        <div
-                          className="fixed inset-0 z-40"
-                          onClick={() => setOpenDropdownId(null)}
-                        />
-                        <div className="absolute right-0 bottom-11 md:bottom-auto md:top-11 bg-card rounded-2xl shadow-xl border border-border/30 p-1.5 z-50 min-w-[130px] animate-in fade-in slide-in-from-top-2 duration-200">
-                          <Button
-                            variant="ghost"
-                            onClick={() => {
-                              setOpenDropdownId(null)
-                              setProductToDelete(item)
-                            }}
-                            className="w-full text-left px-3.5 py-2 text-xs font-bold text-destructive hover:bg-danger hover:text-destructive rounded-xl flex items-center gap-2 cursor-pointer transition-colors justify-start h-auto"
-                          >
-                            <Trash2 size={12} /> Delete Listing
-                          </Button>
-                        </div>
-                      </>
-                    )}
+                    {/* Dropdown container */}
+                    <div className="relative">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full border border-border text-muted-dark hover:text-muted-foreground h-9 w-9 flex items-center justify-center shadow-sm cursor-pointer"
+                        onClick={() =>
+                          setOpenDropdownId(
+                            openDropdownId === item.id ? null : item.id,
+                          )
+                        }
+                      >
+                        <MoreVertical size={16} />
+                      </Button>
+
+                      {/* Simple Custom React Dropdown */}
+                      {openDropdownId === item.id && (
+                        <>
+                          <div
+                            className="fixed inset-0 z-40"
+                            onClick={() => setOpenDropdownId(null)}
+                          />
+                          <div className="absolute right-0 bottom-11 md:bottom-auto md:top-11 bg-card rounded-2xl shadow-xl border border-border/30 p-1.5 z-50 min-w-[130px] animate-in fade-in slide-in-from-top-2 duration-200">
+                            <Button
+                              variant="ghost"
+                              onClick={() => {
+                                setOpenDropdownId(null)
+                                setProductToDelete(item)
+                              }}
+                              className="w-full text-left px-3.5 py-2 text-xs font-bold text-destructive hover:bg-danger hover:text-destructive rounded-xl flex items-center gap-2 cursor-pointer transition-colors justify-start h-auto"
+                            >
+                              <Trash2 size={12} /> Delete Listing
+                            </Button>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Aggregate Statistics Footer Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">
-        <div className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12"
+      >
+        <motion.div
+          variants={fadeUp}
+          className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow"
+        >
           <div className="w-11 h-11 rounded-full bg-primary-soft flex items-center justify-center text-primary shrink-0 border border-primary-border">
             <Eye size={18} className="stroke-[2.5]" />
           </div>
@@ -480,9 +525,12 @@ export function ProfileListings() {
               month
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <motion.div
+          variants={fadeUp}
+          className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow"
+        >
           <div className="w-11 h-11 rounded-full bg-primary-soft flex items-center justify-center text-primary shrink-0 border border-primary-border">
             <Calendar size={18} className="stroke-[2.5]" />
           </div>
@@ -498,9 +546,12 @@ export function ProfileListings() {
               month
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <motion.div
+          variants={fadeUp}
+          className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow"
+        >
           <div className="w-11 h-11 rounded-full bg-primary-soft flex items-center justify-center text-primary shrink-0 border border-primary-border">
             <Coins size={18} className="stroke-[2.5]" />
           </div>
@@ -517,9 +568,12 @@ export function ProfileListings() {
               month
             </p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <motion.div
+          variants={fadeUp}
+          className="bg-background rounded-[1.8rem] border border-border/30 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow"
+        >
           <div className="w-11 h-11 rounded-full bg-primary-soft flex items-center justify-center text-primary shrink-0 border border-primary-border">
             <Star size={18} className="stroke-[2.5]" fill="currentColor" />
           </div>
@@ -534,8 +588,8 @@ export function ProfileListings() {
               Excellent performance
             </p>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Listing Form Dialog: Create new Listing */}
       <ListingDialog
@@ -621,6 +675,6 @@ export function ProfileListings() {
         variant="danger"
         isPending={deleteProduct.isPending}
       />
-    </div>
+    </motion.div>
   )
 }

@@ -11,6 +11,8 @@ import { AccountSecurityCard } from './AccountSecurityCard'
 import { PreferencesCard } from './PreferencesCard'
 import { SubscriptionPlanCard } from './SubscriptionPlanCard'
 import { UserProfileSettingsCard } from './UserProfileSettingsCard'
+import { motion } from 'motion/react'
+import { fadeUp, stagger } from '#/lib/animations'
 
 export function PersonalInfo() {
   const {
@@ -112,16 +114,21 @@ export function PersonalInfo() {
   }
 
   return (
-    <div className="font-sans">
+    <motion.div
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className="font-sans"
+    >
       {/* Page Title Header */}
-      <div className="mb-6 p-1">
+      <motion.div variants={fadeUp} className="mb-6 p-1">
         <h1 className="text-2xl font-extrabold text-foreground font-display tracking-tight leading-none">
           {t('My Profile')}
         </h1>
         <p className="text-[13px] text-muted-foreground/85 mt-2 font-medium">
           {t('Manage your personal information and account preferences.')}
         </p>
-      </div>
+      </motion.div>
 
       <div className="space-y-8 relative">
         {isVerifying && (
@@ -132,10 +139,15 @@ export function PersonalInfo() {
         )}
 
         {/* ─── Profile & Personal Info Row Card ─── */}
-        <UserProfileSettingsCard />
+        <motion.div variants={fadeUp}>
+          <UserProfileSettingsCard />
+        </motion.div>
 
         {/* ─── Cards Row: Account Security & Preferences ─── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        >
           {/* Card 1: Account Security */}
           <AccountSecurityCard
             twoFactorEnabled={twoFactorEnabled}
@@ -154,22 +166,27 @@ export function PersonalInfo() {
             handleTogglePreference={handleTogglePreference}
             handleCurrencyChange={handleCurrencyChange}
           />
-        </div>
+        </motion.div>
 
         {/* ─── Subscription Plan Card ─── */}
-        <SubscriptionPlanCard
-          activeTier={activeTier}
-          isExpired={isExpired}
-          expiresAt={expiresAt}
-          usedCount={usedCount}
-          limitStr={limitStr}
-          quotaPercent={quotaPercent}
-          barColor={barColor}
-          limit={limit}
-        />
+        <motion.div variants={fadeUp}>
+          <SubscriptionPlanCard
+            activeTier={activeTier}
+            isExpired={isExpired}
+            expiresAt={expiresAt}
+            usedCount={usedCount}
+            limitStr={limitStr}
+            quotaPercent={quotaPercent}
+            barColor={barColor}
+            limit={limit}
+          />
+        </motion.div>
 
         {/* ─── Bottom Row: Green Member Banner ─── */}
-        <div className="bg-primary-soft rounded-[32px] border border-primary-border p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4.5">
+        <motion.div
+          variants={fadeUp}
+          className="bg-primary-soft rounded-[32px] border border-primary-border p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4.5"
+        >
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-border text-primary">
               <Leaf className="h-6 w-6" />
@@ -193,7 +210,7 @@ export function PersonalInfo() {
             <span>{t('View Impact')}</span>
             <ChevronRight size={14} className="mt-0.5" />
           </Link>
-        </div>
+        </motion.div>
       </div>
 
       {/* Account Security Modals */}
@@ -210,6 +227,6 @@ export function PersonalInfo() {
         handleToggleTwoFactor={handleToggleTwoFactor}
         userEmail={session.user.email}
       />
-    </div>
+    </motion.div>
   )
 }
