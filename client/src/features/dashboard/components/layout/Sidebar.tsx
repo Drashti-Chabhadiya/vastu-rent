@@ -124,6 +124,19 @@ const SIDEBAR_MENU_CONFIG: Record<
     { id: 'listings', label: 'Manage Listings', icon: List, hasSub: true },
     { id: 'categories', label: 'Manage Categories', icon: Grid, hasSub: true },
     {
+      id: 'orders',
+      label: 'Booking Requests',
+      icon: ShoppingCart,
+      hasSub: true,
+    },
+    { id: 'bookings', label: 'Rentals Calendar', icon: Calendar, hasSub: true },
+    {
+      id: 'payments',
+      label: 'Earnings Payouts',
+      icon: CreditCard,
+      hasSub: true,
+    },
+    {
       id: 'stories',
       label: 'Stories (Catalogue)',
       icon: BookOpen,

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useOrders, useUpdateRentalStatus } from '#/hook'
+import { authClient } from '#/lib/auth/auth-client'
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -29,6 +30,11 @@ import { fadeUp, stagger } from '#/lib/animations'
 
 export const RentalsCalendar = () => {
   const { data: orders, isLoading } = useOrders()
+  const { data: session } = authClient.useSession()
+  const currentUser = session?.user
+  const isAdmin = currentUser?.role === 'admin'
+  const [currentView, setCurrentView] = useState<'my' | 'all'>('my')
+
   const updateStatus = useUpdateRentalStatus()
 
   // Calendar Navigation States
@@ -74,6 +80,12 @@ export const RentalsCalendar = () => {
   const uniqueProducts: string[] = Array.from(
     new Set(
       (orders ?? [])
+        .filter((o: any) => {
+          if (isAdmin && currentView === 'my') {
+            return o.product?.userId === currentUser?.id
+          }
+          return true
+        })
         .map((o: any) => o.product?.title)
         .filter((title: any): title is string => Boolean(title)),
     ),
@@ -81,6 +93,9 @@ export const RentalsCalendar = () => {
 
   // Filter orders based on provider filters
   const filteredOrders = (orders || []).filter((order: any) => {
+    if (isAdmin && currentView === 'my') {
+      if (order.product?.userId !== currentUser?.id) return false
+    }
     const matchProduct =
       selectedProduct === 'all' || order.product?.title === selectedProduct
     const matchStatus =
@@ -167,27 +182,62 @@ export const RentalsCalendar = () => {
           </p>
         </div>
 
-        {/* Date Month Selector */}
-        <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm self-start md:self-auto">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={prevMonth}
-            className="h-8 w-8 rounded-lg"
-          >
-            <ChevronLeft size={16} />
-          </Button>
-          <span className="text-sm font-extrabold text-foreground/90 min-w-[100px] text-center font-display uppercase tracking-wider font-sans">
-            {format(currentMonth, 'MMMM yyyy')}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={nextMonth}
-            className="h-8 w-8 rounded-lg"
-          >
-            <ChevronRight size={16} />
-          </Button>
+        <div className="flex flex-wrap items-center gap-4 self-start md:self-auto">
+          {isAdmin ? (
+            <div className="flex items-center gap-2 rounded-full bg-dash-bg-soft p-1 shrink-0">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setCurrentView('my')
+                  setSelectedProduct('all')
+                }}
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${
+                  currentView === 'my'
+                    ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                    : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
+                }`}
+              >
+                My Rentals
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setCurrentView('all')
+                  setSelectedProduct('all')
+                }}
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${
+                  currentView === 'all'
+                    ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                    : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
+                }`}
+              >
+                All Platform Rentals
+              </Button>
+            </div>
+          ) : null}
+
+          {/* Date Month Selector */}
+          <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={prevMonth}
+              className="h-8 w-8 rounded-lg"
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <span className="text-sm font-extrabold text-foreground/90 min-w-[100px] text-center font-display uppercase tracking-wider font-sans">
+              {format(currentMonth, 'MMMM yyyy')}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={nextMonth}
+              className="h-8 w-8 rounded-lg"
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
         </div>
       </motion.div>
 
