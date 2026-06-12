@@ -21,16 +21,29 @@ export function MediaBrowserDialog({
   onOpenChange,
   messages,
 }: MediaBrowserDialogProps) {
-  // Filter all media files (attachments)
+  // Filter all media files (attachments) that are images
+  const isImageUrl = (url: string): boolean => {
+    const cleanUrl = url.split('?')[0].toLowerCase()
+    return (
+      cleanUrl.endsWith('.jpg') ||
+      cleanUrl.endsWith('.jpeg') ||
+      cleanUrl.endsWith('.png') ||
+      cleanUrl.endsWith('.gif') ||
+      cleanUrl.endsWith('.webp')
+    )
+  }
+
   const mediaItems = messages
     .filter((m) => !m.isDeleted && m.attachments && m.attachments.length > 0)
     .flatMap((m) =>
-      m.attachments.map((url) => ({
-        url,
-        senderName: m.sender.name,
-        createdAt: new Date(m.createdAt),
-        messageId: m.id,
-      })),
+      m.attachments
+        .filter(isImageUrl)
+        .map((url) => ({
+          url,
+          senderName: m.sender.name,
+          createdAt: new Date(m.createdAt),
+          messageId: m.id,
+        })),
     )
 
   const handleDownload = async (url: string, index: number) => {

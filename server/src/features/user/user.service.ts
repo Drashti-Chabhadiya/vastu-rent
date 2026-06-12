@@ -41,6 +41,8 @@ export class UserService {
         createdAt: true,
         image: true,
         banReason: true,
+        showOnline: true,
+        lastActive: true,
       },
     });
   }

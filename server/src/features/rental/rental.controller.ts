@@ -77,6 +77,32 @@ export class RentalController {
     const rentals = await rentalService.getProductRentals(productId);
     return { rentals };
   }
+
+  async verifyPickupOTP(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: string };
+    const { otp } = request.body as { otp: string };
+    const user = (request as any).user;
+
+    try {
+      const rental = await rentalService.verifyPickupOTP(id, otp, user.id, user.role);
+      return { rental };
+    } catch (err: any) {
+      return reply.status(400).send({ message: err.message || "Failed to verify Pickup OTP" });
+    }
+  }
+
+  async verifyReturnOTP(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as { id: string };
+    const { otp } = request.body as { otp: string };
+    const user = (request as any).user;
+
+    try {
+      const rental = await rentalService.verifyReturnOTP(id, otp, user.id, user.role);
+      return { rental };
+    } catch (err: any) {
+      return reply.status(400).send({ message: err.message || "Failed to verify Return OTP" });
+    }
+  }
 }
 
 export const rentalController = new RentalController();

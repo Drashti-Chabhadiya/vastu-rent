@@ -46,7 +46,10 @@ export interface Conversation {
   unreadCount: number
   pinnedBy?: string[]
   mutedBy?: string[]
+  archivedBy?: string[]
+  isArchived?: boolean
   disappearingDuration?: number
+  settings?: Record<string, { wallpaper?: string; theme?: string }>
   lastMessage: {
     id: string
     content: string
@@ -658,6 +661,39 @@ export function useChat() {
     },
   })
 
+  // ── Archive conversation ────────────────────────────────────────────────
+  const archiveConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/archive`)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Unarchive conversation ──────────────────────────────────────────────
+  const unarchiveConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(`/chat/conversations/${conversationId}/unarchive`)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Update conversation appearance settings ───────────────────────────────
+  const updateConversationSettingsMutation = useMutation({
+    mutationFn: async ({ conversationId, settings }: { conversationId: string; settings: { wallpaper?: string; theme?: string } }) => {
+      const res = await apiClient.patch(`/chat/conversations/${conversationId}/settings`, settings)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
   return {
     isConnected,
     conversations,
@@ -686,6 +722,9 @@ export function useChat() {
     toggleMuteConversation: toggleMuteConversationMutation.mutateAsync,
     clearChat: clearChatMutation.mutateAsync,
     setDisappearingMessages: setDisappearingMessagesMutation.mutateAsync,
+    archiveConversation: archiveConversationMutation.mutateAsync,
+    unarchiveConversation: unarchiveConversationMutation.mutateAsync,
+    updateConversationSettings: updateConversationSettingsMutation.mutateAsync,
   }
 }
 

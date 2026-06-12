@@ -3,13 +3,13 @@ import {
   Search,
   MessageSquare,
   SlidersHorizontal,
-  ChevronRight,
   Leaf,
   Pin,
   BellOff,
   Clock,
   MoreVertical,
   Trash2,
+  Plus,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -25,6 +25,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuCheckboxItem,
 } from '#/components/ui/dropdown-menu'
 import { DisappearingSettingsDialog } from './DisappearingSettingsDialog'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
@@ -53,7 +57,13 @@ export function ConversationList() {
     toggleMuteConversation,
     clearChat: onClearChat,
     setDisappearingMessages: onSetDisappearingMessages,
+    setShowNewChat,
+    checkOnline,
   } = useChatStore()
+
+  const [sortBy, setSortBy] = useState<'recent' | 'unread' | 'name'>('recent')
+  const [filterOnline, setFilterOnline] = useState(false)
+  const [filterGreen, setFilterGreen] = useState(false)
 
   // ── Filter & Sort conversations ───────────────────────────────────────────
   const filteredConversations = conversations
@@ -66,6 +76,11 @@ export function ConversationList() {
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
 
+      const isArchived = conv.isArchived === true
+
+      if (activeSubTab !== 'archived' && isArchived) return false
+      if (activeSubTab === 'archived' && !isArchived) return false
+
       let matchesTab = true
       if (activeSubTab === 'unread') matchesTab = conv.unreadCount > 0
       else if (activeSubTab === 'bookings')
@@ -73,12 +88,25 @@ export function ConversationList() {
       else if (activeSubTab === 'support')
         matchesTab = conv.otherParticipant.role === 'admin'
 
-      return matchesSearch && matchesTab
+      const otherPersonOnline = checkOnline(conv.otherParticipant.id)
+      const satisfiesOnlineFilter = !filterOnline || otherPersonOnline
+      const satisfiesGreenFilter = !filterGreen || conv.otherParticipant.isGreenMember
+
+      return matchesSearch && matchesTab && satisfiesOnlineFilter && satisfiesGreenFilter
     })
     .sort((a, b) => {
       const aPinned = a.pinnedBy?.includes(currentUserId || '') ? 1 : 0
       const bPinned = b.pinnedBy?.includes(currentUserId || '') ? 1 : 0
       if (aPinned !== bPinned) return bPinned - aPinned
+
+      if (sortBy === 'unread') {
+        if (a.unreadCount !== b.unreadCount) {
+          return b.unreadCount - a.unreadCount
+        }
+      } else if (sortBy === 'name') {
+        return a.otherParticipant.name.localeCompare(b.otherParticipant.name)
+      }
+
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     })
 
@@ -93,7 +121,7 @@ export function ConversationList() {
   return (
     <div
       className={cn(
-        'w-full lg:w-[380px] shrink-0 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden',
+        'w-full lg:w-[380px] shrink-0 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative',
         showMobileChat ? 'hidden lg:flex' : 'flex',
       )}
     >
@@ -128,23 +156,83 @@ export function ConversationList() {
               )}
             />
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              'w-10',
-              'h-10',
-              'bg-muted-light',
-              'hover:bg-muted/50',
-              'rounded-xl',
-              'text-muted-foreground/85',
-              'transition-colors',
-              'cursor-pointer',
-              'shrink-0',
-            )}
-          >
-            <SlidersHorizontal size={14} />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  'w-10',
+                  'h-10',
+                  'bg-muted-light',
+                  'hover:bg-muted/50',
+                  'rounded-xl',
+                  'text-muted-foreground/85',
+                  'transition-colors',
+                  'cursor-pointer',
+                  'shrink-0',
+                  (filterOnline || filterGreen || sortBy !== 'recent') && 'text-primary bg-primary-soft hover:bg-primary-soft/80'
+                )}
+              >
+                <SlidersHorizontal size={14} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-56 p-1.5 rounded-2xl shadow-xl border border-border/30 bg-card"
+            >
+              <DropdownMenuLabel className="text-xs font-black text-foreground/85 px-3 py-2">
+                Sort Conversations
+              </DropdownMenuLabel>
+              <DropdownMenuRadioGroup value={sortBy} onValueChange={(val: any) => setSortBy(val)}>
+                <DropdownMenuRadioItem value="recent" className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer">
+                  Recent Activity
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="unread" className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer">
+                  Unread Messages First
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="name" className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer">
+                  Name (A to Z)
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+
+              <DropdownMenuSeparator className="my-1 border-border/10" />
+
+              <DropdownMenuLabel className="text-xs font-black text-foreground/85 px-3 py-2">
+                Filters
+              </DropdownMenuLabel>
+              <DropdownMenuCheckboxItem
+                checked={filterOnline}
+                onCheckedChange={setFilterOnline}
+                className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
+              >
+                Online/Active Only
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={filterGreen}
+                onCheckedChange={setFilterGreen}
+                className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
+              >
+                Green Members Only
+              </DropdownMenuCheckboxItem>
+
+              {(filterOnline || filterGreen || sortBy !== 'recent') && (
+                <>
+                  <DropdownMenuSeparator className="my-1 border-border/10" />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSortBy('recent')
+                      setFilterOnline(false)
+                      setFilterGreen(false)
+                    }}
+                    className="rounded-xl text-[11px] font-black py-2 px-3 justify-center text-primary hover:bg-primary-soft cursor-pointer text-center"
+                  >
+                    Clear All Filters
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Sub-tabs */}
@@ -158,13 +246,15 @@ export function ConversationList() {
             'scrollbar-none',
           )}
         >
-          {(['all', 'unread', 'bookings', 'support'] as const).map((tab) => {
+          {(['all', 'unread', 'bookings', 'support', 'archived'] as const).map((tab) => {
             const tabUnread =
               tab === 'unread'
                 ? totalUnread
                 : tab === 'all'
                   ? totalUnread
-                  : conversations
+                  : tab === 'archived'
+                    ? conversations.filter((c) => c.isArchived).length
+                    : conversations
                       .filter((c) => {
                         if (tab === 'bookings')
                           return c.otherParticipant.role === 'user'
@@ -298,8 +388,8 @@ export function ConversationList() {
                   name={conv.otherParticipant.name}
                   isOnline={
                     myShowOnline &&
-                    conv.otherParticipant.lastActive !== null &&
-                    conv.otherParticipant.lastActive !== undefined
+                      conv.otherParticipant.lastActive !== null &&
+                      conv.otherParticipant.lastActive !== undefined
                       ? conv.otherParticipant.isOnline
                       : undefined
                   }
@@ -337,7 +427,7 @@ export function ConversationList() {
                         : formatMsgTime(conv.updatedAt)}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between mt-1 gap-2">
                     <p
                       className={cn(
@@ -441,45 +531,6 @@ export function ConversationList() {
         )}
       </div>
 
-      {/* Left Footer */}
-      <div
-        className={cn(
-          'border-t',
-          'border-border/30',
-          'px-5',
-          'py-4',
-          'shrink-0',
-        )}
-      >
-        <p
-          className={cn(
-            'text-[10px]',
-            'text-muted-dark',
-            'font-semibold',
-            'mb-1',
-          )}
-        >
-          Can't find your conversation?
-        </p>
-        <Button
-          variant="ghost"
-          className={cn(
-            'text-primary',
-            'text-[10px]',
-            'font-black',
-            'flex',
-            'items-center',
-            'gap-0.5',
-            'hover:underline',
-            'cursor-pointer',
-            'h-auto',
-            'p-0',
-            'hover:bg-transparent',
-          )}
-        >
-          View archived messages <ChevronRight size={10} strokeWidth={3} />
-        </Button>
-      </div>
       {disappearingConv && (
         <DisappearingSettingsDialog
           open={!!disappearingConv}
@@ -509,6 +560,14 @@ export function ConversationList() {
         confirmText="Clear"
         variant="danger"
       />
+
+      {/* Floating Action Button */}
+      <Button
+        onClick={() => setShowNewChat(true)}
+        className="absolute bottom-6 right-6 w-11 h-11 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0"
+      >
+        <Plus size={20} strokeWidth={3} />
+      </Button>
     </div>
   )
 }

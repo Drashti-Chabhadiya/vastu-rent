@@ -12,7 +12,7 @@ import { Button } from '#/components/ui/button'
 import { Textarea } from '#/components/ui/textarea'
 import { useAdminReviews, useDeleteReview, useReplyToReview } from '#/hook'
 import { toast } from 'sonner'
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import { UserAvatar } from '#/components/common/UserAvatar'
 import { authClient } from '#/lib/auth/auth-client'
 import {
   DropdownMenu,
@@ -526,15 +526,11 @@ export const ReviewsManagement = () => {
                       alt={review.host.name}
                       className="w-9 h-9 rounded-full object-cover border border-border/30 shadow-sm shrink-0"
                     /> */}
-                    <Avatar className="w-9 h-9">
-                      <AvatarImage
-                        src={review.host.image || ''}
-                        alt={review.host.name}
-                      />
-                      <AvatarFallback className="bg-primary/5 text-[13px] font-bold text-primary">
-                        {review.host.name?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                      image={review.host.avatar || review.host.image}
+                      name={review.host.name}
+                      size="trigger"
+                    />
                     <div className="text-left">
                       <p className="text-[10px] text-muted-dark font-bold uppercase tracking-wider leading-none">
                         Reviewed Host

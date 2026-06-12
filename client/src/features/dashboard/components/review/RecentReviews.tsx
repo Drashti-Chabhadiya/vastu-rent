@@ -1,7 +1,7 @@
 import { Star } from 'lucide-react'
 import { useAdminRecentReviews } from '#/hook'
 import { ExploreLink } from '#/components/common/ExploreLink'
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import { UserAvatar } from '#/components/common/UserAvatar'
 
 export const RecentReviews = () => {
   const { data: reviews = [], isLoading } = useAdminRecentReviews()
@@ -43,16 +43,12 @@ export const RecentReviews = () => {
               className="flex items-start justify-between gap-4 group"
             >
               <div className="flex gap-3">
-                <Avatar className="w-10 h-10 shrink-0 border border-border/30">
-                  <AvatarImage
-                    src={review.user?.image || ''}
-                    alt={review.user?.name || 'User'}
-                    className="object-cover"
-                  />
-                  <AvatarFallback className="bg-primary/5 text-[13px] font-bold text-primary">
-                    {review.user?.name?.slice(0, 2).toUpperCase() || 'US'}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  image={review.user?.image}
+                  name={review.user?.name || 'User'}
+                  size="sidebar"
+                  avatarClassName="border border-border/30"
+                />
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-dash-text">

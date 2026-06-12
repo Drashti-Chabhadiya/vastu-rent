@@ -29,6 +29,9 @@ export async function chatRoutes(fastify: FastifyInstance) {
   fastify.delete("/messages/:id/react", chatController.removeMessageReaction);
   fastify.post("/conversations/:id/pin", chatController.togglePinConversation);
   fastify.post("/conversations/:id/mute", chatController.toggleMuteConversation);
+  fastify.post("/conversations/:id/archive", chatController.archiveConversation);
+  fastify.post("/conversations/:id/unarchive", chatController.unarchiveConversation);
   fastify.post("/conversations/:id/clear", chatController.clearChat);
   fastify.post("/conversations/:id/disappearing", chatController.setDisappearingMessages);
+  fastify.patch("/conversations/:id/settings", chatController.updateConversationSettings);
 }

@@ -425,7 +425,9 @@ model Conversation {
 
   pinnedBy             String[]  @default([])
   mutedBy              String[]  @default([])
+  archivedBy           String[]  @default([])
   disappearingDuration Int       @default(0)
+  settings             Json?
 
   @@unique([participantOneId, participantTwoId])
   @@map("conversation")

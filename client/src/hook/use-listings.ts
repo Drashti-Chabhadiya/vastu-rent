@@ -220,3 +220,33 @@ export const useProductRentals = (productId: string) => {
     enabled: !!productId,
   })
 }
+
+// Verify pickup OTP
+export const useVerifyPickupOTP = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, otp }: { id: string; otp: string }) => {
+      const res = await apiClient.patch(`/rentals/${id}/verify-pickup`, { otp })
+      return res.data.rental
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] })
+      queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
+    },
+  })
+}
+
+// Verify return OTP
+export const useVerifyReturnOTP = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, otp }: { id: string; otp: string }) => {
+      const res = await apiClient.patch(`/rentals/${id}/verify-return`, { otp })
+      return res.data.rental
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] })
+      queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
+    },
+  })
+}

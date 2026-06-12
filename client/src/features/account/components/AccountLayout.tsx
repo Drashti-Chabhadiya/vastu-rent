@@ -17,7 +17,7 @@ import { authClient } from '#/lib/auth/auth-client'
 
 import { useState, useEffect } from 'react'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar'
+import { UserAvatar } from '#/components/common/UserAvatar'
 import { Button } from '#/components/ui/button'
 import { motion } from 'motion/react'
 import { EASE } from '#/lib/animations'
@@ -164,22 +164,14 @@ export function AccountLayout() {
               <div>
                 {/* User Profile Card */}
                 <div className="flex flex-col items-center gap-2 pt-5 pb-4 px-2 mb-2 border-b border-border/30">
-                  <div className="relative">
-                    <Avatar className="w-14 h-14 border-2 border-border/30 shadow-sm">
-                      <AvatarImage
-                        src={session?.user?.image || ''}
-                        alt={session?.user?.name}
-                      />
-                      <AvatarFallback className="bg-primary-soft text-primary font-black text-base">
-                        {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    {/* Active green dot */}
-                    <span
-                      className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-primary border-2 border-card rounded-full shadow-sm"
-                      title="Active"
-                    />
-                  </div>
+                  <UserAvatar
+                    image={session?.user?.image}
+                    name={session?.user?.name || 'User'}
+                    isOnline={true}
+                    size="sidebar-large"
+                    avatarClassName="border-2 border-border/30 shadow-sm"
+                    showPing={false}
+                  />
                   <div className="text-center min-w-0">
                     <p className="text-[12px] font-black text-foreground truncate max-w-[140px]">
                       {session?.user?.name || 'User'}
@@ -263,12 +255,12 @@ export function AccountLayout() {
               className="flex-1 min-w-0 w-full"
             >
               {activeTab === 'personal' ||
-              activeTab === 'bookings' ||
-              activeTab === 'listings' ||
-              activeTab === 'reviews' ||
-              activeTab === 'messages' ||
-              activeTab === 'notifications' ||
-              activeTab === 'settings' ? (
+                activeTab === 'bookings' ||
+                activeTab === 'listings' ||
+                activeTab === 'reviews' ||
+                activeTab === 'messages' ||
+                activeTab === 'notifications' ||
+                activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

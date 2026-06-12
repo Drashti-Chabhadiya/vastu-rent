@@ -11,7 +11,15 @@ export class UserController {
 
   async getAllUsers(request: FastifyRequest, _reply: FastifyReply) {
     const users = await userService.getAllUsers(request.query as any);
-    return { users };
+    const { isUserOnline } = await import("../../lib/socket.js");
+    const usersWithOnlineStatus = users.map((u: any) => {
+      const showOnline = u.showOnline !== false;
+      return {
+        ...u,
+        isOnline: showOnline ? isUserOnline(u.id) : false,
+      };
+    });
+    return { users: usersWithOnlineStatus };
   }
 
   async banUser(request: FastifyRequest, _reply: FastifyReply) {

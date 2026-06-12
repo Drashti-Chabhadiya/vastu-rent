@@ -1,11 +1,7 @@
 import { useEffect } from 'react'
 import {
-  MessageSquare,
-  PenSquare,
   ChevronLeft,
   ChevronRight,
-  Wifi,
-  WifiOff,
   X,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
@@ -14,9 +10,8 @@ import { useChat } from '#/hook'
 import { NewChatDialog } from './components/NewChatDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
+import { AboutPanel } from './components/AboutPanel'
 import { useChatStore } from '../../../../store/useChatStore'
-import { motion } from 'motion/react'
-import { fadeUp, stagger } from '#/lib/animations'
 
 export const MessagesManagement = () => {
   const chatData = useChat()
@@ -27,9 +22,8 @@ export const MessagesManagement = () => {
   const lightboxImages = useChatStore((state) => state.lightboxImages)
   const lightboxIndex = useChatStore((state) => state.lightboxIndex)
   const setLightboxIndex = useChatStore((state) => state.setLightboxIndex)
-  const setShowNewChat = useChatStore((state) => state.setShowNewChat)
-
-  const isConnected = chatData.isConnected
+  const showDetailsPanel = useChatStore((state) => state.showDetailsPanel)
+  const activeConversationId = useChatStore((state) => state.activeConversationId)
 
   // Sync useChat hook data with global Zustand store
   useEffect(() => {
@@ -58,6 +52,9 @@ export const MessagesManagement = () => {
       togglePinMessage: chatData.togglePinMessage,
       reactToMessage: chatData.reactToMessage,
       removeReaction: chatData.removeReaction,
+      archiveConversation: chatData.archiveConversation,
+      unarchiveConversation: chatData.unarchiveConversation,
+      updateConversationSettings: chatData.updateConversationSettings,
     })
   }, [
     chatData.isConnected,
@@ -83,6 +80,9 @@ export const MessagesManagement = () => {
     chatData.togglePinMessage,
     chatData.reactToMessage,
     chatData.removeReaction,
+    chatData.archiveConversation,
+    chatData.unarchiveConversation,
+    chatData.updateConversationSettings,
     setChatData,
   ])
 
@@ -104,125 +104,31 @@ export const MessagesManagement = () => {
 
   return (
     <>
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        animate="show"
-        className="space-y-5"
-      >
-        {/* Header */}
-        <motion.div
-          variants={fadeUp}
-          className={cn(
-            'flex',
-            'flex-col',
-            'sm:flex-row',
-            'sm:items-center',
-            'justify-between',
-            'gap-4',
-          )}
-        >
-          <div className={cn('flex', 'items-center', 'gap-3')}>
-            <div
-              className={cn(
-                'w-10',
-                'h-10',
-                'rounded-xl',
-                'bg-primary/10',
-                'flex',
-                'items-center',
-                'justify-center',
-                'text-primary',
-                'shrink-0',
-              )}
-            >
-              <MessageSquare size={20} fill="currentColor" />
-            </div>
-            <div>
-              <div className={cn('flex', 'items-center', 'gap-2')}>
-                <h1 className={cn('text-xl', 'font-black', 'text-foreground')}>
-                  Messages
-                </h1>
-                {/* Socket connection badge */}
-                <div
-                  className={cn(
-                    'flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black',
-                    isConnected
-                      ? 'bg-emerald-50 text-emerald-600'
-                      : 'bg-muted/50 text-muted-dark',
-                  )}
-                >
-                  {isConnected ? (
-                    <>
-                      <Wifi size={8} strokeWidth={3} /> Live
-                    </>
-                  ) : (
-                    <>
-                      <WifiOff size={8} strokeWidth={3} /> Connecting...
-                    </>
-                  )}
-                </div>
-              </div>
-              <p
-                className={cn(
-                  'text-[11px]',
-                  'text-muted-foreground/70',
-                  'font-bold',
-                  'leading-normal',
-                )}
-              >
-                Chat with hosts, buyers and our support team.
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            onClick={() => setShowNewChat(true)}
-            className={cn(
-              'border-primary',
-              'text-primary',
-              'hover:bg-primary-soft',
-              'rounded-xl',
-              'text-xs',
-              'font-bold',
-              'flex',
-              'items-center',
-              'gap-2',
-              'h-9',
-              'px-4',
-              'self-start',
-              'sm:self-auto',
-              'cursor-pointer',
-              'shadow-none',
-            )}
-          >
-            <PenSquare size={14} strokeWidth={2.5} />
-            New Message
-          </Button>
-        </motion.div>
+      <div className="space-y-4">
+        {/* Dynamic Header */}
+        <div>
+          <h1 className="text-xl font-black text-foreground font-display">
+            Messages
+          </h1>
+          <p className="text-[10px] text-muted-dark/80 font-bold mt-1.5">
+            Chat with hosts, buyers and our support team.
+          </p>
+        </div>
 
-        {/* ── New Message Dialog ── */}
-        <NewChatDialog />
-
-        {/* Dual Panel */}
-        <motion.div
-          variants={fadeUp}
-          className={cn(
-            'flex',
-            'flex-col',
-            'lg:flex-row',
-            'gap-5',
-            'h-[720px]',
-            'max-h-[calc(100vh-220px)]',
-          )}
-        >
+        <div className="flex flex-col lg:flex-row gap-5 h-[700px] max-h-[calc(100vh-280px)] overflow-hidden">
           {/* ── LEFT COLUMN: Conversations List ── */}
           <ConversationList />
 
-          {/* ── RIGHT COLUMN: Active Chat ── */}
+          {/* ── MIDDLE COLUMN: Active Chat ── */}
           <ChatWindow />
-        </motion.div>
-      </motion.div>
+
+          {/* ── RIGHT COLUMN: Details Sidebar (About Panel) ── */}
+          {showDetailsPanel && activeConversationId && <AboutPanel />}
+        </div>
+      </div>
+
+      {/* ── New Message Dialog ── */}
+      <NewChatDialog />
 
       {/* ── Image Lightbox Modal ── */}
       {showLightbox && lightboxImages.length > 0 && (

@@ -75,7 +75,10 @@ export class ChatController {
         updatedAt: conv.updatedAt,
         pinnedBy: conv.pinnedBy || [],
         mutedBy: conv.mutedBy || [],
+        archivedBy: conv.archivedBy || [],
+        isArchived: (conv.archivedBy || []).includes(userId),
         disappearingDuration,
+        settings: conv.settings || null,
         otherParticipant: {
           id: otherUser.id,
           name: otherUser.name,
@@ -180,12 +183,10 @@ export class ChatController {
     const [p1, p2] = userId < targetUserId ? [userId, targetUserId] : [targetUserId, userId];
 
     // Find existing conversation
-    let conversation = await prisma.conversation.findUnique({
+    let conversation = await prisma.conversation.findFirst({
       where: {
-        participantOneId_participantTwoId: {
-          participantOneId: p1,
-          participantTwoId: p2
-        }
+        participantOneId: p1,
+        participantTwoId: p2,
       },
       include: {
         participantOne: { select: { id: true, name: true, image: true, role: true, showProfile: true, showOnline: true, lastActive: true, isGreenMember: true } },
@@ -226,7 +227,10 @@ export class ChatController {
       updatedAt: conversation.updatedAt,
       pinnedBy: conversation.pinnedBy || [],
       mutedBy: conversation.mutedBy || [],
+      archivedBy: conversation.archivedBy || [],
+      isArchived: (conversation.archivedBy || []).includes(userId),
       disappearingDuration: conversation.disappearingDuration || 0,
+      settings: conversation.settings || null,
       otherParticipant: {
         id: otherUser.id,
         name: otherUser.name,
@@ -238,6 +242,54 @@ export class ChatController {
       }
     };
   }
+
+  async updateConversationSettings(request: FastifyRequest, reply: FastifyReply) {
+    const { id: conversationId } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+    const userId = session.user.id;
+    const { wallpaper, theme } = request.body as any;
+
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+    });
+
+    if (!conversation) {
+      return reply.status(404).send({ message: "Conversation not found" });
+    }
+
+    if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    const existingSettings = conversation.settings || {};
+    const currentSettings = (existingSettings as any)[userId] || {};
+    const updatedUserSettings = {
+      ...currentSettings,
+      ...(wallpaper !== undefined ? { wallpaper } : {}),
+      ...(theme !== undefined ? { theme } : {}),
+    };
+
+    const updatedSettings = {
+      ...(existingSettings as any),
+      [userId]: updatedUserSettings,
+    };
+
+    const updatedConversation = await prisma.conversation.update({
+      where: { id: conversationId },
+      data: {
+        settings: updatedSettings,
+      },
+    });
+
+    return {
+      id: updatedConversation.id,
+      settings: updatedConversation.settings || null,
+    };
+  }
+
   async searchUsers(request: FastifyRequest, reply: FastifyReply) {
     const { q } = request.query as any;
     const session = await auth.api.getSession({ headers: request.headers as any });
@@ -346,6 +398,69 @@ export class ChatController {
     await prisma.conversation.delete({ where: { id: conversationId } });
 
     return { message: "Conversation deleted" };
+  }
+
+  async archiveConversation(request: FastifyRequest, reply: FastifyReply) {
+    const { id: conversationId } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+    const userId = session.user.id;
+
+    const conversation = await prisma.conversation.findUnique({ where: { id: conversationId } });
+    if (!conversation) {
+      return reply.status(404).send({ message: "Conversation not found" });
+    }
+    if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    const archivedBy = conversation.archivedBy || [];
+    if (!archivedBy.includes(userId)) {
+      archivedBy.push(userId);
+    }
+
+    const updated = await prisma.conversation.update({
+      where: { id: conversationId },
+      data: { archivedBy: { set: archivedBy } },
+    });
+
+    return {
+      id: updated.id,
+      archivedBy: updated.archivedBy || [],
+      isArchived: (updated.archivedBy || []).includes(userId),
+    };
+  }
+
+  async unarchiveConversation(request: FastifyRequest, reply: FastifyReply) {
+    const { id: conversationId } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) {
+      return reply.status(401).send({ message: "Unauthorized" });
+    }
+    const userId = session.user.id;
+
+    const conversation = await prisma.conversation.findUnique({ where: { id: conversationId } });
+    if (!conversation) {
+      return reply.status(404).send({ message: "Conversation not found" });
+    }
+    if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    const archivedBy = (conversation.archivedBy || []).filter((id) => id !== userId);
+
+    const updated = await prisma.conversation.update({
+      where: { id: conversationId },
+      data: { archivedBy: { set: archivedBy } },
+    });
+
+    return {
+      id: updated.id,
+      archivedBy: updated.archivedBy || [],
+      isArchived: (updated.archivedBy || []).includes(userId),
+    };
   }
 
   async editMessage(request: FastifyRequest, reply: FastifyReply) {
@@ -747,7 +862,7 @@ export class ChatController {
 
   async setDisappearingMessages(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as any;
-    const { duration } = request.body as any; // number in seconds (e.g. 0, 86400, etc)
+    const { duration } = request.body as any; // number in hours or seconds
     const session = await auth.api.getSession({ headers: request.headers as any });
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
     const userId = session.user.id;
@@ -755,19 +870,23 @@ export class ChatController {
     const conversation = await prisma.conversation.findUnique({ where: { id } });
     if (!conversation) return reply.status(404).send({ message: "Conversation not found" });
 
+    const normalizedDuration = duration > 0 && duration <= 720 ? duration * 3600 : duration;
+
     const updated = await prisma.conversation.update({
       where: { id },
-      data: { disappearingDuration: duration }
+      data: { disappearingDuration: normalizedDuration }
     });
 
     // Create system message notifying setting update
-    const durationText = duration === 0
+    const durationText = normalizedDuration === 0
       ? "turned off disappearing messages"
-      : duration === 86400
+      : normalizedDuration === 86400
         ? "set messages to disappear after 24 hours"
-        : duration === 604800
+        : normalizedDuration === 604800
           ? "set messages to disappear after 7 days"
-          : `set messages to disappear after ${duration / 86400} days`;
+          : normalizedDuration === 2592000
+            ? "set messages to disappear after 30 days"
+            : `set messages to disappear after ${normalizedDuration / 86400} days`;
 
     const systemMessage = await prisma.message.create({
       data: {

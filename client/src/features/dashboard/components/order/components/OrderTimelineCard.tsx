@@ -8,64 +8,55 @@ interface OrderTimelineCardProps {
 
 export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
   const getTimelineSteps = () => {
+    const isCancelledOrRejected = order.status === 'cancelled' || order.status === 'rejected'
+
     const steps = [
       {
         title: 'Order Placed',
-        description: 'Order has been placed by customer.',
+        description: 'Order has been placed by renter.',
         date: order.createdAt,
         status: 'completed',
         icon: CheckCircle2,
         color: 'bg-primary',
       },
       {
-        title:
-          order.status === 'cancelled' || order.status === 'rejected'
-            ? 'Rejected / Cancelled'
-            : 'Confirmed',
-        description:
-          order.status === 'cancelled' || order.status === 'rejected'
-            ? 'This booking request was rejected.'
-            : order.status === 'confirmed' ||
-                order.status === 'active' ||
-                order.status === 'completed'
-              ? 'Booking confirmed and active.'
-              : 'Waiting for lister approval & confirmation.',
+        title: isCancelledOrRejected ? 'Rejected / Cancelled' : 'Confirmed',
+        description: isCancelledOrRejected
+          ? 'This booking request was rejected or cancelled.'
+          : order.status === 'confirmed' || order.status === 'picked_up' || order.status === 'completed'
+            ? 'Booking confirmed by lister.'
+            : 'Waiting for lister approval & confirmation.',
         date:
-          order.status === 'confirmed' ||
-          order.status === 'active' ||
-          order.status === 'completed' ||
-          order.status === 'cancelled' ||
-          order.status === 'rejected'
+          order.status === 'confirmed' || order.status === 'picked_up' || order.status === 'completed' || isCancelledOrRejected
             ? order.updatedAt || order.createdAt
             : null,
         status:
-          order.status === 'confirmed' ||
-          order.status === 'active' ||
-          order.status === 'completed' ||
-          order.status === 'cancelled' ||
-          order.status === 'rejected'
+          order.status === 'confirmed' || order.status === 'picked_up' || order.status === 'completed' || isCancelledOrRejected
             ? 'completed'
             : 'pending',
-        icon:
-          order.status === 'cancelled' || order.status === 'rejected'
-            ? XCircle
-            : CheckCircle2,
-        color:
-          order.status === 'cancelled' || order.status === 'rejected'
-            ? 'bg-destructive'
-            : order.status === 'confirmed' ||
-                order.status === 'active' ||
-                order.status === 'completed'
-              ? 'bg-primary'
-              : 'bg-[#f59e0b]',
+        icon: isCancelledOrRejected ? XCircle : CheckCircle2,
+        color: isCancelledOrRejected ? 'bg-destructive' : 'bg-primary',
+      },
+      {
+        title: 'Picked Up',
+        description:
+          order.status === 'picked_up' || order.status === 'completed'
+            ? 'Product picked up and handed over to renter.'
+            : 'Waiting for physical hand-off & verification.',
+        date: order.status === 'picked_up' || order.status === 'completed' ? order.updatedAt : null,
+        status:
+          order.status === 'picked_up' || order.status === 'completed'
+            ? 'completed'
+            : isCancelledOrRejected
+              ? 'upcoming'
+              : 'pending',
+        icon: CheckCircle2,
+        color: order.status === 'picked_up' || order.status === 'completed' ? 'bg-primary' : 'bg-muted/50',
       },
       {
         title: 'Completed',
-        description: 'Rental period has ended and product was returned.',
-        date:
-          order.status === 'completed'
-            ? order.updatedAt || order.createdAt
-            : null,
+        description: 'Rental completed and product was returned to lister.',
+        date: order.status === 'completed' ? order.updatedAt : null,
         status: order.status === 'completed' ? 'completed' : 'upcoming',
         icon: CheckCircle2,
         color: order.status === 'completed' ? 'bg-primary' : 'bg-muted/50',

@@ -26,6 +26,7 @@ import {
   useUpdateUserRole,
 } from '#/hook'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { UserAvatar } from '#/components/common/UserAvatar'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 
@@ -179,16 +180,15 @@ export const UsersManagement = () => {
                   >
                     <TableCell className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-dash-brand-light flex items-center justify-center text-dash-brand font-bold uppercase relative">
-                          {user.image ? (
-                            <img
-                              src={user.image}
-                              alt={user.name}
-                              className="w-full h-full rounded-full object-cover"
-                            />
-                          ) : (
-                            user.name?.[0] || user.email[0]
-                          )}
+                        <div className="relative shrink-0">
+                          <UserAvatar
+                            image={user.image}
+                            name={user.name || user.email}
+                            isOnline={user.isOnline}
+                            size="sidebar"
+                            avatarClassName="bg-dash-brand-light text-dash-brand"
+                            showPing={true}
+                          />
                           {user.banned && (
                             <div className="absolute -top-1 -right-1 p-0.5 bg-card rounded-full">
                               <AlertCircle

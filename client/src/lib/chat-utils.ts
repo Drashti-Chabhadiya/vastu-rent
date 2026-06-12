@@ -1,4 +1,5 @@
 import { format, isToday, isYesterday } from 'date-fns'
+import React from 'react'
 
 export const REPLY_SEP = '\u200B\u{1F4AC}\u200B' // zero-width + speech bubble + zero-width (invisible separator)
 
@@ -51,3 +52,64 @@ export function formatLastActive(lastActiveStr: string | null | undefined): stri
     return 'Offline'
   }
 }
+
+export const getEmojiUnified = (emojiStr: string): string => {
+  return Array.from(emojiStr)
+    .map((char) => char.codePointAt(0)!.toString(16))
+    .join('-')
+}
+
+export const isImageUrl = (url: string): boolean => {
+  const cleanUrl = url.split('?')[0].toLowerCase()
+  return (
+    cleanUrl.endsWith('.jpg') ||
+    cleanUrl.endsWith('.jpeg') ||
+    cleanUrl.endsWith('.png') ||
+    cleanUrl.endsWith('.gif') ||
+    cleanUrl.endsWith('.webp')
+  )
+}
+
+export const isAudioUrl = (url: string): boolean => {
+  const cleanUrl = url.split('?')[0].toLowerCase()
+  return (
+    cleanUrl.endsWith('.mp3') ||
+    cleanUrl.endsWith('.wav') ||
+    cleanUrl.endsWith('.ogg') ||
+    cleanUrl.endsWith('.m4a') ||
+    cleanUrl.endsWith('.aac') ||
+    cleanUrl.endsWith('.webm')
+  )
+}
+
+export const getDisappearingDurationText = (value: number) => {
+  if (value === 0) return 'Off'
+  if (value <= 720) {
+    if (value === 24) return '24 hours'
+    if (value === 168) return '7 days'
+    if (value === 720) return '30 days'
+    return `${value} hours`
+  }
+
+  if (value === 86400) return '24 hours'
+  if (value === 604800) return '7 days'
+  if (value === 7776000) return '90 days'
+  if (value % 86400 === 0) return `${value / 86400} days`
+
+  return `${Math.round(value / 86400 * 100) / 100} days`
+}
+
+export const highlightText = (text: string, search: string): React.ReactNode => {
+  if (!search || !search.trim()) return text
+  const parts = text.split(new RegExp(`(${search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi'))
+  return React.createElement(
+    React.Fragment,
+    null,
+    parts.map((part, i) =>
+      part.toLowerCase() === search.toLowerCase()
+        ? React.createElement('mark', { key: i, className: 'bg-yellow-200 text-foreground font-black px-0.5 rounded-sm' }, part)
+        : part
+    )
+  )
+}
+
