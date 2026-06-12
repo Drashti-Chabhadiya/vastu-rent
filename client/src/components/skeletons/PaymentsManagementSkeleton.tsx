@@ -51,8 +51,11 @@ export function PaymentsManagementSkeleton() {
                 ))}
               </div>
               {Array.from({ length: 3 }).map((_, r) => (
-                <div key={r} className="flex gap-4 py-2 border-b border-border/10">
-                  {Array.from({ length: 4 }).map((_, c) => (
+                <div
+                  key={r}
+                  className="flex gap-4 py-2 border-b border-border/10"
+                >
+                  {Array.from({ length: 4 }).map((__, c) => (
                     <Skeleton key={c} className="h-5 flex-1 rounded" />
                   ))}
                 </div>

@@ -1,6 +1,15 @@
 import React from 'react'
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
-import { CornerUpLeft, X, ImagePlus, Smile, Paperclip, Mic, Send, Loader2 } from 'lucide-react'
+import {
+  CornerUpLeft,
+  X,
+  ImagePlus,
+  Smile,
+  Paperclip,
+  Mic,
+  Send,
+  Loader2,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { useChatStore } from '../../../../../store/useChatStore'
@@ -119,8 +128,9 @@ export function ChatInputDock({
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-ping shrink-0" />
               <span className="text-[10px] font-black text-emerald-800 tracking-wide select-none">
-                Recording {Math.floor(recordingSeconds / 60)}:{(recordingSeconds % 60).toString().padStart(2, '0')}
-                {isSimulatedRecording && " (Simulated)"}
+                Recording {Math.floor(recordingSeconds / 60)}:
+                {(recordingSeconds % 60).toString().padStart(2, '0')}
+                {isSimulatedRecording && ' (Simulated)'}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -238,7 +248,8 @@ export function ChatInputDock({
               disabled={!isConnected || isUploading}
               className={cn(
                 'w-11 h-11 rounded-2xl flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0a6634] hover:bg-[#075028] border-none outline-none',
-                (!isConnected || isUploading) && 'bg-muted text-muted-dark cursor-not-allowed shadow-none',
+                (!isConnected || isUploading) &&
+                  'bg-muted text-muted-dark cursor-not-allowed shadow-none',
               )}
             >
               {isUploading ? (

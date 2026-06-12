@@ -83,7 +83,10 @@ export const DisputesManagement = () => {
       </motion.div>
 
       {/* Main Grid: Disputes List & Details Sidebar */}
-      <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div
+        variants={fadeUp}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
         {/* Left Column: All Disputes Table */}
         <div className="lg:col-span-2 bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-hidden">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -306,7 +309,10 @@ export const DisputesManagement = () => {
       </motion.div>
 
       {/* Support Footer */}
-      <motion.div variants={fadeUp} className="bg-emerald-50 p-8 px-12 rounded-[2.5rem] border border-emerald-100 flex items-center justify-between group">
+      <motion.div
+        variants={fadeUp}
+        className="bg-emerald-50 p-8 px-12 rounded-[2.5rem] border border-emerald-100 flex items-center justify-between group"
+      >
         <div className="flex items-center gap-6">
           <div className="w-12 h-12 rounded-2xl bg-card flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-50">
             <ShieldCheck size={24} />

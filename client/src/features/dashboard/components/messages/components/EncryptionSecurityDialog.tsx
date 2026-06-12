@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '#/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/dialog'
 import { Lock } from 'lucide-react'
 import { useChatStore } from '../../../../../store/useChatStore'
 
@@ -7,9 +12,14 @@ interface EncryptionSecurityDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function EncryptionSecurityDialog({ open, onOpenChange }: EncryptionSecurityDialogProps) {
+export function EncryptionSecurityDialog({
+  open,
+  onOpenChange,
+}: EncryptionSecurityDialogProps) {
   const { conversations, activeConversationId } = useChatStore()
-  const activeConversation = conversations.find((c) => c.id === activeConversationId)
+  const activeConversation = conversations.find(
+    (c) => c.id === activeConversationId,
+  )
 
   if (!activeConversation) return null
 
@@ -38,7 +48,8 @@ export function EncryptionSecurityDialog({ open, onOpenChange }: EncryptionSecur
         </DialogHeader>
         <div className="mt-4 space-y-4 text-slate-600 text-[12px] font-medium leading-relaxed">
           <p>
-            Messages sent to this chat are secured with high-grade transport-layer security and simulated end-to-end encryption.
+            Messages sent to this chat are secured with high-grade
+            transport-layer security and simulated end-to-end encryption.
           </p>
           <p className="font-bold text-slate-800">
             Your security code for verification:
@@ -47,7 +58,9 @@ export function EncryptionSecurityDialog({ open, onOpenChange }: EncryptionSecur
             {getSecurityCode()}
           </div>
           <p className="text-[10px] text-slate-400">
-            Verify this code with {activeConversation.otherParticipant.name} to confirm that messages and files are safely transmitted and cannot be intercepted by third parties.
+            Verify this code with {activeConversation.otherParticipant.name} to
+            confirm that messages and files are safely transmitted and cannot be
+            intercepted by third parties.
           </p>
         </div>
       </DialogContent>

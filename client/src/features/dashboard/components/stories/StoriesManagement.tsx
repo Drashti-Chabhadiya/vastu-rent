@@ -106,7 +106,10 @@ export function StoriesManagement() {
       animate="show"
       className="space-y-6"
     >
-      <motion.div variants={fadeUp} className="flex items-center justify-between">
+      <motion.div
+        variants={fadeUp}
+        className="flex items-center justify-between"
+      >
         <div>
           <h2 className="text-2xl font-black text-dash-text tracking-tight">
             Stories Management

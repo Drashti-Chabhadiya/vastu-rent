@@ -315,7 +315,11 @@ export function WishlistPage() {
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               >
                 {filteredProducts.map((product: any) => (
-                  <motion.div key={product.id} variants={fadeUp} className="relative group">
+                  <motion.div
+                    key={product.id}
+                    variants={fadeUp}
+                    className="relative group"
+                  >
                     <ProductCard product={product} />
                     {clearConfirmId === product.id ? (
                       <div className="absolute inset-0 bg-card/95 rounded-3xl flex flex-col items-center justify-center gap-3 z-10 animate-in fade-in duration-150">

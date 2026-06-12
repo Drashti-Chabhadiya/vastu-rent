@@ -122,7 +122,10 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
 
       {/* Admin Stats */}
       {isAdmin && (
-        <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
           {adminStats.map((stat, i) => {
             const Icon = stat.icon
             return (
@@ -154,7 +157,10 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
 
       {/* User Tabs */}
       {isUser && (
-        <motion.div variants={fadeUp} className="flex items-center gap-2 border-b border-border/30 pb-px">
+        <motion.div
+          variants={fadeUp}
+          className="flex items-center gap-2 border-b border-border/30 pb-px"
+        >
           {(['my', 'global'] as const).map((tab) => (
             <Button
               key={tab}
@@ -174,7 +180,10 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       )}
 
       {/* Main Grid */}
-      <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div
+        variants={fadeUp}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
         <CouponsTable
           coupons={dashboardCoupons}
           isLoading={isLoading}

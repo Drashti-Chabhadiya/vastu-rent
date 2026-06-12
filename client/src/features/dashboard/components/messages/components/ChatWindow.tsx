@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import {
-  MessageSquare,
-  Clock,
-} from 'lucide-react'
+import { MessageSquare, Clock } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
@@ -15,7 +12,10 @@ import { ForwardDialog } from './ForwardDialog'
 import { MessageInfoDialog } from './MessageInfoDialog'
 import { MediaBrowserDialog } from './MediaBrowserDialog'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
-import { buildReplyContent, getDisappearingDurationText } from '#/lib/chat-utils'
+import {
+  buildReplyContent,
+  getDisappearingDurationText,
+} from '#/lib/chat-utils'
 import { ChatHeader } from './ChatHeader'
 import { SearchPanel } from './SearchPanel'
 import { MultiSelectBar } from './MultiSelectBar'
@@ -72,7 +72,10 @@ export function ChatWindow() {
     setShowInfoDialog,
   } = useChatStore()
 
-  const wallpaperClasses: Record<'classic' | 'dawn' | 'forest' | 'minimal', string> = {
+  const wallpaperClasses: Record<
+    'classic' | 'dawn' | 'forest' | 'minimal',
+    string
+  > = {
     classic: 'bg-emerald-50/80',
     dawn: 'bg-orange-50/80',
     forest: 'bg-emerald-100/80',
@@ -80,7 +83,8 @@ export function ChatWindow() {
   }
   const activeConversation =
     conversations.find((c) => c.id === activeConversationId) || null
-  const activeConversationSettings = activeConversation?.settings?.[currentUserId || '']
+  const activeConversationSettings =
+    activeConversation?.settings?.[currentUserId || '']
   const appliedWallpaper =
     activeConversationSettings?.wallpaper ?? chatWallpaper
   const wallpaperClass =
@@ -342,12 +346,21 @@ export function ChatWindow() {
       )}
 
       {/* Disappearing Messages Info Banner */}
-      {activeConversation.disappearingDuration ? activeConversation.disappearingDuration > 0 && (
-        <div className="bg-muted-light/60 border-b border-border/20 px-6 py-2.5 flex items-center gap-2 text-[10px] font-bold text-muted-dark shrink-0 animate-in slide-in-from-top duration-200">
-          <Clock size={12} className="text-primary shrink-0" />
-          <span>Disappearing messages is active. Messages will disappear for everyone after {getDisappearingDurationText(activeConversation.disappearingDuration)}.</span>
-        </div>
-      ) : null}
+      {activeConversation.disappearingDuration
+        ? activeConversation.disappearingDuration > 0 && (
+            <div className="bg-muted-light/60 border-b border-border/20 px-6 py-2.5 flex items-center gap-2 text-[10px] font-bold text-muted-dark shrink-0 animate-in slide-in-from-top duration-200">
+              <Clock size={12} className="text-primary shrink-0" />
+              <span>
+                Disappearing messages is active. Messages will disappear for
+                everyone after{' '}
+                {getDisappearingDurationText(
+                  activeConversation.disappearingDuration,
+                )}
+                .
+              </span>
+            </div>
+          )
+        : null}
 
       {/* Messages Area */}
       <div
@@ -374,15 +387,24 @@ export function ChatWindow() {
                     isMe ? 'ml-auto flex-row-reverse' : 'mr-auto',
                   )}
                 >
-                  {!isMe && <Skeleton className="w-8 h-8 rounded-full shrink-0 self-end" />}
+                  {!isMe && (
+                    <Skeleton className="w-8 h-8 rounded-full shrink-0 self-end" />
+                  )}
                   <div className="space-y-1.5">
                     <Skeleton
                       className={cn(
                         'h-9 rounded-2xl px-4 py-2.5',
-                        isMe ? 'bg-primary/20 rounded-tr-sm w-36' : 'bg-muted rounded-tl-sm w-44',
+                        isMe
+                          ? 'bg-primary/20 rounded-tr-sm w-36'
+                          : 'bg-muted rounded-tl-sm w-44',
                       )}
                     />
-                    <Skeleton className={cn('h-2.5 w-10 rounded', isMe ? 'ml-auto' : '')} />
+                    <Skeleton
+                      className={cn(
+                        'h-2.5 w-10 rounded',
+                        isMe ? 'ml-auto' : '',
+                      )}
+                    />
                   </div>
                 </div>
               )

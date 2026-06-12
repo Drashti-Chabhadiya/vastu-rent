@@ -207,10 +207,7 @@ export function ReviewDialog({
                       try {
                         setIsUploading(true)
                         const url = await uploadProductImage.mutateAsync(file)
-                        setUploadedImages((prev: string[]) => [
-                          ...prev,
-                          url,
-                        ])
+                        setUploadedImages((prev: string[]) => [...prev, url])
                       } catch {
                         toast.error('Image upload failed.')
                       } finally {

@@ -113,19 +113,22 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
 
   const handleSaveRenameDevice = () => {
     if (!editingDeviceName.trim() || !editingDeviceId) return
-    renameMutation.mutate({
-      id: editingDeviceId,
-      name: editingDeviceName.trim(),
-    }, {
-      onSuccess: () => {
-        toast.success('Device renamed successfully!')
-        setEditingDeviceId(null)
-        setEditingDeviceName('')
+    renameMutation.mutate(
+      {
+        id: editingDeviceId,
+        name: editingDeviceName.trim(),
       },
-      onError: () => {
-        toast.error('Failed to rename device.')
-      }
-    })
+      {
+        onSuccess: () => {
+          toast.success('Device renamed successfully!')
+          setEditingDeviceId(null)
+          setEditingDeviceName('')
+        },
+        onError: () => {
+          toast.error('Failed to rename device.')
+        },
+      },
+    )
   }
 
   const currentSessionId = session?.session?.id
@@ -294,7 +297,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
               },
               onSettled: () => {
                 setRemovingId(null)
-              }
+              },
             })
             setDeviceToRemove(null)
           }

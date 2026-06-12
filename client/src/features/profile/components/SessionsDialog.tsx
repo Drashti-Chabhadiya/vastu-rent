@@ -216,7 +216,7 @@ export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
                           },
                           onSettled: () => {
                             setRevokingId(null)
-                          }
+                          },
                         })
                       }}
                       className="h-8 rounded-lg px-3 text-[10px] font-black uppercase tracking-wider text-destructive hover:bg-danger hover:text-destructive shadow-none cursor-pointer shrink-0"

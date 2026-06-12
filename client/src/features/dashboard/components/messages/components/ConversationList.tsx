@@ -37,7 +37,9 @@ import { useChatStore } from '../../../../../store/useChatStore'
 export function ConversationList() {
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
-  const [disappearingConv, setDisappearingConv] = useState<Conversation | null>(null)
+  const [disappearingConv, setDisappearingConv] = useState<Conversation | null>(
+    null,
+  )
   const [clearChatConvId, setClearChatConvId] = useState<string | null>(null)
 
   // Consume Zustand global state
@@ -90,9 +92,15 @@ export function ConversationList() {
 
       const otherPersonOnline = checkOnline(conv.otherParticipant.id)
       const satisfiesOnlineFilter = !filterOnline || otherPersonOnline
-      const satisfiesGreenFilter = !filterGreen || conv.otherParticipant.isGreenMember
+      const satisfiesGreenFilter =
+        !filterGreen || conv.otherParticipant.isGreenMember
 
-      return matchesSearch && matchesTab && satisfiesOnlineFilter && satisfiesGreenFilter
+      return (
+        matchesSearch &&
+        matchesTab &&
+        satisfiesOnlineFilter &&
+        satisfiesGreenFilter
+      )
     })
     .sort((a, b) => {
       const aPinned = a.pinnedBy?.includes(currentUserId || '') ? 1 : 0
@@ -171,7 +179,8 @@ export function ConversationList() {
                   'transition-colors',
                   'cursor-pointer',
                   'shrink-0',
-                  (filterOnline || filterGreen || sortBy !== 'recent') && 'text-primary bg-primary-soft hover:bg-primary-soft/80'
+                  (filterOnline || filterGreen || sortBy !== 'recent') &&
+                    'text-primary bg-primary-soft hover:bg-primary-soft/80',
                 )}
               >
                 <SlidersHorizontal size={14} />
@@ -184,14 +193,26 @@ export function ConversationList() {
               <DropdownMenuLabel className="text-xs font-black text-foreground/85 px-3 py-2">
                 Sort Conversations
               </DropdownMenuLabel>
-              <DropdownMenuRadioGroup value={sortBy} onValueChange={(val: any) => setSortBy(val)}>
-                <DropdownMenuRadioItem value="recent" className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer">
+              <DropdownMenuRadioGroup
+                value={sortBy}
+                onValueChange={(val: any) => setSortBy(val)}
+              >
+                <DropdownMenuRadioItem
+                  value="recent"
+                  className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
+                >
                   Recent Activity
                 </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="unread" className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer">
+                <DropdownMenuRadioItem
+                  value="unread"
+                  className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
+                >
                   Unread Messages First
                 </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="name" className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer">
+                <DropdownMenuRadioItem
+                  value="name"
+                  className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
+                >
                   Name (A to Z)
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
@@ -246,71 +267,73 @@ export function ConversationList() {
             'scrollbar-none',
           )}
         >
-          {(['all', 'unread', 'bookings', 'support', 'archived'] as const).map((tab) => {
-            const tabUnread =
-              tab === 'unread'
-                ? totalUnread
-                : tab === 'all'
+          {(['all', 'unread', 'bookings', 'support', 'archived'] as const).map(
+            (tab) => {
+              const tabUnread =
+                tab === 'unread'
                   ? totalUnread
-                  : tab === 'archived'
-                    ? conversations.filter((c) => c.isArchived).length
-                    : conversations
-                      .filter((c) => {
-                        if (tab === 'bookings')
-                          return c.otherParticipant.role === 'user'
-                        if (tab === 'support')
-                          return c.otherParticipant.role === 'admin'
-                        return false
-                      })
-                      .reduce((s, c) => s + c.unreadCount, 0)
+                  : tab === 'all'
+                    ? totalUnread
+                    : tab === 'archived'
+                      ? conversations.filter((c) => c.isArchived).length
+                      : conversations
+                          .filter((c) => {
+                            if (tab === 'bookings')
+                              return c.otherParticipant.role === 'user'
+                            if (tab === 'support')
+                              return c.otherParticipant.role === 'admin'
+                            return false
+                          })
+                          .reduce((s, c) => s + c.unreadCount, 0)
 
-            return (
-              <Button
-                key={tab}
-                variant="ghost"
-                onClick={() => setActiveSubTab(tab)}
-                className={cn(
-                  'relative pb-3 text-[11px] font-extrabold capitalize tracking-wider whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5 rounded-none h-auto px-0 hover:bg-transparent',
-                  activeSubTab === tab
-                    ? 'text-primary'
-                    : 'text-muted-dark hover:text-muted-foreground',
-                )}
-              >
-                {tab}
-                {tabUnread > 0 && (
-                  <span
-                    className={cn(
-                      'w-4',
-                      'h-4',
-                      'bg-primary',
-                      'text-primary-foreground',
-                      'text-[9px]',
-                      'font-black',
-                      'rounded-full',
-                      'flex',
-                      'items-center',
-                      'justify-center',
-                    )}
-                  >
-                    {tabUnread > 9 ? '9+' : tabUnread}
-                  </span>
-                )}
-                {activeSubTab === tab && (
-                  <div
-                    className={cn(
-                      'absolute',
-                      'bottom-0',
-                      'left-0',
-                      'right-0',
-                      'h-[2px]',
-                      'bg-primary',
-                      'rounded-full',
-                    )}
-                  />
-                )}
-              </Button>
-            )
-          })}
+              return (
+                <Button
+                  key={tab}
+                  variant="ghost"
+                  onClick={() => setActiveSubTab(tab)}
+                  className={cn(
+                    'relative pb-3 text-[11px] font-extrabold capitalize tracking-wider whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5 rounded-none h-auto px-0 hover:bg-transparent',
+                    activeSubTab === tab
+                      ? 'text-primary'
+                      : 'text-muted-dark hover:text-muted-foreground',
+                  )}
+                >
+                  {tab}
+                  {tabUnread > 0 && (
+                    <span
+                      className={cn(
+                        'w-4',
+                        'h-4',
+                        'bg-primary',
+                        'text-primary-foreground',
+                        'text-[9px]',
+                        'font-black',
+                        'rounded-full',
+                        'flex',
+                        'items-center',
+                        'justify-center',
+                      )}
+                    >
+                      {tabUnread > 9 ? '9+' : tabUnread}
+                    </span>
+                  )}
+                  {activeSubTab === tab && (
+                    <div
+                      className={cn(
+                        'absolute',
+                        'bottom-0',
+                        'left-0',
+                        'right-0',
+                        'h-[2px]',
+                        'bg-primary',
+                        'rounded-full',
+                      )}
+                    />
+                  )}
+                </Button>
+              )
+            },
+          )}
         </div>
       </div>
 
@@ -327,7 +350,10 @@ export function ConversationList() {
         {isLoadingConversations ? (
           <div className="space-y-2.5 p-1 animate-pulse">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-2xl border border-transparent">
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 rounded-2xl border border-transparent"
+              >
                 <Skeleton className="w-10 h-10 rounded-full shrink-0" />
                 <div className="flex-1 space-y-2 min-w-0">
                   <div className="flex justify-between items-center">
@@ -388,8 +414,8 @@ export function ConversationList() {
                   name={conv.otherParticipant.name}
                   isOnline={
                     myShowOnline &&
-                      conv.otherParticipant.lastActive !== null &&
-                      conv.otherParticipant.lastActive !== undefined
+                    conv.otherParticipant.lastActive !== null &&
+                    conv.otherParticipant.lastActive !== undefined
                       ? conv.otherParticipant.isOnline
                       : undefined
                   }
@@ -446,10 +472,16 @@ export function ConversationList() {
 
                     <div className="flex items-center gap-1.5 shrink-0">
                       {isPinned && (
-                        <Pin size={11} className="text-primary fill-primary rotate-45 shrink-0" />
+                        <Pin
+                          size={11}
+                          className="text-primary fill-primary rotate-45 shrink-0"
+                        />
                       )}
                       {isMuted && (
-                        <BellOff size={11} className="text-muted-dark shrink-0" />
+                        <BellOff
+                          size={11}
+                          className="text-muted-dark shrink-0"
+                        />
                       )}
                       {hasDisappearing && (
                         <Clock size={11} className="text-muted-dark shrink-0" />

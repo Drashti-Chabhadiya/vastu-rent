@@ -37,9 +37,11 @@ export function SearchPanel() {
     if (searchMatches.length === 0) return
     let nextIndex = currentMatchIndex
     if (direction === 'up') {
-      nextIndex = currentMatchIndex > 0 ? currentMatchIndex - 1 : searchMatches.length - 1
+      nextIndex =
+        currentMatchIndex > 0 ? currentMatchIndex - 1 : searchMatches.length - 1
     } else {
-      nextIndex = currentMatchIndex < searchMatches.length - 1 ? currentMatchIndex + 1 : 0
+      nextIndex =
+        currentMatchIndex < searchMatches.length - 1 ? currentMatchIndex + 1 : 0
     }
     setCurrentMatchIndex(nextIndex)
     scrollToMessage(searchMatches[nextIndex].id)
@@ -58,9 +60,11 @@ export function SearchPanel() {
           }}
           className="h-10 pl-9 pr-24 bg-card border-none rounded-xl text-[11px] font-bold focus-visible:ring-1 focus-visible:ring-primary/20"
         />
-        {searchText.trim() !== "" && (
+        {searchText.trim() !== '' && (
           <span className="absolute right-3 top-3 text-[10px] font-bold text-muted-dark bg-muted-light px-2 py-0.5 rounded-md">
-            {searchMatches.length > 0 ? `${currentMatchIndex + 1} of ${searchMatches.length}` : 'No matches'}
+            {searchMatches.length > 0
+              ? `${currentMatchIndex + 1} of ${searchMatches.length}`
+              : 'No matches'}
           </span>
         )}
       </div>
@@ -102,4 +106,3 @@ export function SearchPanel() {
     </div>
   )
 }
-

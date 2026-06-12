@@ -8,7 +8,8 @@ interface OrderTimelineCardProps {
 
 export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
   const getTimelineSteps = () => {
-    const isCancelledOrRejected = order.status === 'cancelled' || order.status === 'rejected'
+    const isCancelledOrRejected =
+      order.status === 'cancelled' || order.status === 'rejected'
 
     const steps = [
       {
@@ -23,15 +24,23 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
         title: isCancelledOrRejected ? 'Rejected / Cancelled' : 'Confirmed',
         description: isCancelledOrRejected
           ? 'This booking request was rejected or cancelled.'
-          : order.status === 'confirmed' || order.status === 'picked_up' || order.status === 'completed'
+          : order.status === 'confirmed' ||
+              order.status === 'picked_up' ||
+              order.status === 'completed'
             ? 'Booking confirmed by lister.'
             : 'Waiting for lister approval & confirmation.',
         date:
-          order.status === 'confirmed' || order.status === 'picked_up' || order.status === 'completed' || isCancelledOrRejected
+          order.status === 'confirmed' ||
+          order.status === 'picked_up' ||
+          order.status === 'completed' ||
+          isCancelledOrRejected
             ? order.updatedAt || order.createdAt
             : null,
         status:
-          order.status === 'confirmed' || order.status === 'picked_up' || order.status === 'completed' || isCancelledOrRejected
+          order.status === 'confirmed' ||
+          order.status === 'picked_up' ||
+          order.status === 'completed' ||
+          isCancelledOrRejected
             ? 'completed'
             : 'pending',
         icon: isCancelledOrRejected ? XCircle : CheckCircle2,
@@ -43,7 +52,10 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
           order.status === 'picked_up' || order.status === 'completed'
             ? 'Product picked up and handed over to renter.'
             : 'Waiting for physical hand-off & verification.',
-        date: order.status === 'picked_up' || order.status === 'completed' ? order.updatedAt : null,
+        date:
+          order.status === 'picked_up' || order.status === 'completed'
+            ? order.updatedAt
+            : null,
         status:
           order.status === 'picked_up' || order.status === 'completed'
             ? 'completed'
@@ -51,7 +63,10 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
               ? 'upcoming'
               : 'pending',
         icon: CheckCircle2,
-        color: order.status === 'picked_up' || order.status === 'completed' ? 'bg-primary' : 'bg-muted/50',
+        color:
+          order.status === 'picked_up' || order.status === 'completed'
+            ? 'bg-primary'
+            : 'bg-muted/50',
       },
       {
         title: 'Completed',

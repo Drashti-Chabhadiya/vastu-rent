@@ -192,7 +192,10 @@ export function useChat() {
                     otherParticipant: {
                       ...conv.otherParticipant,
                       isOnline: status === 'online',
-                      lastActive: lastActive !== undefined ? lastActive : conv.otherParticipant.lastActive,
+                      lastActive:
+                        lastActive !== undefined
+                          ? lastActive
+                          : conv.otherParticipant.lastActive,
                     },
                   }
                 : conv,
@@ -249,78 +252,103 @@ export function useChat() {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === msg.id
-            ? { ...m, content: msg.content, isEdited: true, updatedAt: msg.updatedAt }
-            : m,
-        ),
-      )
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) =>
-          conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
-            ? {
-                ...conv,
-                lastMessage: {
-                  ...conv.lastMessage,
-                  content: msg.content,
-                },
-              }
-            : conv,
-        ) || [],
-      )
-    })
-
-    // Real-time message delete from socket
-    socket.on('message_deleted', (msg: { id: string; conversationId: string; isDeleted: boolean; content: string; attachments: string[]; updatedAt: string }) => {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === msg.id
             ? {
                 ...m,
                 content: msg.content,
-                attachments: msg.attachments,
-                isDeleted: msg.isDeleted,
+                isEdited: true,
                 updatedAt: msg.updatedAt,
               }
             : m,
         ),
       )
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) =>
-          conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
-            ? {
-                ...conv,
-                lastMessage: {
-                  ...conv.lastMessage,
-                  content: msg.content,
-                },
-              }
-            : conv,
-        ) || [],
-      )
-    })
-
-    // Real-time message delivery from socket
-    socket.on(
-      'messages_delivered',
-      ({ messageIds, deliveredAt }: { messageIds: string[]; deliveredAt: string }) => {
-        setMessages((prev) =>
-          prev.map((m) =>
-            messageIds.includes(m.id)
-              ? { ...m, deliveredAt }
-              : m,
-          ),
-        )
-        queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
+      queryClient.setQueryData<Conversation[]>(
+        ['conversations'],
+        (old) =>
           old?.map((conv) =>
-            conv.lastMessage && messageIds.includes(conv.lastMessage.id)
+            conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
               ? {
                   ...conv,
                   lastMessage: {
                     ...conv.lastMessage,
-                    deliveredAt,
+                    content: msg.content,
                   },
                 }
               : conv,
           ) || [],
+      )
+    })
+
+    // Real-time message delete from socket
+    socket.on(
+      'message_deleted',
+      (msg: {
+        id: string
+        conversationId: string
+        isDeleted: boolean
+        content: string
+        attachments: string[]
+        updatedAt: string
+      }) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === msg.id
+              ? {
+                  ...m,
+                  content: msg.content,
+                  attachments: msg.attachments,
+                  isDeleted: msg.isDeleted,
+                  updatedAt: msg.updatedAt,
+                }
+              : m,
+          ),
+        )
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
+                ? {
+                    ...conv,
+                    lastMessage: {
+                      ...conv.lastMessage,
+                      content: msg.content,
+                    },
+                  }
+                : conv,
+            ) || [],
+        )
+      },
+    )
+
+    // Real-time message delivery from socket
+    socket.on(
+      'messages_delivered',
+      ({
+        messageIds,
+        deliveredAt,
+      }: {
+        messageIds: string[]
+        deliveredAt: string
+      }) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            messageIds.includes(m.id) ? { ...m, deliveredAt } : m,
+          ),
+        )
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.lastMessage && messageIds.includes(conv.lastMessage.id)
+                ? {
+                    ...conv,
+                    lastMessage: {
+                      ...conv.lastMessage,
+                      deliveredAt,
+                    },
+                  }
+                : conv,
+            ) || [],
         )
       },
     )
@@ -378,11 +406,22 @@ export function useChat() {
     // Read receipts
     socket.on(
       'messages_read',
-      ({ conversationId, readAt }: { conversationId: string; readAt: string }) => {
+      ({
+        conversationId,
+        readAt,
+      }: {
+        conversationId: string
+        readAt: string
+      }) => {
         setMessages((prev) =>
           prev.map((m) =>
             m.conversationId === conversationId && m.senderId === userId
-              ? { ...m, isRead: true, readAt, deliveredAt: m.deliveredAt || readAt }
+              ? {
+                  ...m,
+                  isRead: true,
+                  readAt,
+                  deliveredAt: m.deliveredAt || readAt,
+                }
               : m,
           ),
         )
@@ -522,8 +561,16 @@ export function useChat() {
 
   // ── Edit message ───────────────────────────────────────────────────────────
   const editMessageMutation = useMutation({
-    mutationFn: async ({ messageId, content }: { messageId: string; content: string }) => {
-      const res = await apiClient.put(`/chat/messages/${messageId}`, { content })
+    mutationFn: async ({
+      messageId,
+      content,
+    }: {
+      messageId: string
+      content: string
+    }) => {
+      const res = await apiClient.put(`/chat/messages/${messageId}`, {
+        content,
+      })
       return res.data as Message
     },
     onSuccess: (updatedMsg) => {
@@ -535,7 +582,13 @@ export function useChat() {
 
   // ── Delete message ─────────────────────────────────────────────────────────
   const deleteMessageMutation = useMutation({
-    mutationFn: async ({ messageId, mode }: { messageId: string; mode: 'me' | 'everyone' }) => {
+    mutationFn: async ({
+      messageId,
+      mode,
+    }: {
+      messageId: string
+      mode: 'me' | 'everyone'
+    }) => {
       await apiClient.delete(`/chat/messages/${messageId}`, {
         params: { mode },
       })
@@ -550,7 +603,13 @@ export function useChat() {
 
   // ── Forward message ────────────────────────────────────────────────────────
   const forwardMessageMutation = useMutation({
-    mutationFn: async ({ messageId, targetConversationIds }: { messageId: string; targetConversationIds: string[] }) => {
+    mutationFn: async ({
+      messageId,
+      targetConversationIds,
+    }: {
+      messageId: string
+      targetConversationIds: string[]
+    }) => {
       const res = await apiClient.post(`/chat/messages/${messageId}/forward`, {
         targetConversationIds,
       })
@@ -589,8 +648,16 @@ export function useChat() {
 
   // ── React to message ───────────────────────────────────────────────────────
   const reactToMessageMutation = useMutation({
-    mutationFn: async ({ messageId, emoji }: { messageId: string; emoji: string }) => {
-      const res = await apiClient.post(`/chat/messages/${messageId}/react`, { emoji })
+    mutationFn: async ({
+      messageId,
+      emoji,
+    }: {
+      messageId: string
+      emoji: string
+    }) => {
+      const res = await apiClient.post(`/chat/messages/${messageId}/react`, {
+        emoji,
+      })
       return res.data as Message
     },
     onSuccess: (updated) => {
@@ -616,7 +683,9 @@ export function useChat() {
   // ── Pin conversation ───────────────────────────────────────────────────────
   const togglePinConversationMutation = useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/pin`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/pin`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -627,7 +696,9 @@ export function useChat() {
   // ── Mute conversation ──────────────────────────────────────────────────────
   const toggleMuteConversationMutation = useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/mute`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/mute`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -638,7 +709,9 @@ export function useChat() {
   // ── Clear conversation chat ────────────────────────────────────────────────
   const clearChatMutation = useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/clear`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/clear`,
+      )
       return res.data
     },
     onSuccess: (_, conversationId) => {
@@ -652,8 +725,17 @@ export function useChat() {
 
   // ── Set disappearing messages duration ─────────────────────────────────────
   const setDisappearingMessagesMutation = useMutation({
-    mutationFn: async ({ conversationId, duration }: { conversationId: string; duration: number }) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/disappearing`, { duration })
+    mutationFn: async ({
+      conversationId,
+      duration,
+    }: {
+      conversationId: string
+      duration: number
+    }) => {
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/disappearing`,
+        { duration },
+      )
       return res.data
     },
     onSuccess: () => {
@@ -664,7 +746,9 @@ export function useChat() {
   // ── Archive conversation ────────────────────────────────────────────────
   const archiveConversationMutation = useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/archive`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/archive`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -675,7 +759,9 @@ export function useChat() {
   // ── Unarchive conversation ──────────────────────────────────────────────
   const unarchiveConversationMutation = useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/unarchive`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/unarchive`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -685,8 +771,17 @@ export function useChat() {
 
   // ── Update conversation appearance settings ───────────────────────────────
   const updateConversationSettingsMutation = useMutation({
-    mutationFn: async ({ conversationId, settings }: { conversationId: string; settings: { wallpaper?: string; theme?: string } }) => {
-      const res = await apiClient.patch(`/chat/conversations/${conversationId}/settings`, settings)
+    mutationFn: async ({
+      conversationId,
+      settings,
+    }: {
+      conversationId: string
+      settings: { wallpaper?: string; theme?: string }
+    }) => {
+      const res = await apiClient.patch(
+        `/chat/conversations/${conversationId}/settings`,
+        settings,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -742,7 +837,10 @@ export const useCreateConversation = () => {
 }
 
 // Search users for new chat
-export const useSearchChatUsers = (query: string, options?: { enabled?: boolean }) => {
+export const useSearchChatUsers = (
+  query: string,
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: ['chat-users-search', query],
     queryFn: async () => {
@@ -767,5 +865,3 @@ export const useDeleteConversation = () => {
     },
   })
 }
-
-

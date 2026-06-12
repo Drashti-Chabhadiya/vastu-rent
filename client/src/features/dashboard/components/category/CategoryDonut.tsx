@@ -17,7 +17,8 @@ export const CategoryDonut = () => {
     const activeCategories = categories.filter(
       (item: any) => (item._count?.products || 0) > 0,
     )
-    const displayCategories = activeCategories.length > 0 ? activeCategories : categories
+    const displayCategories =
+      activeCategories.length > 0 ? activeCategories : categories
 
     let cumulative = 0
 

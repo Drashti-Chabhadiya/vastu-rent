@@ -1,7 +1,24 @@
 import { Emoji, EmojiStyle } from 'emoji-picker-react'
 import {
-  X, CheckSquare, Square, Reply, MoreVertical, Copy, Smile, Star, Pin, Forward, Edit3, Info, Trash2,
-  ArrowRightLeft, CornerUpLeft, ZoomIn, CheckCheck, Check, ImagePlus
+  X,
+  CheckSquare,
+  Square,
+  Reply,
+  MoreVertical,
+  Copy,
+  Smile,
+  Star,
+  Pin,
+  Forward,
+  Edit3,
+  Info,
+  Trash2,
+  ArrowRightLeft,
+  CornerUpLeft,
+  ZoomIn,
+  CheckCheck,
+  Check,
+  ImagePlus,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import {
@@ -14,7 +31,14 @@ import { cn } from '#/lib/utils'
 import { UserAvatar } from './UserAvatar'
 import { VoicePlayer } from './VoicePlayer'
 import { FileAttachment } from './FileAttachment'
-import { parseMessage, formatMsgTime, getEmojiUnified, isImageUrl, isAudioUrl, highlightText } from '#/lib/chat-utils'
+import {
+  parseMessage,
+  formatMsgTime,
+  getEmojiUnified,
+  isImageUrl,
+  isAudioUrl,
+  highlightText,
+} from '#/lib/chat-utils'
 import { useChatStore } from '../../../../../store/useChatStore'
 import { toast } from 'sonner'
 import { authClient } from '#/lib/auth/auth-client'
@@ -25,11 +49,7 @@ interface MessageItemProps {
   otherParticipant: any
 }
 
-export function MessageItem({
-  msg,
-  isMe,
-  otherParticipant,
-}: MessageItemProps) {
+export function MessageItem({ msg, isMe, otherParticipant }: MessageItemProps) {
   const { data: session } = authClient.useSession()
   const {
     currentUserId,
@@ -75,11 +95,15 @@ export function MessageItem({
 
   const handleSelectMessage = (msgId: string) => {
     setSelectedMsgIds((prev) =>
-      prev.includes(msgId) ? prev.filter((id) => id !== msgId) : [...prev, msgId],
+      prev.includes(msgId)
+        ? prev.filter((id) => id !== msgId)
+        : [...prev, msgId],
     )
   }
 
-  const activeConversation = conversations.find((c) => c.id === activeConversationId)
+  const activeConversation = conversations.find(
+    (c) => c.id === activeConversationId,
+  )
 
   const handleReplyInternal = (m: any, me: boolean) => {
     const { text } = parseMessage(m.content)
@@ -114,7 +138,8 @@ export function MessageItem({
     const m = messages.find((x) => x.id === msgId)
     if (m) {
       const fifteenMinutes = 15 * 60 * 1000
-      const isWithinTimeLimit = Date.now() - new Date(m.createdAt).getTime() < fifteenMinutes
+      const isWithinTimeLimit =
+        Date.now() - new Date(m.createdAt).getTime() < fifteenMinutes
       const isSender = m.senderId === currentUserId
       const isAdmin = session?.user?.role === 'admin'
       setCanDeleteForEveryone((isSender && isWithinTimeLimit) || isAdmin)
@@ -135,14 +160,15 @@ export function MessageItem({
   return (
     <div
       id={`msg-${msg.id}`}
-      onClick={isMultiSelectMode ? () => handleSelectMessage(msg.id) : undefined}
+      onClick={
+        isMultiSelectMode ? () => handleSelectMessage(msg.id) : undefined
+      }
       className={cn(
         'flex gap-2.5 group/msg relative p-1.5 rounded-2xl transition-all',
         isMultiSelectMode && 'cursor-pointer hover:bg-muted-light/45',
-        selectedMsgIds.includes(msg.id) && 'bg-primary-soft/50 border border-primary-border/20 shadow-sm',
-        isMe
-          ? 'flex-row-reverse ml-auto max-w-[82%]'
-          : 'mr-auto max-w-[82%]',
+        selectedMsgIds.includes(msg.id) &&
+          'bg-primary-soft/50 border border-primary-border/20 shadow-sm',
+        isMe ? 'flex-row-reverse ml-auto max-w-[82%]' : 'mr-auto max-w-[82%]',
       )}
       onMouseEnter={() => setHoveredMsgId(msg.id)}
       onMouseLeave={() => setHoveredMsgId(null)}
@@ -166,49 +192,59 @@ export function MessageItem({
       )}
 
       {/* Quick Reactions Bar */}
-      {!msg.isDeleted && (isHovered || activeReactMsgId === msg.id) && !isMultiSelectMode && (
-        <div className={cn(
-          "flex items-center gap-1.5 bg-card border border-border/30 shadow-md rounded-full px-2 py-1.5 absolute -top-8 z-20 animate-in zoom-in-95 duration-100",
-          isMe ? "right-2" : "left-10"
-        )}>
-          {['👍', '❤️', '😂', '😮', '😢'].map((emoji) => {
-            const userReacted = msg.reactions?.some((r: any) => r.userId === currentUserId && r.emoji === emoji)
-            return (
-              <button
-                key={emoji}
-                type="button"
-                onClick={async (e) => {
-                  e.stopPropagation()
-                  if (userReacted) {
-                    await removeReaction(msg.id)
-                  } else {
-                    await reactToMessage({ messageId: msg.id, emoji })
-                  }
-                  setActiveReactMsgId(null)
-                }}
-                className={cn(
-                  "hover:scale-125 transition-transform duration-100 p-1 cursor-pointer hover:drop-shadow-sm flex items-center justify-center rounded-full",
-                  userReacted && "bg-primary/10"
-                )}
-              >
-                <Emoji unified={getEmojiUnified(emoji)} emojiStyle={EmojiStyle.APPLE} size={18} />
-              </button>
-            )
-          })}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              setFullReactMsgId(msg.id)
-              setActiveReactMsgId(null)
-            }}
-            className="hover:scale-125 transition-transform duration-100 px-1 text-sm font-black text-muted-dark hover:text-foreground cursor-pointer flex items-center justify-center shrink-0"
-            title="Plus reaction picker"
+      {!msg.isDeleted &&
+        (isHovered || activeReactMsgId === msg.id) &&
+        !isMultiSelectMode && (
+          <div
+            className={cn(
+              'flex items-center gap-1.5 bg-card border border-border/30 shadow-md rounded-full px-2 py-1.5 absolute -top-8 z-20 animate-in zoom-in-95 duration-100',
+              isMe ? 'right-2' : 'left-10',
+            )}
           >
-            +
-          </button>
-        </div>
-      )}
+            {['👍', '❤️', '😂', '😮', '😢'].map((emoji) => {
+              const userReacted = msg.reactions?.some(
+                (r: any) => r.userId === currentUserId && r.emoji === emoji,
+              )
+              return (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={async (e) => {
+                    e.stopPropagation()
+                    if (userReacted) {
+                      await removeReaction(msg.id)
+                    } else {
+                      await reactToMessage({ messageId: msg.id, emoji })
+                    }
+                    setActiveReactMsgId(null)
+                  }}
+                  className={cn(
+                    'hover:scale-125 transition-transform duration-100 p-1 cursor-pointer hover:drop-shadow-sm flex items-center justify-center rounded-full',
+                    userReacted && 'bg-primary/10',
+                  )}
+                >
+                  <Emoji
+                    unified={getEmojiUnified(emoji)}
+                    emojiStyle={EmojiStyle.APPLE}
+                    size={18}
+                  />
+                </button>
+              )
+            })}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setFullReactMsgId(msg.id)
+                setActiveReactMsgId(null)
+              }}
+              className="hover:scale-125 transition-transform duration-100 px-1 text-sm font-black text-muted-dark hover:text-foreground cursor-pointer flex items-center justify-center shrink-0"
+              title="Plus reaction picker"
+            >
+              +
+            </button>
+          </div>
+        )}
 
       {/* Avatar for other person */}
       {!isMe && (
@@ -223,82 +259,95 @@ export function MessageItem({
 
       <div className={cn('flex flex-col gap-1 min-w-0')}>
         {/* Attachments rendering */}
-        {!msg.isDeleted && msg.attachments && msg.attachments.length > 0 && (() => {
-          const imageAttachments = msg.attachments.filter(isImageUrl)
-          const audioAttachments = msg.attachments.filter(isAudioUrl)
-          const docAttachments = msg.attachments.filter((url: string) => !isImageUrl(url) && !isAudioUrl(url))
+        {!msg.isDeleted &&
+          msg.attachments &&
+          msg.attachments.length > 0 &&
+          (() => {
+            const imageAttachments = msg.attachments.filter(isImageUrl)
+            const audioAttachments = msg.attachments.filter(isAudioUrl)
+            const docAttachments = msg.attachments.filter(
+              (url: string) => !isImageUrl(url) && !isAudioUrl(url),
+            )
 
-          return (
-            <div className="flex flex-col gap-1.5">
-              {/* Image attachments grid */}
-              {imageAttachments.length > 0 && (
-                <div
-                  className={cn(
-                    'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm relative border border-border/10',
-                    imageAttachments.length === 1
-                      ? 'grid-cols-1 max-w-[220px]'
-                      : imageAttachments.length === 2
-                        ? 'grid-cols-2 max-w-[280px]'
-                        : 'grid-cols-3 max-w-[320px]',
-                    isMe ? 'rounded-tr-sm' : 'rounded-tl-sm',
-                  )}
-                >
-                  {hideMedia && !revealedMediaMsgs.includes(msg.id) ? (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setRevealedMediaMsgs(prev => [...prev, msg.id])
-                      }}
-                      className="w-full h-24 bg-muted-light flex flex-col items-center justify-center p-3 text-center border border-border/20 gap-1.5 cursor-pointer outline-none hover:bg-muted-light/85 transition-colors"
-                    >
-                      <div className="w-7 h-7 rounded-lg bg-card flex items-center justify-center text-muted-dark shadow-sm">
-                        <ImagePlus size={14} />
-                      </div>
-                      <span className="text-[9px] font-bold text-muted-dark">Media hidden</span>
-                      <span className="text-[8px] font-medium text-muted-dark/70">Click to view</span>
-                    </button>
-                  ) : (
-                    imageAttachments.map((src: string, i: number) => (
-                      <Button
-                        key={i}
+            return (
+              <div className="flex flex-col gap-1.5">
+                {/* Image attachments grid */}
+                {imageAttachments.length > 0 && (
+                  <div
+                    className={cn(
+                      'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm relative border border-border/10',
+                      imageAttachments.length === 1
+                        ? 'grid-cols-1 max-w-[220px]'
+                        : imageAttachments.length === 2
+                          ? 'grid-cols-2 max-w-[280px]'
+                          : 'grid-cols-3 max-w-[320px]',
+                      isMe ? 'rounded-tr-sm' : 'rounded-tl-sm',
+                    )}
+                  >
+                    {hideMedia && !revealedMediaMsgs.includes(msg.id) ? (
+                      <button
                         type="button"
-                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation()
-                          openLightbox(imageAttachments, i)
+                          setRevealedMediaMsgs((prev) => [...prev, msg.id])
                         }}
-                        className="relative group/img block overflow-hidden focus:outline-none p-0 h-auto rounded-none hover:bg-transparent"
+                        className="w-full h-24 bg-muted-light flex flex-col items-center justify-center p-3 text-center border border-border/20 gap-1.5 cursor-pointer outline-none hover:bg-muted-light/85 transition-colors"
                       >
-                        <img
-                          src={src}
-                          alt={`attachment-${i + 1}`}
-                          className="w-full h-28 object-cover transition-transform duration-200 group-hover/img:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-200 flex items-center justify-center">
-                          <ZoomIn
-                            size={20}
-                            className="text-white opacity-0 group-hover/img:opacity-100 drop-shadow-lg transition-opacity duration-200"
-                          />
+                        <div className="w-7 h-7 rounded-lg bg-card flex items-center justify-center text-muted-dark shadow-sm">
+                          <ImagePlus size={14} />
                         </div>
-                      </Button>
-                    ))
-                  )}
-                </div>
-              )}
+                        <span className="text-[9px] font-bold text-muted-dark">
+                          Media hidden
+                        </span>
+                        <span className="text-[8px] font-medium text-muted-dark/70">
+                          Click to view
+                        </span>
+                      </button>
+                    ) : (
+                      imageAttachments.map((src: string, i: number) => (
+                        <Button
+                          key={i}
+                          type="button"
+                          variant="ghost"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            openLightbox(imageAttachments, i)
+                          }}
+                          className="relative group/img block overflow-hidden focus:outline-none p-0 h-auto rounded-none hover:bg-transparent"
+                        >
+                          <img
+                            src={src}
+                            alt={`attachment-${i + 1}`}
+                            className="w-full h-28 object-cover transition-transform duration-200 group-hover/img:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+                            <ZoomIn
+                              size={20}
+                              className="text-white opacity-0 group-hover/img:opacity-100 drop-shadow-lg transition-opacity duration-200"
+                            />
+                          </div>
+                        </Button>
+                      ))
+                    )}
+                  </div>
+                )}
 
-              {/* Audio attachments */}
-              {audioAttachments.map((src: string, idx: number) => (
-                <VoicePlayer key={`audio-${idx}`} src={src} timeStr={formatMsgTime(msg.createdAt)} />
-              ))}
+                {/* Audio attachments */}
+                {audioAttachments.map((src: string, idx: number) => (
+                  <VoicePlayer
+                    key={`audio-${idx}`}
+                    src={src}
+                    timeStr={formatMsgTime(msg.createdAt)}
+                  />
+                ))}
 
-              {/* Document attachments */}
-              {docAttachments.map((src: string, idx: number) => (
-                <FileAttachment key={`doc-${idx}`} src={src} />
-              ))}
-            </div>
-          )
-        })()}
+                {/* Document attachments */}
+                {docAttachments.map((src: string, idx: number) => (
+                  <FileAttachment key={`doc-${idx}`} src={src} />
+                ))}
+              </div>
+            )
+          })()}
 
         {/* Bubble */}
         {msg.isDeleted ? (
@@ -310,7 +359,9 @@ export function MessageItem({
                 : 'bg-muted/45 border border-border/20 rounded-2xl rounded-tl-sm',
             )}
           >
-            <span className="opacity-60 shrink-0"><X size={11} strokeWidth={3} /></span>
+            <span className="opacity-60 shrink-0">
+              <X size={11} strokeWidth={3} />
+            </span>
             This message was deleted
           </div>
         ) : editingMsgId === msg.id ? (
@@ -362,7 +413,11 @@ export function MessageItem({
                 {/* Forwarded label */}
                 {msg.isForwarded && (
                   <div className="flex items-center gap-1 text-[8.5px] font-black text-muted-dark/85 uppercase tracking-wider mb-1">
-                    <ArrowRightLeft size={9} strokeWidth={3.5} className="text-muted-dark/75" />
+                    <ArrowRightLeft
+                      size={9}
+                      strokeWidth={3.5}
+                      className="text-muted-dark/75"
+                    />
                     Forwarded
                   </div>
                 )}
@@ -406,7 +461,10 @@ export function MessageItem({
               >
                 {formatMsgTime(msg.createdAt)}
                 {isStarred && (
-                  <Star size={9} className="text-amber-500 fill-amber-500 shrink-0" />
+                  <Star
+                    size={9}
+                    className="text-amber-500 fill-amber-500 shrink-0"
+                  />
                 )}
                 {msg.pinnedBy && msg.pinnedBy.length > 0 && (
                   <Pin size={9} className="text-primary rotate-45 shrink-0" />
@@ -416,7 +474,8 @@ export function MessageItem({
                     edited
                   </span>
                 )}
-                {isMe && !msg.isDeleted &&
+                {isMe &&
+                  !msg.isDeleted &&
                   (msg.isRead || !!msg.readAt ? (
                     <CheckCheck
                       size={11}
@@ -443,35 +502,50 @@ export function MessageItem({
 
         {/* Reaction badges */}
         {!msg.isDeleted && msg.reactions && msg.reactions.length > 0 && (
-          <div className={cn("flex flex-wrap gap-1 mt-1", isMe ? "justify-end" : "justify-start")}>
-            {Array.from(new Set(msg.reactions.map((r: any) => r.emoji))).map((emoji: any) => {
-              const reactUsers = msg.reactions!.filter((r: any) => r.emoji === emoji)
-              const userReacted = reactUsers.some((r: any) => r.userId === currentUserId)
-              const tooltipText = `Reacted by: ${reactUsers.map((r: any) => r.name).join(', ')}`
-              return (
-                <div
-                  key={emoji}
-                  title={tooltipText}
-                  onClick={async (e) => {
-                    e.stopPropagation()
-                    if (userReacted) {
-                      await removeReaction(msg.id)
-                    } else {
-                      await reactToMessage({ messageId: msg.id, emoji })
-                    }
-                  }}
-                  className={cn(
-                    "flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-bold cursor-pointer transition-all shadow-sm select-none",
-                    userReacted
-                      ? "bg-[#eef6ec] border-[#dcebd8] text-emerald-800"
-                      : "bg-white border-slate-200/80 text-foreground hover:bg-slate-50"
-                  )}
-                >
-                  <Emoji unified={getEmojiUnified(emoji)} emojiStyle={EmojiStyle.APPLE} size={12} />
-                  <span>{reactUsers.length}</span>
-                </div>
-              )
-            })}
+          <div
+            className={cn(
+              'flex flex-wrap gap-1 mt-1',
+              isMe ? 'justify-end' : 'justify-start',
+            )}
+          >
+            {Array.from(new Set(msg.reactions.map((r: any) => r.emoji))).map(
+              (emoji: any) => {
+                const reactUsers = msg.reactions!.filter(
+                  (r: any) => r.emoji === emoji,
+                )
+                const userReacted = reactUsers.some(
+                  (r: any) => r.userId === currentUserId,
+                )
+                const tooltipText = `Reacted by: ${reactUsers.map((r: any) => r.name).join(', ')}`
+                return (
+                  <div
+                    key={emoji}
+                    title={tooltipText}
+                    onClick={async (e) => {
+                      e.stopPropagation()
+                      if (userReacted) {
+                        await removeReaction(msg.id)
+                      } else {
+                        await reactToMessage({ messageId: msg.id, emoji })
+                      }
+                    }}
+                    className={cn(
+                      'flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-bold cursor-pointer transition-all shadow-sm select-none',
+                      userReacted
+                        ? 'bg-[#eef6ec] border-[#dcebd8] text-emerald-800'
+                        : 'bg-white border-slate-200/80 text-foreground hover:bg-slate-50',
+                    )}
+                  >
+                    <Emoji
+                      unified={getEmojiUnified(emoji)}
+                      emojiStyle={EmojiStyle.APPLE}
+                      size={12}
+                    />
+                    <span>{reactUsers.length}</span>
+                  </div>
+                )
+              },
+            )}
           </div>
         )}
       </div>
@@ -556,7 +630,10 @@ export function MessageItem({
                   onClick={async () => await toggleStarMessage(msg.id)}
                   className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
                 >
-                  <Star size={12} className={isStarred ? "text-amber-500 fill-amber-500" : ""} />
+                  <Star
+                    size={12}
+                    className={isStarred ? 'text-amber-500 fill-amber-500' : ''}
+                  />
                   {isStarred ? 'Unstar Message' : 'Star Message'}
                 </DropdownMenuItem>
               )}
@@ -611,4 +688,3 @@ export function MessageItem({
     </div>
   )
 }
-

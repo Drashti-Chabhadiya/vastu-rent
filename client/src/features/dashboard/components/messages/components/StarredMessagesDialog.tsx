@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '#/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/dialog'
 import { Star } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
@@ -9,7 +14,10 @@ interface StarredMessagesDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function StarredMessagesDialog({ open, onOpenChange }: StarredMessagesDialogProps) {
+export function StarredMessagesDialog({
+  open,
+  onOpenChange,
+}: StarredMessagesDialogProps) {
   const { messages, currentUserId } = useChatStore()
 
   const starredMessages = messages.filter(
@@ -17,7 +25,9 @@ export function StarredMessagesDialog({ open, onOpenChange }: StarredMessagesDia
   )
 
   const handleScrollToMsg = (msgId: string) => {
-    window.dispatchEvent(new CustomEvent('scroll-to-chat-msg', { detail: { messageId: msgId } }))
+    window.dispatchEvent(
+      new CustomEvent('scroll-to-chat-msg', { detail: { messageId: msgId } }),
+    )
     toast.success('Scrolled to message')
     onOpenChange(false)
   }

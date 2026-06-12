@@ -62,11 +62,7 @@ export function UserAvatar({
   return (
     <div className={cn('relative shrink-0', className)}>
       <Avatar className={cn(dim, radius, avatarClassName)}>
-        <AvatarImage
-          src={image || ''}
-          alt={name}
-          className="object-cover"
-        />
+        <AvatarImage src={image || ''} alt={name} className="object-cover" />
         <AvatarFallback
           className={cn(
             'bg-primary-soft text-primary font-bold',

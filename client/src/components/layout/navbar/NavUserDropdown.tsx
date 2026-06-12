@@ -245,40 +245,66 @@ export function NavUserDropdown({
                   >
                     <Leaf className={cn('h-3.5', 'w-3.5')} />
                   </div>
-                  <p className={cn('text-xs', 'font-bold', 'text-foreground/90')}>
+                  <p
+                    className={cn('text-xs', 'font-bold', 'text-foreground/90')}
+                  >
                     {t('Become a Green Member')}
                   </p>
                 </div>
 
                 <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  {t('List items and verify your details to earn the green badge and stand out!')}
+                  {t(
+                    'List items and verify your details to earn the green badge and stand out!',
+                  )}
                 </p>
 
                 <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 pt-1 border-t border-border/40 text-[9px] font-bold text-muted-dark">
                   <div className="flex items-center gap-1">
-                    <span className={cn(
-                      "w-1.5 h-1.5 rounded-full",
-                      session.user.emailVerified ? "bg-emerald-500" : "bg-muted-dark/30"
-                    )} />
-                    <span className={session.user.emailVerified ? "text-foreground/70" : ""}>
+                    <span
+                      className={cn(
+                        'w-1.5 h-1.5 rounded-full',
+                        session.user.emailVerified
+                          ? 'bg-emerald-500'
+                          : 'bg-muted-dark/30',
+                      )}
+                    />
+                    <span
+                      className={
+                        session.user.emailVerified ? 'text-foreground/70' : ''
+                      }
+                    >
                       {t('Email Verified')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className={cn(
-                      "w-1.5 h-1.5 rounded-full",
-                      session.user.phone ? "bg-emerald-500" : "bg-muted-dark/30"
-                    )} />
-                    <span className={session.user.phone ? "text-foreground/70" : ""}>
+                    <span
+                      className={cn(
+                        'w-1.5 h-1.5 rounded-full',
+                        session.user.phone
+                          ? 'bg-emerald-500'
+                          : 'bg-muted-dark/30',
+                      )}
+                    />
+                    <span
+                      className={session.user.phone ? 'text-foreground/70' : ''}
+                    >
                       {t('Phone Added')}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className={cn(
-                      "w-1.5 h-1.5 rounded-full",
-                      session.user.location ? "bg-emerald-500" : "bg-muted-dark/30"
-                    )} />
-                    <span className={session.user.location ? "text-foreground/70" : ""}>
+                    <span
+                      className={cn(
+                        'w-1.5 h-1.5 rounded-full',
+                        session.user.location
+                          ? 'bg-emerald-500'
+                          : 'bg-muted-dark/30',
+                      )}
+                    />
+                    <span
+                      className={
+                        session.user.location ? 'text-foreground/70' : ''
+                      }
+                    >
                       {t('Location Added')}
                     </span>
                   </div>

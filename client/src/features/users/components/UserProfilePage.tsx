@@ -23,8 +23,6 @@ import { cn } from '#/lib/utils'
 import { UserAvatar } from '#/features/dashboard/components/messages/components/UserAvatar'
 import { formatLastActive } from '#/lib/chat-utils'
 
-
-
 export function UserProfilePage() {
   const { id } = useParams({ from: '/users/$id' })
   const { data: profile, isLoading } = useUserProfile(id)
@@ -54,7 +52,7 @@ export function UserProfilePage() {
       onError: (err: any) => {
         toast.error(
           err?.response?.data?.message ||
-          'Could not start conversation. Try again.',
+            'Could not start conversation. Try again.',
         )
       },
     })
@@ -105,7 +103,8 @@ export function UserProfilePage() {
                 image={profile.image}
                 name={profile.name}
                 isOnline={
-                  profile.lastActive !== null && profile.lastActive !== undefined
+                  profile.lastActive !== null &&
+                  profile.lastActive !== undefined
                     ? profile.isOnline
                     : undefined
                 }
@@ -174,19 +173,24 @@ export function UserProfilePage() {
                     })}
                   </span>
                 </div>
-                {profile.lastActive !== null && profile.lastActive !== undefined && (
-                  <div className="flex items-center gap-2">
-                    <span className={cn(
-                      "w-2.5 h-2.5 rounded-full",
-                      profile.isOnline ? "bg-emerald-500 animate-pulse" : "bg-muted-dark/40"
-                    )} />
-                    <span>
-                      {profile.isOnline 
-                        ? 'Online' 
-                        : `Active ${formatLastActive(profile.lastActive)}`}
-                    </span>
-                  </div>
-                )}
+                {profile.lastActive !== null &&
+                  profile.lastActive !== undefined && (
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          'w-2.5 h-2.5 rounded-full',
+                          profile.isOnline
+                            ? 'bg-emerald-500 animate-pulse'
+                            : 'bg-muted-dark/40',
+                        )}
+                      />
+                      <span>
+                        {profile.isOnline
+                          ? 'Online'
+                          : `Active ${formatLastActive(profile.lastActive)}`}
+                      </span>
+                    </div>
+                  )}
                 <div className="flex items-center gap-2">
                   <MessageCircle
                     size={18}

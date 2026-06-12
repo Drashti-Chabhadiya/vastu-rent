@@ -1,9 +1,5 @@
 import { useEffect } from 'react'
-import {
-  ChevronLeft,
-  ChevronRight,
-  X,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { useChat } from '#/hook'
@@ -23,7 +19,9 @@ export const MessagesManagement = () => {
   const lightboxIndex = useChatStore((state) => state.lightboxIndex)
   const setLightboxIndex = useChatStore((state) => state.setLightboxIndex)
   const showDetailsPanel = useChatStore((state) => state.showDetailsPanel)
-  const activeConversationId = useChatStore((state) => state.activeConversationId)
+  const activeConversationId = useChatStore(
+    (state) => state.activeConversationId,
+  )
 
   // Sync useChat hook data with global Zustand store
   useEffect(() => {

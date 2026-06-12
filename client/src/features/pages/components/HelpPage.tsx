@@ -68,7 +68,10 @@ export function HelpPage() {
           >
             How can we help you today?
           </motion.h1>
-          <motion.div variants={fadeUp} className="relative max-w-2xl mx-auto group">
+          <motion.div
+            variants={fadeUp}
+            className="relative max-w-2xl mx-auto group"
+          >
             <Search
               className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:text-primary transition-colors"
               size={24}

@@ -199,7 +199,10 @@ export const SettingsManagement = () => {
         </div>
       </motion.div>
 
-      <motion.div variants={fadeUp} className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
+      <motion.div
+        variants={fadeUp}
+        className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start"
+      >
         {/* Left Sidebar: Settings Navigation */}
         <div className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm space-y-1.5 xl:sticky xl:top-24">
           <h2 className="text-[10px] font-extrabold tracking-widest text-muted-foreground/50 mb-3 px-3 uppercase">

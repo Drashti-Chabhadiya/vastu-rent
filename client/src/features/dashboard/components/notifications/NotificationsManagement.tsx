@@ -302,7 +302,10 @@ export const NotificationsManagement = () => {
             {isLoading ? (
               <div className="divide-y divide-border/30 animate-pulse">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex items-center justify-between px-5 py-4">
+                  <div
+                    key={i}
+                    className="flex items-center justify-between px-5 py-4"
+                  >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <Skeleton className="w-1.5 h-1.5 rounded-full shrink-0" />
                       <Skeleton className="w-9 h-9 rounded-xl shrink-0" />
