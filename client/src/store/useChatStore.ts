@@ -68,8 +68,14 @@ export interface ChatStoreState {
   emitTyping: (isTyping: boolean) => void
   checkOnline: (id: string) => boolean
   editMessage: (params: { messageId: string; content: string }) => Promise<any>
-  deleteMessage: (params: { messageId: string; mode: 'me' | 'everyone' }) => Promise<any>
-  forwardMessage: (params: { messageId: string; targetConversationIds: string[] }) => Promise<any>
+  deleteMessage: (params: {
+    messageId: string
+    mode: 'me' | 'everyone'
+  }) => Promise<any>
+  forwardMessage: (params: {
+    messageId: string
+    targetConversationIds: string[]
+  }) => Promise<any>
   togglePinConversation: (id: string) => Promise<any>
   toggleMuteConversation: (id: string) => Promise<any>
   clearChat: (id: string) => Promise<any>
@@ -80,10 +86,15 @@ export interface ChatStoreState {
   togglePinMessage: (id: string) => Promise<any>
   reactToMessage: (params: { messageId: string; emoji: string }) => Promise<any>
   removeReaction: (id: string) => Promise<any>
-  updateConversationSettings: (params: { conversationId: string; settings: { wallpaper?: string; theme?: string } }) => Promise<any>
+  updateConversationSettings: (params: {
+    conversationId: string
+    settings: { wallpaper?: string; theme?: string }
+  }) => Promise<any>
 
   setSearchQuery: (q: string) => void
-  setActiveSubTab: (tab: 'all' | 'unread' | 'bookings' | 'support' | 'archived') => void
+  setActiveSubTab: (
+    tab: 'all' | 'unread' | 'bookings' | 'support' | 'archived',
+  ) => void
   setInputText: (text: string | ((prev: string) => string)) => void
   setShowEmojiPicker: (show: boolean) => void
   setShowMobileChat: (show: boolean) => void
@@ -132,7 +143,6 @@ export interface ChatStoreState {
   // Synced state updater
   setChatData: (data: Partial<ChatStoreState>) => void
 }
-
 
 export const useChatStore = create<ChatStoreState>((set, get) => ({
   searchQuery: '',
@@ -274,7 +284,8 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   setShowDetailsPanel: (showDetailsPanel) => set({ showDetailsPanel }),
 
   showConversationSearch: false,
-  setShowConversationSearch: (showConversationSearch: boolean) => set({ showConversationSearch }),
+  setShowConversationSearch: (showConversationSearch: boolean) =>
+    set({ showConversationSearch }),
 
   // New UI Setters
   setIsMultiSelectMode: (isMultiSelectMode) => set({ isMultiSelectMode }),
@@ -301,7 +312,8 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   setCurrentMatchIndex: (currentMatchIndex) => set({ currentMatchIndex }),
   setDeleteTargetId: (deleteTargetId) => set({ deleteTargetId }),
   setShowDeleteDialog: (showDeleteDialog) => set({ showDeleteDialog }),
-  setCanDeleteForEveryone: (canDeleteForEveryone) => set({ canDeleteForEveryone }),
+  setCanDeleteForEveryone: (canDeleteForEveryone) =>
+    set({ canDeleteForEveryone }),
   setForwardTargetId: (forwardTargetId) => set({ forwardTargetId }),
   setShowForwardDialog: (showForwardDialog) => set({ showForwardDialog }),
   setInfoTargetMsg: (infoTargetMsg) => set({ infoTargetMsg }),

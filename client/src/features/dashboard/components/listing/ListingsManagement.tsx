@@ -271,7 +271,8 @@ export const ListingsManagement = ({
                 },
                 onError: (err: any) => {
                   toast.error(
-                    err.response?.data?.message || 'Failed to update visibility',
+                    err.response?.data?.message ||
+                      'Failed to update visibility',
                   )
                 },
               },

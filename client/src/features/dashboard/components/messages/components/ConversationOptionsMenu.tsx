@@ -79,9 +79,7 @@ export function ConversationOptionsMenu({
           {isArchived ? 'Unarchive Conversation' : 'Archive Conversation'}
         </DropdownMenuItem>
         {onClearChat && (
-          <DropdownMenuItem onSelect={onClearChat}>
-            Clear Chat
-          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={onClearChat}>Clear Chat</DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onDelete} className="text-destructive">

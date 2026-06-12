@@ -143,7 +143,10 @@ export const ReportsManagement = () => {
       </motion.div>
 
       {/* Overview Stats */}
-      <motion.div variants={fadeUp} className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-x-auto scrollbar-hide">
+      <motion.div
+        variants={fadeUp}
+        className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-x-auto scrollbar-hide"
+      >
         <div className="mb-8">
           <h3 className="text-[15px] font-black text-foreground">Overview</h3>
         </div>
@@ -175,7 +178,10 @@ export const ReportsManagement = () => {
       </motion.div>
 
       {/* Main Content Grid */}
-      <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div
+        variants={fadeUp}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
         {/* Left Column: Chart & Table */}
         <div className="lg:col-span-2 space-y-6">
           {/* Revenue Overview Chart */}

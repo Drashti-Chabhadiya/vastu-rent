@@ -8,13 +8,18 @@ interface TypingBubbleProps {
 
 export function TypingBubble({ name, image }: TypingBubbleProps) {
   return (
-    <div className={cn('flex', 'items-end', 'gap-2.5', 'max-w-[70%]', 'mr-auto', 'my-1')}>
+    <div
+      className={cn(
+        'flex',
+        'items-end',
+        'gap-2.5',
+        'max-w-[70%]',
+        'mr-auto',
+        'my-1',
+      )}
+    >
       <div className="shrink-0">
-        <UserAvatar
-          image={image}
-          name={name}
-          size="sm"
-        />
+        <UserAvatar image={image} name={name} size="sm" />
       </div>
       <div
         className={cn(

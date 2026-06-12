@@ -18,7 +18,10 @@ interface ForwardDialogProps {
   onOpenChange: (open: boolean) => void
   messageId: string | string[] | null
   conversations: Conversation[]
-  onForward: (messageId: string, targetConversationIds: string[]) => Promise<any>
+  onForward: (
+    messageId: string,
+    targetConversationIds: string[],
+  ) => Promise<any>
 }
 
 export function ForwardDialog({
@@ -29,11 +32,13 @@ export function ForwardDialog({
   onForward,
 }: ForwardDialogProps) {
   const [search, setSearch] = useState('')
-  const [forwardingIds, setForwardingIds] = useState<Record<string, 'loading' | 'success'>>({})
+  const [forwardingIds, setForwardingIds] = useState<
+    Record<string, 'loading' | 'success'>
+  >({})
 
   // Filter conversations matching search query
   const filtered = conversations.filter((c) =>
-    c.otherParticipant.name.toLowerCase().includes(search.toLowerCase())
+    c.otherParticipant.name.toLowerCase().includes(search.toLowerCase()),
   )
 
   const handleForwardTo = async (convId: string, name: string) => {
@@ -172,8 +177,16 @@ export function ForwardDialog({
                   </div>
 
                   {status === 'loading' ? (
-                    <Button variant="ghost" size="icon" disabled className="w-8 h-8">
-                      <Loader2 size={13} className="animate-spin text-primary" />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled
+                      className="w-8 h-8"
+                    >
+                      <Loader2
+                        size={13}
+                        className="animate-spin text-primary"
+                      />
                     </Button>
                   ) : status === 'success' ? (
                     <span className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
@@ -183,7 +196,9 @@ export function ForwardDialog({
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => handleForwardTo(conv.id, conv.otherParticipant.name)}
+                      onClick={() =>
+                        handleForwardTo(conv.id, conv.otherParticipant.name)
+                      }
                       className="w-8 h-8 rounded-xl bg-primary-soft hover:bg-primary/20 text-primary transition-colors cursor-pointer shrink-0"
                       title="Send forwarded message"
                     >

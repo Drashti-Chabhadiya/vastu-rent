@@ -244,7 +244,9 @@ export const PaymentsManagement = () => {
             <Button
               onClick={() => {
                 if (stats.withdrawableBalance <= 0) {
-                  toast.error('You do not have any withdrawable balance currently')
+                  toast.error(
+                    'You do not have any withdrawable balance currently',
+                  )
                   return
                 }
                 setIsPayoutModalOpen(true)
@@ -261,7 +263,9 @@ export const PaymentsManagement = () => {
             <div className="lg:col-span-2 space-y-8">
               {/* Payment History & Transactions */}
               <motion.div variants={fadeUp}>
-                <RevenueTransactionsTable recentTransactions={recentTransactions} />
+                <RevenueTransactionsTable
+                  recentTransactions={recentTransactions}
+                />
               </motion.div>
 
               {/* Earnings Breakdown by Product */}

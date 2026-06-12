@@ -46,9 +46,18 @@ export function MultiSelectBar() {
 
   const handleBulkDelete = async () => {
     if (selectedMsgIds.length === 0) return
-    if (!confirm(`Are you sure you want to delete these ${selectedMsgIds.length} messages for you?`)) return
+    if (
+      !confirm(
+        `Are you sure you want to delete these ${selectedMsgIds.length} messages for you?`,
+      )
+    )
+      return
     try {
-      await Promise.all(selectedMsgIds.map((id) => deleteMessage({ messageId: id, mode: 'me' })))
+      await Promise.all(
+        selectedMsgIds.map((id) =>
+          deleteMessage({ messageId: id, mode: 'me' }),
+        ),
+      )
       toast.success('Messages deleted')
       setSelectedMsgIds([])
       setIsMultiSelectMode(false)
@@ -78,7 +87,8 @@ export function MultiSelectBar() {
           <X size={14} />
         </Button>
         <span className="text-[12px] font-black text-primary">
-          {selectedMsgIds.length} message{selectedMsgIds.length !== 1 ? 's' : ''} selected
+          {selectedMsgIds.length} message
+          {selectedMsgIds.length !== 1 ? 's' : ''} selected
         </span>
       </div>
       <div className="flex items-center gap-2">
@@ -122,4 +132,3 @@ export function MultiSelectBar() {
     </div>
   )
 }
-

@@ -22,7 +22,10 @@ export function EmojiReactDialog() {
       if (userReacted) {
         await removeReaction(fullReactMsgId)
       } else {
-        await reactToMessage({ messageId: fullReactMsgId, emoji: emojiData.emoji })
+        await reactToMessage({
+          messageId: fullReactMsgId,
+          emoji: emojiData.emoji,
+        })
       }
     } catch (err) {
       console.error('Failed to react:', err)
@@ -32,7 +35,10 @@ export function EmojiReactDialog() {
   }
 
   return (
-    <Dialog open={!!fullReactMsgId} onOpenChange={(open) => !open && setFullReactMsgId(null)}>
+    <Dialog
+      open={!!fullReactMsgId}
+      onOpenChange={(open) => !open && setFullReactMsgId(null)}
+    >
       <DialogContent className="max-w-[350px] rounded-3xl p-0 border border-border/30 shadow-2xl overflow-hidden bg-card flex justify-center items-center">
         <EmojiPicker
           onEmojiClick={handleEmojiSelect}

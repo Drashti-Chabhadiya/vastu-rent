@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '#/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/dialog'
 import { Button } from '#/components/ui/button'
 import { toast } from 'sonner'
 import { useChatStore } from '../../../../../store/useChatStore'
@@ -20,7 +25,9 @@ export function DeleteMessageDialog() {
       setShowDeleteDialog(false)
       setDeleteTargetId(null)
       toast.success(
-        mode === 'everyone' ? 'Message deleted for everyone' : 'Message deleted for you',
+        mode === 'everyone'
+          ? 'Message deleted for everyone'
+          : 'Message deleted for you',
       )
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Failed to delete message')

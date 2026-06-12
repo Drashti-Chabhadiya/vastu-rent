@@ -18,9 +18,21 @@ interface DisappearingSettingsDialogProps {
 
 const DURATIONS = [
   { label: 'Off', value: 0, description: 'Keep messages forever' },
-  { label: '24 Hours', value: 86400, description: 'Messages vanish after 1 day' },
-  { label: '7 Days', value: 604800, description: 'Messages vanish after 1 week' },
-  { label: '90 Days', value: 7776000, description: 'Messages vanish after 3 months' },
+  {
+    label: '24 Hours',
+    value: 86400,
+    description: 'Messages vanish after 1 day',
+  },
+  {
+    label: '7 Days',
+    value: 604800,
+    description: 'Messages vanish after 1 week',
+  },
+  {
+    label: '90 Days',
+    value: 7776000,
+    description: 'Messages vanish after 3 months',
+  },
 ]
 
 export function DisappearingSettingsDialog({
@@ -29,7 +41,8 @@ export function DisappearingSettingsDialog({
   currentDuration = 0,
   onSetDuration,
 }: DisappearingSettingsDialogProps) {
-  const [selectedDuration, setSelectedDuration] = useState<number>(currentDuration)
+  const [selectedDuration, setSelectedDuration] =
+    useState<number>(currentDuration)
   const [isSaving, setIsSaving] = useState(false)
 
   // Sync state if prop changes
@@ -91,7 +104,9 @@ export function DisappearingSettingsDialog({
 
         <div className="p-6 space-y-4">
           <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-            For more privacy and storage, new messages will disappear from this chat for everyone after the selected duration. Old messages won't be affected.
+            For more privacy and storage, new messages will disappear from this
+            chat for everyone after the selected duration. Old messages won't be
+            affected.
           </p>
 
           <div className="space-y-2">

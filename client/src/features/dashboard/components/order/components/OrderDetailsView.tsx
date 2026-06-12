@@ -13,7 +13,11 @@ import {
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Button } from '#/components/ui/button'
-import { useUpdateRentalStatus, useVerifyPickupOTP, useVerifyReturnOTP } from '#/hook'
+import {
+  useUpdateRentalStatus,
+  useVerifyPickupOTP,
+  useVerifyReturnOTP,
+} from '#/hook'
 import { toast } from 'sonner'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
@@ -52,16 +56,20 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
       { id: order.id, otp: otpInput },
       {
         onSuccess: () => {
-          toast.success('Pickup verified successfully! Rental is now in progress.')
+          toast.success(
+            'Pickup verified successfully! Rental is now in progress.',
+          )
           setOtpInput('')
         },
         onError: (err: any) => {
-          toast.error(err.response?.data?.message || 'Failed to verify Pickup OTP')
+          toast.error(
+            err.response?.data?.message || 'Failed to verify Pickup OTP',
+          )
         },
         onSettled: () => {
           setIsVerifying(false)
-        }
-      }
+        },
+      },
     )
   }
 
@@ -76,16 +84,20 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
       { id: order.id, otp: otpInput },
       {
         onSuccess: () => {
-          toast.success('Return verified successfully! Rental has been completed.')
+          toast.success(
+            'Return verified successfully! Rental has been completed.',
+          )
           setOtpInput('')
         },
         onError: (err: any) => {
-          toast.error(err.response?.data?.message || 'Failed to verify Return OTP')
+          toast.error(
+            err.response?.data?.message || 'Failed to verify Return OTP',
+          )
         },
         onSettled: () => {
           setIsVerifying(false)
-        }
-      }
+        },
+      },
     )
   }
 
@@ -293,7 +305,8 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                           <CheckCircle2 size={16} /> Confirmed (Awaiting Pickup)
                         </span>
                       )}
-                      {(order.status === 'picked_up' || order.status === 'active') && (
+                      {(order.status === 'picked_up' ||
+                        order.status === 'active') && (
                         <span className="text-info-foreground flex items-center gap-1 justify-center">
                           <Clock size={16} /> Rental Ongoing (Picked Up)
                         </span>
@@ -313,13 +326,17 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                   </div>
 
                   {order.status === 'confirmed' && (
-                    <form onSubmit={handleVerifyPickup} className="bg-card p-5 rounded-2xl border border-border/30 space-y-4 shadow-inner">
+                    <form
+                      onSubmit={handleVerifyPickup}
+                      className="bg-card p-5 rounded-2xl border border-border/30 space-y-4 shadow-inner"
+                    >
                       <div className="space-y-1">
                         <label className="text-[10px] font-black text-muted-dark uppercase tracking-wider block">
                           Pickup OTP Verification
                         </label>
                         <p className="text-[10px] text-muted-foreground font-medium">
-                          Renter must provide their 6-digit Pickup OTP to verify physical hand-off.
+                          Renter must provide their 6-digit Pickup OTP to verify
+                          physical hand-off.
                         </p>
                       </div>
                       <input
@@ -327,7 +344,9 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                         maxLength={6}
                         placeholder="• • • • • •"
                         value={otpInput}
-                        onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
+                        onChange={(e) =>
+                          setOtpInput(e.target.value.replace(/\D/g, ''))
+                        }
                         className="w-full text-center tracking-[0.3em] font-mono font-black text-xl h-12 bg-muted-light/50 border border-border/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-foreground"
                       />
                       <Button
@@ -335,19 +354,26 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                         disabled={isVerifying || otpInput.length !== 6}
                         className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-black text-xs active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                       >
-                        {isVerifying ? 'Verifying...' : 'Verify Pickup Hand-off'}
+                        {isVerifying
+                          ? 'Verifying...'
+                          : 'Verify Pickup Hand-off'}
                       </Button>
                     </form>
                   )}
 
-                  {(order.status === 'picked_up' || order.status === 'active') && (
-                    <form onSubmit={handleVerifyReturn} className="bg-card p-5 rounded-2xl border border-border/30 space-y-4 shadow-inner">
+                  {(order.status === 'picked_up' ||
+                    order.status === 'active') && (
+                    <form
+                      onSubmit={handleVerifyReturn}
+                      className="bg-card p-5 rounded-2xl border border-border/30 space-y-4 shadow-inner"
+                    >
                       <div className="space-y-1">
                         <label className="text-[10px] font-black text-muted-dark uppercase tracking-wider block">
                           Return OTP Verification
                         </label>
                         <p className="text-[10px] text-muted-foreground font-medium">
-                          Renter must provide their 6-digit Return OTP to verify physical return.
+                          Renter must provide their 6-digit Return OTP to verify
+                          physical return.
                         </p>
                       </div>
                       <input
@@ -355,7 +381,9 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                         maxLength={6}
                         placeholder="• • • • • •"
                         value={otpInput}
-                        onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
+                        onChange={(e) =>
+                          setOtpInput(e.target.value.replace(/\D/g, ''))
+                        }
                         className="w-full text-center tracking-[0.3em] font-mono font-black text-xl h-12 bg-muted-light/50 border border-border/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-foreground"
                       />
                       <Button
@@ -363,7 +391,9 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                         disabled={isVerifying || otpInput.length !== 6}
                         className="w-full h-12 rounded-xl bg-primary text-primary-foreground font-black text-xs active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                       >
-                        {isVerifying ? 'Verifying...' : 'Verify Return & Complete'}
+                        {isVerifying
+                          ? 'Verifying...'
+                          : 'Verify Return & Complete'}
                       </Button>
                     </form>
                   )}

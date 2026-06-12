@@ -102,13 +102,15 @@ export function MessageInfoDialog({
                     'absolute -left-[35px] top-0.5 w-6 h-6 rounded-full flex items-center justify-center border shadow-sm transition-colors',
                     isRead
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-600'
-                      : 'bg-muted border-border/40 text-muted-dark/40'
+                      : 'bg-muted border-border/40 text-muted-dark/40',
                   )}
                 >
                   <CheckCheck size={12} strokeWidth={3} />
                 </div>
                 <div>
-                  <h4 className="text-[11.5px] font-black text-foreground">Read</h4>
+                  <h4 className="text-[11.5px] font-black text-foreground">
+                    Read
+                  </h4>
                   <p className="text-[9.5px] font-bold text-muted-dark mt-0.5">
                     {isRead && readTimeStr ? readTimeStr : 'Unread'}
                   </p>
@@ -122,16 +124,24 @@ export function MessageInfoDialog({
                     'absolute -left-[35px] top-0.5 w-6 h-6 rounded-full flex items-center justify-center border shadow-sm transition-colors',
                     isDelivered
                       ? 'bg-blue-50 border-blue-200 text-blue-600'
-                      : 'bg-muted border-border/40 text-muted-dark/40'
+                      : 'bg-muted border-border/40 text-muted-dark/40',
                   )}
                 >
-                  <CheckCheck size={12} className={cn(!isRead && isDelivered ? 'text-muted-dark' : '')} strokeWidth={3} />
+                  <CheckCheck
+                    size={12}
+                    className={cn(
+                      !isRead && isDelivered ? 'text-muted-dark' : '',
+                    )}
+                    strokeWidth={3}
+                  />
                 </div>
                 <div>
-                  <h4 className="text-[11.5px] font-black text-foreground">Delivered</h4>
+                  <h4 className="text-[11.5px] font-black text-foreground">
+                    Delivered
+                  </h4>
                   <p className="text-[9.5px] font-bold text-muted-dark mt-0.5">
                     {isDelivered && (deliveredTimeStr || readTimeStr)
-                      ? (deliveredTimeStr || readTimeStr)
+                      ? deliveredTimeStr || readTimeStr
                       : 'Pending delivery'}
                   </p>
                 </div>
@@ -143,7 +153,9 @@ export function MessageInfoDialog({
                   <Check size={12} strokeWidth={3} />
                 </div>
                 <div>
-                  <h4 className="text-[11.5px] font-black text-foreground">Sent</h4>
+                  <h4 className="text-[11.5px] font-black text-foreground">
+                    Sent
+                  </h4>
                   <p className="text-[9.5px] font-bold text-muted-dark mt-0.5">
                     {sentTimeStr}
                   </p>

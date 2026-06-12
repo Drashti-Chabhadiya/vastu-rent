@@ -46,7 +46,9 @@ export function VoicePlayer({ src, timeStr }: VoicePlayerProps) {
       audioRef.current.pause()
       setIsPlaying(false)
     } else {
-      audioRef.current.play().catch((err) => console.error("Audio play failed:", err))
+      audioRef.current
+        .play()
+        .catch((err) => console.error('Audio play failed:', err))
       setIsPlaying(true)
     }
   }
@@ -64,7 +66,11 @@ export function VoicePlayer({ src, timeStr }: VoicePlayerProps) {
         onClick={togglePlay}
         className="w-7 h-7 rounded-full bg-[#eef6ec] text-emerald-800 hover:bg-[#dcebd8] flex items-center justify-center cursor-pointer transition-transform active:scale-95 shrink-0 border-none outline-none"
       >
-        {isPlaying ? <Pause size={11} fill="currentColor" /> : <Play size={11} className="ml-0.5" fill="currentColor" />}
+        {isPlaying ? (
+          <Pause size={11} fill="currentColor" />
+        ) : (
+          <Play size={11} className="ml-0.5" fill="currentColor" />
+        )}
       </button>
 
       <span className="text-[11px] font-bold text-emerald-800 shrink-0 select-none">
@@ -80,8 +86,8 @@ export function VoicePlayer({ src, timeStr }: VoicePlayerProps) {
               key={i}
               style={{ height: `${h * 0.7}px` }}
               className={cn(
-                "w-[2px] rounded-full transition-colors duration-150 shrink-0",
-                active ? "bg-[#0a6634]" : "bg-slate-200"
+                'w-[2px] rounded-full transition-colors duration-150 shrink-0',
+                active ? 'bg-[#0a6634]' : 'bg-slate-200',
               )}
             />
           )

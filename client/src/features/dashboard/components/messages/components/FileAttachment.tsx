@@ -5,7 +5,9 @@ interface FileAttachmentProps {
 }
 
 export function FileAttachment({ src }: FileAttachmentProps) {
-  const filename = decodeURIComponent(src.substring(src.lastIndexOf('/') + 1)).split('?')[0]
+  const filename = decodeURIComponent(
+    src.substring(src.lastIndexOf('/') + 1),
+  ).split('?')[0]
   return (
     <div className="flex items-center justify-between p-2.5 bg-muted-light/30 rounded-xl w-[220px] shrink-0 border border-border/10">
       <div className="flex items-center gap-2 min-w-0">
@@ -13,8 +15,12 @@ export function FileAttachment({ src }: FileAttachmentProps) {
           <FileText size={15} />
         </div>
         <div className="min-w-0 flex flex-col justify-center">
-          <span className="text-[9.5px] font-black text-foreground truncate max-w-[125px] leading-tight">{filename}</span>
-          <span className="text-[7.5px] font-bold text-muted-dark/80 uppercase tracking-wide leading-none mt-0.5">Document</span>
+          <span className="text-[9.5px] font-black text-foreground truncate max-w-[125px] leading-tight">
+            {filename}
+          </span>
+          <span className="text-[7.5px] font-bold text-muted-dark/80 uppercase tracking-wide leading-none mt-0.5">
+            Document
+          </span>
         </div>
       </div>
       <a

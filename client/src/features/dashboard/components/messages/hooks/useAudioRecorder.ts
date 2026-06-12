@@ -22,7 +22,9 @@ export function useAudioRecorder() {
 
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        })
         const mediaRecorder = new MediaRecorder(stream)
         mediaRecorderRef.current = mediaRecorder
 
@@ -33,12 +35,18 @@ export function useAudioRecorder() {
         }
 
         mediaRecorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
-          stream.getTracks().forEach((track) => track.stop())
-
-          const file = new File([audioBlob], `voice-message-${Date.now()}.webm`, {
+          const audioBlob = new Blob(audioChunksRef.current, {
             type: 'audio/webm',
           })
+          stream.getTracks().forEach((track) => track.stop())
+
+          const file = new File(
+            [audioBlob],
+            `voice-message-${Date.now()}.webm`,
+            {
+              type: 'audio/webm',
+            },
+          )
 
           try {
             setIsUploading(true)
@@ -74,7 +82,10 @@ export function useAudioRecorder() {
     if (recordingTimerRef.current) {
       clearInterval(recordingTimerRef.current)
     }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== 'inactive'
+    ) {
       mediaRecorderRef.current.onstop = () => {}
       mediaRecorderRef.current.stop()
     }
@@ -90,7 +101,8 @@ export function useAudioRecorder() {
     if (isSimulatedRecording) {
       try {
         setIsUploading(true)
-        const dummyAudioUrl = 'https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg'
+        const dummyAudioUrl =
+          'https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg'
         await sendMessage('🎤 Voice message', [dummyAudioUrl])
       } catch (err) {
         toast.error('Failed to send simulated voice message')
@@ -100,7 +112,10 @@ export function useAudioRecorder() {
         setIsSimulatedRecording(false)
       }
     } else {
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      if (
+        mediaRecorderRef.current &&
+        mediaRecorderRef.current.state !== 'inactive'
+      ) {
         mediaRecorderRef.current.stop()
       }
       setIsRecording(false)

@@ -39,7 +39,9 @@ export function ChatHeader() {
     setSelectedMsgIds,
   } = useChatStore()
 
-  const activeConversation = conversations.find((c) => c.id === activeConversationId)
+  const activeConversation = conversations.find(
+    (c) => c.id === activeConversationId,
+  )
 
   if (!activeConversation) return null
 
@@ -113,7 +115,14 @@ export function ChatHeader() {
 
         <div>
           <div className="flex items-center gap-1">
-            <h3 className={cn('text-[13px]', 'font-black', 'text-foreground', 'lowercase')}>
+            <h3
+              className={cn(
+                'text-[13px]',
+                'font-black',
+                'text-foreground',
+                'lowercase',
+              )}
+            >
               {activeConversation.otherParticipant.name}
             </h3>
             {activeConversation.otherParticipant.isGreenMember && (
@@ -128,9 +137,13 @@ export function ChatHeader() {
                 {showOnlineStatus
                   ? 'Online'
                   : (() => {
-                    const formatted = formatLastActive(activeConversation.otherParticipant.lastActive)
-                    return formatted === 'Offline' ? 'Offline' : `last seen ${formatted}`
-                  })()}
+                      const formatted = formatLastActive(
+                        activeConversation.otherParticipant.lastActive,
+                      )
+                      return formatted === 'Offline'
+                        ? 'Offline'
+                        : `last seen ${formatted}`
+                    })()}
               </span>
               {isOtherPersonTyping && (
                 <span
@@ -170,7 +183,9 @@ export function ChatHeader() {
           variant="ghost"
           size="icon"
           onClick={() =>
-            toast.success(`Starting video call with ${activeConversation.otherParticipant.name}...`)
+            toast.success(
+              `Starting video call with ${activeConversation.otherParticipant.name}...`,
+            )
           }
           className={cn(
             'w-9',
@@ -190,7 +205,9 @@ export function ChatHeader() {
           variant="ghost"
           size="icon"
           onClick={() =>
-            toast.success(`Calling ${activeConversation.otherParticipant.name}...`)
+            toast.success(
+              `Calling ${activeConversation.otherParticipant.name}...`,
+            )
           }
           className={cn(
             'w-9',
@@ -219,7 +236,9 @@ export function ChatHeader() {
           }}
           className={cn(
             'w-9 h-9 hover:bg-muted-light rounded-xl cursor-pointer transition-colors',
-            showConversationSearch ? 'text-primary bg-primary/10' : 'text-muted-dark hover:text-muted-foreground'
+            showConversationSearch
+              ? 'text-primary bg-primary/10'
+              : 'text-muted-dark hover:text-muted-foreground',
           )}
           title="Search Messages"
         >
@@ -272,4 +291,3 @@ export function ChatHeader() {
     </div>
   )
 }
-

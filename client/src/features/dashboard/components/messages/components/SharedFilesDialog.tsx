@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '#/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/dialog'
 import { FileText, Download } from 'lucide-react'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
@@ -10,7 +15,10 @@ interface SharedFilesDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function SharedFilesDialog({ open, onOpenChange }: SharedFilesDialogProps) {
+export function SharedFilesDialog({
+  open,
+  onOpenChange,
+}: SharedFilesDialogProps) {
   const { messages } = useChatStore()
 
   const fileAttachments = messages
@@ -27,7 +35,9 @@ export function SharedFilesDialog({ open, onOpenChange }: SharedFilesDialogProps
     )
 
   const handleScrollToMsg = (msgId: string) => {
-    window.dispatchEvent(new CustomEvent('scroll-to-chat-msg', { detail: { messageId: msgId } }))
+    window.dispatchEvent(
+      new CustomEvent('scroll-to-chat-msg', { detail: { messageId: msgId } }),
+    )
     toast.success('Scrolled to message')
     onOpenChange(false)
   }
@@ -48,7 +58,9 @@ export function SharedFilesDialog({ open, onOpenChange }: SharedFilesDialogProps
             </div>
           ) : (
             fileAttachments.map((file, idx) => {
-              const filename = decodeURIComponent(file.url.substring(file.url.lastIndexOf('/') + 1)).split('?')[0]
+              const filename = decodeURIComponent(
+                file.url.substring(file.url.lastIndexOf('/') + 1),
+              ).split('?')[0]
               return (
                 <div
                   key={`${file.messageId}-${idx}`}
@@ -63,9 +75,12 @@ export function SharedFilesDialog({ open, onOpenChange }: SharedFilesDialogProps
                       <FileText size={15} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11.5px] font-bold text-slate-700 truncate">{filename}</p>
+                      <p className="text-[11.5px] font-bold text-slate-700 truncate">
+                        {filename}
+                      </p>
                       <p className="text-[9px] text-slate-400 mt-0.5">
-                        Sent by {file.senderName} on {format(file.createdAt, 'dd MMM')}
+                        Sent by {file.senderName} on{' '}
+                        {format(file.createdAt, 'dd MMM')}
                       </p>
                     </div>
                   </div>

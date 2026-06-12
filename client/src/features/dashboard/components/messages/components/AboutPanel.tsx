@@ -70,13 +70,18 @@ export function AboutPanel() {
   const activeConversation =
     conversations.find((c) => c.id === activeConversationId) || null
 
-  const activeConversationSettings = activeConversation?.settings?.[currentUserId || '']
-  const currentWallpaper = activeConversationSettings?.wallpaper ?? chatWallpaper
+  const activeConversationSettings =
+    activeConversation?.settings?.[currentUserId || '']
+  const currentWallpaper =
+    activeConversationSettings?.wallpaper ?? chatWallpaper
 
   // Initialize about text when conversation changes
   useEffect(() => {
     if (activeConversation) {
-      setAboutText((activeConversation.otherParticipant as any).about || 'Helping you find the perfect home aligned with Vastu.')
+      setAboutText(
+        (activeConversation.otherParticipant as any).about ||
+          'Helping you find the perfect home aligned with Vastu.',
+      )
     }
     setIsEditingAbout(false)
   }, [activeConversationId])
@@ -141,14 +146,16 @@ export function AboutPanel() {
   }
 
   const handleScrollToMsg = (msgId: string) => {
-    window.dispatchEvent(new CustomEvent('scroll-to-chat-msg', { detail: { messageId: msgId } }))
+    window.dispatchEvent(
+      new CustomEvent('scroll-to-chat-msg', { detail: { messageId: msgId } }),
+    )
     toast.success('Scrolled to message')
     setShowStarredDialog(false)
     setShowFilesDialog(false)
   }
 
   const handleSaveAbout = () => {
-    ; (activeConversation.otherParticipant as any).about = aboutText
+    ;(activeConversation.otherParticipant as any).about = aboutText
     setIsEditingAbout(false)
     toast.success('About section updated')
   }
@@ -191,9 +198,7 @@ export function AboutPanel() {
     <div className="w-[320px] shrink-0 bg-[#fbf9f4] border-l border-slate-200/80 flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250">
       {/* Header */}
       <div className="px-5 py-4 flex items-center justify-between shrink-0">
-        <h3 className="text-[16px] font-bold text-slate-800">
-          Chat Info
-        </h3>
+        <h3 className="text-[16px] font-bold text-slate-800">Chat Info</h3>
         <Button
           variant="ghost"
           size="icon"
@@ -217,7 +222,10 @@ export function AboutPanel() {
               />
             ) : (
               <div className="w-20 h-20 rounded-full bg-slate-300 flex items-center justify-center text-xl font-bold text-slate-700 border border-slate-200 shadow-sm">
-                {activeConversation.otherParticipant.name.trim().charAt(0).toUpperCase()}
+                {activeConversation.otherParticipant.name
+                  .trim()
+                  .charAt(0)
+                  .toUpperCase()}
               </div>
             )}
             {showOnlineStatus && (
@@ -230,22 +238,33 @@ export function AboutPanel() {
               <h4 className="text-[16px] font-bold text-slate-800 leading-tight">
                 {activeConversation.otherParticipant.name}
               </h4>
-              <Star size={14} className="text-emerald-600 fill-emerald-600 shrink-0" />
+              <Star
+                size={14}
+                className="text-emerald-600 fill-emerald-600 shrink-0"
+              />
             </div>
 
             <div className="flex flex-col mt-1">
               {showOnlineStatus ? (
-                <span className="text-[12px] font-bold text-emerald-600">Online</span>
+                <span className="text-[12px] font-bold text-emerald-600">
+                  Online
+                </span>
               ) : (
-                <span className="text-[12px] font-semibold text-slate-400">Offline</span>
+                <span className="text-[12px] font-semibold text-slate-400">
+                  Offline
+                </span>
               )}
               <span className="text-[11px] text-slate-400 mt-0.5">
                 {showOnlineStatus
                   ? 'Last seen just now'
                   : (() => {
-                    const formatted = formatLastActive(activeConversation.otherParticipant.lastActive)
-                    return formatted === 'Offline' ? 'Offline' : `Last seen ${formatted}`
-                  })()}
+                      const formatted = formatLastActive(
+                        activeConversation.otherParticipant.lastActive,
+                      )
+                      return formatted === 'Offline'
+                        ? 'Offline'
+                        : `Last seen ${formatted}`
+                    })()}
               </span>
             </div>
           </div>
@@ -271,7 +290,10 @@ export function AboutPanel() {
                     size="sm"
                     variant="ghost"
                     onClick={() => {
-                      setAboutText((activeConversation.otherParticipant as any).about || 'Helping you find the perfect home aligned with Vastu.')
+                      setAboutText(
+                        (activeConversation.otherParticipant as any).about ||
+                          'Helping you find the perfect home aligned with Vastu.',
+                      )
                       setIsEditingAbout(false)
                     }}
                     className="h-6 px-2 text-[9px] font-black text-slate-500 rounded-md hover:bg-slate-100 cursor-pointer shadow-none"
@@ -306,7 +328,10 @@ export function AboutPanel() {
 
         {/* Media, Links and Docs Card */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col gap-3">
-          <div className="flex items-center justify-between cursor-pointer group" onClick={() => setShowMediaBrowser(true)}>
+          <div
+            className="flex items-center justify-between cursor-pointer group"
+            onClick={() => setShowMediaBrowser(true)}
+          >
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
                 <Image size={18} />
@@ -358,7 +383,12 @@ export function AboutPanel() {
 
         {/* Pinned Messages Card */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col gap-3">
-          <div className="flex items-center justify-between cursor-pointer group" onClick={() => toast.info('Pinned Messages options in options menu')}>
+          <div
+            className="flex items-center justify-between cursor-pointer group"
+            onClick={() =>
+              toast.info('Pinned Messages options in options menu')
+            }
+          >
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
                 <Pin size={18} className="rotate-45" />
@@ -368,7 +398,9 @@ export function AboutPanel() {
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition-colors">
-              <span className="text-[12px] font-bold">{pinnedMessages.length}</span>
+              <span className="text-[12px] font-bold">
+                {pinnedMessages.length}
+              </span>
               <ChevronRight size={15} />
             </div>
           </div>
@@ -384,11 +416,15 @@ export function AboutPanel() {
             className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl p-3 cursor-pointer hover:bg-slate-100/50 transition-colors"
             title="Click to scroll to pinned message"
           >
-            <p className={cn(
-              "text-[11.5px] leading-normal truncate flex-1 pr-3 font-semibold",
-              lastPinnedMessage ? "text-slate-600" : "text-slate-400 italic"
-            )}>
-              {lastPinnedMessage ? lastPinnedMessage.content : 'No pinned messages'}
+            <p
+              className={cn(
+                'text-[11.5px] leading-normal truncate flex-1 pr-3 font-semibold',
+                lastPinnedMessage ? 'text-slate-600' : 'text-slate-400 italic',
+              )}
+            >
+              {lastPinnedMessage
+                ? lastPinnedMessage.content
+                : 'No pinned messages'}
             </p>
             <div className="w-6 h-6 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
               <MapPin size={13} className="text-slate-400" />
@@ -402,7 +438,9 @@ export function AboutPanel() {
           <div className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
             <div className="flex items-center gap-3">
               <Volume2 size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">Mute Notifications</span>
+              <span className="text-[12px] font-medium text-slate-700">
+                Mute Notifications
+              </span>
             </div>
             <button
               type="button"
@@ -442,7 +480,9 @@ export function AboutPanel() {
           >
             <div className="flex items-center gap-3">
               <Search size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">Search in Conversation</span>
+              <span className="text-[12px] font-medium text-slate-700">
+                Search in Conversation
+              </span>
             </div>
             <ChevronRight size={14} className="text-slate-400" />
           </div>
@@ -454,11 +494,15 @@ export function AboutPanel() {
           >
             <div className="flex items-center gap-3">
               <Clock size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">Disappearing Messages</span>
+              <span className="text-[12px] font-medium text-slate-700">
+                Disappearing Messages
+              </span>
             </div>
             <div className="flex items-center gap-1 text-slate-400">
               <span className="text-[11px] font-bold text-slate-500/80">
-                {getDisappearingLabel(activeConversation.disappearingDuration || 0)}
+                {getDisappearingLabel(
+                  activeConversation.disappearingDuration || 0,
+                )}
               </span>
               <ChevronRight size={14} />
             </div>
@@ -471,10 +515,14 @@ export function AboutPanel() {
           >
             <div className="flex items-center gap-3">
               <Clock size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">Encryption & Security</span>
+              <span className="text-[12px] font-medium text-slate-700">
+                Encryption & Security
+              </span>
             </div>
             <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[10px] font-bold text-slate-500/70">Encrypted</span>
+              <span className="text-[10px] font-bold text-slate-500/70">
+                Encrypted
+              </span>
               <ChevronRight size={14} />
             </div>
           </div>
@@ -486,10 +534,14 @@ export function AboutPanel() {
           >
             <div className="flex items-center gap-3">
               <Palette size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">Chat Wallpaper</span>
+              <span className="text-[12px] font-medium text-slate-700">
+                Chat Wallpaper
+              </span>
             </div>
             <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[10px] font-bold text-slate-500/70 uppercase tracking-wider">{currentWallpaper}</span>
+              <span className="text-[10px] font-bold text-slate-500/70 uppercase tracking-wider">
+                {currentWallpaper}
+              </span>
               <ChevronRight size={14} />
             </div>
           </div>
@@ -501,10 +553,14 @@ export function AboutPanel() {
           >
             <div className="flex items-center gap-3">
               <Star size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">Starred Messages</span>
+              <span className="text-[12px] font-medium text-slate-700">
+                Starred Messages
+              </span>
             </div>
             <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[11px] font-medium">{starredMessages.length}</span>
+              <span className="text-[11px] font-medium">
+                {starredMessages.length}
+              </span>
               <ChevronRight size={14} />
             </div>
           </div>
@@ -516,10 +572,14 @@ export function AboutPanel() {
           >
             <div className="flex items-center gap-3">
               <FileText size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">Files and Documents</span>
+              <span className="text-[12px] font-medium text-slate-700">
+                Files and Documents
+              </span>
             </div>
             <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[11px] font-medium">{fileAttachments.length}</span>
+              <span className="text-[11px] font-medium">
+                {fileAttachments.length}
+              </span>
               <ChevronRight size={14} />
             </div>
           </div>
@@ -568,14 +628,28 @@ export function AboutPanel() {
         currentDuration={activeConversation.disappearingDuration || 0}
         onSetDuration={async (duration: number) => {
           await setDisappearingMessages(activeConversation.id, duration)
-          toast.success(`Disappearing messages set to: ${getDisappearingLabel(duration)}`)
+          toast.success(
+            `Disappearing messages set to: ${getDisappearingLabel(duration)}`,
+          )
         }}
       />
 
-      <EncryptionSecurityDialog open={showEncryptionInfo} onOpenChange={setShowEncryptionInfo} />
-      <WallpaperSettingsDialog open={showWallpaperDialog} onOpenChange={setShowWallpaperDialog} />
-      <StarredMessagesDialog open={showStarredDialog} onOpenChange={setShowStarredDialog} />
-      <SharedFilesDialog open={showFilesDialog} onOpenChange={setShowFilesDialog} />
+      <EncryptionSecurityDialog
+        open={showEncryptionInfo}
+        onOpenChange={setShowEncryptionInfo}
+      />
+      <WallpaperSettingsDialog
+        open={showWallpaperDialog}
+        onOpenChange={setShowWallpaperDialog}
+      />
+      <StarredMessagesDialog
+        open={showStarredDialog}
+        onOpenChange={setShowStarredDialog}
+      />
+      <SharedFilesDialog
+        open={showFilesDialog}
+        onOpenChange={setShowFilesDialog}
+      />
 
       <ReusableAlertDialog
         isOpen={showClearConfirm}

@@ -19,13 +19,17 @@ export function PinnedMessageBanner({
         onClick={() => scrollToMessage(activePinnedMessage.id)}
         className="flex items-center gap-3 cursor-pointer min-w-0 flex-1 hover:opacity-90"
       >
-        <Pin size={14} className="text-emerald-600 fill-emerald-600 rotate-45 shrink-0" />
+        <Pin
+          size={14}
+          className="text-emerald-600 fill-emerald-600 rotate-45 shrink-0"
+        />
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-bold text-emerald-700">
             Pinned message
           </p>
           <p className="text-[11px] text-muted-dark mt-0.5 truncate">
-            {parseMessage(activePinnedMessage.content).text || "Media attachment"}
+            {parseMessage(activePinnedMessage.content).text ||
+              'Media attachment'}
           </p>
         </div>
       </div>

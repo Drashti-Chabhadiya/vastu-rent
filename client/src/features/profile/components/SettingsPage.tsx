@@ -107,8 +107,6 @@ export function SettingsPage() {
     }
   }
 
-
-
   const handleDeleteAccount = async () => {
     if (delInput !== 'DELETE') {
       toast.error('Type DELETE to confirm.')

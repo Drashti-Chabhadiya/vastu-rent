@@ -14,7 +14,6 @@ import { toast } from 'sonner'
 import { UserAvatar } from './UserAvatar'
 import { authClient } from '#/lib/auth/auth-client'
 
-
 import { useChatStore } from '../../../../../store/useChatStore'
 
 export function NewChatDialog() {
@@ -41,10 +40,8 @@ export function NewChatDialog() {
     return () => clearTimeout(timer)
   }, [userSearch, open])
 
-  const { data: userResults = [], isLoading: isSearchingUsers } = useSearchChatUsers(
-    debouncedSearch,
-    { enabled: open }
-  )
+  const { data: userResults = [], isLoading: isSearchingUsers } =
+    useSearchChatUsers(debouncedSearch, { enabled: open })
 
   const createConversation = useCreateConversation()
 
@@ -198,7 +195,9 @@ export function NewChatDialog() {
                   image={u.image}
                   name={u.name}
                   isOnline={
-                    myShowOnline && u.lastActive !== null && u.lastActive !== undefined
+                    myShowOnline &&
+                    u.lastActive !== null &&
+                    u.lastActive !== undefined
                       ? u.isOnline
                       : undefined
                   }

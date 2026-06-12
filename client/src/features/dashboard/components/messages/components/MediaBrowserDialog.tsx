@@ -36,14 +36,12 @@ export function MediaBrowserDialog({
   const mediaItems = messages
     .filter((m) => !m.isDeleted && m.attachments && m.attachments.length > 0)
     .flatMap((m) =>
-      m.attachments
-        .filter(isImageUrl)
-        .map((url) => ({
-          url,
-          senderName: m.sender.name,
-          createdAt: new Date(m.createdAt),
-          messageId: m.id,
-        })),
+      m.attachments.filter(isImageUrl).map((url) => ({
+        url,
+        senderName: m.sender.name,
+        createdAt: new Date(m.createdAt),
+        messageId: m.id,
+      })),
     )
 
   const handleDownload = async (url: string, index: number) => {

@@ -23,9 +23,14 @@ export const useProductReviews = (productId: string) => {
 export const useCreateReview = (productId?: string) => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (data: { rating: number; comment: string; productId?: string }) => {
+    mutationFn: async (data: {
+      rating: number
+      comment: string
+      productId?: string
+    }) => {
       const targetProductId = data.productId || productId
-      if (!targetProductId) throw new Error('Product ID is required to create a review')
+      if (!targetProductId)
+        throw new Error('Product ID is required to create a review')
       const res = await apiClient.post('/reviews', {
         rating: data.rating,
         comment: data.comment,
@@ -39,7 +44,9 @@ export const useCreateReview = (productId?: string) => {
         queryClient.invalidateQueries({
           queryKey: ['product-reviews', targetProductId],
         })
-        queryClient.invalidateQueries({ queryKey: ['product', targetProductId] })
+        queryClient.invalidateQueries({
+          queryKey: ['product', targetProductId],
+        })
       }
       queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
     },
@@ -50,8 +57,16 @@ export const useCreateReview = (productId?: string) => {
 export const useReplyToReview = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ reviewId, replyText }: { reviewId: string; replyText: string }) => {
-      const res = await apiClient.post(`/reviews/${reviewId}/reply`, { replyText })
+    mutationFn: async ({
+      reviewId,
+      replyText,
+    }: {
+      reviewId: string
+      replyText: string
+    }) => {
+      const res = await apiClient.post(`/reviews/${reviewId}/reply`, {
+        replyText,
+      })
       return res.data
     },
     onSuccess: () => {
@@ -59,7 +74,6 @@ export const useReplyToReview = () => {
     },
   })
 }
-
 
 // Fetch all reviews with filters (admin)
 export const useAdminReviews = (params?: { search?: string }) => {

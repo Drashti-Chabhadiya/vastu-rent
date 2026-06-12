@@ -38,12 +38,13 @@ export const OrdersManagement = () => {
   } | null>(null)
   console.log('orders', orders)
 
-  const filteredOrders = orders?.filter((order: any) => {
-    if (isAdmin && currentView === 'my') {
-      return order.product?.userId === currentUser?.id
-    }
-    return true
-  }) || []
+  const filteredOrders =
+    orders?.filter((order: any) => {
+      if (isAdmin && currentView === 'my') {
+        return order.product?.userId === currentUser?.id
+      }
+      return true
+    }) || []
   const handleStatusUpdate = (id: string, newStatus: string) => {
     updateStatus.mutate(
       { id, status: newStatus },

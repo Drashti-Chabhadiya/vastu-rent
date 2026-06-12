@@ -520,22 +520,25 @@ export const MyBookings = () => {
           if (uploadedImages.length > 0) {
             finalComment += `\n\n[Images: ${uploadedImages.join(', ')}]`
           }
-          reviewMutation.mutate({
-            productId: selectedRental.productId,
-            rating,
-            comment: finalComment,
-          }, {
-            onSuccess: () => {
-              toast.success('Review submitted successfully!')
-              setIsReviewDialogOpen(false)
-              setRating(5)
-              setComment('')
-              setUploadedImages([])
+          reviewMutation.mutate(
+            {
+              productId: selectedRental.productId,
+              rating,
+              comment: finalComment,
             },
-            onError: () => {
-              toast.error('Failed to submit review. Please try again.')
-            }
-          })
+            {
+              onSuccess: () => {
+                toast.success('Review submitted successfully!')
+                setIsReviewDialogOpen(false)
+                setRating(5)
+                setComment('')
+                setUploadedImages([])
+              },
+              onError: () => {
+                toast.error('Failed to submit review. Please try again.')
+              },
+            },
+          )
         }}
         isPending={reviewMutation.isPending}
       />

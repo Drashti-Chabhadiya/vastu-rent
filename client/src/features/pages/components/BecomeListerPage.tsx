@@ -148,9 +148,7 @@ export function BecomeListerPage() {
           >
             {features.map((feature, i) => (
               <motion.div key={i} variants={fadeUp} className="flex">
-                <Card
-                  className="w-full bg-card border border-border/30 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl p-6 group"
-                >
+                <Card className="w-full bg-card border border-border/30 shadow-sm hover:shadow-xl transition-all duration-300 rounded-3xl p-6 group">
                   <CardHeader className="p-0 mb-6">
                     <div className="w-16 h-16 rounded-2xl bg-primary/5 flex items-center justify-center transition-transform group-hover:scale-110">
                       {feature.icon}
@@ -187,7 +185,7 @@ export function BecomeListerPage() {
                 alt="Happy Lister"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  ; (e.target as any).src =
+                  ;(e.target as any).src =
                     'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Lister'
                 }}
               />
@@ -239,10 +237,7 @@ export function BecomeListerPage() {
               </Button>
             </Link>
           </motion.div>
-          <motion.p
-            variants={fadeUp}
-            className="mt-6 text-muted-foreground/85"
-          >
+          <motion.p variants={fadeUp} className="mt-6 text-muted-foreground/85">
             {isLoggedIn
               ? 'Create your first listing in under 2 minutes.'
               : 'No hidden fees. No listing costs. Just earnings.'}

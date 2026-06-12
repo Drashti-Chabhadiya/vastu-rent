@@ -36,7 +36,9 @@ export function formatMsgTime(dateStr: string) {
   return format(date, 'dd MMM')
 }
 
-export function formatLastActive(lastActiveStr: string | null | undefined): string {
+export function formatLastActive(
+  lastActiveStr: string | null | undefined,
+): string {
   if (!lastActiveStr) return 'Offline'
   try {
     const date = new Date(lastActiveStr)
@@ -96,20 +98,32 @@ export const getDisappearingDurationText = (value: number) => {
   if (value === 7776000) return '90 days'
   if (value % 86400 === 0) return `${value / 86400} days`
 
-  return `${Math.round(value / 86400 * 100) / 100} days`
+  return `${Math.round((value / 86400) * 100) / 100} days`
 }
 
-export const highlightText = (text: string, search: string): React.ReactNode => {
+export const highlightText = (
+  text: string,
+  search: string,
+): React.ReactNode => {
   if (!search || !search.trim()) return text
-  const parts = text.split(new RegExp(`(${search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi'))
+  const parts = text.split(
+    new RegExp(`(${search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi'),
+  )
   return React.createElement(
     React.Fragment,
     null,
     parts.map((part, i) =>
       part.toLowerCase() === search.toLowerCase()
-        ? React.createElement('mark', { key: i, className: 'bg-yellow-200 text-foreground font-black px-0.5 rounded-sm' }, part)
-        : part
-    )
+        ? React.createElement(
+            'mark',
+            {
+              key: i,
+              className:
+                'bg-yellow-200 text-foreground font-black px-0.5 rounded-sm',
+            },
+            part,
+          )
+        : part,
+    ),
   )
 }
-
