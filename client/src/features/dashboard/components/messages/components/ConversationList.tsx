@@ -1,9 +1,15 @@
+import { useState } from 'react'
 import {
   Search,
   MessageSquare,
   SlidersHorizontal,
   ChevronRight,
   Leaf,
+  Pin,
+  BellOff,
+  Clock,
+  MoreVertical,
+  Trash2,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -13,39 +19,76 @@ import { UserAvatar } from './UserAvatar'
 import { formatMsgTime } from '#/lib/chat-utils'
 import { authClient } from '#/lib/auth/auth-client'
 import { Skeleton } from '#/components/ui/skeleton'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '#/components/ui/dropdown-menu'
+import { DisappearingSettingsDialog } from './DisappearingSettingsDialog'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { useChatStore } from '../../../../../store/useChatStore'
 
-
-interface ConversationListProps {
-  conversations: Conversation[]
-  filteredConversations: Conversation[]
-  activeConversationId: string | null
-  onSelect: (conv: Conversation) => void
-  searchQuery: string
-  setSearchQuery: (q: string) => void
-  activeSubTab: 'all' | 'unread' | 'bookings' | 'support'
-  setActiveSubTab: (tab: 'all' | 'unread' | 'bookings' | 'support') => void
-  isLoadingConversations: boolean
-  currentUserId: string | null | undefined
-  totalUnread: number
-  showMobileChat: boolean
-}
-
-export function ConversationList({
-  conversations,
-  filteredConversations,
-  activeConversationId,
-  onSelect,
-  searchQuery,
-  setSearchQuery,
-  activeSubTab,
-  setActiveSubTab,
-  isLoadingConversations,
-  currentUserId,
-  totalUnread,
-  showMobileChat,
-}: ConversationListProps) {
+export function ConversationList() {
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
+  const [disappearingConv, setDisappearingConv] = useState<Conversation | null>(null)
+  const [clearChatConvId, setClearChatConvId] = useState<string | null>(null)
+
+  // Consume Zustand global state
+  const {
+    conversations,
+    searchQuery,
+    setSearchQuery,
+    activeSubTab,
+    setActiveSubTab,
+    isLoadingConversations,
+    activeConversationId,
+    currentUserId,
+    showMobileChat,
+    setShowMobileChat,
+    switchConversation,
+    togglePinConversation,
+    toggleMuteConversation,
+    clearChat: onClearChat,
+    setDisappearingMessages: onSetDisappearingMessages,
+  } = useChatStore()
+
+  // ── Filter & Sort conversations ───────────────────────────────────────────
+  const filteredConversations = conversations
+    .filter((conv) => {
+      const matchesSearch =
+        conv.otherParticipant.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        (conv.lastMessage?.content || '')
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+
+      let matchesTab = true
+      if (activeSubTab === 'unread') matchesTab = conv.unreadCount > 0
+      else if (activeSubTab === 'bookings')
+        matchesTab = conv.otherParticipant.role === 'user'
+      else if (activeSubTab === 'support')
+        matchesTab = conv.otherParticipant.role === 'admin'
+
+      return matchesSearch && matchesTab
+    })
+    .sort((a, b) => {
+      const aPinned = a.pinnedBy?.includes(currentUserId || '') ? 1 : 0
+      const bPinned = b.pinnedBy?.includes(currentUserId || '') ? 1 : 0
+      if (aPinned !== bPinned) return bPinned - aPinned
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    })
+
+  // Total unread across all conversations
+  const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
+
+  const handleSelectConversation = (conv: Conversation) => {
+    switchConversation(conv.id)
+    setShowMobileChat(true)
+  }
 
   return (
     <div
@@ -235,13 +278,16 @@ export function ConversationList({
         ) : (
           filteredConversations.map((conv) => {
             const isSelected = activeConversationId === conv.id
+            const isPinned = conv.pinnedBy?.includes(currentUserId || '')
+            const isMuted = conv.mutedBy?.includes(currentUserId || '')
+            const hasDisappearing = (conv.disappearingDuration || 0) > 0
 
             return (
               <div
                 key={conv.id}
-                onClick={() => onSelect(conv)}
+                onClick={() => handleSelectConversation(conv)}
                 className={cn(
-                  'flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all',
+                  'group flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all relative',
                   isSelected
                     ? 'bg-primary-soft border border-primary-border/60 shadow-sm'
                     : 'hover:bg-muted-light/60 border border-transparent',
@@ -291,53 +337,104 @@ export function ConversationList({
                         : formatMsgTime(conv.updatedAt)}
                     </span>
                   </div>
-                  <p
-                    className={cn(
-                      'text-[10px] truncate mt-0.5',
-                      conv.unreadCount > 0
-                        ? 'text-foreground font-extrabold'
-                        : 'text-muted-dark font-medium',
-                    )}
-                  >
-                    {conv.lastMessage
-                      ? conv.lastMessage.senderId === currentUserId
-                        ? `You: ${conv.lastMessage.content}`
-                        : conv.lastMessage.content
-                      : 'No messages yet'}
-                  </p>
-                </div>
+                  
+                  <div className="flex items-center justify-between mt-1 gap-2">
+                    <p
+                      className={cn(
+                        'text-[10px] truncate flex-1 min-w-0',
+                        conv.unreadCount > 0
+                          ? 'text-foreground font-extrabold'
+                          : 'text-muted-dark font-medium',
+                      )}
+                    >
+                      {conv.lastMessage
+                        ? conv.lastMessage.senderId === currentUserId
+                          ? `You: ${conv.lastMessage.content}`
+                          : conv.lastMessage.content
+                        : 'No messages yet'}
+                    </p>
 
-                {conv.unreadCount > 0 && (
-                  <div className="shrink-0">
-                    {conv.unreadCount > 1 ? (
-                      <span
-                        className={cn(
-                          'w-5',
-                          'h-5',
-                          'bg-primary',
-                          'text-primary-foreground',
-                          'text-[9px]',
-                          'font-black',
-                          'rounded-full',
-                          'flex',
-                          'items-center',
-                          'justify-center',
-                        )}
-                      >
-                        {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
-                      </span>
-                    ) : (
-                      <div
-                        className={cn(
-                          'w-2.5',
-                          'h-2.5',
-                          'bg-primary',
-                          'rounded-full',
-                        )}
-                      />
-                    )}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {isPinned && (
+                        <Pin size={11} className="text-primary fill-primary rotate-45 shrink-0" />
+                      )}
+                      {isMuted && (
+                        <BellOff size={11} className="text-muted-dark shrink-0" />
+                      )}
+                      {hasDisappearing && (
+                        <Clock size={11} className="text-muted-dark shrink-0" />
+                      )}
+
+                      {conv.unreadCount > 0 && (
+                        <span className="w-4 h-4 bg-primary text-primary-foreground text-[8px] font-black rounded-full flex items-center justify-center shrink-0">
+                          {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
+                        </span>
+                      )}
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                            }}
+                            className="w-6 h-6 rounded-lg hover:bg-muted text-muted-dark hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100 cursor-pointer p-0 shrink-0"
+                          >
+                            <MoreVertical size={12} />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-44 rounded-2xl p-1.5 shadow-xl border border-border/30 bg-card"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <DropdownMenuItem
+                            onClick={async (e) => {
+                              e.stopPropagation()
+                              await togglePinConversation(conv.id)
+                            }}
+                            className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer"
+                          >
+                            <Pin size={13} className="mr-2 rotate-45" />
+                            {isPinned ? 'Unpin Chat' : 'Pin Chat'}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={async (e) => {
+                              e.stopPropagation()
+                              await toggleMuteConversation(conv.id)
+                            }}
+                            className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer"
+                          >
+                            <BellOff size={13} className="mr-2" />
+                            {isMuted ? 'Unmute' : 'Mute'}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setDisappearingConv(conv)
+                            }}
+                            className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer"
+                          >
+                            <Clock size={13} className="mr-2" />
+                            Disappearing Messages
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="my-1 border-border/10" />
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setClearChatConvId(conv.id)
+                            }}
+                            className="rounded-xl text-[11px] font-bold py-2 px-3 text-destructive focus:text-destructive cursor-pointer"
+                          >
+                            <Trash2 size={13} className="mr-2" />
+                            Clear Chat
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             )
           })
@@ -383,6 +480,35 @@ export function ConversationList({
           View archived messages <ChevronRight size={10} strokeWidth={3} />
         </Button>
       </div>
+      {disappearingConv && (
+        <DisappearingSettingsDialog
+          open={!!disappearingConv}
+          onOpenChange={(open) => !open && setDisappearingConv(null)}
+          currentDuration={disappearingConv.disappearingDuration}
+          onSetDuration={async (duration) => {
+            await onSetDisappearingMessages(disappearingConv.id, duration)
+          }}
+        />
+      )}
+      <ReusableAlertDialog
+        isOpen={!!clearChatConvId}
+        onOpenChange={(open) => !open && setClearChatConvId(null)}
+        onConfirm={async () => {
+          if (clearChatConvId) {
+            try {
+              await onClearChat(clearChatConvId)
+            } catch (err) {
+              console.error('Failed to clear chat:', err)
+            } finally {
+              setClearChatConvId(null)
+            }
+          }
+        }}
+        title="Clear Chat?"
+        description="Are you sure you want to clear this chat? This action cannot be undone."
+        confirmText="Clear"
+        variant="danger"
+      />
     </div>
   )
 }

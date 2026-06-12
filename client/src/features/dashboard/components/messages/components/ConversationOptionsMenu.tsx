@@ -14,13 +14,14 @@ import { cn } from '#/lib/utils'
  * Placeholder handlers are provided – replace with actual logic as needed.
  */
 export function ConversationOptionsMenu({
-  // You can pass callbacks for each action if you need to handle them externally.
   onViewProfile,
   onArchive,
+  onClearChat,
   onDelete,
 }: {
   onViewProfile?: () => void
   onArchive?: () => void
+  onClearChat?: () => void
   onDelete?: () => void
 }) {
   return (
@@ -50,6 +51,11 @@ export function ConversationOptionsMenu({
         <DropdownMenuItem onSelect={onArchive}>
           Archive Conversation
         </DropdownMenuItem>
+        {onClearChat && (
+          <DropdownMenuItem onSelect={onClearChat}>
+            Clear Chat
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onDelete} className="text-destructive">
           Delete Conversation

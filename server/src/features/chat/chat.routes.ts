@@ -21,4 +21,14 @@ export async function chatRoutes(fastify: FastifyInstance) {
   fastify.put("/messages/:id", chatController.editMessage);
   fastify.delete("/messages/:id", chatController.deleteMessage);
   fastify.post("/messages/:id/forward", chatController.forwardMessage);
+
+  // Phase 2 WhatsApp Features
+  fastify.post("/messages/:id/star", chatController.toggleStarMessage);
+  fastify.post("/messages/:id/pin", chatController.togglePinMessage);
+  fastify.post("/messages/:id/react", chatController.addMessageReaction);
+  fastify.delete("/messages/:id/react", chatController.removeMessageReaction);
+  fastify.post("/conversations/:id/pin", chatController.togglePinConversation);
+  fastify.post("/conversations/:id/mute", chatController.toggleMuteConversation);
+  fastify.post("/conversations/:id/clear", chatController.clearChat);
+  fastify.post("/conversations/:id/disappearing", chatController.setDisappearingMessages);
 }

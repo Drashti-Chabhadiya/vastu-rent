@@ -16,7 +16,7 @@ import { toast } from 'sonner'
 interface ForwardDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  messageId: string | null
+  messageId: string | string[] | null
   conversations: Conversation[]
   onForward: (messageId: string, targetConversationIds: string[]) => Promise<any>
 }
@@ -41,16 +41,20 @@ export function ForwardDialog({
 
     setForwardingIds((prev) => ({ ...prev, [convId]: 'loading' }))
     try {
-      await onForward(messageId, [convId])
+      if (Array.isArray(messageId)) {
+        await Promise.all(messageId.map((id) => onForward(id, [convId])))
+      } else {
+        await onForward(messageId, [convId])
+      }
       setForwardingIds((prev) => ({ ...prev, [convId]: 'success' }))
-      toast.success(`Message forwarded to ${name}`)
+      toast.success(`Forwarded to ${name}`)
     } catch (err: any) {
       setForwardingIds((prev) => {
         const updated = { ...prev }
         delete updated[convId]
         return updated
       })
-      toast.error(err?.response?.data?.message || 'Failed to forward message')
+      toast.error(err?.response?.data?.message || 'Failed to forward')
     }
   }
 

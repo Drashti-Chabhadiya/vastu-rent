@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import EmojiPicker from 'emoji-picker-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import EmojiPicker, { Emoji, EmojiStyle } from 'emoji-picker-react'
 import {
   ArrowLeft,
   Phone,
@@ -24,6 +24,16 @@ import {
   Forward,
   Info,
   ArrowRightLeft,
+  Search,
+  ChevronUp,
+  ChevronDown,
+  Pin,
+  Star,
+  Clock,
+  Eye,
+  EyeOff,
+  CheckSquare,
+  Square,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
@@ -32,8 +42,8 @@ import { format } from 'date-fns'
 import { authClient } from '#/lib/auth/auth-client'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { useDeleteConversation } from '#/hook'
-import type { Conversation, Message } from '../../../../../hook/use-chat'
+import { useDeleteConversation, useUploadChatFile } from '#/hook'
+import type { Message } from '../../../../../hook/use-chat'
 import { UserAvatar } from './UserAvatar'
 import { TypingBubble } from './TypingBubble'
 import { ConversationOptionsMenu } from './ConversationOptionsMenu'
@@ -48,79 +58,175 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '#/components/ui/dialog'
 import { ForwardDialog } from './ForwardDialog'
 import { MessageInfoDialog } from './MessageInfoDialog'
+import { MediaBrowserDialog } from './MediaBrowserDialog'
+import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 
-import { parseMessage, formatMsgTime, formatLastActive } from '#/lib/chat-utils'
+import { parseMessage, formatMsgTime, formatLastActive, buildReplyContent } from '#/lib/chat-utils'
 
-interface ChatWindowProps {
-  activeConversation: Conversation | null
-  checkOnline: (id: string) => boolean
-  isOtherPersonTyping: boolean
-  isLoadingMessages: boolean
-  messages: Message[]
-  currentUserId: string | null | undefined
-  handleReply: (msg: Message, isMe: boolean) => void
-  fileInputRef: React.RefObject<HTMLInputElement | null>
-  handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void
-  isConnected: boolean
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
-  handleSend: () => void
-  messagesContainerRef: React.RefObject<HTMLDivElement | null>
-  inputRef: React.RefObject<HTMLInputElement | null>
-  onCallSuccess?: (name: string) => void
-  onVideoSuccess?: (name: string) => void
-  editMessage: (params: { messageId: string; content: string }) => Promise<any>
-  deleteMessage: (params: { messageId: string; mode: 'me' | 'everyone' }) => Promise<any>
-  forwardMessage: (params: { messageId: string; targetConversationIds: string[] }) => Promise<any>
-  conversations: Conversation[]
+const getEmojiUnified = (emojiStr: string): string => {
+  return Array.from(emojiStr)
+    .map((char) => char.codePointAt(0)!.toString(16))
+    .join('-')
 }
 
-
-export function ChatWindow({
-  activeConversation,
-  checkOnline,
-  isOtherPersonTyping,
-  isLoadingMessages,
-  messages,
-  currentUserId,
-  handleReply,
-  fileInputRef,
-  handleFileSelect,
-  isConnected,
-  handleInputChange,
-  handleKeyDown,
-  handleSend,
-  messagesContainerRef,
-  inputRef,
-  onCallSuccess,
-  onVideoSuccess,
-  editMessage,
-  deleteMessage,
-  forwardMessage,
-  conversations,
-}: ChatWindowProps) {
+export function ChatWindow() {
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
   const deleteConversation = useDeleteConversation()
+  const uploadChatFile = useUploadChatFile()
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
 
+  // Consume Zustand global state
   const {
+    isConnected,
+    conversations,
+    activeConversationId,
+    messages,
+    isLoadingMessages,
+    isOtherPersonTyping,
+    currentUserId,
+    sendMessage,
+    emitTyping,
+    checkOnline,
+    editMessage,
+    deleteMessage,
+    forwardMessage,
+    clearChat: onClearChat,
+    toggleStarMessage,
+    togglePinMessage,
+    reactToMessage,
+    removeReaction,
+
     showMobileChat,
     setShowMobileChat,
     hoveredMsgId,
     setHoveredMsgId,
-    openLightbox,
     replyTarget,
     setReplyTarget,
     pendingPreviews,
     pendingFiles,
     removeFile,
+    addPendingFiles,
+    addPendingPreviews,
+    clearAttachments,
     inputText,
     setInputText,
     showEmojiPicker,
     setShowEmojiPicker,
     isUploading,
+    setIsUploading,
+    openLightbox,
   } = useChatStore()
+
+  // Local Component Refs
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const prevConversationIdRef = useRef<string | null>(null)
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Auto-scroll to bottom when messages change or conversation switches
+  useEffect(() => {
+    const el = messagesContainerRef.current
+    if (el) {
+      const isSameConv = prevConversationIdRef.current === activeConversationId
+      el.scrollTo({
+        top: el.scrollHeight,
+        behavior: isSameConv ? 'smooth' : 'auto',
+      })
+    }
+    prevConversationIdRef.current = activeConversationId
+  }, [messages, isOtherPersonTyping, activeConversationId])
+
+  // Derive active conversation object
+  const activeConversation =
+    conversations.find((c) => c.id === activeConversationId) || null
+
+  // ── Handle typing indicator ──────────────────────────────────────────────
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value)
+    emitTyping(true)
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    typingTimeoutRef.current = setTimeout(() => emitTyping(false), 2000)
+  }
+
+  // ── Handle send ──────────────────────────────────────────────────────────
+  const handleSend = async () => {
+    const hasText = inputText.trim().length > 0
+    const hasFiles = pendingFiles.length > 0
+    if (!hasText && !hasFiles) return
+    if (!activeConversationId) {
+      toast.error('Please select a conversation first')
+      return
+    }
+
+    setIsUploading(true)
+    try {
+      // 1. Upload any pending file attachments
+      let uploadedUrls: string[] = []
+      if (hasFiles) {
+        const uploads = await Promise.all(
+          pendingFiles.map(async (file) => {
+            return await uploadChatFile.mutateAsync(file)
+          }),
+        )
+        uploadedUrls = uploads
+      }
+
+      // 2. Build final message content
+      const finalContent = replyTarget
+        ? buildReplyContent(replyTarget.content, inputText.trim())
+        : inputText.trim()
+
+      // 3. Send via socket
+      sendMessage(finalContent, uploadedUrls)
+
+      // 4. Reset state
+      setInputText('')
+      setReplyTarget(null)
+      clearAttachments()
+      emitTyping(false)
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to upload attachment')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  // ── Handle file selection ─────────────────────────────────────────
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+    // Limit to 5 images
+    const allowed = files.slice(0, 5 - pendingFiles.length)
+    const newPreviews = allowed.map((f) => URL.createObjectURL(f))
+    addPendingFiles(allowed)
+    addPendingPreviews(newPreviews)
+    // Reset input so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  // ── Handle reply ─────────────────────────────────────────────────────────
+  const handleReply = useCallback(
+    (msg: Message, isMe: boolean) => {
+      const { text } = parseMessage(msg.content)
+      const senderName = isMe
+        ? 'You'
+        : (activeConversation?.otherParticipant.name ?? 'Them')
+      setReplyTarget({ id: msg.id, content: text, senderName, isMe })
+      setTimeout(() => inputRef.current?.focus(), 50)
+    },
+    [activeConversation, setReplyTarget],
+  )
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
 
   const [editingMsgId, setEditingMsgId] = useState<string | null>(null)
   const [editingText, setEditingText] = useState('')
@@ -129,11 +235,160 @@ export function ChatWindow({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [canDeleteForEveryone, setCanDeleteForEveryone] = useState(false)
 
-  const [forwardTargetId, setForwardTargetId] = useState<string | null>(null)
+  const [forwardTargetId, setForwardTargetId] = useState<string | string[] | null>(null)
   const [showForwardDialog, setShowForwardDialog] = useState(false)
 
   const [infoTargetMsg, setInfoTargetMsg] = useState<Message | null>(null)
   const [showInfoDialog, setShowInfoDialog] = useState(false)
+
+  // --- Search state ---
+  const [showSearch, setShowSearch] = useState(false)
+  const [searchText, setSearchText] = useState('')
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0)
+
+  // --- Multi-select state ---
+  const [isMultiSelectMode, setIsMultiSelectMode] = useState(false)
+  const [selectedMsgIds, setSelectedMsgIds] = useState<string[]>([])
+
+  // --- Media visibility state ---
+  const [hideMedia, setHideMedia] = useState(false)
+  const [revealedMediaMsgs, setRevealedMediaMsgs] = useState<string[]>([])
+
+  // --- Shared Media Browser state ---
+  const [showMediaBrowser, setShowMediaBrowser] = useState(false)
+
+  // --- Quick Reaction & Emoji Dialog state ---
+  const [activeReactMsgId, setActiveReactMsgId] = useState<string | null>(null)
+  const [fullReactMsgId, setFullReactMsgId] = useState<string | null>(null)
+
+  // --- Search matches calculation ---
+  const searchMatches = messages.filter(
+    (m) =>
+      !m.isDeleted &&
+      m.content &&
+      m.content.toLowerCase().includes(searchText.toLowerCase()) &&
+      searchText.trim() !== '',
+  )
+
+  const scrollToMessage = (msgId: string) => {
+    const el = document.getElementById(`msg-${msgId}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('bg-yellow-200/40', 'transition-all', 'duration-500')
+      setTimeout(() => {
+        el.classList.remove('bg-yellow-200/40')
+      }, 2000)
+    }
+  }
+
+  const handleSearchNavigate = (direction: 'up' | 'down') => {
+    if (searchMatches.length === 0) return
+    let nextIndex = currentMatchIndex
+    if (direction === 'up') {
+      nextIndex = currentMatchIndex > 0 ? currentMatchIndex - 1 : searchMatches.length - 1
+    } else {
+      nextIndex = currentMatchIndex < searchMatches.length - 1 ? currentMatchIndex + 1 : 0
+    }
+    setCurrentMatchIndex(nextIndex)
+    scrollToMessage(searchMatches[nextIndex].id)
+  }
+
+  const highlightText = (text: string, search: string) => {
+    if (!search || !search.trim()) return text
+    const parts = text.split(new RegExp(`(${search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi'))
+    return (
+      <>
+        {parts.map((part, i) =>
+          part.toLowerCase() === search.toLowerCase() ? (
+            <mark key={i} className="bg-yellow-200 text-foreground font-black px-0.5 rounded-sm">
+              {part}
+            </mark>
+          ) : (
+            part
+          )
+        )}
+      </>
+    )
+  }
+
+  // --- Multi-select handlers ---
+  const handleSelectMessage = (msgId: string) => {
+    setSelectedMsgIds((prev) =>
+      prev.includes(msgId) ? prev.filter((id) => id !== msgId) : [...prev, msgId],
+    )
+  }
+
+  const handleBulkStar = async () => {
+    if (selectedMsgIds.length === 0) return
+    try {
+      await Promise.all(selectedMsgIds.map((id) => toggleStarMessage(id)))
+      toast.success('Messages starred status updated')
+      setSelectedMsgIds([])
+      setIsMultiSelectMode(false)
+    } catch {
+      toast.error('Failed to star messages')
+    }
+  }
+
+  const handleBulkCopy = () => {
+    if (selectedMsgIds.length === 0) return
+    const textToCopy = messages
+      .filter((m) => selectedMsgIds.includes(m.id))
+      .map((m) => {
+        const { text } = parseMessage(m.content)
+        return `[${format(new Date(m.createdAt), 'HH:mm')}] ${m.sender.name}: ${text}`
+      })
+      .join('\n')
+    navigator.clipboard.writeText(textToCopy)
+    toast.success('Copied selected messages to clipboard!')
+    setSelectedMsgIds([])
+    setIsMultiSelectMode(false)
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedMsgIds.length === 0) return
+    if (!confirm(`Are you sure you want to delete these ${selectedMsgIds.length} messages for you?`)) return
+    try {
+      await Promise.all(selectedMsgIds.map((id) => deleteMessage({ messageId: id, mode: 'me' })))
+      toast.success('Messages deleted')
+      setSelectedMsgIds([])
+      setIsMultiSelectMode(false)
+    } catch {
+      toast.error('Failed to delete messages')
+    }
+  }
+
+  const handleBulkForward = () => {
+    if (selectedMsgIds.length === 0) return
+    setForwardTargetId(selectedMsgIds)
+    setShowForwardDialog(true)
+  }
+
+  // Helper to format disappearing message text
+  const getDisappearingDurationText = (sec: number) => {
+    if (sec === 86400) return '24 hours'
+    if (sec === 604800) return '7 days'
+    if (sec === 7776000) return '90 days'
+    return `${sec / 86400} days`
+  }
+
+  // Pinned messages banner calculation
+  const pinnedMessages = messages.filter(
+    (m) => !m.isDeleted && m.pinnedBy && m.pinnedBy.length > 0,
+  )
+  const activePinnedMessage = pinnedMessages[pinnedMessages.length - 1] || null
+
+  // Reset search, multi-select, and revealed media messages on conversation change
+  useEffect(() => {
+    setShowSearch(false)
+    setSearchText('')
+    setCurrentMatchIndex(0)
+    setIsMultiSelectMode(false)
+    setSelectedMsgIds([])
+    setRevealedMediaMsgs([])
+    setActiveReactMsgId(null)
+    setFullReactMsgId(null)
+  }, [activeConversation?.id])
 
   const handleOpenDelete = (msgId: string) => {
     const msg = messages.find((m) => m.id === msgId)
@@ -341,9 +596,9 @@ export function ChatWindow({
                   {showOnlineStatus
                     ? 'Online'
                     : (() => {
-                        const formatted = formatLastActive(activeConversation.otherParticipant.lastActive)
-                        return formatted === 'Offline' ? 'Offline' : `last seen ${formatted}`
-                      })()}
+                      const formatted = formatLastActive(activeConversation.otherParticipant.lastActive)
+                      return formatted === 'Offline' ? 'Offline' : `last seen ${formatted}`
+                    })()}
                 </span>
                 {isOtherPersonTyping && (
                   <span
@@ -379,11 +634,76 @@ export function ChatWindow({
         </div>
 
         <div className={cn('flex', 'items-center', 'gap-1')}>
+          {/* Hide Media Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setHideMedia(!hideMedia)
+              setRevealedMediaMsgs([])
+            }}
+            className={cn(
+              'w-9 h-9 hover:bg-muted-light rounded-xl cursor-pointer transition-colors',
+              hideMedia ? 'text-primary bg-primary/10' : 'text-muted-dark hover:text-muted-foreground'
+            )}
+            title={hideMedia ? "Show Media" : "Hide Media"}
+          >
+            {hideMedia ? <EyeOff size={16} /> : <Eye size={16} />}
+          </Button>
+
+          {/* Search Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setShowSearch(!showSearch)
+              if (showSearch) {
+                setSearchText('')
+                setCurrentMatchIndex(0)
+              }
+            }}
+            className={cn(
+              'w-9 h-9 hover:bg-muted-light rounded-xl cursor-pointer transition-colors',
+              showSearch ? 'text-primary bg-primary/10' : 'text-muted-dark hover:text-muted-foreground'
+            )}
+            title="Search Messages"
+          >
+            <Search size={16} />
+          </Button>
+
+          {/* Multi-select Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setIsMultiSelectMode(!isMultiSelectMode)
+              setSelectedMsgIds([])
+            }}
+            className={cn(
+              'w-9 h-9 hover:bg-muted-light rounded-xl cursor-pointer transition-colors',
+              isMultiSelectMode ? 'text-primary bg-primary/10' : 'text-muted-dark hover:text-muted-foreground'
+            )}
+            title="Select Messages"
+          >
+            <CheckSquare size={16} />
+          </Button>
+
+          {/* Shared Media Browser */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowMediaBrowser(true)}
+            className="w-9 h-9 hover:bg-muted-light rounded-xl text-muted-dark hover:text-muted-foreground cursor-pointer transition-colors"
+            title="Shared Media"
+          >
+            <ImagePlus size={16} />
+          </Button>
+
           <Button
             variant="ghost"
             size="icon"
             onClick={() =>
-              onCallSuccess?.(activeConversation.otherParticipant.name)
+              toast.success(`Calling ${activeConversation.otherParticipant.name}...`)
             }
             className={cn(
               'w-9',
@@ -402,7 +722,7 @@ export function ChatWindow({
             variant="ghost"
             size="icon"
             onClick={() =>
-              onVideoSuccess?.(activeConversation.otherParticipant.name)
+              toast.success(`Starting video call with ${activeConversation.otherParticipant.name}...`)
             }
             className={cn(
               'w-9',
@@ -425,6 +745,7 @@ export function ChatWindow({
               })
             }
             onArchive={() => toast.info('Archive feature coming soon')}
+            onClearChat={() => setShowClearConfirm(true)}
             onDelete={async () => {
               try {
                 await deleteConversation.mutateAsync(activeConversation.id)
@@ -436,6 +757,164 @@ export function ChatWindow({
           />
         </div>
       </div>
+
+      {/* Message Search Bar Panel */}
+      {showSearch && (
+        <div className="px-6 py-2.5 border-b border-border/20 bg-muted-light/35 flex items-center justify-between gap-3 shrink-0 animate-in slide-in-from-top duration-200">
+          <div className="relative flex-1">
+            <Search size={13} className="absolute left-3 top-3 text-muted-dark" />
+            <Input
+              placeholder="Search in this chat..."
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value)
+                setCurrentMatchIndex(0)
+              }}
+              className="h-10 pl-9 pr-24 bg-card border-none rounded-xl text-[11px] font-bold focus-visible:ring-1 focus-visible:ring-primary/20"
+            />
+            {searchText.trim() !== "" && (
+              <span className="absolute right-3 top-3 text-[10px] font-bold text-muted-dark bg-muted-light px-2 py-0.5 rounded-md">
+                {searchMatches.length > 0 ? `${currentMatchIndex + 1} of ${searchMatches.length}` : 'No matches'}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={searchMatches.length === 0}
+              onClick={() => handleSearchNavigate('up')}
+              className="w-8 h-8 hover:bg-muted-light text-muted-dark hover:text-foreground rounded-lg cursor-pointer shrink-0"
+              title="Previous match"
+            >
+              <ChevronUp size={14} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={searchMatches.length === 0}
+              onClick={() => handleSearchNavigate('down')}
+              className="w-8 h-8 hover:bg-muted-light text-muted-dark hover:text-foreground rounded-lg cursor-pointer shrink-0"
+              title="Next match"
+            >
+              <ChevronDown size={14} />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                setShowSearch(false)
+                setSearchText('')
+                setCurrentMatchIndex(0)
+              }}
+              className="w-8 h-8 hover:bg-muted-light text-muted-dark hover:text-foreground rounded-lg cursor-pointer shrink-0"
+              title="Close search"
+            >
+              <X size={14} />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Multi-Select Action Bar Panel */}
+      {isMultiSelectMode && (
+        <div className="px-6 py-3 border-b border-border/20 bg-primary/5 flex items-center justify-between gap-4 shrink-0 animate-in slide-in-from-top duration-250">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                setIsMultiSelectMode(false)
+                setSelectedMsgIds([])
+              }}
+              className="w-7 h-7 rounded-full hover:bg-muted-light text-muted-dark hover:text-foreground cursor-pointer"
+            >
+              <X size={14} />
+            </Button>
+            <span className="text-[12px] font-black text-primary">
+              {selectedMsgIds.length} message{selectedMsgIds.length !== 1 ? 's' : ''} selected
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleBulkStar}
+              disabled={selectedMsgIds.length === 0}
+              variant="ghost"
+              className="h-8 rounded-xl text-[10px] font-black px-3 gap-1.5 hover:bg-primary/10 text-primary cursor-pointer border border-primary/20"
+            >
+              <Star size={12} className="fill-transparent" />
+              Star/Unstar
+            </Button>
+            <Button
+              onClick={handleBulkCopy}
+              disabled={selectedMsgIds.length === 0}
+              variant="ghost"
+              className="h-8 rounded-xl text-[10px] font-black px-3 gap-1.5 hover:bg-primary/10 text-primary cursor-pointer border border-primary/20"
+            >
+              <Copy size={12} />
+              Copy
+            </Button>
+            <Button
+              onClick={handleBulkForward}
+              disabled={selectedMsgIds.length === 0}
+              variant="ghost"
+              className="h-8 rounded-xl text-[10px] font-black px-3 gap-1.5 hover:bg-primary/10 text-primary cursor-pointer border border-primary/20"
+            >
+              <Forward size={12} />
+              Forward
+            </Button>
+            <Button
+              onClick={handleBulkDelete}
+              disabled={selectedMsgIds.length === 0}
+              variant="ghost"
+              className="h-8 rounded-xl text-[10px] font-black px-3 gap-1.5 hover:bg-red-50 text-red-600 cursor-pointer border border-red-200"
+            >
+              <Trash2 size={12} />
+              Delete
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Pinned Messages Banner */}
+      {activePinnedMessage && (
+        <div className="bg-primary/5 border-b border-border/20 px-6 py-2.5 flex items-center justify-between gap-3 shrink-0 animate-in slide-in-from-top duration-200">
+          <div
+            onClick={() => scrollToMessage(activePinnedMessage.id)}
+            className="flex items-center gap-2.5 cursor-pointer min-w-0 flex-1 hover:opacity-90"
+          >
+            <Pin size={12} className="text-primary rotate-45 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[9px] font-black text-primary uppercase tracking-wider mb-0.5">
+                Pinned Message
+              </p>
+              <p className="text-[10px] font-semibold text-muted-dark truncate">
+                {parseMessage(activePinnedMessage.content).text || "Media attachment"}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={async (e) => {
+              e.stopPropagation()
+              await togglePinMessage(activePinnedMessage.id)
+            }}
+            className="w-6 h-6 rounded-full hover:bg-muted-light text-muted-dark hover:text-foreground cursor-pointer shrink-0"
+            title="Unpin message"
+          >
+            <X size={12} />
+          </Button>
+        </div>
+      )}
+
+      {/* Disappearing Messages Info Banner */}
+      {activeConversation.disappearingDuration ? activeConversation.disappearingDuration > 0 && (
+        <div className="bg-muted-light/60 border-b border-border/20 px-6 py-2.5 flex items-center gap-2 text-[10px] font-bold text-muted-dark shrink-0 animate-in slide-in-from-top duration-200">
+          <Clock size={12} className="text-primary shrink-0" />
+          <span>Disappearing messages is active. Messages will disappear for everyone after {getDisappearingDurationText(activeConversation.disappearingDuration)}.</span>
+        </div>
+      ) : null}
 
       {/* Messages Area */}
       <div
@@ -540,11 +1019,18 @@ export function ChatWindow({
                 const isMe = msg.senderId === currentUserId
                 const { replyQuote, text: msgText } = parseMessage(msg.content)
                 const isHovered = hoveredMsgId === msg.id
+                const isStarred = msg.starredBy?.includes(currentUserId || '')
+                const isPinned = msg.pinnedBy?.includes(currentUserId || '')
+
                 return (
                   <div
                     key={msg.id}
+                    id={`msg-${msg.id}`}
+                    onClick={isMultiSelectMode ? () => handleSelectMessage(msg.id) : undefined}
                     className={cn(
-                      'flex gap-2.5 group/msg',
+                      'flex gap-2.5 group/msg relative p-1.5 rounded-2xl transition-all',
+                      isMultiSelectMode && 'cursor-pointer hover:bg-muted-light/45',
+                      selectedMsgIds.includes(msg.id) && 'bg-primary-soft/50 border border-primary-border/20 shadow-sm',
                       isMe
                         ? 'flex-row-reverse ml-auto max-w-[82%]'
                         : 'mr-auto max-w-[82%]',
@@ -552,6 +1038,69 @@ export function ChatWindow({
                     onMouseEnter={() => setHoveredMsgId(msg.id)}
                     onMouseLeave={() => setHoveredMsgId(null)}
                   >
+                    {/* Multi-select check icon */}
+                    {isMultiSelectMode && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleSelectMessage(msg.id)
+                        }}
+                        className="self-center p-1 rounded-lg text-primary cursor-pointer shrink-0 transition-colors"
+                      >
+                        {selectedMsgIds.includes(msg.id) ? (
+                          <CheckSquare size={16} className="fill-primary text-white" />
+                        ) : (
+                          <Square size={16} className="text-muted-dark/60" />
+                        )}
+                      </button>
+                    )}
+
+                    {/* Quick Reactions Bar */}
+                    {!msg.isDeleted && (isHovered || activeReactMsgId === msg.id) && !isMultiSelectMode && (
+                      <div className={cn(
+                        "flex items-center gap-1.5 bg-card border border-border/30 shadow-md rounded-full px-2 py-1.5 absolute -top-8 z-20 animate-in zoom-in-95 duration-100",
+                        isMe ? "right-2" : "left-10"
+                      )}>
+                        {['👍', '❤️', '😂', '😮', '😢'].map((emoji) => {
+                          const userReacted = msg.reactions?.some(r => r.userId === currentUserId && r.emoji === emoji)
+                          return (
+                            <button
+                              key={emoji}
+                              type="button"
+                              onClick={async (e) => {
+                                e.stopPropagation()
+                                if (userReacted) {
+                                  await removeReaction(msg.id)
+                                } else {
+                                  await reactToMessage({ messageId: msg.id, emoji })
+                                }
+                                setActiveReactMsgId(null)
+                              }}
+                              className={cn(
+                                "hover:scale-125 transition-transform duration-100 p-1 cursor-pointer hover:drop-shadow-sm flex items-center justify-center rounded-full",
+                                userReacted && "bg-primary/10"
+                              )}
+                            >
+                              <Emoji unified={getEmojiUnified(emoji)} emojiStyle={EmojiStyle.APPLE} size={18} />
+                            </button>
+                          )
+                        })}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setFullReactMsgId(msg.id)
+                            setActiveReactMsgId(null)
+                          }}
+                          className="hover:scale-125 transition-transform duration-100 px-1 text-sm font-black text-muted-dark hover:text-foreground cursor-pointer flex items-center justify-center shrink-0"
+                          title="Plus reaction picker"
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
+
                     {/* Avatar for other person */}
                     {!isMe && (
                       <div className={cn('self-end', 'shrink-0')}>
@@ -568,7 +1117,7 @@ export function ChatWindow({
                       {!msg.isDeleted && msg.attachments && msg.attachments.length > 0 && (
                         <div
                           className={cn(
-                            'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm',
+                            'grid gap-1.5 rounded-2xl overflow-hidden shadow-sm relative',
                             msg.attachments.length === 1
                               ? 'grid-cols-1 max-w-[220px]'
                               : msg.attachments.length === 2
@@ -577,27 +1126,47 @@ export function ChatWindow({
                             isMe ? 'rounded-tr-sm' : 'rounded-tl-sm',
                           )}
                         >
-                          {msg.attachments.map((src, i) => (
-                            <Button
-                              key={i}
+                          {hideMedia && !revealedMediaMsgs.includes(msg.id) ? (
+                            <button
                               type="button"
-                              variant="ghost"
-                              onClick={() => openLightbox(msg.attachments, i)}
-                              className="relative group/img block overflow-hidden focus:outline-none p-0 h-auto rounded-none hover:bg-transparent"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setRevealedMediaMsgs(prev => [...prev, msg.id])
+                              }}
+                              className="w-full h-24 bg-muted-light flex flex-col items-center justify-center p-3 text-center border border-border/20 gap-1.5 cursor-pointer outline-none hover:bg-muted-light/85 transition-colors"
                             >
-                              <img
-                                src={src}
-                                alt={`attachment-${i + 1}`}
-                                className="w-full h-28 object-cover transition-transform duration-200 group-hover/img:scale-105"
-                              />
-                              <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-200 flex items-center justify-center">
-                                <ZoomIn
-                                  size={20}
-                                  className="text-white opacity-0 group-hover/img:opacity-100 drop-shadow-lg transition-opacity duration-200"
-                                />
+                              <div className="w-7 h-7 rounded-lg bg-card flex items-center justify-center text-muted-dark shadow-sm">
+                                <ImagePlus size={14} />
                               </div>
-                            </Button>
-                          ))}
+                              <span className="text-[9px] font-bold text-muted-dark">Media hidden</span>
+                              <span className="text-[8px] font-medium text-muted-dark/70">Click to view</span>
+                            </button>
+                          ) : (
+                            msg.attachments.map((src, i) => (
+                              <Button
+                                key={i}
+                                type="button"
+                                variant="ghost"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  openLightbox(msg.attachments, i)
+                                }}
+                                className="relative group/img block overflow-hidden focus:outline-none p-0 h-auto rounded-none hover:bg-transparent"
+                              >
+                                <img
+                                  src={src}
+                                  alt={`attachment-${i + 1}`}
+                                  className="w-full h-28 object-cover transition-transform duration-200 group-hover/img:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+                                  <ZoomIn
+                                    size={20}
+                                    className="text-white opacity-0 group-hover/img:opacity-100 drop-shadow-lg transition-opacity duration-200"
+                                  />
+                                </div>
+                              </Button>
+                            ))
+                          )}
                         </div>
                       )}
 
@@ -694,7 +1263,7 @@ export function ChatWindow({
                                 </p>
                               </div>
                             )}
-                            {msgText}
+                            {highlightText(msgText, searchText)}
                           </div>
                         )
                       )}
@@ -711,9 +1280,16 @@ export function ChatWindow({
                             'text-[8px]',
                             'font-bold',
                             'text-muted-dark',
+                            'flex items-center gap-1'
                           )}
                         >
                           {formatMsgTime(msg.createdAt)}
+                          {isStarred && (
+                            <Star size={9} className="text-amber-500 fill-amber-500 shrink-0" />
+                          )}
+                          {msg.pinnedBy && msg.pinnedBy.length > 0 && (
+                            <Pin size={9} className="text-primary rotate-45 shrink-0" />
+                          )}
                         </span>
                         {msg.isEdited && !msg.isDeleted && (
                           <span className="text-[8px] font-bold text-muted-dark/65 italic">
@@ -741,16 +1317,53 @@ export function ChatWindow({
                             />
                           ))}
                       </div>
+
+                      {/* Reaction badges */}
+                      {!msg.isDeleted && msg.reactions && msg.reactions.length > 0 && (
+                        <div className={cn("flex flex-wrap gap-1 mt-1", isMe ? "justify-end" : "justify-start")}>
+                          {Array.from(new Set(msg.reactions.map(r => r.emoji))).map((emoji) => {
+                            const reactUsers = msg.reactions!.filter(r => r.emoji === emoji)
+                            const userReacted = reactUsers.some(r => r.userId === currentUserId)
+                            const tooltipText = `Reacted by: ${reactUsers.map(r => r.name).join(', ')}`
+                            return (
+                              <div
+                                key={emoji}
+                                title={tooltipText}
+                                onClick={async (e) => {
+                                  e.stopPropagation()
+                                  if (userReacted) {
+                                    await removeReaction(msg.id)
+                                  } else {
+                                    await reactToMessage({ messageId: msg.id, emoji })
+                                  }
+                                }}
+                                className={cn(
+                                  "flex items-center gap-1 px-1.5 py-0.5 rounded-full border text-[8px] font-bold cursor-pointer transition-all shadow-sm select-none",
+                                  userReacted
+                                    ? "bg-primary-soft/60 border-primary/20 text-primary"
+                                    : "bg-card border-border/20 text-foreground hover:bg-muted-light"
+                                )}
+                              >
+                                <Emoji unified={getEmojiUnified(emoji)} emojiStyle={EmojiStyle.APPLE} size={12} />
+                                <span>{reactUsers.length}</span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )}
                     </div>
 
                     {/* Hover Dropdown & Reply Actions */}
                     <div className="flex items-center gap-1 self-center shrink-0">
                       {/* Quick Reply */}
-                      {!msg.isDeleted && (
+                      {!msg.isDeleted && !isMultiSelectMode && (
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleReply(msg, isMe)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleReply(msg, isMe)
+                          }}
                           className={cn(
                             'w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
                             'bg-muted/60 hover:bg-primary/10 text-muted-dark hover:text-primary border border-border/30',
@@ -765,80 +1378,112 @@ export function ChatWindow({
                       )}
 
                       {/* Context Dropdown Menu */}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className={cn(
-                              'w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
-                              'bg-muted/60 hover:bg-primary/10 text-muted-dark hover:text-primary border border-border/30',
-                              isHovered
-                                ? 'opacity-100 scale-100'
-                                : 'opacity-0 scale-75 pointer-events-none',
-                            )}
-                            title="Message Actions"
+                      {!isMultiSelectMode && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                'w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
+                                'bg-muted/60 hover:bg-primary/10 text-muted-dark hover:text-primary border border-border/30',
+                                isHovered
+                                  ? 'opacity-100 scale-100'
+                                  : 'opacity-0 scale-75 pointer-events-none',
+                              )}
+                              title="Message Actions"
+                            >
+                              <MoreVertical size={12} strokeWidth={2.5} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align={isMe ? 'end' : 'start'}
+                            className="rounded-xl border border-border/30 shadow-lg min-w-[140px]"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            <MoreVertical size={12} strokeWidth={2.5} />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align={isMe ? 'end' : 'start'}
-                          className="rounded-xl border border-border/30 shadow-lg min-w-[120px]"
-                        >
-                          {!msg.isDeleted && (
-                            <DropdownMenuItem
-                              onClick={() => handleReply(msg, isMe)}
-                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
-                            >
-                              <Reply size={12} /> Reply
-                            </DropdownMenuItem>
-                          )}
-                          {!msg.isDeleted && (
-                            <DropdownMenuItem
-                              onClick={() => handleCopyText(msgText)}
-                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
-                            >
-                              <Copy size={12} /> Copy
-                            </DropdownMenuItem>
-                          )}
-                          {!msg.isDeleted && (
-                            <DropdownMenuItem
-                              onClick={() => handleOpenForward(msg.id)}
-                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
-                            >
-                              <Forward size={12} /> Forward
-                            </DropdownMenuItem>
-                          )}
-                          {isMe && !msg.isDeleted && (
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setEditingMsgId(msg.id)
-                                setEditingText(msgText)
-                              }}
-                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
-                            >
-                              <Edit3 size={12} /> Edit
-                            </DropdownMenuItem>
-                          )}
-                          {isMe && (
-                            <DropdownMenuItem
-                              onClick={() => handleOpenInfo(msg)}
-                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg"
-                            >
-                              <Info size={12} /> Info
-                            </DropdownMenuItem>
-                          )}
-                          {!msg.isDeleted && (
-                            <DropdownMenuItem
-                              onClick={() => handleOpenDelete(msg.id)}
-                              className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-red-600 focus:text-red-600 focus:bg-red-50"
-                            >
-                              <Trash2 size={12} /> Delete
-                            </DropdownMenuItem>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            {!msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={() => handleReply(msg, isMe)}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Reply size={12} /> Reply
+                              </DropdownMenuItem>
+                            )}
+                            {!msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={() => handleCopyText(msgText)}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Copy size={12} /> Copy
+                              </DropdownMenuItem>
+                            )}
+                            {!msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setActiveReactMsgId(msg.id)
+                                }}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Smile size={12} /> React
+                              </DropdownMenuItem>
+                            )}
+                            {!msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={async () => await toggleStarMessage(msg.id)}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Star size={12} className={isStarred ? "text-amber-500 fill-amber-500" : ""} />
+                                {isStarred ? 'Unstar Message' : 'Star Message'}
+                              </DropdownMenuItem>
+                            )}
+                            {!msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={async () => await togglePinMessage(msg.id)}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Pin size={12} className="rotate-45" />
+                                {isPinned ? 'Unpin Message' : 'Pin Message'}
+                              </DropdownMenuItem>
+                            )}
+                            {!msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={() => handleOpenForward(msg.id)}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Forward size={12} /> Forward
+                              </DropdownMenuItem>
+                            )}
+                            {isMe && !msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setEditingMsgId(msg.id)
+                                  setEditingText(msgText)
+                                }}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Edit3 size={12} /> Edit
+                              </DropdownMenuItem>
+                            )}
+                            {isMe && (
+                              <DropdownMenuItem
+                                onClick={() => handleOpenInfo(msg)}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
+                              >
+                                <Info size={12} /> Info
+                              </DropdownMenuItem>
+                            )}
+                            {!msg.isDeleted && (
+                              <DropdownMenuItem
+                                onClick={() => handleOpenDelete(msg.id)}
+                                className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-red-600 focus:text-red-600 focus:bg-red-50"
+                              >
+                                <Trash2 size={12} /> Delete
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                   </div>
                 )
@@ -1011,6 +1656,7 @@ export function ChatWindow({
                   previewConfig={{ showPreview: false }}
                   searchDisabled={false}
                   skinTonesDisabled={true}
+                  emojiStyle={EmojiStyle.APPLE}
                 />
               </div>
             )}
@@ -1059,6 +1705,43 @@ export function ChatWindow({
         message={infoTargetMsg}
       />
 
+      <MediaBrowserDialog
+        open={showMediaBrowser}
+        onOpenChange={setShowMediaBrowser}
+        messages={messages}
+      />
+
+      <Dialog open={!!fullReactMsgId} onOpenChange={(open) => !open && setFullReactMsgId(null)}>
+        <DialogContent className="max-w-[350px] rounded-3xl p-0 border border-border/30 shadow-2xl overflow-hidden bg-card flex justify-center items-center">
+          <EmojiPicker
+            onEmojiClick={async (emojiData) => {
+              if (fullReactMsgId) {
+                const targetMsg = messages.find((m) => m.id === fullReactMsgId)
+                const userReacted = targetMsg?.reactions?.some(
+                  (r) => r.userId === currentUserId && r.emoji === emojiData.emoji,
+                )
+                try {
+                  if (userReacted) {
+                    await removeReaction(fullReactMsgId)
+                  } else {
+                    await reactToMessage({ messageId: fullReactMsgId, emoji: emojiData.emoji })
+                  }
+                } catch (err) {
+                  console.error('Failed to react:', err)
+                }
+                setFullReactMsgId(null)
+              }
+            }}
+            width={320}
+            height={360}
+            previewConfig={{ showPreview: false }}
+            searchDisabled={false}
+            skinTonesDisabled={true}
+            emojiStyle={EmojiStyle.APPLE}
+          />
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent className="max-w-xs rounded-3xl p-5 border border-border/30 shadow-2xl">
           <DialogHeader>
@@ -1092,6 +1775,27 @@ export function ChatWindow({
           </div>
         </DialogContent>
       </Dialog>
+
+      {activeConversation && (
+        <ReusableAlertDialog
+          isOpen={showClearConfirm}
+          onOpenChange={setShowClearConfirm}
+          onConfirm={async () => {
+            try {
+              await onClearChat(activeConversation.id)
+              toast.success('Chat cleared')
+            } catch {
+              toast.error('Failed to clear chat')
+            } finally {
+              setShowClearConfirm(false)
+            }
+          }}
+          title="Clear Chat?"
+          description="Are you sure you want to clear this chat? This action cannot be undone."
+          confirmText="Clear"
+          variant="danger"
+        />
+      )}
     </div>
   )
 }

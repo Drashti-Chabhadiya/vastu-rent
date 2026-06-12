@@ -15,19 +15,16 @@ import { UserAvatar } from './UserAvatar'
 import { authClient } from '#/lib/auth/auth-client'
 
 
-interface NewChatDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  switchConversation: (id: string) => Promise<void>
-  setShowMobileChat: (show: boolean) => void
-}
+import { useChatStore } from '../../../../../store/useChatStore'
 
-export function NewChatDialog({
-  open,
-  onOpenChange,
-  switchConversation,
-  setShowMobileChat,
-}: NewChatDialogProps) {
+export function NewChatDialog() {
+  const {
+    showNewChat: open,
+    setShowNewChat: onOpenChange,
+    switchConversation,
+    setShowMobileChat,
+  } = useChatStore()
+
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
 

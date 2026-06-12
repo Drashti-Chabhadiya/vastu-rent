@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { Conversation, Message } from '#/hook'
 
 export interface ReplyTarget {
   id: string
@@ -29,6 +30,33 @@ export interface ChatStoreState {
   // Dialog state
   showNewChat: boolean
 
+  // useChat Synced State
+  isConnected: boolean
+  conversations: Conversation[]
+  isLoadingConversations: boolean
+  activeConversationId: string | null
+  messages: Message[]
+  isLoadingMessages: boolean
+  isOtherPersonTyping: boolean
+  currentUserId: string | null | undefined
+
+  // useChat Synced Actions
+  switchConversation: (id: string) => void
+  sendMessage: (content: string, attachments?: string[]) => void
+  emitTyping: (isTyping: boolean) => void
+  checkOnline: (id: string) => boolean
+  editMessage: (params: { messageId: string; content: string }) => Promise<any>
+  deleteMessage: (params: { messageId: string; mode: 'me' | 'everyone' }) => Promise<any>
+  forwardMessage: (params: { messageId: string; targetConversationIds: string[] }) => Promise<any>
+  togglePinConversation: (id: string) => Promise<any>
+  toggleMuteConversation: (id: string) => Promise<any>
+  clearChat: (id: string) => Promise<any>
+  setDisappearingMessages: (id: string, duration: number) => Promise<any>
+  toggleStarMessage: (id: string) => Promise<any>
+  togglePinMessage: (id: string) => Promise<any>
+  reactToMessage: (params: { messageId: string; emoji: string }) => Promise<any>
+  removeReaction: (id: string) => Promise<any>
+
   setSearchQuery: (q: string) => void
   setActiveSubTab: (tab: 'all' | 'unread' | 'bookings' | 'support') => void
   setInputText: (text: string | ((prev: string) => string)) => void
@@ -53,6 +81,9 @@ export interface ChatStoreState {
 
   // Dialog Actions
   setShowNewChat: (show: boolean) => void
+
+  // Synced state updater
+  setChatData: (data: Partial<ChatStoreState>) => void
 }
 
 export const useChatStore = create<ChatStoreState>((set, get) => ({
@@ -73,6 +104,33 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   showLightbox: false,
 
   showNewChat: false,
+
+  // Synced defaults
+  isConnected: false,
+  conversations: [],
+  isLoadingConversations: false,
+  activeConversationId: null,
+  messages: [],
+  isLoadingMessages: false,
+  isOtherPersonTyping: false,
+  currentUserId: null,
+
+  // Synced default actions (noop)
+  switchConversation: () => {},
+  sendMessage: () => {},
+  emitTyping: () => {},
+  checkOnline: () => false,
+  editMessage: async () => {},
+  deleteMessage: async () => {},
+  forwardMessage: async () => {},
+  togglePinConversation: async () => {},
+  toggleMuteConversation: async () => {},
+  clearChat: async () => {},
+  setDisappearingMessages: async () => {},
+  toggleStarMessage: async () => {},
+  togglePinMessage: async () => {},
+  reactToMessage: async () => {},
+  removeReaction: async () => {},
 
   setSearchQuery: (searchQuery) => set({ searchQuery }),
   setActiveSubTab: (activeSubTab) => set({ activeSubTab }),
@@ -139,4 +197,6 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
     }),
 
   setShowNewChat: (showNewChat) => set({ showNewChat }),
+
+  setChatData: (data) => set(data),
 }))

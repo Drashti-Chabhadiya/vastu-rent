@@ -282,9 +282,10 @@ export function initSocket(httpServer: any) {
           lastMessage: payloadMessage,
         });
 
-        // Smart Notification Trigger: only notify recipient if they are not currently in the chat room
+        // Smart Notification Trigger: only notify recipient if they are not currently in the chat room and hasn't muted the chat
         try {
-          if (!isOtherUserActiveInChat) {
+          const isMuted = conversation.mutedBy?.includes(otherParticipantId) ?? false;
+          if (!isOtherUserActiveInChat && !isMuted) {
             const { createAndDeliverNotification } = await import('./notification.js');
             const notifMessage = hasAttachments && !hasContent
               ? `📎 Sent ${attachments.length} image${attachments.length > 1 ? 's' : ''}`
@@ -380,6 +381,33 @@ export function initSocket(httpServer: any) {
       }
     });
   });
+
+  // Disappearing messages hourly database cleanup task
+  setInterval(async () => {
+    try {
+      console.log("🧹 Running disappearing messages database cleanup...");
+      const conversations = await prisma.conversation.findMany({
+        where: {
+          disappearingDuration: { gt: 0 }
+        }
+      });
+      
+      for (const conv of conversations) {
+        const cutoff = new Date(Date.now() - conv.disappearingDuration * 1000);
+        const deleted = await prisma.message.deleteMany({
+          where: {
+            conversationId: conv.id,
+            createdAt: { lt: cutoff }
+          }
+        });
+        if (deleted.count > 0) {
+          console.log(`🧹 Deleted ${deleted.count} expired messages from conversation ${conv.id}`);
+        }
+      }
+    } catch (err) {
+      console.error("❌ Disappearing messages cleanup failed:", err);
+    }
+  }, 60 * 60 * 1000); // 1 hour
 }
 
 // Helper function to check if a user is online
