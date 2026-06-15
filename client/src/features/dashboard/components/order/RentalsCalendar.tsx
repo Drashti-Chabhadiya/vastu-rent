@@ -348,7 +348,7 @@ export const RentalsCalendar = () => {
             Reserved occupancy validation
           </h4>
           <p className="text-xs font-semibold text-muted-foreground/85 leading-relaxed max-w-2xl">
-            Confirming a Cash or razorpay booking automatically blocks the
+            Confirming a booking (Cash or Online) automatically blocks the
             specific listing dates from being reserved by other renters.
             Rejected/Cancelled requests immediately free the dates.
           </p>

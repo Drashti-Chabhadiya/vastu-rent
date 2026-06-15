@@ -16,7 +16,7 @@ export const OrderPaymentDetailsCard = ({
       value:
         order.paymentMethod === 'cash'
           ? 'Cash / CoD Payment'
-          : 'Online Payment (Razorpay)',
+          : 'Online Payment',
     },
     {
       label: 'Payment Status',

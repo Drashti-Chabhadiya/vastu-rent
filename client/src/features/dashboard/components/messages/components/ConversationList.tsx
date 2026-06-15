@@ -1,15 +1,17 @@
 import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import {
   Search,
   MessageSquare,
   SlidersHorizontal,
-  Leaf,
   Pin,
   BellOff,
   Clock,
-  MoreVertical,
   Trash2,
-  Plus,
+  Settings,
+  ArrowLeftRight,
+  Pencil,
+  MoreVertical,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -33,6 +35,7 @@ import {
 import { DisappearingSettingsDialog } from './DisappearingSettingsDialog'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { useChatStore } from '../../../../../store/useChatStore'
+import { toast } from 'sonner'
 
 export function ConversationList() {
   const { data: session } = authClient.useSession()
@@ -61,6 +64,10 @@ export function ConversationList() {
     setDisappearingMessages: onSetDisappearingMessages,
     setShowNewChat,
     checkOnline,
+    activePanel,
+    setActivePanel,
+    showDetailsPanel,
+    setShowDetailsPanel,
   } = useChatStore()
 
   const [sortBy, setSortBy] = useState<'recent' | 'unread' | 'name'>('recent')
@@ -133,35 +140,69 @@ export function ConversationList() {
         showMobileChat ? 'hidden lg:flex' : 'flex',
       )}
     >
-      {/* Search + Filter */}
-      <div className={cn('p-5', 'pb-0', 'shrink-0')}>
-        <div className={cn('flex', 'items-center', 'gap-2', 'mb-4')}>
-          <div className={cn('relative', 'flex-1')}>
-            <Search
-              size={13}
+      {/* ── Messages Header Section ── */}
+      <div className="px-6 pt-6 pb-2 shrink-0 select-none">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold text-slate-900 font-sans tracking-tight">
+            Messages
+          </h1>
+          <div className="flex items-center gap-1.5">
+            {/* Sort button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                setSortBy(sortBy === 'recent' ? 'unread' : 'recent')
+                toast.success(
+                  `Sorting by ${sortBy === 'recent' ? 'Unread count' : 'Recent activity'}`,
+                )
+              }}
+              className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors"
+              title="Sort chat list"
+            >
+              <ArrowLeftRight size={14} />
+            </Button>
+
+            {/* Settings button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                const isOpening =
+                  activePanel !== 'settings' || !showDetailsPanel
+                setActivePanel(isOpening ? 'settings' : 'about')
+                setShowDetailsPanel(isOpening)
+              }}
               className={cn(
-                'absolute',
-                'left-3',
-                'top-[13px]',
-                'text-muted-dark',
+                'w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors',
+                activePanel === 'settings' &&
+                  showDetailsPanel &&
+                  'text-emerald-700 bg-emerald-50',
               )}
+              title="Settings"
+            >
+              <Settings size={14} />
+            </Button>
+          </div>
+        </div>
+        <p className="text-[11px] text-slate-500 font-medium mt-1">
+          Stay connected and build real rapports.
+        </p>
+      </div>
+
+      {/* Search + Filter */}
+      <div className="px-6 pb-4 pt-1 shrink-0">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="relative flex-1">
+            <Search
+              size={16}
+              className="absolute left-4 top-[14px] text-slate-400"
             />
             <Input
               placeholder="Search messages..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={cn(
-                'h-10',
-                'pl-9',
-                'pr-4',
-                'bg-muted-light',
-                'border-none',
-                'rounded-xl',
-                'text-[11px]',
-                'font-bold',
-                'focus-visible:ring-1',
-                'focus-visible:ring-primary/20',
-              )}
+              className="h-11 pl-11 pr-4 bg-slate-100/80 hover:bg-slate-100 border-none rounded-full text-[13px] font-medium focus-visible:ring-1 focus-visible:ring-emerald-500/20"
             />
           </div>
           <DropdownMenu>
@@ -170,20 +211,12 @@ export function ConversationList() {
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  'w-10',
-                  'h-10',
-                  'bg-muted-light',
-                  'hover:bg-muted/50',
-                  'rounded-xl',
-                  'text-muted-foreground/85',
-                  'transition-colors',
-                  'cursor-pointer',
-                  'shrink-0',
+                  'w-11 h-11 bg-slate-100/80 hover:bg-slate-200/50 rounded-full text-slate-600 transition-all cursor-pointer shrink-0 border-none shadow-none',
                   (filterOnline || filterGreen || sortBy !== 'recent') &&
-                    'text-primary bg-primary-soft hover:bg-primary-soft/80',
+                    'text-[#0f513d] bg-emerald-50 hover:bg-emerald-100',
                 )}
               >
-                <SlidersHorizontal size={14} />
+                <SlidersHorizontal size={16} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -237,6 +270,20 @@ export function ConversationList() {
                 Green Members Only
               </DropdownMenuCheckboxItem>
 
+              <DropdownMenuSeparator className="my-1 border-border/10" />
+              <DropdownMenuItem
+                onClick={() => {
+                  const isOpening =
+                    activePanel !== 'settings' || !showDetailsPanel
+                  setActivePanel(isOpening ? 'settings' : 'about')
+                  setShowDetailsPanel(isOpening)
+                }}
+                className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer flex items-center"
+              >
+                <Settings size={13} className="mr-2" />
+                <span>Chat Settings</span>
+              </DropdownMenuItem>
+
               {(filterOnline || filterGreen || sortBy !== 'recent') && (
                 <>
                   <DropdownMenuSeparator className="my-1 border-border/10" />
@@ -256,17 +303,8 @@ export function ConversationList() {
           </DropdownMenu>
         </div>
 
-        {/* Sub-tabs */}
-        <div
-          className={cn(
-            'flex',
-            'gap-5',
-            'border-b',
-            'border-border/30',
-            'overflow-x-auto',
-            'scrollbar-none',
-          )}
-        >
+        {/* Sub-tabs Capsule Row */}
+        <div className="flex gap-1 pt-1 justify-between w-full">
           {(['all', 'unread', 'bookings', 'support', 'archived'] as const).map(
             (tab) => {
               const tabUnread =
@@ -286,49 +324,36 @@ export function ConversationList() {
                           })
                           .reduce((s, c) => s + c.unreadCount, 0)
 
+              const isActive = activeSubTab === tab
+              const tabLabel =
+                tab === 'archived'
+                  ? 'Archive'
+                  : tab.charAt(0).toUpperCase() + tab.slice(1)
+
               return (
                 <Button
                   key={tab}
                   variant="ghost"
                   onClick={() => setActiveSubTab(tab)}
                   className={cn(
-                    'relative pb-3 text-[11px] font-extrabold capitalize tracking-wider whitespace-nowrap cursor-pointer transition-colors flex items-center gap-1.5 rounded-none h-auto px-0 hover:bg-transparent',
-                    activeSubTab === tab
-                      ? 'text-primary'
-                      : 'text-muted-dark hover:text-muted-foreground',
+                    'h-8 rounded-full px-2 text-[11px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1 flex-1 shrink min-w-0 shadow-none border border-transparent',
+                    isActive
+                      ? 'bg-[#0f513d] text-white hover:bg-[#0c4131] hover:text-white'
+                      : 'bg-slate-100 hover:bg-slate-200/60 text-slate-600',
                   )}
                 >
-                  {tab}
+                  <span className="truncate">{tabLabel}</span>
                   {tabUnread > 0 && (
                     <span
                       className={cn(
-                        'w-4',
-                        'h-4',
-                        'bg-primary',
-                        'text-primary-foreground',
-                        'text-[9px]',
-                        'font-black',
-                        'rounded-full',
-                        'flex',
-                        'items-center',
-                        'justify-center',
+                        'px-1 h-4 rounded-full flex items-center justify-center text-[9px] font-black shrink-0 transition-colors min-w-[14px]',
+                        isActive
+                          ? 'bg-white text-[#0f513d]'
+                          : 'bg-emerald-100 text-[#0f513d]',
                       )}
                     >
-                      {tabUnread > 9 ? '9+' : tabUnread}
+                      {tabUnread}
                     </span>
-                  )}
-                  {activeSubTab === tab && (
-                    <div
-                      className={cn(
-                        'absolute',
-                        'bottom-0',
-                        'left-0',
-                        'right-0',
-                        'h-[2px]',
-                        'bg-primary',
-                        'rounded-full',
-                      )}
-                    />
                   )}
                 </Button>
               )
@@ -342,25 +367,27 @@ export function ConversationList() {
         className={cn(
           'flex-1',
           'overflow-y-auto',
-          'p-3',
-          'space-y-0.5',
+          'px-4',
+          'pb-4',
+          'pt-1',
+          'space-y-1',
           'scrollbar-thin',
         )}
       >
         {isLoadingConversations ? (
-          <div className="space-y-2.5 p-1 animate-pulse">
+          <div className="space-y-1.5 p-1 animate-pulse">
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 p-3 rounded-2xl border border-transparent"
+                className="flex items-center gap-3.5 p-3.5 rounded-2xl border border-transparent"
               >
-                <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+                <Skeleton className="w-11 h-11 rounded-full shrink-0 bg-slate-100" />
                 <div className="flex-1 space-y-2 min-w-0">
                   <div className="flex justify-between items-center">
-                    <Skeleton className="h-4 w-24 rounded" />
-                    <Skeleton className="h-3 w-8 rounded" />
+                    <Skeleton className="h-4 w-28 rounded bg-slate-100" />
+                    <Skeleton className="h-3 w-10 rounded bg-slate-100" />
                   </div>
-                  <Skeleton className="h-3 w-3/4 rounded" />
+                  <Skeleton className="h-3.5 w-3/4 rounded bg-slate-100" />
                 </div>
               </div>
             ))}
@@ -402,13 +429,21 @@ export function ConversationList() {
               <div
                 key={conv.id}
                 onClick={() => handleSelectConversation(conv)}
-                className={cn(
-                  'group flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all relative',
+                style={
                   isSelected
-                    ? 'bg-primary-soft border border-primary-border/60 shadow-sm'
-                    : 'hover:bg-muted-light/60 border border-transparent',
+                    ? ({ '--card': '#ebf5ed' } as CSSProperties)
+                    : undefined
+                }
+                className={cn(
+                  'group flex items-center gap-3.5 p-3.5 rounded-2xl cursor-pointer transition-all relative overflow-hidden',
+                  isSelected
+                    ? 'bg-[var(--card)] shadow-none'
+                    : 'hover:bg-slate-50 border border-transparent',
                 )}
               >
+                {isSelected && (
+                  <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-[#0f513d]" />
+                )}
                 <UserAvatar
                   image={conv.otherParticipant.image}
                   name={conv.otherParticipant.name}
@@ -420,47 +455,50 @@ export function ConversationList() {
                       : undefined
                   }
                 />
-                <div className={cn('flex-1', 'min-w-0')}>
-                  <div
-                    className={cn('flex', 'items-center', 'justify-between')}
-                  >
+                <div className="flex-1 min-w-0 flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1 min-w-0">
                       <h4
                         className={cn(
-                          'text-[12px] truncate',
-                          conv.unreadCount > 0
-                            ? 'font-black text-foreground'
-                            : 'font-bold text-foreground/90',
+                          'text-sm font-semibold text-slate-900 truncate font-sans tracking-tight',
                         )}
                       >
                         {conv.otherParticipant.name}
                       </h4>
                       {conv.otherParticipant.isGreenMember && (
-                        <Leaf className="w-3.5 h-3.5 text-emerald-500 fill-emerald-500 shrink-0" />
+                        <svg
+                          className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none animate-fade-in"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z"
+                            fill="currentColor"
+                          />
+                          <polyline
+                            points="8.5 12.5 10.5 14.5 15.5 9.5"
+                            stroke="white"
+                            strokeWidth="2.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            fill="none"
+                          />
+                        </svg>
                       )}
                     </div>
-                    <span
-                      className={cn(
-                        'text-[9px]',
-                        'font-bold',
-                        'text-muted-dark',
-                        'shrink-0',
-                        'ml-2',
-                      )}
-                    >
+                    <span className="text-[11px] font-medium text-slate-400 shrink-0 ml-2">
                       {conv.lastMessage
                         ? formatMsgTime(conv.lastMessage.createdAt)
                         : formatMsgTime(conv.updatedAt)}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between mt-1 gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <p
                       className={cn(
-                        'text-[10px] truncate flex-1 min-w-0',
+                        'text-[12px] truncate flex-1 min-w-0 font-sans',
                         conv.unreadCount > 0
-                          ? 'text-foreground font-extrabold'
-                          : 'text-muted-dark font-medium',
+                          ? 'text-slate-900 font-semibold'
+                          : 'text-slate-500 font-normal',
                       )}
                     >
                       {conv.lastMessage
@@ -488,8 +526,8 @@ export function ConversationList() {
                       )}
 
                       {conv.unreadCount > 0 && (
-                        <span className="w-4 h-4 bg-primary text-primary-foreground text-[8px] font-black rounded-full flex items-center justify-center shrink-0">
-                          {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
+                        <span className="w-5 h-5 bg-[#0f513d] text-white text-[10px] font-bold rounded-full flex items-center justify-center shrink-0">
+                          {conv.unreadCount}
                         </span>
                       )}
 
@@ -596,9 +634,9 @@ export function ConversationList() {
       {/* Floating Action Button */}
       <Button
         onClick={() => setShowNewChat(true)}
-        className="absolute bottom-6 right-6 w-11 h-11 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0"
+        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-[#0f513d] hover:bg-[#0c4131] text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0"
       >
-        <Plus size={20} strokeWidth={3} />
+        <Pencil size={16} />
       </Button>
     </div>
   )

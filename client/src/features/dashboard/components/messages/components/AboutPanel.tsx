@@ -18,6 +18,13 @@ import {
   FileDown,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '#/components/ui/select'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
 import { useChatStore } from '../../../../../store/useChatStore'
@@ -31,6 +38,7 @@ import { StarredMessagesDialog } from './StarredMessagesDialog'
 import { SharedFilesDialog } from './SharedFilesDialog'
 import { formatLastActive, isImageUrl, isAudioUrl } from '#/lib/chat-utils'
 import { format } from 'date-fns'
+import { MySettingsPanel } from './MySettingsPanel'
 
 export function AboutPanel() {
   const { data: session } = authClient.useSession()
@@ -49,6 +57,10 @@ export function AboutPanel() {
     setShowConversationSearch,
     setDisappearingMessages,
     chatWallpaper,
+    blockConversation,
+    unblockConversation,
+    reportConversation,
+    activePanel,
   } = useChatStore()
 
   const [showClearConfirm, setShowClearConfirm] = useState(false)
@@ -65,6 +77,7 @@ export function AboutPanel() {
   // Local state for interactive editing of About section
   const [isEditingAbout, setIsEditingAbout] = useState(false)
   const [aboutText, setAboutText] = useState('')
+  const [reportReason, setReportReason] = useState('Spam')
 
   // Derive active conversation
   const activeConversation =
@@ -135,14 +148,40 @@ export function AboutPanel() {
     }
   }
 
-  const handleBlockUser = () => {
-    toast.error(`Blocked ${activeConversation.otherParticipant.name}`)
-    setShowBlockConfirm(false)
+  const isBlockedByMe = activeConversation.blockedBy?.includes(
+    currentUserId || '',
+  )
+
+  const handleBlockUser = async () => {
+    try {
+      if (isBlockedByMe) {
+        await unblockConversation(activeConversation.id)
+        toast.success(`Unblocked ${activeConversation.otherParticipant.name}`)
+      } else {
+        await blockConversation(activeConversation.id)
+        toast.error(`Blocked ${activeConversation.otherParticipant.name}`)
+      }
+    } catch (err) {
+      toast.error('Failed to update block status')
+    } finally {
+      setShowBlockConfirm(false)
+    }
   }
 
-  const handleReportUser = () => {
-    toast.warning(`Reported ${activeConversation.otherParticipant.name}`)
-    setShowReportConfirm(false)
+  const handleReportUser = async () => {
+    try {
+      await reportConversation({
+        conversationId: activeConversation.id,
+        reason: reportReason,
+      })
+      toast.warning(
+        `Reported ${activeConversation.otherParticipant.name} for: ${reportReason}`,
+      )
+    } catch (err) {
+      toast.error('Failed to submit report')
+    } finally {
+      setShowReportConfirm(false)
+    }
   }
 
   const handleScrollToMsg = (msgId: string) => {
@@ -194,432 +233,504 @@ export function AboutPanel() {
     return `${sec / 86400} Days`
   }
 
+  // Tab state
+  const [activeTab, setActiveTab] = useState<'info' | 'settings'>(
+    activePanel === 'settings' ? 'settings' : 'info',
+  )
+
+  useEffect(() => {
+    if (activePanel === 'settings') {
+      setActiveTab('settings')
+    } else {
+      setActiveTab('info')
+    }
+  }, [activePanel])
+
   return (
     <div className="w-[320px] shrink-0 bg-[#fbf9f4] border-l border-slate-200/80 flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250">
       {/* Header */}
-      <div className="px-5 py-4 flex items-center justify-between shrink-0">
-        <h3 className="text-[16px] font-bold text-slate-800">Chat Info</h3>
+      <div className="bg-[#0d4d38] px-4 py-5 flex items-center justify-between text-white shrink-0 shadow-sm">
+        <h3 className="text-[16px] font-bold text-white leading-none font-display">
+          {activeTab === 'info' ? 'Chat Info' : 'My Settings'}
+        </h3>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setShowDetailsPanel(false)}
-          className="h-8 w-8 rounded-full hover:bg-slate-200/50 text-slate-500 hover:text-slate-700 cursor-pointer shadow-none shrink-0"
+          className="h-8 w-8 rounded-full hover:bg-white/10 text-white cursor-pointer shadow-none shrink-0"
         >
-          <X size={16} strokeWidth={2.5} />
+          <X size={18} strokeWidth={2.5} />
         </Button>
       </div>
 
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-4 pb-6 flex flex-col gap-4">
-        {/* Profile Info Card Section */}
-        <div className="flex items-center gap-4 bg-transparent py-2 px-1">
-          {/* Custom avatar badge wrapper */}
-          <div className="relative shrink-0 w-20 h-20">
-            {activeConversation.otherParticipant.image ? (
-              <img
-                src={activeConversation.otherParticipant.image}
-                alt={activeConversation.otherParticipant.name}
-                className="w-20 h-20 rounded-full object-cover border border-slate-200 shadow-sm"
-              />
-            ) : (
-              <div className="w-20 h-20 rounded-full bg-slate-300 flex items-center justify-center text-xl font-bold text-slate-700 border border-slate-200 shadow-sm">
-                {activeConversation.otherParticipant.name
-                  .trim()
-                  .charAt(0)
-                  .toUpperCase()}
-              </div>
-            )}
-            {showOnlineStatus && (
-              <div className="absolute bottom-0.5 right-0.5 w-4.5 h-4.5 bg-emerald-500 rounded-full border-3 border-white shadow-xs" />
-            )}
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <h4 className="text-[16px] font-bold text-slate-800 leading-tight">
-                {activeConversation.otherParticipant.name}
-              </h4>
-              <Star
-                size={14}
-                className="text-emerald-600 fill-emerald-600 shrink-0"
-              />
-            </div>
-
-            <div className="flex flex-col mt-1">
-              {showOnlineStatus ? (
-                <span className="text-[12px] font-bold text-emerald-600">
-                  Online
-                </span>
-              ) : (
-                <span className="text-[12px] font-semibold text-slate-400">
-                  Offline
-                </span>
-              )}
-              <span className="text-[11px] text-slate-400 mt-0.5">
-                {showOnlineStatus
-                  ? 'Last seen just now'
-                  : (() => {
-                      const formatted = formatLastActive(
-                        activeConversation.otherParticipant.lastActive,
-                      )
-                      return formatted === 'Offline'
-                        ? 'Offline'
-                        : `Last seen ${formatted}`
-                    })()}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* About Card block */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex gap-3.5 items-start">
-          <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
-            <Info size={18} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h4 className="text-[13px] font-bold text-slate-800">About</h4>
-            {isEditingAbout ? (
-              <div className="mt-2 flex flex-col gap-2">
-                <textarea
-                  value={aboutText}
-                  onChange={(e) => setAboutText(e.target.value)}
-                  className="w-full text-[12px] p-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none h-16 text-foreground bg-slate-50 font-bold"
-                  autoFocus
-                />
-                <div className="flex justify-end gap-1.5">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      setAboutText(
-                        (activeConversation.otherParticipant as any).about ||
-                          'Helping you find the perfect home aligned with Vastu.',
-                      )
-                      setIsEditingAbout(false)
-                    }}
-                    className="h-6 px-2 text-[9px] font-black text-slate-500 rounded-md hover:bg-slate-100 cursor-pointer shadow-none"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={handleSaveAbout}
-                    className="h-6 px-2.5 text-[9px] font-black text-white bg-primary hover:bg-primary-hover rounded-md shadow-sm cursor-pointer"
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">
-                {aboutText}
-              </p>
-            )}
-          </div>
-          {!isEditingAbout && (
-            <button
-              onClick={() => setIsEditingAbout(true)}
-              className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded hover:bg-slate-100/50 shrink-0 border-none bg-transparent cursor-pointer"
-              title="Edit about"
-            >
-              <Pencil size={15} />
-            </button>
-          )}
-        </div>
-
-        {/* Media, Links and Docs Card */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col gap-3">
-          <div
-            className="flex items-center justify-between cursor-pointer group"
-            onClick={() => setShowMediaBrowser(true)}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
-                <Image size={18} />
-              </div>
-              <span className="text-[13px] font-bold text-slate-800">
-                Media, Links and Docs
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition-colors">
-              <span className="text-[12px] font-bold">
-                {mediaAttachments.length}
-              </span>
-              <ChevronRight size={15} />
-            </div>
-          </div>
-
-          {mediaAttachments.length > 0 ? (
-            <div className="grid grid-cols-5 gap-2 mt-1">
-              {mediaAttachments.slice(0, 4).map((src, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => openLightbox(mediaAttachments, i)}
-                  className="relative aspect-square rounded-xl overflow-hidden border border-slate-100 cursor-pointer outline-none bg-slate-50 hover:opacity-95 transition-opacity"
-                >
-                  <img
-                    src={src}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-              {mediaAttachments.length > 4 && (
-                <button
-                  type="button"
-                  onClick={() => setShowMediaBrowser(true)}
-                  className="aspect-square rounded-xl bg-[#d2ebd4] hover:bg-[#c3e3c6] text-emerald-800 text-[12px] font-bold flex items-center justify-center cursor-pointer border-none transition-colors"
-                >
-                  +{mediaAttachments.length - 4}
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="text-[12px] text-slate-400 py-1 px-1 select-none font-medium italic">
-              No media shared
-            </div>
-          )}
-        </div>
-
-        {/* Pinned Messages Card */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col gap-3">
-          <div
-            className="flex items-center justify-between cursor-pointer group"
-            onClick={() =>
-              toast.info('Pinned Messages options in options menu')
-            }
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
-                <Pin size={18} className="rotate-45" />
-              </div>
-              <span className="text-[13px] font-bold text-slate-800">
-                Pinned Messages
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition-colors">
-              <span className="text-[12px] font-bold">
-                {pinnedMessages.length}
-              </span>
-              <ChevronRight size={15} />
-            </div>
-          </div>
-
-          <div
-            onClick={() => {
-              if (lastPinnedMessage) {
-                handleScrollToMsg(lastPinnedMessage.id)
-              } else {
-                toast.info('No pinned messages in this chat')
-              }
-            }}
-            className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl p-3 cursor-pointer hover:bg-slate-100/50 transition-colors"
-            title="Click to scroll to pinned message"
-          >
-            <p
-              className={cn(
-                'text-[11.5px] leading-normal truncate flex-1 pr-3 font-semibold',
-                lastPinnedMessage ? 'text-slate-600' : 'text-slate-400 italic',
-              )}
-            >
-              {lastPinnedMessage
-                ? lastPinnedMessage.content
-                : 'No pinned messages'}
-            </p>
-            <div className="w-6 h-6 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-              <MapPin size={13} className="text-slate-400" />
-            </div>
-          </div>
-        </div>
-
-        {/* Settings List Card */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-2.5 flex flex-col gap-1">
-          {/* Row 1: Mute Notifications */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
-            <div className="flex items-center gap-3">
-              <Volume2 size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">
-                Mute Notifications
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={async () => {
-                try {
-                  await toggleMuteConversation(activeConversation.id)
-                  toast.success('Mute setting updated')
-                } catch {
-                  toast.error('Failed to update mute setting')
-                }
-              }}
-              className={cn(
-                'w-8 h-4 rounded-full transition-colors relative cursor-pointer focus:outline-none shrink-0 border-none outline-none',
-                activeConversation.mutedBy?.includes(currentUserId!)
-                  ? 'bg-[#0a6634]'
-                  : 'bg-slate-200',
-              )}
-            >
-              <div
-                className={cn(
-                  'w-3.5 h-3.5 rounded-full bg-white absolute top-[1px] shadow-sm transition-transform duration-200',
-                  activeConversation.mutedBy?.includes(currentUserId!)
-                    ? 'translate-x-4'
-                    : 'translate-x-[1px]',
-                )}
-              />
-            </button>
-          </div>
-
-          {/* Row 2: Search in Conversation */}
-          <div
-            onClick={() => {
-              setShowConversationSearch(true)
-              toast.info('Search in conversation opened')
-            }}
-            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <Search size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">
-                Search in Conversation
-              </span>
-            </div>
-            <ChevronRight size={14} className="text-slate-400" />
-          </div>
-
-          {/* Row 3: Disappearing Messages */}
-          <div
-            onClick={() => setShowDisappearingDialog(true)}
-            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <Clock size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">
-                Disappearing Messages
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[11px] font-bold text-slate-500/80">
-                {getDisappearingLabel(
-                  activeConversation.disappearingDuration || 0,
-                )}
-              </span>
-              <ChevronRight size={14} />
-            </div>
-          </div>
-
-          {/* Row 4: Encryption & Security */}
-          <div
-            onClick={() => setShowEncryptionInfo(true)}
-            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <Clock size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">
-                Encryption & Security
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[10px] font-bold text-slate-500/70">
-                Encrypted
-              </span>
-              <ChevronRight size={14} />
-            </div>
-          </div>
-
-          {/* Row 5: Chat Wallpaper */}
-          <div
-            onClick={() => setShowWallpaperDialog(true)}
-            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <Palette size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">
-                Chat Wallpaper
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[10px] font-bold text-slate-500/70 uppercase tracking-wider">
-                {currentWallpaper}
-              </span>
-              <ChevronRight size={14} />
-            </div>
-          </div>
-
-          {/* Row 6: Starred Messages */}
-          <div
-            onClick={() => setShowStarredDialog(true)}
-            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <Star size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">
-                Starred Messages
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[11px] font-medium">
-                {starredMessages.length}
-              </span>
-              <ChevronRight size={14} />
-            </div>
-          </div>
-
-          {/* Row 7: Files and Documents */}
-          <div
-            onClick={() => setShowFilesDialog(true)}
-            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <FileText size={16} className="text-slate-500" />
-              <span className="text-[12px] font-medium text-slate-700">
-                Files and Documents
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-slate-400">
-              <span className="text-[11px] font-medium">
-                {fileAttachments.length}
-              </span>
-              <ChevronRight size={14} />
-            </div>
-          </div>
-
-          {/* Row 8: Export Chat */}
-          <div
-            onClick={handleExportChat}
-            className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-[#0a6634]"
-          >
-            <div className="flex items-center gap-3">
-              <FileDown size={16} className="text-[#0a6634]" />
-              <span className="text-[12px] font-bold">Export Chat History</span>
-            </div>
-            <ChevronRight size={14} className="text-[#0a6634]/60" />
-          </div>
-        </div>
-
-        {/* Destructive actions blocks */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-1 flex flex-col gap-1">
+      {/* Segmented Tab Bar */}
+      <div className="px-4 py-2 border-b border-slate-200/30 bg-white shrink-0">
+        <div className="flex bg-[#faf9f6] border border-slate-200/40 p-0.5 rounded-xl text-xs font-semibold">
           <button
-            type="button"
-            onClick={() => setShowBlockConfirm(true)}
-            className="flex items-center gap-3 p-3 rounded-xl text-[12px] font-bold text-red-600 hover:bg-red-50/50 transition-colors cursor-pointer w-full text-left outline-none border-none bg-transparent"
+            onClick={() => setActiveTab('info')}
+            className={cn(
+              'flex-1 py-1.5 rounded-lg text-center transition-all cursor-pointer text-[11px] font-black tracking-wide',
+              activeTab === 'info'
+                ? 'bg-[#0d4d38] text-white shadow-sm'
+                : 'text-slate-500 hover:text-slate-800',
+            )}
           >
-            <Ban size={16} className="text-red-500" />
-            <span>Block {activeConversation.otherParticipant.name}</span>
+            Chat Info
           </button>
-        </div>
-
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-1 flex flex-col gap-1">
           <button
-            type="button"
-            onClick={() => setShowReportConfirm(true)}
-            className="flex items-center gap-3 p-3 rounded-xl text-[12px] font-bold text-red-600 hover:bg-red-50/50 transition-colors cursor-pointer w-full text-left outline-none border-none bg-transparent"
+            onClick={() => setActiveTab('settings')}
+            className={cn(
+              'flex-1 py-1.5 rounded-lg text-center transition-all cursor-pointer text-[11px] font-black tracking-wide',
+              activeTab === 'settings'
+                ? 'bg-[#0d4d38] text-white shadow-sm'
+                : 'text-slate-500 hover:text-slate-800',
+            )}
           >
-            <AlertTriangle size={16} className="text-red-500" />
-            <span>Report {activeConversation.otherParticipant.name}</span>
+            My Settings
           </button>
         </div>
       </div>
+
+      {activeTab === 'info' ? (
+        <div className="flex-1 overflow-y-auto scrollbar-thin px-4 pb-6 pt-4 flex flex-col gap-4">
+          {/* Profile Info Card Section */}
+          <div className="flex items-center gap-4 bg-transparent py-2 px-1">
+            {/* Custom avatar badge wrapper */}
+            <div className="relative shrink-0 w-20 h-20">
+              {activeConversation.otherParticipant.image ? (
+                <img
+                  src={activeConversation.otherParticipant.image}
+                  alt={activeConversation.otherParticipant.name}
+                  className="w-20 h-20 rounded-full object-cover border border-slate-200 shadow-sm"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-slate-300 flex items-center justify-center text-xl font-bold text-slate-700 border border-slate-200 shadow-sm">
+                  {activeConversation.otherParticipant.name
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase()}
+                </div>
+              )}
+              {showOnlineStatus && (
+                <div className="absolute bottom-0.5 right-0.5 w-4.5 h-4.5 bg-emerald-500 rounded-full border-3 border-white shadow-xs" />
+              )}
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h4 className="text-[16px] font-bold text-slate-800 leading-tight">
+                  {activeConversation.otherParticipant.name}
+                </h4>
+                {activeConversation.otherParticipant.isGreenMember && (
+                  <svg
+                    className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z"
+                      fill="currentColor"
+                    />
+                    <polyline
+                      points="8.5 12.5 10.5 14.5 15.5 9.5"
+                      stroke="white"
+                      strokeWidth="2.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                    />
+                  </svg>
+                )}
+              </div>
+
+              <div className="flex flex-col mt-1">
+                {showOnlineStatus ? (
+                  <span className="text-[12px] font-bold text-emerald-600">
+                    Online
+                  </span>
+                ) : (
+                  <span className="text-[12px] font-semibold text-slate-400">
+                    Offline
+                  </span>
+                )}
+                <span className="text-[11px] text-slate-400 mt-0.5">
+                  {showOnlineStatus
+                    ? 'Last seen just now'
+                    : (() => {
+                        const formatted = formatLastActive(
+                          activeConversation.otherParticipant.lastActive,
+                        )
+                        return formatted === 'Offline'
+                          ? 'Offline'
+                          : `Last seen ${formatted}`
+                      })()}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* About Card block */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex gap-3.5 items-start">
+            <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
+              <Info size={18} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-[13px] font-bold text-slate-800">About</h4>
+              {isEditingAbout ? (
+                <div className="mt-2 flex flex-col gap-2">
+                  <textarea
+                    value={aboutText}
+                    onChange={(e) => setAboutText(e.target.value)}
+                    className="w-full text-[12px] p-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/20 resize-none h-16 text-foreground bg-slate-50 font-bold"
+                    autoFocus
+                  />
+                  <div className="flex justify-end gap-1.5">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setAboutText(
+                          (activeConversation.otherParticipant as any).about ||
+                            'Helping you find the perfect home aligned with Vastu.',
+                        )
+                        setIsEditingAbout(false)
+                      }}
+                      className="h-6 px-2 text-[9px] font-black text-slate-500 rounded-md hover:bg-slate-100 cursor-pointer shadow-none"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleSaveAbout}
+                      className="h-6 px-2.5 text-[9px] font-black text-white bg-primary hover:bg-primary-hover rounded-md shadow-sm cursor-pointer"
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-[12px] text-slate-500 mt-1 leading-relaxed">
+                  {aboutText}
+                </p>
+              )}
+            </div>
+            {!isEditingAbout && (
+              <button
+                onClick={() => setIsEditingAbout(true)}
+                className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded hover:bg-slate-100/50 shrink-0 border-none bg-transparent cursor-pointer"
+                title="Edit about"
+              >
+                <Pencil size={15} />
+              </button>
+            )}
+          </div>
+
+          {/* Media, Links and Docs Card */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col gap-3">
+            <div
+              className="flex items-center justify-between cursor-pointer group"
+              onClick={() => setShowMediaBrowser(true)}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
+                  <Image size={18} />
+                </div>
+                <span className="text-[13px] font-bold text-slate-800">
+                  Media, Links and Docs
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition-colors">
+                <span className="text-[12px] font-bold">
+                  {mediaAttachments.length}
+                </span>
+                <ChevronRight size={15} />
+              </div>
+            </div>
+
+            {mediaAttachments.length > 0 ? (
+              <div className="grid grid-cols-5 gap-2 mt-1">
+                {mediaAttachments.slice(0, 4).map((src, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => openLightbox(mediaAttachments, i)}
+                    className="relative aspect-square rounded-xl overflow-hidden border border-slate-100 cursor-pointer outline-none bg-slate-50 hover:opacity-95 transition-opacity"
+                  >
+                    <img
+                      src={src}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+                {mediaAttachments.length > 4 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowMediaBrowser(true)}
+                    className="aspect-square rounded-xl bg-[#d2ebd4] hover:bg-[#c3e3c6] text-emerald-800 text-[12px] font-bold flex items-center justify-center cursor-pointer border-none transition-colors"
+                  >
+                    +{mediaAttachments.length - 4}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="text-[12px] text-slate-400 py-1 px-1 select-none font-medium italic">
+                No media shared
+              </div>
+            )}
+          </div>
+
+          {/* Pinned Messages Card */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col gap-3">
+            <div
+              className="flex items-center justify-between cursor-pointer group"
+              onClick={() =>
+                toast.info('Pinned Messages options in options menu')
+              }
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-slate-100/80 text-slate-600 flex items-center justify-center shrink-0">
+                  <Pin size={18} className="rotate-45" />
+                </div>
+                <span className="text-[13px] font-bold text-slate-800">
+                  Pinned Messages
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition-colors">
+                <span className="text-[12px] font-bold">
+                  {pinnedMessages.length}
+                </span>
+                <ChevronRight size={15} />
+              </div>
+            </div>
+
+            <div
+              onClick={() => {
+                if (lastPinnedMessage) {
+                  handleScrollToMsg(lastPinnedMessage.id)
+                } else {
+                  toast.info('No pinned messages in this chat')
+                }
+              }}
+              className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl p-3 cursor-pointer hover:bg-slate-100/50 transition-colors"
+              title="Click to scroll to pinned message"
+            >
+              <p
+                className={cn(
+                  'text-[11.5px] leading-normal truncate flex-1 pr-3 font-semibold',
+                  lastPinnedMessage
+                    ? 'text-slate-600'
+                    : 'text-slate-400 italic',
+                )}
+              >
+                {lastPinnedMessage
+                  ? lastPinnedMessage.content
+                  : 'No pinned messages'}
+              </p>
+              <div className="w-6 h-6 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                <MapPin size={13} className="text-slate-400" />
+              </div>
+            </div>
+          </div>
+
+          {/* Settings List Card */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-2.5 flex flex-col gap-1">
+            {/* Row 1: Mute Notifications */}
+            <div className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+              <div className="flex items-center gap-3">
+                <Volume2 size={16} className="text-slate-500" />
+                <span className="text-[12px] font-medium text-slate-700">
+                  Mute Notifications
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await toggleMuteConversation(activeConversation.id)
+                    toast.success('Mute setting updated')
+                  } catch {
+                    toast.error('Failed to update mute setting')
+                  }
+                }}
+                className={cn(
+                  'w-8 h-4 rounded-full transition-colors relative cursor-pointer focus:outline-none shrink-0 border-none outline-none',
+                  activeConversation.mutedBy?.includes(currentUserId!)
+                    ? 'bg-[#0a6634]'
+                    : 'bg-slate-200',
+                )}
+              >
+                <div
+                  className={cn(
+                    'w-3.5 h-3.5 rounded-full bg-white absolute top-[1px] shadow-sm transition-transform duration-200',
+                    activeConversation.mutedBy?.includes(currentUserId!)
+                      ? 'translate-x-4'
+                      : 'translate-x-[1px]',
+                  )}
+                />
+              </button>
+            </div>
+
+            {/* Row 2: Search in Conversation */}
+            <div
+              onClick={() => {
+                setShowConversationSearch(true)
+                toast.info('Search in conversation opened')
+              }}
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Search size={16} className="text-slate-500" />
+                <span className="text-[12px] font-medium text-slate-700">
+                  Search in Conversation
+                </span>
+              </div>
+              <ChevronRight size={14} className="text-slate-400" />
+            </div>
+
+            {/* Row 3: Disappearing Messages */}
+            <div
+              onClick={() => setShowDisappearingDialog(true)}
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Clock size={16} className="text-slate-500" />
+                <span className="text-[12px] font-medium text-slate-700">
+                  Disappearing Messages
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-slate-400">
+                <span className="text-[11px] font-bold text-slate-500/80">
+                  {getDisappearingLabel(
+                    activeConversation.disappearingDuration || 0,
+                  )}
+                </span>
+                <ChevronRight size={14} />
+              </div>
+            </div>
+
+            {/* Row 4: Encryption & Security */}
+            <div
+              onClick={() => setShowEncryptionInfo(true)}
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Clock size={16} className="text-slate-500" />
+                <span className="text-[12px] font-medium text-slate-700">
+                  Encryption & Security
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-slate-400">
+                <span className="text-[10px] font-bold text-slate-500/70">
+                  Encrypted
+                </span>
+                <ChevronRight size={14} />
+              </div>
+            </div>
+
+            {/* Row 5: Chat Wallpaper */}
+            <div
+              onClick={() => setShowWallpaperDialog(true)}
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Palette size={16} className="text-slate-500" />
+                <span className="text-[12px] font-medium text-slate-700">
+                  Chat Wallpaper
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-slate-400">
+                <span className="text-[10px] font-bold text-slate-500/70 uppercase tracking-wider">
+                  {currentWallpaper}
+                </span>
+                <ChevronRight size={14} />
+              </div>
+            </div>
+
+            {/* Row 6: Starred Messages */}
+            <div
+              onClick={() => setShowStarredDialog(true)}
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <Star size={16} className="text-slate-500" />
+                <span className="text-[12px] font-medium text-slate-700">
+                  Starred Messages
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-slate-400">
+                <span className="text-[11px] font-medium">
+                  {starredMessages.length}
+                </span>
+                <ChevronRight size={14} />
+              </div>
+            </div>
+
+            {/* Row 7: Files and Documents */}
+            <div
+              onClick={() => setShowFilesDialog(true)}
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <FileText size={16} className="text-slate-500" />
+                <span className="text-[12px] font-medium text-slate-700">
+                  Files and Documents
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-slate-400">
+                <span className="text-[11px] font-medium">
+                  {fileAttachments.length}
+                </span>
+                <ChevronRight size={14} />
+              </div>
+            </div>
+
+            {/* Row 8: Export Chat */}
+            <div
+              onClick={handleExportChat}
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-[#0a6634]"
+            >
+              <div className="flex items-center gap-3">
+                <FileDown size={16} className="text-[#0a6634]" />
+                <span className="text-[12px] font-bold">
+                  Export Chat History
+                </span>
+              </div>
+              <ChevronRight size={14} className="text-[#0a6634]/60" />
+            </div>
+          </div>
+
+          {/* Destructive actions blocks */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-1 flex flex-col gap-1">
+            <button
+              type="button"
+              onClick={() => setShowBlockConfirm(true)}
+              className="flex items-center gap-3 p-3 rounded-xl text-[12px] font-bold text-red-600 hover:bg-red-50/50 transition-colors cursor-pointer w-full text-left outline-none border-none bg-transparent"
+            >
+              <Ban size={16} className="text-red-500" />
+              <span>
+                {isBlockedByMe ? 'Unblock' : 'Block'}{' '}
+                {activeConversation.otherParticipant.name}
+              </span>
+            </button>
+          </div>
+
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-1 flex flex-col gap-1">
+            <button
+              type="button"
+              onClick={() => setShowReportConfirm(true)}
+              className="flex items-center gap-3 p-3 rounded-xl text-[12px] font-bold text-red-600 hover:bg-red-50/50 transition-colors cursor-pointer w-full text-left outline-none border-none bg-transparent"
+            >
+              <AlertTriangle size={16} className="text-red-500" />
+              <span>Report {activeConversation.otherParticipant.name}</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <MySettingsPanel
+          isEmbedded={true}
+          onBackToInfo={() => setActiveTab('info')}
+        />
+      )}
 
       {/* Extracted dialog components */}
       <DisappearingSettingsDialog
@@ -665,9 +776,17 @@ export function AboutPanel() {
         isOpen={showBlockConfirm}
         onOpenChange={setShowBlockConfirm}
         onConfirm={handleBlockUser}
-        title={`Block ${activeConversation.otherParticipant.name}?`}
-        description={`Are you sure you want to block ${activeConversation.otherParticipant.name}? You will no longer receive their messages.`}
-        confirmText="Block"
+        title={
+          isBlockedByMe
+            ? `Unblock ${activeConversation.otherParticipant.name}?`
+            : `Block ${activeConversation.otherParticipant.name}?`
+        }
+        description={
+          isBlockedByMe
+            ? `Are you sure you want to unblock ${activeConversation.otherParticipant.name}? You will be able to start sending and receiving messages.`
+            : `Are you sure you want to block ${activeConversation.otherParticipant.name}? You will no longer receive their messages.`
+        }
+        confirmText={isBlockedByMe ? 'Unblock' : 'Block'}
         variant="danger"
       />
 
@@ -676,7 +795,55 @@ export function AboutPanel() {
         onOpenChange={setShowReportConfirm}
         onConfirm={handleReportUser}
         title={`Report ${activeConversation.otherParticipant.name}?`}
-        description={`Report ${activeConversation.otherParticipant.name} for spam or inappropriate behavior? This report will be reviewed by admin.`}
+        description={
+          <div className="flex flex-col gap-3 w-full mt-2">
+            <span className="text-slate-500 font-semibold text-[12px] leading-relaxed">
+              Report {activeConversation.otherParticipant.name} for spam, abuse,
+              or inappropriate content? This report will be reviewed by
+              administrators.
+            </span>
+            <Select
+              value={reportReason}
+              onValueChange={(val) => setReportReason(val)}
+            >
+              <SelectTrigger className="w-full text-[12px] font-bold border border-slate-200 bg-white rounded-xl focus:outline-none focus:ring-1 focus:ring-primary/20 text-slate-800 shadow-none h-11 px-3.5">
+                <SelectValue placeholder="Select a reason" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border border-slate-200 bg-card font-bold text-[12px] text-slate-700">
+                <SelectItem
+                  value="Spam"
+                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                >
+                  Spam
+                </SelectItem>
+                <SelectItem
+                  value="Harassment"
+                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                >
+                  Harassment / Abuse
+                </SelectItem>
+                <SelectItem
+                  value="Inappropriate Content"
+                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                >
+                  Inappropriate Content
+                </SelectItem>
+                <SelectItem
+                  value="Policy Violation"
+                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                >
+                  Policy Violation
+                </SelectItem>
+                <SelectItem
+                  value="Other"
+                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                >
+                  Other Reason
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        }
         confirmText="Report"
         variant="danger"
       />

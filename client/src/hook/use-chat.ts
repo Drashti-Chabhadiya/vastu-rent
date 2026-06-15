@@ -47,6 +47,8 @@ export interface Conversation {
   pinnedBy?: string[]
   mutedBy?: string[]
   archivedBy?: string[]
+  blockedBy?: string[]
+  reportedBy?: string[]
   isArchived?: boolean
   disappearingDuration?: number
   settings?: Record<string, { wallpaper?: string; theme?: string }>
@@ -378,6 +380,17 @@ export function useChat() {
     })
 
     socket.on('conversation_settings_updated', () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    })
+
+    socket.on('conversation_blocked_updated', ({ id, blockedBy }: any) => {
+      queryClient.setQueryData<Conversation[]>(
+        ['conversations'],
+        (old) =>
+          old?.map((conv) =>
+            conv.id === id ? { ...conv, blockedBy } : conv,
+          ) || [],
+      )
       queryClient.invalidateQueries({ queryKey: ['conversations'] })
     })
 
@@ -789,6 +802,52 @@ export function useChat() {
     },
   })
 
+  // ── Block conversation ────────────────────────────────────────────────
+  const blockConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/block`,
+      )
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Unblock conversation ──────────────────────────────────────────────
+  const unblockConversationMutation = useMutation({
+    mutationFn: async (conversationId: string) => {
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/unblock`,
+      )
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
+  // ── Report conversation ───────────────────────────────────────────────
+  const reportConversationMutation = useMutation({
+    mutationFn: async ({
+      conversationId,
+      reason,
+    }: {
+      conversationId: string
+      reason: string
+    }) => {
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/report`,
+        { reason },
+      )
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+
   return {
     isConnected,
     conversations,
@@ -820,6 +879,9 @@ export function useChat() {
     archiveConversation: archiveConversationMutation.mutateAsync,
     unarchiveConversation: unarchiveConversationMutation.mutateAsync,
     updateConversationSettings: updateConversationSettingsMutation.mutateAsync,
+    blockConversation: blockConversationMutation.mutateAsync,
+    unblockConversation: unblockConversationMutation.mutateAsync,
+    reportConversation: reportConversationMutation.mutateAsync,
   }
 }
 

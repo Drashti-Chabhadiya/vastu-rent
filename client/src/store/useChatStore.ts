@@ -32,6 +32,7 @@ export interface ChatStoreState {
   showDetailsPanel: boolean
   chatWallpaper: string
   showConversationSearch: boolean
+  activePanel: 'about' | 'settings'
 
   // New UI States
   isMultiSelectMode: boolean
@@ -90,6 +91,12 @@ export interface ChatStoreState {
     conversationId: string
     settings: { wallpaper?: string; theme?: string }
   }) => Promise<any>
+  blockConversation: (id: string) => Promise<any>
+  unblockConversation: (id: string) => Promise<any>
+  reportConversation: (params: {
+    conversationId: string
+    reason: string
+  }) => Promise<any>
 
   setSearchQuery: (q: string) => void
   setActiveSubTab: (
@@ -119,6 +126,7 @@ export interface ChatStoreState {
   setShowNewChat: (show: boolean) => void
   setShowDetailsPanel: (show: boolean) => void
   setShowConversationSearch: (show: boolean) => void
+  setActivePanel: (panel: 'about' | 'settings') => void
   setChatWallpaper: (wallpaper: string) => void
 
   // New UI Actions
@@ -163,6 +171,7 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
 
   showNewChat: false,
   showDetailsPanel: true,
+  activePanel: 'about',
 
   // New UI states defaults
   isMultiSelectMode: false,
@@ -212,6 +221,9 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   reactToMessage: async () => {},
   removeReaction: async () => {},
   updateConversationSettings: async () => {},
+  blockConversation: async () => {},
+  unblockConversation: async () => {},
+  reportConversation: async () => {},
 
   chatWallpaper: 'classic',
   setChatWallpaper: (wallpaper: string) => set({ chatWallpaper: wallpaper }),
@@ -282,6 +294,7 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
 
   setShowNewChat: (showNewChat) => set({ showNewChat }),
   setShowDetailsPanel: (showDetailsPanel) => set({ showDetailsPanel }),
+  setActivePanel: (activePanel) => set({ activePanel }),
 
   showConversationSearch: false,
   setShowConversationSearch: (showConversationSearch: boolean) =>

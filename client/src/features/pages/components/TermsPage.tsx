@@ -14,6 +14,8 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from '#/components/ui/collapsible'
+import { motion } from 'motion/react'
+import { EASE, fadeUp, stagger } from '#/lib/animations'
 
 import { useSettings } from '#/hook'
 
@@ -163,37 +165,53 @@ export function TermsPage() {
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
-          <div className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16">
-            <div>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16"
+          >
+            <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 Terms of Service
               </div>
-            </div>
-            <h1 className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]">
+            </motion.div>
+            <motion.h1
+              variants={fadeUp}
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+            >
               Clear terms. <br />
               <span className="italic text-primary">Trusted platform.</span>
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
               These Terms of Service govern your use of Vastu. <br />
               By using our platform, you agree to these terms.
-            </p>
-            <div className="mt-8">
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-8">
               <span className="inline-flex rounded-full bg-primary px-5 py-3 text-[13px] font-bold text-primary-foreground">
                 Last updated: {lastUpdated}
               </span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Hero Image */}
-          <div className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: EASE }}
+            className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
+          >
             <img
               src="/assets/contact-hero.png"
               alt="Beautiful Vastu Arched Room"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -201,7 +219,13 @@ export function TermsPage() {
       <section className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Sticky Left Sidebar Navigation */}
-          <div className="lg:col-span-3">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="lg:col-span-3"
+          >
             <div className="sticky top-[100px] space-y-6">
               <Card className="border border-border/30 rounded-[2rem] bg-card p-6 shadow-sm">
                 <CardContent className="p-0">
@@ -266,12 +290,19 @@ export function TermsPage() {
                 </CardContent>
               </Card>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Content */}
-          <div className="lg:col-span-9 space-y-12 pr-0 lg:pr-6">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="lg:col-span-9 space-y-12 pr-0 lg:pr-6"
+          >
             {mainSections.map((sec: any) => (
-              <div
+              <motion.div
+                variants={fadeUp}
                 key={sec.id}
                 id={sec.id}
                 className="scroll-mt-28 border-b border-border/30 pb-10"
@@ -286,7 +317,7 @@ export function TermsPage() {
                     </p>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
 
             {/* Shadcn Collapsible Section for remaining items */}
@@ -298,7 +329,8 @@ export function TermsPage() {
               >
                 <CollapsibleContent className="space-y-12 data-[state=open]:animate-slide-down">
                   {collapsedSections.map((sec: any) => (
-                    <div
+                    <motion.div
+                      variants={fadeUp}
                       key={sec.id}
                       id={sec.id}
                       className="scroll-mt-28 border-b border-border/30 pb-10"
@@ -315,12 +347,15 @@ export function TermsPage() {
                             </p>
                           ))}
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </CollapsibleContent>
 
                 {/* Trigger Toggle */}
-                <div className="flex justify-center pt-4">
+                <motion.div
+                  variants={fadeUp}
+                  className="flex justify-center pt-4"
+                >
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="outline"
@@ -334,12 +369,15 @@ export function TermsPage() {
                       )}
                     </Button>
                   </CollapsibleTrigger>
-                </div>
+                </motion.div>
               </Collapsible>
             )}
 
             {/* Important notice block */}
-            <div className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex items-start gap-4 shadow-sm mt-8">
+            <motion.div
+              variants={fadeUp}
+              className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex items-start gap-4 shadow-sm mt-8"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/5 shrink-0">
                 <ShieldAlert className="h-5 w-5 text-primary" />
               </div>
@@ -350,8 +388,8 @@ export function TermsPage() {
                   Vastu after changes means you accept the updated Terms.
                 </p>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </div>

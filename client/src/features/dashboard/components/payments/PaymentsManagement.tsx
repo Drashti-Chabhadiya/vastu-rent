@@ -10,6 +10,8 @@ import {
   Lock,
   Zap,
   XCircle,
+  TrendingUp,
+  ShoppingCart,
 } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
@@ -42,8 +44,16 @@ export const PaymentsManagement = () => {
   // Fetch queries
   const { data: dashboardData, isLoading: isDashboardLoading } =
     usePayoutDashboard()
-  const { data: allAdminPayouts, isLoading: isAdminPayoutsLoading } =
+  const { data: allAdminPayoutsData, isLoading: isAdminPayoutsLoading } =
     useAllPayoutRequests({ enabled: isAdmin })
+
+  const allAdminPayouts = allAdminPayoutsData?.payouts || []
+  const platformStats = allAdminPayoutsData?.platformStats || {
+    totalGmv: 0,
+    totalBookings: 0,
+    totalPayoutsPaid: 0,
+    totalPayoutsPending: 0,
+  }
 
   // Mutations
   const createPayout = useCreatePayoutRequest()
@@ -208,14 +218,90 @@ export const PaymentsManagement = () => {
         </div>
       </motion.div>
 
+      {/* CORE EARNINGS / PLATFORM ANALYTICS CARDS */}
+      {currentView === 'my' ? (
+        <motion.div variants={fadeUp}>
+          <EarningStatsCards stats={stats} />
+        </motion.div>
+      ) : (
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          {/* Card 1: Platform GMV */}
+          <div className="bg-card p-6 rounded-3xl border border-border/30 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-emerald-50 text-emerald-600 shrink-0">
+              <TrendingUp size={22} strokeWidth={2.5} />
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
+                Platform GMV
+              </span>
+              <h3 className="text-xl font-black text-foreground/90">
+                ₹{platformStats.totalGmv.toLocaleString()}
+              </h3>
+              <span className="text-[9px] font-bold text-muted-dark block">
+                Total booking volume
+              </span>
+            </div>
+          </div>
+          {/* Card 2: Platform Bookings */}
+          <div className="bg-card p-6 rounded-3xl border border-border/30 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-amber-50 text-amber-600 shrink-0">
+              <ShoppingCart size={22} strokeWidth={2.5} />
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
+                Platform Bookings
+              </span>
+              <h3 className="text-xl font-black text-foreground/90">
+                {platformStats.totalBookings.toLocaleString()}
+              </h3>
+              <span className="text-[9px] font-bold text-muted-dark block">
+                Total bookings processed
+              </span>
+            </div>
+          </div>
+          {/* Card 3: Payouts Processed */}
+          <div className="bg-card p-6 rounded-3xl border border-border/30 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-indigo-50 text-indigo-600 shrink-0">
+              <CheckCircle2 size={22} strokeWidth={2.5} />
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
+                Paid Out Volume
+              </span>
+              <h3 className="text-xl font-black text-foreground/90">
+                ₹{platformStats.totalPayoutsPaid.toLocaleString()}
+              </h3>
+              <span className="text-[9px] font-bold text-muted-dark block text-indigo-500">
+                Successfully settled
+              </span>
+            </div>
+          </div>
+          {/* Card 4: Pending Payouts Queue */}
+          <div className="bg-card p-6 rounded-3xl border border-border/30 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-orange-50 text-orange-600 shrink-0">
+              <Clock size={22} strokeWidth={2.5} />
+            </div>
+            <div className="space-y-0.5">
+              <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
+                Pending Queue
+              </span>
+              <h3 className="text-xl font-black text-foreground/90">
+                ₹{platformStats.totalPayoutsPending.toLocaleString()}
+              </h3>
+              <span className="text-[9px] font-bold text-muted-dark block text-orange-500">
+                Awaiting approvals
+              </span>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Render based on selected toggle tab */}
       {currentView === 'my' ? (
         <>
-          {/* CORE EARNINGS ANALYTICS CARDS */}
-          <motion.div variants={fadeUp}>
-            <EarningStatsCards stats={stats} />
-          </motion.div>
-
           {/* WITHDRAWABLE BALANCE HEADER & TRIGGER BUTTON */}
           <motion.div
             variants={fadeUp}
@@ -344,9 +430,9 @@ export const PaymentsManagement = () => {
                   Safety Settlement Guarantee
                 </h3>
                 <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
-                  Platform settlements are subject to a standard 10% commission.
-                  Payout requests are verified by auditing dispute histories and
-                  cleared within 24-48 hours.
+                  Platform settlements are fully paid out with 0% commission
+                  fees. Payout requests are verified by auditing dispute
+                  histories and cleared within 24-48 hours.
                 </p>
                 <div className="border-t border-border/30 pt-4 flex items-center gap-2 text-[10px] font-black text-muted-dark uppercase tracking-widest">
                   <Lock size={12} className="text-emerald-600" /> BANK-LEVEL SSL

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { MessageSquare, Clock } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
@@ -25,6 +25,7 @@ import { ChatInputDock } from './ChatInputDock'
 import { useAudioRecorder } from '../hooks/useAudioRecorder'
 import { DeleteMessageDialog } from './DeleteMessageDialog'
 import { EmojiReactDialog } from './EmojiReactDialog'
+import { MessageEmptyState } from './MessageEmptyState'
 
 export function ChatWindow() {
   const uploadChatFile = useUploadChatFile()
@@ -255,55 +256,12 @@ export function ChatWindow() {
     return (
       <div
         className={cn(
-          'flex-1 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden',
+          'flex-1 bg-background border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative',
           !showMobileChat ? 'hidden lg:flex' : 'flex',
         )}
       >
-        <div
-          className={cn(
-            'flex-1',
-            'flex',
-            'flex-col',
-            'items-center',
-            'justify-center',
-            'gap-4',
-            'text-center',
-            'px-8',
-          )}
-        >
-          <div
-            className={cn(
-              'w-16',
-              'h-16',
-              'rounded-2xl',
-              'bg-primary/10',
-              'flex',
-              'items-center',
-              'justify-center',
-            )}
-          >
-            <MessageSquare
-              size={28}
-              className="text-primary"
-              fill="currentColor"
-            />
-          </div>
-          <div>
-            <h3 className={cn('text-[13px]', 'font-black', 'text-foreground')}>
-              Select a conversation
-            </h3>
-            <p
-              className={cn(
-                'text-[11px]',
-                'text-muted-dark',
-                'font-bold',
-                'mt-1',
-                'leading-relaxed',
-              )}
-            >
-              Choose a chat from the list or start a new one.
-            </p>
-          </div>
+        <div className="flex-1 overflow-y-auto flex items-center justify-center p-6 bg-transparent scrollbar-none">
+          <MessageEmptyState showCards={true} />
         </div>
       </div>
     )
@@ -411,39 +369,8 @@ export function ChatWindow() {
             })}
           </div>
         ) : messages.length === 0 ? (
-          <div
-            className={cn(
-              'flex',
-              'flex-col',
-              'items-center',
-              'justify-center',
-              'h-full',
-              'gap-3',
-            )}
-          >
-            <div
-              className={cn(
-                'w-12',
-                'h-12',
-                'rounded-2xl',
-                'bg-muted/50',
-                'flex',
-                'items-center',
-                'justify-center',
-              )}
-            >
-              <MessageSquare size={20} className="text-muted-dark" />
-            </div>
-            <p
-              className={cn(
-                'text-[11px]',
-                'font-bold',
-                'text-muted-dark',
-                'text-center',
-              )}
-            >
-              No messages yet. Say hello!
-            </p>
+          <div className="flex items-center justify-center min-h-full py-8">
+            <MessageEmptyState showCards={true} />
           </div>
         ) : (
           groupedMessages.map((group) => (

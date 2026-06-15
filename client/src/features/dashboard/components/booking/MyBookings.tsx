@@ -1,4 +1,9 @@
-import { useMyRentals, useCreateDispute, useCreateReview } from '#/hook'
+import {
+  useMyRentals,
+  useCreateDispute,
+  useCreateReview,
+  useVerifyBookingSession,
+} from '#/hook'
 import {
   Calendar,
   SlidersHorizontal,
@@ -7,8 +12,9 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
+import { LoadingOverlay } from '#/components/ui/loader'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,13 +30,61 @@ import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 
 export const MyBookings = () => {
-  const { data: rentals, isLoading } = useMyRentals()
+  const { data: rentals, isLoading, refetch } = useMyRentals()
+  const [isVerifying, setIsVerifying] = useState(false)
+  const verifyBookingSession = useVerifyBookingSession()
   const [activeTab, setActiveTab] = useState<
     'upcoming' | 'ongoing' | 'completed' | 'cancelled'
   >('upcoming')
   const [paymentFilter, setPaymentFilter] = useState<
     'all' | 'paid' | 'pending'
   >('all')
+
+  // Verify Stripe Checkout session on mount/redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const sessionId = params.get('session_id')
+    const rentalId = params.get('rental_id')
+
+    if (sessionId && rentalId) {
+      const verifySession = async () => {
+        setIsVerifying(true)
+        const toastId = toast.loading('Verifying your booking payment...')
+        try {
+          const res = await verifyBookingSession.mutateAsync({
+            sessionId,
+            rentalId,
+          })
+          if (res?.success) {
+            toast.success('🎉 Booking confirmed and paid successfully!', {
+              id: toastId,
+            })
+            await refetch()
+            // Clean up query parameters in URL without page refresh
+            window.history.replaceState(
+              {},
+              document.title,
+              window.location.pathname,
+            )
+          } else {
+            toast.error('Could not verify your booking payment.', {
+              id: toastId,
+            })
+          }
+        } catch (error: any) {
+          console.error('Booking session verification failed:', error)
+          toast.error(
+            error.response?.data?.message ||
+              'Booking payment verification failed.',
+            { id: toastId },
+          )
+        } finally {
+          setIsVerifying(false)
+        }
+      }
+      verifySession()
+    }
+  }, [refetch])
 
   // Review state
   const [selectedRental, setSelectedRental] = useState<any>(null)
@@ -179,8 +233,14 @@ export const MyBookings = () => {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className="space-y-8"
+      className="space-y-8 relative"
     >
+      {isVerifying && (
+        <LoadingOverlay
+          message="Verifying payment..."
+          className="rounded-[32px] z-50 animate-fade-in"
+        />
+      )}
       {/* Header */}
       <motion.div
         variants={fadeUp}

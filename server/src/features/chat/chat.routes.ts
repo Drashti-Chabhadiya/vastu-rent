@@ -34,4 +34,7 @@ export async function chatRoutes(fastify: FastifyInstance) {
   fastify.post("/conversations/:id/clear", chatController.clearChat);
   fastify.post("/conversations/:id/disappearing", chatController.setDisappearingMessages);
   fastify.patch("/conversations/:id/settings", chatController.updateConversationSettings);
+  fastify.post("/conversations/:id/block", chatController.blockConversation);
+  fastify.post("/conversations/:id/unblock", chatController.unblockConversation);
+  fastify.post("/conversations/:id/report", chatController.reportConversation);
 }

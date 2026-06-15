@@ -6,9 +6,10 @@ import {
   useCreateRental,
   useProductRentals,
   useApplyCoupon,
-  useCreateOrder,
-  useVerifyPayment,
+  useConfirmPayment,
+  useCreateBookingSession,
 } from '#/hook'
+import { toast } from 'sonner'
 import { useProductReviews, useCreateReview } from '#/hook/use-reviews'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductDetailSkeleton } from '#/components/skeletons'
@@ -39,8 +40,8 @@ export function ProductDetail({ id }: { id: string }) {
   const { data: productRentals = [] } = useProductRentals(id)
   const createRental = useCreateRental()
   const createReview = useCreateReview(id)
-  const createOrder = useCreateOrder()
-  const verifyPayment = useVerifyPayment()
+  const confirmPayment = useConfirmPayment()
+  const createBookingSession = useCreateBookingSession()
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('description')
 
@@ -80,6 +81,15 @@ export function ProductDetail({ id }: { id: string }) {
     resetBooking()
   }, [id, resetBooking])
 
+  // Show error if payment was cancelled
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment_cancelled') === 'true') {
+      toast.error('Payment was cancelled. You can try booking again.')
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  }, [])
+
   // Reset coupon if dates change
   useEffect(() => {
     setAppliedCoupon(null)
@@ -109,17 +119,6 @@ export function ProductDetail({ id }: { id: string }) {
     setCouponCode('')
     setCouponError('')
   }
-
-  // Load Razorpay script
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-    script.async = true
-    document.body.appendChild(script)
-    return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
 
   const handleShare = useCallback(() => {
     navigator.clipboard.writeText(window.location.href)
@@ -227,6 +226,7 @@ export function ProductDetail({ id }: { id: string }) {
 
     try {
       setIsPaying(true)
+
       // 1. Create Rental Record
       const rental = await createRental.mutateAsync({
         productId: id,
@@ -239,60 +239,26 @@ export function ProductDetail({ id }: { id: string }) {
         couponCode: appliedCoupon?.code || undefined,
       })
 
-      // If COD, we are done
-      if (paymentMethod === 'cash') {
-        setShowBookingConfirm(true)
-        setIsPaying(false)
-        return
+      // 2. For online payment — redirect to Stripe/Simulated checkout session
+      if (paymentMethod === 'online') {
+        const bookingSession = await createBookingSession.mutateAsync({
+          rentalId: rental.id,
+        })
+        if (bookingSession?.url) {
+          window.location.href = bookingSession.url
+          return
+        }
       }
 
-      // 2. Create Razorpay Order (Only for online)
-      const { order } = await createOrder.mutateAsync({
-        rentalId: rental.id,
-      })
-
-      // 3. Open Razorpay Checkout
-      const options = {
-        key: 'rzp_test_placeholder', // Should be in env
-        amount: order.amount,
-        currency: order.currency,
-        name: 'Vastu Rent',
-        description: `Rental for ${product.title || product.name}`,
-        order_id: order.id,
-        handler: async (response: any) => {
-          // 4. Verify Payment
-          try {
-            await verifyPayment.mutateAsync({
-              ...response,
-              rentalId: rental.id,
-            })
-            setShowBookingConfirm(true)
-          } catch (err) {
-            alert('Payment verification failed. Please contact support.')
-          } finally {
-            setIsPaying(false)
-          }
-        },
-        prefill: {
-          name: '', // Can fill from session
-          email: '',
-        },
-        theme: {
-          color: 'var(--color-primary)',
-        },
-        modal: {
-          ondismiss: () => setIsPaying(false),
-        },
-      }
-
-      const rzp = new (window as any).Razorpay(options)
-      rzp.open()
+      // Show success modal for both cash and online
+      setShowBookingConfirm(true)
     } catch (err: any) {
-      setIsPaying(false)
       alert(
         err.response?.data?.message ||
           'Booking failed. Please make sure you are logged in.',
       )
+    } finally {
+      setIsPaying(false)
     }
   }
 
@@ -383,7 +349,9 @@ export function ProductDetail({ id }: { id: string }) {
               product={product}
               productInfo={productInfo}
               handleRentNow={handleRentNow}
-              createRentalIsPending={createRental.isPending}
+              createRentalIsPending={
+                createRental.isPending || confirmPayment.isPending
+              }
               handleApplyCoupon={handleApplyCoupon}
               handleRemoveCoupon={handleRemoveCoupon}
               applyCouponIsPending={applyCoupon.isPending}
@@ -460,6 +428,7 @@ export function ProductDetail({ id }: { id: string }) {
         productTitle={product.title || product.name}
         startDate={startDate}
         endDate={endDate}
+        paymentMethod={paymentMethod}
         totalPrice={
           Math.max(0, totalPrice - (appliedCoupon?.discountAmount || 0)) +
           (product.securityDeposit || 0)

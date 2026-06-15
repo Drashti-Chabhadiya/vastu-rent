@@ -36,6 +36,8 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { useSettings } from '#/hook'
+import { motion } from 'motion/react'
+import { EASE, fadeUp, stagger } from '#/lib/animations'
 
 const getIcon = (name: string, className = 'h-6 w-6 text-primary') => {
   switch (name) {
@@ -162,25 +164,41 @@ export function TrustPage() {
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
-          <div className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16">
-            <div>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16"
+          >
+            <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 Trust & safety
               </div>
-            </div>
-            <h1 className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]">
+            </motion.div>
+            <motion.h1
+              variants={fadeUp}
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+            >
               Your trust is <br />
               <span className="italic text-primary">our priority.</span>
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+            </motion.h1>
+            <motion.p
+              variants={fadeUp}
+              className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
               At Vastu, we’re building a community where everyone can rent and
               host with confidence.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {/* Right Hero Image */}
-          <div className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, ease: EASE }}
+            className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
+          >
             <img
               src="/assets/contact-hero.png"
               alt="Beautiful Vastu Arched Room"
@@ -188,61 +206,94 @@ export function TrustPage() {
             />
             {/* Soft decorative shading */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Commitment Cards Section */}
-      <section className="mx-auto max-w-[1400px] px-6 mt-20 md:px-10">
-        <div className="text-center md:text-left">
-          <h2 className="text-2xl font-bold text-[#0F291B] tracking-tight sm:text-3xl">
+      <section className="mx-auto max-w-[1400px] px-6 mt-20 md:px-10 overflow-hidden">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="text-center md:text-left"
+        >
+          <motion.h2
+            variants={fadeUp}
+            className="text-2xl font-bold text-[#0F291B] tracking-tight sm:text-3xl"
+          >
             Our commitment to you
-          </h2>
-          <p className="text-muted-foreground mt-2 text-sm max-w-xl leading-relaxed">
+          </motion.h2>
+          <motion.p
+            variants={fadeUp}
+            className="text-muted-foreground mt-2 text-sm max-w-xl leading-relaxed"
+          >
             We work around the clock to keep Vastu safe, secure and reliable for
             our community.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10"
+        >
           {commitments.map((c, i) => (
-            <Card
-              key={i}
-              className="group border border-border/30 rounded-[2rem] bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20"
-            >
-              <CardContent className="p-0 flex flex-col items-start gap-5">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 transition-colors group-hover:bg-primary/10 shrink-0">
-                  {c.icon}
-                </div>
-                <div>
-                  <h3 className="font-bold text-[#0F291B] text-base">
-                    {c.title}
-                  </h3>
-                  <p className="text-muted-foreground text-[13px] leading-relaxed mt-2">
-                    {c.description}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div key={i} variants={fadeUp} className="flex">
+              <Card className="group w-full border border-border/30 rounded-[2rem] bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
+                <CardContent className="p-0 flex flex-col items-start gap-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 transition-colors group-hover:bg-primary/10 shrink-0">
+                    {c.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#0F291B] text-base">
+                      {c.title}
+                    </h3>
+                    <p className="text-muted-foreground text-[13px] leading-relaxed mt-2">
+                      {c.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Safety Tips and Privacy Section */}
-      <section className="mx-auto max-w-[1400px] px-6 mt-20 md:px-10">
+      <section className="mx-auto max-w-[1400px] px-6 mt-20 md:px-10 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Safety Tips List */}
-          <div className="lg:col-span-7">
-            <h2 className="text-2xl font-bold text-[#0F291B] tracking-tight">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="lg:col-span-7"
+          >
+            <motion.h2
+              variants={fadeUp}
+              className="text-2xl font-bold text-[#0F291B] tracking-tight"
+            >
               Safety tips for a secure experience
-            </h2>
-            <p className="text-muted-foreground mt-2 text-sm">
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              className="text-muted-foreground mt-2 text-sm"
+            >
               Follow these simple tips to protect yourself and others.
-            </p>
+            </motion.p>
 
-            <div className="mt-8 rounded-[2rem] border border-border/30 overflow-hidden bg-card divide-y divide-border/30">
+            <motion.div
+              variants={stagger}
+              className="mt-8 rounded-[2rem] border border-border/30 overflow-hidden bg-card divide-y divide-border/30"
+            >
               {safetyTips.map((tip, idx) => (
-                <div
+                <motion.div
+                  variants={fadeUp}
                   key={idx}
                   onClick={() => toast.info(`${tip.title}: ${tip.description}`)}
                   className="flex items-center justify-between gap-4 p-5 sm:px-6 transition-colors hover:bg-[#faf9f5]/50 cursor-pointer group"
@@ -261,13 +312,19 @@ export function TrustPage() {
                     </div>
                   </div>
                   <ChevronRight className="h-4 w-4 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column: Privacy matters Callout */}
-          <div className="lg:col-span-5 bg-primary/5 border border-brand/10 rounded-[2.5rem] p-8 sm:p-10 shadow-sm relative overflow-hidden">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="lg:col-span-5 bg-primary/5 border border-brand/10 rounded-[2.5rem] p-8 sm:p-10 shadow-sm relative overflow-hidden"
+          >
             {/* Elegant background circles */}
             <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/5 blur-xl pointer-events-none" />
 
@@ -307,13 +364,19 @@ export function TrustPage() {
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Report Suspicious Activity Callout */}
-      <section className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10">
-        <div className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+      <section className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10 overflow-hidden">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm"
+        >
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 border border-primary/10 shrink-0">
               <Flag className="h-7 w-7 text-primary" />
@@ -422,7 +485,7 @@ export function TrustPage() {
               </DialogContent>
             </Dialog>
           </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   )
