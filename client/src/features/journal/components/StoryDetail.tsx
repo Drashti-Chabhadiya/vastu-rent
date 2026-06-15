@@ -13,6 +13,7 @@ import { motion } from 'motion/react'
 import { useState } from 'react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { formatLongDate } from '#/lib/date-utils'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -123,13 +124,6 @@ const fallbackArticles: Record<
   },
 }
 
-const formatDate = (dateStr: string) =>
-  new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  })
-
 /* ─── Related card ───────────────────────────────────────────────────────── */
 function RelatedCard({ story }: { story: any }) {
   return (
@@ -150,7 +144,7 @@ function RelatedCard({ story }: { story: any }) {
       <div className="mt-4 flex items-center gap-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <Calendar className="h-3 w-3" />
-          {formatDate(story.createdAt)}
+          {formatLongDate(story.createdAt)}
         </span>
         <span className="h-1 w-1 rounded-full bg-border" />
         <span className="flex items-center gap-1.5">
@@ -300,7 +294,7 @@ export function StoryDetail({ id }: { id: string }) {
             <div className="mt-6 flex flex-wrap items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/75">
               <span className="flex items-center gap-2">
                 <Calendar size={13} />
-                {formatDate(story.createdAt)}
+                {formatLongDate(story.createdAt)}
               </span>
               <span className="h-1 w-1 rounded-full bg-card/30" />
               <span className="flex items-center gap-2">

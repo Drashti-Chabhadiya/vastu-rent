@@ -25,7 +25,7 @@ import { BookingCard } from './components/BookingCard'
 import { BookingDetailsDialog } from './components/BookingDetailsDialog'
 import { ReviewDialog } from './components/ReviewDialog'
 import { DisputeDialog } from './components/DisputeDialog'
-import { getBookingGroup } from './components/BookingStatusBadge'
+import { getBookingGroup } from '#/lib/booking-utils'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 

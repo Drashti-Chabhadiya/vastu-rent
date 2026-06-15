@@ -10,7 +10,8 @@ import { format } from 'date-fns'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
-import { BookingStatusBadge, getBookingGroup } from './BookingStatusBadge'
+import { BookingStatusBadge } from './BookingStatusBadge'
+import { getBookingGroup } from '#/lib/booking-utils'
 
 interface BookingCardProps {
   rental: any

@@ -8,34 +8,88 @@ import {
 } from '#/components/ui/dropdown-menu'
 import { MoreVertical } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { useChatStore } from '../../../../../store/useChatStore'
+import { useDeleteConversation } from '#/hook'
+import { useNavigate } from '@tanstack/react-router'
+import { toast } from 'sonner'
 
 /**
  * A dropdown menu providing common actions for a conversation.
- * Placeholder handlers are provided – replace with actual logic as needed.
  */
-export function ConversationOptionsMenu({
-  onViewProfile,
-  onArchive,
-  onClearChat,
-  onDelete,
-  onToggleHideMedia,
-  hideMedia,
-  onToggleSelectMode,
-  isMultiSelectMode,
-  onShowSharedMedia,
-  isArchived,
-}: {
-  onViewProfile?: () => void
-  onArchive?: () => void
-  onClearChat?: () => void
-  onDelete?: () => void
-  onToggleHideMedia?: () => void
-  hideMedia?: boolean
-  onToggleSelectMode?: () => void
-  isMultiSelectMode?: boolean
-  onShowSharedMedia?: () => void
-  isArchived?: boolean
-}) {
+export function ConversationOptionsMenu() {
+  const navigate = useNavigate()
+  const deleteConversation = useDeleteConversation()
+
+  const {
+    conversations,
+    activeConversationId,
+    archiveConversation,
+    unarchiveConversation,
+    hideMedia,
+    setHideMedia,
+    setRevealedMediaMsgs,
+    isMultiSelectMode,
+    setIsMultiSelectMode,
+    setSelectedMsgIds,
+    setShowMediaBrowser,
+  } = useChatStore()
+
+  const activeConversation = conversations.find(
+    (c) => c.id === activeConversationId,
+  )
+
+  if (!activeConversation) return null
+
+  const isArchived = activeConversation.isArchived
+
+  const handleViewProfile = () => {
+    navigate({
+      to: '/users/$id',
+      params: { id: activeConversation.otherParticipant.id },
+    })
+  }
+
+  const handleToggleHideMedia = () => {
+    setHideMedia(!hideMedia)
+    setRevealedMediaMsgs([])
+  }
+
+  const handleToggleSelectMode = () => {
+    setIsMultiSelectMode(!isMultiSelectMode)
+    setSelectedMsgIds([])
+  }
+
+  const handleShowSharedMedia = () => {
+    setShowMediaBrowser(true)
+  }
+
+  const handleArchive = async () => {
+    try {
+      if (isArchived) {
+        await unarchiveConversation(activeConversation.id)
+        toast.success('Conversation unarchived')
+      } else {
+        await archiveConversation(activeConversation.id)
+        toast.success('Conversation archived')
+      }
+    } catch {
+      toast.error('Unable to update archive status')
+    }
+  }
+
+  const handleClearChat = () => {
+    window.dispatchEvent(new CustomEvent('open-clear-chat-dialog'))
+  }
+
+  const handleDelete = async () => {
+    try {
+      await deleteConversation.mutateAsync(activeConversation.id)
+      toast.success('Conversation deleted')
+    } catch {
+      toast.error('Failed to delete conversation')
+    }
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -57,32 +111,26 @@ export function ConversationOptionsMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={4} className={cn('w-52')}>
-        <DropdownMenuItem onSelect={onViewProfile}>
+        <DropdownMenuItem onSelect={handleViewProfile}>
           View Profile
         </DropdownMenuItem>
-        {onToggleHideMedia && (
-          <DropdownMenuItem onSelect={onToggleHideMedia}>
-            {hideMedia ? 'Show Media' : 'Hide Media'}
-          </DropdownMenuItem>
-        )}
-        {onToggleSelectMode && (
-          <DropdownMenuItem onSelect={onToggleSelectMode}>
-            {isMultiSelectMode ? 'Exit Select Mode' : 'Select Messages'}
-          </DropdownMenuItem>
-        )}
-        {onShowSharedMedia && (
-          <DropdownMenuItem onSelect={onShowSharedMedia}>
-            Shared Media Browser
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuItem onSelect={onArchive}>
+        <DropdownMenuItem onSelect={handleToggleHideMedia}>
+          {hideMedia ? 'Show Media' : 'Hide Media'}
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleToggleSelectMode}>
+          {isMultiSelectMode ? 'Exit Select Mode' : 'Select Messages'}
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleShowSharedMedia}>
+          Shared Media Browser
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleArchive}>
           {isArchived ? 'Unarchive Conversation' : 'Archive Conversation'}
         </DropdownMenuItem>
-        {onClearChat && (
-          <DropdownMenuItem onSelect={onClearChat}>Clear Chat</DropdownMenuItem>
-        )}
+        <DropdownMenuItem onSelect={handleClearChat}>
+          Clear Chat
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={onDelete} className="text-destructive">
+        <DropdownMenuItem onSelect={handleDelete} className="text-destructive">
           Delete Conversation
         </DropdownMenuItem>
       </DropdownMenuContent>

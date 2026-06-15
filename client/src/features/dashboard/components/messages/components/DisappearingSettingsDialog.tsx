@@ -8,13 +8,8 @@ import { Button } from '#/components/ui/button'
 import { Clock, Check } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { useState, useEffect } from 'react'
-
-interface DisappearingSettingsDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  currentDuration?: number
-  onSetDuration: (duration: number) => Promise<any>
-}
+import { useChatStore } from '../../../../../store/useChatStore'
+import { toast } from 'sonner'
 
 const DURATIONS = [
   { label: 'Off', value: 0, description: 'Keep messages forever' },
@@ -35,17 +30,26 @@ const DURATIONS = [
   },
 ]
 
-export function DisappearingSettingsDialog({
-  open,
-  onOpenChange,
-  currentDuration = 0,
-  onSetDuration,
-}: DisappearingSettingsDialogProps) {
+export function DisappearingSettingsDialog() {
+  const {
+    disappearingTargetConvId,
+    setDisappearingTargetConvId,
+    conversations,
+    setDisappearingMessages,
+  } = useChatStore()
+
+  const activeConversation = conversations.find(
+    (c) => c.id === disappearingTargetConvId,
+  )
+
+  const open = !!disappearingTargetConvId
+  const currentDuration = activeConversation?.disappearingDuration || 0
+
   const [selectedDuration, setSelectedDuration] =
     useState<number>(currentDuration)
   const [isSaving, setIsSaving] = useState(false)
 
-  // Sync state if prop changes
+  // Sync state if open or currentDuration changes
   useEffect(() => {
     if (open) {
       setSelectedDuration(currentDuration)
@@ -53,19 +57,30 @@ export function DisappearingSettingsDialog({
   }, [open, currentDuration])
 
   const handleSave = async () => {
+    if (!disappearingTargetConvId) return
     try {
       setIsSaving(true)
-      await onSetDuration(selectedDuration)
-      onOpenChange(false)
+      await setDisappearingMessages(disappearingTargetConvId, selectedDuration)
+      const label =
+        DURATIONS.find((opt) => opt.value === selectedDuration)?.label || 'Off'
+      toast.success(`Disappearing messages set to: ${label}`)
+      setDisappearingTargetConvId(null)
     } catch (err) {
       console.error('Failed to set disappearing messages duration:', err)
+      toast.error('Failed to save settings')
     } finally {
       setIsSaving(false)
     }
   }
 
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      setDisappearingTargetConvId(null)
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
           'max-w-md',
@@ -148,7 +163,7 @@ export function DisappearingSettingsDialog({
         <div className="px-6 pb-6 pt-2 flex items-center justify-end gap-3 border-t border-border/10 bg-muted-light/30">
           <Button
             variant="ghost"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
             className="rounded-xl text-[11px] font-bold cursor-pointer h-9 px-4"
             disabled={isSaving}
           >

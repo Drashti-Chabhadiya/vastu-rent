@@ -1,15 +1,7 @@
 import { useState } from 'react'
-import {
-  Bell,
-  Calendar,
-  ChevronDown,
-  Menu,
-  ShoppingCart,
-  CreditCard,
-  AlertCircle,
-  Loader2,
-} from 'lucide-react'
+import { Bell, Calendar, ChevronDown, Menu } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import { Skeleton } from '#/components/ui/skeleton'
 import { useNavigate } from '@tanstack/react-router'
 import {
   useNotifications,
@@ -22,20 +14,16 @@ import {
   PopoverTrigger,
 } from '#/components/ui/popover'
 import { cn } from '#/lib/utils'
-import { format } from 'date-fns'
 import { authClient } from '#/lib/auth/auth-client'
 import { isAdminRole, isUserRole } from '#/lib/auth/roles'
+import { formatMsgTime } from '#/lib/chat-utils'
+import { formatMonthDay, getRangeLabel } from '#/lib/date-utils'
+import {
+  getNotificationIcon,
+  getHeaderNotificationColorClasses,
+} from '#/lib/notification-utils'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function formatMsgTime(dateStr: string) {
-  const date = new Date(dateStr)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffHrs = diffMs / (1000 * 60 * 60)
-  if (diffHrs < 24) return format(date, 'h:mm a')
-  if (diffHrs < 48) return 'Yesterday'
-  return format(date, 'dd MMM')
-}
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -58,32 +46,6 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const unreadCount = notifications.filter((n) => !n.isRead).length
-
-  const getIcon = (type: string) => {
-    switch (type) {
-      case 'booking':
-        return ShoppingCart
-      case 'payment':
-        return CreditCard
-      case 'alert':
-        return AlertCircle
-      default:
-        return Bell
-    }
-  }
-
-  const getColorClasses = (type: string) => {
-    switch (type) {
-      case 'booking':
-        return 'bg-emerald-50 text-emerald-600'
-      case 'payment':
-        return 'bg-warning text-warning-foreground'
-      case 'alert':
-        return 'bg-danger text-danger-foreground'
-      default:
-        return 'bg-muted-light text-muted-foreground/85'
-    }
-  }
 
   const handleNotificationClick = async (notif: any) => {
     if (!notif.isRead) {
@@ -126,25 +88,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
       startDate.setDate(1)
     }
 
-    const formatMonthDay = (date: Date) => {
-      return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      })
-    }
-
     return `${formatMonthDay(startDate)} - ${formatMonthDay(endDate)}, ${endDate.getFullYear()}`
-  }
-
-  const getLabel = () => {
-    switch (rangeType) {
-      case '7days':
-        return 'Last 7 Days'
-      case '30days':
-        return 'Last 30 Days'
-      case 'thisMonth':
-        return 'This Month'
-    }
   }
 
   return (
@@ -178,7 +122,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             <Calendar size={18} className="text-dash-brand" />
             <div className="flex flex-col items-start leading-none gap-0.5">
               <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-wider">
-                {getLabel()}
+                {getRangeLabel(rangeType)}
               </span>
               <span className="text-xs font-bold text-foreground">
                 {getFormattedRange()}
@@ -289,8 +233,17 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             {/* Popover List */}
             <div className="max-h-72 overflow-y-auto divide-y divide-border/30/70 scrollbar-thin">
               {isLoadingNotifications ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                <div className="divide-y divide-border/30">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="p-4 flex gap-3.5 items-start">
+                      <Skeleton className="w-8 h-8 rounded-lg shrink-0" />
+                      <div className="flex-1 min-w-0 space-y-1.5">
+                        <Skeleton className="h-2.5 w-1/3 rounded" />
+                        <Skeleton className="h-2 w-2/3 rounded" />
+                        <Skeleton className="h-1.5 w-12 rounded mt-1" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 gap-1.5 text-center px-4">
@@ -301,8 +254,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                 </div>
               ) : (
                 notifications.slice(0, 5).map((notif) => {
-                  const Icon = getIcon(notif.type)
-                  const colorCls = getColorClasses(notif.type)
+                  const Icon = getNotificationIcon(notif.type)
+                  const colorCls = getHeaderNotificationColorClasses(notif.type)
                   return (
                     <div
                       key={notif.id}

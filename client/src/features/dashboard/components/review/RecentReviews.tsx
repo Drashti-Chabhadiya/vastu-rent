@@ -2,6 +2,7 @@ import { Star } from 'lucide-react'
 import { useAdminRecentReviews } from '#/hook'
 import { ExploreLink } from '#/components/common/ExploreLink'
 import { UserAvatar } from '#/components/common/UserAvatar'
+import { parseCommentImagesAndReply } from '#/lib/review-utils'
 
 export const RecentReviews = () => {
   const { data: reviews = [], isLoading } = useAdminRecentReviews()
@@ -70,7 +71,7 @@ export const RecentReviews = () => {
                   </div>
                   {review.comment && (
                     <p className="text-[11px] text-dash-text-soft mt-1 leading-relaxed line-clamp-2">
-                      {review.comment}
+                      {parseCommentImagesAndReply(review.comment).text}
                     </p>
                   )}
                 </div>

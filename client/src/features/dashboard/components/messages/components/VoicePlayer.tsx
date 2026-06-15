@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Play, Pause } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { formatMediaTime as formatTime } from '#/lib/date-utils'
 
 interface VoicePlayerProps {
   src: string
@@ -51,13 +52,6 @@ export function VoicePlayer({ src, timeStr }: VoicePlayerProps) {
         .catch((err) => console.error('Audio play failed:', err))
       setIsPlaying(true)
     }
-  }
-
-  const formatTime = (time: number) => {
-    if (isNaN(time)) return '0:00'
-    const mins = Math.floor(time / 60)
-    const secs = Math.floor(time % 60)
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`
   }
 
   return (

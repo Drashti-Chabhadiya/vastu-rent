@@ -14,80 +14,12 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { authClient } from '#/lib/auth/auth-client'
 import { useUserSessions, useRevokeSession } from '#/hook'
+import { parseUserAgent } from '#/lib/device-utils'
+import { getLastActive } from '#/lib/date-utils'
 
 interface SessionsDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-}
-
-function parseUserAgent(userAgent: string | null) {
-  if (!userAgent) {
-    return { device: 'Unknown Device', browser: 'Browser', os: 'OS' }
-  }
-
-  let os = 'OS'
-  let device = 'Desktop'
-  let browser = 'Browser'
-
-  // OS & Device detection
-  if (/windows/i.test(userAgent)) {
-    os = 'Windows'
-    device = 'Windows PC'
-  } else if (/macintosh|mac os x/i.test(userAgent)) {
-    os = 'macOS'
-    device = 'Mac'
-  } else if (/iphone/i.test(userAgent)) {
-    os = 'iOS'
-    device = 'iPhone'
-  } else if (/ipad/i.test(userAgent)) {
-    os = 'iOS'
-    device = 'iPad'
-  } else if (/android/i.test(userAgent)) {
-    os = 'Android'
-    device = 'Android Phone'
-
-    // Dynamically extract exact Android model name from the user agent details
-    const androidMatch = userAgent.match(/android \d+(?:\.\d+)*;\s*([^;)]+)/i)
-    if (androidMatch && androidMatch[1]) {
-      const model = androidMatch[1].split('Build/')[0].trim()
-      if (model && model.length < 32 && !/wv|mobile|version/i.test(model)) {
-        device = model
-      }
-    }
-  } else if (/linux/i.test(userAgent)) {
-    os = 'Linux'
-    device = 'Linux PC'
-  }
-
-  // Browser detection
-  if (/chrome|crios/i.test(userAgent) && !/edge|opr|opera/i.test(userAgent)) {
-    browser = 'Chrome'
-  } else if (
-    /safari/i.test(userAgent) &&
-    !/chrome|crios|android/i.test(userAgent)
-  ) {
-    browser = 'Safari'
-  } else if (/firefox|fxios/i.test(userAgent)) {
-    browser = 'Firefox'
-  } else if (/edge|edg/i.test(userAgent)) {
-    browser = 'Edge'
-  } else if (/opera|opr/i.test(userAgent)) {
-    browser = 'Opera'
-  }
-
-  return { device, browser, os }
-}
-
-function getLastActive(dateStr: string) {
-  const d = new Date(dateStr)
-  const diffMs = Date.now() - d.getTime()
-  const diffMins = Math.floor(diffMs / 60000)
-  if (diffMins < 1) return 'Just now'
-  if (diffMins < 60) return `${diffMins} minutes ago`
-  const diffHours = Math.floor(diffMins / 60)
-  if (diffHours < 24) return `${diffHours} hours ago`
-  const diffDays = Math.floor(diffHours / 24)
-  return `${diffDays} days ago`
 }
 
 export function SessionsDialog({ open, onOpenChange }: SessionsDialogProps) {
