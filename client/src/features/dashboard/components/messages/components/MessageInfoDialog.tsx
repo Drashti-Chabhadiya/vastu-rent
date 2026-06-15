@@ -6,33 +6,20 @@ import {
 } from '#/components/ui/dialog'
 import { Info, Check, CheckCheck } from 'lucide-react'
 import { cn } from '#/lib/utils'
-import { format } from 'date-fns'
-import type { Message } from '../../../../../hook/use-chat'
 import { parseMessage } from '#/lib/chat-utils'
+import { useChatStore } from '../../../../../store/useChatStore'
+import { formatFullDate } from '#/lib/date-utils'
 
-interface MessageInfoDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  message: Message | null
-}
+export function MessageInfoDialog() {
+  const {
+    showInfoDialog: open,
+    setShowInfoDialog: onOpenChange,
+    infoTargetMsg: message,
+  } = useChatStore()
 
-export function MessageInfoDialog({
-  open,
-  onOpenChange,
-  message,
-}: MessageInfoDialogProps) {
   if (!message) return null
 
   const { text: msgText } = parseMessage(message.content)
-
-  const formatFullDate = (dateStr: string | null | undefined) => {
-    if (!dateStr) return null
-    try {
-      return format(new Date(dateStr), 'dd MMM yyyy, h:mm a')
-    } catch {
-      return null
-    }
-  }
 
   // Determine message status
   const isRead = !!message.readAt || message.isRead

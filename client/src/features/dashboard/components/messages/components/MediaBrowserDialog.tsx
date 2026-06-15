@@ -7,20 +7,16 @@ import {
 import { Button } from '#/components/ui/button'
 import { Image, Download, User, Calendar } from 'lucide-react'
 import { cn } from '#/lib/utils'
-import type { Message } from '../../../../../hook/use-chat'
 import { format } from 'date-fns'
+import { useChatStore } from '../../../../../store/useChatStore'
 
-interface MediaBrowserDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  messages: Message[]
-}
+export function MediaBrowserDialog() {
+  const {
+    showMediaBrowser: open,
+    setShowMediaBrowser: onOpenChange,
+    messages,
+  } = useChatStore()
 
-export function MediaBrowserDialog({
-  open,
-  onOpenChange,
-  messages,
-}: MediaBrowserDialogProps) {
   // Filter all media files (attachments) that are images
   const isImageUrl = (url: string): boolean => {
     const cleanUrl = url.split('?')[0].toLowerCase()

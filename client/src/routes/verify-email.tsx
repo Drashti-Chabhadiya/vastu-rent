@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { AuthLayout } from '#/features/auth/components/auth-layout'
 import { AuthLeftSection } from '#/features/auth/components/auth-left-section'
-import { CheckCircle2, AlertTriangle, Loader2, Mail } from 'lucide-react'
+import { CheckCircle2, AlertTriangle, Mail } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { Skeleton } from '#/components/ui/skeleton'
 
 type SearchParams = {
   token?: string
@@ -100,20 +101,15 @@ function VerifyEmailPage() {
       <div className="flex flex-1 items-center justify-center p-8 lg:p-20">
         <div className="w-full max-w-[520px]">
           {status === 'loading' && (
-            <div className="text-center py-12 animate-in fade-in duration-300">
+            <div className="text-center py-12 animate-in fade-in duration-300 space-y-6">
               <div className="flex justify-center mb-6">
-                <Loader2
-                  className="h-12 w-12 text-primary animate-spin"
-                  strokeWidth={1.5}
-                />
+                <Skeleton className="h-12 w-12 rounded-full" />
               </div>
-              <h1 className="text-[28px] font-bold text-foreground mb-2 font-display">
-                Verifying Email
-              </h1>
-              <p className="text-muted-foreground/85 text-[15px] font-medium max-w-[320px] mx-auto">
-                Please wait a moment while we verify your email address and
-                activate your account.
-              </p>
+              <div className="space-y-3">
+                <Skeleton className="h-7 w-48 rounded mx-auto" />
+                <Skeleton className="h-4 w-72 rounded mx-auto" />
+                <Skeleton className="h-4 w-60 rounded mx-auto" />
+              </div>
             </div>
           )}
 

@@ -52,6 +52,8 @@ export interface ChatStoreState {
   showForwardDialog: boolean
   infoTargetMsg: Message | null
   showInfoDialog: boolean
+  showMediaBrowser: boolean
+  disappearingTargetConvId: string | null
 
   // useChat Synced State
   isConnected: boolean
@@ -147,6 +149,8 @@ export interface ChatStoreState {
   setShowForwardDialog: (show: boolean) => void
   setInfoTargetMsg: (msg: Message | null) => void
   setShowInfoDialog: (show: boolean) => void
+  setShowMediaBrowser: (show: boolean) => void
+  setDisappearingTargetConvId: (id: string | null) => void
 
   // Synced state updater
   setChatData: (data: Partial<ChatStoreState>) => void
@@ -170,7 +174,7 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   showLightbox: false,
 
   showNewChat: false,
-  showDetailsPanel: true,
+  showDetailsPanel: false,
   activePanel: 'about',
 
   // New UI states defaults
@@ -191,6 +195,8 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   showForwardDialog: false,
   infoTargetMsg: null,
   showInfoDialog: false,
+  showMediaBrowser: false,
+  disappearingTargetConvId: null,
 
   // Synced defaults
   isConnected: false,
@@ -331,6 +337,9 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   setShowForwardDialog: (showForwardDialog) => set({ showForwardDialog }),
   setInfoTargetMsg: (infoTargetMsg) => set({ infoTargetMsg }),
   setShowInfoDialog: (showInfoDialog) => set({ showInfoDialog }),
+  setShowMediaBrowser: (showMediaBrowser) => set({ showMediaBrowser }),
+  setDisappearingTargetConvId: (disappearingTargetConvId) =>
+    set({ disappearingTargetConvId }),
 
   setChatData: (data) => set(data),
 }))

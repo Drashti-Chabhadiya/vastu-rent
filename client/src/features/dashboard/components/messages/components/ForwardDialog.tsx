@@ -10,27 +10,18 @@ import { Button } from '#/components/ui/button'
 import { Search, Send, Check, Loader2, ArrowRightLeft } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { UserAvatar } from './UserAvatar'
-import type { Conversation } from '../../../../../hook/use-chat'
 import { toast } from 'sonner'
+import { useChatStore } from '../../../../../store/useChatStore'
 
-interface ForwardDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  messageId: string | string[] | null
-  conversations: Conversation[]
-  onForward: (
-    messageId: string,
-    targetConversationIds: string[],
-  ) => Promise<any>
-}
+export function ForwardDialog() {
+  const {
+    showForwardDialog: open,
+    setShowForwardDialog: onOpenChange,
+    forwardTargetId: messageId,
+    conversations,
+    forwardMessage,
+  } = useChatStore()
 
-export function ForwardDialog({
-  open,
-  onOpenChange,
-  messageId,
-  conversations,
-  onForward,
-}: ForwardDialogProps) {
   const [search, setSearch] = useState('')
   const [forwardingIds, setForwardingIds] = useState<
     Record<string, 'loading' | 'success'>
@@ -47,9 +38,16 @@ export function ForwardDialog({
     setForwardingIds((prev) => ({ ...prev, [convId]: 'loading' }))
     try {
       if (Array.isArray(messageId)) {
-        await Promise.all(messageId.map((id) => onForward(id, [convId])))
+        await Promise.all(
+          messageId.map((id) =>
+            forwardMessage({ messageId: id, targetConversationIds: [convId] }),
+          ),
+        )
       } else {
-        await onForward(messageId, [convId])
+        await forwardMessage({
+          messageId,
+          targetConversationIds: [convId],
+        })
       }
       setForwardingIds((prev) => ({ ...prev, [convId]: 'success' }))
       toast.success(`Forwarded to ${name}`)

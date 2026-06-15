@@ -7,6 +7,7 @@ import { useStories } from '#/hook/use-stories'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { ExploreLink } from '#/components/common/ExploreLink'
+import { formatLongDate } from '#/lib/date-utils'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -70,15 +71,6 @@ const fallbackPosts = [
     author: { name: 'David Kim' },
   },
 ]
-
-const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
 
 export function JournalPage() {
   const { data: dbStories, isLoading } = useStories()
@@ -217,7 +209,7 @@ export function JournalPage() {
                   <div className="mt-8 flex items-center gap-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                     <span className="flex items-center gap-2">
                       <Calendar className="h-3.5 w-3.5" />
-                      {formatDate(p.createdAt)}
+                      {formatLongDate(p.createdAt)}
                     </span>
                     <span className="h-1 w-1 rounded-full bg-border" />
                     <span className="flex items-center gap-2">

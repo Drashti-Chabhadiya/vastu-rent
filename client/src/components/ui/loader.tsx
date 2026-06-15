@@ -1,4 +1,3 @@
-import { Loader2 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 
 interface LoaderProps {
@@ -13,10 +12,10 @@ export const Loader = ({
   variant = 'default',
 }: LoaderProps) => {
   return (
-    <Loader2
-      size={size}
+    <span
+      style={{ width: size, height: size }}
       className={cn(
-        'animate-spin shrink-0',
+        'animate-spin shrink-0 rounded-full border-2 border-current border-t-transparent',
         variant === 'default' && 'text-muted-foreground/70',
         variant === 'brand' && 'text-dash-brand',
         variant === 'white' && 'text-primary-foreground',

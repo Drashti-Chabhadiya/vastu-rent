@@ -2,19 +2,15 @@ import { Button } from '#/components/ui/button'
 import { ArrowLeft, Video, Phone, Search } from 'lucide-react'
 import { UserAvatar } from './UserAvatar'
 import { ConversationOptionsMenu } from './ConversationOptionsMenu'
-import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { cn } from '#/lib/utils'
 import { formatLastActive } from '#/lib/chat-utils'
 import { useChatStore } from '../../../../../store/useChatStore'
 import { authClient } from '#/lib/auth/auth-client'
-import { useDeleteConversation } from '#/hook'
 
 export function ChatHeader() {
-  const navigate = useNavigate()
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
-  const deleteConversation = useDeleteConversation()
 
   const {
     conversations,
@@ -23,22 +19,13 @@ export function ChatHeader() {
     setShowConversationSearch,
     checkOnline,
     isOtherPersonTyping,
-    archiveConversation,
-    unarchiveConversation,
     setShowMobileChat,
     showDetailsPanel,
     setShowDetailsPanel,
     activePanel,
     setActivePanel,
-    // Store state and actions
     setSearchText,
     setCurrentMatchIndex,
-    hideMedia,
-    setHideMedia,
-    setRevealedMediaMsgs,
-    isMultiSelectMode,
-    setIsMultiSelectMode,
-    setSelectedMsgIds,
   } = useChatStore()
 
   const activeConversation = conversations.find(
@@ -53,20 +40,6 @@ export function ChatHeader() {
     activeConversation.otherParticipant.lastActive !== null &&
     activeConversation.otherParticipant.lastActive !== undefined
   const showOnlineStatus = canSeeStatus && otherPersonOnline
-
-  // Global settings for clear chat confirm trigger
-  const setShowClearConfirm = (_show: boolean) => {
-    // Dispatch custom event to trigger dialog or handle directly in ChatWindow.
-    // Since ChatWindow consumes clear chat from store, we can use a custom event or store state.
-    // Wait, let's see. In ChatWindow:
-    // const [showClearConfirm, setShowClearConfirm] = useState(false)
-    // We can dispatch a custom event 'open-clear-chat-dialog'
-    window.dispatchEvent(new CustomEvent('open-clear-chat-dialog'))
-  }
-
-  const setShowMediaBrowser = (_show: boolean) => {
-    window.dispatchEvent(new CustomEvent('open-media-browser-dialog'))
-  }
 
   return (
     <div
@@ -278,48 +251,7 @@ export function ChatHeader() {
           <Search size={16} />
         </Button>
 
-        <ConversationOptionsMenu
-          onViewProfile={() =>
-            navigate({
-              to: '/users/$id',
-              params: { id: activeConversation.otherParticipant.id },
-            })
-          }
-          isArchived={activeConversation.isArchived}
-          onArchive={async () => {
-            try {
-              if (activeConversation.isArchived) {
-                await unarchiveConversation(activeConversation.id)
-                toast.success('Conversation unarchived')
-              } else {
-                await archiveConversation(activeConversation.id)
-                toast.success('Conversation archived')
-              }
-            } catch {
-              toast.error('Unable to update archive status')
-            }
-          }}
-          onClearChat={() => setShowClearConfirm(true)}
-          onDelete={async () => {
-            try {
-              await deleteConversation.mutateAsync(activeConversation.id)
-              toast.success('Conversation deleted')
-            } catch {
-              toast.error('Failed to delete conversation')
-            }
-          }}
-          onToggleHideMedia={() => {
-            setHideMedia(!hideMedia)
-            setRevealedMediaMsgs([])
-          }}
-          hideMedia={hideMedia}
-          onToggleSelectMode={() => {
-            setIsMultiSelectMode(!isMultiSelectMode)
-            setSelectedMsgIds([])
-          }}
-          isMultiSelectMode={isMultiSelectMode}
-          onShowSharedMedia={() => setShowMediaBrowser(true)}
-        />
+        <ConversationOptionsMenu />
       </div>
     </div>
   )

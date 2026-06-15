@@ -32,7 +32,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuCheckboxItem,
 } from '#/components/ui/dropdown-menu'
-import { DisappearingSettingsDialog } from './DisappearingSettingsDialog'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { useChatStore } from '../../../../../store/useChatStore'
 import { toast } from 'sonner'
@@ -40,9 +39,6 @@ import { toast } from 'sonner'
 export function ConversationList() {
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
-  const [disappearingConv, setDisappearingConv] = useState<Conversation | null>(
-    null,
-  )
   const [clearChatConvId, setClearChatConvId] = useState<string | null>(null)
 
   // Consume Zustand global state
@@ -61,13 +57,13 @@ export function ConversationList() {
     togglePinConversation,
     toggleMuteConversation,
     clearChat: onClearChat,
-    setDisappearingMessages: onSetDisappearingMessages,
     setShowNewChat,
     checkOnline,
     activePanel,
     setActivePanel,
     showDetailsPanel,
     setShowDetailsPanel,
+    setDisappearingTargetConvId,
   } = useChatStore()
 
   const [sortBy, setSortBy] = useState<'recent' | 'unread' | 'name'>('recent')
@@ -136,17 +132,41 @@ export function ConversationList() {
   return (
     <div
       className={cn(
-        'w-full lg:w-[380px] shrink-0 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative',
-        showMobileChat ? 'hidden lg:flex' : 'flex',
+        'shrink-0 bg-card rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out border border-border/30',
+        showDetailsPanel
+          ? 'w-0 lg:w-[84px] p-2 hidden lg:flex'
+          : showMobileChat
+            ? 'hidden lg:flex w-full lg:w-[380px] opacity-100'
+            : 'flex w-full lg:w-[380px] opacity-100',
       )}
     >
       {/* ── Messages Header Section ── */}
-      <div className="px-6 pt-6 pb-2 shrink-0 select-none">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-slate-900 font-sans tracking-tight">
+      <div
+        className={cn(
+          'px-6 pt-6 pb-2 shrink-0 select-none',
+          showDetailsPanel && 'px-1 pt-4 pb-2 flex flex-col items-center',
+        )}
+      >
+        <div
+          className={cn(
+            'flex items-center justify-between w-full',
+            showDetailsPanel && 'flex-col gap-2 justify-center',
+          )}
+        >
+          <h1
+            className={cn(
+              'text-xl font-bold text-slate-900 font-sans tracking-tight',
+              showDetailsPanel && 'hidden',
+            )}
+          >
             Messages
           </h1>
-          <div className="flex items-center gap-1.5">
+          <div
+            className={cn(
+              'flex items-center gap-1.5',
+              showDetailsPanel && 'flex-col gap-2 justify-center',
+            )}
+          >
             {/* Sort button */}
             <Button
               variant="ghost"
@@ -157,7 +177,10 @@ export function ConversationList() {
                   `Sorting by ${sortBy === 'recent' ? 'Unread count' : 'Recent activity'}`,
                 )
               }}
-              className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors"
+              className={cn(
+                'w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors',
+                showDetailsPanel && 'hidden',
+              )}
               title="Sort chat list"
             >
               <ArrowLeftRight size={14} />
@@ -185,13 +208,20 @@ export function ConversationList() {
             </Button>
           </div>
         </div>
-        <p className="text-[11px] text-slate-500 font-medium mt-1">
+        <p
+          className={cn(
+            'text-[11px] text-slate-500 font-medium mt-1',
+            showDetailsPanel && 'hidden',
+          )}
+        >
           Stay connected and build real rapports.
         </p>
       </div>
 
       {/* Search + Filter */}
-      <div className="px-6 pb-4 pt-1 shrink-0">
+      <div
+        className={cn('px-6 pb-4 pt-1 shrink-0', showDetailsPanel && 'hidden')}
+      >
         <div className="flex items-center gap-2 mb-3">
           <div className="relative flex-1">
             <Search
@@ -372,6 +402,7 @@ export function ConversationList() {
           'pt-1',
           'space-y-1',
           'scrollbar-thin',
+          showDetailsPanel && 'px-1',
         )}
       >
         {isLoadingConversations ? (
@@ -379,10 +410,18 @@ export function ConversationList() {
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3.5 p-3.5 rounded-2xl border border-transparent"
+                className={cn(
+                  'flex items-center gap-3.5 p-3.5 rounded-2xl border border-transparent',
+                  showDetailsPanel && 'justify-center p-1.5 rounded-xl gap-0',
+                )}
               >
                 <Skeleton className="w-11 h-11 rounded-full shrink-0 bg-slate-100" />
-                <div className="flex-1 space-y-2 min-w-0">
+                <div
+                  className={cn(
+                    'flex-1 space-y-2 min-w-0',
+                    showDetailsPanel && 'hidden',
+                  )}
+                >
                   <div className="flex justify-between items-center">
                     <Skeleton className="h-4 w-28 rounded bg-slate-100" />
                     <Skeleton className="h-3 w-10 rounded bg-slate-100" />
@@ -439,10 +478,16 @@ export function ConversationList() {
                   isSelected
                     ? 'bg-[var(--card)] shadow-none'
                     : 'hover:bg-slate-50 border border-transparent',
+                  showDetailsPanel && 'justify-center gap-0 p-1.5 rounded-2xl',
                 )}
               >
                 {isSelected && (
-                  <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-[#0f513d]" />
+                  <div
+                    className={cn(
+                      'absolute right-0 top-0 bottom-0 w-[3px] bg-[#0f513d]',
+                      showDetailsPanel && 'hidden',
+                    )}
+                  />
                 )}
                 <UserAvatar
                   image={conv.otherParticipant.image}
@@ -455,7 +500,12 @@ export function ConversationList() {
                       : undefined
                   }
                 />
-                <div className="flex-1 min-w-0 flex flex-col gap-1">
+                <div
+                  className={cn(
+                    'flex-1 min-w-0 flex flex-col gap-1',
+                    showDetailsPanel && 'hidden',
+                  )}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1 min-w-0">
                       <h4
@@ -572,7 +622,7 @@ export function ConversationList() {
                           <DropdownMenuItem
                             onClick={(e) => {
                               e.stopPropagation()
-                              setDisappearingConv(conv)
+                              setDisappearingTargetConvId(conv.id)
                             }}
                             className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer"
                           >
@@ -601,16 +651,6 @@ export function ConversationList() {
         )}
       </div>
 
-      {disappearingConv && (
-        <DisappearingSettingsDialog
-          open={!!disappearingConv}
-          onOpenChange={(open) => !open && setDisappearingConv(null)}
-          currentDuration={disappearingConv.disappearingDuration}
-          onSetDuration={async (duration) => {
-            await onSetDisappearingMessages(disappearingConv.id, duration)
-          }}
-        />
-      )}
       <ReusableAlertDialog
         isOpen={!!clearChatConvId}
         onOpenChange={(open) => !open && setClearChatConvId(null)}

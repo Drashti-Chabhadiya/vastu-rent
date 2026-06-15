@@ -15,15 +15,9 @@ import {
 } from '#/components/ui/dialog'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
-import {
-  Search,
-  Loader2,
-  ArrowRight,
-  TrendingUp,
-  Package,
-  X,
-} from 'lucide-react'
+import { Search, ArrowRight, TrendingUp, Package, X } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { Skeleton } from '#/components/ui/skeleton'
 
 interface SearchDialogProps {
   open: boolean
@@ -202,11 +196,19 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                 </div>
               </div>
             ) : isLoading ? (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                <span className="text-xs text-muted-dark font-bold">
-                  Searching catalogue...
-                </span>
+              <div className="divide-y divide-border/30">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-full px-6 py-4 flex items-center gap-4 border-b border-border/30 last:border-b-0"
+                  >
+                    <Skeleton className="h-11 w-11 rounded-full shrink-0" />
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <Skeleton className="h-3 w-1/3 rounded" />
+                      <Skeleton className="h-2.5 w-2/3 rounded" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : filteredProducts && filteredProducts.length > 0 ? (
               <div className="divide-y divide-border/30">

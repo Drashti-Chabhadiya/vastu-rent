@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import EmojiPicker, { EmojiStyle } from 'emoji-picker-react'
 import {
   CornerUpLeft,
@@ -14,53 +14,49 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
 import { useChatStore } from '../../../../../store/useChatStore'
+import { useUploadChatFile } from '#/hook'
+import { useAudioRecorder } from '../hooks/useAudioRecorder'
+import { buildReplyContent } from '#/lib/chat-utils'
 
-interface ChatInputDockProps {
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
-  handleSend: () => void
-  fileInputRef: React.RefObject<HTMLInputElement | null>
-  handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void
-  isRecording: boolean
-  recordingSeconds: number
-  isSimulatedRecording: boolean
-  handleStartRecording: () => void
-  handleCancelRecording: () => void
-  handleStopAndSendRecording: () => void
-  inputRef: React.RefObject<HTMLInputElement | null>
-}
+export function ChatInputDock() {
+  const uploadChatFile = useUploadChatFile()
 
-export function ChatInputDock({
-  handleInputChange,
-  handleKeyDown,
-  handleSend,
-  fileInputRef,
-  handleFileSelect,
-  isRecording,
-  recordingSeconds,
-  isSimulatedRecording,
-  handleStartRecording,
-  handleCancelRecording,
-  handleStopAndSendRecording,
-  inputRef,
-}: ChatInputDockProps) {
   const {
     isConnected,
     isUploading,
+    setIsUploading,
     inputText,
     setInputText,
     showEmojiPicker,
     setShowEmojiPicker,
     pendingFiles,
     pendingPreviews,
+    addPendingFiles,
+    addPendingPreviews,
     removeFile,
+    clearAttachments,
     replyTarget,
     setReplyTarget,
     conversations,
     activeConversationId,
     currentUserId,
     unblockConversation,
+    sendMessage,
+    emitTyping,
   } = useChatStore()
+
+  const {
+    isRecording,
+    recordingSeconds,
+    isSimulatedRecording,
+    startRecording: handleStartRecording,
+    cancelRecording: handleCancelRecording,
+    stopAndSendRecording: handleStopAndSendRecording,
+  } = useAudioRecorder()
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const activeConversation = conversations.find(
     (c) => c.id === activeConversationId,
@@ -71,6 +67,75 @@ export function ChatInputDock({
   const isBlockedByOther = activeConversation?.blockedBy?.some(
     (uid) => uid !== currentUserId,
   )
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value)
+    emitTyping(true)
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    typingTimeoutRef.current = setTimeout(() => emitTyping(false), 2000)
+  }
+
+  const handleSend = async () => {
+    const hasText = inputText.trim().length > 0
+    const hasFiles = pendingFiles.length > 0
+    if (!hasText && !hasFiles) return
+    if (!activeConversationId) {
+      toast.error('Please select a conversation first')
+      return
+    }
+
+    setIsUploading(true)
+    try {
+      // 1. Upload any pending file attachments
+      let uploadedUrls: string[] = []
+      if (hasFiles) {
+        const uploads = await Promise.all(
+          pendingFiles.map(async (file) => {
+            return await uploadChatFile.mutateAsync(file)
+          }),
+        )
+        uploadedUrls = uploads
+      }
+
+      // 2. Build final message content
+      const finalContent = replyTarget
+        ? buildReplyContent(replyTarget.content, inputText.trim())
+        : inputText.trim()
+
+      // 3. Send via socket
+      sendMessage(finalContent, uploadedUrls)
+
+      // 4. Reset state
+      setInputText('')
+      setReplyTarget(null)
+      clearAttachments()
+      emitTyping(false)
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Failed to upload attachment')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+    // Limit to 5 images
+    const allowed = files.slice(0, 5 - pendingFiles.length)
+    const newPreviews = allowed.map((f) => URL.createObjectURL(f))
+    addPendingFiles(allowed)
+    addPendingPreviews(newPreviews)
+    // Reset input so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
 
   return (
     <div className={cn('border-t border-border/30 bg-card shrink-0')}>

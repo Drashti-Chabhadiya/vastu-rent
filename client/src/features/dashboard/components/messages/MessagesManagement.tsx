@@ -4,6 +4,7 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { useChat } from '#/hook'
 import { NewChatDialog } from './components/NewChatDialog'
+import { DisappearingSettingsDialog } from './components/DisappearingSettingsDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
 import { AboutPanel } from './components/AboutPanel'
@@ -128,6 +129,7 @@ export const MessagesManagement = () => {
 
       {/* ── New Message Dialog ── */}
       <NewChatDialog />
+      <DisappearingSettingsDialog />
 
       {/* ── Image Lightbox Modal ── */}
       {showLightbox && lightboxImages.length > 0 && (

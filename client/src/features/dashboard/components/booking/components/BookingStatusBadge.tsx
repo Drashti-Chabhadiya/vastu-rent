@@ -1,16 +1,6 @@
 import { Badge } from '#/components/ui/badge'
 import { cn } from '#/lib/utils'
-
-type BookingGroup = 'upcoming' | 'ongoing' | 'completed' | 'cancelled'
-
-export function getBookingGroup(status: string): BookingGroup {
-  const s = status.toLowerCase()
-  if (s === 'pending' || s === 'confirmed') return 'upcoming'
-  if (s === 'picked_up' || s === 'in_use') return 'ongoing'
-  if (s === 'returned' || s === 'completed') return 'completed'
-  if (s === 'cancelled' || s === 'rejected') return 'cancelled'
-  return 'upcoming'
-}
+import { getBookingGroup } from '#/lib/booking-utils'
 
 interface BookingStatusBadgeProps {
   status: string

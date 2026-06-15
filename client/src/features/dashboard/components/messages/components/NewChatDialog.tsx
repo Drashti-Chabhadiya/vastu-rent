@@ -7,8 +7,9 @@ import {
 } from '#/components/ui/dialog'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
-import { Search, MessageSquare, UserPlus, Loader2, Leaf } from 'lucide-react'
+import { Search, MessageSquare, UserPlus, Leaf } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { Skeleton } from '#/components/ui/skeleton'
 import { useSearchChatUsers, useCreateConversation } from '#/hook'
 import { toast } from 'sonner'
 import { UserAvatar } from './UserAvatar'
@@ -145,13 +146,20 @@ export function NewChatDialog() {
           )}
         >
           {isSearchingUsers ? (
-            <div
-              className={cn('flex', 'items-center', 'justify-center', 'py-8')}
-            >
-              <Loader2
-                size={18}
-                className={cn('animate-spin', 'text-primary')}
-              />
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="w-full flex items-center gap-3 p-3 rounded-2xl"
+                >
+                  <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+                  <div className="flex-1 space-y-1.5 min-w-0">
+                    <Skeleton className="h-3.5 w-1/3 rounded" />
+                    <Skeleton className="h-2.5 w-1/4 rounded" />
+                  </div>
+                  <Skeleton className="w-10 h-5 rounded-lg shrink-0" />
+                </div>
+              ))}
             </div>
           ) : userResults.length === 0 ? (
             <div
@@ -231,10 +239,7 @@ export function NewChatDialog() {
                   </p>
                 </div>
                 {startingChatWith === u.id ? (
-                  <Loader2
-                    size={14}
-                    className={cn('animate-spin', 'text-primary', 'shrink-0')}
-                  />
+                  <span className="w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
                 ) : (
                   <span
                     className={cn(

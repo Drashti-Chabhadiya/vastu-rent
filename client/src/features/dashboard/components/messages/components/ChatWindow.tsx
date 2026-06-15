@@ -3,8 +3,6 @@ import { Clock } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
-import { useUploadChatFile } from '#/hook'
-import type { Message } from '../../../../../hook/use-chat'
 import { TypingBubble } from './TypingBubble'
 import { useChatStore } from '../../../../../store/useChatStore'
 import { Skeleton } from '#/components/ui/skeleton'
@@ -12,23 +10,18 @@ import { ForwardDialog } from './ForwardDialog'
 import { MessageInfoDialog } from './MessageInfoDialog'
 import { MediaBrowserDialog } from './MediaBrowserDialog'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
-import {
-  buildReplyContent,
-  getDisappearingDurationText,
-} from '#/lib/chat-utils'
+import { getDisappearingDurationText } from '#/lib/chat-utils'
 import { ChatHeader } from './ChatHeader'
 import { SearchPanel } from './SearchPanel'
 import { MultiSelectBar } from './MultiSelectBar'
 import { PinnedMessageBanner } from './PinnedMessageBanner'
 import { MessageItem } from './MessageItem'
 import { ChatInputDock } from './ChatInputDock'
-import { useAudioRecorder } from '../hooks/useAudioRecorder'
 import { DeleteMessageDialog } from './DeleteMessageDialog'
 import { EmojiReactDialog } from './EmojiReactDialog'
 import { MessageEmptyState } from './MessageEmptyState'
 
 export function ChatWindow() {
-  const uploadChatFile = useUploadChatFile()
   const [showClearConfirm, setShowClearConfirm] = useState(false)
 
   // Consume Zustand global state
@@ -39,21 +32,9 @@ export function ChatWindow() {
     isLoadingMessages,
     isOtherPersonTyping,
     currentUserId,
-    sendMessage,
-    emitTyping,
     clearChat: onClearChat,
-    togglePinMessage,
-    forwardMessage,
     showMobileChat,
-    replyTarget,
-    setReplyTarget,
-    pendingFiles,
-    addPendingFiles,
-    addPendingPreviews,
-    clearAttachments,
-    inputText,
-    setInputText,
-    setIsUploading,
+    showDetailsPanel,
     chatWallpaper,
     isMultiSelectMode,
     setIsMultiSelectMode,
@@ -65,12 +46,7 @@ export function ChatWindow() {
     setCurrentMatchIndex,
     showConversationSearch,
     setShowConversationSearch,
-    forwardTargetId,
-    showForwardDialog,
-    setShowForwardDialog,
-    infoTargetMsg,
-    showInfoDialog,
-    setShowInfoDialog,
+    setShowMediaBrowser,
   } = useChatStore()
 
   const wallpaperClasses: Record<
@@ -93,21 +69,8 @@ export function ChatWindow() {
     wallpaperClasses.classic
 
   // Local Component Refs
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const prevConversationIdRef = useRef<string | null>(null)
-  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Audio recording custom hook
-  const {
-    isRecording,
-    recordingSeconds,
-    isSimulatedRecording,
-    startRecording,
-    cancelRecording,
-    stopAndSendRecording,
-  } = useAudioRecorder()
 
   // Custom event listeners for communication with Header / other parts
   useEffect(() => {
@@ -121,22 +84,7 @@ export function ChatWindow() {
       window.removeEventListener('open-clear-chat-dialog', handleOpenClearChat)
       window.removeEventListener('open-media-browser-dialog', handleOpenMedia)
     }
-  }, [])
-
-  // Shared Media Browser state
-  const [showMediaBrowser, setShowMediaBrowser] = useState(false)
-
-  useEffect(() => {
-    const handleScrollToMsg = (e: any) => {
-      if (e.detail && e.detail.messageId) {
-        scrollToMessage(e.detail.messageId)
-      }
-    }
-    window.addEventListener('scroll-to-chat-msg', handleScrollToMsg)
-    return () => {
-      window.removeEventListener('scroll-to-chat-msg', handleScrollToMsg)
-    }
-  }, [messages])
+  }, [setShowMediaBrowser])
 
   // Auto-scroll to bottom when messages change or conversation switches
   useEffect(() => {
@@ -151,95 +99,6 @@ export function ChatWindow() {
     prevConversationIdRef.current = activeConversationId
   }, [messages, isOtherPersonTyping, activeConversationId])
 
-  // ── Handle typing indicator ──────────────────────────────────────────────
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(e.target.value)
-    emitTyping(true)
-    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
-    typingTimeoutRef.current = setTimeout(() => emitTyping(false), 2000)
-  }
-
-  // ── Handle send ──────────────────────────────────────────────────────────
-  const handleSend = async () => {
-    const hasText = inputText.trim().length > 0
-    const hasFiles = pendingFiles.length > 0
-    if (!hasText && !hasFiles) return
-    if (!activeConversationId) {
-      toast.error('Please select a conversation first')
-      return
-    }
-
-    setIsUploading(true)
-    try {
-      // 1. Upload any pending file attachments
-      let uploadedUrls: string[] = []
-      if (hasFiles) {
-        const uploads = await Promise.all(
-          pendingFiles.map(async (file) => {
-            return await uploadChatFile.mutateAsync(file)
-          }),
-        )
-        uploadedUrls = uploads
-      }
-
-      // 2. Build final message content
-      const finalContent = replyTarget
-        ? buildReplyContent(replyTarget.content, inputText.trim())
-        : inputText.trim()
-
-      // 3. Send via socket
-      sendMessage(finalContent, uploadedUrls)
-
-      // 4. Reset state
-      setInputText('')
-      setReplyTarget(null)
-      clearAttachments()
-      emitTyping(false)
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || 'Failed to upload attachment')
-    } finally {
-      setIsUploading(false)
-    }
-  }
-
-  // ── Handle file selection ─────────────────────────────────────────
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    if (files.length === 0) return
-    // Limit to 5 images
-    const allowed = files.slice(0, 5 - pendingFiles.length)
-    const newPreviews = allowed.map((f) => URL.createObjectURL(f))
-    addPendingFiles(allowed)
-    addPendingPreviews(newPreviews)
-    // Reset input so same file can be re-selected
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
-  }
-
-  const scrollToMessage = (msgId: string) => {
-    const el = document.getElementById(`msg-${msgId}`)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      el.classList.add('bg-yellow-200/40', 'transition-all', 'duration-500')
-      setTimeout(() => {
-        el.classList.remove('bg-yellow-200/40')
-      }, 2000)
-    }
-  }
-
-  // Pinned messages banner calculation
-  const pinnedMessages = messages.filter(
-    (m) => !m.isDeleted && m.pinnedBy && m.pinnedBy.length > 0,
-  )
-  const activePinnedMessage = pinnedMessages[pinnedMessages.length - 1] || null
-
   // Reset search, multi-select, and revealed media messages on conversation change
   useEffect(() => {
     setShowConversationSearch(false)
@@ -250,14 +109,28 @@ export function ChatWindow() {
     setRevealedMediaMsgs([])
     setActiveReactMsgId(null)
     setFullReactMsgId(null)
-  }, [activeConversation?.id])
+  }, [
+    activeConversation?.id,
+    setShowConversationSearch,
+    setSearchText,
+    setCurrentMatchIndex,
+    setIsMultiSelectMode,
+    setSelectedMsgIds,
+    setRevealedMediaMsgs,
+    setActiveReactMsgId,
+    setFullReactMsgId,
+  ])
 
   if (!activeConversation) {
     return (
       <div
         className={cn(
-          'flex-1 bg-background border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative',
-          !showMobileChat ? 'hidden lg:flex' : 'flex',
+          'flex-1 bg-background border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out',
+          showDetailsPanel
+            ? 'hidden lg:flex'
+            : !showMobileChat
+              ? 'hidden lg:flex'
+              : 'flex',
         )}
       >
         <div className="flex-1 overflow-y-auto flex items-center justify-center p-6 bg-transparent scrollbar-none">
@@ -268,7 +141,7 @@ export function ChatWindow() {
   }
 
   // ── Group messages by date ───────────────────────────────────────────────
-  const groupedMessages = messages.reduce<{ date: string; msgs: Message[] }[]>(
+  const groupedMessages = messages.reduce<{ date: string; msgs: any[] }[]>(
     (groups, msg) => {
       const dateKey = format(new Date(msg.createdAt), 'dd MMM yyyy')
       const last = groups[groups.length - 1]
@@ -285,8 +158,12 @@ export function ChatWindow() {
   return (
     <div
       className={cn(
-        'flex-1 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative',
-        !showMobileChat ? 'hidden lg:flex' : 'flex',
+        'flex-1 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out',
+        showDetailsPanel
+          ? 'hidden lg:flex'
+          : !showMobileChat
+            ? 'hidden lg:flex'
+            : 'flex',
       )}
     >
       <ChatHeader />
@@ -295,13 +172,7 @@ export function ChatWindow() {
 
       {isMultiSelectMode && <MultiSelectBar />}
 
-      {activePinnedMessage && (
-        <PinnedMessageBanner
-          activePinnedMessage={activePinnedMessage}
-          togglePinMessage={togglePinMessage}
-          scrollToMessage={scrollToMessage}
-        />
-      )}
+      <PinnedMessageBanner />
 
       {/* Disappearing Messages Info Banner */}
       {activeConversation.disappearingDuration
@@ -397,18 +268,9 @@ export function ChatWindow() {
               </div>
 
               {/* Messages */}
-              {group.msgs.map((msg) => {
-                const isMe = msg.senderId === currentUserId
-
-                return (
-                  <MessageItem
-                    key={msg.id}
-                    msg={msg}
-                    isMe={isMe}
-                    otherParticipant={activeConversation.otherParticipant}
-                  />
-                )
-              })}
+              {group.msgs.map((msg) => (
+                <MessageItem key={msg.id} msg={msg} />
+              ))}
             </div>
           ))
         )}
@@ -422,43 +284,14 @@ export function ChatWindow() {
         )}
       </div>
 
-      <ChatInputDock
-        handleInputChange={handleInputChange}
-        handleKeyDown={handleKeyDown}
-        handleSend={handleSend}
-        fileInputRef={fileInputRef}
-        handleFileSelect={handleFileSelect}
-        isRecording={isRecording}
-        recordingSeconds={recordingSeconds}
-        isSimulatedRecording={isSimulatedRecording}
-        handleStartRecording={startRecording}
-        handleCancelRecording={cancelRecording}
-        handleStopAndSendRecording={stopAndSendRecording}
-        inputRef={inputRef}
-      />
+      <ChatInputDock />
 
       {/* Dialogue windows */}
-      <ForwardDialog
-        open={showForwardDialog}
-        onOpenChange={setShowForwardDialog}
-        messageId={forwardTargetId}
-        conversations={conversations}
-        onForward={(messageId, targetConversationIds) =>
-          forwardMessage({ messageId, targetConversationIds })
-        }
-      />
+      <ForwardDialog />
 
-      <MessageInfoDialog
-        open={showInfoDialog}
-        onOpenChange={setShowInfoDialog}
-        message={infoTargetMsg}
-      />
+      <MessageInfoDialog />
 
-      <MediaBrowserDialog
-        open={showMediaBrowser}
-        onOpenChange={setShowMediaBrowser}
-        messages={messages}
-      />
+      <MediaBrowserDialog />
 
       <EmojiReactDialog />
       <DeleteMessageDialog />

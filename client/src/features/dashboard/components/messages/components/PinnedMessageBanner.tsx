@@ -1,22 +1,33 @@
 import { Button } from '#/components/ui/button'
 import { Pin, X } from 'lucide-react'
 import { parseMessage } from '#/lib/chat-utils'
+import { useChatStore } from '../../../../../store/useChatStore'
 
-interface PinnedMessageBannerProps {
-  activePinnedMessage: any
-  togglePinMessage: (id: string) => Promise<void>
-  scrollToMessage: (id: string) => void
-}
+export function PinnedMessageBanner() {
+  const { messages, togglePinMessage } = useChatStore()
 
-export function PinnedMessageBanner({
-  activePinnedMessage,
-  togglePinMessage,
-  scrollToMessage,
-}: PinnedMessageBannerProps) {
+  const pinnedMessages = messages.filter(
+    (m) => !m.isDeleted && m.pinnedBy && m.pinnedBy.length > 0,
+  )
+  const activePinnedMessage = pinnedMessages[pinnedMessages.length - 1] || null
+
+  if (!activePinnedMessage) return null
+
+  const handleScrollToMessage = () => {
+    const el = document.getElementById(`msg-${activePinnedMessage.id}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('bg-yellow-200/40', 'transition-all', 'duration-500')
+      setTimeout(() => {
+        el.classList.remove('bg-yellow-200/40')
+      }, 2000)
+    }
+  }
+
   return (
     <div className="bg-[#f4f9f3] border-b border-[#dcebd8] px-6 py-3 flex items-center justify-between gap-3 shrink-0 animate-in slide-in-from-top duration-200">
       <div
-        onClick={() => scrollToMessage(activePinnedMessage.id)}
+        onClick={handleScrollToMessage}
         className="flex items-center gap-3 cursor-pointer min-w-0 flex-1 hover:opacity-90"
       >
         <Pin

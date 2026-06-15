@@ -23,6 +23,11 @@ import {
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import {
+  formatStayDates,
+  formatPostedDate,
+  parseCommentImagesAndReply,
+} from '#/lib/review-utils'
 
 // Custom StarRating component to handle full stars, fractional stars (half-filled), and empty stars high-fidelity
 const StarRating = ({ rating }: { rating: number }) => {
@@ -65,98 +70,6 @@ const StarRating = ({ rating }: { rating: number }) => {
       })}
     </div>
   )
-}
-
-// Custom Date Formatters to match screenshot layout exactly (DD Month - DD Month YYYY) across all systems
-const formatStayDates = (createdAtStr: string) => {
-  if (!createdAtStr) return '20 May – 27 May 2024'
-  const createdDate = new Date(createdAtStr)
-  if (isNaN(createdDate.getTime())) return '20 May – 27 May 2024'
-
-  // Stay start is calculated as 9 days prior to the review submission
-  const startDate = new Date(createdDate.getTime())
-  startDate.setDate(startDate.getDate() - 9)
-
-  // Stay end is calculated as 2 days prior to the review submission
-  const endDate = new Date(createdDate.getTime())
-  endDate.setDate(endDate.getDate() - 2)
-
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
-
-  const startDay = startDate.getDate().toString()
-  const startMonth = months[startDate.getMonth()]
-
-  const endDay = endDate.getDate().toString()
-  const endMonth = months[endDate.getMonth()]
-  const endYear = endDate.getFullYear()
-
-  return `${startDay} ${startMonth} – ${endDay} ${endMonth} ${endYear}`
-}
-
-const formatPostedDate = (createdAtStr: string) => {
-  if (!createdAtStr) return '29 May 2024'
-  const date = new Date(createdAtStr)
-  if (isNaN(date.getTime())) return '29 May 2024'
-
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ]
-  const day = date.getDate()
-  const month = months[date.getMonth()]
-  const year = date.getFullYear()
-
-  return `${day} ${month} ${year}`
-}
-
-const parseCommentImagesAndReply = (comment: string) => {
-  if (!comment) return { text: '', images: [], reply: '' }
-
-  let images: string[] = []
-  const imagesMatch = comment.match(/\[Images:\s*([^\]]+)\]/)
-  if (imagesMatch) {
-    const imagesStr = imagesMatch[1]
-    images = imagesStr
-      .split(',')
-      .map((img: string) => img.trim())
-      .filter(Boolean)
-  }
-
-  let reply = ''
-  const replyMatch = comment.match(/\[Reply:\s*([^\]]+)\]/)
-  if (replyMatch) {
-    reply = replyMatch[1].trim()
-  }
-
-  const text = comment
-    .replace(/\[Images:\s*([^\]]+)\]/, '')
-    .replace(/\[Reply:\s*([^\]]+)\]/, '')
-    .trim()
-
-  return { text, images, reply }
 }
 
 export const ReviewsManagement = () => {

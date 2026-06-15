@@ -1,12 +1,4 @@
-import {
-  Bell,
-  Search,
-  ShoppingCart,
-  CreditCard,
-  AlertCircle,
-  CheckCheck,
-  Info,
-} from 'lucide-react'
+import { Bell, Search, CheckCheck } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
@@ -27,47 +19,12 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
 import { isUserRole } from '#/lib/auth/roles'
+import { formatNumericDate } from '#/lib/date-utils'
+import {
+  getNotificationIcon,
+  getNotificationColorClasses,
+} from '#/lib/notification-utils'
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-function getIcon(type: string) {
-  switch (type) {
-    case 'booking':
-      return ShoppingCart
-    case 'payment':
-      return CreditCard
-    case 'alert':
-      return AlertCircle
-    case 'info':
-      return Info
-    default:
-      return Bell
-  }
-}
-
-function getIconColors(type: string) {
-  switch (type) {
-    case 'booking':
-      return 'bg-primary-soft text-primary'
-    case 'payment':
-      return 'bg-warning text-warning-foreground'
-    case 'alert':
-      return 'bg-danger text-danger-foreground'
-    case 'info':
-      return 'bg-info text-info-foreground'
-    default:
-      return 'bg-muted-light text-muted-dark'
-  }
-}
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
-
-// ─── Main Component ───────────────────────────────────────────────────────────
 export const NotificationsManagement = () => {
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
@@ -354,8 +311,8 @@ export const NotificationsManagement = () => {
               </div>
             ) : (
               paginatedNotifs.map((notif) => {
-                const Icon = getIcon(notif.type)
-                const colorCls = getIconColors(notif.type)
+                const Icon = getNotificationIcon(notif.type)
+                const colorCls = getNotificationColorClasses(notif.type)
                 return (
                   <div
                     key={notif.id}
@@ -419,7 +376,7 @@ export const NotificationsManagement = () => {
                         'ml-4',
                       )}
                     >
-                      {formatDate(notif.createdAt)}
+                      {formatNumericDate(notif.createdAt)}
                     </span>
                   </div>
                 )

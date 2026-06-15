@@ -45,11 +45,9 @@ import { authClient } from '#/lib/auth/auth-client'
 
 interface MessageItemProps {
   msg: any
-  isMe: boolean
-  otherParticipant: any
 }
 
-export function MessageItem({ msg, isMe, otherParticipant }: MessageItemProps) {
+export function MessageItem({ msg }: MessageItemProps) {
   const { data: session } = authClient.useSession()
   const {
     currentUserId,
@@ -104,6 +102,11 @@ export function MessageItem({ msg, isMe, otherParticipant }: MessageItemProps) {
   const activeConversation = conversations.find(
     (c) => c.id === activeConversationId,
   )
+  const otherParticipant = activeConversation?.otherParticipant || {
+    name: 'Them',
+    image: '',
+  }
+  const isMe = msg.senderId === currentUserId
 
   const handleReplyInternal = (m: any, me: boolean) => {
     const { text } = parseMessage(m.content)
