@@ -259,7 +259,10 @@ export function AccountLayout() {
                 </svg>
 
                 <div className="relative z-10 flex flex-col items-start gap-2">
-                  <Leaf size={16} className="text-primary fill-primary/10 shrink-0" />
+                  <Leaf
+                    size={16}
+                    className="text-primary fill-primary/10 shrink-0"
+                  />
                   <div>
                     <h4 className="font-display font-black text-foreground text-[13px] tracking-tight leading-tight">
                       Grow your bookings
@@ -272,7 +275,8 @@ export function AccountLayout() {
                     to="/help"
                     className="text-primary text-[10px] font-black flex items-center gap-0.5 mt-1.5 hover:opacity-80 transition-opacity"
                   >
-                    View impact <ChevronRight size={9} strokeWidth={3} className="mt-0.5" />
+                    View impact{' '}
+                    <ChevronRight size={9} strokeWidth={3} className="mt-0.5" />
                   </Link>
                 </div>
               </div>
@@ -286,12 +290,12 @@ export function AccountLayout() {
               className="flex-1 min-w-0 w-full"
             >
               {activeTab === 'personal' ||
-                activeTab === 'bookings' ||
-                activeTab === 'listings' ||
-                activeTab === 'reviews' ||
-                activeTab === 'messages' ||
-                activeTab === 'notifications' ||
-                activeTab === 'settings' ? (
+              activeTab === 'bookings' ||
+              activeTab === 'listings' ||
+              activeTab === 'reviews' ||
+              activeTab === 'messages' ||
+              activeTab === 'notifications' ||
+              activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

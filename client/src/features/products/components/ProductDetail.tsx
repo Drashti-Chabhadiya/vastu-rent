@@ -86,11 +86,7 @@ export function ProductDetail({ id }: { id: string }) {
     const params = new URLSearchParams(window.location.search)
     if (params.get('payment_cancelled') === 'true') {
       toast.error('Payment was cancelled. You can try booking again.')
-      window.history.replaceState(
-        {},
-        document.title,
-        window.location.pathname,
-      )
+      window.history.replaceState({}, document.title, window.location.pathname)
     }
   }, [])
 
@@ -245,9 +241,11 @@ export function ProductDetail({ id }: { id: string }) {
 
       // 2. For online payment — redirect to Stripe/Simulated checkout session
       if (paymentMethod === 'online') {
-        const session = await createBookingSession.mutateAsync({ rentalId: rental.id })
-        if (session?.url) {
-          window.location.href = session.url
+        const bookingSession = await createBookingSession.mutateAsync({
+          rentalId: rental.id,
+        })
+        if (bookingSession?.url) {
+          window.location.href = bookingSession.url
           return
         }
       }
@@ -351,7 +349,9 @@ export function ProductDetail({ id }: { id: string }) {
               product={product}
               productInfo={productInfo}
               handleRentNow={handleRentNow}
-              createRentalIsPending={createRental.isPending || confirmPayment.isPending}
+              createRentalIsPending={
+                createRental.isPending || confirmPayment.isPending
+              }
               handleApplyCoupon={handleApplyCoupon}
               handleRemoveCoupon={handleRemoveCoupon}
               applyCouponIsPending={applyCoupon.isPending}

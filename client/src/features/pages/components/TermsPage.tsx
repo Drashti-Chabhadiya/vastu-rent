@@ -352,7 +352,10 @@ export function TermsPage() {
                 </CollapsibleContent>
 
                 {/* Trigger Toggle */}
-                <motion.div variants={fadeUp} className="flex justify-center pt-4">
+                <motion.div
+                  variants={fadeUp}
+                  className="flex justify-center pt-4"
+                >
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="outline"

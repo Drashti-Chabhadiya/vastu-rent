@@ -1,5 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { CheckCircle2, Calendar, CreditCard, Banknote, ArrowRight } from 'lucide-react'
+import {
+  CheckCircle2,
+  Calendar,
+  CreditCard,
+  Banknote,
+  ArrowRight,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { motion, AnimatePresence } from 'motion/react'
 
@@ -46,16 +52,26 @@ export const BookingConfirmationModal = ({
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ delay: 0.15, duration: 0.4, type: 'spring', bounce: 0.5 }}
+                transition={{
+                  delay: 0.15,
+                  duration: 0.4,
+                  type: 'spring',
+                  bounce: 0.5,
+                }}
                 className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4"
               >
-                <CheckCircle2 className="w-9 h-9 text-white" strokeWidth={2.5} />
+                <CheckCircle2
+                  className="w-9 h-9 text-white"
+                  strokeWidth={2.5}
+                />
               </motion.div>
               <h3 className="text-xl font-black text-white leading-tight">
                 Booking Confirmed!
               </h3>
               <p className="text-white/75 text-sm mt-1 font-medium">
-                {isCash ? 'Your request has been sent to the lister.' : 'Payment received & booking confirmed.'}
+                {isCash
+                  ? 'Your request has been sent to the lister.'
+                  : 'Payment received & booking confirmed.'}
               </p>
             </div>
 
@@ -63,8 +79,12 @@ export const BookingConfirmationModal = ({
             <div className="px-7 py-6 space-y-4">
               {/* Product name */}
               <div className="text-center">
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Item Rented</p>
-                <p className="text-base font-black text-foreground mt-1 leading-snug">{productTitle}</p>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Item Rented
+                </p>
+                <p className="text-base font-black text-foreground mt-1 leading-snug">
+                  {productTitle}
+                </p>
               </div>
 
               <div className="h-px bg-border/40" />
@@ -74,9 +94,16 @@ export const BookingConfirmationModal = ({
                 <div className="flex items-center gap-3 bg-muted-light rounded-2xl px-4 py-3">
                   <Calendar className="w-4 h-4 text-primary shrink-0" />
                   <div className="text-xs font-bold text-foreground">
-                    {startDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
+                    {startDate.toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short',
+                    })}
                     {' → '}
-                    {endDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    {endDate.toLocaleDateString('en-IN', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
                   </div>
                 </div>
               )}
@@ -96,14 +123,17 @@ export const BookingConfirmationModal = ({
                     ₹{totalPrice.toLocaleString()}
                   </p>
                 </div>
-                <span className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${isCash ? 'bg-warning/20 text-warning-foreground' : 'bg-primary-soft text-primary'}`}>
+                <span
+                  className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${isCash ? 'bg-warning/20 text-warning-foreground' : 'bg-primary-soft text-primary'}`}
+                >
                   {isCash ? 'Pay at pickup' : 'Paid'}
                 </span>
               </div>
 
               {isCash && (
                 <p className="text-[11px] text-muted-foreground text-center leading-relaxed font-medium">
-                  The lister will confirm your request. You'll be notified once approved.
+                  The lister will confirm your request. You'll be notified once
+                  approved.
                 </p>
               )}
             </div>

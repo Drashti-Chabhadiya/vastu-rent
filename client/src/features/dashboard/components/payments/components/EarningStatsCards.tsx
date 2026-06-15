@@ -70,7 +70,8 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
                 {card.title}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                {card.isCount ? '' : '₹'}{card.value.toLocaleString()}
+                {card.isCount ? '' : '₹'}
+                {card.value.toLocaleString()}
               </h3>
               <span
                 className={`text-[9px] font-bold text-muted-dark block ${card.descClass || ''}`}

@@ -32,6 +32,7 @@ import { useUploadProfileImage, useUpdateUserSettings } from '#/hook'
 import { useQueryClient, useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { cn } from '#/lib/utils'
+
 type SubScreen =
   | 'main'
   | 'profile'
@@ -80,7 +81,8 @@ export function MySettingsPanel({
   } = useChatStore()
 
   // Mutations
-  const { mutateAsync: uploadImage, isPending: isUploadingImage } = useUploadProfileImage()
+  const { mutateAsync: uploadImage, isPending: isUploadingImage } =
+    useUploadProfileImage()
   const { mutateAsync: updateSettings } = useUpdateUserSettings()
 
   // Local state for editing Name & Bio
@@ -107,7 +109,9 @@ export function MySettingsPanel({
   useEffect(() => {
     if (session?.user) {
       setNameValue(session.user.name || '')
-      setBioValue((session.user as any).bio || 'Hey there! I am using VastuRent.')
+      setBioValue(
+        (session.user as any).bio || 'Hey there! I am using VastuRent.',
+      )
     }
   }, [session])
 
@@ -212,7 +216,10 @@ export function MySettingsPanel({
     const docSize = docCount * 1.1
     const totalSize = parseFloat((mediaSize + audioSize + docSize).toFixed(2))
     const limitMB = 15360
-    const usedPercent = Math.min(parseFloat(((totalSize / limitMB) * 100).toFixed(3)) + 0.05, 100)
+    const usedPercent = Math.min(
+      parseFloat(((totalSize / limitMB) * 100).toFixed(3)) + 0.05,
+      100,
+    )
 
     return {
       totalSize,
@@ -236,7 +243,14 @@ export function MySettingsPanel({
 
   if (!session?.user) {
     return (
-      <div className={cn("flex items-center justify-center h-full bg-[#fbf9f4]", !isEmbedded ? "w-[320px] shrink-0 border-l border-slate-200/80" : "flex-1")}>
+      <div
+        className={cn(
+          'flex items-center justify-center h-full bg-[#fbf9f4]',
+          !isEmbedded
+            ? 'w-[320px] shrink-0 border-l border-slate-200/80'
+            : 'flex-1',
+        )}
+      >
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     )
@@ -260,8 +274,12 @@ export function MySettingsPanel({
   }
 
   return (
-    <div className={cn("flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-[#fbf9f4]", !isEmbedded && "w-[320px] shrink-0 border-l border-slate-200/80")}>
-
+    <div
+      className={cn(
+        'flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-[#fbf9f4]',
+        !isEmbedded && 'w-[320px] shrink-0 border-l border-slate-200/80',
+      )}
+    >
       {/* ── HEADER ── */}
       {(!isEmbedded || subScreen !== 'main') && (
         <div className="bg-[#0d4d38] px-4 py-5 flex items-center gap-4 text-white shrink-0 shadow-sm">
@@ -274,14 +292,19 @@ export function MySettingsPanel({
             <ArrowLeft size={18} strokeWidth={2.5} />
           </Button>
           <h3 className="text-[15px] font-bold text-white capitalize leading-none font-display">
-            {subScreen === 'main' ? 'Settings' : subScreen === 'invite' ? 'Invite a friend' : subScreen === 'storage' ? 'Storage and data' : subScreen}
+            {subScreen === 'main'
+              ? 'Settings'
+              : subScreen === 'invite'
+                ? 'Invite a friend'
+                : subScreen === 'storage'
+                  ? 'Storage and data'
+                  : subScreen}
           </h3>
         </div>
       )}
 
       {/* ── SCROLLABLE VIEWS ── */}
       <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4">
-
         {/* ── 1. MAIN SCREEN VIEW ── */}
         {subScreen === 'main' && (
           <div className="flex flex-col gap-4 animate-fade-in">
@@ -290,7 +313,11 @@ export function MySettingsPanel({
               onClick={() => setSubScreen('profile')}
               className="flex items-center gap-4 bg-white/70 border border-slate-200/30 rounded-2xl p-4 shadow-sm hover:bg-slate-50/70 transition-all cursor-pointer group"
             >
-              <UserAvatar image={user.image} name={user.name} size="sidebar-large" />
+              <UserAvatar
+                image={user.image}
+                name={user.name}
+                size="sidebar-large"
+              />
               <div className="flex-1 min-w-0">
                 <h4 className="text-[13px] font-black text-slate-800 group-hover:text-primary transition-colors truncate">
                   {user.name}
@@ -304,7 +331,6 @@ export function MySettingsPanel({
 
             {/* Settings Options List */}
             <div className="bg-white/70 border border-slate-200/30 rounded-2xl overflow-hidden shadow-xs flex flex-col">
-
               {/* Account settings */}
               <button
                 onClick={() => setSubScreen('account')}
@@ -315,7 +341,9 @@ export function MySettingsPanel({
                     <KeyRound size={15} />
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-slate-800 block">Account</span>
+                    <span className="text-[12px] font-bold text-slate-800 block">
+                      Account
+                    </span>
                     <span className="text-[10px] font-semibold text-slate-400 block truncate">
                       Security notifications, login details
                     </span>
@@ -334,7 +362,9 @@ export function MySettingsPanel({
                     <Shield size={15} />
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-slate-800 block">Privacy</span>
+                    <span className="text-[12px] font-bold text-slate-800 block">
+                      Privacy
+                    </span>
                     <span className="text-[10px] font-semibold text-slate-400 block truncate">
                       Blocked contacts, profile visibility
                     </span>
@@ -353,7 +383,9 @@ export function MySettingsPanel({
                     <MessageSquare size={15} />
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-slate-800 block">Chats</span>
+                    <span className="text-[12px] font-bold text-slate-800 block">
+                      Chats
+                    </span>
                     <span className="text-[10px] font-semibold text-slate-400 block truncate">
                       Wallpaper themes, media visibility
                     </span>
@@ -372,7 +404,9 @@ export function MySettingsPanel({
                     <Bell size={15} />
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-slate-800 block">Notifications</span>
+                    <span className="text-[12px] font-bold text-slate-800 block">
+                      Notifications
+                    </span>
                     <span className="text-[10px] font-semibold text-slate-400 block truncate">
                       Message alerts, audio tones
                     </span>
@@ -391,7 +425,9 @@ export function MySettingsPanel({
                     <HardDrive size={15} />
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-slate-800 block">Storage and data</span>
+                    <span className="text-[12px] font-bold text-slate-800 block">
+                      Storage and data
+                    </span>
                     <span className="text-[10px] font-semibold text-slate-400 block truncate">
                       Network usage, auto-download sizes
                     </span>
@@ -410,7 +446,9 @@ export function MySettingsPanel({
                     <HelpCircle size={15} />
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-slate-800 block">Help</span>
+                    <span className="text-[12px] font-bold text-slate-800 block">
+                      Help
+                    </span>
                     <span className="text-[10px] font-semibold text-slate-400 block truncate">
                       Help centre, contact support chats
                     </span>
@@ -429,7 +467,9 @@ export function MySettingsPanel({
                     <UserPlus size={15} />
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-slate-800 block">Invite a friend</span>
+                    <span className="text-[12px] font-bold text-slate-800 block">
+                      Invite a friend
+                    </span>
                     <span className="text-[10px] font-semibold text-slate-400 block truncate">
                       Share referral link or codes
                     </span>
@@ -437,7 +477,6 @@ export function MySettingsPanel({
                 </div>
                 <ChevronRight size={14} className="text-slate-400 shrink-0" />
               </button>
-
             </div>
           </div>
         )}
@@ -446,16 +485,22 @@ export function MySettingsPanel({
         {subScreen === 'profile' && (
           <div className="flex flex-col gap-5 animate-in slide-in-from-right-5 duration-200">
             <div className="flex flex-col items-center gap-4 bg-white/70 border border-slate-200/30 rounded-2xl p-5 shadow-xs">
-
               {/* Avatar Upload Container */}
-              <div className="relative group cursor-pointer" onClick={handleImageClick}>
+              <div
+                className="relative group cursor-pointer"
+                onClick={handleImageClick}
+              >
                 <div className="relative w-24 h-24 rounded-full overflow-hidden border border-slate-200/80 shadow-md flex items-center justify-center bg-slate-100">
                   {isUploadingImage ? (
                     <div className="absolute inset-0 bg-black/45 flex items-center justify-center text-white">
                       <Loader2 className="w-6 h-6 animate-spin text-white" />
                     </div>
                   ) : user.image ? (
-                    <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                    <img
+                      src={user.image}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <span className="text-3xl font-bold text-slate-500 uppercase">
                       {user.name.charAt(0)}
@@ -551,7 +596,10 @@ export function MySettingsPanel({
                     </Button>
                     <Button
                       onClick={() => {
-                        setBioValue((user as any).bio || 'Hey there! I am using VastuRent.')
+                        setBioValue(
+                          (user as any).bio ||
+                            'Hey there! I am using VastuRent.',
+                        )
                         setIsEditingBio(false)
                       }}
                       variant="ghost"
@@ -577,7 +625,6 @@ export function MySettingsPanel({
                   </div>
                 )}
               </div>
-
             </div>
           </div>
         )}
@@ -591,27 +638,35 @@ export function MySettingsPanel({
               </h4>
 
               <div className="space-y-1">
-                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Email Address</span>
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+                  Email Address
+                </span>
                 <span className="text-[12px] font-bold text-slate-800 block bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                   {user.email}
                 </span>
               </div>
 
               <div className="space-y-1">
-                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Role</span>
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+                  Role
+                </span>
                 <span className="text-[11px] font-extrabold text-primary uppercase inline-block bg-primary-soft/60 px-3 py-1 rounded-full">
                   {user.role} Member
                 </span>
               </div>
 
               <div className="space-y-1">
-                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Join Date</span>
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+                  Join Date
+                </span>
                 <span className="text-[12px] font-semibold text-slate-500 block">
-                  {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                  }) : 'June 15, 2026'}
+                  {user.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString('en-US', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })
+                    : 'June 15, 2026'}
                 </span>
               </div>
             </div>
@@ -641,8 +696,12 @@ export function MySettingsPanel({
                   onCheckedChange={async (val) => {
                     try {
                       await updateSettings({ showProfile: val })
-                      await queryClient.invalidateQueries({ queryKey: ['session'] })
-                      toast.success(`Profile visibility set to ${val ? 'everyone' : 'nobody'}`)
+                      await queryClient.invalidateQueries({
+                        queryKey: ['session'],
+                      })
+                      toast.success(
+                        `Profile visibility set to ${val ? 'everyone' : 'nobody'}`,
+                      )
                     } catch {
                       toast.error('Failed to update settings')
                     }
@@ -665,8 +724,12 @@ export function MySettingsPanel({
                   onCheckedChange={async (val) => {
                     try {
                       await updateSettings({ showOnline: val })
-                      await queryClient.invalidateQueries({ queryKey: ['session'] })
-                      toast.success(`Online status set to ${val ? 'everyone' : 'nobody'}`)
+                      await queryClient.invalidateQueries({
+                        queryKey: ['session'],
+                      })
+                      toast.success(
+                        `Online status set to ${val ? 'everyone' : 'nobody'}`,
+                      )
                     } catch {
                       toast.error('Failed to update settings')
                     }
@@ -684,7 +747,9 @@ export function MySettingsPanel({
               {blockedConversations.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-4 text-center gap-1 bg-slate-50/40 border border-dashed border-slate-200/50 rounded-xl">
                   <AlertCircle size={14} className="text-slate-300" />
-                  <span className="text-[10px] font-semibold text-slate-400">No blocked contacts</span>
+                  <span className="text-[10px] font-semibold text-slate-400">
+                    No blocked contacts
+                  </span>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
@@ -707,7 +772,9 @@ export function MySettingsPanel({
                         onClick={async () => {
                           try {
                             await unblockConversation(conv.id)
-                            toast.success(`Unblocked ${conv.otherParticipant.name}`)
+                            toast.success(
+                              `Unblocked ${conv.otherParticipant.name}`,
+                            )
                           } catch {
                             toast.error('Failed to unblock user')
                           }
@@ -738,7 +805,10 @@ export function MySettingsPanel({
               </p>
               <div className="grid grid-cols-5 gap-2 mt-1">
                 {[
-                  { id: 'classic', color: 'bg-emerald-500/10 border-emerald-500/20' },
+                  {
+                    id: 'classic',
+                    color: 'bg-emerald-500/10 border-emerald-500/20',
+                  },
                   { id: 'dark', color: 'bg-slate-800 border-slate-900' },
                   { id: 'blue', color: 'bg-sky-500/15 border-sky-400/20' },
                   { id: 'emerald', color: 'bg-teal-500/15 border-teal-400/20' },
@@ -750,7 +820,9 @@ export function MySettingsPanel({
                     className={cn(
                       'w-9 h-9 rounded-lg border-2 transition-all cursor-pointer hover:scale-105 active:scale-95',
                       wp.color,
-                      chatWallpaper === wp.id ? 'border-primary scale-110 shadow-sm' : 'border-transparent',
+                      chatWallpaper === wp.id
+                        ? 'border-primary scale-110 shadow-sm'
+                        : 'border-transparent',
                     )}
                     title={`Wallpaper ${wp.id}`}
                   />
@@ -762,7 +834,9 @@ export function MySettingsPanel({
             <div className="flex flex-col gap-3 bg-white/70 border border-slate-200/30 rounded-2xl p-5 shadow-xs">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5 max-w-[80%]">
-                  <span className="text-[12px] font-bold text-slate-800">Media Visibility</span>
+                  <span className="text-[12px] font-bold text-slate-800">
+                    Media Visibility
+                  </span>
                   <p className="text-[9px] font-semibold text-slate-400">
                     Auto-hide attachment images/videos.
                   </p>
@@ -784,23 +858,33 @@ export function MySettingsPanel({
               {/* Sound Notifications switch */}
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5 max-w-[80%]">
-                  <span className="text-[12px] font-bold text-slate-800">Alert Sounds</span>
+                  <span className="text-[12px] font-bold text-slate-800">
+                    Alert Sounds
+                  </span>
                   <p className="text-[9px] font-semibold text-slate-400">
                     Play sounds on receiving incoming messages.
                   </p>
                 </div>
-                <Switch checked={soundEnabled} onCheckedChange={handleSoundToggle} />
+                <Switch
+                  checked={soundEnabled}
+                  onCheckedChange={handleSoundToggle}
+                />
               </div>
 
               {/* Push Banner switch */}
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5 max-w-[80%]">
-                  <span className="text-[12px] font-bold text-slate-800">Browser Banners</span>
+                  <span className="text-[12px] font-bold text-slate-800">
+                    Browser Banners
+                  </span>
                   <p className="text-[9px] font-semibold text-slate-400">
                     Show desktop notice banners when tab is inactive.
                   </p>
                 </div>
-                <Switch checked={desktopEnabled} onCheckedChange={handleDesktopToggle} />
+                <Switch
+                  checked={desktopEnabled}
+                  onCheckedChange={handleDesktopToggle}
+                />
               </div>
             </div>
           </div>
@@ -811,19 +895,24 @@ export function MySettingsPanel({
           <div className="flex flex-col gap-4 animate-in slide-in-from-right-5 duration-200">
             <div className="flex flex-col gap-4 bg-white/70 border border-slate-200/30 rounded-2xl p-5 shadow-xs">
               <h4 className="text-[11px] font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-2">
-                <HardDrive size={12} className="text-primary" /> Attachment Sizes
+                <HardDrive size={12} className="text-primary" /> Attachment
+                Sizes
               </h4>
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-500">
                   <span>{storage.totalSize} MB of 15 GB Used</span>
-                  <span className="text-primary font-black">{storage.usedPercent}%</span>
+                  <span className="text-primary font-black">
+                    {storage.usedPercent}%
+                  </span>
                 </div>
                 {/* Visual Storage Meter bar */}
                 <div className="w-full h-2.5 bg-slate-200/50 rounded-full overflow-hidden flex">
                   <div
                     className="h-full bg-emerald-500 rounded-l-full transition-all"
-                    style={{ width: `${Math.max(1, storage.usedPercent * 5)}%` }}
+                    style={{
+                      width: `${Math.max(1, storage.usedPercent * 5)}%`,
+                    }}
                     title="Media"
                   />
                   <div
@@ -841,7 +930,8 @@ export function MySettingsPanel({
                 <div className="grid grid-cols-3 gap-2 mt-2 pt-1 border-t border-slate-100">
                   <div className="flex flex-col">
                     <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full shrink-0" /> Media
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full shrink-0" />{' '}
+                      Media
                     </span>
                     <span className="text-[10px] font-extrabold text-slate-700 mt-0.5">
                       {storage.mediaSize} MB
@@ -849,7 +939,8 @@ export function MySettingsPanel({
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-purple-500 rounded-full shrink-0" /> Audio
+                      <span className="w-1.5 h-1.5 bg-purple-500 rounded-full shrink-0" />{' '}
+                      Audio
                     </span>
                     <span className="text-[10px] font-extrabold text-slate-700 mt-0.5">
                       {storage.audioSize} MB
@@ -857,7 +948,8 @@ export function MySettingsPanel({
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-amber-500 rounded-full shrink-0" /> Docs
+                      <span className="w-1.5 h-1.5 bg-amber-500 rounded-full shrink-0" />{' '}
+                      Docs
                     </span>
                     <span className="text-[10px] font-extrabold text-slate-700 mt-0.5">
                       {storage.docSize} MB
@@ -873,10 +965,16 @@ export function MySettingsPanel({
         {subScreen === 'help' && (
           <div className="flex flex-col gap-4 animate-in slide-in-from-right-5 duration-200">
             <div className="bg-white/70 border border-slate-200/30 rounded-2xl p-5 shadow-xs flex flex-col gap-3 text-center items-center">
-              <HelpCircle size={24} className="text-primary animate-bounce mt-2" />
-              <h4 className="text-[13px] font-black text-slate-800">Need Assistance?</h4>
+              <HelpCircle
+                size={24}
+                className="text-primary animate-bounce mt-2"
+              />
+              <h4 className="text-[13px] font-black text-slate-800">
+                Need Assistance?
+              </h4>
               <p className="text-[10px] font-semibold text-slate-500 leading-normal">
-                If you have any questions regarding rentals, listings, payouts, or account security, our chat support is here 24/7.
+                If you have any questions regarding rentals, listings, payouts,
+                or account security, our chat support is here 24/7.
               </p>
               <Button
                 onClick={() => {
@@ -895,9 +993,12 @@ export function MySettingsPanel({
           <div className="flex flex-col gap-4 animate-in slide-in-from-right-5 duration-200">
             <div className="bg-white/70 border border-slate-200/30 rounded-2xl p-5 shadow-xs flex flex-col gap-3 text-center items-center">
               <UserPlus size={24} className="text-primary mt-2" />
-              <h4 className="text-[13px] font-black text-slate-800">Spread the Word</h4>
+              <h4 className="text-[13px] font-black text-slate-800">
+                Spread the Word
+              </h4>
               <p className="text-[10px] font-semibold text-slate-500 leading-normal">
-                Invite hosts, buyers, and friends to VastuRent and help them find properties aligned with positive energy.
+                Invite hosts, buyers, and friends to VastuRent and help them
+                find properties aligned with positive energy.
               </p>
 
               <div className="flex items-center gap-1.5 w-full mt-2 bg-slate-50 border border-slate-100 p-2 rounded-xl">
@@ -915,7 +1016,6 @@ export function MySettingsPanel({
             </div>
           </div>
         )}
-
       </div>
     </div>
   )

@@ -118,13 +118,12 @@ export const MessagesManagement = () => {
         <ChatWindow />
 
         {/* ── RIGHT COLUMN: Details Sidebar (About Panel or Settings) ── */}
-        {showDetailsPanel && (
-          activePanel === 'settings' && !activeConversationId ? (
+        {showDetailsPanel &&
+          (activePanel === 'settings' && !activeConversationId ? (
             <MySettingsPanel />
           ) : (
             activeConversationId && <AboutPanel />
-          )
-        )}
+          ))}
       </div>
 
       {/* ── New Message Dialog ── */}

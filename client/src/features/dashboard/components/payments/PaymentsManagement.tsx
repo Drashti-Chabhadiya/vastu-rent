@@ -72,8 +72,8 @@ export const PaymentsManagement = () => {
       onError: (err: any) => {
         toast.error(
           err.response?.data?.message ||
-          err.message ||
-          'Failed to submit payout request',
+            err.message ||
+            'Failed to submit payout request',
         )
       },
     })
@@ -99,8 +99,8 @@ export const PaymentsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            err.message ||
-            'Failed to update payout request',
+              err.message ||
+              'Failed to update payout request',
           )
         },
       },
@@ -186,20 +186,22 @@ export const PaymentsManagement = () => {
               <Button
                 variant="ghost"
                 onClick={() => setCurrentView('my')}
-                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${currentView === 'my'
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${
+                  currentView === 'my'
                     ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
                     : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
-                  }`}
+                }`}
               >
                 My Payouts
               </Button>
               <Button
                 variant="ghost"
                 onClick={() => setCurrentView('all')}
-                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${currentView === 'all'
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${
+                  currentView === 'all'
                     ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
                     : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
-                  }`}
+                }`}
               >
                 All Platform Payouts
               </Button>
@@ -428,9 +430,9 @@ export const PaymentsManagement = () => {
                   Safety Settlement Guarantee
                 </h3>
                 <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
-                  Platform settlements are fully paid out with 0% commission fees.
-                  Payout requests are verified by auditing dispute histories and
-                  cleared within 24-48 hours.
+                  Platform settlements are fully paid out with 0% commission
+                  fees. Payout requests are verified by auditing dispute
+                  histories and cleared within 24-48 hours.
                 </p>
                 <div className="border-t border-border/30 pt-4 flex items-center gap-2 text-[10px] font-black text-muted-dark uppercase tracking-widest">
                   <Lock size={12} className="text-emerald-600" /> BANK-LEVEL SSL

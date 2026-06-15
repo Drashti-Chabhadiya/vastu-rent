@@ -185,7 +185,7 @@ export function HowItWorksPage() {
                 alt="Safety"
                 className="rounded-[32px] shadow-2xl bg-card"
                 onError={(e) => {
-                  ; (e.target as any).src =
+                  ;(e.target as any).src =
                     'https://placehold.co/800x600/166534/FFFFFF/png?text=Trust+and+Safety'
                 }}
               />

@@ -139,27 +139,44 @@ export function ChatHeader() {
               {activeConversation.otherParticipant.name}
             </h3>
             {activeConversation.otherParticipant.isGreenMember && (
-              <svg className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none" viewBox="0 0 24 24">
-                <path d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z" fill="currentColor" />
-                <polyline points="8.5 12.5 10.5 14.5 15.5 9.5" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <svg
+                className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z"
+                  fill="currentColor"
+                />
+                <polyline
+                  points="8.5 12.5 10.5 14.5 15.5 9.5"
+                  stroke="white"
+                  strokeWidth="2.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
               </svg>
             )}
           </div>
           {canSeeStatus ? (
             <div className={cn('flex', 'items-center', 'mt-0.5')}>
               <span
-                className={cn('text-[11px]', 'font-semibold', 'text-muted-dark')}
+                className={cn(
+                  'text-[11px]',
+                  'font-semibold',
+                  'text-muted-dark',
+                )}
               >
                 {showOnlineStatus
                   ? 'Online • Typically replies in a few minutes'
                   : (() => {
-                    const formatted = formatLastActive(
-                      activeConversation.otherParticipant.lastActive,
-                    )
-                    return formatted === 'Offline'
-                      ? 'Offline'
-                      : `last seen ${formatted}`
-                  })()}
+                      const formatted = formatLastActive(
+                        activeConversation.otherParticipant.lastActive,
+                      )
+                      return formatted === 'Offline'
+                        ? 'Offline'
+                        : `last seen ${formatted}`
+                    })()}
               </span>
               {isOtherPersonTyping && (
                 <span

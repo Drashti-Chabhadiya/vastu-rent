@@ -45,7 +45,8 @@ export const AdminPayoutApprovals = ({
             Admin Approvals Portal
           </h3>
           <p className="text-[11px] font-semibold text-muted-foreground/85 max-w-sm">
-            All payout requests have been processed! No pending withdrawals to review at this time.
+            All payout requests have been processed! No pending withdrawals to
+            review at this time.
           </p>
         </div>
       </div>

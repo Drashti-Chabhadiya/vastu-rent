@@ -116,7 +116,8 @@ export const WithdrawalRequestModal = ({
               className="text-emerald-600 shrink-0 mt-0.5"
             />
             <p className="text-[10px] font-semibold text-emerald-600 leading-relaxed">
-              Platform payouts are processed with 0% commission fees. Listers retain 100% of their gross rental booking earnings.
+              Platform payouts are processed with 0% commission fees. Listers
+              retain 100% of their gross rental booking earnings.
             </p>
           </div>
 

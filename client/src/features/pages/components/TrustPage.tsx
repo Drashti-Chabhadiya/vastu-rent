@@ -243,9 +243,7 @@ export function TrustPage() {
         >
           {commitments.map((c, i) => (
             <motion.div key={i} variants={fadeUp} className="flex">
-              <Card
-                className="group w-full border border-border/30 rounded-[2rem] bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20"
-              >
+              <Card className="group w-full border border-border/30 rounded-[2rem] bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
                 <CardContent className="p-0 flex flex-col items-start gap-5">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 transition-colors group-hover:bg-primary/10 shrink-0">
                     {c.icon}

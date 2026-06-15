@@ -263,7 +263,6 @@ export function ChatWindow() {
         <div className="flex-1 overflow-y-auto flex items-center justify-center p-6 bg-transparent scrollbar-none">
           <MessageEmptyState showCards={true} />
         </div>
-
       </div>
     )
   }
@@ -307,18 +306,18 @@ export function ChatWindow() {
       {/* Disappearing Messages Info Banner */}
       {activeConversation.disappearingDuration
         ? activeConversation.disappearingDuration > 0 && (
-          <div className="bg-muted-light/60 border-b border-border/20 px-6 py-2.5 flex items-center gap-2 text-[10px] font-bold text-muted-dark shrink-0 animate-in slide-in-from-top duration-200">
-            <Clock size={12} className="text-primary shrink-0" />
-            <span>
-              Disappearing messages is active. Messages will disappear for
-              everyone after{' '}
-              {getDisappearingDurationText(
-                activeConversation.disappearingDuration,
-              )}
-              .
-            </span>
-          </div>
-        )
+            <div className="bg-muted-light/60 border-b border-border/20 px-6 py-2.5 flex items-center gap-2 text-[10px] font-bold text-muted-dark shrink-0 animate-in slide-in-from-top duration-200">
+              <Clock size={12} className="text-primary shrink-0" />
+              <span>
+                Disappearing messages is active. Messages will disappear for
+                everyone after{' '}
+                {getDisappearingDurationText(
+                  activeConversation.disappearingDuration,
+                )}
+                .
+              </span>
+            </div>
+          )
         : null}
 
       {/* Messages Area */}

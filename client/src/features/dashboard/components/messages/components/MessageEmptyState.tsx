@@ -7,13 +7,14 @@ interface MessageEmptyStateProps {
   showCards?: boolean
 }
 
-export function MessageEmptyState({ showCards = true }: MessageEmptyStateProps) {
+export function MessageEmptyState({
+  showCards = true,
+}: MessageEmptyStateProps) {
   const navigate = useNavigate()
   const { setShowNewChat } = useChatStore()
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-4 sm:py-6 bg-transparent animate-fade-in select-none max-w-2xl mx-auto">
-
       {/* ── Scenery House Illustration ── */}
       <div className="relative w-44 h-44 sm:w-52 sm:h-52 mx-auto mb-4 flex items-center justify-center">
         <img
@@ -29,14 +30,14 @@ export function MessageEmptyState({ showCards = true }: MessageEmptyStateProps) 
           Welcome to your conversations
         </h3>
         <p className="text-sm text-slate-500 mt-2.5 px-4 leading-relaxed font-medium font-sans max-w-sm mx-auto">
-          Select a chat from the list to view your conversation or start a new one.
+          Select a chat from the list to view your conversation or start a new
+          one.
         </p>
       </div>
 
       {/* ── Quick Action Cards ── */}
       {showCards && (
         <div className="flex flex-col sm:flex-row gap-3.5 w-full max-w-2xl items-stretch justify-center px-4">
-
           {/* Browse listings card */}
           <div
             onClick={() => navigate({ to: '/' })}
@@ -46,8 +47,12 @@ export function MessageEmptyState({ showCards = true }: MessageEmptyStateProps) 
               <Leaf size={18} className="text-[#0f513d]" />
             </span>
             <div>
-              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">Browse Listings</span>
-              <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">Explore homes</span>
+              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">
+                Browse Listings
+              </span>
+              <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
+                Explore homes
+              </span>
             </div>
           </div>
 
@@ -55,7 +60,11 @@ export function MessageEmptyState({ showCards = true }: MessageEmptyStateProps) 
           <div
             onClick={() => {
               toast.info('Opening bookings dashboard...')
-              window.dispatchEvent(new CustomEvent('switch-dashboard-tab', { detail: { tab: 'bookings' } }))
+              window.dispatchEvent(
+                new CustomEvent('switch-dashboard-tab', {
+                  detail: { tab: 'bookings' },
+                }),
+              )
             }}
             className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-[#f0efe9] rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#0f513d]/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
           >
@@ -63,8 +72,12 @@ export function MessageEmptyState({ showCards = true }: MessageEmptyStateProps) 
               <Calendar size={18} className="text-[#0f513d]" />
             </span>
             <div>
-              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">My Bookings</span>
-              <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">View reservations</span>
+              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">
+                My Bookings
+              </span>
+              <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
+                View reservations
+              </span>
             </div>
           </div>
 
@@ -72,7 +85,9 @@ export function MessageEmptyState({ showCards = true }: MessageEmptyStateProps) 
           <div
             onClick={() => {
               setShowNewChat(true)
-              toast.success('Directory search opened. Select support team to chat.')
+              toast.success(
+                'Directory search opened. Select support team to chat.',
+              )
             }}
             className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-[#f0efe9] rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#0f513d]/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
           >
@@ -80,14 +95,16 @@ export function MessageEmptyState({ showCards = true }: MessageEmptyStateProps) 
               <Headset size={18} className="text-[#0f513d]" />
             </span>
             <div>
-              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">Support</span>
-              <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">Get help</span>
+              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">
+                Support
+              </span>
+              <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
+                Get help
+              </span>
             </div>
           </div>
-
         </div>
       )}
-
     </div>
   )
 }

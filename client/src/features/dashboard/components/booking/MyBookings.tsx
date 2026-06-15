@@ -1,4 +1,9 @@
-import { useMyRentals, useCreateDispute, useCreateReview, useVerifyBookingSession } from '#/hook'
+import {
+  useMyRentals,
+  useCreateDispute,
+  useCreateReview,
+  useVerifyBookingSession,
+} from '#/hook'
 import {
   Calendar,
   SlidersHorizontal,
@@ -69,7 +74,8 @@ export const MyBookings = () => {
         } catch (error: any) {
           console.error('Booking session verification failed:', error)
           toast.error(
-            error.response?.data?.message || 'Booking payment verification failed.',
+            error.response?.data?.message ||
+              'Booking payment verification failed.',
             { id: toastId },
           )
         } finally {

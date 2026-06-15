@@ -62,9 +62,15 @@ export function ChatInputDock({
     unblockConversation,
   } = useChatStore()
 
-  const activeConversation = conversations.find((c) => c.id === activeConversationId)
-  const isBlockedByMe = activeConversation?.blockedBy?.includes(currentUserId || '')
-  const isBlockedByOther = activeConversation?.blockedBy?.some((uid) => uid !== currentUserId)
+  const activeConversation = conversations.find(
+    (c) => c.id === activeConversationId,
+  )
+  const isBlockedByMe = activeConversation?.blockedBy?.includes(
+    currentUserId || '',
+  )
+  const isBlockedByOther = activeConversation?.blockedBy?.some(
+    (uid) => uid !== currentUserId,
+  )
 
   return (
     <div className={cn('border-t border-border/30 bg-card shrink-0')}>
@@ -184,7 +190,9 @@ export function ChatInputDock({
               try {
                 if (activeConversation) {
                   await unblockConversation(activeConversation.id)
-                  toast.success(`Unblocked ${activeConversation.otherParticipant.name}`)
+                  toast.success(
+                    `Unblocked ${activeConversation.otherParticipant.name}`,
+                  )
                 }
               } catch {
                 toast.error('Failed to unblock contact')
@@ -280,7 +288,7 @@ export function ChatInputDock({
                 className={cn(
                   'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0d4d38] hover:bg-[#093a2a] border-none outline-none',
                   (!isConnected || isUploading) &&
-                  'bg-muted text-muted-dark cursor-not-allowed shadow-none',
+                    'bg-muted text-muted-dark cursor-not-allowed shadow-none',
                 )}
                 title="Send Message"
               >
@@ -298,7 +306,7 @@ export function ChatInputDock({
                 className={cn(
                   'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0d4d38] hover:bg-[#093a2a] border-none outline-none',
                   (!isConnected || isUploading) &&
-                  'bg-muted text-muted-dark cursor-not-allowed shadow-none',
+                    'bg-muted text-muted-dark cursor-not-allowed shadow-none',
                 )}
                 title="Record Voice Message"
               >

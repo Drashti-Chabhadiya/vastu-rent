@@ -1,4 +1,5 @@
-import { useState, type CSSProperties } from 'react'
+import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import {
   Search,
   MessageSquare,
@@ -152,7 +153,9 @@ export function ConversationList() {
               size="icon"
               onClick={() => {
                 setSortBy(sortBy === 'recent' ? 'unread' : 'recent')
-                toast.success(`Sorting by ${sortBy === 'recent' ? 'Unread count' : 'Recent activity'}`)
+                toast.success(
+                  `Sorting by ${sortBy === 'recent' ? 'Unread count' : 'Recent activity'}`,
+                )
               }}
               className="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors"
               title="Sort chat list"
@@ -165,13 +168,16 @@ export function ConversationList() {
               variant="ghost"
               size="icon"
               onClick={() => {
-                const isOpening = activePanel !== 'settings' || !showDetailsPanel
+                const isOpening =
+                  activePanel !== 'settings' || !showDetailsPanel
                 setActivePanel(isOpening ? 'settings' : 'about')
                 setShowDetailsPanel(isOpening)
               }}
               className={cn(
                 'w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors',
-                activePanel === 'settings' && showDetailsPanel && 'text-emerald-700 bg-emerald-50',
+                activePanel === 'settings' &&
+                  showDetailsPanel &&
+                  'text-emerald-700 bg-emerald-50',
               )}
               title="Settings"
             >
@@ -207,7 +213,7 @@ export function ConversationList() {
                 className={cn(
                   'w-11 h-11 bg-slate-100/80 hover:bg-slate-200/50 rounded-full text-slate-600 transition-all cursor-pointer shrink-0 border-none shadow-none',
                   (filterOnline || filterGreen || sortBy !== 'recent') &&
-                  'text-[#0f513d] bg-emerald-50 hover:bg-emerald-100',
+                    'text-[#0f513d] bg-emerald-50 hover:bg-emerald-100',
                 )}
               >
                 <SlidersHorizontal size={16} />
@@ -267,7 +273,8 @@ export function ConversationList() {
               <DropdownMenuSeparator className="my-1 border-border/10" />
               <DropdownMenuItem
                 onClick={() => {
-                  const isOpening = activePanel !== 'settings' || !showDetailsPanel
+                  const isOpening =
+                    activePanel !== 'settings' || !showDetailsPanel
                   setActivePanel(isOpening ? 'settings' : 'about')
                   setShowDetailsPanel(isOpening)
                 }}
@@ -308,14 +315,14 @@ export function ConversationList() {
                     : tab === 'archived'
                       ? conversations.filter((c) => c.isArchived).length
                       : conversations
-                        .filter((c) => {
-                          if (tab === 'bookings')
-                            return c.otherParticipant.role === 'user'
-                          if (tab === 'support')
-                            return c.otherParticipant.role === 'admin'
-                          return false
-                        })
-                        .reduce((s, c) => s + c.unreadCount, 0)
+                          .filter((c) => {
+                            if (tab === 'bookings')
+                              return c.otherParticipant.role === 'user'
+                            if (tab === 'support')
+                              return c.otherParticipant.role === 'admin'
+                            return false
+                          })
+                          .reduce((s, c) => s + c.unreadCount, 0)
 
               const isActive = activeSubTab === tab
               const tabLabel =
@@ -442,8 +449,8 @@ export function ConversationList() {
                   name={conv.otherParticipant.name}
                   isOnline={
                     myShowOnline &&
-                      conv.otherParticipant.lastActive !== null &&
-                      conv.otherParticipant.lastActive !== undefined
+                    conv.otherParticipant.lastActive !== null &&
+                    conv.otherParticipant.lastActive !== undefined
                       ? conv.otherParticipant.isOnline
                       : undefined
                   }
@@ -459,9 +466,22 @@ export function ConversationList() {
                         {conv.otherParticipant.name}
                       </h4>
                       {conv.otherParticipant.isGreenMember && (
-                        <svg className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none animate-fade-in" viewBox="0 0 24 24">
-                          <path d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z" fill="currentColor" />
-                          <polyline points="8.5 12.5 10.5 14.5 15.5 9.5" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                        <svg
+                          className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none animate-fade-in"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z"
+                            fill="currentColor"
+                          />
+                          <polyline
+                            points="8.5 12.5 10.5 14.5 15.5 9.5"
+                            stroke="white"
+                            strokeWidth="2.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            fill="none"
+                          />
                         </svg>
                       )}
                     </div>
@@ -581,18 +601,16 @@ export function ConversationList() {
         )}
       </div>
 
-      {
-        disappearingConv && (
-          <DisappearingSettingsDialog
-            open={!!disappearingConv}
-            onOpenChange={(open) => !open && setDisappearingConv(null)}
-            currentDuration={disappearingConv.disappearingDuration}
-            onSetDuration={async (duration) => {
-              await onSetDisappearingMessages(disappearingConv.id, duration)
-            }}
-          />
-        )
-      }
+      {disappearingConv && (
+        <DisappearingSettingsDialog
+          open={!!disappearingConv}
+          onOpenChange={(open) => !open && setDisappearingConv(null)}
+          currentDuration={disappearingConv.disappearingDuration}
+          onSetDuration={async (duration) => {
+            await onSetDisappearingMessages(disappearingConv.id, duration)
+          }}
+        />
+      )}
       <ReusableAlertDialog
         isOpen={!!clearChatConvId}
         onOpenChange={(open) => !open && setClearChatConvId(null)}
@@ -620,6 +638,6 @@ export function ConversationList() {
       >
         <Pencil size={16} />
       </Button>
-    </div >
+    </div>
   )
 }
