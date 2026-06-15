@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
+import { toast } from 'sonner'
 import { useChatStore } from '../../../../../store/useChatStore'
 
 interface ChatInputDockProps {
@@ -55,7 +56,15 @@ export function ChatInputDock({
     removeFile,
     replyTarget,
     setReplyTarget,
+    conversations,
+    activeConversationId,
+    currentUserId,
+    unblockConversation,
   } = useChatStore()
+
+  const activeConversation = conversations.find((c) => c.id === activeConversationId)
+  const isBlockedByMe = activeConversation?.blockedBy?.includes(currentUserId || '')
+  const isBlockedByOther = activeConversation?.blockedBy?.some((uid) => uid !== currentUserId)
 
   return (
     <div className={cn('border-t border-border/30 bg-card shrink-0')}>
@@ -90,26 +99,39 @@ export function ChatInputDock({
       {/* Attachment previews (before send) */}
       {pendingPreviews.length > 0 && (
         <div className="flex items-center gap-2 px-4 pt-3 pb-1 flex-wrap">
-          {pendingPreviews.map((src, i) => (
-            <div
-              key={i}
-              className="relative w-14 h-14 rounded-xl overflow-hidden border border-border/40 shadow-sm group"
-            >
-              <img
-                src={src}
-                alt={`preview-${i}`}
-                className="w-full h-full object-cover"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => removeFile(i)}
-                className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-0 rounded-none hover:bg-black/50 w-full h-full"
+          {pendingPreviews.map((src, i) => {
+            const file = pendingFiles[i]
+            const isImage = file?.type?.startsWith('image/')
+            return (
+              <div
+                key={i}
+                className="relative w-14 h-14 rounded-xl overflow-hidden border border-border/40 shadow-sm group flex items-center justify-center bg-slate-50"
               >
-                <X size={14} className="text-white" strokeWidth={2.5} />
-              </Button>
-            </div>
-          ))}
+                {isImage ? (
+                  <img
+                    src={src}
+                    alt={`preview-${i}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-1 text-center text-slate-400 select-none">
+                    <Paperclip size={14} className="text-slate-400" />
+                    <span className="text-[7px] font-bold text-slate-500 truncate max-w-[50px] mt-0.5">
+                      {file?.name}
+                    </span>
+                  </div>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeFile(i)}
+                  className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer p-0 rounded-none hover:bg-black/50 w-full h-full"
+                >
+                  <X size={14} className="text-white" strokeWidth={2.5} />
+                </Button>
+              </div>
+            )
+          })}
           {pendingFiles.length < 5 && (
             <Button
               variant="ghost"
@@ -156,26 +178,46 @@ export function ChatInputDock({
               </Button>
             </div>
           </div>
+        ) : isBlockedByMe ? (
+          <div
+            onClick={async () => {
+              try {
+                if (activeConversation) {
+                  await unblockConversation(activeConversation.id)
+                  toast.success(`Unblocked ${activeConversation.otherParticipant.name}`)
+                }
+              } catch {
+                toast.error('Failed to unblock contact')
+              }
+            }}
+            className="flex-1 flex items-center justify-center h-11 bg-red-50 hover:bg-red-100/70 border border-red-200 rounded-2xl cursor-pointer text-red-600 font-extrabold text-[12px] select-none transition-colors px-4 text-center"
+          >
+            You blocked this contact. Tap to unblock.
+          </div>
+        ) : isBlockedByOther ? (
+          <div className="flex-1 flex items-center justify-center h-11 bg-slate-100 border border-slate-200 rounded-2xl text-slate-500 font-extrabold text-[12px] select-none px-4 text-center">
+            You cannot send messages to this contact.
+          </div>
         ) : (
           <>
             {/* Hidden file input */}
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/*,video/*,audio/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,application/zip,application/x-zip-compressed"
               multiple
               className="hidden"
               onChange={handleFileSelect}
             />
 
             {/* Text Input Container */}
-            <div className="flex-1 relative flex items-center bg-white border border-[#e2e8f0] rounded-2xl px-3 h-11 gap-1.5 shadow-sm">
+            <div className="flex-1 relative flex items-center bg-white border border-[#e2e8f0] rounded-full px-4 h-11 gap-1.5 shadow-sm">
               {/* Emoji trigger inside left */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0 border-none outline-none"
+                className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0 border-none outline-none p-0"
                 title="Emoji Picker"
               >
                 <Smile size={18} />
@@ -204,24 +246,12 @@ export function ChatInputDock({
                 disabled={!isConnected || pendingFiles.length >= 5}
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  'w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0 border-none outline-none',
+                  'w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0 border-none outline-none p-0',
                   pendingFiles.length > 0 && 'text-emerald-600 bg-emerald-50',
                 )}
-                title={`Attach images (${pendingFiles.length}/5)`}
+                title={`Attach files (${pendingFiles.length}/5)`}
               >
                 <Paperclip size={18} className="rotate-45" />
-              </Button>
-
-              {/* Voice Record trigger inside far right */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleStartRecording}
-                disabled={!isConnected || isUploading}
-                className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0 border-none outline-none"
-                title="Record Voice Message"
-              >
-                <Mic size={18} />
               </Button>
 
               {showEmojiPicker && (
@@ -241,23 +271,40 @@ export function ChatInputDock({
               )}
             </div>
 
-            {/* Action Button: Always Send outside the text field */}
-            <Button
-              size="icon"
-              onClick={handleSend}
-              disabled={!isConnected || isUploading}
-              className={cn(
-                'w-11 h-11 rounded-2xl flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0a6634] hover:bg-[#075028] border-none outline-none',
-                (!isConnected || isUploading) &&
+            {/* Action Button: Dynamic Mic/Send outside the text field */}
+            {inputText.trim().length > 0 || pendingFiles.length > 0 ? (
+              <Button
+                size="icon"
+                onClick={handleSend}
+                disabled={!isConnected || isUploading}
+                className={cn(
+                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0d4d38] hover:bg-[#093a2a] border-none outline-none',
+                  (!isConnected || isUploading) &&
                   'bg-muted text-muted-dark cursor-not-allowed shadow-none',
-              )}
-            >
-              {isUploading ? (
-                <Loader2 size={15} className="animate-spin" />
-              ) : (
-                <Send size={15} className="ml-0.5" />
-              )}
-            </Button>
+                )}
+                title="Send Message"
+              >
+                {isUploading ? (
+                  <Loader2 size={15} className="animate-spin" />
+                ) : (
+                  <Send size={15} className="ml-0.5" />
+                )}
+              </Button>
+            ) : (
+              <Button
+                size="icon"
+                onClick={handleStartRecording}
+                disabled={!isConnected || isUploading}
+                className={cn(
+                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0d4d38] hover:bg-[#093a2a] border-none outline-none',
+                  (!isConnected || isUploading) &&
+                  'bg-muted text-muted-dark cursor-not-allowed shadow-none',
+                )}
+                title="Record Voice Message"
+              >
+                <Mic size={18} />
+              </Button>
+            )}
           </>
         )}
       </div>

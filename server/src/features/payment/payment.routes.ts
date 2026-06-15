@@ -9,6 +9,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
     request.user = session.user;
   };
 
-  fastify.post("/create-order", { preHandler: [authHandler] }, paymentController.createOrder);
-  fastify.post("/verify-payment", { preHandler: [authHandler] }, paymentController.verifyPayment);
+  fastify.post("/confirm-payment", { preHandler: [authHandler] }, paymentController.confirmPayment);
+  fastify.post("/create-booking-session", { preHandler: [authHandler] }, paymentController.createBookingSession);
+  fastify.post("/verify-booking-session", { preHandler: [authHandler] }, paymentController.verifyBookingSession);
 }

@@ -34,7 +34,23 @@ export const AdminPayoutApprovals = ({
       (p: any) => p.status === 'pending' || p.status === 'approved',
     ) || []
 
-  if (activePayouts.length === 0) return null
+  if (activePayouts.length === 0) {
+    return (
+      <div className="bg-background border-2 border-dashed border-border/60 p-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <Zap size={20} className="text-emerald-600" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-sm font-extrabold text-foreground/90 uppercase tracking-wider">
+            Admin Approvals Portal
+          </h3>
+          <p className="text-[11px] font-semibold text-muted-foreground/85 max-w-sm">
+            All payout requests have been processed! No pending withdrawals to review at this time.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   const handleConfirmAction = () => {
     if (!selectedAdminPayout || !adminActionType) return

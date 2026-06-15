@@ -1,5 +1,5 @@
 import { Button } from '#/components/ui/button'
-import { ArrowLeft, Leaf, Video, Phone, Search } from 'lucide-react'
+import { ArrowLeft, Video, Phone, Search } from 'lucide-react'
 import { UserAvatar } from './UserAvatar'
 import { ConversationOptionsMenu } from './ConversationOptionsMenu'
 import { useNavigate } from '@tanstack/react-router'
@@ -28,6 +28,8 @@ export function ChatHeader() {
     setShowMobileChat,
     showDetailsPanel,
     setShowDetailsPanel,
+    activePanel,
+    setActivePanel,
     // Store state and actions
     setSearchText,
     setCurrentMatchIndex,
@@ -82,7 +84,16 @@ export function ChatHeader() {
       )}
     >
       <div
-        onClick={() => setShowDetailsPanel(!showDetailsPanel)}
+        onClick={() => {
+          if (!showDetailsPanel) {
+            setActivePanel('about')
+            setShowDetailsPanel(true)
+          } else if (activePanel === 'settings') {
+            setActivePanel('about')
+          } else {
+            setShowDetailsPanel(false)
+          }
+        }}
         className="flex items-center gap-3 cursor-pointer hover:opacity-90 select-none"
       >
         {/* Back on mobile */}
@@ -111,39 +122,44 @@ export function ChatHeader() {
         <UserAvatar
           image={activeConversation.otherParticipant.image}
           name={activeConversation.otherParticipant.name}
+          isOnline={otherPersonOnline}
+          showPing={false}
         />
 
         <div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <h3
               className={cn(
-                'text-[13px]',
+                'text-[15px]',
                 'font-black',
                 'text-foreground',
-                'lowercase',
+                'font-display',
               )}
             >
               {activeConversation.otherParticipant.name}
             </h3>
             {activeConversation.otherParticipant.isGreenMember && (
-              <Leaf className="w-3.5 h-3.5 text-emerald-500 fill-emerald-500 shrink-0" />
+              <svg className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none" viewBox="0 0 24 24">
+                <path d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12z" fill="currentColor" />
+                <polyline points="8.5 12.5 10.5 14.5 15.5 9.5" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              </svg>
             )}
           </div>
           {canSeeStatus ? (
             <div className={cn('flex', 'items-center', 'mt-0.5')}>
               <span
-                className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}
+                className={cn('text-[11px]', 'font-semibold', 'text-muted-dark')}
               >
                 {showOnlineStatus
-                  ? 'Online'
+                  ? 'Online • Typically replies in a few minutes'
                   : (() => {
-                      const formatted = formatLastActive(
-                        activeConversation.otherParticipant.lastActive,
-                      )
-                      return formatted === 'Offline'
-                        ? 'Offline'
-                        : `last seen ${formatted}`
-                    })()}
+                    const formatted = formatLastActive(
+                      activeConversation.otherParticipant.lastActive,
+                    )
+                    return formatted === 'Offline'
+                      ? 'Offline'
+                      : `last seen ${formatted}`
+                  })()}
               </span>
               {isOtherPersonTyping && (
                 <span
@@ -152,7 +168,7 @@ export function ChatHeader() {
                     'font-black',
                     'text-primary',
                     'animate-pulse',
-                    'ml-1',
+                    'ml-1.5',
                   )}
                 >
                   • typing...

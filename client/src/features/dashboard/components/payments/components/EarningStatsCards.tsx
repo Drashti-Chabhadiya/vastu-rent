@@ -4,7 +4,7 @@ interface EarningStatsCardsProps {
   stats: {
     totalEarnings: number
     monthlyEarnings: number
-    platformCommission: number
+    totalBookings: number
     netEarnings: number
     withdrawableBalance: number
     pendingPayouts: number
@@ -20,6 +20,7 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
       description: 'All successful orders',
       icon: TrendingUp,
       bgClass: 'bg-emerald-50 text-emerald-600',
+      isCount: false,
     },
     {
       title: 'Monthly Revenue',
@@ -28,14 +29,16 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
       icon: Calendar,
       bgClass: 'bg-info text-info-foreground',
       descClass: 'text-info-foreground font-medium',
+      isCount: false,
     },
     {
-      title: 'Commission (10%)',
-      value: stats.platformCommission,
-      description: 'Platform charge',
+      title: 'Total Bookings',
+      value: stats.totalBookings,
+      description: 'Bookings received',
       icon: Coins,
       bgClass: 'bg-warning text-warning-foreground',
       descClass: 'text-warning-foreground',
+      isCount: true,
     },
     {
       title: 'Withdrawn Paid',
@@ -44,6 +47,7 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
       icon: CheckCircle2,
       bgClass: 'bg-indigo-50 text-indigo-600',
       descClass: 'text-indigo-500',
+      isCount: false,
     },
   ]
 
@@ -66,7 +70,7 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
                 {card.title}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                ₹{card.value.toLocaleString()}
+                {card.isCount ? '' : '₹'}{card.value.toLocaleString()}
               </h3>
               <span
                 className={`text-[9px] font-bold text-muted-dark block ${card.descClass || ''}`}

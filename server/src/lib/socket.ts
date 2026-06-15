@@ -201,6 +201,10 @@ export function initSocket(httpServer: any) {
           return socket.emit("error", { message: "Unauthorized in this conversation" });
         }
 
+        if (conversation.blockedBy && conversation.blockedBy.length > 0) {
+          return socket.emit("error", { message: "Cannot send messages in a blocked conversation" });
+        }
+
         const otherParticipantId = conversation.participantOneId === userId
           ? conversation.participantTwoId
           : conversation.participantOneId;

@@ -34,7 +34,7 @@ export const useAllPayoutRequests = (options?: { enabled?: boolean }) => {
     queryKey: ['all-payouts'],
     queryFn: async () => {
       const res = await apiClient.get('/payouts/requests')
-      return res.data.payouts
+      return res.data
     },
     ...options,
   })

@@ -128,6 +128,7 @@ export class UserService {
       showOnline: user.showOnline,
       lastActive: user.lastActive,
       isGreenMember: user.isGreenMember,
+      bio: user.bio,
     };
   }
 
@@ -151,6 +152,7 @@ export class UserService {
     showProfile?: boolean;
     showOnline?: boolean;
     allowData?: boolean;
+    bio?: string;
   }) {
     const userBefore = await prisma.user.findUnique({
       where: { id },
@@ -178,6 +180,7 @@ export class UserService {
         showProfile: data.showProfile !== undefined ? data.showProfile : undefined,
         showOnline: data.showOnline !== undefined ? data.showOnline : undefined,
         allowData: data.allowData !== undefined ? data.allowData : undefined,
+        bio: data.bio !== undefined ? data.bio : undefined,
       }
     });
 

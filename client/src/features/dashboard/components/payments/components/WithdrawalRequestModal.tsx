@@ -110,14 +110,13 @@ export const WithdrawalRequestModal = ({
           </div>
 
           {/* Platform notice */}
-          <div className="bg-warning/50 p-4 rounded-2xl border border-amber-100/50 flex items-start gap-2">
+          <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 flex items-start gap-2">
             <AlertCircle
               size={16}
-              className="text-warning-foreground shrink-0 mt-0.5"
+              className="text-emerald-600 shrink-0 mt-0.5"
             />
-            <p className="text-[10px] font-semibold text-warning-foreground leading-relaxed">
-              By requesting this withdrawal, you authorize standard 10% platform
-              fee calculations against your gross earnings bookings database.
+            <p className="text-[10px] font-semibold text-emerald-600 leading-relaxed">
+              Platform payouts are processed with 0% commission fees. Listers retain 100% of their gross rental booking earnings.
             </p>
           </div>
 

@@ -7,6 +7,7 @@ import { NewChatDialog } from './components/NewChatDialog'
 import { ConversationList } from './components/ConversationList'
 import { ChatWindow } from './components/ChatWindow'
 import { AboutPanel } from './components/AboutPanel'
+import { MySettingsPanel } from './components/MySettingsPanel'
 import { useChatStore } from '../../../../store/useChatStore'
 
 export const MessagesManagement = () => {
@@ -19,6 +20,7 @@ export const MessagesManagement = () => {
   const lightboxIndex = useChatStore((state) => state.lightboxIndex)
   const setLightboxIndex = useChatStore((state) => state.setLightboxIndex)
   const showDetailsPanel = useChatStore((state) => state.showDetailsPanel)
+  const activePanel = useChatStore((state) => state.activePanel)
   const activeConversationId = useChatStore(
     (state) => state.activeConversationId,
   )
@@ -53,6 +55,9 @@ export const MessagesManagement = () => {
       archiveConversation: chatData.archiveConversation,
       unarchiveConversation: chatData.unarchiveConversation,
       updateConversationSettings: chatData.updateConversationSettings,
+      blockConversation: chatData.blockConversation,
+      unblockConversation: chatData.unblockConversation,
+      reportConversation: chatData.reportConversation,
     })
   }, [
     chatData.isConnected,
@@ -81,6 +86,9 @@ export const MessagesManagement = () => {
     chatData.archiveConversation,
     chatData.unarchiveConversation,
     chatData.updateConversationSettings,
+    chatData.blockConversation,
+    chatData.unblockConversation,
+    chatData.reportConversation,
     setChatData,
   ])
 
@@ -102,27 +110,21 @@ export const MessagesManagement = () => {
 
   return (
     <>
-      <div className="space-y-4">
-        {/* Dynamic Header */}
-        <div>
-          <h1 className="text-xl font-black text-foreground font-display">
-            Messages
-          </h1>
-          <p className="text-[10px] text-muted-dark/80 font-bold mt-1.5">
-            Chat with hosts, buyers and our support team.
-          </p>
-        </div>
+      <div className="flex flex-col lg:flex-row gap-5 h-[700px] max-h-[calc(100vh-280px)] overflow-hidden">
+        {/* ── LEFT COLUMN: Conversations List ── */}
+        <ConversationList />
 
-        <div className="flex flex-col lg:flex-row gap-5 h-[700px] max-h-[calc(100vh-280px)] overflow-hidden">
-          {/* ── LEFT COLUMN: Conversations List ── */}
-          <ConversationList />
+        {/* ── MIDDLE COLUMN: Active Chat ── */}
+        <ChatWindow />
 
-          {/* ── MIDDLE COLUMN: Active Chat ── */}
-          <ChatWindow />
-
-          {/* ── RIGHT COLUMN: Details Sidebar (About Panel) ── */}
-          {showDetailsPanel && activeConversationId && <AboutPanel />}
-        </div>
+        {/* ── RIGHT COLUMN: Details Sidebar (About Panel or Settings) ── */}
+        {showDetailsPanel && (
+          activePanel === 'settings' && !activeConversationId ? (
+            <MySettingsPanel />
+          ) : (
+            activeConversationId && <AboutPanel />
+          )
+        )}
       </div>
 
       {/* ── New Message Dialog ── */}

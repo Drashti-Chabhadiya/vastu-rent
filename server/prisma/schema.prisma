@@ -62,6 +62,7 @@ model User {
   allowData         Boolean   @default(true)
   lastActive        DateTime  @default(now())
   isGreenMember     Boolean   @default(false)
+  bio               String?   @default("Hey there! I am using VastuRent.")
   
   // Relations
   sessions      Session[]
@@ -426,6 +427,8 @@ model Conversation {
   pinnedBy             String[]  @default([])
   mutedBy              String[]  @default([])
   archivedBy           String[]  @default([])
+  blockedBy            String[]  @default([])
+  reportedBy           String[]  @default([])
   disappearingDuration Int       @default(0)
   settings             Json?
 

@@ -39,8 +39,8 @@ export class PayoutController {
     }
 
     try {
-      const payouts = await payoutService.getAllPayoutRequests();
-      return { payouts };
+      const { payouts, platformStats } = await payoutService.getAllPayoutRequests();
+      return { payouts, platformStats };
     } catch (error: any) {
       return reply.status(500).send({ message: error.message || "Failed to retrieve payout requests" });
     }

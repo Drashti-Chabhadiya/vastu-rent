@@ -63,9 +63,12 @@ export class ChatController {
         lastMessage = null;
       }
 
+      const isBlockedByOther = (conv.blockedBy || []).includes(otherUser.id);
+      const isBlockedByMe = (conv.blockedBy || []).includes(userId);
+
       // Reciprocal Online/Last Seen status rules
       const otherUserShowOnline = (otherUser as any).showOnline !== false;
-      const canSeeStatus = userShowOnline && otherUserShowOnline;
+      const canSeeStatus = userShowOnline && otherUserShowOnline && !isBlockedByOther && !isBlockedByMe;
 
       const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false;
       const lastActive = canSeeStatus ? (otherUser as any).lastActive : null;
@@ -76,6 +79,8 @@ export class ChatController {
         pinnedBy: conv.pinnedBy || [],
         mutedBy: conv.mutedBy || [],
         archivedBy: conv.archivedBy || [],
+        blockedBy: conv.blockedBy || [],
+        reportedBy: conv.reportedBy || [],
         isArchived: (conv.archivedBy || []).includes(userId),
         disappearingDuration,
         settings: conv.settings || null,
@@ -83,7 +88,7 @@ export class ChatController {
           id: otherUser.id,
           name: otherUser.name,
           role: otherUser.role,
-          image: (otherUser as any).showProfile === false ? null : otherUser.image,
+          image: ((otherUser as any).showProfile === false || isBlockedByOther) ? null : otherUser.image,
           isOnline,
           lastActive,
           isGreenMember: (otherUser as any).isGreenMember === true,
@@ -215,9 +220,12 @@ export class ChatController {
     const userShowOnline = (session.user as any).showOnline !== false;
     const otherUser = conversation.participantOneId === userId ? conversation.participantTwo : conversation.participantOne;
 
+    const isBlockedByOther = (conversation.blockedBy || []).includes(otherUser.id);
+    const isBlockedByMe = (conversation.blockedBy || []).includes(userId);
+
     // Reciprocal Online/Last Seen status rules
     const otherUserShowOnline = (otherUser as any).showOnline !== false;
-    const canSeeStatus = userShowOnline && otherUserShowOnline;
+    const canSeeStatus = userShowOnline && otherUserShowOnline && !isBlockedByOther && !isBlockedByMe;
 
     const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false;
     const lastActive = canSeeStatus ? (otherUser as any).lastActive : null;
@@ -228,6 +236,8 @@ export class ChatController {
       pinnedBy: conversation.pinnedBy || [],
       mutedBy: conversation.mutedBy || [],
       archivedBy: conversation.archivedBy || [],
+      blockedBy: conversation.blockedBy || [],
+      reportedBy: conversation.reportedBy || [],
       isArchived: (conversation.archivedBy || []).includes(userId),
       disappearingDuration: conversation.disappearingDuration || 0,
       settings: conversation.settings || null,
@@ -235,7 +245,7 @@ export class ChatController {
         id: otherUser.id,
         name: otherUser.name,
         role: otherUser.role,
-        image: (otherUser as any).showProfile === false ? null : otherUser.image,
+        image: ((otherUser as any).showProfile === false || isBlockedByOther) ? null : otherUser.image,
         isOnline,
         lastActive,
         isGreenMember: (otherUser as any).isGreenMember === true,
@@ -339,9 +349,21 @@ export class ChatController {
         return reply.status(400).send({ message: "No file uploaded" });
       }
 
-      // Validate file type
-      if (!data.mimetype.startsWith("image/")) {
-        return reply.status(400).send({ message: "Only image files are allowed" });
+      // Validate file type: allow images, audios, videos, and common document types
+      const allowedMimePrefixes = ["image/", "audio/", "video/"];
+      const allowedMimetypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "text/plain",
+        "application/zip",
+        "application/x-zip-compressed"
+      ];
+      const isAllowed = allowedMimePrefixes.some(prefix => data.mimetype.startsWith(prefix)) ||
+                        allowedMimetypes.includes(data.mimetype);
+
+      if (!isAllowed) {
+        return reply.status(400).send({ message: "Only image, audio, video, and document files (PDF, Word, Text, Zip) are allowed." });
       }
 
       const buffer = await data.toBuffer();
@@ -1000,6 +1022,90 @@ export class ChatController {
     });
 
     return updated;
+  }
+
+  async blockConversation(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+    const userId = session.user.id;
+
+    const conversation = await prisma.conversation.findUnique({ where: { id } });
+    if (!conversation) return reply.status(404).send({ message: "Conversation not found" });
+
+    if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    const blockedBy = Array.from(new Set([...(conversation.blockedBy || []), userId]));
+
+    const updated = await prisma.conversation.update({
+      where: { id },
+      data: { blockedBy }
+    });
+
+    // Broadcast update via socket
+    io?.to(`conversation_${id}`).emit("conversation_blocked_updated", {
+      id: updated.id,
+      blockedBy: updated.blockedBy
+    });
+
+    return { id: updated.id, blockedBy: updated.blockedBy };
+  }
+
+  async unblockConversation(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+    const userId = session.user.id;
+
+    const conversation = await prisma.conversation.findUnique({ where: { id } });
+    if (!conversation) return reply.status(404).send({ message: "Conversation not found" });
+
+    if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    const blockedBy = (conversation.blockedBy || []).filter(uid => uid !== userId);
+
+    const updated = await prisma.conversation.update({
+      where: { id },
+      data: { blockedBy }
+    });
+
+    // Broadcast update via socket
+    io?.to(`conversation_${id}`).emit("conversation_blocked_updated", {
+      id: updated.id,
+      blockedBy: updated.blockedBy
+    });
+
+    return { id: updated.id, blockedBy: updated.blockedBy };
+  }
+
+  async reportConversation(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = request.params as any;
+    const { reason } = request.body as any;
+    const session = await auth.api.getSession({ headers: request.headers as any });
+    if (!session) return reply.status(401).send({ message: "Unauthorized" });
+    const userId = session.user.id;
+
+    const conversation = await prisma.conversation.findUnique({ where: { id } });
+    if (!conversation) return reply.status(404).send({ message: "Conversation not found" });
+
+    if (conversation.participantOneId !== userId && conversation.participantTwoId !== userId) {
+      return reply.status(403).send({ message: "Forbidden" });
+    }
+
+    const reportedBy = Array.from(new Set([...(conversation.reportedBy || []), userId]));
+
+    const updated = await prisma.conversation.update({
+      where: { id },
+      data: { reportedBy }
+    });
+
+    console.log(`⚠️ User ${session.user.name} reported conversation ${id}. Reason: "${reason || 'No reason provided'}"`);
+
+    return { id: updated.id, reportedBy: updated.reportedBy, message: "Report submitted successfully" };
   }
 }
 

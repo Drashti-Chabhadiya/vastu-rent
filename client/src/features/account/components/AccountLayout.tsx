@@ -3,7 +3,6 @@ import {
   User,
   Settings,
   Calendar,
-  Percent,
   Star,
   MessageSquare,
   Bell,
@@ -11,6 +10,7 @@ import {
   LogOut,
   Leaf,
   ChevronRight,
+  Building2,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
@@ -117,7 +117,7 @@ export function AccountLayout() {
     {
       id: 'listings',
       label: 'My Listings',
-      icon: Percent,
+      icon: Building2,
       href: '/account/listings',
     },
     { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
@@ -132,6 +132,7 @@ export function AccountLayout() {
       label: 'Notifications',
       icon: Bell,
       href: '/account/notifications',
+      badge: 3,
     },
     {
       id: 'settings',
@@ -159,7 +160,7 @@ export function AccountLayout() {
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: EASE }}
-              className="w-full lg:w-[190px] shrink-0 bg-card rounded-2xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden"
+              className="w-full lg:w-[240px] shrink-0 bg-card rounded-3xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden"
             >
               <div>
                 {/* User Profile Card */}
@@ -181,7 +182,7 @@ export function AccountLayout() {
                     </p>
                   </div>
                 </div>
-                <nav className="space-y-0">
+                <nav className="space-y-0.5">
                   {menuItems.map((item) => {
                     const Icon = item.icon
                     const isActive = activeTab === item.id
@@ -190,10 +191,10 @@ export function AccountLayout() {
                         key={item.id}
                         to={item.href}
                         className={cn(
-                          'flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-all duration-200 group cursor-pointer text-[13px] font-semibold',
+                          'flex items-center gap-2.5 py-2.5 pr-3 pl-3 rounded-xl transition-all duration-200 group cursor-pointer text-[13px] font-semibold border-l-[3.5px]',
                           isActive
-                            ? 'bg-primary-soft text-primary'
-                            : 'text-muted-foreground hover:bg-muted-light hover:text-foreground',
+                            ? 'bg-primary-soft text-primary border-primary rounded-l-none pl-2.5 font-bold'
+                            : 'text-muted-foreground hover:bg-muted-light hover:text-foreground border-transparent pl-[13.5px]',
                         )}
                       >
                         <Icon
@@ -205,7 +206,12 @@ export function AccountLayout() {
                               : 'text-muted-dark group-hover:text-foreground/80',
                           )}
                         />
-                        <span>{item.label}</span>
+                        <span className="flex-1">{item.label}</span>
+                        {item.badge !== undefined && (
+                          <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black flex items-center justify-center shrink-0 ml-auto border border-emerald-100">
+                            {item.badge}
+                          </span>
+                        )}
                       </Link>
                     )
                   })}
@@ -225,23 +231,48 @@ export function AccountLayout() {
                 </nav>
               </div>
 
-              {/* Green Member Banner */}
-              <div className="bg-primary-soft rounded-xl p-3 flex gap-2 items-start border border-primary-border mt-4 mx-1">
-                <div className="w-7 h-7 rounded-full bg-primary-border flex items-center justify-center text-primary shrink-0 mt-0.5">
-                  <Leaf size={13} fill="currentColor" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h4 className="font-extrabold text-primary text-[11px]">
-                    Green Member
-                  </h4>
-                  <p className="text-[10px] text-primary/80 font-semibold leading-normal mt-0.5">
-                    You're saving the planet!
-                  </p>
+              {/* Grow bookings card */}
+              <div className="relative overflow-hidden bg-primary-soft/40 rounded-2xl p-4.5 mt-4 mx-1 border border-primary-border/40 shadow-xs">
+                {/* Background Leaf Watermark */}
+                <svg
+                  className="absolute right-[-10px] bottom-[-10px] w-24 h-24 text-primary/10 pointer-events-none fill-none"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M10,90 C40,70 50,40 80,10 C50,20 20,50 10,90 Z"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <path
+                    d="M10,90 L80,10 M30,65 C40,55 50,55 60,45 M50,45 C55,40 60,40 65,35"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    opacity="0.2"
+                  />
+                  <path
+                    d="M85,15 C75,25 70,35 72,45 C75,55 85,60 90,55 C95,50 90,25 85,15 Z"
+                    fill="currentColor"
+                    opacity="0.2"
+                  />
+                </svg>
+
+                <div className="relative z-10 flex flex-col items-start gap-2">
+                  <Leaf size={16} className="text-primary fill-primary/10 shrink-0" />
+                  <div>
+                    <h4 className="font-display font-black text-foreground text-[13px] tracking-tight leading-tight">
+                      Grow your bookings
+                    </h4>
+                    <p className="text-[10px] text-muted-foreground font-semibold leading-normal mt-0.5">
+                      List more. Earn more.
+                    </p>
+                  </div>
                   <Link
                     to="/help"
-                    className="text-primary text-[10px] font-black flex items-center gap-0.5 mt-2 hover:underline"
+                    className="text-primary text-[10px] font-black flex items-center gap-0.5 mt-1.5 hover:opacity-80 transition-opacity"
                   >
-                    View Impact <ChevronRight size={9} strokeWidth={3} />
+                    View impact <ChevronRight size={9} strokeWidth={3} className="mt-0.5" />
                   </Link>
                 </div>
               </div>
@@ -255,12 +286,12 @@ export function AccountLayout() {
               className="flex-1 min-w-0 w-full"
             >
               {activeTab === 'personal' ||
-              activeTab === 'bookings' ||
-              activeTab === 'listings' ||
-              activeTab === 'reviews' ||
-              activeTab === 'messages' ||
-              activeTab === 'notifications' ||
-              activeTab === 'settings' ? (
+                activeTab === 'bookings' ||
+                activeTab === 'listings' ||
+                activeTab === 'reviews' ||
+                activeTab === 'messages' ||
+                activeTab === 'notifications' ||
+                activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

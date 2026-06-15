@@ -3,62 +3,101 @@ import { paymentService } from "./payment.service.js";
 import { rentalService } from "../rental/rental.service.js";
 
 export class PaymentController {
-  async createOrder(request: FastifyRequest, reply: FastifyReply) {
+  /**
+   * Confirm payment for an online rental.
+   * Generates an internal reference and marks the rental as confirmed + paid.
+   */
+  async confirmPayment(request: FastifyRequest, reply: FastifyReply) {
     const { rentalId } = request.body as { rentalId: string };
-    
-    // Fetch rental details
-    const rentals = await rentalService.getMyRentals((request as any).user.id);
+    const userId = (request as any).user.id;
+
+    // Verify the rental belongs to the requesting user
+    const rentals = await rentalService.getMyRentals(userId);
     const rental = rentals.find((r: any) => r.id === rentalId);
 
     if (!rental) {
       return reply.status(404).send({ message: "Rental not found" });
     }
 
+    if (rental.paymentStatus === "paid") {
+      return reply.status(400).send({ message: "Payment already confirmed" });
+    }
+
     try {
-      const order = await paymentService.createOrder(rental.totalPrice, `receipt_${rental.id}`);
-      return { order };
+      const transactionId = paymentService.generatePaymentReference(rentalId);
+
+      // Mark rental as confirmed and paid
+      const updatedRental = await rentalService.updateRentalStatus(
+        rentalId,
+        "confirmed",
+        "paid",
+        transactionId
+      );
+
+      // Send notifications in background
+      try {
+        const { createAndDeliverNotification } = await import('../../lib/notification.js');
+
+        await createAndDeliverNotification({
+          userId: updatedRental.renterId,
+          title: "Payment Confirmed! 💳",
+          message: `Your payment of ₹${updatedRental.totalPrice} for "${updatedRental.product.title}" was confirmed.`,
+          type: "payment",
+          url: `/account/bookings`,
+        });
+
+        await createAndDeliverNotification({
+          userId: updatedRental.product.userId,
+          title: "Payment Received! 💰",
+          message: `Payment of ₹${updatedRental.totalPrice} for your product "${updatedRental.product.title}" has been received.`,
+          type: "payment",
+          url: `/dashboard/orders`,
+        });
+      } catch (err) {
+        console.error("Failed to deliver payment notifications:", err);
+      }
+
+      return { success: true, rental: updatedRental, transactionId };
     } catch (error: any) {
       return reply.status(500).send({ message: error.message });
     }
   }
 
-  async verifyPayment(request: FastifyRequest, reply: FastifyReply) {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, rentalId } = request.body as any;
+  /**
+   * Create a Stripe Checkout Session (or simulated fallback session) for online booking payment.
+   */
+  async createBookingSession(request: FastifyRequest, reply: FastifyReply) {
+    const { rentalId } = request.body as { rentalId: string };
+    const userId = (request as any).user.id;
 
-    const isValid = paymentService.verifyPayment(razorpay_order_id, razorpay_payment_id, razorpay_signature);
+    if (!rentalId) {
+      return reply.status(400).send({ message: "Rental ID is required" });
+    }
 
-    if (isValid) {
-      // Update rental status and payment status
-      const rental = await rentalService.updateRentalStatus(rentalId, "confirmed", "paid", razorpay_payment_id);
-      
-      // Send payment notifications in background
-      try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js');
-        
-        // 1. Notify Renter
-        await createAndDeliverNotification({
-          userId: rental.renterId,
-          title: "Payment Successful! 💳",
-          message: `Your payment of ₹${rental.totalPrice} for "${rental.product.title}" was successful.`,
-          type: "payment",
-          url: `/journal`,
-        });
+    try {
+      const session = await paymentService.createBookingSession(userId, rentalId);
+      return session;
+    } catch (error: any) {
+      return reply.status(500).send({ message: error.message });
+    }
+  }
 
-        // 2. Notify Product Lister
-        await createAndDeliverNotification({
-          userId: rental.product.userId,
-          title: "Payment Received! 💰",
-          message: `Payment of ₹${rental.totalPrice} for your product "${rental.product.title}" has been received.`,
-          type: "payment",
-          url: `/journal`,
-        });
-      } catch (err) {
-        console.error("Failed to deliver payment verification notifications:", err);
-      }
+  /**
+   * Verify a Stripe Checkout Session (or simulated fallback session) for online booking payment.
+   */
+  async verifyBookingSession(request: FastifyRequest, reply: FastifyReply) {
+    const { sessionId, rentalId } = request.body as { sessionId: string; rentalId: string };
+    const userId = (request as any).user.id;
 
-      return { success: true, message: "Payment verified successfully" };
-    } else {
-      return reply.status(400).send({ success: false, message: "Invalid payment signature" });
+    if (!sessionId || !rentalId) {
+      return reply.status(400).send({ message: "Session ID and Rental ID are required" });
+    }
+
+    try {
+      const result = await paymentService.verifyBookingSession(userId, sessionId, rentalId);
+      return result;
+    } catch (error: any) {
+      return reply.status(500).send({ message: error.message });
     }
   }
 }

@@ -30,9 +30,8 @@ export class PayoutService {
       .filter(o => new Date(o.createdAt) >= startOfMonth)
       .reduce((sum, o) => sum + (o.totalPrice || 0), 0);
 
-    const platformCommissionRate = 0.10; // 10%
-    const platformCommission = totalEarnings * platformCommissionRate;
-    const netEarnings = totalEarnings - platformCommission;
+    const platformCommission = 0; // 0% commission under subscription model
+    const netEarnings = totalEarnings;
 
     const completedPayoutsTotal = payouts
       .filter(p => p.status === "paid")
@@ -74,7 +73,8 @@ export class PayoutService {
         netEarnings,
         withdrawableBalance,
         pendingPayouts: pendingPayoutsTotal,
-        completedPayouts: completedPayoutsTotal
+        completedPayouts: completedPayoutsTotal,
+        totalBookings: orders.length
       },
       payoutRequests: payouts,
       productBreakdown,
@@ -119,12 +119,41 @@ export class PayoutService {
   }
 
   async getAllPayoutRequests() {
-    return prisma.payout.findMany({
-      include: {
-        user: { select: { id: true, name: true, email: true, image: true } }
-      },
-      orderBy: { createdAt: "desc" }
-    });
+    const [payouts, rentals] = await Promise.all([
+      prisma.payout.findMany({
+        include: {
+          user: { select: { id: true, name: true, email: true, image: true } }
+        },
+        orderBy: { createdAt: "desc" }
+      }),
+      prisma.rental.findMany({
+        where: {
+          status: { in: ["confirmed", "active", "completed"] }
+        },
+        select: { totalPrice: true }
+      })
+    ]);
+
+    // Calculate platform-wide statistics
+    const totalGmv = rentals.reduce((sum, r) => sum + (r.totalPrice || 0), 0);
+
+    const totalPayoutsPaid = payouts
+      .filter(p => p.status === "paid")
+      .reduce((sum, p) => sum + p.amount, 0);
+
+    const totalPayoutsPending = payouts
+      .filter(p => p.status === "pending" || p.status === "approved")
+      .reduce((sum, p) => sum + p.amount, 0);
+
+    return {
+      payouts,
+      platformStats: {
+        totalGmv,
+        totalBookings: rentals.length,
+        totalPayoutsPaid,
+        totalPayoutsPending
+      }
+    };
   }
 
   async updatePayoutStatus(id: string, status: string, notes?: string) {
