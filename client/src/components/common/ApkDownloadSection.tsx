@@ -24,7 +24,9 @@ const ApkDownloadSection = () => {
   const [isLocalhost, setIsLocalhost] = useState(false)
   const [customIp, setCustomIp] = useState('')
   const [copied, setCopied] = useState(false)
-  const [activePlatform, setActivePlatform] = useState<'android' | 'ios'>('android')
+  const [activePlatform, setActivePlatform] = useState<'android' | 'ios'>(
+    'android',
+  )
 
   // Auto-detect iOS devices on load
   useEffect(() => {
@@ -52,7 +54,9 @@ const ApkDownloadSection = () => {
     } else {
       // iOS QR code should point to the browser website origin
       if (isLocal) {
-        const cleanIp = customIp ? customIp.replace(/^https?:\/\//, '').split(':')[0] : '192.168.1.1'
+        const cleanIp = customIp
+          ? customIp.replace(/^https?:\/\//, '').split(':')[0]
+          : '192.168.1.1'
         setQrUrl(`http://${cleanIp}:3000`)
       } else {
         setQrUrl(origin)
@@ -136,7 +140,7 @@ const ApkDownloadSection = () => {
                     'rounded-xl px-5 h-9 font-bold text-xs cursor-pointer shadow-none transition-all',
                     activePlatform === 'android'
                       ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light'
+                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light',
                   )}
                 >
                   Android
@@ -147,7 +151,7 @@ const ApkDownloadSection = () => {
                     'rounded-xl px-5 h-9 font-bold text-xs cursor-pointer shadow-none transition-all',
                     activePlatform === 'ios'
                       ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light'
+                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light',
                   )}
                 >
                   iOS (iPhone)
@@ -160,12 +164,15 @@ const ApkDownloadSection = () => {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full border border-primary/20 text-xs font-bold uppercase tracking-widest font-sans"
               >
                 <Smartphone className="w-4 h-4" />
-                {activePlatform === 'android' ? 'Now Available for Android' : 'Installs instantly on iOS'}
+                {activePlatform === 'android'
+                  ? 'Now Available for Android'
+                  : 'Installs instantly on iOS'}
               </motion.div>
               <h1 className="text-5xl lg:text-7xl font-display text-foreground leading-[1.05] tracking-tight">
                 {activePlatform === 'android' ? (
                   <>
-                    Download <span className="text-primary italic">Vastu Rent</span>{' '}
+                    Download{' '}
+                    <span className="text-primary italic">Vastu Rent</span>{' '}
                     Mobile App
                   </>
                 ) : (
@@ -176,11 +183,9 @@ const ApkDownloadSection = () => {
                 )}
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-sans">
-                {activePlatform === 'android' ? (
-                  'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.'
-                ) : (
-                  'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.'
-                )}
+                {activePlatform === 'android'
+                  ? 'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.'
+                  : 'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.'}
               </p>
             </div>
 
@@ -223,7 +228,10 @@ const ApkDownloadSection = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
                 <motion.button
                   onClick={() => {
-                    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+                    const origin =
+                      typeof window !== 'undefined'
+                        ? window.location.origin
+                        : ''
                     window.open(origin, '_blank')
                   }}
                   whileHover={{ scale: 1.02, y: -4 }}
@@ -345,14 +353,14 @@ const ApkDownloadSection = () => {
 
                 <div className="space-y-3 px-4">
                   <h3 className="text-2xl font-display text-foreground leading-tight">
-                    {activePlatform === 'android' ? 'Scan to Install' : 'Scan on iPhone'}
+                    {activePlatform === 'android'
+                      ? 'Scan to Install'
+                      : 'Scan on iPhone'}
                   </h3>
                   <p className="text-sm text-muted-foreground font-sans leading-relaxed">
-                    {activePlatform === 'android' ? (
-                      'Point your camera at this code to download the APK directly to your phone.'
-                    ) : (
-                      'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.'
-                    )}
+                    {activePlatform === 'android'
+                      ? 'Point your camera at this code to download the APK directly to your phone.'
+                      : 'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.'}
                   </p>
                 </div>
 

@@ -315,7 +315,8 @@ function RootDocument() {
     routerState.location.pathname.startsWith('/signup')
   const isAdminPage = routerState.location.pathname.startsWith('/admin')
   const isDashboardPage = routerState.location.pathname.startsWith('/dashboard')
-  const isChatPage = routerState.location.pathname.startsWith('/account/messages')
+  const isChatPage =
+    routerState.location.pathname.startsWith('/account/messages')
 
   return (
     <div className={cn('bg-card', 'font-sans', 'antialiased')}>

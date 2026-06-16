@@ -137,7 +137,8 @@ export function MySettingsPanel({
     <div
       className={cn(
         'flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-[#fbf9f4]',
-        !isEmbedded && 'w-full lg:w-[360px] shrink-0 lg:border-l lg:border-slate-200/80',
+        !isEmbedded &&
+          'w-full lg:w-[360px] shrink-0 lg:border-l lg:border-slate-200/80',
       )}
     >
       {/* ── HEADER ── */}

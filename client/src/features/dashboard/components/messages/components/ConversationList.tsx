@@ -134,7 +134,7 @@ export function ConversationList() {
   return (
     <div
       className={cn(
-        'shrink-0 bg-card lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out lg:border lg:border-border/30',
+        'shrink-0 bg-card lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out lg:border lg:border-border/30 safe-area-top',
         showDetailsPanel
           ? 'w-0 lg:w-[84px] p-2 hidden lg:flex'
           : showMobileChat
@@ -145,7 +145,7 @@ export function ConversationList() {
       {/* ── Messages Header Section ── */}
       <div
         className={cn(
-          'px-6 pt-6 pb-2 shrink-0 select-none safe-area-top', // safe-area-top = status bar padding on mobile
+          'px-6 pt-6 pb-2 shrink-0 select-none',
           showDetailsPanel && 'px-1 pt-4 pb-2 flex flex-col items-center',
         )}
       >

@@ -138,7 +138,11 @@ export function ChatInputDock() {
   }
 
   return (
-    <div className={cn('border-t border-border/30 bg-card shrink-0 safe-area-bottom')}>
+    <div
+      className={cn(
+        'border-t border-border/30 bg-card shrink-0 safe-area-bottom',
+      )}
+    >
       {/* Reply Preview Bar */}
       {replyTarget && (
         <div

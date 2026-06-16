@@ -443,9 +443,15 @@ export const ReviewsManagement = () => {
                   <div className="flex items-center gap-2.5">
                     {(() => {
                       const isOwnReview = currentUserId === review.reviewer.id
-                      const displayName = isOwnReview ? review.host.name : review.reviewer.name
-                      const displayAvatar = isOwnReview ? review.host.avatar : review.reviewer.avatar
-                      const displayLabel = isOwnReview ? 'Reviewed Host' : 'Reviewed By'
+                      const displayName = isOwnReview
+                        ? review.host.name
+                        : review.reviewer.name
+                      const displayAvatar = isOwnReview
+                        ? review.host.avatar
+                        : review.reviewer.avatar
+                      const displayLabel = isOwnReview
+                        ? 'Reviewed Host'
+                        : 'Reviewed By'
                       return (
                         <>
                           <UserAvatar
