@@ -60,21 +60,15 @@ export function AccountLayoutSkeleton() {
                 <div className="h-10 w-28 bg-muted rounded-xl" />
               </div>
 
-              {/* Avatar + info block */}
-              <div className="flex flex-col sm:flex-row items-center gap-8 mb-10">
-                <div className="w-28 h-28 rounded-2xl bg-muted shrink-0" />
-                <div className="flex-1 space-y-3 w-full">
-                  <div className="h-5 bg-muted rounded-lg w-40" />
-                  <div className="h-3 bg-muted/50 rounded-lg w-24" />
-                </div>
-              </div>
-
-              {/* Fields grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="space-y-2">
-                    <div className="h-3 bg-muted/50 rounded w-24" />
-                    <div className="h-11 bg-muted/50 rounded-xl w-full" />
+              {/* Generic content rows */}
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="p-6 bg-muted-light/60 rounded-[2rem] border border-border/10 space-y-3"
+                  >
+                    <div className="h-4 bg-muted rounded-lg w-1/4" />
+                    <div className="h-3 bg-muted/50 rounded-lg w-2/3" />
                   </div>
                 ))}
               </div>

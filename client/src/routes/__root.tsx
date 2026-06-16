@@ -315,15 +315,24 @@ function RootDocument() {
     routerState.location.pathname.startsWith('/signup')
   const isAdminPage = routerState.location.pathname.startsWith('/admin')
   const isDashboardPage = routerState.location.pathname.startsWith('/dashboard')
+  const isChatPage = routerState.location.pathname.startsWith('/account/messages')
 
   return (
     <div className={cn('bg-card', 'font-sans', 'antialiased')}>
       <QueryClientProvider client={queryClient}>
         <TranslationProvider>
           <NotificationListener />
-          {!isAuthPage && !isAdminPage && !isDashboardPage && <Navbar />}
+          {!isAuthPage && !isAdminPage && !isDashboardPage && (
+            <div className={cn(isChatPage && 'hidden lg:block')}>
+              <Navbar />
+            </div>
+          )}
           <Outlet />
-          {!isAuthPage && !isAdminPage && !isDashboardPage && <Footer />}
+          {!isAuthPage && !isAdminPage && !isDashboardPage && (
+            <div className={cn(isChatPage && 'hidden')}>
+              <Footer />
+            </div>
+          )}
         </TranslationProvider>
       </QueryClientProvider>
       <Toaster position="top-right" />

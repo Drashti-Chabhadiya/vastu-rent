@@ -26,6 +26,11 @@ export const auth = betterAuth({
       "localhost:4000",
       "localhost:3000",
       "127.0.0.1:4000",
+      "127.0.0.1:3000",
+      "127.0.0.1",
+      "10.0.2.2:4000",
+      "10.0.2.2:3000",
+      "10.0.2.2",
       "*.vercel.app",
       "*.onrender.com",
       getHostName(process.env.BETTER_AUTH_URL),
@@ -109,6 +114,10 @@ export const auth = betterAuth({
     // Local development
     'http://localhost:3000',
     'http://localhost',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:4000',
+    'http://10.0.2.2:3000',
+    'http://10.0.2.2:4000',
     // Capacitor WebView
     'capacitor://localhost',
     // Production web app (Vercel)

@@ -111,7 +111,7 @@ export const MessagesManagement = () => {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row gap-5 h-[700px] max-h-[calc(100vh-280px)] overflow-hidden">
+      <div className="flex flex-col lg:flex-row lg:gap-5 gap-0 lg:h-[700px] h-dvh lg:max-h-[calc(100vh-280px)] max-h-dvh overflow-hidden w-full">
         {/* ── LEFT COLUMN: Conversations List ── */}
         <ConversationList />
 
