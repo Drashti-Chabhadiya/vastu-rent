@@ -12,7 +12,6 @@ import type { LoginSchema } from '#/schema'
 import { toast } from 'sonner'
 import { SocialAuth } from './social-auth'
 import { Capacitor } from '@capacitor/core'
-import { setBearerToken } from '#/lib/auth/token-storage'
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -106,14 +105,6 @@ export function LoginForm() {
     }
 
     if (Capacitor.isNativePlatform()) {
-      // On native, the session token comes back in the JSON response body as `token`.
-      // The onSuccess hook in auth-client.ts also captures it from the set-auth-token header.
-      // Store it directly here as an extra safety net before polling.
-      const token = (data as any)?.token
-      if (token) {
-        await setBearerToken(token)
-      }
-
       // Poll getSession() to confirm the session is live (up to ~3 seconds)
       let sessionOk = false
       for (let i = 0; i < 6; i++) {

@@ -102,9 +102,7 @@ export const authClient = createAuthClient({
           const body = ctx.data
           const token =
             body?.token ||
-            body?.session?.token ||
-            body?.data?.token ||
-            body?.data?.session?.token
+            body?.data?.token
           if (token) {
             await setBearerToken(decodeURIComponent(String(token)))
           }

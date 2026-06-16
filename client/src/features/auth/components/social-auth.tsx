@@ -5,7 +5,7 @@ import { Loader } from '@/components/ui/loader'
 import { toast } from 'sonner'
 import { Capacitor } from '@capacitor/core'
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in'
-import { setBearerToken, getBearerTokenSync } from '#/lib/auth/token-storage'
+import { getBearerTokenSync } from '#/lib/auth/token-storage'
 
 /**
  * Polls Better Auth's getSession() until a valid session is returned.
@@ -77,21 +77,6 @@ export function SocialAuth() {
         console.log(
           '[GoogleSignIn] Better Auth success, extracting session token...',
         )
-
-        // ALWAYS extract and store the token directly from the response body.
-        // Better Auth with bearer() plugin returns `token` in the JSON body.
-        // This is more reliable than relying on the set-auth-token header alone.
-        const responseData = (result as any)?.data
-        const bearerToken = responseData?.token || responseData?.session?.token
-
-        if (bearerToken) {
-          await setBearerToken(bearerToken)
-          console.log('[GoogleSignIn] Token stored from response body')
-        } else {
-          // The onSuccess hook in auth-client.ts may have already set it from the header.
-          // Wait a moment for that to complete before polling.
-          await new Promise((r) => setTimeout(r, 300))
-        }
 
         // Poll getSession() to confirm the session is live on the server.
         const ok = await waitForSession(8, 500)
