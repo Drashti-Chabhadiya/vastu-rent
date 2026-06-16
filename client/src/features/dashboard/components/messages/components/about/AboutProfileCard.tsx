@@ -25,13 +25,13 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
   const showOnlineStatus = canSeeStatus && otherPersonOnline
 
   return (
-    <div className="bg-white border border-slate-100 rounded-[2rem] shadow-2xs overflow-hidden flex flex-col items-center pb-6 shrink-0 relative">
+    <div className="bg-card border border-border/30 rounded-[2rem] shadow-2xs overflow-hidden flex flex-col items-center pb-6 shrink-0 relative">
       {/* Top gradient section */}
-      <div className="h-28 w-full bg-gradient-to-br from-[#d4ebe0] via-[#edf6f1] to-white shrink-0 relative">
+      <div className="h-28 w-full bg-gradient-to-br from-brand-green-bubble via-brand-green-tint to-card shrink-0 relative">
         {/* Floating Close Button */}
         <button
           onClick={() => setShowDetailsPanel(false)}
-          className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 text-slate-700 backdrop-blur-sm border border-white/25 flex items-center justify-center transition-colors cursor-pointer z-20 shadow-3xs"
+          className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 text-muted-foreground backdrop-blur-sm border border-white/25 flex items-center justify-center transition-colors cursor-pointer z-20 shadow-3xs"
           title="Close panel"
         >
           <X size={16} strokeWidth={2.5} />
@@ -39,7 +39,7 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
       </div>
 
       {/* Overlapping Avatar */}
-      <div className="relative -mt-12 z-10 w-24 h-24 rounded-full overflow-hidden border-[3.5px] border-white shadow-md">
+      <div className="relative -mt-12 z-10 w-24 h-24 rounded-full overflow-hidden border-[3.5px] border-card shadow-md">
         {otherParticipant.image ? (
           <img
             src={otherParticipant.image}
@@ -47,7 +47,7 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-slate-300 flex items-center justify-center text-2xl font-bold text-slate-700">
+          <div className="w-full h-full bg-muted flex items-center justify-center text-2xl font-bold text-muted-foreground">
             {otherParticipant.name.trim().charAt(0).toUpperCase()}
           </div>
         )}
@@ -55,7 +55,7 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
 
       {/* Name & verification badge */}
       <div className="mt-3 flex items-center justify-center gap-1.5 px-4">
-        <h4 className="text-[16px] font-bold text-slate-900 leading-tight font-sans tracking-tight">
+        <h4 className="text-[16px] font-bold text-foreground leading-tight font-sans tracking-tight">
           {otherParticipant.name}
         </h4>
         {otherParticipant.isGreenMember && (
@@ -90,13 +90,13 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
           </div>
         ) : (
           <div className="flex items-center">
-            <span className="w-2 h-2 rounded-full bg-slate-300 mr-1.5 inline-block"></span>
-            <span className="text-[12px] font-semibold text-slate-400">
+            <span className="w-2 h-2 rounded-full bg-muted mr-1.5 inline-block"></span>
+            <span className="text-[12px] font-semibold text-muted-dark">
               Offline
             </span>
           </div>
         )}
-        <span className="text-[11px] text-slate-400 mt-0.5 ml-1">
+        <span className="text-[11px] text-muted-dark mt-0.5 ml-1">
           {showOnlineStatus
             ? 'Last seen just now'
             : (() => {
@@ -113,12 +113,12 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
         <div className="flex flex-col items-center flex-1">
           <button
             onClick={() => toast.info('Starting audio call...')}
-            className="w-10 h-10 rounded-full bg-[#f4fbf7] hover:bg-[#e6f6ed] text-[#0d4d38] border border-emerald-500/10 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
+            className="w-10 h-10 rounded-full bg-brand-green-tint hover:bg-brand-green-bubble text-brand-primary-deep border-brand-green-border/20 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
             title="Audio Call"
           >
             <Phone size={16} />
           </button>
-          <span className="text-[11px] font-bold text-slate-500 mt-2 font-sans">
+          <span className="text-[11px] font-bold text-muted-foreground mt-2 font-sans">
             Audio
           </span>
         </div>
@@ -126,12 +126,12 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
         <div className="flex flex-col items-center flex-1">
           <button
             onClick={() => toast.info('Starting video call...')}
-            className="w-10 h-10 rounded-full bg-[#f4fbf7] hover:bg-[#e6f6ed] text-[#0d4d38] border border-emerald-500/10 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
+            className="w-10 h-10 rounded-full bg-brand-green-tint hover:bg-brand-green-bubble text-brand-primary-deep border-brand-green-border/20 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
             title="Video Call"
           >
             <Video size={16} />
           </button>
-          <span className="text-[11px] font-bold text-slate-500 mt-2 font-sans">
+          <span className="text-[11px] font-bold text-muted-foreground mt-2 font-sans">
             Video
           </span>
         </div>
@@ -144,12 +144,12 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
                 params: { id: otherParticipant.id },
               })
             }
-            className="w-10 h-10 rounded-full bg-[#f4fbf7] hover:bg-[#e6f6ed] text-[#0d4d38] border border-emerald-500/10 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
+            className="w-10 h-10 rounded-full bg-brand-green-tint hover:bg-brand-green-bubble text-brand-primary-deep border-brand-green-border/20 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
             title="Profile Details"
           >
             <User size={16} />
           </button>
-          <span className="text-[11px] font-bold text-slate-500 mt-2 font-sans">
+          <span className="text-[11px] font-bold text-muted-foreground mt-2 font-sans">
             Profile
           </span>
         </div>
@@ -157,12 +157,12 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
         <div className="flex flex-col items-center flex-1">
           <button
             onClick={() => setShowConversationSearch(true)}
-            className="w-10 h-10 rounded-full bg-[#f4fbf7] hover:bg-[#e6f6ed] text-[#0d4d38] border border-emerald-500/10 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
+            className="w-10 h-10 rounded-full bg-brand-green-tint hover:bg-brand-green-bubble text-brand-primary-deep border-brand-green-border/20 flex items-center justify-center transition-colors cursor-pointer shadow-3xs"
             title="Search Chat"
           >
             <Search size={16} />
           </button>
-          <span className="text-[11px] font-bold text-slate-500 mt-2 font-sans">
+          <span className="text-[11px] font-bold text-muted-foreground mt-2 font-sans">
             Search
           </span>
         </div>

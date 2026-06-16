@@ -244,8 +244,8 @@ export function BookingCard({
                 >
                   <Badge
                     className={cn(
-                      'bg-[#f0f9eb]',
-                      'hover:bg-[#f0f9eb]',
+                      'bg-brand-green-bubble/50',
+                      'hover:bg-brand-green-bubble/50',
                       'text-primary',
                       'border-none',
                       'px-3.5',
@@ -279,8 +279,8 @@ export function BookingCard({
                           }}
                           className={cn(
                             'rounded-full',
-                            'bg-[#f4f7f4]',
-                            'hover:bg-[#eaf0ea]',
+                            'bg-brand-green-tint',
+                            'hover:bg-brand-green-bubble',
                             'text-primary',
                             'font-black',
                             'text-[11px]',

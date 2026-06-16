@@ -132,11 +132,11 @@ function NotificationListener() {
         } else if (Notification.permission === 'default') {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
-              registerDeviceForPush().catch(() => {})
+              registerDeviceForPush().catch(() => { })
             }
           })
         } else if (Notification.permission === 'granted') {
-          registerDeviceForPush().catch(() => {})
+          registerDeviceForPush().catch(() => { })
         }
       }
     }
@@ -324,7 +324,7 @@ function RootDocument() {
         <TranslationProvider>
           <NotificationListener />
           {!isAuthPage && !isAdminPage && !isDashboardPage && (
-            <div className={cn(isChatPage && 'hidden lg:block')}>
+            <div className={cn('sticky top-0 z-40', isChatPage && 'hidden lg:block')}>
               <Navbar />
             </div>
           )}

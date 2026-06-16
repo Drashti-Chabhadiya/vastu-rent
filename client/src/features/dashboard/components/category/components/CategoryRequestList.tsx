@@ -84,7 +84,7 @@ export const CategoryRequestList = ({
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm"
                         style={{
-                          backgroundColor: `${req.color || 'var(--color-primary)'}15`,
+                          backgroundColor: `color-mix(in srgb, ${req.color || 'var(--color-primary)'} 15%, transparent)`,
                           color: req.color || 'var(--color-primary)',
                         }}
                       >

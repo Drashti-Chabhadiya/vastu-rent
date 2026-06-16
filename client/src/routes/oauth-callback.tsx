@@ -96,7 +96,7 @@ function OAuthCallback() {
         minHeight: '100dvh',
         gap: '16px',
         fontFamily: 'system-ui, sans-serif',
-        background: '#f8f9fa',
+        background: 'var(--background)',
       }}
     >
       <svg
@@ -106,7 +106,7 @@ function OAuthCallback() {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <circle cx="32" cy="32" r="32" fill="#1a7a4a" />
+        <circle cx="32" cy="32" r="32" fill="var(--primary)" />
         <path
           d="M20 32l9 9 15-15"
           stroke="white"
@@ -119,13 +119,13 @@ function OAuthCallback() {
         style={{
           fontSize: '18px',
           fontWeight: 600,
-          color: '#1a1a2e',
+          color: 'var(--ink)',
           margin: 0,
         }}
       >
         Login Successful
       </p>
-      <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
+      <p style={{ fontSize: '14px', color: 'var(--muted-foreground)', margin: 0 }}>
         Returning to the app...
       </p>
     </div>

@@ -160,7 +160,7 @@ export function ConversationList() {
             <Link
               to="/account"
               className={cn(
-                'lg:hidden flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors',
+                'lg:hidden flex items-center justify-center w-8 h-8 rounded-lg bg-muted-light hover:bg-muted text-muted-foreground hover:text-foreground transition-colors',
                 showDetailsPanel && 'hidden',
               )}
             >
@@ -168,7 +168,7 @@ export function ConversationList() {
             </Link>
             <h1
               className={cn(
-                'text-xl font-bold text-slate-900 font-sans tracking-tight',
+                'text-xl font-bold text-foreground font-sans tracking-tight',
                 showDetailsPanel && 'hidden',
               )}
             >
@@ -192,7 +192,7 @@ export function ConversationList() {
                 )
               }}
               className={cn(
-                'w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors',
+                'w-8 h-8 rounded-lg hover:bg-muted-light text-muted-foreground hover:text-foreground cursor-pointer transition-colors',
                 showDetailsPanel && 'hidden',
               )}
               title="Sort chat list"
@@ -211,7 +211,7 @@ export function ConversationList() {
                 setShowDetailsPanel(isOpening)
               }}
               className={cn(
-                'w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-800 cursor-pointer transition-colors',
+                'w-8 h-8 rounded-lg hover:bg-muted-light text-muted-foreground hover:text-foreground cursor-pointer transition-colors',
                 activePanel === 'settings' &&
                   showDetailsPanel &&
                   'text-emerald-700 bg-emerald-50',
@@ -224,7 +224,7 @@ export function ConversationList() {
         </div>
         <p
           className={cn(
-            'text-[11px] text-slate-500 font-medium mt-1',
+            'text-[11px] text-muted-foreground font-medium mt-1',
             showDetailsPanel && 'hidden',
           )}
         >
@@ -240,13 +240,13 @@ export function ConversationList() {
           <div className="relative flex-1">
             <Search
               size={16}
-              className="absolute left-4 top-[14px] text-slate-400"
+              className="absolute left-4 top-[14px] text-muted-dark"
             />
             <Input
               placeholder="Search messages..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-11 pl-11 pr-4 bg-slate-100/80 hover:bg-slate-100 border-none rounded-full text-[13px] font-medium focus-visible:ring-1 focus-visible:ring-emerald-500/20"
+              className="h-11 pl-11 pr-4 bg-muted-light/80 hover:bg-muted-light border-none rounded-full text-[13px] font-medium focus-visible:ring-1 focus-visible:ring-emerald-500/20"
             />
           </div>
           <DropdownMenu>
@@ -255,9 +255,9 @@ export function ConversationList() {
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  'w-11 h-11 bg-slate-100/80 hover:bg-slate-200/50 rounded-full text-slate-600 transition-all cursor-pointer shrink-0 border-none shadow-none',
+                  'w-11 h-11 bg-muted-light/80 hover:bg-muted/50 rounded-full text-muted-foreground transition-all cursor-pointer shrink-0 border-none shadow-none',
                   (filterOnline || filterGreen || sortBy !== 'recent') &&
-                    'text-[#0f513d] bg-emerald-50 hover:bg-emerald-100',
+                    'text-brand-primary-deep bg-emerald-50 hover:bg-emerald-100',
                 )}
               >
                 <SlidersHorizontal size={16} />
@@ -382,8 +382,8 @@ export function ConversationList() {
                   className={cn(
                     'h-8 rounded-full px-2 text-[11px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1 flex-1 shrink min-w-0 shadow-none border border-transparent',
                     isActive
-                      ? 'bg-[#0f513d] text-white hover:bg-[#0c4131] hover:text-white'
-                      : 'bg-slate-100 hover:bg-slate-200/60 text-slate-600',
+                      ? 'bg-brand-primary-deep text-white hover:bg-brand-primary-darker hover:text-white'
+                      : 'bg-muted-light hover:bg-muted/60 text-muted-foreground',
                   )}
                 >
                   <span className="truncate">{tabLabel}</span>
@@ -392,8 +392,8 @@ export function ConversationList() {
                       className={cn(
                         'px-1 h-4 rounded-full flex items-center justify-center text-[9px] font-black shrink-0 transition-colors min-w-[14px]',
                         isActive
-                          ? 'bg-white text-[#0f513d]'
-                          : 'bg-emerald-100 text-[#0f513d]',
+                          ? 'bg-white text-brand-primary-deep'
+                          : 'bg-emerald-100 text-brand-primary-deep',
                       )}
                     >
                       {tabUnread}
@@ -429,7 +429,7 @@ export function ConversationList() {
                   showDetailsPanel && 'justify-center p-1.5 rounded-xl gap-0',
                 )}
               >
-                <Skeleton className="w-11 h-11 rounded-full shrink-0 bg-slate-100" />
+                <Skeleton className="w-11 h-11 rounded-full shrink-0 bg-muted-light" />
                 <div
                   className={cn(
                     'flex-1 space-y-2 min-w-0',
@@ -437,10 +437,10 @@ export function ConversationList() {
                   )}
                 >
                   <div className="flex justify-between items-center">
-                    <Skeleton className="h-4 w-28 rounded bg-slate-100" />
-                    <Skeleton className="h-3 w-10 rounded bg-slate-100" />
+                    <Skeleton className="h-4 w-28 rounded bg-muted-light" />
+                    <Skeleton className="h-3 w-10 rounded bg-muted-light" />
                   </div>
-                  <Skeleton className="h-3.5 w-3/4 rounded bg-slate-100" />
+                  <Skeleton className="h-3.5 w-3/4 rounded bg-muted-light" />
                 </div>
               </div>
             ))}
@@ -484,21 +484,21 @@ export function ConversationList() {
                 onClick={() => handleSelectConversation(conv)}
                 style={
                   isSelected
-                    ? ({ '--card': '#ebf5ed' } as CSSProperties)
+                    ? ({ '--card': 'var(--brand-green-bubble)' } as CSSProperties)
                     : undefined
                 }
                 className={cn(
                   'group flex items-center gap-3.5 p-3.5 rounded-2xl cursor-pointer transition-all relative overflow-hidden',
                   isSelected
                     ? 'bg-[var(--card)] shadow-none'
-                    : 'hover:bg-slate-50 border border-transparent',
+                    : 'hover:bg-muted-light/40 border border-transparent',
                   showDetailsPanel && 'justify-center gap-0 p-1.5 rounded-2xl',
                 )}
               >
                 {isSelected && (
                   <div
                     className={cn(
-                      'absolute right-0 top-0 bottom-0 w-[3px] bg-[#0f513d]',
+                      'absolute right-0 top-0 bottom-0 w-[3px] bg-brand-primary-deep',
                       showDetailsPanel && 'hidden',
                     )}
                   />
@@ -524,7 +524,7 @@ export function ConversationList() {
                     <div className="flex items-center gap-1 min-w-0">
                       <h4
                         className={cn(
-                          'text-sm font-semibold text-slate-900 truncate font-sans tracking-tight',
+                          'text-sm font-semibold text-foreground truncate font-sans tracking-tight',
                         )}
                       >
                         {conv.otherParticipant.name}
@@ -549,7 +549,7 @@ export function ConversationList() {
                         </svg>
                       )}
                     </div>
-                    <span className="text-[11px] font-medium text-slate-400 shrink-0 ml-2">
+                    <span className="text-[11px] font-medium text-muted-dark shrink-0 ml-2">
                       {conv.lastMessage
                         ? formatMsgTime(conv.lastMessage.createdAt)
                         : formatMsgTime(conv.updatedAt)}
@@ -561,8 +561,8 @@ export function ConversationList() {
                       className={cn(
                         'text-[12px] truncate flex-1 min-w-0 font-sans',
                         conv.unreadCount > 0
-                          ? 'text-slate-900 font-semibold'
-                          : 'text-slate-500 font-normal',
+                          ? 'text-foreground font-semibold'
+                          : 'text-muted-foreground font-normal',
                       )}
                     >
                       {conv.lastMessage
@@ -590,7 +590,7 @@ export function ConversationList() {
                       )}
 
                       {conv.unreadCount > 0 && (
-                        <span className="w-5 h-5 bg-[#0f513d] text-white text-[10px] font-bold rounded-full flex items-center justify-center shrink-0">
+                        <span className="w-5 h-5 bg-brand-primary-deep text-white text-[10px] font-bold rounded-full flex items-center justify-center shrink-0">
                           {conv.unreadCount}
                         </span>
                       )}
@@ -688,7 +688,7 @@ export function ConversationList() {
       {/* Floating Action Button */}
       <Button
         onClick={() => setShowNewChat(true)}
-        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-[#0f513d] hover:bg-[#0c4131] text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0"
+        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-brand-primary-deep hover:bg-brand-primary-darker text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0"
       >
         <Pencil size={16} />
       </Button>

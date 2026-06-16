@@ -12,6 +12,7 @@ import {
   Lock,
   Link2,
   Trash2,
+  Palette,
 } from 'lucide-react'
 import { SecurityDialogs } from './SecurityDialogs'
 
@@ -22,11 +23,13 @@ import { PaymentMethodsSection } from './settings/PaymentMethodsSection'
 import { PrivacySection } from './settings/PrivacySection'
 import { ConnectedAccountsSection } from './settings/ConnectedAccountsSection'
 import { DeleteAccountSection } from './settings/DeleteAccountSection'
+import { ThemeSection } from './settings/ThemeSection'
 import { useProfileData, useDeleteAccountRequest } from '#/hook'
 
 const subNavItems = [
   { id: 'profile', label: 'Profile Information', icon: User },
   { id: 'security', label: 'Account & Security', icon: ShieldCheck },
+  { id: 'theme', label: 'Theme & Appearance', icon: Palette },
   { id: 'notifs', label: 'Notifications', icon: Bell },
   { id: 'payment', label: 'Payment Methods', icon: CreditCard },
   { id: 'privacy', label: 'Privacy', icon: Lock },
@@ -290,6 +293,9 @@ export function SettingsPage() {
 
           {/* ── CONNECTED ACCOUNTS ── */}
           {section === 'connected' && <ConnectedAccountsSection />}
+
+          {/* ── THEME & APPEARANCE ── */}
+          {section === 'theme' && <ThemeSection />}
 
           {/* ── DELETE ACCOUNT ── */}
           {section === 'delete' && (

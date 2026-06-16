@@ -128,14 +128,14 @@ export const NotificationSettingsForm = ({
         {hasPermissionSupport && (
           <div className="flex items-center justify-between p-5 rounded-2xl border border-emerald-500/25 bg-emerald-500/5 hover:bg-emerald-500/10 transition-all duration-300 shadow-sm">
             <div className="space-y-1 pr-4">
-              <h4 className="text-sm font-bold text-[#0a5c36] flex items-center gap-1.5">
+              <h4 className="text-sm font-bold text-brand-primary-deep flex items-center gap-1.5">
                 <BellRing
                   size={14}
                   className="text-emerald-600 animate-bounce"
                 />
                 Browser Push Notifications
               </h4>
-              <p className="text-[11px] font-semibold text-[#0a5c36]/90 leading-normal">
+              <p className="text-[11px] font-semibold text-brand-primary-deep/90 leading-normal">
                 Receive instant real-time updates for bookings, payments, and
                 messaging directly on this device.
               </p>
@@ -143,12 +143,12 @@ export const NotificationSettingsForm = ({
             <Switch
               checked={pushEnabled}
               onCheckedChange={handlePushToggle}
-              className="data-[state=checked]:bg-[#0a5c36] cursor-pointer"
+              className="data-[state=checked]:bg-brand-primary-deep cursor-pointer"
             />
           </div>
         )}
 
-        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc]/30 hover:bg-[#f8fafc]/80 transition-all duration-200">
+        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-border bg-muted-light/30 hover:bg-muted-light/80 transition-all duration-200">
           <div className="space-y-0.5">
             <h4 className="text-sm font-bold text-slate-800">
               New Booking Alerts
@@ -164,7 +164,7 @@ export const NotificationSettingsForm = ({
           />
         </div>
 
-        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc]/30 hover:bg-[#f8fafc]/80 transition-all duration-200">
+        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-border bg-muted-light/30 hover:bg-muted-light/80 transition-all duration-200">
           <div className="space-y-0.5">
             <h4 className="text-sm font-bold text-slate-800">
               Payout Settlements
@@ -180,7 +180,7 @@ export const NotificationSettingsForm = ({
           />
         </div>
 
-        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-[#e2e8f0] bg-[#f8fafc]/30 hover:bg-[#f8fafc]/80 transition-all duration-200">
+        <div className="flex items-center justify-between p-4.5 rounded-2xl border border-border bg-muted-light/30 hover:bg-muted-light/80 transition-all duration-200">
           <div className="space-y-0.5">
             <h4 className="text-sm font-bold text-slate-800">
               Marketing Updates

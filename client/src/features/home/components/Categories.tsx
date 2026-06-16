@@ -44,7 +44,7 @@ const IconComponent = ({
     <div
       className="flex h-full w-full items-center justify-center"
       style={{
-        backgroundColor: color ? `${color}15` : 'var(--primary-10)',
+        backgroundColor: color ? `color-mix(in srgb, ${color} 15%, transparent)` : 'var(--primary-10)',
       }}
     >
       <Icon

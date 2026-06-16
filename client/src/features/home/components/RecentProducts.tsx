@@ -31,7 +31,7 @@ export function RecentProducts() {
               <Sparkles className="h-3.5 w-3.5 animate-spin-slow" /> Fresh
               Inventory
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F291B] tracking-tight leading-none">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink tracking-tight leading-none">
               Recent Additions
             </h2>
             <p className="text-muted-foreground/85 font-medium mt-1">

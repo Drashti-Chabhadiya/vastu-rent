@@ -163,7 +163,7 @@ export function TermsPage() {
     <div className="min-h-screen bg-background pb-20">
       {/* Hero Section Container */}
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
           <motion.div
             variants={stagger}
@@ -179,7 +179,7 @@ export function TermsPage() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
               Clear terms. <br />
               <span className="italic text-primary">Trusted platform.</span>
@@ -273,7 +273,7 @@ export function TermsPage() {
                     <Headphones className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#0F291B] text-sm">
+                    <h4 className="font-bold text-brand-ink text-sm">
                       Questions about these terms?
                     </h4>
                     <p className="text-[12px] text-muted-foreground mt-1">
@@ -307,7 +307,7 @@ export function TermsPage() {
                 id={sec.id}
                 className="scroll-mt-28 border-b border-border/30 pb-10"
               >
-                <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">
+                <h2 className="text-xl font-bold text-brand-ink tracking-tight">
                   {sec.title}
                 </h2>
                 <div className="text-sm leading-relaxed text-muted-foreground">
@@ -335,7 +335,7 @@ export function TermsPage() {
                       id={sec.id}
                       className="scroll-mt-28 border-b border-border/30 pb-10"
                     >
-                      <h2 className="text-xl font-bold text-[#0F291B] tracking-tight">
+                      <h2 className="text-xl font-bold text-brand-ink tracking-tight">
                         {sec.title}
                       </h2>
                       <div className="text-sm leading-relaxed text-muted-foreground">
@@ -359,7 +359,7 @@ export function TermsPage() {
                   <CollapsibleTrigger asChild>
                     <Button
                       variant="outline"
-                      className="rounded-full border border-border px-8 py-5 h-auto text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
+                      className="rounded-full border border-border px-8 py-5 h-auto text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
                     >
                       {isOpen ? 'Collapse terms' : 'View all terms'}
                       {isOpen ? (
@@ -376,13 +376,13 @@ export function TermsPage() {
             {/* Important notice block */}
             <motion.div
               variants={fadeUp}
-              className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex items-start gap-4 shadow-sm mt-8"
+              className="bg-brand-surface-warm border border-border/20 rounded-[2rem] p-6 sm:p-8 flex items-start gap-4 shadow-sm mt-8"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/5 shrink-0">
                 <ShieldAlert className="h-5 w-5 text-primary" />
               </div>
               <div className="text-sm">
-                <h4 className="font-bold text-[#0F291B]">Important</h4>
+                <h4 className="font-bold text-brand-ink">Important</h4>
                 <p className="text-muted-foreground mt-1 leading-relaxed">
                   These Terms may be updated from time to time. Continued use of
                   Vastu after changes means you accept the updated Terms.

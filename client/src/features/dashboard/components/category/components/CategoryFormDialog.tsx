@@ -45,7 +45,7 @@ export const CategoryFormDialog = ({
 }: CategoryFormDialogProps) => {
   const [categoryName, setCategoryName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState<string>('Folder')
-  const [selectedColor, setSelectedColor] = useState<string>('#166534')
+  const [selectedColor, setSelectedColor] = useState<string>('var(--color-primary)')
   const [categoryImage, setCategoryImage] = useState<string>('')
   const [useImage, setUseImage] = useState(false)
   const [description, setDescription] = useState('')
@@ -53,19 +53,19 @@ export const CategoryFormDialog = ({
 
   const COLORS = [
     'var(--color-primary)',
-    '#15803d',
-    '#1e40af',
-    '#1d4ed8',
-    '#7c3aed',
-    '#9333ea',
-    '#c026d3',
-    '#db2777',
-    '#e11d48',
-    '#ea580c',
-    '#d97706',
-    '#65a30d',
-    '#4b5563',
-    '#000000',
+    'var(--color-category-green)',
+    'var(--color-category-blue-dark)',
+    'var(--color-category-blue)',
+    'var(--color-category-violet)',
+    'var(--color-category-purple)',
+    'var(--color-category-fuchsia)',
+    'var(--color-category-pink)',
+    'var(--color-category-red)',
+    'var(--color-category-orange)',
+    'var(--color-category-amber)',
+    'var(--color-category-lime)',
+    'var(--color-category-gray)',
+    'var(--color-black)',
   ]
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -406,7 +406,7 @@ export const CategoryFormDialog = ({
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm"
                         style={{
-                          backgroundColor: `${selectedColor}15`,
+                          backgroundColor: `color-mix(in srgb, ${selectedColor} 15%, transparent)`,
                           color: selectedColor,
                         }}
                       >
@@ -432,8 +432,8 @@ export const CategoryFormDialog = ({
                           className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
                           style={{
                             backgroundColor: !useImage
-                              ? `${selectedColor}15`
-                              : '#f3f4f6',
+                              ? `color-mix(in srgb, ${selectedColor} 15%, transparent)`
+                              : 'var(--color-muted-light)',
                           }}
                         >
                           <Layers

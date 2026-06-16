@@ -205,7 +205,7 @@ export function BookingDetailsDialog({
             rental.status === 'in_use') && (
             <div
               className={cn(
-                'bg-[#fcfdfa]',
+                'bg-brand-cream-light',
                 'p-4.5',
                 'rounded-2xl',
                 'border',

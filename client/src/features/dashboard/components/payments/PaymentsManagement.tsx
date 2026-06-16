@@ -247,7 +247,7 @@ export const PaymentsManagement = () => {
           </div>
           {/* Card 2: Platform Bookings */}
           <div className="bg-card p-6 rounded-3xl border border-border/30 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)] flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-amber-50 text-amber-600 shrink-0">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-warning text-warning-foreground shrink-0">
               <ShoppingCart size={22} strokeWidth={2.5} />
             </div>
             <div className="space-y-0.5">

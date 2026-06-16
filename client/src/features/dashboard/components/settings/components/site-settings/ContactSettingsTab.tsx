@@ -37,7 +37,7 @@ export function ContactSettingsTab() {
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
             Support Email Address
           </label>
-          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+          <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
                 <Mail size={16} />
@@ -61,7 +61,7 @@ export function ContactSettingsTab() {
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
             Support Phone Number
           </label>
-          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+          <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
                 <Phone size={16} />
@@ -86,7 +86,7 @@ export function ContactSettingsTab() {
         <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block flex items-center gap-1">
           ✨ Contact Page Hero Description
         </label>
-        <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-start justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+        <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-start justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
           <Textarea
             value={contactDescription}
             onChange={(e) => setContactDescription(e.target.value)}
@@ -105,7 +105,7 @@ export function ContactSettingsTab() {
         <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
           Office Address
         </label>
-        <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+        <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
           <div className="flex items-center gap-3.5 flex-1 min-w-0">
             <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
               <MapPin size={16} />

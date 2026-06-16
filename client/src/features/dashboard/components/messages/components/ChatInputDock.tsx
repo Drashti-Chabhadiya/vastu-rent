@@ -180,7 +180,7 @@ export function ChatInputDock() {
             return (
               <div
                 key={i}
-                className="relative w-14 h-14 rounded-xl overflow-hidden border border-border/40 shadow-sm group flex items-center justify-center bg-slate-50"
+                className="relative w-14 h-14 rounded-xl overflow-hidden border border-border/40 shadow-sm group flex items-center justify-center bg-muted-light/60"
               >
                 {isImage ? (
                   <img
@@ -189,9 +189,9 @@ export function ChatInputDock() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="flex flex-col items-center justify-center p-1 text-center text-slate-400 select-none">
-                    <Paperclip size={14} className="text-slate-400" />
-                    <span className="text-[7px] font-bold text-slate-500 truncate max-w-[50px] mt-0.5">
+                  <div className="flex flex-col items-center justify-center p-1 text-center text-muted-dark select-none">
+                    <Paperclip size={14} className="text-muted-dark" />
+                    <span className="text-[7px] font-bold text-muted-foreground truncate max-w-[50px] mt-0.5">
                       {file?.name}
                     </span>
                   </div>
@@ -267,12 +267,12 @@ export function ChatInputDock() {
                 toast.error('Failed to unblock contact')
               }
             }}
-            className="flex-1 flex items-center justify-center h-11 bg-red-50 hover:bg-red-100/70 border border-red-200 rounded-2xl cursor-pointer text-red-600 font-extrabold text-[12px] select-none transition-colors px-4 text-center"
+            className="flex-1 flex items-center justify-center h-11 bg-danger hover:bg-danger/80 border border-danger/20 rounded-2xl cursor-pointer text-destructive font-extrabold text-[12px] select-none transition-colors px-4 text-center"
           >
             You blocked this contact. Tap to unblock.
           </div>
         ) : isBlockedByOther ? (
-          <div className="flex-1 flex items-center justify-center h-11 bg-slate-100 border border-slate-200 rounded-2xl text-slate-500 font-extrabold text-[12px] select-none px-4 text-center">
+          <div className="flex-1 flex items-center justify-center h-11 bg-muted-light border border-border rounded-2xl text-muted-foreground font-extrabold text-[12px] select-none px-4 text-center">
             You cannot send messages to this contact.
           </div>
         ) : (
@@ -288,13 +288,13 @@ export function ChatInputDock() {
             />
 
             {/* Text Input Container */}
-            <div className="flex-1 relative flex items-center bg-white border border-[#e2e8f0] rounded-full px-4 h-11 gap-1.5 shadow-sm">
+            <div className="flex-1 relative flex items-center bg-card border border-border rounded-full px-4 h-11 gap-1.5 shadow-sm">
               {/* Emoji trigger inside left */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0 border-none outline-none p-0"
+                className="w-8 h-8 rounded-full text-muted-dark hover:text-foreground hover:bg-muted-light cursor-pointer shrink-0 border-none outline-none p-0"
                 title="Emoji Picker"
               >
                 <Smile size={18} />
@@ -313,7 +313,7 @@ export function ChatInputDock() {
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 disabled={!isConnected}
-                className="w-full bg-transparent border-none outline-none text-[13px] placeholder:text-slate-400 h-full flex-1 text-slate-800"
+                className="w-full bg-transparent border-none outline-none text-[13px] placeholder:text-muted-dark h-full flex-1 text-foreground"
               />
 
               {/* Attachment trigger inside right */}
@@ -323,7 +323,7 @@ export function ChatInputDock() {
                 disabled={!isConnected || pendingFiles.length >= 5}
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  'w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer shrink-0 border-none outline-none p-0',
+                  'w-8 h-8 rounded-full text-muted-dark hover:text-foreground hover:bg-muted-light cursor-pointer shrink-0 border-none outline-none p-0',
                   pendingFiles.length > 0 && 'text-emerald-600 bg-emerald-50',
                 )}
                 title={`Attach files (${pendingFiles.length}/5)`}
@@ -355,7 +355,7 @@ export function ChatInputDock() {
                 onClick={handleSend}
                 disabled={!isConnected || isUploading}
                 className={cn(
-                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0d4d38] hover:bg-[#093a2a] border-none outline-none',
+                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-brand-primary-deep hover:bg-brand-primary-darker border-none outline-none',
                   (!isConnected || isUploading) &&
                     'bg-muted text-muted-dark cursor-not-allowed shadow-none',
                 )}
@@ -373,7 +373,7 @@ export function ChatInputDock() {
                 onClick={handleStartRecording}
                 disabled={!isConnected || isUploading}
                 className={cn(
-                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-[#0d4d38] hover:bg-[#093a2a] border-none outline-none',
+                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-brand-primary-deep hover:bg-brand-primary-darker border-none outline-none',
                   (!isConnected || isUploading) &&
                     'bg-muted text-muted-dark cursor-not-allowed shadow-none',
                 )}

@@ -109,7 +109,7 @@ export const CategoryDeleteRequestList = ({
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center transition-all shadow-sm"
                         style={{
-                          backgroundColor: `${categoryColor}15`,
+                          backgroundColor: `color-mix(in srgb, ${categoryColor} 15%, transparent)`,
                           color: categoryColor,
                         }}
                       >
@@ -142,29 +142,29 @@ export const CategoryDeleteRequestList = ({
                     )}
 
                     {isApproved && !isExpired && (
-                      <div className="text-xs text-amber-700 bg-amber-500/10 border border-amber-500/20 px-3.5 py-2.5 rounded-xl w-full max-w-lg mt-3 flex items-start gap-2.5 animate-in fade-in duration-300">
+                      <div className="text-xs text-warning-foreground bg-warning/10 border border-warning/20 px-3.5 py-2.5 rounded-xl w-full max-w-lg mt-3 flex items-start gap-2.5 animate-in fade-in duration-300">
                         <AlertTriangle
-                          className="flex-shrink-0 mt-0.5 text-amber-600 animate-pulse"
+                          className="flex-shrink-0 mt-0.5 text-warning-foreground animate-pulse"
                           size={15}
                         />
                         <div className="space-y-0.5">
-                          <p className="font-extrabold text-[10px] uppercase tracking-wider text-amber-800 font-black">
+                          <p className="font-extrabold text-[10px] uppercase tracking-wider text-warning-foreground font-black">
                             {isAdmin
                               ? 'Approved: 24-Hour Deletion Window'
                               : 'Action Required: 24-Hour Delete Permission'}
                           </p>
-                          <p className="font-semibold text-amber-700/95 leading-relaxed">
+                          <p className="font-semibold text-warning-foreground/95 leading-relaxed">
                             {isAdmin ? (
                               <>
                                 This deletion request has been approved. The
                                 proposing user has until{' '}
-                                <span className="font-black text-amber-900">
+                                <span className="font-black text-warning-foreground underline">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>{' '}
                                 to complete the deletion (Expires in{' '}
-                                <span className="font-black text-amber-900 underline">
+                                <span className="font-black text-warning-foreground underline">
                                   {timeRemainingStr}
                                 </span>
                                 ).
@@ -173,13 +173,13 @@ export const CategoryDeleteRequestList = ({
                               <>
                                 Admin approved this deletion. You must complete
                                 the deletion before the permission expires on{' '}
-                                <span className="font-black text-amber-900">
+                                <span className="font-black text-warning-foreground underline">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>{' '}
                                 (Expires in{' '}
-                                <span className="font-black text-amber-900 underline">
+                                <span className="font-black text-warning-foreground underline">
                                   {timeRemainingStr}
                                 </span>
                                 ).

@@ -65,12 +65,12 @@ export const PayoutSettingsForm = ({
       </div>
 
       {/* Styled Bottom Alert */}
-      <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4.5 flex items-start gap-3.5 mt-8">
-        <div className="w-9 h-9 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+      <div className="bg-warning/5 border border-warning/10 rounded-2xl p-4.5 flex items-start gap-3.5 mt-8">
+        <div className="w-9 h-9 rounded-full bg-warning/10 text-warning-foreground flex items-center justify-center shrink-0 mt-0.5">
           <AlertCircle size={18} />
         </div>
         <div>
-          <span className="text-sm font-bold text-amber-700 block">
+          <span className="text-sm font-bold text-warning-foreground block">
             Verify Payout Details
           </span>
           <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
@@ -87,7 +87,7 @@ export const PayoutSettingsForm = ({
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
             UPI ID / Address (Recommended)
           </label>
-          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+          <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
                 <Smartphone size={16} />
@@ -117,7 +117,7 @@ export const PayoutSettingsForm = ({
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Account Holder Name
               </label>
-              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+              <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
                     <User size={16} />
@@ -141,7 +141,7 @@ export const PayoutSettingsForm = ({
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Bank Name
               </label>
-              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+              <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
                     <Building2 size={16} />
@@ -165,7 +165,7 @@ export const PayoutSettingsForm = ({
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 Account Number
               </label>
-              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+              <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
                     <CreditCard size={16} />
@@ -189,7 +189,7 @@ export const PayoutSettingsForm = ({
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
                 IFSC Code
               </label>
-              <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+              <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
                     <Key size={16} />

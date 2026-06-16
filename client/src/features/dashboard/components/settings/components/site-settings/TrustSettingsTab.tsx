@@ -53,7 +53,7 @@ export function TrustSettingsTab() {
           {commitments.map((comm, index) => (
             <div
               key={index}
-              className="p-5 rounded-2xl bg-[#f8fafc]/30 border border-[#e2e8f0] space-y-4 relative group"
+              className="p-5 rounded-2xl bg-muted-light/30 border border-border space-y-4 relative group"
             >
               <Button
                 type="button"
@@ -69,7 +69,7 @@ export function TrustSettingsTab() {
                   <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                     Icon Keyword
                   </label>
-                  <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                  <div className="bg-muted-light border border-border rounded-xl px-3 py-1 flex items-center">
                     <Input
                       type="text"
                       value={comm.iconName}
@@ -85,7 +85,7 @@ export function TrustSettingsTab() {
                   <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                     Title
                   </label>
-                  <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                  <div className="bg-muted-light border border-border rounded-xl px-3 py-1 flex items-center">
                     <Input
                       type="text"
                       value={comm.title}
@@ -103,7 +103,7 @@ export function TrustSettingsTab() {
                 <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                   Description
                 </label>
-                <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3 flex items-start">
+                <div className="bg-muted-light border border-border rounded-xl p-3 flex items-start">
                   <Textarea
                     value={comm.description}
                     onChange={(e) =>
@@ -144,7 +144,7 @@ export function TrustSettingsTab() {
           {safetyTips.map((tip, index) => (
             <div
               key={index}
-              className="p-5 rounded-2xl bg-[#f8fafc]/30 border border-[#e2e8f0] space-y-4 relative group"
+              className="p-5 rounded-2xl bg-muted-light/30 border border-border space-y-4 relative group"
             >
               <Button
                 type="button"
@@ -160,7 +160,7 @@ export function TrustSettingsTab() {
                   <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                     Icon Keyword
                   </label>
-                  <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                  <div className="bg-muted-light border border-border rounded-xl px-3 py-1 flex items-center">
                     <Input
                       type="text"
                       value={tip.iconName}
@@ -176,7 +176,7 @@ export function TrustSettingsTab() {
                   <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                     Title
                   </label>
-                  <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                  <div className="bg-muted-light border border-border rounded-xl px-3 py-1 flex items-center">
                     <Input
                       type="text"
                       value={tip.title}
@@ -194,7 +194,7 @@ export function TrustSettingsTab() {
                 <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                   Description
                 </label>
-                <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3 flex items-start">
+                <div className="bg-muted-light border border-border rounded-xl p-3 flex items-start">
                   <Textarea
                     value={tip.description}
                     onChange={(e) =>

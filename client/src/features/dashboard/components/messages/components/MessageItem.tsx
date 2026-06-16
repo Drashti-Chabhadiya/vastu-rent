@@ -358,7 +358,7 @@ export function MessageItem({ msg }: MessageItemProps) {
             className={cn(
               'px-4 py-3 text-[11px] font-semibold leading-relaxed shadow-sm relative italic text-muted-dark/70 flex items-center gap-1.5',
               isMe
-                ? 'bg-[#eef6ec]/50 border border-[#dcebd8] rounded-2xl rounded-tr-sm'
+                ? 'bg-brand-green-bubble/50 border border-brand-green-border rounded-2xl rounded-tr-sm'
                 : 'bg-muted/45 border border-border/20 rounded-2xl rounded-tl-sm',
             )}
           >
@@ -372,7 +372,7 @@ export function MessageItem({ msg }: MessageItemProps) {
             className={cn(
               'px-4 py-3 text-[11px] font-semibold leading-relaxed shadow-sm relative',
               isMe
-                ? 'bg-[#eef6ec] border border-[#dcebd8] text-foreground rounded-2xl rounded-tr-sm'
+                ? 'bg-brand-green-bubble border border-brand-green-border text-foreground rounded-2xl rounded-tr-sm'
                 : 'bg-card text-foreground/80 border border-border/30 rounded-2xl rounded-tl-sm',
             )}
           >
@@ -408,8 +408,8 @@ export function MessageItem({ msg }: MessageItemProps) {
               className={cn(
                 'px-4 py-2.5 text-[12px] font-semibold leading-relaxed relative rounded-2xl shadow-none border max-w-md flex flex-wrap items-baseline justify-between gap-3',
                 isMe
-                  ? 'bg-[#eef6ec] border-[#dcebd8] text-foreground rounded-tr-sm'
-                  : 'bg-white border-slate-200/80 text-foreground rounded-tl-sm',
+                  ? 'bg-brand-green-bubble border border-brand-green-border text-foreground rounded-tr-sm'
+                  : 'bg-card text-foreground/80 border border-border/30 rounded-tl-sm',
               )}
             >
               <div className="flex-1 break-words min-w-[60px]">
@@ -535,8 +535,8 @@ export function MessageItem({ msg }: MessageItemProps) {
                     className={cn(
                       'flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-bold cursor-pointer transition-all shadow-sm select-none',
                       userReacted
-                        ? 'bg-[#eef6ec] border-[#dcebd8] text-emerald-800'
-                        : 'bg-white border-slate-200/80 text-foreground hover:bg-slate-50',
+                        ? 'bg-brand-green-bubble border-brand-green-border text-emerald-800'
+                        : 'bg-card border-border/80 text-foreground hover:bg-muted-light/30',
                     )}
                   >
                     <Emoji
@@ -679,7 +679,7 @@ export function MessageItem({ msg }: MessageItemProps) {
               {!msg.isDeleted && (
                 <DropdownMenuItem
                   onClick={() => handleOpenDeleteInternal(msg.id)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-red-600 focus:text-red-600 focus:bg-red-50"
+                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-destructive focus:text-destructive focus:bg-danger"
                 >
                   <Trash2 size={12} /> Delete
                 </DropdownMenuItem>

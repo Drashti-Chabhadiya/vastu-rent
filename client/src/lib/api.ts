@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Capacitor } from '@capacitor/core'
+import { getBearerToken } from '#/lib/auth/token-storage'
 
 /**
  * Resolves the correct API base URL at runtime.
@@ -46,9 +47,9 @@ export const apiClient = axios.create({
 })
 
 // Attach bearer token for native mobile requests to authenticate correctly
-apiClient.interceptors.request.use((config) => {
+apiClient.interceptors.request.use(async (config) => {
   if (Capacitor.isNativePlatform()) {
-    const token = localStorage.getItem('bearer_token')
+    const token = await getBearerToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }

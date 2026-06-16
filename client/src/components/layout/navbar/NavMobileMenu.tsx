@@ -1,8 +1,9 @@
 import { Link } from '@tanstack/react-router'
 import { UserAvatar } from '#/components/common/UserAvatar'
 import { Button } from '#/components/ui/button'
-import { Heart, Smartphone, User, LogOut, ChevronRight } from 'lucide-react'
+import { Heart, Smartphone, User, LogOut, ChevronRight, Sun, Moon, Laptop } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { useTheme } from '#/hook'
 
 const navLinks = [
   { label: 'Catalogue', path: '/', hash: 'categories' },
@@ -31,6 +32,7 @@ export function NavMobileMenu({
   wishlistCount,
   t,
 }: NavMobileMenuProps) {
+  const { theme, setTheme } = useTheme()
   return (
     <div
       className={cn(
@@ -143,6 +145,54 @@ export function NavMobileMenu({
                   {t('View all categories')}
                 </Link>
               )}
+            </div>
+          </div>
+
+          {/* Theme Selector */}
+          <div className="space-y-2 px-1">
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80 mb-2">
+              {t('Theme & Appearance')}
+            </h4>
+            <div className="grid grid-cols-3 gap-1 bg-muted/40 p-1 rounded-xl border border-border/30">
+              <Button
+                variant="ghost"
+                onClick={() => setTheme('light')}
+                className={cn(
+                  'flex flex-col items-center gap-1 py-1.5 h-auto rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none shadow-none',
+                  theme === 'light'
+                    ? 'bg-card text-primary border border-border/40 hover:bg-card hover:text-primary shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                )}
+              >
+                <Sun size={14} className={theme === 'light' ? 'text-primary' : 'text-muted-foreground'} />
+                <span>Light</span>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setTheme('dark')}
+                className={cn(
+                  'flex flex-col items-center gap-1 py-1.5 h-auto rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none shadow-none',
+                  theme === 'dark'
+                    ? 'bg-card text-primary border border-border/40 hover:bg-card hover:text-primary shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                )}
+              >
+                <Moon size={14} className={theme === 'dark' ? 'text-primary' : 'text-muted-foreground'} />
+                <span>Dark</span>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setTheme('auto')}
+                className={cn(
+                  'flex flex-col items-center gap-1 py-1.5 h-auto rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none shadow-none',
+                  theme === 'auto'
+                    ? 'bg-card text-primary border border-border/40 hover:bg-card hover:text-primary shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                )}
+              >
+                <Laptop size={14} className={theme === 'auto' ? 'text-primary' : 'text-muted-foreground'} />
+                <span>System</span>
+              </Button>
             </div>
           </div>
         </div>

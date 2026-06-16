@@ -190,7 +190,7 @@ export const DetailedBookingDialog = ({
                 <Button
                   onClick={() => setPendingAction('reject')}
                   variant="outline"
-                  className="flex-1 h-12 rounded-xl bg-card hover:bg-danger text-destructive border border-[#ef4444]/30 font-black text-[11px] flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+                  className="flex-1 h-12 rounded-xl bg-card hover:bg-danger text-destructive border border-destructive/30 font-black text-[11px] flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
                   disabled={isPendingStatusUpdate}
                 >
                   <XCircle size={14} /> Reject Request
