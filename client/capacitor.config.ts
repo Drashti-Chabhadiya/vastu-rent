@@ -28,7 +28,9 @@ const config: CapacitorConfig = {
     StatusBar: {
       // Push webview below status bar — content starts AFTER status bar
       overlaysWebView: false,
-      backgroundColor: '#ffffff',
+      // Cream background matching the app theme (#faf7f0 ≈ oklch(0.984 0.012 95))
+      backgroundColor: '#FDFAF4',
+      style: 'DARK',
     },
   },
 }

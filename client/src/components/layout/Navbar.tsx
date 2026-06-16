@@ -70,6 +70,7 @@ export function Navbar() {
           'bg-card/80',
           'backdrop-blur-lg',
           'supports-backdrop-filter:bg-card/60',
+          'safe-area-top', // Pad below Android/iOS status bar (viewport-fit=cover)
         )}
       >
         <div
