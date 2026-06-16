@@ -25,6 +25,11 @@ const config: CapacitorConfig = {
       resize: 'body',
       resizeOnFullScreen: true,
     },
+    StatusBar: {
+      // Push webview below status bar — content starts AFTER status bar
+      overlaysWebView: false,
+      backgroundColor: '#ffffff',
+    },
   },
 }
 
