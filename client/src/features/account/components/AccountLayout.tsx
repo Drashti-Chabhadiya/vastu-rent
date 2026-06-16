@@ -10,12 +10,15 @@ import {
   LogOut,
   Leaf,
   ChevronRight,
+  ChevronLeft,
   Building2,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
-
-import { useState, useEffect } from 'react'
+import { useNotifications } from '#/hook'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { apiClient } from '#/lib/api'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
 import { UserAvatar } from '#/components/common/UserAvatar'
 import { Button } from '#/components/ui/button'
@@ -84,19 +87,22 @@ function LogoutDialog({
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 export function AccountLayout() {
-  const [session, setSession] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { data: sessionData, isPending: isLoading } = authClient.useSession()
+  const session = sessionData || null
   const [logoutOpen, setLogoutOpen] = useState(false)
   const [logoutLoading, setLogoutLoading] = useState(false)
   const routerState = useRouterState()
   const pathname = routerState.location.pathname
-
-  useEffect(() => {
-    authClient.getSession().then((res) => {
-      setSession(res.data)
-      setIsLoading(false)
-    })
-  }, [])
+  const { data: notifications } = useNotifications()
+  const { data: conversations } = useQuery<any[]>({
+    queryKey: ['conversations'],
+    queryFn: async () => {
+      const res = await apiClient.get('/chat/conversations')
+      return res.data
+    },
+    enabled: !!session?.user?.id,
+    staleTime: 10_000,
+  })
 
   const handleLogout = async () => {
     setLogoutLoading(true)
@@ -105,6 +111,11 @@ export function AccountLayout() {
   }
 
   if (isLoading) return <AccountLayoutSkeleton />
+
+  const unreadCount = notifications ? notifications.filter((n: any) => !n.isRead).length : 0
+  const unreadMessagesCount = conversations
+    ? conversations.reduce((sum: number, conv: any) => sum + (conv.unreadCount || 0), 0)
+    : 0
 
   const menuItems = [
     { id: 'personal', label: 'My Profile', icon: User, href: '/account' },
@@ -126,13 +137,14 @@ export function AccountLayout() {
       label: 'Messages',
       icon: MessageSquare,
       href: '/account/messages',
+      badge: unreadMessagesCount,
     },
     {
       id: 'notifications',
       label: 'Notifications',
       icon: Bell,
       href: '/account/notifications',
-      badge: 3,
+      badge: unreadCount,
     },
     {
       id: 'settings',
@@ -150,21 +162,37 @@ export function AccountLayout() {
         (item.href === '/account' && pathname === '/account/'),
     )?.id || 'personal'
 
+  const isChatPage = pathname.startsWith('/account/messages')
+  const isAccountIndex = pathname === '/account' || pathname === '/account/'
+
   return (
     <>
-      <div className="min-h-screen bg-background pt-16 pb-12 font-sans">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+      <div
+        className={cn(
+          'min-h-screen bg-background font-sans transition-all duration-300',
+          isChatPage ? 'pt-0 lg:pt-16 pb-0 lg:pb-12' : 'pt-16 pb-12',
+        )}
+      >
+        <div
+          className={cn(
+            'mx-auto max-w-[1400px] transition-all duration-300',
+            isChatPage ? 'px-0 lg:px-8' : 'px-4 sm:px-6 lg:px-8',
+          )}
+        >
           <div className="flex flex-col lg:flex-row gap-6 items-start">
             {/* Sidebar */}
             <motion.aside
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: EASE }}
-              className="w-full lg:w-[240px] shrink-0 bg-card rounded-3xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden"
+              className={cn(
+                'w-full lg:w-[240px] shrink-0 bg-card rounded-3xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden',
+                !isAccountIndex && 'hidden lg:flex',
+              )}
             >
               <div>
                 {/* User Profile Card */}
-                <div className="flex flex-col items-center gap-2 pt-5 pb-4 px-2 mb-2 border-b border-border/30">
+                <div className="hidden lg:flex flex-col items-center gap-2 pt-5 pb-4 px-2 mb-2 border-b border-border/30">
                   <UserAvatar
                     image={session?.user?.image}
                     name={session?.user?.name || 'User'}
@@ -207,7 +235,7 @@ export function AccountLayout() {
                           )}
                         />
                         <span className="flex-1">{item.label}</span>
-                        {item.badge !== undefined && (
+                        {item.badge !== undefined && item.badge > 0 && (
                           <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black flex items-center justify-center shrink-0 ml-auto border border-emerald-100">
                             {item.badge}
                           </span>
@@ -289,13 +317,29 @@ export function AccountLayout() {
               transition={{ duration: 0.7, ease: EASE }}
               className="flex-1 min-w-0 w-full"
             >
+              {!isAccountIndex && !isChatPage && (
+                <div className="lg:hidden flex items-center gap-2 mb-4 px-1">
+                  <Link
+                    to="/account"
+                    className="flex items-center gap-1.5 text-[13px] font-bold text-primary hover:opacity-85"
+                  >
+                    <ChevronLeft
+                      size={16}
+                      strokeWidth={2.5}
+                      className="mt-0.5"
+                    />
+                    <span>Back to Account Menu</span>
+                  </Link>
+                </div>
+              )}
+
               {activeTab === 'personal' ||
-              activeTab === 'bookings' ||
-              activeTab === 'listings' ||
-              activeTab === 'reviews' ||
-              activeTab === 'messages' ||
-              activeTab === 'notifications' ||
-              activeTab === 'settings' ? (
+                activeTab === 'bookings' ||
+                activeTab === 'listings' ||
+                activeTab === 'reviews' ||
+                activeTab === 'messages' ||
+                activeTab === 'notifications' ||
+                activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

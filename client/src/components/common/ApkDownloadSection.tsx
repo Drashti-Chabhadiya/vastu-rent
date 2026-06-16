@@ -15,33 +15,59 @@ import { motion, AnimatePresence } from 'motion/react'
 import { useState, useEffect } from 'react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
+import { cn } from '#/lib/utils'
 
 const ApkDownloadSection = () => {
   const [downloadUrl, setDownloadUrl] = useState('')
+  const [qrUrl, setQrUrl] = useState('')
   const [qrLoaded, setQrLoaded] = useState(false)
   const [isLocalhost, setIsLocalhost] = useState(false)
   const [customIp, setCustomIp] = useState('')
   const [copied, setCopied] = useState(false)
+  const [activePlatform, setActivePlatform] = useState<'android' | 'ios'>('android')
+
+  // Auto-detect iOS devices on load
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const ua = navigator.userAgent.toLowerCase()
+      if (/iphone|ipad|ipod/.test(ua)) {
+        setActivePlatform('ios')
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const hostname =
       typeof window !== 'undefined' ? window.location.hostname : ''
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
     const isLocal = hostname === 'localhost' || hostname === '127.0.0.1'
     setIsLocalhost(isLocal)
 
     // Use the smart utility to get the URL
     const url = getApkDownloadUrl(customIp)
     setDownloadUrl(url)
+
+    if (activePlatform === 'android') {
+      setQrUrl(url)
+    } else {
+      // iOS QR code should point to the browser website origin
+      if (isLocal) {
+        const cleanIp = customIp ? customIp.replace(/^https?:\/\//, '').split(':')[0] : '192.168.1.1'
+        setQrUrl(`http://${cleanIp}:3000`)
+      } else {
+        setQrUrl(origin)
+      }
+    }
     setQrLoaded(false)
-  }, [customIp])
+  }, [customIp, activePlatform])
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(downloadUrl)
+    navigator.clipboard.writeText(qrUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const installSteps = [
+  const androidSteps = [
     {
       title: 'Download APK',
       description:
@@ -62,7 +88,29 @@ const ApkDownloadSection = () => {
     },
   ]
 
-  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(downloadUrl)}&bgcolor=ffffff&color=000000&margin=10`
+  const iosSteps = [
+    {
+      title: 'Scan QR Code',
+      description:
+        'Scan the QR code to open the Vastu Rent website in Safari browser.',
+      icon: <Globe className="w-5 h-5" />,
+    },
+    {
+      title: 'Tap Share Button',
+      description:
+        'Tap the Share button in Safari (box icon with upward arrow) at the bottom.',
+      icon: <ExternalLink className="w-5 h-5" />,
+    },
+    {
+      title: 'Add to Home Screen',
+      description:
+        'Select "Add to Home Screen" from the menu to install it on your device.',
+      icon: <CheckCircle2 className="w-5 h-5" />,
+    },
+  ]
+
+  const steps = activePlatform === 'android' ? androidSteps : iosSteps
+  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrUrl)}&bgcolor=ffffff&color=000000&margin=10`
 
   return (
     <section className="relative overflow-hidden bg-background py-24 px-6 bg-grain min-h-[800px] flex items-center">
@@ -80,63 +128,138 @@ const ApkDownloadSection = () => {
             className="lg:col-span-7 space-y-10"
           >
             <div className="space-y-6">
+              {/* Platform Selector */}
+              <div className="flex gap-2 p-1 bg-muted-light/60 border border-border/30 rounded-2xl w-fit">
+                <Button
+                  onClick={() => setActivePlatform('android')}
+                  className={cn(
+                    'rounded-xl px-5 h-9 font-bold text-xs cursor-pointer shadow-none transition-all',
+                    activePlatform === 'android'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light'
+                  )}
+                >
+                  Android
+                </Button>
+                <Button
+                  onClick={() => setActivePlatform('ios')}
+                  className={cn(
+                    'rounded-xl px-5 h-9 font-bold text-xs cursor-pointer shadow-none transition-all',
+                    activePlatform === 'ios'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light'
+                  )}
+                >
+                  iOS (iPhone)
+                </Button>
+              </div>
+
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full border border-primary/20 text-xs font-bold uppercase tracking-widest font-sans"
               >
                 <Smartphone className="w-4 h-4" />
-                Now Available for Android
+                {activePlatform === 'android' ? 'Now Available for Android' : 'Installs instantly on iOS'}
               </motion.div>
               <h1 className="text-5xl lg:text-7xl font-display text-foreground leading-[1.05] tracking-tight">
-                Download <span className="text-primary italic">Vastu Rent</span>{' '}
-                Mobile App
+                {activePlatform === 'android' ? (
+                  <>
+                    Download <span className="text-primary italic">Vastu Rent</span>{' '}
+                    Mobile App
+                  </>
+                ) : (
+                  <>
+                    Add <span className="text-primary italic">Vastu Rent</span>{' '}
+                    to Home Screen
+                  </>
+                )}
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-sans">
-                Get the full Vastu Rent experience on your Android device. Fast
-                listings, real-time booking updates, and exclusive mobile
-                features.
+                {activePlatform === 'android' ? (
+                  'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.'
+                ) : (
+                  'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.'
+                )}
               </p>
             </div>
 
             {/* Main Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
-              <motion.a
-                href={downloadUrl}
-                download={APK_CONFIG.FILENAME}
-                whileHover={{ scale: 1.02, y: -4 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex-1 sm:flex-none group relative inline-flex items-center justify-center gap-4 px-10 py-6 bg-primary text-primary-foreground rounded-[2rem] font-bold text-xl shadow-2xl shadow-primary/30 transition-all hover:shadow-primary/50 font-sans"
-              >
-                <div className="p-2 bg-card/20 rounded-xl group-hover:rotate-12 transition-transform">
-                  <Download className="w-6 h-6" />
-                </div>
-                <div className="flex flex-col items-start leading-tight">
-                  <span className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em] mb-0.5">
-                    {APK_CONFIG.VERSION} Stable
-                  </span>
-                  <span>Download APK</span>
-                </div>
-              </motion.a>
+            {activePlatform === 'android' ? (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
+                <motion.a
+                  href={downloadUrl}
+                  download={APK_CONFIG.FILENAME}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex-1 sm:flex-none group relative inline-flex items-center justify-center gap-4 px-10 py-6 bg-primary text-primary-foreground rounded-[2rem] font-bold text-xl shadow-2xl shadow-primary/30 transition-all hover:shadow-primary/50 font-sans"
+                >
+                  <div className="p-2 bg-card/20 rounded-xl group-hover:rotate-12 transition-transform">
+                    <Download className="w-6 h-6" />
+                  </div>
+                  <div className="flex flex-col items-start leading-tight">
+                    <span className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em] mb-0.5">
+                      {APK_CONFIG.VERSION} Stable
+                    </span>
+                    <span>Download APK</span>
+                  </div>
+                </motion.a>
 
-              <div className="flex flex-col gap-2 font-sans">
-                <div className="flex items-center gap-2 text-primary font-bold">
-                  <ShieldCheck className="w-5 h-5 text-primary" />
-                  <span>100% Safe & Virus Free</span>
-                </div>
-                <div className="text-muted-foreground text-sm flex items-center gap-3">
-                  <span className="font-medium text-foreground">
-                    {APK_CONFIG.SIZE}
-                  </span>
-                  <span className="w-1 h-1 bg-border rounded-full" />
-                  <span>Android {APK_CONFIG.MIN_ANDROID}</span>
+                <div className="flex flex-col gap-2 font-sans">
+                  <div className="flex items-center gap-2 text-primary font-bold">
+                    <ShieldCheck className="w-5 h-5 text-primary" />
+                    <span>100% Safe & Virus Free</span>
+                  </div>
+                  <div className="text-muted-foreground text-sm flex items-center gap-3">
+                    <span className="font-medium text-foreground">
+                      {APK_CONFIG.SIZE}
+                    </span>
+                    <span className="w-1 h-1 bg-border rounded-full" />
+                    <span>Android {APK_CONFIG.MIN_ANDROID}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
+                <motion.button
+                  onClick={() => {
+                    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+                    window.open(origin, '_blank')
+                  }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex-1 sm:flex-none group relative inline-flex items-center justify-center gap-4 px-10 py-6 bg-primary text-primary-foreground rounded-[2rem] font-bold text-xl shadow-2xl shadow-primary/30 transition-all hover:shadow-primary/50 font-sans cursor-pointer"
+                >
+                  <div className="p-2 bg-card/20 rounded-xl group-hover:rotate-12 transition-transform">
+                    <Globe className="w-6 h-6" />
+                  </div>
+                  <div className="flex flex-col items-start leading-tight">
+                    <span className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em] mb-0.5">
+                      Safari Web App
+                    </span>
+                    <span>Open Web Version</span>
+                  </div>
+                </motion.button>
+
+                <div className="flex flex-col gap-2 font-sans">
+                  <div className="flex items-center gap-2 text-primary font-bold">
+                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                    <span>Install via Safari</span>
+                  </div>
+                  <div className="text-muted-foreground text-sm flex items-center gap-3">
+                    <span className="font-medium text-foreground">
+                      No Store Needed
+                    </span>
+                    <span className="w-1 h-1 bg-border rounded-full" />
+                    <span>iOS 16.4+ Supported</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Install Steps */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-border/50">
-              {installSteps.map((step, i) => (
+              {steps.map((step, i) => (
                 <div
                   key={i}
                   className="flex flex-col gap-4 p-4 rounded-3xl hover:bg-card/50 transition-colors"
@@ -222,11 +345,14 @@ const ApkDownloadSection = () => {
 
                 <div className="space-y-3 px-4">
                   <h3 className="text-2xl font-display text-foreground leading-tight">
-                    Scan to Install
+                    {activePlatform === 'android' ? 'Scan to Install' : 'Scan on iPhone'}
                   </h3>
                   <p className="text-sm text-muted-foreground font-sans leading-relaxed">
-                    Point your camera at this code to download the APK directly
-                    to your phone.
+                    {activePlatform === 'android' ? (
+                      'Point your camera at this code to download the APK directly to your phone.'
+                    ) : (
+                      'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.'
+                    )}
                   </p>
                 </div>
 
@@ -254,7 +380,7 @@ const ApkDownloadSection = () => {
                           <ExternalLink className="w-4 h-4" />
                         </div>
                         <span className="text-[11px] font-mono text-muted-foreground truncate max-w-[180px]">
-                          {downloadUrl}
+                          {qrUrl}
                         </span>
                       </div>
                       <div className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary rounded-xl text-[10px] font-bold uppercase transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
@@ -268,7 +394,7 @@ const ApkDownloadSection = () => {
                     </Button>
                   </div>
                   <p className="text-[10px] text-muted-foreground font-sans text-center opacity-40">
-                    Share this link with your Android device
+                    Share this link with your device
                   </p>
                 </div>
               </div>

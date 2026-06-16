@@ -99,6 +99,27 @@ export function ChatWindow() {
     prevConversationIdRef.current = activeConversationId
   }, [messages, isOtherPersonTyping, activeConversationId])
 
+  // Capacitor / Mobile: scroll to bottom when keyboard opens (visualViewport resize)
+  useEffect(() => {
+    const scrollToBottom = () => {
+      const el = messagesContainerRef.current
+      if (el) {
+        // Small delay to let layout settle after keyboard animation
+        setTimeout(() => {
+          el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+        }, 100)
+      }
+    }
+
+    // visualViewport fires when keyboard opens/closes on mobile
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scrollToBottom)
+      return () => {
+        window.visualViewport?.removeEventListener('resize', scrollToBottom)
+      }
+    }
+  }, [])
+
   // Reset search, multi-select, and revealed media messages on conversation change
   useEffect(() => {
     setShowConversationSearch(false)
@@ -125,7 +146,7 @@ export function ChatWindow() {
     return (
       <div
         className={cn(
-          'flex-1 bg-background border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out',
+          'flex-1 bg-background lg:border lg:border-border/30 lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out',
           showDetailsPanel
             ? 'hidden lg:flex'
             : !showMobileChat
@@ -158,7 +179,7 @@ export function ChatWindow() {
   return (
     <div
       className={cn(
-        'flex-1 bg-card border border-border/30 rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out',
+        'flex-1 bg-card lg:border lg:border-border/30 lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out',
         showDetailsPanel
           ? 'hidden lg:flex'
           : !showMobileChat

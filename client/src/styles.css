@@ -137,12 +137,17 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Mobile: prevent text zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-feature-settings: 'ss01', 'cv11';
+    /* Prevent content shift when keyboard opens */
+    overscroll-behavior: none;
   }
 
   h1,
@@ -152,6 +157,11 @@
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     font-weight: 500;
+  }
+
+  /* Mobile safe area for bottom notch/home indicator */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
 

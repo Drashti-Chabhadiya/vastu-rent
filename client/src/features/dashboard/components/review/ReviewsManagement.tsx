@@ -73,6 +73,8 @@ const StarRating = ({ rating }: { rating: number }) => {
 }
 
 export const ReviewsManagement = () => {
+  const { data: sessionData } = authClient.useSession()
+  const currentUserId = sessionData?.user?.id
   const [search] = useState('')
   const [activeTab, setActiveTab] = useState<'all' | 'listings' | 'hosts'>(
     'all',
@@ -138,6 +140,11 @@ export const ReviewsManagement = () => {
           avatar:
             r.product?.user?.image ||
             'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+        },
+        reviewer: {
+          id: r.user?.id,
+          name: r.user?.name || 'Vastu Renter',
+          avatar: r.user?.image,
         },
         postedDate: formatPostedDate(r.createdAt),
         type: r.product ? 'listings' : 'hosts',
@@ -434,24 +441,29 @@ export const ReviewsManagement = () => {
                 {/* Host Row */}
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-2.5">
-                    {/* <img
-                      src={review.host.avatar}
-                      alt={review.host.name}
-                      className="w-9 h-9 rounded-full object-cover border border-border/30 shadow-sm shrink-0"
-                    /> */}
-                    <UserAvatar
-                      image={review.host.avatar || review.host.image}
-                      name={review.host.name}
-                      size="trigger"
-                    />
-                    <div className="text-left">
-                      <p className="text-[10px] text-muted-dark font-bold uppercase tracking-wider leading-none">
-                        Reviewed Host
-                      </p>
-                      <p className="text-xs font-bold text-foreground mt-1 leading-none">
-                        {review.host.name}
-                      </p>
-                    </div>
+                    {(() => {
+                      const isOwnReview = currentUserId === review.reviewer.id
+                      const displayName = isOwnReview ? review.host.name : review.reviewer.name
+                      const displayAvatar = isOwnReview ? review.host.avatar : review.reviewer.avatar
+                      const displayLabel = isOwnReview ? 'Reviewed Host' : 'Reviewed By'
+                      return (
+                        <>
+                          <UserAvatar
+                            image={displayAvatar}
+                            name={displayName}
+                            size="trigger"
+                          />
+                          <div className="text-left">
+                            <p className="text-[10px] text-muted-dark font-bold uppercase tracking-wider leading-none">
+                              {displayLabel}
+                            </p>
+                            <p className="text-xs font-bold text-foreground mt-1 leading-none">
+                              {displayName}
+                            </p>
+                          </div>
+                        </>
+                      )
+                    })()}
                   </div>
 
                   {/* Actions Dropdown (Admins Only) */}

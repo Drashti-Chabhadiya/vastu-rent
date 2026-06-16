@@ -21,6 +21,10 @@ const config: CapacitorConfig = {
     CapacitorUpdater: {
       autoUpdate: false, // Disable auto-update to prevent overwriting our fixed bundle
     },
+    Keyboard: {
+      resize: 'body',
+      resizeOnFullScreen: true,
+    },
   },
 }
 

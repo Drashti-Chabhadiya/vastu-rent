@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import {
@@ -12,6 +13,7 @@ import {
   ArrowLeftRight,
   Pencil,
   MoreVertical,
+  ArrowLeft,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -132,7 +134,7 @@ export function ConversationList() {
   return (
     <div
       className={cn(
-        'shrink-0 bg-card rounded-[2.5rem] shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out border border-border/30',
+        'shrink-0 bg-card lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out lg:border lg:border-border/30',
         showDetailsPanel
           ? 'w-0 lg:w-[84px] p-2 hidden lg:flex'
           : showMobileChat
@@ -153,14 +155,26 @@ export function ConversationList() {
             showDetailsPanel && 'flex-col gap-2 justify-center',
           )}
         >
-          <h1
-            className={cn(
-              'text-xl font-bold text-slate-900 font-sans tracking-tight',
-              showDetailsPanel && 'hidden',
-            )}
-          >
-            Messages
-          </h1>
+          <div className="flex items-center gap-3">
+            {/* Back button to Account Menu on mobile */}
+            <Link
+              to="/account"
+              className={cn(
+                'lg:hidden flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors',
+                showDetailsPanel && 'hidden',
+              )}
+            >
+              <ArrowLeft size={15} />
+            </Link>
+            <h1
+              className={cn(
+                'text-xl font-bold text-slate-900 font-sans tracking-tight',
+                showDetailsPanel && 'hidden',
+              )}
+            >
+              Messages
+            </h1>
+          </div>
           <div
             className={cn(
               'flex items-center gap-1.5',
