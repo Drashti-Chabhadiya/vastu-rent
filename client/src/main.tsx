@@ -7,9 +7,6 @@ import { Capacitor } from '@capacitor/core'
 import { CapacitorUpdater } from '@capgo/capacitor-updater'
 import { initSecureToken } from '#/lib/auth/token-storage'
 
-// Initialize secure token storage as early as possible
-initSecureToken()
-
 // Google Translate React compatibility patch.
 // Google Translate wraps text nodes in <font> elements, which can cause React's
 // virtual DOM to lose track of nodes. This patch silently handles the mismatch
@@ -80,11 +77,14 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   })
 }
 
-if (!rootElement.innerHTML) {
-  const root = createRoot(rootElement)
-  root.render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>,
-  )
-}
+// Wait for secure token storage to be initialized before rendering the app
+initSecureToken().then(() => {
+  if (!rootElement.innerHTML) {
+    const root = createRoot(rootElement)
+    root.render(
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>,
+    )
+  }
+})
