@@ -162,7 +162,7 @@ export function TrustPage() {
     <div className="min-h-screen bg-background pb-20">
       {/* Hero Section Container */}
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
           <motion.div
             variants={stagger}
@@ -178,7 +178,7 @@ export function TrustPage() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
               Your trust is <br />
               <span className="italic text-primary">our priority.</span>
@@ -221,7 +221,7 @@ export function TrustPage() {
         >
           <motion.h2
             variants={fadeUp}
-            className="text-2xl font-bold text-[#0F291B] tracking-tight sm:text-3xl"
+            className="text-2xl font-bold text-brand-ink tracking-tight sm:text-3xl"
           >
             Our commitment to you
           </motion.h2>
@@ -249,7 +249,7 @@ export function TrustPage() {
                     {c.icon}
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">
+                    <h3 className="font-bold text-brand-ink text-base">
                       {c.title}
                     </h3>
                     <p className="text-muted-foreground text-[13px] leading-relaxed mt-2">
@@ -276,7 +276,7 @@ export function TrustPage() {
           >
             <motion.h2
               variants={fadeUp}
-              className="text-2xl font-bold text-[#0F291B] tracking-tight"
+              className="text-2xl font-bold text-brand-ink tracking-tight"
             >
               Safety tips for a secure experience
             </motion.h2>
@@ -296,14 +296,14 @@ export function TrustPage() {
                   variants={fadeUp}
                   key={idx}
                   onClick={() => toast.info(`${tip.title}: ${tip.description}`)}
-                  className="flex items-center justify-between gap-4 p-5 sm:px-6 transition-colors hover:bg-[#faf9f5]/50 cursor-pointer group"
+                  className="flex items-center justify-between gap-4 p-5 sm:px-6 transition-colors hover:bg-brand-surface-warm/50 cursor-pointer group"
                 >
                   <div className="flex gap-4 items-center">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/5 transition-colors group-hover:bg-primary/10">
                       {tip.icon}
                     </div>
                     <div>
-                      <h4 className="font-bold text-[#0F291B] text-[14px]">
+                      <h4 className="font-bold text-brand-ink text-[14px]">
                         {tip.title}
                       </h4>
                       <p className="text-[12px] text-muted-foreground mt-0.5 leading-relaxed">
@@ -332,7 +332,7 @@ export function TrustPage() {
               <Shield className="h-6 w-6 text-primary animate-pulse" />
             </div>
 
-            <h3 className="font-bold text-[#0F291B] text-xl mt-6">
+            <h3 className="font-bold text-brand-ink text-xl mt-6">
               Your privacy matters
             </h3>
             <p className="text-muted-foreground text-sm leading-relaxed mt-2">
@@ -375,14 +375,14 @@ export function TrustPage() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm"
+          className="bg-brand-surface-warm border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm"
         >
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 border border-primary/10 shrink-0">
               <Flag className="h-7 w-7 text-primary" />
             </div>
             <div>
-              <h3 className="font-bold text-[#0F291B] text-lg">
+              <h3 className="font-bold text-brand-ink text-lg">
                 See something that doesn’t look right?
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
@@ -394,14 +394,14 @@ export function TrustPage() {
           <div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="group rounded-full bg-[#faf9f5] border border-primary/20 hover:border-primary px-6 py-4.5 h-auto text-sm font-bold text-[#0F291B] shadow-sm transition-all hover:bg-background active:scale-[0.98] inline-flex items-center gap-2 [&_svg]:size-4">
+                <Button className="group rounded-full bg-brand-surface-warm border border-primary/20 hover:border-primary px-6 py-4.5 h-auto text-sm font-bold text-brand-ink shadow-sm transition-all hover:bg-background active:scale-[0.98] inline-flex items-center gap-2 [&_svg]:size-4">
                   Report a concern
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md bg-background rounded-3xl p-6 border border-border/50 shadow-lg">
                 <DialogHeader>
-                  <DialogTitle className="text-xl font-bold text-[#0F291B] flex items-center gap-2">
+                  <DialogTitle className="text-xl font-bold text-brand-ink flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-primary" />
                     Report a concern
                   </DialogTitle>
@@ -412,7 +412,7 @@ export function TrustPage() {
                 </DialogHeader>
                 <form onSubmit={handleSendReport} className="mt-4 space-y-4">
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B]">
+                    <Label className="text-[13px] font-bold text-brand-ink">
                       What kind of concern is this?
                     </Label>
                     <Select value={reportType} onValueChange={setReportType}>
@@ -449,7 +449,7 @@ export function TrustPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B]">
+                    <Label className="text-[13px] font-bold text-brand-ink">
                       Reference URL / Listing / User ID (Optional)
                     </Label>
                     <Input
@@ -461,7 +461,7 @@ export function TrustPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B]">
+                    <Label className="text-[13px] font-bold text-brand-ink">
                       Detailed Description
                     </Label>
                     <Textarea

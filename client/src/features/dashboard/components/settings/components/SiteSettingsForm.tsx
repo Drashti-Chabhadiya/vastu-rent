@@ -122,28 +122,28 @@ export const SiteSettingsForm = () => {
         onValueChange={(val: any) => setActiveTab(val)}
         className="w-full flex flex-col flex-1 min-h-0 space-y-6"
       >
-        <TabsList className="w-full flex p-1 rounded-full bg-[#f8fafc] border border-[#e2e8f0] h-auto justify-between mb-8">
+        <TabsList className="w-full flex p-1 rounded-full bg-muted-light border border-border h-auto justify-between mb-8">
           <TabsTrigger
             value="contact"
-            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
             Contact
           </TabsTrigger>
           <TabsTrigger
             value="pricing"
-            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
             Pricing
           </TabsTrigger>
           <TabsTrigger
             value="trust"
-            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
             Trust
           </TabsTrigger>
           <TabsTrigger
             value="terms"
-            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-[#334155] hover:text-dash-brand cursor-pointer"
+            className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
             Terms
           </TabsTrigger>

@@ -36,7 +36,7 @@ export function TermsSettingsTab() {
         <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
           Document Last Updated Date
         </label>
-        <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+        <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
           <div className="flex items-center gap-3.5 flex-1 min-w-0">
             <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0">
               <Calendar size={16} />
@@ -64,7 +64,7 @@ export function TermsSettingsTab() {
           <Button
             type="button"
             onClick={addTermsSection}
-            className="h-8 px-3.5 rounded-full bg-[#e6f4ea] text-[#0a5c36] hover:bg-[#d0eed8] text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
+            className="h-8 px-3.5 rounded-full bg-brand-green-bubble text-brand-primary-deep hover:bg-brand-green-bubble/80 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
           >
             <Plus size={12} /> Add Section
           </Button>
@@ -74,7 +74,7 @@ export function TermsSettingsTab() {
           {termsSections.map((sec, index) => (
             <div
               key={index}
-              className="p-5 rounded-2xl bg-[#f8fafc]/30 border border-[#e2e8f0] space-y-4 relative group"
+              className="p-5 rounded-2xl bg-muted-light/30 border border-border space-y-4 relative group"
             >
               <Button
                 type="button"
@@ -90,7 +90,7 @@ export function TermsSettingsTab() {
                   <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                     Unique Anchor ID
                   </label>
-                  <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                  <div className="bg-muted-light border border-border rounded-xl px-3 py-1 flex items-center">
                     <Input
                       type="text"
                       value={sec.id}
@@ -106,7 +106,7 @@ export function TermsSettingsTab() {
                   <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                     Section Title
                   </label>
-                  <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-3 py-1 flex items-center">
+                  <div className="bg-muted-light border border-border rounded-xl px-3 py-1 flex items-center">
                     <Input
                       type="text"
                       value={sec.title}
@@ -124,7 +124,7 @@ export function TermsSettingsTab() {
                 <label className="text-[9px] font-extrabold text-muted-dark uppercase tracking-wider">
                   Content Body
                 </label>
-                <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-xl p-3 flex items-start">
+                <div className="bg-muted-light border border-border rounded-xl p-3 flex items-start">
                   <Textarea
                     value={sec.content}
                     onChange={(e) =>

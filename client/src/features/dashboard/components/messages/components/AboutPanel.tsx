@@ -44,7 +44,7 @@ export function AboutPanel() {
   if (!activeConversation) return null
 
   return (
-    <div className="w-full lg:w-[360px] shrink-0 flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-[#fbf9f4]">
+    <div className="w-full lg:w-[360px] shrink-0 flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-brand-surface-warm">
       {activeTab === 'info' ? (
         <div className="flex-1 overflow-y-auto scrollbar-none pb-6 pt-1 flex flex-col gap-4 px-1">
           {/* Card 1: Profile card with avatar & Verification status */}
@@ -72,7 +72,7 @@ export function AboutPanel() {
       ) : (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Settings Sub-Header */}
-          <div className="bg-[#0d4d38] px-4 py-5 flex items-center gap-4 text-white shrink-0 shadow-sm rounded-t-3xl">
+          <div className="bg-brand-primary-deep px-4 py-5 flex items-center gap-4 text-white shrink-0 shadow-sm rounded-t-3xl">
             <Button
               variant="ghost"
               size="icon"

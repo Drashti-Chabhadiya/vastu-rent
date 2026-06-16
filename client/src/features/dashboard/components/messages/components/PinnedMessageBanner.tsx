@@ -25,7 +25,7 @@ export function PinnedMessageBanner() {
   }
 
   return (
-    <div className="bg-[#f4f9f3] border-b border-[#dcebd8] px-6 py-3 flex items-center justify-between gap-3 shrink-0 animate-in slide-in-from-top duration-200">
+    <div className="bg-brand-green-tint/50 border-b border-brand-green-border px-6 py-3 flex items-center justify-between gap-3 shrink-0 animate-in slide-in-from-top duration-200">
       <div
         onClick={handleScrollToMessage}
         className="flex items-center gap-3 cursor-pointer min-w-0 flex-1 hover:opacity-90"

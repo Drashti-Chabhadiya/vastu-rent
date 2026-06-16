@@ -155,7 +155,7 @@ export const RentalsCalendar = () => {
       case 'cancelled':
         return 'bg-destructive border-destructive/80 text-destructive-foreground'
       default:
-        return 'bg-warning-foreground border-amber-600 text-primary-foreground'
+        return 'bg-warning-foreground border-warning-foreground text-primary-foreground'
     }
   }
 

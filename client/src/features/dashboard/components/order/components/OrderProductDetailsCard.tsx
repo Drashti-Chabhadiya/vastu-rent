@@ -42,14 +42,14 @@ export const OrderProductDetailsCard = ({
           </div>
         </div>
         <div className="flex flex-col justify-center items-end gap-1.5">
-          <span className="text-[9px] font-black text-[#334155] uppercase tracking-widest">
+          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
             Rental Period
           </span>
           <span className="text-[14px] font-black text-foreground">
             {format(new Date(order.startDate), 'dd MMM yyyy')} -{' '}
             {format(new Date(order.endDate), 'dd MMM yyyy')}
           </span>
-          <Badge className="bg-[#f1f5f9] text-[#475569] border-none px-4 py-1 rounded-full font-bold text-[11px]">
+          <Badge className="bg-muted text-muted-foreground border-none px-4 py-1 rounded-full font-bold text-[11px]">
             {calculateDuration(order.startDate, order.endDate)} Days
           </Badge>
         </div>

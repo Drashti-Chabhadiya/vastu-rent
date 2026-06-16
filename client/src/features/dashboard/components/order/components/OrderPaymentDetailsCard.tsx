@@ -70,7 +70,7 @@ export const OrderPaymentDetailsCard = ({
                   'text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full',
                   item.value === 'PAID'
                     ? 'bg-primary-soft text-primary'
-                    : 'bg-[#fffbeb] text-[#d97706]',
+                    : 'bg-warning text-warning-foreground',
                 )}
               >
                 {item.value}
@@ -83,7 +83,7 @@ export const OrderPaymentDetailsCard = ({
           </div>
         ))}
       </div>
-      <div className="bg-[#f8fafc] px-10 py-8 flex items-center justify-between mt-4">
+      <div className="bg-muted-light px-10 py-8 flex items-center justify-between mt-4">
         <span className="text-[14px] font-black text-foreground">
           Total Paid (Gross Income)
         </span>

@@ -151,7 +151,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
   }
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-[#f8fafc] -m-8 p-10 min-h-screen">
+    <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-muted-light/60 -m-8 p-10 min-h-screen">
       {/* Breadcrumbs & Header */}
       <div className="flex flex-col gap-1 mb-4">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
@@ -287,7 +287,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                     onClick={() => setPendingAction('reject')}
                     disabled={updateStatus.isPending}
                     variant="ghost"
-                    className="h-14 rounded-2xl bg-card hover:bg-danger text-destructive border border-[#ef4444]/30 font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                    className="h-14 rounded-2xl bg-card hover:bg-danger text-destructive border border-destructive/30 font-black text-[12px] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
                   >
                     <XCircle size={16} />
                     Reject Request
@@ -301,7 +301,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                     </span>
                     <div className="flex items-center justify-center gap-2 text-sm font-bold text-foreground/80 font-sans">
                       {order.status === 'confirmed' && (
-                        <span className="text-amber-600 flex items-center gap-1 justify-center">
+                        <span className="text-warning-foreground flex items-center gap-1 justify-center">
                           <CheckCircle2 size={16} /> Confirmed (Awaiting Pickup)
                         </span>
                       )}

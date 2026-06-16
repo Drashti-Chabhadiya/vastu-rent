@@ -58,7 +58,7 @@ export function VoicePlayer({ src, timeStr }: VoicePlayerProps) {
     <div className="flex items-center gap-2.5 py-2 px-3.5 bg-white border border-slate-200/80 rounded-2xl w-[260px] shrink-0 shadow-none">
       <button
         onClick={togglePlay}
-        className="w-7 h-7 rounded-full bg-[#eef6ec] text-emerald-800 hover:bg-[#dcebd8] flex items-center justify-center cursor-pointer transition-transform active:scale-95 shrink-0 border-none outline-none"
+        className="w-7 h-7 rounded-full bg-brand-green-bubble text-emerald-800 hover:bg-brand-green-border flex items-center justify-center cursor-pointer transition-transform active:scale-95 shrink-0 border-none outline-none"
       >
         {isPlaying ? (
           <Pause size={11} fill="currentColor" />
@@ -81,7 +81,7 @@ export function VoicePlayer({ src, timeStr }: VoicePlayerProps) {
               style={{ height: `${h * 0.7}px` }}
               className={cn(
                 'w-[2px] rounded-full transition-colors duration-150 shrink-0',
-                active ? 'bg-[#0a6634]' : 'bg-slate-200',
+                active ? 'bg-brand-primary-deep' : 'bg-slate-200',
               )}
             />
           )

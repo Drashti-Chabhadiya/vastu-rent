@@ -120,7 +120,7 @@ export function ContactPage() {
     <div className="min-h-screen bg-background pb-20">
       {/* Hero Section Container */}
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
           <motion.div
             variants={stagger}
@@ -136,7 +136,7 @@ export function ContactPage() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
               We’d love to <br />
               <span className="italic text-primary">hear from you.</span>
@@ -194,7 +194,7 @@ export function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
             {/* Left side details */}
             <div className="lg:col-span-4">
-              <h2 className="text-2xl font-bold text-[#0F291B] tracking-tight">
+              <h2 className="text-2xl font-bold text-brand-ink tracking-tight">
                 Other ways to reach us
               </h2>
               <div className="mt-10 space-y-8">
@@ -204,7 +204,7 @@ export function ContactPage() {
                     <Mail className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">
+                    <h3 className="font-bold text-brand-ink text-base">
                       Email us
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -225,7 +225,7 @@ export function ContactPage() {
                     <Phone className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">
+                    <h3 className="font-bold text-brand-ink text-base">
                       Call us
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -246,7 +246,7 @@ export function ContactPage() {
                     <MessageCircle className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">
+                    <h3 className="font-bold text-brand-ink text-base">
                       Live chat
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
@@ -264,7 +264,7 @@ export function ContactPage() {
                     <MapPin className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#0F291B] text-base">
+                    <h3 className="font-bold text-brand-ink text-base">
                       Office
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed mt-1">
@@ -277,7 +277,7 @@ export function ContactPage() {
 
             {/* Right side form */}
             <div className="lg:col-span-8 lg:border-l lg:border-border/40 lg:pl-16">
-              <h2 className="text-2xl font-bold text-[#0F291B] tracking-tight">
+              <h2 className="text-2xl font-bold text-brand-ink tracking-tight">
                 Send us a message
               </h2>
               <p className="text-sm text-muted-foreground mt-1.5">
@@ -289,7 +289,7 @@ export function ContactPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Full Name */}
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B] tracking-tight">
+                    <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
                       Full name
                     </Label>
                     <Input
@@ -298,13 +298,13 @@ export function ContactPage() {
                       value={name}
                       disabled={isSubmitting}
                       onChange={(e) => setName(e.target.value)}
-                      className="h-13 w-full rounded-2xl border border-border bg-[#faf9f5]/30 px-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none text-[#0F291B] disabled:opacity-60"
+                      className="h-13 w-full rounded-2xl border border-border bg-brand-surface-warm/30 px-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none text-brand-ink disabled:opacity-60"
                     />
                   </div>
 
                   {/* Email address */}
                   <div className="space-y-2">
-                    <Label className="text-[13px] font-bold text-[#0F291B] tracking-tight">
+                    <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
                       Email address
                     </Label>
                     <Input
@@ -313,14 +313,14 @@ export function ContactPage() {
                       value={email}
                       disabled={isSubmitting || !!session?.user}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-13 w-full rounded-2xl border border-border bg-[#faf9f5]/30 px-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none text-[#0F291B] disabled:opacity-60 disabled:bg-[#faf9f5]/10 disabled:cursor-not-allowed"
+                      className="h-13 w-full rounded-2xl border border-border bg-brand-surface-warm/30 px-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none text-brand-ink disabled:opacity-60 disabled:bg-brand-surface-warm/10 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>
 
                 {/* Subject Dropdown */}
                 <div className="space-y-2">
-                  <Label className="text-[13px] font-bold text-[#0F291B] tracking-tight">
+                  <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
                     Subject
                   </Label>
                   <Select
@@ -328,7 +328,7 @@ export function ContactPage() {
                     onValueChange={setSubject}
                     disabled={isSubmitting}
                   >
-                    <SelectTrigger className="h-13 w-full rounded-2xl border border-border bg-[#faf9f5]/30 px-5 text-sm transition-all focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/5 cursor-pointer text-[#0F291B] focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none disabled:opacity-60">
+                    <SelectTrigger className="h-13 w-full rounded-2xl border border-border bg-brand-surface-warm/30 px-5 text-sm transition-all focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/5 cursor-pointer text-brand-ink focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none disabled:opacity-60">
                       <SelectValue placeholder="What is this regarding?" />
                     </SelectTrigger>
                     <SelectContent className="bg-popover rounded-2xl border border-border/50 shadow-md">
@@ -369,7 +369,7 @@ export function ContactPage() {
                 {/* Message Textarea */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <Label className="text-[13px] font-bold text-[#0F291B] tracking-tight">
+                    <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
                       Message
                     </Label>
                     <span className="text-[11px] text-muted-foreground">
@@ -386,7 +386,7 @@ export function ContactPage() {
                       }
                     }}
                     rows={6}
-                    className="w-full rounded-2xl border border-border bg-[#faf9f5]/30 p-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none resize-none leading-relaxed text-[#0F291B] disabled:opacity-60"
+                    className="w-full rounded-2xl border border-border bg-brand-surface-warm/30 p-5 text-sm outline-none transition-all focus:border-primary focus:bg-background focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none resize-none leading-relaxed text-brand-ink disabled:opacity-60"
                   />
                 </div>
 

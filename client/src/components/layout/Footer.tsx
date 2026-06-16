@@ -100,13 +100,13 @@ export function Footer() {
     <footer className="border-t border-border bg-background pt-16 pb-8">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         {/* Top Callout Card: Integrated inside the footer */}
-        <div className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm mb-16">
+        <div className="bg-brand-surface-warm border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm mb-16">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 border border-primary/10 shrink-0">
               <Headphones className="h-7 w-7 text-primary animate-pulse" />
             </div>
             <div>
-              <h3 className="font-bold text-[#0F291B] text-lg">
+              <h3 className="font-bold text-brand-ink text-lg">
                 {t('Need help?')}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
@@ -117,7 +117,7 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             <Link
               to="/help"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-[#0F291B] shadow-sm transition-all hover:bg-[#faf9f5] hover:border-primary active:scale-[0.98] w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-brand-ink shadow-sm transition-all hover:bg-brand-surface-warm hover:border-primary active:scale-[0.98] w-full sm:w-auto"
             >
               {t('Visit Help Center')}
               <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
@@ -180,7 +180,7 @@ export function Footer() {
 
           {/* Column 2: Company Navigation */}
           <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
-            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
+            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-brand-ink">
               {t('Company')}
             </h4>
             <ul className="mt-6 space-y-3.5">
@@ -199,7 +199,7 @@ export function Footer() {
 
           {/* Column 3: Explore Navigation */}
           <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
-            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
+            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-brand-ink">
               {t('Explore')}
             </h4>
             <ul className="mt-6 space-y-3.5">
@@ -218,7 +218,7 @@ export function Footer() {
 
           {/* Column 4: Support Navigation */}
           <div className="col-span-1 min-[375px]:col-span-1 sm:col-span-1 lg:col-span-1 xl:col-span-2">
-            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
+            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-brand-ink">
               {t('Support')}
             </h4>
             <ul className="mt-6 space-y-3.5">
@@ -237,7 +237,7 @@ export function Footer() {
 
           {/* Column 5: Stay in the loop */}
           <div className="col-span-1 min-[375px]:col-span-2 sm:col-span-3 lg:col-span-1 xl:col-span-2">
-            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-[#0F291B]">
+            <h4 className="text-[12px] font-bold uppercase tracking-[0.2em] text-brand-ink">
               {t('Stay in the loop')}
             </h4>
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
@@ -247,7 +247,7 @@ export function Footer() {
             {/* Newsletter input form */}
             <form
               onSubmit={handleSubscribe}
-              className="mt-6 relative flex items-center bg-[#faf9f5] border border-border rounded-2xl p-1 shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/5 transition-all"
+              className="mt-6 relative flex items-center bg-brand-surface-warm border border-border rounded-2xl p-1 shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/5 transition-all"
             >
               <Input
                 type="email"
@@ -255,7 +255,7 @@ export function Footer() {
                 value={email}
                 disabled={isSubmitting}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-transparent px-4 py-2 border-none shadow-none text-xs text-[#0F291B] placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:outline-none disabled:opacity-60"
+                className="flex-1 bg-transparent px-4 py-2 border-none shadow-none text-xs text-brand-ink placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:outline-none disabled:opacity-60"
               />
               <Button
                 type="submit"
@@ -287,7 +287,7 @@ export function Footer() {
           </div>
 
           {/* Bottom right region indicators */}
-          <div className="flex flex-wrap items-center gap-6 font-medium text-[#0F291B]/80">
+          <div className="flex flex-wrap items-center gap-6 font-medium text-brand-ink/80">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-primary" />
               <span className="text-[11.5px]">{t('Secure Payments')}</span>

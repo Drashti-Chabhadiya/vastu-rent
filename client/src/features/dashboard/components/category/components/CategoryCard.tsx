@@ -45,7 +45,7 @@ export const CategoryCard = ({
       <div
         className="w-12 h-12 rounded-xl flex items-center justify-center transition-all group-hover:scale-110 shadow-sm flex-shrink-0"
         style={{
-          backgroundColor: `${iconColor}15`,
+          backgroundColor: `color-mix(in srgb, ${iconColor} 15%, transparent)`,
           color: iconColor,
         }}
       >
@@ -72,7 +72,7 @@ export const CategoryCard = ({
               <div
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
                 style={{
-                  backgroundColor: `${category.color || 'var(--color-primary)'}15`,
+                  backgroundColor: `color-mix(in srgb, ${category.color || 'var(--color-primary)'} 15%, transparent)`,
                 }}
               >
                 <Layers

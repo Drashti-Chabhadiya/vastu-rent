@@ -105,7 +105,7 @@ export function PricingPage() {
     <div className="min-h-screen bg-background pb-20">
       {/* Hero Section */}
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-[#faf9f5] rounded-[2.5rem] border border-border/20 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
           <motion.div
             variants={stagger}
@@ -121,7 +121,7 @@ export function PricingPage() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-[#0F291B]"
+              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
               Simple, transparent <br />
               <span className="italic text-primary">pricing.</span>
@@ -162,7 +162,7 @@ export function PricingPage() {
       >
         <div className="flex items-center gap-4 bg-muted/30 p-2 px-5 rounded-full border border-border/40 shadow-sm">
           <span
-            className={`text-sm font-semibold transition-colors ${!isYearly ? 'text-[#0F291B]' : 'text-muted-foreground'}`}
+            className={`text-sm font-semibold transition-colors ${!isYearly ? 'text-brand-ink' : 'text-muted-foreground'}`}
           >
             Monthly billing
           </span>
@@ -174,7 +174,7 @@ export function PricingPage() {
           />
 
           <span
-            className={`text-sm font-semibold transition-colors ${isYearly ? 'text-[#0F291B]' : 'text-muted-foreground'}`}
+            className={`text-sm font-semibold transition-colors ${isYearly ? 'text-brand-ink' : 'text-muted-foreground'}`}
           >
             Yearly billing
           </span>
@@ -204,7 +204,7 @@ export function PricingPage() {
                       <Sprout className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#0F291B] text-lg">
+                      <h3 className="font-bold text-brand-ink text-lg">
                         Starter
                       </h3>
                       <p className="text-xs text-muted-foreground">
@@ -215,7 +215,7 @@ export function PricingPage() {
 
                   {/* Price */}
                   <div className="mt-8">
-                    <div className="flex items-baseline text-[#0F291B]">
+                    <div className="flex items-baseline text-brand-ink">
                       <span className="text-4xl font-extrabold tracking-tight">
                         ₹{rawStarterPrice}
                       </span>
@@ -234,7 +234,7 @@ export function PricingPage() {
                   <Button
                     onClick={() => handleSelectPlan('Starter')}
                     variant="outline"
-                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98]"
+                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98]"
                   >
                     Get Started
                   </Button>
@@ -274,7 +274,7 @@ export function PricingPage() {
                       <Home className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#0F291B] text-lg">Pro</h3>
+                      <h3 className="font-bold text-brand-ink text-lg">Pro</h3>
                       <p className="text-xs text-muted-foreground">
                         For growing renters.
                       </p>
@@ -283,7 +283,7 @@ export function PricingPage() {
 
                   {/* Price */}
                   <div className="mt-8">
-                    <div className="flex items-baseline text-[#0F291B]">
+                    <div className="flex items-baseline text-brand-ink">
                       <span className="text-4xl font-extrabold tracking-tight">
                         ₹{getProPrice()}
                       </span>
@@ -317,7 +317,7 @@ export function PricingPage() {
                   {proFeatures.map((f, i) => (
                     <li key={i} className="flex items-center gap-3">
                       <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                      <span className="text-[13.5px] text-[#0F291B] font-medium leading-relaxed">
+                      <span className="text-[13.5px] text-brand-ink font-medium leading-relaxed">
                         {f}
                       </span>
                     </li>
@@ -338,7 +338,7 @@ export function PricingPage() {
                       <Building2 className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-[#0F291B] text-lg">
+                      <h3 className="font-bold text-brand-ink text-lg">
                         Business
                       </h3>
                       <p className="text-xs text-muted-foreground">
@@ -349,7 +349,7 @@ export function PricingPage() {
 
                   {/* Price */}
                   <div className="mt-8">
-                    <div className="flex items-baseline text-[#0F291B]">
+                    <div className="flex items-baseline text-brand-ink">
                       <span className="text-4xl font-extrabold tracking-tight">
                         ₹{getBusinessPrice()}
                       </span>
@@ -370,7 +370,7 @@ export function PricingPage() {
                   <Button
                     onClick={() => handleSelectPlan('Business')}
                     variant="outline"
-                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-[#0F291B] hover:bg-muted/10 active:scale-[0.98]"
+                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98]"
                   >
                     Choose Business
                   </Button>
@@ -404,13 +404,13 @@ export function PricingPage() {
         viewport={{ once: true }}
         className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10"
       >
-        <div className="bg-[#faf9f5] border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+        <div className="bg-brand-surface-warm border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
           <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 border border-primary/10 shrink-0">
               <ShieldCheck className="h-7 w-7 text-primary animate-pulse" />
             </div>
             <div>
-              <h3 className="font-bold text-[#0F291B] text-lg">
+              <h3 className="font-bold text-brand-ink text-lg">
                 Trusted. Secure. Hassle-free.
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
@@ -418,7 +418,7 @@ export function PricingPage() {
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 text-[#0F291B] text-sm font-semibold">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-brand-ink text-sm font-semibold">
             <div className="flex items-center gap-2">
               <CreditCard className="h-4.5 w-4.5 text-primary" />
               <span>Secure Payments</span>

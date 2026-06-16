@@ -31,7 +31,7 @@ export const OrderCustomerDetailsCard = ({
         </div>
 
         <div className="space-y-2">
-          <span className="text-[9px] font-black text-[#334155] uppercase tracking-widest block">
+          <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest block">
             Pickup & Location Details
           </span>
           <div className="text-[12px] font-bold text-muted-foreground leading-relaxed space-y-1">

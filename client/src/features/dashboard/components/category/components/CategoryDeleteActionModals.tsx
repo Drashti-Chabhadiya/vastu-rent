@@ -63,7 +63,7 @@ export const CategoryDeleteActionModals = ({
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm"
               style={{
-                backgroundColor: `${categoryColor}15`,
+                backgroundColor: `color-mix(in srgb, ${categoryColor} 15%, transparent)`,
                 color: categoryColor,
               }}
             >

@@ -245,7 +245,7 @@ export function AboutActionsCard({
           className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer group border-t border-slate-50"
         >
           <div className="flex items-center flex-1 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-[#f4fbf7] text-[#0d4d38] flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-brand-green-tint text-brand-primary-deep flex items-center justify-center shrink-0">
               <FileDown size={16} />
             </div>
             <span className="text-[12.5px] font-bold text-slate-800 ml-3 truncate">

@@ -77,25 +77,25 @@ export function AboutSettingsCard({
   return (
     <>
       <div className="mt-1 shrink-0">
-        <span className="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest px-3 block mb-1.5">
+        <span className="text-[10.5px] font-bold text-muted-dark uppercase tracking-widest px-3 block mb-1.5">
           Chat settings
         </span>
-        <div className="bg-white border border-slate-100 rounded-[2rem] p-1.5 shadow-2xs flex flex-col gap-0.5">
+        <div className="bg-card border border-border/30 rounded-[2rem] p-1.5 shadow-2xs flex flex-col gap-0.5">
           {/* Disappearing messages */}
           <div
             onClick={() => setDisappearingTargetConvId(activeConversation.id)}
-            className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer group"
+            className="flex items-center justify-between p-3 rounded-2xl hover:bg-muted-light/50 transition-colors cursor-pointer group"
           >
             <div className="flex items-center flex-1 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-muted-light text-muted-foreground flex items-center justify-center shrink-0">
                 <Clock size={16} />
               </div>
-              <span className="text-[12.5px] font-bold text-slate-800 ml-3 truncate">
+              <span className="text-[12.5px] font-bold text-foreground ml-3 truncate">
                 Disappearing messages
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-600 transition-colors ml-2 shrink-0">
-              <span className="text-[11.5px] font-bold text-slate-500/80">
+            <div className="flex items-center gap-1.5 text-muted-dark group-hover:text-foreground/80 transition-colors ml-2 shrink-0">
+              <span className="text-[11.5px] font-bold text-muted-foreground/80">
                 {getDisappearingLabel(
                   activeConversation.disappearingDuration || 0,
                 )}
@@ -107,13 +107,13 @@ export function AboutSettingsCard({
           {/* Block user */}
           <div
             onClick={() => setShowBlockConfirm(true)}
-            className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer group border-t border-slate-50"
+            className="flex items-center justify-between p-3 rounded-2xl hover:bg-muted-light/50 transition-colors cursor-pointer group border-t border-border/20"
           >
             <div className="flex items-center flex-1 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-muted-light text-muted-foreground flex items-center justify-center shrink-0">
                 <Ban size={16} />
               </div>
-              <span className="text-[12.5px] font-bold text-slate-800 ml-3 truncate">
+              <span className="text-[12.5px] font-bold text-foreground ml-3 truncate">
                 {isBlockedByMe ? 'Unblock' : 'Block'}{' '}
                 {activeConversation.otherParticipant.name}
               </span>
@@ -123,13 +123,13 @@ export function AboutSettingsCard({
           {/* Report and block */}
           <div
             onClick={() => setShowReportConfirm(true)}
-            className="flex items-center justify-between p-3 rounded-2xl hover:bg-red-50/20 hover:text-red-700 transition-colors cursor-pointer group border-t border-slate-50"
+            className="flex items-center justify-between p-3 rounded-2xl hover:bg-danger/10 hover:text-destructive transition-colors cursor-pointer group border-t border-border/20"
           >
             <div className="flex items-center flex-1 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-danger text-destructive flex items-center justify-center shrink-0">
                 <AlertTriangle size={16} />
               </div>
-              <span className="text-[12.5px] font-bold text-red-600 ml-3 truncate">
+              <span className="text-[12.5px] font-bold text-destructive ml-3 truncate">
                 Report and block
               </span>
             </div>
@@ -164,7 +164,7 @@ export function AboutSettingsCard({
         title={`Report ${activeConversation.otherParticipant.name}?`}
         description={
           <div className="flex flex-col gap-3 w-full mt-2">
-            <span className="text-slate-500 font-semibold text-[12px] leading-relaxed">
+            <span className="text-muted-foreground font-semibold text-[12px] leading-relaxed">
               Report {activeConversation.otherParticipant.name} for spam, abuse,
               or inappropriate content? This report will be reviewed by
               administrators.
@@ -173,37 +173,37 @@ export function AboutSettingsCard({
               value={reportReason}
               onValueChange={(val) => setReportReason(val)}
             >
-              <SelectTrigger className="w-full text-[12px] font-bold border border-slate-200 bg-white rounded-xl focus:outline-none focus:ring-1 focus:ring-primary/20 text-slate-800 shadow-none h-11 px-3.5">
+              <SelectTrigger className="w-full text-[12px] font-bold border border-border bg-card rounded-xl focus:outline-none focus:ring-1 focus:ring-primary/20 text-foreground shadow-none h-11 px-3.5">
                 <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border border-slate-200 bg-card font-bold text-[12px] text-slate-700">
+              <SelectContent className="rounded-xl border border-border bg-card font-bold text-[12px] text-foreground/80">
                 <SelectItem
                   value="Spam"
-                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                  className="cursor-pointer rounded-lg hover:bg-muted-light/60"
                 >
                   Spam
                 </SelectItem>
                 <SelectItem
                   value="Harassment"
-                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                  className="cursor-pointer rounded-lg hover:bg-muted-light/60"
                 >
                   Harassment / Abuse
                 </SelectItem>
                 <SelectItem
                   value="Inappropriate Content"
-                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                  className="cursor-pointer rounded-lg hover:bg-muted-light/60"
                 >
                   Inappropriate Content
                 </SelectItem>
                 <SelectItem
                   value="Policy Violation"
-                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                  className="cursor-pointer rounded-lg hover:bg-muted-light/60"
                 >
                   Policy Violation
                 </SelectItem>
                 <SelectItem
                   value="Other"
-                  className="cursor-pointer rounded-lg hover:bg-slate-50"
+                  className="cursor-pointer rounded-lg hover:bg-muted-light/60"
                 >
                   Other Reason
                 </SelectItem>
@@ -230,7 +230,7 @@ function ChevronRightIcon() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="text-slate-400 group-hover:text-slate-600 transition-colors ml-2 shrink-0"
+      className="text-muted-dark group-hover:text-foreground/80 transition-colors ml-2 shrink-0"
     >
       <path d="m9 18 6-6-6-6" />
     </svg>

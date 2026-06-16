@@ -215,14 +215,14 @@ export const SettingsManagement = () => {
               onClick={() => setActiveSubTab(item.id)}
               className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
                 activeSubTab === item.id
-                  ? 'bg-[#e6f4ea] text-[#0a5c36] hover:bg-[#e6f4ea] hover:text-[#0a5c36]'
+                  ? 'bg-brand-green-bubble text-brand-primary-deep hover:bg-brand-green-bubble hover:text-brand-primary-deep'
                   : 'text-slate-600 hover:bg-slate-50'
               }`}
             >
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${
                   activeSubTab === item.id
-                    ? 'bg-white text-[#0a5c36] border-emerald-100 shadow-sm'
+                    ? 'bg-white text-brand-primary-deep border-brand-green-border shadow-sm'
                     : 'bg-slate-100 border-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm'
                 }`}
               >
@@ -235,7 +235,7 @@ export const SettingsManagement = () => {
                 <p
                   className={`font-sans text-[13px] leading-snug font-bold ${
                     activeSubTab === item.id
-                      ? 'text-[#0a5c36]'
+                      ? 'text-brand-primary-deep'
                       : 'text-slate-800'
                   }`}
                 >
@@ -244,7 +244,7 @@ export const SettingsManagement = () => {
                 <p
                   className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
                     activeSubTab === item.id
-                      ? 'text-[#0a5c36]/80'
+                      ? 'text-brand-primary-deep/80'
                       : 'text-slate-400'
                   }`}
                 >
@@ -302,7 +302,7 @@ export const SettingsManagement = () => {
                 under your main Account Settings page.
               </p>
               <Link to="/account">
-                <Button className="mt-2 bg-[#0a5c36] hover:bg-[#084a2b] text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm">
+                <Button className="mt-2 bg-brand-primary-deep hover:bg-brand-primary-darker text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm">
                   Go to Profile Security
                 </Button>
               </Link>

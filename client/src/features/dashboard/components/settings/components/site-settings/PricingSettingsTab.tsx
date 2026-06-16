@@ -43,7 +43,7 @@ export function PricingSettingsTab() {
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
             Starter Price (INR)
           </label>
-          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+          <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0 font-extrabold text-sm">
                 ₹
@@ -66,7 +66,7 @@ export function PricingSettingsTab() {
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
             Pro Price (INR)
           </label>
-          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+          <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0 font-extrabold text-sm">
                 ₹
@@ -89,7 +89,7 @@ export function PricingSettingsTab() {
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
             Business Price (INR)
           </label>
-          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
+          <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
               <div className="w-9 h-9 rounded-xl bg-dash-brand-light text-dash-brand flex items-center justify-center shrink-0 font-extrabold text-sm">
                 ₹
@@ -134,7 +134,7 @@ export function PricingSettingsTab() {
             {starterFeatures.map((feat, index) => (
               <div
                 key={index}
-                className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-2.5 pl-4 flex items-center justify-between"
+                className="bg-muted-light border border-border rounded-2xl p-2.5 pl-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <span className="w-2 h-2 rounded-full bg-dash-brand shrink-0" />
@@ -185,7 +185,7 @@ export function PricingSettingsTab() {
             {proFeatures.map((feat, index) => (
               <div
                 key={index}
-                className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-2.5 pl-4 flex items-center justify-between"
+                className="bg-muted-light border border-border rounded-2xl p-2.5 pl-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <span className="w-2 h-2 rounded-full bg-dash-brand shrink-0" />
@@ -236,7 +236,7 @@ export function PricingSettingsTab() {
             {businessFeatures.map((feat, index) => (
               <div
                 key={index}
-                className="bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-2.5 pl-4 flex items-center justify-between"
+                className="bg-muted-light border border-border rounded-2xl p-2.5 pl-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <span className="w-2 h-2 rounded-full bg-dash-brand shrink-0" />

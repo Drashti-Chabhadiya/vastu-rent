@@ -26,7 +26,7 @@ export function MessageEmptyState({
 
       {/* ── Welcome Header ── */}
       <div className="max-w-md mb-6">
-        <h3 className="text-2xl sm:text-[25px] font-bold text-[#091e15] tracking-tight font-display">
+        <h3 className="text-2xl sm:text-[25px] font-bold text-brand-ink tracking-tight font-display">
           Welcome to your conversations
         </h3>
         <p className="text-sm text-slate-500 mt-2.5 px-4 leading-relaxed font-medium font-sans max-w-sm mx-auto">
@@ -41,13 +41,13 @@ export function MessageEmptyState({
           {/* Browse listings card */}
           <div
             onClick={() => navigate({ to: '/' })}
-            className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-[#f0efe9] rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#0f513d]/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
+            className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-border rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-brand-primary-deep/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
           >
-            <span className="w-10 h-10 rounded-full border border-[#0f513d]/30 text-[#0f513d] flex items-center justify-center shrink-0 bg-transparent">
-              <Leaf size={18} className="text-[#0f513d]" />
+            <span className="w-10 h-10 rounded-full border border-brand-primary-deep/30 text-brand-primary-deep flex items-center justify-center shrink-0 bg-transparent">
+              <Leaf size={18} className="text-brand-primary-deep" />
             </span>
             <div>
-              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">
+              <span className="text-[13px] font-bold text-brand-primary-deep block font-sans tracking-tight">
                 Browse Listings
               </span>
               <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
@@ -66,13 +66,13 @@ export function MessageEmptyState({
                 }),
               )
             }}
-            className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-[#f0efe9] rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#0f513d]/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
+            className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-border rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-brand-primary-deep/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
           >
-            <span className="w-10 h-10 rounded-full border border-[#0f513d]/30 text-[#0f513d] flex items-center justify-center shrink-0 bg-transparent">
-              <Calendar size={18} className="text-[#0f513d]" />
+            <span className="w-10 h-10 rounded-full border border-brand-primary-deep/30 text-brand-primary-deep flex items-center justify-center shrink-0 bg-transparent">
+              <Calendar size={18} className="text-brand-primary-deep" />
             </span>
             <div>
-              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">
+              <span className="text-[13px] font-bold text-brand-primary-deep block font-sans tracking-tight">
                 My Bookings
               </span>
               <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
@@ -89,13 +89,13 @@ export function MessageEmptyState({
                 'Directory search opened. Select support team to chat.',
               )
             }}
-            className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-[#f0efe9] rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#0f513d]/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
+            className="flex-1 flex items-center gap-3.5 p-4 bg-white border border-border rounded-2xl cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-brand-primary-deep/20 hover:bg-slate-50/30 active:scale-[0.98] transition-all text-left"
           >
-            <span className="w-10 h-10 rounded-full border border-[#0f513d]/30 text-[#0f513d] flex items-center justify-center shrink-0 bg-transparent">
-              <Headset size={18} className="text-[#0f513d]" />
+            <span className="w-10 h-10 rounded-full border border-brand-primary-deep/30 text-brand-primary-deep flex items-center justify-center shrink-0 bg-transparent">
+              <Headset size={18} className="text-brand-primary-deep" />
             </span>
             <div>
-              <span className="text-[13px] font-bold text-[#0f513d] block font-sans tracking-tight">
+              <span className="text-[13px] font-bold text-brand-primary-deep block font-sans tracking-tight">
                 Support
               </span>
               <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
