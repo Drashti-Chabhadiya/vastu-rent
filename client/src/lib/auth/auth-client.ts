@@ -1,6 +1,11 @@
 import { createAuthClient } from 'better-auth/react'
 import { adminClient } from 'better-auth/client/plugins'
 import { Capacitor } from '@capacitor/core'
+import {
+  getBearerTokenSync,
+  setBearerToken,
+  removeBearerToken,
+} from '#/lib/auth/token-storage'
 
 /**
  * Resolves the correct auth base URL at runtime.
@@ -51,7 +56,7 @@ const getAuthBaseUrl = (): string => {
  *
  * On native Capacitor, cookies from onrender.com are blocked by the same-origin
  * policy. The `bearer()` plugin on the server provides a session token via the
- * `set-auth-token` response header, which we store in localStorage and send back
+ * `set-auth-token` response header, which we store in secure storage and send back
  * as `Authorization: Bearer <token>` on every subsequent request.
  */
 export const authClient = createAuthClient({
@@ -63,23 +68,23 @@ export const authClient = createAuthClient({
       type: 'Bearer',
       token: () => {
         if (Capacitor.isNativePlatform()) {
-          return localStorage.getItem('bearer_token') || ''
+          return getBearerTokenSync()
         }
         return ''
       },
     },
-    onSuccess: (ctx) => {
+    onSuccess: async (ctx) => {
       if (Capacitor.isNativePlatform()) {
         // Clear token on sign-out
         if (ctx.response.url.includes('/sign-out')) {
-          localStorage.removeItem('bearer_token')
+          await removeBearerToken()
           return
         }
 
         // 1. Primary: set-auth-token header (Better Auth bearer plugin)
         const setAuthToken = ctx.response.headers.get('set-auth-token')
         if (setAuthToken) {
-          localStorage.setItem('bearer_token', decodeURIComponent(setAuthToken))
+          await setBearerToken(decodeURIComponent(setAuthToken))
           return
         }
 
@@ -88,7 +93,7 @@ export const authClient = createAuthClient({
           ctx.response.headers.get('Authorization') ||
           ctx.response.headers.get('authorization')
         if (authHeader?.startsWith('Bearer ')) {
-          localStorage.setItem('bearer_token', authHeader.slice(7))
+          await setBearerToken(authHeader.slice(7))
           return
         }
 
@@ -101,19 +106,16 @@ export const authClient = createAuthClient({
             body?.data?.token ||
             body?.data?.session?.token
           if (token) {
-            localStorage.setItem(
-              'bearer_token',
-              decodeURIComponent(String(token)),
-            )
+            await setBearerToken(decodeURIComponent(String(token)))
           }
         } catch {
           // Ignore parse errors
         }
       }
     },
-    onError: (ctx) => {
+    onError: async (ctx) => {
       if (Capacitor.isNativePlatform() && ctx.error.status === 401) {
-        localStorage.removeItem('bearer_token')
+        await removeBearerToken()
       }
     },
   },

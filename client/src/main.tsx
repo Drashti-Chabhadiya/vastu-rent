@@ -5,6 +5,10 @@ import { getRouter } from './router'
 import './styles.css'
 import { Capacitor } from '@capacitor/core'
 import { CapacitorUpdater } from '@capgo/capacitor-updater'
+import { initSecureToken } from '#/lib/auth/token-storage'
+
+// Initialize secure token storage as early as possible
+initSecureToken()
 
 // Google Translate React compatibility patch.
 // Google Translate wraps text nodes in <font> elements, which can cause React's

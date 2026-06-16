@@ -5,6 +5,7 @@ import { Loader } from '@/components/ui/loader'
 import { toast } from 'sonner'
 import { Capacitor } from '@capacitor/core'
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in'
+import { setBearerToken, getBearerTokenSync } from '#/lib/auth/token-storage'
 
 /**
  * Polls Better Auth's getSession() until a valid session is returned.
@@ -84,7 +85,7 @@ export function SocialAuth() {
         const bearerToken = responseData?.token || responseData?.session?.token
 
         if (bearerToken) {
-          localStorage.setItem('bearer_token', bearerToken)
+          await setBearerToken(bearerToken)
           console.log('[GoogleSignIn] Token stored from response body')
         } else {
           // The onSuccess hook in auth-client.ts may have already set it from the header.
@@ -97,7 +98,7 @@ export function SocialAuth() {
         if (ok) {
           console.log('[GoogleSignIn] Session confirmed, navigating...')
           window.location.replace('/')
-        } else if (localStorage.getItem('bearer_token')) {
+        } else if (getBearerTokenSync()) {
           // Token exists but getSession timed out — navigate anyway (slow server)
           console.warn(
             '[GoogleSignIn] Session poll timed out but token exists, navigating...',

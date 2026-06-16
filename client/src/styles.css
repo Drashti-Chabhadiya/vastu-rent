@@ -50,7 +50,7 @@
   --color-dash-bg: var(--background);
   --color-dash-bg-soft: var(--surface);
   --color-dash-text: var(--foreground);
-  --color-dash-text-soft: oklch(0.35 0.03 250);
+  --color-dash-text-soft: var(--dash-text-soft);
   --color-dash-text-muted: var(--muted-foreground);
 
   /* ── Extra semantic tokens for brand & UI ───────────────────── */
@@ -116,10 +116,35 @@
     0 1px 2px rgba(20, 35, 25, 0.04), 0 8px 24px rgba(20, 35, 25, 0.05);
   --shadow-lift:
     0 1px 2px rgba(20, 35, 25, 0.05), 0 24px 60px -20px rgba(20, 35, 25, 0.18);
+
+  --color-light-preview-bg: var(--light-preview-bg);
+  --color-light-preview-border: var(--light-preview-border);
+  --color-light-preview-card: var(--light-preview-card);
+  --color-light-preview-primary: var(--light-preview-primary);
+  --color-light-preview-text: var(--light-preview-text);
+
+  --color-dark-preview-bg: var(--dark-preview-bg);
+  --color-dark-preview-border: var(--dark-preview-border);
+  --color-dark-preview-card: var(--dark-preview-card);
+  --color-dark-preview-primary: var(--dark-preview-primary);
+  --color-dark-preview-text: var(--dark-preview-text);
 }
 
 :root {
   --radius: 1rem;
+
+  /* Static Preview variables (same values in light & dark mode) */
+  --light-preview-bg: oklch(0.984 0.012 95);
+  --light-preview-border: oklch(0.94 0.03 152);
+  --light-preview-card: oklch(1 0 0);
+  --light-preview-primary: oklch(0.42 0.11 152);
+  --light-preview-text: oklch(0.22 0.04 250);
+
+  --dark-preview-bg: oklch(0.12 0.015 152);
+  --dark-preview-border: oklch(0.24 0.04 152);
+  --dark-preview-card: oklch(0.15 0.02 152);
+  --dark-preview-primary: oklch(0.68 0.12 152);
+  --dark-preview-text: oklch(0.92 0.01 150);
 
   /* Cream / paper background, deep forest green primary, ink navy text */
   --background: oklch(0.984 0.012 95);
@@ -238,6 +263,102 @@
   --category-amber: #d97706;
   --category-lime: #65a30d;
   --category-gray: #4b5563;
+
+  --dash-text-soft: oklch(0.35 0.03 250);
+}
+
+.dark {
+  /* Cream / paper background, deep forest green primary, ink navy text overrides */
+  --background: oklch(0.12 0.015 152); /* Deep dark obsidian slate-emerald */
+  --surface: oklch(0.14 0.018 152); /* Slightly lighter dark surface */
+  --foreground: oklch(0.92 0.01 150); /* Crispy clear light text */
+  --ink: oklch(0.97 0.005 150); /* Clean white for headings */
+
+  --card: oklch(0.15 0.02 152);
+  --card-foreground: oklch(0.92 0.01 150);
+
+  --popover: oklch(0.15 0.02 152);
+  --popover-foreground: oklch(0.92 0.01 150);
+
+  --primary: oklch(0.68 0.12 152); /* vibrant emerald accent */
+  --primary-foreground: oklch(0.12 0.015 152);
+  --primary-soft: oklch(0.18 0.035 152); /* deep forest green tint */
+  --primary-hover: oklch(0.72 0.14 152);
+  --primary-border: oklch(0.24 0.04 152);
+
+  --secondary: oklch(0.18 0.02 152);
+  --secondary-foreground: oklch(0.92 0.01 150);
+
+  --muted: oklch(0.16 0.015 152);
+  --muted-foreground: oklch(0.60 0.02 150);
+
+  --accent: oklch(0.18 0.03 152);
+  --accent-foreground: oklch(0.85 0.05 152);
+
+  --destructive: oklch(0.55 0.18 25);
+  --destructive-foreground: oklch(0.95 0.01 25);
+
+  --warning: oklch(0.22 0.05 80);
+  --warning-foreground: oklch(0.82 0.1 80);
+
+  --danger: oklch(0.22 0.05 20);
+  --danger-foreground: oklch(0.85 0.12 20);
+
+  --info: oklch(0.20 0.05 240);
+  --info-foreground: oklch(0.82 0.1 240);
+
+  --muted-light: oklch(0.16 0.01 152);
+  --muted-dark: oklch(0.60 0.01 152);
+
+  --border: oklch(0.18 0.02 152);
+  --input: oklch(0.18 0.02 152);
+  --ring: oklch(0.68 0.12 152);
+
+  --dash-text-soft: oklch(0.70 0.02 250);
+
+  /* Extra brand tokens for dark mode */
+  --brand-ink: oklch(0.97 0.005 150);
+  --brand-surface-warm: oklch(0.14 0.018 152);
+  --brand-green-tint: oklch(0.16 0.025 152);
+  --brand-green-border: oklch(0.22 0.03 152);
+  --brand-green-bubble: oklch(0.17 0.03 152);
+  --brand-cream-light: oklch(0.13 0.015 152);
+  --brand-green-mid: #10b981;
+  --brand-primary-deep: #10b981;
+  --brand-primary-darker: #34d399;
+
+  /* Re-map slate & gray colors under dark mode so components styled with slate automatically adapt */
+  --slate-50: oklch(0.12 0.015 152);
+  --slate-100: oklch(0.14 0.015 152);
+  --slate-200: oklch(0.18 0.02 152);
+  --slate-400: oklch(0.45 0.015 152);
+  --slate-500: oklch(0.55 0.015 152);
+  --slate-600: oklch(0.65 0.015 152);
+  --slate-700: oklch(0.75 0.015 152);
+  --slate-800: oklch(0.85 0.01 152);
+  --slate-900: oklch(0.95 0.005 152);
+
+  --gray-200: oklch(0.18 0.02 152);
+
+  /* Adjustments to override bg-white utilities specifically for containers */
+  .bg-white {
+    background-color: var(--color-card) !important;
+  }
+  .bg-white\/70 {
+    background-color: color-mix(in oklab, var(--color-card) 70%, transparent) !important;
+  }
+  .bg-white\/80 {
+    background-color: color-mix(in oklab, var(--color-card) 80%, transparent) !important;
+  }
+  .bg-white\/90 {
+    background-color: color-mix(in oklab, var(--color-card) 90%, transparent) !important;
+  }
+  .bg-white\/10 {
+    background-color: color-mix(in oklab, var(--color-card) 10%, transparent) !important;
+  }
+  .bg-white\/20 {
+    background-color: color-mix(in oklab, var(--color-card) 20%, transparent) !important;
+  }
 }
 
 @layer base {

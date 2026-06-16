@@ -19,6 +19,7 @@ import { cn } from '#/lib/utils'
 import { NavDesktopMenu } from './navbar/NavDesktopMenu'
 import { NavUserDropdown } from './navbar/NavUserDropdown'
 import { NavMobileMenu } from './navbar/NavMobileMenu'
+import { ThemeToggle } from './ThemeToggle'
 
 export function Navbar() {
   const { t } = useTranslation()
@@ -201,6 +202,9 @@ export function Navbar() {
                 )}
               </Button>
             </Link>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* User Menu */}
             {isPending ? (
