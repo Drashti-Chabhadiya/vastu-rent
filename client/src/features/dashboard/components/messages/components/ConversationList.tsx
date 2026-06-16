@@ -145,7 +145,7 @@ export function ConversationList() {
       {/* ── Messages Header Section ── */}
       <div
         className={cn(
-          'px-6 pt-6 pb-2 shrink-0 select-none',
+          'px-6 pt-6 pb-2 shrink-0 select-none safe-area-top', // safe-area-top = status bar padding on mobile
           showDetailsPanel && 'px-1 pt-4 pb-2 flex flex-col items-center',
         )}
       >

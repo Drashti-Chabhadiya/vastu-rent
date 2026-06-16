@@ -54,6 +54,7 @@ export function ChatHeader() {
         'shrink-0',
         'bg-card/80',
         'backdrop-blur-sm',
+        'safe-area-top', // Pad below Android/iOS status bar (viewport-fit=cover)
       )}
     >
       <div
