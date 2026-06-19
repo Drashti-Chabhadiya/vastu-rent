@@ -49,11 +49,9 @@ app.register(cors, {
 
     const allowed = [
       process.env.CLIENT_URL,
-      'https://new-vastu-rent-client.vercel.app',
-      'https://new-vastu-rent.onrender.com',
+      process.env.BETTER_AUTH_URL,
       'capacitor://localhost',
       'http://localhost',
-      'http://localhost:3000',
     ].filter(Boolean) as string[]
 
     const isLocalOrCapacitor =
