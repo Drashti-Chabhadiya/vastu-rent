@@ -9,13 +9,16 @@ import { JOB_NAMES } from "../constants/queue-keys.js";
 export async function initWorkers() {
   console.log("👷 [BullMQ] Initializing background workers...");
 
-  // Instantiate references to log initialization
-  console.log(`[BullMQ] Workers registered:
-  - paymentWorker      (Queue: paymentQueue)
-  - notificationWorker (Queue: notificationQueue)
-  - imageWorker        (Queue: imageQueue)
-  - rentalWorker       (Queue: rentalQueue)
-  - chatWorker         (Queue: chatQueue)`);
+  // Keep references to prevent tree-shaking / garbage collection of background workers
+  const workers = [
+    paymentWorker,
+    notificationWorker,
+    imageWorker,
+    rentalWorker,
+    chatWorker,
+  ];
+
+  console.log(`[BullMQ] Workers registered and active: ${workers.map((w) => w.name).join(", ")}`);
 
   try {
     // Clear existing repeatable jobs to avoid duplicates during server reloads (hot reloads)
