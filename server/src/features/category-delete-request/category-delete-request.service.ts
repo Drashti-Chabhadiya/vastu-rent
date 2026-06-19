@@ -56,6 +56,7 @@ export class CategoryDeleteRequestService {
         title: 'Category Deletion Submitted',
         message: `Your request to delete category "${category.name}" has been submitted and is pending admin review.`,
         type: 'info',
+        url: '/dashboard/categories?tab=requests&sub=deletions',
       });
 
       // Notify all admins
@@ -63,7 +64,7 @@ export class CategoryDeleteRequestService {
         title: 'New Deletion Request',
         message: `User ${request.user?.name || request.user?.email || 'Unknown'} requested deletion of category "${category.name}".`,
         type: 'alert',
-        url: '/dashboard?tab=requests&sub=deletions',
+        url: '/admin/dashboard/categories?tab=requests&sub=deletions',
       });
     } catch (err) {
       console.error('Failed to deliver deletion request notification:', err);
@@ -167,7 +168,7 @@ export class CategoryDeleteRequestService {
           title: 'Category Deletion Approved',
           message: `Your request to delete the category "${request.categoryName}" has been approved! You have 24 hours to complete the deletion.`,
           type: 'booking',
-          url: '/dashboard?tab=requests&sub=deletions',
+          url: '/dashboard/categories?tab=requests&sub=deletions',
         })
       } catch (err) {
         console.error('Failed to deliver deletion approval notification:', err)
@@ -187,7 +188,7 @@ export class CategoryDeleteRequestService {
           title: 'Category Deletion Rejected',
           message: `Your request to delete the category "${request.categoryName}" was rejected by the admin.`,
           type: 'alert',
-          url: '/dashboard?tab=requests&sub=deletions',
+          url: '/dashboard/categories?tab=requests&sub=deletions',
         })
       } catch (err) {
         console.error('Failed to deliver deletion rejection notification:', err)

@@ -1,5 +1,5 @@
 import { Queue } from "bullmq";
-import { bullMQConnection } from "../config/bullmq.js";
+import { redis } from "../config/redis.js";
 import { QUEUE_NAMES } from "../constants/queue-keys.js";
 
 const defaultJobOptions = {
@@ -19,26 +19,41 @@ const defaultJobOptions = {
 };
 
 export const paymentQueue = new Queue(QUEUE_NAMES.PAYMENT, {
-  connection: bullMQConnection,
+  connection: redis as any,
   defaultJobOptions,
 });
 
 export const notificationQueue = new Queue(QUEUE_NAMES.NOTIFICATION, {
-  connection: bullMQConnection,
+  connection: redis as any,
   defaultJobOptions,
 });
 
 export const imageQueue = new Queue(QUEUE_NAMES.IMAGE, {
-  connection: bullMQConnection,
+  connection: redis as any,
   defaultJobOptions,
 });
 
 export const rentalQueue = new Queue(QUEUE_NAMES.RENTAL, {
-  connection: bullMQConnection,
+  connection: redis as any,
   defaultJobOptions,
 });
 
 export const chatQueue = new Queue(QUEUE_NAMES.CHAT, {
-  connection: bullMQConnection,
+  connection: redis as any,
   defaultJobOptions,
 });
+
+export async function closeQueues() {
+  try {
+    await Promise.all([
+      paymentQueue.close(),
+      notificationQueue.close(),
+      imageQueue.close(),
+      rentalQueue.close(),
+      chatQueue.close(),
+    ]);
+    console.log("📁 [BullMQ] All queues closed cleanly.");
+  } catch (err: any) {
+    console.error("❌ [BullMQ] Error closing queues:", err.message);
+  }
+}

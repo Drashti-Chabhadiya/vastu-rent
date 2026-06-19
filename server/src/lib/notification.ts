@@ -31,7 +31,7 @@ export async function createAndDeliverNotification({
 }: NotificationOptions) {
   try {
     const notif = await prisma.notification.create({
-      data: { userId, title, message, type },
+      data: { userId, title, message, type, url },
     })
 
     // Emit via socket.io to user's room (foreground real-time update)

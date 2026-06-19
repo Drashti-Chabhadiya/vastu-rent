@@ -2,6 +2,8 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
 import { createAndDeliverNotification, notifyAllAdmins } from "../../lib/notification.js";
+import { cacheDel } from "../../lib/redis-cache.js";
+import { CACHE_KEYS } from "../../constants/cache-keys.js";
 
 export class CategoryRequestController {
   async getAllRequests(request: FastifyRequest, reply: FastifyReply) {
@@ -64,7 +66,7 @@ export class CategoryRequestController {
         title: 'New Category Proposal',
         message: `User ${session.user.name || session.user.email} proposed a new category "${name}"`,
         type: 'alert',
-        url: '/dashboard?tab=requests',
+        url: '/admin/dashboard/categories?tab=requests',
       })
     } catch (err) {
       console.error('Failed to deliver category request notification:', err)
@@ -106,6 +108,9 @@ export class CategoryRequestController {
         }
       });
 
+      // Invalidate categories cache
+      await cacheDel(CACHE_KEYS.CATEGORIES_ALL);
+
       // Notify the requesting User
       try {
         await createAndDeliverNotification({
@@ -113,6 +118,7 @@ export class CategoryRequestController {
           title: 'Category Request Approved',
           message: `Your request to add category "${categoryReq.name}" has been approved!`,
           type: 'booking',
+          url: '/dashboard/categories?tab=requests',
         })
       } catch (err) {
         console.error('Failed to deliver approval notification:', err)
@@ -125,6 +131,7 @@ export class CategoryRequestController {
           title: 'Category Request Rejected',
           message: `Your request for "${categoryReq.name}" was rejected. Reason: ${reason || 'Not specified.'}`,
           type: 'alert',
+          url: '/dashboard/categories?tab=requests',
         })
       } catch (err) {
         console.error('Failed to deliver rejection notification:', err)

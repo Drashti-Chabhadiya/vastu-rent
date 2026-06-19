@@ -1,10 +1,11 @@
 import url from "node:url";
 import { app } from "./app.js"; 
-import { connectPrisma } from "./config/prisma.js";
+import { connectPrisma, prisma } from "./config/prisma.js";
 import { redis } from "./config/redis.js";
 import { initSocket } from "./lib/socket.js";
 import awsLambdaFastify from "@fastify/aws-lambda";
-import { initWorkers } from "./queues/workers.js";
+import { initWorkers, closeWorkers } from "./queues/workers.js";
+import { closeQueues } from "./queues/queues.js";
 
 let proxy: any;
 
@@ -37,6 +38,25 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+
+const gracefulShutdown = async (signal: string) => {
+  console.log(`\n🛑 Received ${signal}. Initiating graceful shutdown...`);
+  try {
+    await closeWorkers();
+    await closeQueues();
+    await redis.quit();
+    await prisma.$disconnect();
+    await app.close();
+    console.log("👋 Graceful shutdown completed. Exiting process.");
+    process.exit(0);
+  } catch (err: any) {
+    console.error("❌ Error during graceful shutdown:", err.message);
+    process.exit(1);
+  }
+};
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 if (isDirectExecution) {
   startServer();

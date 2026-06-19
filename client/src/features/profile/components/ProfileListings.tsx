@@ -47,10 +47,9 @@ export function ProfileListings() {
   const createMutation = useCreateProduct()
   const updateMutation = useUpdateProduct()
   const { data: categories } = useAdminCategories()
-  const { data: users } = useAdminUsers(
-    undefined,
-    { enabled: session?.user?.role === 'admin' },
-  )
+  const { data: users } = useAdminUsers(undefined, {
+    enabled: session?.user?.role === 'admin',
+  })
 
   const [activeTab, setActiveTab] = useState<
     'all' | 'active' | 'inactive' | 'draft'
