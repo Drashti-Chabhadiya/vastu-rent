@@ -6,11 +6,12 @@ import { chatWorker } from "./workers/chat.worker.js";
 import { rentalQueue } from "./queues.js";
 import { JOB_NAMES } from "../constants/queue-keys.js";
 
+let activeWorkers: any[] = [];
+
 export async function initWorkers() {
   console.log("👷 [BullMQ] Initializing background workers...");
 
-  // Keep references to prevent tree-shaking / garbage collection of background workers
-  const workers = [
+  activeWorkers = [
     paymentWorker,
     notificationWorker,
     imageWorker,
@@ -18,7 +19,7 @@ export async function initWorkers() {
     chatWorker,
   ];
 
-  console.log(`[BullMQ] Workers registered and active: ${workers.map((w) => w.name).join(", ")}`);
+  console.log(`[BullMQ] Workers registered and active: ${activeWorkers.map((w) => w.name).join(", ")}`);
 
   try {
     // Clear existing repeatable jobs to avoid duplicates during server reloads (hot reloads)
@@ -53,5 +54,14 @@ export async function initWorkers() {
     console.log(`⏰ [BullMQ] Scheduled repeatable task: '${JOB_NAMES.RENTAL.SEND_REMINDERS}' (every 12 hours)`);
   } catch (err: any) {
     console.error("❌ [BullMQ] Error registering repeatable schedules:", err.message);
+  }
+}
+
+export async function closeWorkers() {
+  try {
+    await Promise.all(activeWorkers.map((w) => w.close()));
+    console.log("Worker pools closed cleanly.");
+  } catch (err: any) {
+    console.error("❌ [BullMQ] Error closing workers:", err.message);
   }
 }

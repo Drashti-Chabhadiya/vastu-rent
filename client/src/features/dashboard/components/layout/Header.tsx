@@ -52,6 +52,11 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
       await markReadMutation.mutateAsync(notif.id)
     }
 
+    if (notif.url) {
+      navigate({ to: notif.url })
+      return
+    }
+
     // Dynamic Role-based navigation based on notification types
     switch (notif.type) {
       case 'booking':

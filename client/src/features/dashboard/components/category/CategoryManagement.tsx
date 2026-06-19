@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, Search, FolderPlus } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -20,6 +20,7 @@ import { DeleteConfirmDialog } from './components/DeleteConfirmDialog'
 import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
 import { Textarea } from '#/components/ui/textarea'
+import { useSearch } from '@tanstack/react-router'
 
 // Import extracted sub-components
 import { CategoryCard } from './components/CategoryCard'
@@ -39,8 +40,9 @@ export const CategoryManagement = ({
   onManageCategory,
 }: CategoryManagementProps) => {
   const [search, setSearch] = useState('')
+  const searchParams = useSearch({ strict: false }) as any
   const [activeTab, setActiveTab] = useState<'categories' | 'requests'>(
-    'categories',
+    searchParams.tab === 'requests' ? 'requests' : 'categories',
   )
 
   // Category CRUD states
@@ -56,7 +58,16 @@ export const CategoryManagement = ({
   const [isRequestDialogOpen, setIsRequestDialogOpen] = useState(false)
   const [requestsSubTab, setRequestsSubTab] = useState<
     'proposals' | 'deletions'
-  >('proposals')
+  >(searchParams.sub === 'deletions' ? 'deletions' : 'proposals')
+
+  useEffect(() => {
+    if (searchParams.tab) {
+      setActiveTab(searchParams.tab)
+    }
+    if (searchParams.sub) {
+      setRequestsSubTab(searchParams.sub)
+    }
+  }, [searchParams.tab, searchParams.sub])
 
   // Rejection state
   const [rejectingRequest, setRejectingRequest] = useState<any>(null)

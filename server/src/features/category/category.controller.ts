@@ -63,7 +63,7 @@ export class CategoryController {
           title: "Category Deleted",
           message: `The category "${categoryName}" has been successfully deleted.`,
           type: "info",
-          url: "/dashboard?tab=requests&sub=deletions",
+          url: "/dashboard/categories?tab=requests&sub=deletions",
         });
       } else if (proposerId) {
         await createAndDeliverNotification({
@@ -71,7 +71,7 @@ export class CategoryController {
           title: "Category Deleted",
           message: `The category "${categoryName}" has been deleted by an administrator.`,
           type: "alert",
-          url: "/dashboard?tab=requests&sub=deletions",
+          url: "/dashboard/categories?tab=requests&sub=deletions",
         });
       }
 
@@ -80,7 +80,7 @@ export class CategoryController {
         title: "Category Deleted",
         message: `User ${currentUser?.name || currentUser?.email || 'Unknown'} deleted category "${categoryName}".`,
         type: "info",
-        url: "/dashboard?tab=requests&sub=deletions",
+        url: "/admin/dashboard/categories?tab=requests&sub=deletions",
       });
     } catch (err) {
       console.error("Failed to send category deleted notification:", err);

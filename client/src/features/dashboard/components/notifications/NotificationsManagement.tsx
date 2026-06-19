@@ -47,6 +47,10 @@ export const NotificationsManagement = () => {
     if (!notif.isRead) {
       await markReadMutation.mutateAsync(notif.id)
     }
+    if (notif.url) {
+      navigate({ to: notif.url })
+      return
+    }
     switch (notif.type) {
       case 'booking':
         navigate({
