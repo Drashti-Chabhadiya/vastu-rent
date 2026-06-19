@@ -32,6 +32,7 @@ import {
   useCreateProduct,
   useUpdateProduct,
   useAdminCategories,
+  useAdminUsers,
 } from '#/hook'
 import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
@@ -46,6 +47,10 @@ export function ProfileListings() {
   const createMutation = useCreateProduct()
   const updateMutation = useUpdateProduct()
   const { data: categories } = useAdminCategories()
+  const { data: users } = useAdminUsers(
+    undefined,
+    { enabled: session?.user?.role === 'admin' },
+  )
 
   const [activeTab, setActiveTab] = useState<
     'all' | 'active' | 'inactive' | 'draft'
@@ -610,7 +615,7 @@ export function ProfileListings() {
         }}
         isLoading={createMutation.isPending}
         categories={categories || []}
-        users={[]}
+        users={users || []}
         currentUser={session?.user}
       />
 
@@ -642,7 +647,7 @@ export function ProfileListings() {
         }}
         isLoading={updateMutation.isPending}
         categories={categories || []}
-        users={[]}
+        users={users || []}
         currentUser={session?.user}
       />
 

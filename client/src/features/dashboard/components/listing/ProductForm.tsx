@@ -244,7 +244,7 @@ export const ProductForm = ({
               </FormLabel>
               <Select
                 onValueChange={field.onChange}
-                value={field.value as string}
+                value={(field.value || undefined) as string | undefined}
               >
                 <FormControl>
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all">
@@ -315,7 +315,7 @@ export const ProductForm = ({
               </FormLabel>
               <Select
                 onValueChange={field.onChange}
-                value={field.value as string}
+                value={(field.value || undefined) as string | undefined}
                 disabled={isLister}
               >
                 <FormControl>
