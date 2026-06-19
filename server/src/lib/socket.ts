@@ -1,5 +1,7 @@
 import { Server as SocketIOServer } from "socket.io";
 import { prisma } from "../config/prisma.js";
+import { chatQueue } from "../queues/queues.js";
+import { JOB_NAMES } from "../constants/queue-keys.js";
 
 // Store online users mapping: userId -> array of socketIds
 export const onlineUsers = new Map<string, string[]>();
@@ -10,8 +12,7 @@ export function initSocket(httpServer: any) {
   const clientUrl = process.env.CLIENT_URL ?? "http://localhost:3000";
   const allowedOrigins = [
     clientUrl,
-    "http://localhost:3000",
-    "https://new-vastu-rent-client.vercel.app",
+    process.env.CLIENT_URL,
   ];
 
   io = new SocketIOServer(httpServer, {
@@ -286,23 +287,18 @@ export function initSocket(httpServer: any) {
           lastMessage: payloadMessage,
         });
 
-        // Smart Notification Trigger: only notify recipient if they are not currently in the chat room and hasn't muted the chat
+        // Offload chat notification dispatch and unread count recalculation to background queue
         try {
-          const isMuted = conversation.mutedBy?.includes(otherParticipantId) ?? false;
-          if (!isOtherUserActiveInChat && !isMuted) {
-            const { createAndDeliverNotification } = await import('./notification.js');
-            const notifMessage = hasAttachments && !hasContent
-              ? `📎 Sent ${attachments.length} image${attachments.length > 1 ? 's' : ''}`
-              : (content.trim().length > 80 ? `${content.trim().substring(0, 80)}...` : content.trim());
-            await createAndDeliverNotification({
-              userId: otherParticipantId,
-              title: `New message from ${user.name} 💬`,
-              message: notifMessage,
-              type: "info",
-            });
-          }
+          await chatQueue.add(JOB_NAMES.CHAT.MESSAGE_NOTIFICATION, {
+            messageId: message.id,
+            recipientId: otherParticipantId,
+          });
+
+          await chatQueue.add(JOB_NAMES.CHAT.UNREAD_COUNT, {
+            userId: otherParticipantId,
+          });
         } catch (err) {
-          console.error("Failed to deliver message notification:", err);
+          console.error("Failed to queue chat processing jobs:", err);
         }
 
       } catch (err) {
@@ -395,7 +391,7 @@ export function initSocket(httpServer: any) {
           disappearingDuration: { gt: 0 }
         }
       });
-      
+
       for (const conv of conversations) {
         const cutoff = new Date(Date.now() - conv.disappearingDuration * 1000);
         const deleted = await prisma.message.deleteMany({

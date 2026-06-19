@@ -1,7 +1,16 @@
 import { Link } from '@tanstack/react-router'
 import { UserAvatar } from '#/components/common/UserAvatar'
 import { Button } from '#/components/ui/button'
-import { Heart, Smartphone, User, LogOut, ChevronRight, Sun, Moon, Laptop } from 'lucide-react'
+import {
+  Heart,
+  Smartphone,
+  User,
+  LogOut,
+  ChevronRight,
+  Sun,
+  Moon,
+  Laptop,
+} from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { useTheme } from '#/hook'
 
@@ -161,10 +170,15 @@ export function NavMobileMenu({
                   'flex flex-col items-center gap-1 py-1.5 h-auto rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none shadow-none',
                   theme === 'light'
                     ? 'bg-card text-primary border border-border/40 hover:bg-card hover:text-primary shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
                 )}
               >
-                <Sun size={14} className={theme === 'light' ? 'text-primary' : 'text-muted-foreground'} />
+                <Sun
+                  size={14}
+                  className={
+                    theme === 'light' ? 'text-primary' : 'text-muted-foreground'
+                  }
+                />
                 <span>Light</span>
               </Button>
               <Button
@@ -174,10 +188,15 @@ export function NavMobileMenu({
                   'flex flex-col items-center gap-1 py-1.5 h-auto rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none shadow-none',
                   theme === 'dark'
                     ? 'bg-card text-primary border border-border/40 hover:bg-card hover:text-primary shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
                 )}
               >
-                <Moon size={14} className={theme === 'dark' ? 'text-primary' : 'text-muted-foreground'} />
+                <Moon
+                  size={14}
+                  className={
+                    theme === 'dark' ? 'text-primary' : 'text-muted-foreground'
+                  }
+                />
                 <span>Dark</span>
               </Button>
               <Button
@@ -187,10 +206,15 @@ export function NavMobileMenu({
                   'flex flex-col items-center gap-1 py-1.5 h-auto rounded-lg text-[10px] font-bold transition-all cursor-pointer border-none shadow-none',
                   theme === 'auto'
                     ? 'bg-card text-primary border border-border/40 hover:bg-card hover:text-primary shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
                 )}
               >
-                <Laptop size={14} className={theme === 'auto' ? 'text-primary' : 'text-muted-foreground'} />
+                <Laptop
+                  size={14}
+                  className={
+                    theme === 'auto' ? 'text-primary' : 'text-muted-foreground'
+                  }
+                />
                 <span>System</span>
               </Button>
             </div>

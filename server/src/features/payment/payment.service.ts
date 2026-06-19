@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { prisma } from "../../config/prisma.js";
 import { stripe } from "../../lib/stripe.js";
 import { rentalService } from "../rental/rental.service.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
 
 export class PaymentService {
   /**
@@ -63,7 +64,7 @@ export class PaymentService {
           description: `Rental: ${rental.product.title} booking export transaction for User ${userId}`,
         },
         success_url: `${clientUrl}/account/bookings?session_id={CHECKOUT_SESSION_ID}&rental_id=${rentalId}`,
-        cancel_url: `${clientUrl}/products/${rental.productId}?payment_cancelled=true`,
+        cancel_url: `${clientUrl}/products/${rental.productId}?payment_cancelled=true&rental_id=${rentalId}`,
         metadata: {
           rentalId: rentalId,
           userId: userId,
@@ -115,10 +116,6 @@ export class PaymentService {
 
     try {
       const session = await stripe.checkout.sessions.retrieve(sessionId);
-      if (session.payment_status !== "paid") {
-        throw new Error("Stripe payment session not marked as paid");
-      }
-
       const metaRentalId = session.metadata?.rentalId || rentalId;
       const metaUserId = session.metadata?.userId || userId;
 
@@ -137,15 +134,37 @@ export class PaymentService {
         return { success: true, rental };
       }
 
+      if (session.payment_status !== "paid") {
+        // Payment failed or unpaid: Rollback / cancel booking under transaction context
+        const updatedRental = await prisma.$transaction(async (tx) => {
+          const rent = await tx.rental.findUnique({ where: { id: metaRentalId } });
+          if (!rent) throw new Error("Rental booking not found");
+
+          const updated = await rentalService.updateRentalStatus(
+            metaRentalId,
+            "cancelled",
+            "failed",
+            session.id,
+            tx
+          );
+          return updated;
+        });
+
+        return { success: false, message: "Payment was not successful. Booking has been cancelled.", rental: updatedRental };
+      }
+
       const transactionId = session.payment_intent as string || session.id;
 
-      // Update rental status to confirmed and paid
-      const updatedRental = await rentalService.updateRentalStatus(
-        metaRentalId,
-        "confirmed",
-        "paid",
-        transactionId
-      );
+      // Update rental status to confirmed and paid under transaction context
+      const updatedRental = await prisma.$transaction(async (tx) => {
+        return rentalService.updateRentalStatus(
+          metaRentalId,
+          "confirmed",
+          "paid",
+          transactionId,
+          tx
+        );
+      });
 
       // Dispatch notifications
       await this.sendPaymentNotifications(updatedRental);
@@ -153,8 +172,69 @@ export class PaymentService {
       return { success: true, rental: updatedRental };
     } catch (error: any) {
       console.error("❌ Stripe Booking Verification Error:", error);
+      // Run transaction to cancel the rental if verifying failed to guarantee rollback/cancelled status
+      try {
+        await prisma.$transaction(async (tx) => {
+          const rent = await tx.rental.findUnique({ where: { id: rentalId } });
+          if (rent && rent.status === "pending") {
+            await rentalService.updateRentalStatus(
+              rentalId,
+              "cancelled",
+              "failed",
+              sessionId,
+              tx
+            );
+          }
+        });
+      } catch (cancelErr) {
+        console.error("Failed to cancel rental booking on verification error:", cancelErr);
+      }
       throw new Error(`Failed to verify booking payment session: ${error.message}`);
     }
+  }
+
+  /**
+   * Cancel a Stripe or Mock Booking Session.
+   * Runs inside an ACID transaction to update status and release any coupon usage.
+   */
+  async cancelBookingSession(userId: string, rentalId: string) {
+    return prisma.$transaction(async (tx) => {
+      const rental = await tx.rental.findUnique({
+        where: { id: rentalId },
+        include: { product: true }
+      });
+
+      if (!rental) throw new Error("Rental booking not found");
+      if (rental.renterId !== userId) throw new Error("Unauthorized access to this booking");
+
+      // Only cancel if it is still pending
+      if (rental.status === "pending") {
+        const updatedRental = await rentalService.updateRentalStatus(
+          rentalId,
+          "cancelled",
+          "failed",
+          undefined,
+          tx
+        );
+
+        // Deliver notification/alert for cancellation
+        try {
+          await createAndDeliverNotification({
+            userId: rental.renterId,
+            title: "Booking Cancelled ❌",
+            message: `Your booking payment for "${rental.product.title}" was cancelled or failed.`,
+            type: "alert",
+            url: `/account/bookings`,
+          });
+        } catch (err) {
+          console.error("Failed to deliver notification for cancellation:", err);
+        }
+
+        return { success: true, rental: updatedRental };
+      }
+
+      return { success: false, message: "Booking is not in pending state", rental };
+    });
   }
 
   /**
@@ -162,8 +242,6 @@ export class PaymentService {
    */
   private async sendPaymentNotifications(updatedRental: any) {
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js');
-
       await createAndDeliverNotification({
         userId: updatedRental.renterId,
         title: "Payment Confirmed! 💳",

@@ -48,3 +48,21 @@ export function useVerifyBookingSession() {
     },
   })
 }
+
+/**
+ * Cancel a Stripe/Simulated Checkout Session for booking.
+ * Marks the rental as cancelled and invalidates cache queries.
+ */
+export function useCancelBookingSession() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: { rentalId: string }) => {
+      const res = await apiClient.post('/payments/cancel-booking-session', data)
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-rentals'] })
+      queryClient.invalidateQueries({ queryKey: ['orders'] })
+    },
+  })
+}

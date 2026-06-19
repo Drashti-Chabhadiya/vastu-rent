@@ -1,5 +1,6 @@
 import { prisma } from "../../config/prisma.js";
 import { categoryService } from "../category/category.service.js";
+import { createAndDeliverNotification, notifyAllAdmins } from "../../lib/notification.js";
 
 export class CategoryDeleteRequestService {
   async createRequest(categoryId: string, userId: string, reason?: string) {
@@ -49,8 +50,6 @@ export class CategoryDeleteRequestService {
 
     // Send notifications to admins and requester
     try {
-      const { createAndDeliverNotification, notifyAllAdmins } = await import('../../lib/notification.js');
-      
       // Notify requester
       await createAndDeliverNotification({
         userId,
@@ -163,7 +162,6 @@ export class CategoryDeleteRequestService {
 
       // Notify the requesting user
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
           userId: request.userId,
           title: 'Category Deletion Approved',
@@ -184,7 +182,6 @@ export class CategoryDeleteRequestService {
 
       // Notify the requesting user of rejection
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
           userId: request.userId,
           title: 'Category Deletion Rejected',

@@ -125,7 +125,13 @@ function OAuthCallback() {
       >
         Login Successful
       </p>
-      <p style={{ fontSize: '14px', color: 'var(--muted-foreground)', margin: 0 }}>
+      <p
+        style={{
+          fontSize: '14px',
+          color: 'var(--muted-foreground)',
+          margin: 0,
+        }}
+      >
         Returning to the app...
       </p>
     </div>

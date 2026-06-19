@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
 
 export class NotificationController {
   async getNotifications(request: FastifyRequest, reply: FastifyReply) {
@@ -63,7 +64,6 @@ export class NotificationController {
     try {
       // Find all users in the system
       const users = await prisma.user.findMany({ select: { id: true } });
-      const { createAndDeliverNotification } = await import('../../lib/notification.js');
 
       // Create and deliver notifications to everyone in parallel
       await Promise.all(

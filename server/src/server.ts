@@ -1,8 +1,10 @@
 import url from "node:url";
 import { app } from "./app.js"; 
 import { connectPrisma } from "./config/prisma.js";
+import { redis } from "./config/redis.js";
 import { initSocket } from "./lib/socket.js";
 import awsLambdaFastify from "@fastify/aws-lambda";
+import { initWorkers } from "./queues/workers.js";
 
 let proxy: any;
 
@@ -19,6 +21,10 @@ const isDirectExecution = import.meta.url === url.pathToFileURL(process.argv[1])
 const startServer = async () => {
   try {
     await connectPrisma();
+
+    // Start BullMQ background workers
+    await initWorkers();
+
     await app.listen({
       port: Number(process.env.PORT) || 4000,
       host: "0.0.0.0",

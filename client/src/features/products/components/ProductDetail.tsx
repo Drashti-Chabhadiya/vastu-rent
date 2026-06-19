@@ -8,6 +8,7 @@ import {
   useApplyCoupon,
   useConfirmPayment,
   useCreateBookingSession,
+  useCancelBookingSession,
 } from '#/hook'
 import { toast } from 'sonner'
 import { useProductReviews, useCreateReview } from '#/hook/use-reviews'
@@ -42,6 +43,7 @@ export function ProductDetail({ id }: { id: string }) {
   const createReview = useCreateReview(id)
   const confirmPayment = useConfirmPayment()
   const createBookingSession = useCreateBookingSession()
+  const cancelBookingSession = useCancelBookingSession()
   const [selectedImage, setSelectedImage] = useState(0)
   const [activeTab, setActiveTab] = useState('description')
 
@@ -84,11 +86,17 @@ export function ProductDetail({ id }: { id: string }) {
   // Show error if payment was cancelled
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    if (params.get('payment_cancelled') === 'true') {
+    const paymentCancelled = params.get('payment_cancelled') === 'true'
+    const rentalId = params.get('rental_id')
+
+    if (paymentCancelled) {
       toast.error('Payment was cancelled. You can try booking again.')
+      if (rentalId) {
+        cancelBookingSession.mutate({ rentalId })
+      }
       window.history.replaceState({}, document.title, window.location.pathname)
     }
-  }, [])
+  }, [cancelBookingSession])
 
   // Reset coupon if dates change
   useEffect(() => {

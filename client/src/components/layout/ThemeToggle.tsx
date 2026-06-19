@@ -23,9 +23,15 @@ export function ThemeToggle() {
           )}
           aria-label="Toggle Theme"
         >
-          {theme === 'light' && <Sun className="h-5 w-5 text-foreground animate-in fade-in zoom-in duration-250" />}
-          {theme === 'dark' && <Moon className="h-5 w-5 text-foreground animate-in fade-in zoom-in duration-250" />}
-          {theme === 'auto' && <Laptop className="h-5 w-5 text-foreground animate-in fade-in zoom-in duration-250" />}
+          {theme === 'light' && (
+            <Sun className="h-5 w-5 text-foreground animate-in fade-in zoom-in duration-250" />
+          )}
+          {theme === 'dark' && (
+            <Moon className="h-5 w-5 text-foreground animate-in fade-in zoom-in duration-250" />
+          )}
+          {theme === 'auto' && (
+            <Laptop className="h-5 w-5 text-foreground animate-in fade-in zoom-in duration-250" />
+          )}
           <span className="sr-only">Toggle Theme</span>
         </Button>
       </DropdownMenuTrigger>

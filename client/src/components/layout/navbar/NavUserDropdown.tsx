@@ -91,6 +91,7 @@ export function NavUserDropdown({
           {/* User Profile Header */}
           <Link
             to="/account"
+            hash="personal"
             className={cn(
               'flex',
               'items-center',
@@ -322,7 +323,7 @@ export function NavUserDropdown({
 
         {/* Menu Items */}
         <div className="space-y-1">
-          <Link to="/account">
+          <Link to="/account" hash="personal">
             <DropdownMenuItem
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',

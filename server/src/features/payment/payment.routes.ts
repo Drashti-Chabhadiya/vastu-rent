@@ -12,4 +12,5 @@ export async function paymentRoutes(fastify: FastifyInstance) {
   fastify.post("/confirm-payment", { preHandler: [authHandler] }, paymentController.confirmPayment);
   fastify.post("/create-booking-session", { preHandler: [authHandler] }, paymentController.createBookingSession);
   fastify.post("/verify-booking-session", { preHandler: [authHandler] }, paymentController.verifyBookingSession);
+  fastify.post("/cancel-booking-session", { preHandler: [authHandler] }, paymentController.cancelBookingSession);
 }

@@ -100,9 +100,7 @@ export const authClient = createAuthClient({
         // 3. Last resort: try to parse JSON body for a token field
         try {
           const body = ctx.data
-          const token =
-            body?.token ||
-            body?.data?.token
+          const token = body?.token || body?.data?.token
           if (token) {
             await setBearerToken(decodeURIComponent(String(token)))
           }

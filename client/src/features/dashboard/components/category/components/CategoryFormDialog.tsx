@@ -45,7 +45,9 @@ export const CategoryFormDialog = ({
 }: CategoryFormDialogProps) => {
   const [categoryName, setCategoryName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState<string>('Folder')
-  const [selectedColor, setSelectedColor] = useState<string>('var(--color-primary)')
+  const [selectedColor, setSelectedColor] = useState<string>(
+    'var(--color-primary)',
+  )
   const [categoryImage, setCategoryImage] = useState<string>('')
   const [useImage, setUseImage] = useState(false)
   const [description, setDescription] = useState('')

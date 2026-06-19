@@ -1,4 +1,7 @@
 import { prisma } from "../../config/prisma.js";
+import { cloudinaryService } from "../upload/cloudinary.service.js";
+import { sendEmailNotificationsConfirmationEmail, sendMarketingWelcomeEmail } from "../../lib/mail.js";
+import { syncGreenMemberStatus } from "../../lib/green-member.helper.js";
 
 export class UserService {
   async getRecentUsers() {
@@ -67,7 +70,6 @@ export class UserService {
   async deleteUser(id: string) {
     const user = await prisma.user.findUnique({ where: { id } });
     if (user?.image) {
-      const { cloudinaryService } = await import("../upload/cloudinary.service.js");
       const publicId = cloudinaryService.extractPublicId(user.image);
       if (publicId) {
         await cloudinaryService.deleteImage(publicId, id);
@@ -191,7 +193,6 @@ export class UserService {
       // Check if Email Notifications were toggled from OFF to ON (accepts false/nullish values)
       if (data.bookingAlerts === true && userBefore.bookingAlerts !== true) {
         try {
-          const { sendEmailNotificationsConfirmationEmail } = await import('../../lib/mail.js');
           await sendEmailNotificationsConfirmationEmail({ email, name });
         } catch (err) {
           console.error("Failed to send email activation confirmation:", err);
@@ -201,7 +202,6 @@ export class UserService {
       // Check if Marketing Emails were toggled from OFF to ON (accepts false/nullish values)
       if (data.marketingAlerts === true && userBefore.marketingAlerts !== true) {
         try {
-          const { sendMarketingWelcomeEmail } = await import('../../lib/mail.js');
           await sendMarketingWelcomeEmail({ email, name });
         } catch (err) {
           console.error("Failed to send marketing welcome email:", err);
@@ -211,7 +211,6 @@ export class UserService {
 
     // Sync Green Member status when user preferences or settings change
     try {
-      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       await syncGreenMemberStatus(id);
     } catch (err) {
       console.error("Failed to sync Green Member status on settings update:", err);

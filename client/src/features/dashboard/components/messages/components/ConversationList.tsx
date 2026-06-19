@@ -484,7 +484,9 @@ export function ConversationList() {
                 onClick={() => handleSelectConversation(conv)}
                 style={
                   isSelected
-                    ? ({ '--card': 'var(--brand-green-bubble)' } as CSSProperties)
+                    ? ({
+                        '--card': 'var(--brand-green-bubble)',
+                      } as CSSProperties)
                     : undefined
                 }
                 className={cn(
