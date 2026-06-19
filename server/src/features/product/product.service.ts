@@ -1,7 +1,15 @@
 import { prisma } from "../../config/prisma.js";
+import { cacheGet, cacheSet, cacheDel, cacheDelPattern } from "../../lib/redis-cache.js";
+import { CACHE_KEYS, CACHE_TTLS } from "../../constants/cache-keys.js";
 
 export class ProductService {
   async getAllProducts(filters: { search?: string; categoryId?: string; status?: string; minPrice?: string; maxPrice?: string; isAvailable?: boolean; ids?: string | string[]; city?: string }) {
+    const cacheKey = CACHE_KEYS.PRODUCTS_LIST(filters);
+    const cachedProducts = await cacheGet<any[]>(cacheKey);
+    if (cachedProducts) {
+      return cachedProducts;
+    }
+
     const { search, categoryId, status, minPrice, maxPrice, isAvailable, ids, city } = filters;
     const where: any = {};
 
@@ -49,17 +57,25 @@ export class ProductService {
       },
     });
 
-    return products.map((p: any) => ({
+    const result = products.map((p: any) => ({
       ...p,
       reviewsCount: p._count.reviews,
       rating: p.reviews.length > 0
         ? (p.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / p.reviews.length).toFixed(1)
         : "5.0"
     }));
+
+    await cacheSet(cacheKey, result, CACHE_TTLS.PRODUCTS); // cache list for 1 hour
+
+    return result;
   }
 
   async getRecentProducts() {
-    return prisma.product.findMany({
+    const cacheKey = CACHE_KEYS.PRODUCTS_RECENT;
+    const cached = await cacheGet<any[]>(cacheKey);
+    if (cached) return cached;
+
+    const products = await prisma.product.findMany({
       take: 10,
       orderBy: { createdAt: "desc" },
       include: {
@@ -67,9 +83,17 @@ export class ProductService {
         user: { select: { name: true } },
       },
     });
+
+    await cacheSet(cacheKey, products, CACHE_TTLS.PRODUCTS); // cache recent products for 1 hour
+
+    return products;
   }
 
   async getProductById(id: string) {
+    const cacheKey = CACHE_KEYS.PRODUCT_DETAIL(id);
+    const cached = await cacheGet<any>(cacheKey);
+    if (cached) return cached;
+
     const product = await prisma.product.findUnique({
       where: { id },
       include: {
@@ -110,7 +134,7 @@ export class ProductService {
     });
     const userRating = userReviewCount > 0 ? (userTotalRating / userReviewCount).toFixed(1) : "5.0";
 
-    return {
+    const result = {
       ...product,
       reviewsCount: product._count.reviews,
       rating: product.reviews.length > 0
@@ -126,6 +150,10 @@ export class ProductService {
         showProfile: product.user.showProfile
       }
     };
+
+    await cacheSet(cacheKey, result, CACHE_TTLS.PRODUCTS); // cache detail for 1 hour
+
+    return result;
   }
 
   async createProduct(data: any) {
@@ -169,6 +197,12 @@ export class ProductService {
       },
     });
 
+    // Invalidate product caches and categories count cache
+    await Promise.all([
+      cacheDel([CACHE_KEYS.PRODUCTS_RECENT, CACHE_KEYS.CATEGORIES_ALL]),
+      cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)
+    ]);
+
     try {
       const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       await syncGreenMemberStatus(data.userId);
@@ -187,13 +221,21 @@ export class ProductService {
       throw new Error("Forbidden: You do not own this listing");
     }
 
-    return prisma.product.update({
+    const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
         ...data,
         price: data.price ? parseFloat(data.price) : undefined,
       },
     });
+
+    // Invalidate product caches and categories count cache
+    await Promise.all([
+      cacheDel([CACHE_KEYS.PRODUCT_DETAIL(id), CACHE_KEYS.PRODUCTS_RECENT, CACHE_KEYS.CATEGORIES_ALL]),
+      cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)
+    ]);
+
+    return updatedProduct;
   }
 
   async deleteProduct(id: string, userId?: string, role?: string) {
@@ -223,6 +265,12 @@ export class ProductService {
 
     const deletedProduct = await prisma.product.delete({ where: { id } });
 
+    // Invalidate product caches and categories count cache
+    await Promise.all([
+      cacheDel([CACHE_KEYS.PRODUCT_DETAIL(id), CACHE_KEYS.PRODUCTS_RECENT, CACHE_KEYS.CATEGORIES_ALL]),
+      cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)
+    ]);
+
     try {
       const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       await syncGreenMemberStatus(product.userId);
@@ -234,10 +282,18 @@ export class ProductService {
   }
 
   async toggleAvailability(id: string, isAvailable: boolean) {
-    return prisma.product.update({
+    const product = await prisma.product.update({
       where: { id },
       data: { isAvailable },
     });
+
+    // Invalidate product caches
+    await Promise.all([
+      cacheDel([CACHE_KEYS.PRODUCT_DETAIL(id), CACHE_KEYS.PRODUCTS_RECENT]),
+      cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)
+    ]);
+
+    return product;
   }
 
   async getUserListings(userId: string) {

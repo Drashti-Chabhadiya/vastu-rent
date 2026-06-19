@@ -224,46 +224,49 @@ export class RentalService {
     });
   }
 
-  async updateRentalStatus(id: string, status: string, paymentStatus?: string, transactionId?: string) {
-    const rentalBefore = await prisma.rental.findUnique({
-      where: { id },
-      select: { status: true, couponId: true }
-    });
+  async updateRentalStatus(id: string, status: string, paymentStatus?: string, transactionId?: string, txClient?: any) {
+    const runUpdate = async (db: any) => {
+      const rentalBefore = await db.rental.findUnique({
+        where: { id },
+        select: { status: true, couponId: true }
+      });
 
-    const updatedRental = await prisma.rental.update({
-      where: { id },
-      data: { 
-        status,
-        paymentStatus: paymentStatus || undefined,
-        transactionId: transactionId || undefined,
-      } as any,
-      include: {
-        product: true,
-        renter: true,
-      },
-    });
+      const updatedRental = await db.rental.update({
+        where: { id },
+        data: { 
+          status,
+          paymentStatus: paymentStatus || undefined,
+          transactionId: transactionId || undefined,
+        } as any,
+        include: {
+          product: true,
+          renter: true,
+        },
+      });
 
-    if (
-      rentalBefore &&
-      rentalBefore.couponId &&
-      (status === "cancelled" || status === "rejected") &&
-      rentalBefore.status !== "cancelled" &&
-      rentalBefore.status !== "rejected"
-    ) {
-      try {
-        const coupon = await prisma.coupon.findUnique({
+      if (
+        rentalBefore &&
+        rentalBefore.couponId &&
+        (status === "cancelled" || status === "rejected") &&
+        rentalBefore.status !== "cancelled" &&
+        rentalBefore.status !== "rejected"
+      ) {
+        const coupon = await db.coupon.findUnique({
           where: { id: rentalBefore.couponId }
         });
         if (coupon && coupon.usedCount > 0) {
-          await prisma.coupon.update({
+          await db.coupon.update({
             where: { id: coupon.id },
             data: { usedCount: { decrement: 1 } }
           });
         }
-      } catch (err) {
-        console.error("Failed to decrement coupon usedCount on cancellation:", err);
       }
-    }
+      return updatedRental;
+    };
+
+    const updatedRental = txClient
+      ? await runUpdate(txClient)
+      : await prisma.$transaction(async (tx) => runUpdate(tx));
 
     // Generate real-time DB notifications for the customer/renter
     try {

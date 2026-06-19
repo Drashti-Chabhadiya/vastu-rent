@@ -1,6 +1,7 @@
 import url from "node:url";
 import { app } from "./app.js"; 
 import { connectPrisma } from "./config/prisma.js";
+import { redis } from "./config/redis.js";
 import { initSocket } from "./lib/socket.js";
 import awsLambdaFastify from "@fastify/aws-lambda";
 

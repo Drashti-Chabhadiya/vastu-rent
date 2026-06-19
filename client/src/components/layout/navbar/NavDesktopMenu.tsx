@@ -14,7 +14,6 @@ const navLinks = [
   { label: 'Catalogue', path: '/', hash: 'categories' },
   { label: 'How it works', path: '/', hash: 'how-it-works' },
   { label: 'Pricing', path: '/pricing' },
-  { label: 'Journal', path: '/', hash: 'journal' },
   { label: 'Become a host', path: '/become-lister' },
 ]
 

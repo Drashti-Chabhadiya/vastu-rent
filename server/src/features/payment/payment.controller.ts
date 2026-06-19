@@ -100,6 +100,26 @@ export class PaymentController {
       return reply.status(500).send({ message: error.message });
     }
   }
+
+  /**
+   * Cancel a Stripe checkout session or a simulated mock checkout session.
+   * Runs an ACID transaction to update status to cancelled and rollback coupon.
+   */
+  async cancelBookingSession(request: FastifyRequest, reply: FastifyReply) {
+    const { rentalId } = request.body as { rentalId: string };
+    const userId = (request as any).user.id;
+
+    if (!rentalId) {
+      return reply.status(400).send({ message: "Rental ID is required" });
+    }
+
+    try {
+      const result = await paymentService.cancelBookingSession(userId, rentalId);
+      return result;
+    } catch (error: any) {
+      return reply.status(500).send({ message: error.message });
+    }
+  }
 }
 
 export const paymentController = new PaymentController();

@@ -84,13 +84,15 @@ export class BillingService {
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + durationDays);
 
-      const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: {
-          subscriptionTier: planName.charAt(0).toUpperCase() + planName.slice(1).toLowerCase(),
-          subscriptionExpiresAt: expiryDate,
-          stripeSubscriptionId: sessionId,
-        },
+      const updatedUser = await prisma.$transaction(async (tx) => {
+        return tx.user.update({
+          where: { id: userId },
+          data: {
+            subscriptionTier: planName.charAt(0).toUpperCase() + planName.slice(1).toLowerCase(),
+            subscriptionExpiresAt: expiryDate,
+            stripeSubscriptionId: sessionId,
+          },
+        });
       });
 
       // Create a nice system notification
@@ -128,14 +130,16 @@ export class BillingService {
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + durationDays);
 
-      const updatedUser = await prisma.user.update({
-        where: { id: userId },
-        data: {
-          subscriptionTier: planName.charAt(0).toUpperCase() + planName.slice(1).toLowerCase(),
-          subscriptionExpiresAt: expiryDate,
-          stripeCustomerId: session.customer as string,
-          stripeSubscriptionId: session.id,
-        },
+      const updatedUser = await prisma.$transaction(async (tx) => {
+        return tx.user.update({
+          where: { id: userId },
+          data: {
+            subscriptionTier: planName.charAt(0).toUpperCase() + planName.slice(1).toLowerCase(),
+            subscriptionExpiresAt: expiryDate,
+            stripeCustomerId: session.customer as string,
+            stripeSubscriptionId: session.id,
+          },
+        });
       });
 
       // Create system notification

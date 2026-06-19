@@ -16,7 +16,7 @@ import {
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
 import { useNotifications } from '#/hook'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
@@ -93,6 +93,21 @@ export function AccountLayout() {
   const [logoutLoading, setLogoutLoading] = useState(false)
   const routerState = useRouterState()
   const pathname = routerState.location.pathname
+  const hash = routerState.location.hash
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 1023px)').matches
+      : false,
+  )
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 1023px)')
+    setIsMobile(media.matches)
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    media.addEventListener('change', listener)
+    return () => media.removeEventListener('change', listener)
+  }, [])
+
   const { data: notifications } = useNotifications()
   const { data: conversations } = useQuery<any[]>({
     queryKey: ['conversations'],
@@ -104,26 +119,20 @@ export function AccountLayout() {
     staleTime: 10_000,
   })
 
-  const handleLogout = async () => {
-    setLogoutLoading(true)
-    await authClient.signOut()
-    window.location.href = '/'
-  }
-
-  if (isLoading) return <AccountLayoutSkeleton />
+  const [lastActiveTab, setLastActiveTab] = useState<string | null>(null)
 
   const unreadCount = notifications
     ? notifications.filter((n: any) => !n.isRead).length
     : 0
   const unreadMessagesCount = conversations
     ? conversations.reduce(
-        (sum: number, conv: any) => sum + (conv.unreadCount || 0),
-        0,
-      )
+      (sum: number, conv: any) => sum + (conv.unreadCount || 0),
+      0,
+    )
     : 0
 
   const menuItems = [
-    { id: 'personal', label: 'My Profile', icon: User, href: '/account' },
+    { id: 'personal', label: 'My Profile', icon: User, href: '/account', hash: 'personal' },
     {
       id: 'bookings',
       label: 'My Bookings',
@@ -160,15 +169,34 @@ export function AccountLayout() {
     { id: 'help', label: 'Help & Support', icon: HelpCircle, href: '/help' },
   ]
 
-  const activeTab =
-    menuItems.find(
-      (item) =>
-        pathname === item.href ||
-        (item.href === '/account' && pathname === '/account/'),
-    )?.id || 'personal'
+  const currentActiveTab =
+    menuItems.find((item) => {
+      if (item.href === '/account') {
+        if (isMobile) {
+          return pathname === '/account' && (hash === 'personal' || hash === '#personal')
+        }
+        return pathname === '/account' || pathname === '/account/'
+      }
+      return pathname === item.href
+    })?.id || null
+
+  useEffect(() => {
+    if (currentActiveTab) {
+      setLastActiveTab(currentActiveTab)
+    }
+  }, [currentActiveTab])
+
+  const activeTab = currentActiveTab || (isMobile ? lastActiveTab : 'personal')
+
+  const handleLogout = async () => {
+    setLogoutLoading(true)
+    await authClient.signOut()
+    window.location.href = '/'
+  }
+
+  if (isLoading) return <AccountLayoutSkeleton />
 
   const isChatPage = pathname.startsWith('/account/messages')
-  const isAccountIndex = pathname === '/account' || pathname === '/account/'
 
   return (
     <>
@@ -191,8 +219,8 @@ export function AccountLayout() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: EASE }}
               className={cn(
-                'w-full lg:w-[240px] shrink-0 bg-card rounded-3xl border border-border/30 pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden',
-                !isAccountIndex && 'hidden lg:flex',
+                'w-full lg:w-[240px] shrink-0 bg-card rounded-3xl border border-border/30 pt-3 lg:pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden',
+                (pathname !== '/account' || (hash !== '' && hash !== '#')) && 'hidden lg:flex',
               )}
             >
               <div>
@@ -223,6 +251,7 @@ export function AccountLayout() {
                       <Link
                         key={item.id}
                         to={item.href}
+                        hash={item.hash}
                         className={cn(
                           'flex items-center gap-2.5 py-2.5 pr-3 pl-3 rounded-xl transition-all duration-200 group cursor-pointer text-[13px] font-semibold border-l-[3.5px]',
                           isActive
@@ -320,9 +349,12 @@ export function AccountLayout() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: EASE }}
-              className="flex-1 min-w-0 w-full"
+              className={cn(
+                'flex-1 min-w-0 w-full',
+                isMobile && pathname === '/account' && hash === '' && 'hidden',
+              )}
             >
-              {!isAccountIndex && !isChatPage && (
+              {isMobile && (pathname !== '/account' || (hash !== '' && hash !== '#')) && !isChatPage && (
                 <div className="lg:hidden flex items-center gap-2 mb-4 px-1">
                   <Link
                     to="/account"
@@ -339,12 +371,12 @@ export function AccountLayout() {
               )}
 
               {activeTab === 'personal' ||
-              activeTab === 'bookings' ||
-              activeTab === 'listings' ||
-              activeTab === 'reviews' ||
-              activeTab === 'messages' ||
-              activeTab === 'notifications' ||
-              activeTab === 'settings' ? (
+                activeTab === 'bookings' ||
+                activeTab === 'listings' ||
+                activeTab === 'reviews' ||
+                activeTab === 'messages' ||
+                activeTab === 'notifications' ||
+                activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">
