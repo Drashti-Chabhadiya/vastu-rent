@@ -124,7 +124,7 @@ export function ThemeSection() {
                 'flex flex-col text-left p-4.5 space-y-4 transition-all duration-300 relative group cursor-pointer focus:outline-none bg-card hover:bg-muted-light/20 active:scale-[0.98]',
                 isActive
                   ? 'border-primary ring-2 ring-primary/10 shadow-md scale-102 bg-primary/2 dark:bg-primary/2'
-                  : 'border-border/40 hover:border-border shadow-xs'
+                  : 'border-border/40 hover:border-border shadow-xs',
               )}
             >
               {choice.preview}
@@ -132,11 +132,19 @@ export function ThemeSection() {
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-2 text-xs font-black text-foreground">
-                    <Icon size={14} className={isActive ? 'text-primary' : 'text-muted-foreground'} />
+                    <Icon
+                      size={14}
+                      className={
+                        isActive ? 'text-primary' : 'text-muted-foreground'
+                      }
+                    />
                     {choice.name}
                   </span>
                   {isActive && (
-                    <CheckCircle2 size={15} className="text-primary fill-primary-soft" />
+                    <CheckCircle2
+                      size={15}
+                      className="text-primary fill-primary-soft"
+                    />
                   )}
                 </div>
                 <p className="text-[10px] font-semibold text-muted-foreground/85 leading-relaxed">

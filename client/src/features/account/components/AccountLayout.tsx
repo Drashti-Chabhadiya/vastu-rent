@@ -126,13 +126,19 @@ export function AccountLayout() {
     : 0
   const unreadMessagesCount = conversations
     ? conversations.reduce(
-      (sum: number, conv: any) => sum + (conv.unreadCount || 0),
-      0,
-    )
+        (sum: number, conv: any) => sum + (conv.unreadCount || 0),
+        0,
+      )
     : 0
 
   const menuItems = [
-    { id: 'personal', label: 'My Profile', icon: User, href: '/account', hash: 'personal' },
+    {
+      id: 'personal',
+      label: 'My Profile',
+      icon: User,
+      href: '/account',
+      hash: 'personal',
+    },
     {
       id: 'bookings',
       label: 'My Bookings',
@@ -173,7 +179,10 @@ export function AccountLayout() {
     menuItems.find((item) => {
       if (item.href === '/account') {
         if (isMobile) {
-          return pathname === '/account' && (hash === 'personal' || hash === '#personal')
+          return (
+            pathname === '/account' &&
+            (hash === 'personal' || hash === '#personal')
+          )
         }
         return pathname === '/account' || pathname === '/account/'
       }
@@ -220,7 +229,8 @@ export function AccountLayout() {
               transition={{ duration: 0.6, ease: EASE }}
               className={cn(
                 'w-full lg:w-[240px] shrink-0 bg-card rounded-3xl border border-border/30 pt-3 lg:pt-0 pb-4 px-2 shadow-sm flex flex-col justify-between min-h-[580px] overflow-hidden',
-                (pathname !== '/account' || (hash !== '' && hash !== '#')) && 'hidden lg:flex',
+                (pathname !== '/account' || (hash !== '' && hash !== '#')) &&
+                  'hidden lg:flex',
               )}
             >
               <div>
@@ -354,29 +364,31 @@ export function AccountLayout() {
                 isMobile && pathname === '/account' && hash === '' && 'hidden',
               )}
             >
-              {isMobile && (pathname !== '/account' || (hash !== '' && hash !== '#')) && !isChatPage && (
-                <div className="lg:hidden flex items-center gap-2 mb-4 px-1">
-                  <Link
-                    to="/account"
-                    className="flex items-center gap-1.5 text-[13px] font-bold text-primary hover:opacity-85"
-                  >
-                    <ChevronLeft
-                      size={16}
-                      strokeWidth={2.5}
-                      className="mt-0.5"
-                    />
-                    <span>Back to Account Menu</span>
-                  </Link>
-                </div>
-              )}
+              {isMobile &&
+                (pathname !== '/account' || (hash !== '' && hash !== '#')) &&
+                !isChatPage && (
+                  <div className="lg:hidden flex items-center gap-2 mb-4 px-1">
+                    <Link
+                      to="/account"
+                      className="flex items-center gap-1.5 text-[13px] font-bold text-primary hover:opacity-85"
+                    >
+                      <ChevronLeft
+                        size={16}
+                        strokeWidth={2.5}
+                        className="mt-0.5"
+                      />
+                      <span>Back to Account Menu</span>
+                    </Link>
+                  </div>
+                )}
 
               {activeTab === 'personal' ||
-                activeTab === 'bookings' ||
-                activeTab === 'listings' ||
-                activeTab === 'reviews' ||
-                activeTab === 'messages' ||
-                activeTab === 'notifications' ||
-                activeTab === 'settings' ? (
+              activeTab === 'bookings' ||
+              activeTab === 'listings' ||
+              activeTab === 'reviews' ||
+              activeTab === 'messages' ||
+              activeTab === 'notifications' ||
+              activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

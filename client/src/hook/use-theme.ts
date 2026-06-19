@@ -6,9 +6,9 @@ export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('theme')
-      return (stored === 'light' || stored === 'dark' || stored === 'auto'
+      return stored === 'light' || stored === 'dark' || stored === 'auto'
         ? stored
-        : 'auto') as Theme
+        : 'auto'
     }
     return 'auto'
   })
@@ -19,9 +19,10 @@ export function useTheme() {
 
     const handleThemeChange = () => {
       const stored = localStorage.getItem('theme')
-      const nextTheme = (stored === 'light' || stored === 'dark' || stored === 'auto'
-        ? stored
-        : 'auto') as Theme
+      const nextTheme =
+        stored === 'light' || stored === 'dark' || stored === 'auto'
+          ? stored
+          : 'auto'
       setThemeState(nextTheme)
     }
 

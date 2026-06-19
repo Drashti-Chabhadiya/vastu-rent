@@ -47,7 +47,9 @@ export function CategoryIcon({
         className,
       )}
       style={{
-        backgroundColor: showImage ? undefined : `color-mix(in srgb, ${iconColor} 10%, transparent)`,
+        backgroundColor: showImage
+          ? undefined
+          : `color-mix(in srgb, ${iconColor} 10%, transparent)`,
         color: iconColor,
       }}
     >
