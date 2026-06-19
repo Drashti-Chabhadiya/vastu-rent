@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { productService } from "./product.service.js";
 import { auth } from "../../config/auth.js";
+import { notifyAllUsers } from "../../lib/notification.js";
 
 export class ProductController {
   async getAllProducts(request: FastifyRequest, _reply: FastifyReply) {
@@ -55,7 +56,6 @@ export class ProductController {
 
       // Notify all users about new product listing
       try {
-        const { notifyAllUsers } = await import('../../lib/notification.js');
         const creatorName = (request as any).user?.name || (request as any).user?.email || "Someone";
         const productImage = product.images?.[0] || "";
         await notifyAllUsers({

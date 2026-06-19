@@ -2,6 +2,10 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { userService } from "./user.service.js";
 import { auth } from "../../config/auth.js";
 import { isAdminRole, isDashboardRole } from "../../config/roles.js";
+import { isUserOnline, io } from "../../lib/socket.js";
+import { syncGreenMemberStatus } from "../../lib/green-member.helper.js";
+import { v2 as cloudinary } from "cloudinary";
+import { prisma } from "../../config/prisma.js";
 
 export class UserController {
   async getRecentUsers(_request: FastifyRequest, _reply: FastifyReply) {
@@ -11,7 +15,6 @@ export class UserController {
 
   async getAllUsers(request: FastifyRequest, _reply: FastifyReply) {
     const users = await userService.getAllUsers(request.query as any);
-    const { isUserOnline } = await import("../../lib/socket.js");
     const usersWithOnlineStatus = users.map((u: any) => {
       const showOnline = u.showOnline !== false;
       return {
@@ -68,7 +71,6 @@ export class UserController {
     const otherUserShowOnline = (profile as any).showOnline !== false;
     const canSeeStatus = isOwner || (loggedInUserShowOnline && otherUserShowOnline);
 
-    const { isUserOnline } = await import("../../lib/socket.js");
     (profile as any).isOnline = canSeeStatus ? isUserOnline(id) : false;
     if (!canSeeStatus) {
       (profile as any).lastActive = null;
@@ -76,7 +78,6 @@ export class UserController {
 
     // Lazy sync Green Member status on profile load to ensure accuracy
     try {
-      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       const isGreen = await syncGreenMemberStatus(id);
       (profile as any).isGreenMember = isGreen;
     } catch (err) {
@@ -97,7 +98,6 @@ export class UserController {
       // If showOnline was updated, broadcast presence update to other clients if user is online
       if (body.showOnline !== undefined) {
         try {
-          const { io, isUserOnline } = await import("../../lib/socket.js");
           if (isUserOnline(session.user.id)) {
             if (body.showOnline === false) {
               io?.emit("user_status", { userId: session.user.id, status: "offline" });
@@ -168,8 +168,6 @@ export class UserController {
     }
 
     try {
-      const { v2: cloudinary } = await import("cloudinary");
-      
       const pingResult = await cloudinary.api.ping({
         cloud_name: testCloudName,
         api_key: testApiKey,
@@ -204,7 +202,6 @@ export class UserController {
     }
 
     try {
-      const { v2: cloudinary } = await import("cloudinary");
       const usageResult = await cloudinary.api.usage({
         cloud_name: cloudName,
         api_key: apiKey,
@@ -240,7 +237,6 @@ export class UserController {
     if (!session) return reply.status(401).send({ message: "Unauthorized" });
 
     try {
-      const { prisma } = await import("../../config/prisma.js");
       const sessions = await prisma.session.findMany({
         where: { userId: session.user.id },
         orderBy: { createdAt: "desc" },
@@ -258,7 +254,6 @@ export class UserController {
     const { id } = request.params as any;
 
     try {
-      const { prisma } = await import("../../config/prisma.js");
       const targetSession = await prisma.session.findUnique({
         where: { id },
       });
@@ -285,7 +280,6 @@ export class UserController {
     const { deviceName } = request.body as any;
 
     try {
-      const { prisma } = await import("../../config/prisma.js");
       const targetSession = await prisma.session.findUnique({
         where: { id },
       });

@@ -7,6 +7,8 @@ import {
   getMarketingWelcomeTemplate,
   getContactSupportTemplate,
 } from "../templates/index.js";
+import { notificationQueue } from "../queues/queues.js";
+import { JOB_NAMES } from "../constants/queue-keys.js";
 
 interface SendVerificationEmailOptions {
   email: string;
@@ -20,7 +22,7 @@ interface SendVerificationEmailOptions {
  * If SMTP credentials are not configured in .env, falls back to logging a styled
  * terminal box containing the link to make local development and review a breeze.
  */
-export async function sendVerificationEmail({
+export async function sendVerificationEmailDirect({
   email,
   name,
   url: _url,
@@ -103,7 +105,7 @@ interface SendResetPasswordEmailOptions {
  * If SMTP credentials are not configured in .env, falls back to logging a styled
  * terminal box containing the link to make local development and review a breeze.
  */
-export async function sendResetPasswordEmail({
+export async function sendResetPasswordEmailDirect({
   email,
   name,
   url: _url,
@@ -180,7 +182,7 @@ interface SendBookingAlertOptions {
   type: string; // 'booking_request' | 'booking_status' | 'booking_completed'
 }
 
-export async function sendBookingAlertEmail({
+export async function sendBookingAlertEmailDirect({
   email,
   name,
   title,
@@ -244,7 +246,7 @@ interface SendPreferenceConfirmationOptions {
   name: string;
 }
 
-export async function sendEmailNotificationsConfirmationEmail({
+export async function sendEmailNotificationsConfirmationEmailDirect({
   email,
   name,
 }: SendPreferenceConfirmationOptions): Promise<void> {
@@ -298,7 +300,7 @@ export async function sendEmailNotificationsConfirmationEmail({
   }
 }
 
-export async function sendMarketingWelcomeEmail({
+export async function sendMarketingWelcomeEmailDirect({
   email,
   name,
 }: SendPreferenceConfirmationOptions): Promise<void> {
@@ -359,7 +361,7 @@ interface SendContactSupportOptions {
   message: string;
 }
 
-export async function sendContactSupportEmail({
+export async function sendContactSupportEmailDirect({
   email,
   name,
   subject,
@@ -416,5 +418,61 @@ export async function sendContactSupportEmail({
     console.log(`📧  Support inquiry alert sent successfully.`);
   } catch (error) {
     console.error("❌  Error sending support inquiry email:", error);
+  }
+}
+
+// ─── Queue-based Non-blocking Wrappers ───────────────────────────────────────
+
+export async function sendVerificationEmail(options: SendVerificationEmailOptions): Promise<void> {
+  try {
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "verification", emailData: options });
+  } catch (err) {
+    console.error("Failed to queue verification email:", err);
+    await sendVerificationEmailDirect(options);
+  }
+}
+
+export async function sendResetPasswordEmail(options: SendResetPasswordEmailOptions): Promise<void> {
+  try {
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "reset-password", emailData: options });
+  } catch (err) {
+    console.error("Failed to queue reset password email:", err);
+    await sendResetPasswordEmailDirect(options);
+  }
+}
+
+export async function sendBookingAlertEmail(options: SendBookingAlertOptions): Promise<void> {
+  try {
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "booking-alert", emailData: options });
+  } catch (err) {
+    console.error("Failed to queue booking alert email:", err);
+    await sendBookingAlertEmailDirect(options);
+  }
+}
+
+export async function sendEmailNotificationsConfirmationEmail(options: SendPreferenceConfirmationOptions): Promise<void> {
+  try {
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "preference-confirmation", emailData: options });
+  } catch (err) {
+    console.error("Failed to queue preference confirmation email:", err);
+    await sendEmailNotificationsConfirmationEmailDirect(options);
+  }
+}
+
+export async function sendMarketingWelcomeEmail(options: SendPreferenceConfirmationOptions): Promise<void> {
+  try {
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "welcome", emailData: options });
+  } catch (err) {
+    console.error("Failed to queue welcome email:", err);
+    await sendMarketingWelcomeEmailDirect(options);
+  }
+}
+
+export async function sendContactSupportEmail(options: SendContactSupportOptions): Promise<void> {
+  try {
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "support", emailData: options });
+  } catch (err) {
+    console.error("Failed to queue support email:", err);
+    await sendContactSupportEmailDirect(options);
   }
 }

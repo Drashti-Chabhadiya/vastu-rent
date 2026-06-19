@@ -1,4 +1,5 @@
 import { prisma } from "../../config/prisma.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
 
 export class PayoutService {
   async getEarningsDashboard(userId: string) {
@@ -194,7 +195,6 @@ export class PayoutService {
       }
 
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
           userId: updatedPayout.userId,
           title,

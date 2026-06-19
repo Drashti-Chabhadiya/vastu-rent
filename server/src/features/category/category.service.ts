@@ -1,6 +1,7 @@
 import { prisma } from "../../config/prisma.js";
 import { cacheGet, cacheSet, cacheDel } from "../../lib/redis-cache.js";
 import { CACHE_KEYS, CACHE_TTLS } from "../../constants/cache-keys.js";
+import { cloudinaryService } from "../upload/cloudinary.service.js";
 
 export class CategoryService {
   async getAllCategories() {
@@ -52,7 +53,6 @@ export class CategoryService {
   async deleteCategory(id: string) {
     const category = await prisma.category.findUnique({ where: { id } });
     if (category?.image) {
-      const { cloudinaryService } = await import("../upload/cloudinary.service.js");
       const publicId = cloudinaryService.extractPublicId(category.image);
       if (publicId) {
         await cloudinaryService.deleteImage(publicId);

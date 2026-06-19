@@ -1,6 +1,10 @@
 import { prisma } from "../../config/prisma.js";
 import { cacheGet, cacheSet, cacheDel, cacheDelPattern } from "../../lib/redis-cache.js";
 import { CACHE_KEYS, CACHE_TTLS } from "../../constants/cache-keys.js";
+import { imageQueue } from "../../queues/queues.js";
+import { JOB_NAMES } from "../../constants/queue-keys.js";
+import { syncGreenMemberStatus } from "../../lib/green-member.helper.js";
+import { cloudinaryService } from "../upload/cloudinary.service.js";
 
 export class ProductService {
   async getAllProducts(filters: { search?: string; categoryId?: string; status?: string; minPrice?: string; maxPrice?: string; isAvailable?: boolean; ids?: string | string[]; city?: string }) {
@@ -203,8 +207,20 @@ export class ProductService {
       cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)
     ]);
 
+    // Dispatch background image optimization
+    if (product.images && product.images.length > 0) {
+      try {
+        await imageQueue.add(JOB_NAMES.IMAGE.OPTIMIZE_IMAGE, {
+          entityId: product.id,
+          entityType: "product",
+          imageUrls: product.images,
+        });
+      } catch (err) {
+        console.error("Failed to queue product image optimization on create:", err);
+      }
+    }
+
     try {
-      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       await syncGreenMemberStatus(data.userId);
     } catch (err) {
       console.error("Failed to sync Green Member status on product creation:", err);
@@ -235,6 +251,19 @@ export class ProductService {
       cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)
     ]);
 
+    // Dispatch background image optimization for newly updated images
+    if (updatedProduct.images && updatedProduct.images.length > 0) {
+      try {
+        await imageQueue.add(JOB_NAMES.IMAGE.OPTIMIZE_IMAGE, {
+          entityId: updatedProduct.id,
+          entityType: "product",
+          imageUrls: updatedProduct.images,
+        });
+      } catch (err) {
+        console.error("Failed to queue product image optimization on update:", err);
+      }
+    }
+
     return updatedProduct;
   }
 
@@ -251,7 +280,6 @@ export class ProductService {
 
     // Delete images from Cloudinary
     if (product.images && product.images.length > 0) {
-      const { cloudinaryService } = await import("../upload/cloudinary.service.js");
       for (const imageUrl of product.images) {
         const publicId = cloudinaryService.extractPublicId(imageUrl);
         if (publicId) {
@@ -272,7 +300,6 @@ export class ProductService {
     ]);
 
     try {
-      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       await syncGreenMemberStatus(product.userId);
     } catch (err) {
       console.error("Failed to sync Green Member status on product deletion:", err);

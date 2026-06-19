@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { categoryService } from "./category.service.js";
 import { prisma } from "../../config/prisma.js";
+import { createAndDeliverNotification, notifyAllAdmins } from "../../lib/notification.js";
 
 export class CategoryController {
   async getAllCategories(_request: FastifyRequest, _reply: FastifyReply) {
@@ -53,7 +54,6 @@ export class CategoryController {
 
     // Deliver notifications
     try {
-      const { createAndDeliverNotification, notifyAllAdmins } = await import('../../lib/notification.js');
       const currentUser = (request as any).user;
 
       // Notify proposer

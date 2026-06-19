@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
 
 export class DisputeController {
   async getAllDisputes(_request: FastifyRequest, _reply: FastifyReply) {
@@ -50,7 +51,6 @@ export class DisputeController {
 
     // Notify admins of a new dispute
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js')
       await createAndDeliverNotification({
         userId: session.user.id,
         title: 'Dispute Opened',
@@ -91,7 +91,6 @@ export class DisputeController {
 
     // Notify the reported user & the renter
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js')
       await createAndDeliverNotification({
         userId: dispute.reportedById,
         title: 'Dispute Resolution',

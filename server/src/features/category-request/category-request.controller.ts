@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../config/prisma.js";
 import { auth } from "../../config/auth.js";
+import { createAndDeliverNotification, notifyAllAdmins } from "../../lib/notification.js";
 
 export class CategoryRequestController {
   async getAllRequests(request: FastifyRequest, reply: FastifyReply) {
@@ -50,8 +51,6 @@ export class CategoryRequestController {
 
     // Create system notification for admins and requester (persist + deliver)
     try {
-      const { createAndDeliverNotification, notifyAllAdmins } = await import('../../lib/notification.js')
-      
       // Notify requester
       await createAndDeliverNotification({
         userId: session.user.id,
@@ -109,7 +108,6 @@ export class CategoryRequestController {
 
       // Notify the requesting User
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
           userId: categoryReq.userId,
           title: 'Category Request Approved',
@@ -122,7 +120,6 @@ export class CategoryRequestController {
     } else {
       // Notify User of Rejection
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js')
         await createAndDeliverNotification({
           userId: categoryReq.userId,
           title: 'Category Request Rejected',

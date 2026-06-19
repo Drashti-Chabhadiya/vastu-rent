@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { prisma } from "../../config/prisma.js";
 import { stripe } from "../../lib/stripe.js";
 import { rentalService } from "../rental/rental.service.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
 
 export class PaymentService {
   /**
@@ -218,7 +219,6 @@ export class PaymentService {
 
         // Deliver notification/alert for cancellation
         try {
-          const { createAndDeliverNotification } = await import('../../lib/notification.js');
           await createAndDeliverNotification({
             userId: rental.renterId,
             title: "Booking Cancelled ❌",
@@ -242,8 +242,6 @@ export class PaymentService {
    */
   private async sendPaymentNotifications(updatedRental: any) {
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js');
-
       await createAndDeliverNotification({
         userId: updatedRental.renterId,
         title: "Payment Confirmed! 💳",

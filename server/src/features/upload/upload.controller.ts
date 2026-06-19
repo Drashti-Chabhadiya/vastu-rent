@@ -1,6 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { cloudinaryService } from "./cloudinary.service.js";
 import { prisma } from "../../config/prisma.js";
+import { imageQueue } from "../../queues/queues.js";
+import { JOB_NAMES } from "../../constants/queue-keys.js";
 
 export class UploadController {
   async uploadProfileImage(request: FastifyRequest, reply: FastifyReply) {
@@ -35,6 +37,17 @@ export class UploadController {
         where: { id: userId },
         data: { image: url },
       });
+
+      // Queue user profile image optimization in background
+      try {
+        await imageQueue.add(JOB_NAMES.IMAGE.OPTIMIZE_IMAGE, {
+          entityId: userId,
+          entityType: "user",
+          imageUrls: [url],
+        });
+      } catch (err) {
+        console.error("Failed to queue user profile image optimization:", err);
+      }
 
       return { url, user: updatedUser };
     } catch (error: any) {

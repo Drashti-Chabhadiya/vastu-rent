@@ -1,5 +1,6 @@
 import { prisma } from "../../config/prisma.js";
 import { stripe } from "../../lib/stripe.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
 
 export class BillingService {
   async createCheckoutSession(userId: string, planName: string, interval: string) {
@@ -97,7 +98,6 @@ export class BillingService {
 
       // Create a nice system notification
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js');
         await createAndDeliverNotification({
           userId: updatedUser.id,
           title: "🎉 Plan Upgraded! (Simulated)",
@@ -144,7 +144,6 @@ export class BillingService {
 
       // Create system notification
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js');
         await createAndDeliverNotification({
           userId: updatedUser.id,
           title: "🎉 Plan Upgraded successfully! 🚀",

@@ -1,6 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { paymentService } from "./payment.service.js";
 import { rentalService } from "../rental/rental.service.js";
+import { paymentQueue } from "../../queues/queues.js";
+import { JOB_NAMES } from "../../constants/queue-keys.js";
 
 export class PaymentController {
   /**
@@ -34,27 +36,11 @@ export class PaymentController {
         transactionId
       );
 
-      // Send notifications in background
+      // Offload notification dispatch & invoice generation to background queue
       try {
-        const { createAndDeliverNotification } = await import('../../lib/notification.js');
-
-        await createAndDeliverNotification({
-          userId: updatedRental.renterId,
-          title: "Payment Confirmed! 💳",
-          message: `Your payment of ₹${updatedRental.totalPrice} for "${updatedRental.product.title}" was confirmed.`,
-          type: "payment",
-          url: `/account/bookings`,
-        });
-
-        await createAndDeliverNotification({
-          userId: updatedRental.product.userId,
-          title: "Payment Received! 💰",
-          message: `Payment of ₹${updatedRental.totalPrice} for your product "${updatedRental.product.title}" has been received.`,
-          type: "payment",
-          url: `/dashboard/orders`,
-        });
+        await paymentQueue.add(JOB_NAMES.PAYMENT.GENERATE_INVOICE, { rentalId });
       } catch (err) {
-        console.error("Failed to deliver payment notifications:", err);
+        console.error("Failed to queue invoice generation:", err);
       }
 
       return { success: true, rental: updatedRental, transactionId };
@@ -94,8 +80,9 @@ export class PaymentController {
     }
 
     try {
-      const result = await paymentService.verifyBookingSession(userId, sessionId, rentalId);
-      return result;
+      await paymentQueue.add(JOB_NAMES.PAYMENT.VERIFY_PAYMENT, { userId, sessionId, rentalId });
+      
+      return { success: true, message: "Payment verification has been queued in the background." };
     } catch (error: any) {
       return reply.status(500).send({ message: error.message });
     }

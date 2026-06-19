@@ -1,4 +1,5 @@
 import { prisma } from "../../config/prisma.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
 
 export class ReviewService {
   async getAllReviews(search?: string, productId?: string, userId?: string, userRole?: string) {
@@ -114,7 +115,6 @@ export class ReviewService {
 
     // Notify listing provider
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js');
       await createAndDeliverNotification({
         userId: createdReview.product.userId,
         title: "New Review Received! ⭐",
@@ -154,7 +154,6 @@ export class ReviewService {
 
     // Notify reviewer
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js');
       await createAndDeliverNotification({
         userId: updatedReview.userId,
         title: "New Reply to Your Review! 💬",

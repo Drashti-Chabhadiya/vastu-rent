@@ -1,4 +1,9 @@
 import { prisma } from "../../config/prisma.js";
+import { createAndDeliverNotification } from "../../lib/notification.js";
+import { sendBookingAlertEmail } from "../../lib/mail.js";
+import { syncGreenMemberStatus } from "../../lib/green-member.helper.js";
+import { rentalQueue } from "../../queues/queues.js";
+import { JOB_NAMES } from "../../constants/queue-keys.js";
 
 export class RentalService {
   async createRental(data: {
@@ -113,7 +118,6 @@ export class RentalService {
 
     // Generate real-time DB notification for the product lister
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js');
       await createAndDeliverNotification({
         userId: rental.product.userId,
         title: "New Booking Request! 📦",
@@ -133,7 +137,6 @@ export class RentalService {
       });
 
       if (userObj && userObj.bookingAlerts !== false) {
-        const { sendBookingAlertEmail } = await import('../../lib/mail.js');
         await sendBookingAlertEmail({
           email: userObj.email,
           name: userObj.name || "Lister",
@@ -147,7 +150,6 @@ export class RentalService {
     }
 
     try {
-      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       await syncGreenMemberStatus(data.renterId);
     } catch (err) {
       console.error("Failed to sync Green Member status on booking creation:", err);
@@ -233,7 +235,7 @@ export class RentalService {
 
       const updatedRental = await db.rental.update({
         where: { id },
-        data: { 
+        data: {
           status,
           paymentStatus: paymentStatus || undefined,
           transactionId: transactionId || undefined,
@@ -270,7 +272,6 @@ export class RentalService {
 
     // Generate real-time DB notifications for the customer/renter
     try {
-      const { createAndDeliverNotification } = await import('../../lib/notification.js')
       if (status === "active" || status === "confirmed") {
         await createAndDeliverNotification({
           userId: updatedRental.renterId,
@@ -279,7 +280,61 @@ export class RentalService {
           type: "booking",
           url: `/journal`,
         })
-      } else if (status === "cancelled" || status === "rejected") {
+
+        // Schedule delayed pickup reminder 24 hours before startDate
+        if (status === "confirmed") {
+          try {
+            const startDate = new Date(updatedRental.startDate);
+            const reminderTime = startDate.getTime() - 24 * 60 * 60 * 1000; // 24 hours before
+            const delay = reminderTime - Date.now();
+
+            if (delay > 0) {
+              await rentalQueue.add(
+                JOB_NAMES.RENTAL.PICKUP_REMINDER,
+                { rentalId: updatedRental.id },
+                {
+                  delay,
+                  jobId: `pickup-reminder-${updatedRental.id}`,
+                  removeOnComplete: true
+                }
+              );
+              console.log(`[Rental Service] Scheduled delayed pickup reminder for booking ${updatedRental.id} in ${delay}ms`);
+            } else {
+              console.log(`[Rental Service] Booking starts in less than 24 hours. Skipping pickup reminder schedule.`);
+            }
+          } catch (err) {
+            console.error("[Rental Service] Failed to schedule pickup reminder:", err);
+          }
+        }
+      }
+
+      // Schedule delayed return reminder 24 hours before endDate
+      if (status === "picked_up") {
+        try {
+          const endDate = new Date(updatedRental.endDate);
+          const reminderTime = endDate.getTime() - 24 * 60 * 60 * 1000; // 24 hours before
+          const delay = reminderTime - Date.now();
+
+          if (delay > 0) {
+            await rentalQueue.add(
+              JOB_NAMES.RENTAL.RETURN_REMINDER,
+              { rentalId: updatedRental.id },
+              {
+                delay,
+                jobId: `return-reminder-${updatedRental.id}`,
+                removeOnComplete: true
+              }
+            );
+            console.log(`[Rental Service] Scheduled delayed return reminder for booking ${updatedRental.id} in ${delay}ms`);
+          } else {
+            console.log(`[Rental Service] Rental ends in less than 24 hours. Skipping return reminder schedule.`);
+          }
+        } catch (err) {
+          console.error("[Rental Service] Failed to schedule return reminder:", err);
+        }
+      }
+
+      if (status === "cancelled" || status === "rejected") {
         await createAndDeliverNotification({
           userId: updatedRental.renterId,
           title: "Booking Rejected ❌",
@@ -303,7 +358,6 @@ export class RentalService {
     // Send email alert to renter if preference is enabled
     try {
       if (updatedRental.renter && updatedRental.renter.bookingAlerts !== false) {
-        const { sendBookingAlertEmail } = await import('../../lib/mail.js');
         let title = "";
         let message = "";
         let type = "booking_status";
@@ -335,7 +389,6 @@ export class RentalService {
     }
 
     try {
-      const { syncGreenMemberStatus } = await import("../../lib/green-member.helper.js");
       await syncGreenMemberStatus(updatedRental.renterId);
     } catch (err) {
       console.error("Failed to sync Green Member status on booking status update:", err);
