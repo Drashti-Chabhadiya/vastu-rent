@@ -3,7 +3,7 @@
 
   <!-- Home Page -->
   <url>
-    <loc>https://vastu-rent.vercel.app/</loc>
+    <loc>https://new-vastu-rent-client.vercel.app/</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -11,23 +11,15 @@
 
   <!-- Search / Listings Page -->
   <url>
-    <loc>https://vastu-rent.vercel.app/search</loc>
+    <loc>https://new-vastu-rent-client.vercel.app/search</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Near You Page -->
-  <url>
-    <loc>https://vastu-rent.vercel.app/near-you</loc>
-    <lastmod>2026-06-22</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
   <!-- Login Page -->
   <url>
-    <loc>https://vastu-rent.vercel.app/login</loc>
+    <loc>https://new-vastu-rent-client.vercel.app/login</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -35,7 +27,7 @@
 
   <!-- Register Page -->
   <url>
-    <loc>https://vastu-rent.vercel.app/register</loc>
+    <loc>https://new-vastu-rent-client.vercel.app/register</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
