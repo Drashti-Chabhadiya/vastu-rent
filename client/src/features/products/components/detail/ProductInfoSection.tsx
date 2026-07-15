@@ -191,7 +191,7 @@ export const ProductInfoSection = ({
           <Button
             type="button"
             variant="outline"
-            // onClick={() => setPaymentMethod('online')}
+            onClick={() => setPaymentMethod('online')}
             className={cn(
               'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'online'
@@ -207,7 +207,7 @@ export const ProductInfoSection = ({
           <Button
             type="button"
             variant="outline"
-            // onClick={() => setPaymentMethod('cash')}
+            onClick={() => setPaymentMethod('cash')}
             className={cn(
               'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'cash'
@@ -225,7 +225,7 @@ export const ProductInfoSection = ({
 
       <div className="flex flex-col sm:flex-row xl:flex-col min-[1400px]:flex-row gap-3 pt-2">
         <Button
-          onClick={handleRentNow}
+          // onClick={handleRentNow}
           disabled={createRentalIsPending || isPaying}
           className="w-full sm:flex-1 h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
         >
