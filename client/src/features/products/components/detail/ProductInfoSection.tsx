@@ -191,7 +191,7 @@ export const ProductInfoSection = ({
           <Button
             type="button"
             variant="outline"
-            onClick={() => setPaymentMethod('online')}
+            // onClick={() => setPaymentMethod('online')}
             className={cn(
               'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'online'
@@ -207,7 +207,7 @@ export const ProductInfoSection = ({
           <Button
             type="button"
             variant="outline"
-            onClick={() => setPaymentMethod('cash')}
+            // onClick={() => setPaymentMethod('cash')}
             className={cn(
               'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
               paymentMethod === 'cash'

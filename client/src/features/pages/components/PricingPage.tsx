@@ -302,7 +302,7 @@ export function PricingPage() {
                 {/* Action */}
                 <div className="mt-8">
                   <Button
-                    onClick={() => handleSelectPlan('Pro')}
+                    // onClick={() => handleSelectPlan('Pro')}
                     className="w-full rounded-full bg-primary py-6 text-sm font-bold text-primary-foreground hover:bg-primary/95 active:scale-[0.98]"
                   >
                     Choose Pro
@@ -368,7 +368,7 @@ export function PricingPage() {
                 {/* Action */}
                 <div className="mt-8">
                   <Button
-                    onClick={() => handleSelectPlan('Business')}
+                    // onClick={() => handleSelectPlan('Business')}
                     variant="outline"
                     className="w-full rounded-full border border-border py-6 text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98]"
                   >
