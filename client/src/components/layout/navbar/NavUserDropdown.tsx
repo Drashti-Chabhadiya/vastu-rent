@@ -433,24 +433,6 @@ export function NavUserDropdown({
             </Link>
           )}
 
-          <Link to="/wishlist">
-            <DropdownMenuItem
-              className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors sm:hidden',
-              )}
-            >
-              <Heart className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
-              <div>
-                <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
-                  {t('Wishlist')}
-                </p>
-                <p className={cn('text-xs', 'text-muted-foreground/85')}>
-                  {t('Saved items')}
-                </p>
-              </div>
-            </DropdownMenuItem>
-          </Link>
-
           <Link to="/account/reviews">
             <DropdownMenuItem
               className={cn(
