@@ -31,7 +31,7 @@ export function BookingCard({
     Math.ceil(
       (new Date(rental.endDate).getTime() -
         new Date(rental.startDate).getTime()) /
-        (1000 * 60 * 60 * 24),
+      (1000 * 60 * 60 * 24),
     ),
   )
 
@@ -40,7 +40,8 @@ export function BookingCard({
       className={cn(
         'group',
         'bg-card',
-        'p-6',
+        'p-5',
+        'sm:p-6',
         'rounded-[2.5rem]',
         'border',
         'border-border/30',
@@ -50,106 +51,122 @@ export function BookingCard({
         'duration-300',
         'flex',
         'flex-col',
-        'md:flex-row',
-        'gap-6',
+        'sm:flex-row',
+        'gap-5',
+        'sm:gap-6',
         'items-start',
-        'md:items-center',
+        'sm:items-center',
         'relative',
       )}
     >
-      {/* Product Image */}
-      <div
-        className={cn(
-          'w-32',
-          'h-32',
-          'rounded-2xl',
-          'overflow-hidden',
-          'shrink-0',
-          'bg-muted-light',
-          'shadow-inner',
-        )}
-      >
-        <img
-          src={
-            rental.product?.images?.[0] || 'https://placehold.co/128?text=Vastu'
-          }
-          alt={rental.product?.title}
+      {/* Wrapper to layout image & details in row on mobile/tablet, but act as normal items on desktop via sm:contents */}
+      <div className="flex flex-row gap-4 items-center w-full sm:contents">
+        {/* Product Image */}
+        <div
           className={cn(
-            'w-full',
-            'h-full',
-            'object-cover',
-            'transition-transform',
-            'duration-500',
-            'group-hover:scale-105',
+            'w-20',
+            'h-20',
+            'xs:w-24',
+            'xs:h-24',
+            'sm:w-28',
+            'sm:h-28',
+            'md:w-32',
+            'md:h-32',
+            'rounded-2xl',
+            'overflow-hidden',
+            'shrink-0',
+            'bg-muted-light',
+            'shadow-inner',
           )}
-        />
-      </div>
-
-      {/* Middle Details */}
-      <div className={cn('flex-1', 'space-y-4')}>
-        <div>
-          <h3
+        >
+          <img
+            src={
+              rental.product?.images?.[0] || 'https://placehold.co/128?text=Vastu'
+            }
+            alt={rental.product?.title}
             className={cn(
-              'text-[17px]',
-              'font-black',
-              'text-foreground',
-              'leading-tight',
+              'w-full',
+              'h-full',
+              'object-cover',
+              'transition-transform',
+              'duration-500',
+              'group-hover:scale-105',
             )}
-          >
-            {rental.product?.title}
-          </h3>
-          <div
-            className={cn(
-              'flex',
-              'items-center',
-              'gap-1',
-              'text-[11px]',
-              'font-bold',
-              'text-muted-dark',
-              'mt-1',
-            )}
-          >
-            <MapPin size={12} className="text-primary" />
-            <span>
-              {rental.product?.location ||
-                rental.product?.city ||
-                'Ahmedabad, India'}
-            </span>
-          </div>
+          />
         </div>
 
-        <div className="space-y-1.5">
-          <div
-            className={cn(
-              'flex',
-              'items-center',
-              'gap-2',
-              'text-xs',
-              'font-bold',
-              'text-muted-foreground/85',
-            )}
-          >
-            <Calendar size={13} className="text-muted-dark" />
-            <span>
-              {format(new Date(rental.startDate), 'dd MMMM')} –{' '}
-              {format(new Date(rental.endDate), 'dd MMMM, yyyy')}{' '}
-              <span className="text-muted-dark">
-                ({nights} {nights === 1 ? 'Night' : 'Nights'})
+        {/* Middle Details */}
+        <div className="flex-1 min-w-0 space-y-1.5 sm:space-y-4">
+          <div>
+            <h3
+              className={cn(
+                'text-[14px]',
+                'xs:text-base',
+                'sm:text-[17px]',
+                'font-black',
+                'text-foreground',
+                'leading-tight',
+                'line-clamp-2',
+              )}
+            >
+              {rental.product?.title}
+            </h3>
+            <div
+              className={cn(
+                'flex',
+                'items-center',
+                'gap-1',
+                'text-[10px]',
+                'xs:text-[11px]',
+                'font-bold',
+                'text-muted-dark',
+                'mt-1',
+              )}
+            >
+              <MapPin size={12} className="text-primary shrink-0" />
+              <span className="truncate">
+                {rental.product?.location ||
+                  rental.product?.city ||
+                  'Surat, India'}
               </span>
-            </span>
+            </div>
           </div>
-          <div
-            className={cn(
-              'flex',
-              'items-center',
-              'gap-2',
-              'text-xs',
-              'font-bold',
-              'text-muted-foreground/85',
-            )}
-          >
-            <Users size={13} className="text-muted-dark" />
-            <span>{rental.product?.category?.name || 'Vastu Rental'}</span>
+
+          <div className="space-y-1">
+            <div
+              className={cn(
+                'flex',
+                'items-center',
+                'gap-1.5',
+                'text-[11px]',
+                'xs:text-xs',
+                'font-bold',
+                'text-muted-foreground/85',
+              )}
+            >
+              <Calendar size={13} className="text-muted-dark shrink-0" />
+              <span className="truncate">
+                {format(new Date(rental.startDate), 'dd MMMM')} –{' '}
+                {format(new Date(rental.endDate), 'dd MMMM, yyyy')}{' '}
+                <span className="text-muted-dark font-extrabold text-[10px] xs:text-xs">
+                  ({nights} {nights === 1 ? 'Night' : 'Nights'})
+                </span>
+              </span>
+            </div>
+            <div
+              className={cn(
+                'flex',
+                'items-center',
+                'gap-1.5',
+                'text-[11px]',
+                'xs:text-xs',
+                'font-bold',
+                'text-muted-foreground/85',
+              )}
+            >
+              <Users size={13} className="text-muted-dark shrink-0" />
+              <span className="truncate">{rental.product?.category?.name || 'Vastu Rental'}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -160,22 +177,22 @@ export function BookingCard({
           'flex',
           'flex-col',
           'items-start',
-          'md:items-end',
-          'gap-3',
+          'sm:items-end',
+          'gap-3.5',
           'shrink-0',
           'self-stretch',
           'justify-between',
-          'md:text-right',
+          'sm:text-right',
           'border-t',
-          'md:border-t-0',
+          'sm:border-t-0',
           'border-border/30',
           'pt-4',
-          'md:pt-0',
+          'sm:pt-0',
           'w-full',
-          'md:w-auto',
+          'sm:w-auto',
         )}
       >
-        <div className="space-y-1">
+        <div className="flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-end w-full sm:w-auto gap-2">
           <p
             className={cn(
               'text-[10px]',
@@ -194,12 +211,11 @@ export function BookingCard({
             className={cn(
               'flex',
               'items-center',
-              'md:justify-end',
+              'sm:justify-end',
               'gap-1.5',
               'text-xs',
               'font-bold',
               'text-muted-foreground/85',
-              'mt-1',
             )}
           >
             <span className={cn('text-muted-dark', 'font-extrabold')}>
@@ -225,12 +241,12 @@ export function BookingCard({
           className={cn(
             'flex',
             'items-center',
-            'md:justify-end',
-            'gap-3',
+            'justify-start',
+            'sm:justify-end',
+            'gap-2.5',
             'w-full',
-            'md:w-auto',
+            'sm:w-auto',
             'flex-wrap',
-            'md:flex-nowrap',
           )}
         >
           <BookingStatusBadge status={rental.status} />

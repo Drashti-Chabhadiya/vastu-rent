@@ -263,7 +263,7 @@ export function ProductDetail({ id }: { id: string }) {
     } catch (err: any) {
       alert(
         err.response?.data?.message ||
-          'Booking failed. Please make sure you are logged in.',
+        'Booking failed. Please make sure you are logged in.',
       )
     } finally {
       setIsPaying(false)
@@ -302,8 +302,8 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-        ]
+        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+      ]
   const liked = isLiked(product.id)
 
   const productInfo = [
@@ -314,7 +314,7 @@ export function ProductDetail({ id }: { id: string }) {
       label: 'Max. Rental',
       value: product.maxDuration ? `${product.maxDuration} days` : 'Unlimited',
     },
-    { label: 'Location', value: product.location || 'Ahmedabad, Gujarat' },
+    { label: 'Location', value: product.location || 'Surat, Gujarat' },
     {
       label: 'Listed On',
       value: new Date(product.createdAt).toLocaleDateString('en-IN', {

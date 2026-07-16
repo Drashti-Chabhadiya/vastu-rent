@@ -102,7 +102,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-1.5 text-muted-foreground/85 mb-4">
           <MapPin className="w-3.5 h-3.5 shrink-0" />
           <span className="text-xs font-medium truncate">
-            {product.location || 'Ahmedabad'}
+            {product.location || 'Surat'}
           </span>
         </div>
 

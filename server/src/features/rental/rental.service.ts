@@ -165,6 +165,15 @@ export class RentalService {
         product: {
           include: {
             category: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                location: true,
+              },
+            },
             reviews: {
               where: { userId }
             }
@@ -178,7 +187,20 @@ export class RentalService {
   async getAllRentals() {
     return prisma.rental.findMany({
       include: {
-        product: { include: { category: true } },
+        product: {
+          include: {
+            category: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                location: true,
+              },
+            },
+          },
+        },
         renter: { select: { name: true, email: true, image: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -206,7 +228,20 @@ export class RentalService {
         product: { userId }
       },
       include: {
-        product: { include: { category: true } },
+        product: {
+          include: {
+            category: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                location: true,
+              },
+            },
+          },
+        },
         renter: { select: { name: true, email: true, image: true } },
       },
       orderBy: { createdAt: "desc" },

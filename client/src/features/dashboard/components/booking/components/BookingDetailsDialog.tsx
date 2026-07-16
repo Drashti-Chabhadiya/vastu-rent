@@ -153,7 +153,9 @@ export function BookingDetailsDialog({
                   'truncate',
                 )}
               >
-                Ahmedabad, India
+                {rental.product?.location ||
+                  rental.product?.city ||
+                  'Surat, India'}
               </span>
             </div>
 
@@ -203,70 +205,70 @@ export function BookingDetailsDialog({
             rental.status === 'confirmed' ||
             rental.status === 'picked_up' ||
             rental.status === 'in_use') && (
-            <div
-              className={cn(
-                'bg-brand-cream-light',
-                'p-4.5',
-                'rounded-2xl',
-                'border',
-                'border-primary-border',
-                'space-y-2',
-              )}
-            >
-              <span
+              <div
                 className={cn(
-                  'text-[8px]',
-                  'font-black',
-                  'text-primary',
-                  'uppercase',
-                  'tracking-widest',
-                  'block',
+                  'bg-brand-cream-light',
+                  'p-4.5',
+                  'rounded-2xl',
+                  'border',
+                  'border-primary-border',
+                  'space-y-2',
                 )}
               >
-                🛡️ Verification Security OTP
-              </span>
-              <div className={cn('flex', 'items-center', 'justify-between')}>
-                <div>
-                  <p
-                    className={cn('text-xs', 'font-bold', 'text-foreground/80')}
-                  >
-                    {rental.status === 'pending' ||
-                    rental.status === 'confirmed'
-                      ? 'Pickup Verification OTP'
-                      : 'Return Verification OTP'}
-                  </p>
-                  <p
-                    className={cn(
-                      'text-[10px]',
-                      'text-muted-dark',
-                      'font-medium',
-                      'mt-0.5',
-                    )}
-                  >
-                    Share this OTP with the host upon physical verification.
-                  </p>
-                </div>
-                <div
+                <span
                   className={cn(
-                    'bg-primary/5',
-                    'border',
-                    'border-primary/20',
-                    'px-3.5',
-                    'py-1.5',
-                    'rounded-xl',
-                    'font-mono',
+                    'text-[8px]',
                     'font-black',
-                    'text-sm',
                     'text-primary',
+                    'uppercase',
+                    'tracking-widest',
+                    'block',
                   )}
                 >
-                  {rental.status === 'pending' || rental.status === 'confirmed'
-                    ? rental.pickupOTP || '— — —'
-                    : rental.returnOTP || '— — —'}
+                  🛡️ Verification Security OTP
+                </span>
+                <div className={cn('flex', 'items-center', 'justify-between')}>
+                  <div>
+                    <p
+                      className={cn('text-xs', 'font-bold', 'text-foreground/80')}
+                    >
+                      {rental.status === 'pending' ||
+                        rental.status === 'confirmed'
+                        ? 'Pickup Verification OTP'
+                        : 'Return Verification OTP'}
+                    </p>
+                    <p
+                      className={cn(
+                        'text-[10px]',
+                        'text-muted-dark',
+                        'font-medium',
+                        'mt-0.5',
+                      )}
+                    >
+                      Share this OTP with the host upon physical verification.
+                    </p>
+                  </div>
+                  <div
+                    className={cn(
+                      'bg-primary/5',
+                      'border',
+                      'border-primary/20',
+                      'px-3.5',
+                      'py-1.5',
+                      'rounded-xl',
+                      'font-mono',
+                      'font-black',
+                      'text-sm',
+                      'text-primary',
+                    )}
+                  >
+                    {rental.status === 'pending' || rental.status === 'confirmed'
+                      ? rental.pickupOTP || '— — —'
+                      : rental.returnOTP || '— — —'}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Rental Period */}
           <div
@@ -350,7 +352,7 @@ export function BookingDetailsDialog({
                     Math.ceil(
                       (new Date(rental.endDate).getTime() -
                         new Date(rental.startDate).getTime()) /
-                        (1000 * 60 * 60 * 24),
+                      (1000 * 60 * 60 * 24),
                     ),
                   )}{' '}
                 Nights

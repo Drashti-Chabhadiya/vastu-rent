@@ -52,7 +52,7 @@ export function UserProfilePage() {
       onError: (err: any) => {
         toast.error(
           err?.response?.data?.message ||
-            'Could not start conversation. Try again.',
+          'Could not start conversation. Try again.',
         )
       },
     })
@@ -104,7 +104,7 @@ export function UserProfilePage() {
                 name={profile.name}
                 isOnline={
                   profile.lastActive !== null &&
-                  profile.lastActive !== undefined
+                    profile.lastActive !== undefined
                     ? profile.isOnline
                     : undefined
                 }
@@ -161,7 +161,7 @@ export function UserProfilePage() {
               <div className="flex flex-wrap justify-center md:justify-start gap-y-3 gap-x-6 mb-8 text-muted-foreground/85 font-medium">
                 <div className="flex items-center gap-2">
                   <MapPin size={18} className="text-primary" />
-                  <span>{profile.location || 'Ahmedabad, Gujarat'}</span>
+                  <span>{profile.location || 'Surat, Gujarat'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar size={18} className="text-primary" />
