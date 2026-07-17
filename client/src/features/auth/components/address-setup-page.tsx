@@ -16,6 +16,7 @@ import {
   Globe,
   CheckCircle2,
   ArrowRight,
+  Store,
 } from 'lucide-react'
 import { apiClient } from '#/lib/api'
 import { useTranslation } from '#/context/TranslationContext'
@@ -64,19 +65,32 @@ export function AddressSetupPage() {
   const { t } = useTranslation()
   const [serverError, setServerError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [addressType, setAddressType] = useState<'home' | 'shop'>('home')
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
+    reset,
   } = useForm<AddressSchema>({
     resolver: zodResolver(addressSchema) as any,
     mode: 'onChange',
     defaultValues: {
+      addressType: 'home',
       country: 'India',
-    },
+    } as any,
   })
+
+  const handleAddressTypeChange = (type: 'home' | 'shop') => {
+    setAddressType(type)
+    reset(
+      {
+        addressType: type,
+        country: 'India',
+      } as any,
+      { keepValues: false },
+    )
+  }
 
   const onSubmit = async (values: AddressSchema) => {
     setServerError(null)
@@ -89,12 +103,11 @@ export function AddressSetupPage() {
         state: values.state,
         pincode: values.pincode,
         country: values.country,
+        shopName: values.shopName || '',
       })
 
       setSuccess(true)
 
-      // Hard navigation to bust the module-level session cache in _authenticated.tsx
-      // so the auth guard re-reads fresh session and sees the address is now set
       setTimeout(() => {
         window.location.href = '/'
       }, 1500)
@@ -186,6 +199,89 @@ export function AddressSetupPage() {
           <div className="bg-card rounded-3xl border border-border/30 shadow-sm p-6 sm:p-8">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-5">
+                <div className="rounded-2xl border border-border/40 bg-muted/20 p-4">
+                  <p className="text-[13px] font-bold text-foreground mb-3">
+                    Please indicate whether the address you're setting up for your
+                    listing is your home address or your shop address.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleAddressTypeChange('home')}
+                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${
+                        addressType === 'home'
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                      }`}
+                    >
+                      <Home className="h-4 w-4" strokeWidth={2} />
+                      Home Address
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleAddressTypeChange('shop')}
+                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${
+                        addressType === 'shop'
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                      }`}
+                    >
+                      <Building2 className="h-4 w-4" strokeWidth={2} />
+                      Shop Address
+                    </button>
+                  </div>
+                </div>
+
+                {/* Hidden addressType field */}
+                <input type="hidden" {...register('addressType')} />
+
+                {/* Shop Name — required when shop, optional when home */}
+                <Field>
+                  <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    {addressType === 'shop' ? (
+                      <>
+                        Shop Name <span className="text-destructive">*</span>
+                      </>
+                    ) : (
+                      <>
+                        Shop / Home Name{' '}
+                        <span className="text-muted-foreground/50 font-normal text-[11px]">
+                          (Optional)
+                        </span>
+                      </>
+                    )}
+                  </FieldLabel>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      {addressType === 'shop' ? (
+                        <Store
+                          className="h-[17px] w-[17px] text-muted-foreground/60"
+                          strokeWidth={2}
+                        />
+                      ) : (
+                        <Home
+                          className="h-[17px] w-[17px] text-muted-foreground/60"
+                          strokeWidth={2}
+                        />
+                      )}
+                    </div>
+                    <Input
+                      placeholder={
+                        addressType === 'shop'
+                          ? 'e.g. Raju Camera Store'
+                          : 'e.g. Ramesh\'s Home'
+                      }
+                      className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-background text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                      {...register('shopName')}
+                    />
+                  </div>
+                  {(errors as any).shopName && (
+                    <p className="text-xs text-destructive mt-1 font-medium">
+                      {(errors as any).shopName.message}
+                    </p>
+                  )}
+                </Field>
+
                 {/* Address Line 1 */}
                 <Field>
                   <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
