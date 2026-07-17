@@ -286,11 +286,10 @@ export const CategoryManagement = ({
         <Button
           variant="ghost"
           onClick={() => setActiveTab('categories')}
-          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${
-            activeTab === 'categories'
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'categories'
               ? 'text-primary font-black hover:text-primary'
               : 'text-muted-foreground/70 hover:text-muted-foreground'
-          }`}
+            }`}
         >
           Active Categories
           {activeTab === 'categories' && (
@@ -300,16 +299,15 @@ export const CategoryManagement = ({
         <Button
           variant="ghost"
           onClick={() => setActiveTab('requests')}
-          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${
-            activeTab === 'requests'
+          className={`h-auto pb-4 pt-0 px-0 rounded-none text-sm font-bold tracking-tight transition-all relative flex items-center gap-2 cursor-pointer hover:bg-transparent active:scale-[0.98] ${activeTab === 'requests'
               ? 'text-primary font-black hover:text-primary'
               : 'text-muted-foreground/70 hover:text-muted-foreground'
-          }`}
+            }`}
         >
           Category Requests
           {userRequests &&
             userRequests.filter((r: any) => r.status === 'pending').length >
-              0 && (
+            0 && (
               <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full font-extrabold animate-pulse">
                 {userRequests.filter((r: any) => r.status === 'pending').length}
               </span>
@@ -410,22 +408,20 @@ export const CategoryManagement = ({
             <Button
               variant="ghost"
               onClick={() => setRequestsSubTab('proposals')}
-              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${
-                requestsSubTab === 'proposals'
+              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${requestsSubTab === 'proposals'
                   ? 'text-primary border-b-2 border-primary font-black'
                   : 'text-muted-foreground/70'
-              }`}
+                }`}
             >
               Proposals
             </Button>
             <Button
               variant="ghost"
               onClick={() => setRequestsSubTab('deletions')}
-              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${
-                requestsSubTab === 'deletions'
+              className={`pb-2 pt-0 px-2 rounded-none text-xs font-bold transition-all relative cursor-pointer hover:bg-transparent ${requestsSubTab === 'deletions'
                   ? 'text-primary border-b-2 border-primary font-black'
                   : 'text-muted-foreground/70'
-              }`}
+                }`}
             >
               Deletion Requests
               {userDeleteRequests &&

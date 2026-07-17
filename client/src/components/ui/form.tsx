@@ -3,6 +3,7 @@ import type * as LabelPrimitive from '@radix-ui/react-label'
 import { Slot } from '@radix-ui/react-slot'
 import { Controller, FormProvider, useFormContext } from 'react-hook-form'
 import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form'
+import { AlertCircle } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Label } from '@/components/ui/label'
@@ -87,7 +88,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && 'text-destructive', className)}
+      className={cn(error && 'text-red-500', className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -150,9 +151,13 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn('text-[0.8rem] font-medium text-destructive', className)}
+      className={cn(
+        'flex items-center gap-1.5 text-[0.8rem] font-semibold text-red-500 animate-in fade-in slide-in-from-top-1 duration-200',
+        className,
+      )}
       {...props}
     >
+      <AlertCircle className="h-3.5 w-3.5 shrink-0" />
       {body}
     </p>
   )

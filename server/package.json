@@ -10,6 +10,8 @@
     "vercel-build": "prisma generate && tsc",
     "postinstall": "prisma generate",
     "start": "node dist/server.js",
+    "seed": "tsx prisma/seed.ts",
+    "seed:taxonomy": "tsx src/scripts/seed-taxonomy.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

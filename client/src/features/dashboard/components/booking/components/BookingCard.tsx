@@ -111,25 +111,7 @@ export function BookingCard({
             >
               {rental.product?.title}
             </h3>
-            <div
-              className={cn(
-                'flex',
-                'items-center',
-                'gap-1',
-                'text-[10px]',
-                'xs:text-[11px]',
-                'font-bold',
-                'text-muted-dark',
-                'mt-1',
-              )}
-            >
-              <MapPin size={12} className="text-primary shrink-0" />
-              <span className="truncate">
-                {rental.product?.location ||
-                  rental.product?.city ||
-                  'Surat, India'}
-              </span>
-            </div>
+
           </div>
 
           <div className="space-y-1">

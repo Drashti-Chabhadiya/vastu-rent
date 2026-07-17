@@ -21,6 +21,7 @@ export function SignupForm() {
     formState: { errors, isSubmitting },
   } = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
+    mode: 'onChange',
   })
 
   // Verification-related states

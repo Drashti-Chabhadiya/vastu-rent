@@ -37,9 +37,7 @@ export function AboutBookingCard({
 
   const bookingInfo = {
     title: realRental.product?.title || 'Rental Unit',
-    category: `${realRental.product?.category?.name || ''} · ${
-      realRental.product?.city || 'Vastu Rent'
-    }`,
+    category: realRental.product?.category?.name || 'Vastu Rent',
     dates: `${format(sDate, 'dd MMM')} - ${format(eDate, 'dd MMM yyyy')}`,
     days: `${diffDays} ${diffDays === 1 ? 'day' : 'days'}`,
     image:

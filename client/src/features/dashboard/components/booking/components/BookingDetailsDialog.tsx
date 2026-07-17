@@ -144,19 +144,7 @@ export function BookingDetailsDialog({
                 <Users size={12} className="text-muted-dark" />
                 <span>{rental.product?.user?.name || 'Vastu Lister'}</span>
               </div>
-              <span
-                className={cn(
-                  'text-[10px]',
-                  'font-medium',
-                  'text-muted-dark',
-                  'block',
-                  'truncate',
-                )}
-              >
-                {rental.product?.location ||
-                  rental.product?.city ||
-                  'Surat, India'}
-              </span>
+
             </div>
 
             <div
