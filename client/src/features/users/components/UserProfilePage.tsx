@@ -52,7 +52,7 @@ export function UserProfilePage() {
       onError: (err: any) => {
         toast.error(
           err?.response?.data?.message ||
-          'Could not start conversation. Try again.',
+            'Could not start conversation. Try again.',
         )
       },
     })
@@ -104,7 +104,7 @@ export function UserProfilePage() {
                 name={profile.name}
                 isOnline={
                   profile.lastActive !== null &&
-                    profile.lastActive !== undefined
+                  profile.lastActive !== undefined
                     ? profile.isOnline
                     : undefined
                 }

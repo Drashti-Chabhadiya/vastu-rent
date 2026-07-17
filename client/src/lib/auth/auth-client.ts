@@ -118,7 +118,6 @@ export const authClient = createAuthClient({
   user: {
     additionalFields: {
       gender: { type: 'string', required: false },
-      location: { type: 'string', required: false },
       phone: { type: 'string', required: false },
       language: { type: 'string', required: false },
       dob: { type: 'string', required: false },
@@ -127,6 +126,13 @@ export const authClient = createAuthClient({
       bookingAlerts: { type: 'boolean', required: false },
       settlementAlerts: { type: 'boolean', required: false },
       marketingAlerts: { type: 'boolean', required: false },
+      addressLine1: { type: 'string', required: false },
+      addressLine2: { type: 'string', required: false },
+      street: { type: 'string', required: false },
+      city: { type: 'string', required: false },
+      state: { type: 'string', required: false },
+      pincode: { type: 'string', required: false },
+      country: { type: 'string', required: false },
     },
   },
 })

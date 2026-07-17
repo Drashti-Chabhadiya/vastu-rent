@@ -54,7 +54,6 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       gender: { type: "string", required: false },
-      location: { type: "string", required: false },
       phone: { type: "string", required: false },
       language: { type: "string", required: false },
       dob: { type: "string", required: false },
@@ -72,6 +71,13 @@ export const auth = betterAuth({
       allowData: { type: "boolean", required: false },
       lastActive: { type: "date", required: false },
       isGreenMember: { type: "boolean", required: false },
+      addressLine1: { type: "string", required: false },
+      addressLine2: { type: "string", required: false },
+      street: { type: "string", required: false },
+      city: { type: "string", required: false },
+      state: { type: "string", required: false },
+      pincode: { type: "string", required: false },
+      country: { type: "string", required: false },
     }
   },
 

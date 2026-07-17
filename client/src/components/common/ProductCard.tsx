@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Heart, MapPin, Star, Package } from 'lucide-react'
+import { Heart, MapPin, Star, Package, Home, Store } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { useWishlist } from '#/hook'
@@ -15,6 +15,8 @@ interface ProductCardProps {
     location?: string
     rating?: number
     reviewsCount?: number
+    listingType?: 'home' | 'shop' | string
+    shopName?: string
   }
 }
 
@@ -72,6 +74,28 @@ export function ProductCard({ product }: ProductCardProps) {
                 )}
               />
             </Button>
+          </div>
+          {/* Listing Source Badge */}
+          <div className="absolute bottom-3 left-3 z-10">
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-md border',
+                product.listingType === 'shop'
+                  ? 'bg-amber-50/90 text-amber-700 border-amber-200/60'
+                  : 'bg-emerald-50/90 text-emerald-700 border-emerald-200/60',
+              )}
+            >
+              {product.listingType === 'shop' ? (
+                <Store className="w-3 h-3" strokeWidth={2.5} />
+              ) : (
+                <Home className="w-3 h-3" strokeWidth={2.5} />
+              )}
+              <span className="max-w-[90px] truncate">
+                {product.listingType === 'shop'
+                  ? product.shopName || 'Shop'
+                  : 'Home'}
+              </span>
+            </span>
           </div>
         </div>
 

@@ -40,15 +40,31 @@ export function UserProfileSettingsCard() {
     busy,
     uploadImage,
     updateSettings,
+    addressLine1,
+    setAddressLine1,
+    addressLine2,
+    setAddressLine2,
+    street,
+    setStreet,
+    city,
+    setCity,
+    state,
+    setState,
+    pincode,
+    setPincode,
+    country,
+    setCountry,
   } = useProfileData()
 
   const { t, changeLanguage } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const isSaving = busy
 
   const handleEditClick = () => {
+    setErrors({})
     if (isEditing) {
       setName(session?.user.name || '')
       setImagePreview(null)
@@ -87,6 +103,31 @@ export function UserProfileSettingsCard() {
   }
 
   const handleSaveChanges = async () => {
+    const newErrors: Record<string, string> = {}
+    if (!name.trim()) newErrors.name = 'Full Name is required'
+    if (phone.trim() && !/^\d{10}$/.test(phone.trim())) {
+      newErrors.phone = 'Phone number must be a valid 10-digit number'
+    } else if (!phone.trim()) {
+      newErrors.phone = 'Phone number is required'
+    }
+    if (!addressLine1.trim())
+      newErrors.addressLine1 = 'Address Line 1 is required'
+    if (!street.trim()) newErrors.street = 'Street / Area is required'
+    if (!city.trim()) newErrors.city = 'City is required'
+    if (!state.trim()) newErrors.state = 'State is required'
+    if (!pincode.trim()) {
+      newErrors.pincode = 'Pincode is required'
+    } else if (!/^\d{6}$/.test(pincode.trim())) {
+      newErrors.pincode = 'Pincode must be exactly 6 digits'
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      toast.error(t('Please fix the errors in the form before saving.'))
+      return
+    }
+
+    setErrors({})
     try {
       // 1. Update name via better-auth if edited
       if (name.trim() && name.trim() !== session?.user.name) {
@@ -108,6 +149,13 @@ export function UserProfileSettingsCard() {
         language,
         dob,
         currency,
+        addressLine1,
+        addressLine2,
+        street,
+        city,
+        state,
+        pincode,
+        country,
         bookingAlerts: emailNotifications,
         settlementAlerts: smsNotifications,
         marketingAlerts: marketingEmails,
@@ -146,9 +194,13 @@ export function UserProfileSettingsCard() {
     },
     { key: 'phone', label: 'Phone Number', value: phone },
     { key: 'gender', label: 'Gender', value: gender },
-    { key: 'location', label: 'Location', value: location },
     { key: 'language', label: 'Preferred Language', value: language },
     { key: 'dob', label: 'Date of Birth', value: dob },
+    { key: 'addressLine1', label: 'Address Line 1', value: addressLine1 },
+    { key: 'street', label: 'Street / Area', value: street },
+    { key: 'city', label: 'City', value: city },
+    { key: 'state', label: 'State', value: state },
+    { key: 'pincode', label: 'Pincode', value: pincode },
   ]
 
   const filledFields = fields.filter((f) => f.value && f.value.trim() !== '')
@@ -334,6 +386,20 @@ export function UserProfileSettingsCard() {
           handleEditClick={handleEditClick}
           handleSaveChanges={handleSaveChanges}
           isSaving={isSaving}
+          addressLine1={addressLine1}
+          setAddressLine1={setAddressLine1}
+          addressLine2={addressLine2}
+          setAddressLine2={setAddressLine2}
+          street={street}
+          setStreet={setStreet}
+          city={city}
+          setCity={setCity}
+          state={state}
+          setState={setState}
+          pincode={pincode}
+          setPincode={setPincode}
+          country={country}
+          setCountry={setCountry}
         />
       </div>
 

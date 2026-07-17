@@ -32,6 +32,10 @@ import {
   Image as ImageIcon,
   Type,
   ShieldCheck,
+  Home,
+  Store,
+  Instagram,
+  Facebook,
 } from 'lucide-react'
 
 interface Category {
@@ -233,6 +237,154 @@ export const ProductForm = ({
           )}
         />
 
+        {/* Listing Type — Home or Shop */}
+        <FormField<ListingSchema>
+          control={form.control}
+          name="listingType"
+          render={({ field }) => (
+            <FormItem className="col-span-full">
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
+                <Store size={14} className="text-dash-brand" />
+                Listing Source
+              </FormLabel>
+              <div className="grid grid-cols-2 gap-3 mt-1">
+                {/* Home Option */}
+                <button
+                  type="button"
+                  onClick={() => field.onChange('home')}
+                  className={`relative flex items-center gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer text-left
+                    ${
+                      field.value === 'home'
+                        ? 'border-dash-brand bg-dash-brand/5 shadow-sm'
+                        : 'border-border bg-card hover:border-dash-brand/40 hover:bg-muted-light/50'
+                    }`}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0
+                    ${
+                      field.value === 'home'
+                        ? 'bg-dash-brand/15 text-dash-brand'
+                        : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    <Home size={20} strokeWidth={2} />
+                  </div>
+                  <div>
+                    <p
+                      className={`text-[13px] font-extrabold leading-tight ${
+                        field.value === 'home'
+                          ? 'text-dash-brand'
+                          : 'text-foreground'
+                      }`}
+                    >
+                      From Home
+                    </p>
+                    <p className="text-[11px] text-muted-foreground/70 font-medium mt-0.5">
+                      Individual / Personal rental
+                    </p>
+                  </div>
+                  {field.value === 'home' && (
+                    <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-dash-brand flex items-center justify-center">
+                      <svg
+                        className="w-2.5 h-2.5 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+
+                {/* Shop Option */}
+                <button
+                  type="button"
+                  onClick={() => field.onChange('shop')}
+                  className={`relative flex items-center gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer text-left
+                    ${
+                      field.value === 'shop'
+                        ? 'border-dash-brand bg-dash-brand/5 shadow-sm'
+                        : 'border-border bg-card hover:border-dash-brand/40 hover:bg-muted-light/50'
+                    }`}
+                >
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0
+                    ${
+                      field.value === 'shop'
+                        ? 'bg-dash-brand/15 text-dash-brand'
+                        : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    <Store size={20} strokeWidth={2} />
+                  </div>
+                  <div>
+                    <p
+                      className={`text-[13px] font-extrabold leading-tight ${
+                        field.value === 'shop'
+                          ? 'text-dash-brand'
+                          : 'text-foreground'
+                      }`}
+                    >
+                      From Shop / Store
+                    </p>
+                    <p className="text-[11px] text-muted-foreground/70 font-medium mt-0.5">
+                      Business / Commercial rental
+                    </p>
+                  </div>
+                  {field.value === 'shop' && (
+                    <div className="absolute top-2.5 right-2.5 w-4 h-4 rounded-full bg-dash-brand flex items-center justify-center">
+                      <svg
+                        className="w-2.5 h-2.5 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {form.watch('listingType') === 'shop' && (
+          <FormField<ListingSchema>
+            control={form.control}
+            name="shopName"
+            render={({ field }) => (
+              <FormItem className="col-span-full animate-in fade-in slide-in-from-top-2 duration-200">
+                <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
+                  <Store size={14} className="text-dash-brand" />
+                  Shop / Store Name
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your business/shop name"
+                    {...field}
+                    value={field.value || ''}
+                    className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField<ListingSchema>
           control={form.control}
           name="categoryId"
@@ -363,6 +515,50 @@ export const ProductForm = ({
                   )}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField<ListingSchema>
+          control={form.control}
+          name="instagramUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
+                <Instagram size={14} className="text-pink-600" />
+                Instagram Link (Optional)
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="https://instagram.com/yourusername"
+                  {...field}
+                  value={field.value || ''}
+                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField<ListingSchema>
+          control={form.control}
+          name="facebookUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
+                <Facebook size={14} className="text-blue-600" />
+                Facebook Link (Optional)
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="https://facebook.com/yourusername"
+                  {...field}
+                  value={field.value || ''}
+                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

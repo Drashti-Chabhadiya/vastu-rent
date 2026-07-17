@@ -58,7 +58,7 @@ export function AuthLeftSection() {
                   ★ 4.96
                 </span>
               </div>
-              
+
               <div>
                 <h3 className="font-display text-[20px] font-semibold text-brand-ink leading-tight">
                   Stockholm Lounge Chair
@@ -72,12 +72,17 @@ export function AuthLeftSection() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] text-muted-foreground/80 font-medium">Weekly Rent</div>
+                  <div className="text-[10px] text-muted-foreground/80 font-medium">
+                    Weekly Rent
+                  </div>
                   <div className="font-display text-[18px] font-bold text-brand-ink mt-0.5">
-                    ₹800<span className="text-xs text-muted-foreground/80 font-normal">/wk</span>
+                    ₹800
+                    <span className="text-xs text-muted-foreground/80 font-normal">
+                      /wk
+                    </span>
                   </div>
                 </div>
-                
+
                 <button className="bg-primary text-white text-xs px-5 py-2.5 rounded-full font-bold hover:bg-primary-hover shadow-soft hover:shadow-lift transition-all active:scale-95 duration-200">
                   Reserve Item
                 </button>

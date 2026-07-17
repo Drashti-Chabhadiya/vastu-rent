@@ -58,10 +58,12 @@ export function NavDesktopMenu({ categories, t }: NavDesktopMenuProps) {
                       {t('Find items for every aspect of life.')}
                     </h3>
                     <p className="text-xs text-muted-foreground/90 leading-relaxed">
-                      {t('Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.')}
+                      {t(
+                        'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.',
+                      )}
                     </p>
                   </div>
-                  
+
                   <Link
                     to="/categories"
                     className="mt-8 flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover group transition-colors"
@@ -76,7 +78,7 @@ export function NavDesktopMenu({ categories, t }: NavDesktopMenuProps) {
                   <div className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80">
                     {t('All Categories')}
                   </div>
-                  
+
                   {categories && categories.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 max-h-[380px] overflow-y-auto pr-1">
                       {categories.map((category: any) => (
@@ -105,7 +107,9 @@ export function NavDesktopMenu({ categories, t }: NavDesktopMenuProps) {
                     </div>
                   ) : (
                     <div className="flex items-center justify-center p-8 text-sm text-muted-foreground/80">
-                      {categories?.length === 0 ? t('No categories found') : t('Loading categories...')}
+                      {categories?.length === 0
+                        ? t('No categories found')
+                        : t('Loading categories...')}
                     </div>
                   )}
                 </div>

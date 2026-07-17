@@ -105,6 +105,13 @@ export const useUpdateUserSettings = () => {
       showProfile?: boolean
       showOnline?: boolean
       allowData?: boolean
+      addressLine1?: string
+      addressLine2?: string
+      street?: string
+      city?: string
+      state?: string
+      pincode?: string
+      country?: string
     }) => {
       const res = await apiClient.patch('/users/settings', data)
       return res.data.user

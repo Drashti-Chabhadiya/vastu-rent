@@ -15,6 +15,13 @@ export function useProfileData() {
   const [language, setLanguage] = useState('')
   const [dob, setDob] = useState('')
   const [currency, setCurrency] = useState('INR')
+  const [addressLine1, setAddressLine1] = useState('')
+  const [addressLine2, setAddressLine2] = useState('')
+  const [street, setStreet] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [pincode, setPincode] = useState('')
+  const [country, setCountry] = useState('India')
 
   // Notification states
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -87,6 +94,13 @@ export function useProfileData() {
         setShowOnline(u.showOnline)
       if (u.allowData !== undefined && u.allowData !== null)
         setAllowData(u.allowData)
+      setAddressLine1(u.addressLine1 || '')
+      setAddressLine2(u.addressLine2 || '')
+      setStreet(u.street || '')
+      setCity(u.city || '')
+      setState(u.state || '')
+      setPincode(u.pincode || '')
+      setCountry(u.country || 'India')
     }
   }, [session])
 
@@ -201,6 +215,20 @@ export function useProfileData() {
     setDob,
     currency,
     setCurrency,
+    addressLine1,
+    setAddressLine1,
+    addressLine2,
+    setAddressLine2,
+    street,
+    setStreet,
+    city,
+    setCity,
+    state,
+    setState,
+    pincode,
+    setPincode,
+    country,
+    setCountry,
 
     // Notifications preferences
     emailNotifications,

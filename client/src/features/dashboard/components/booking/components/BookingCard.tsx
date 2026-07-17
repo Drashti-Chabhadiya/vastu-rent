@@ -1,6 +1,5 @@
 import {
   Calendar,
-  MapPin,
   IndianRupee,
   ChevronRight,
   CheckCircle2,
@@ -31,7 +30,7 @@ export function BookingCard({
     Math.ceil(
       (new Date(rental.endDate).getTime() -
         new Date(rental.startDate).getTime()) /
-      (1000 * 60 * 60 * 24),
+        (1000 * 60 * 60 * 24),
     ),
   )
 
@@ -81,7 +80,8 @@ export function BookingCard({
         >
           <img
             src={
-              rental.product?.images?.[0] || 'https://placehold.co/128?text=Vastu'
+              rental.product?.images?.[0] ||
+              'https://placehold.co/128?text=Vastu'
             }
             alt={rental.product?.title}
             className={cn(
@@ -111,7 +111,6 @@ export function BookingCard({
             >
               {rental.product?.title}
             </h3>
-
           </div>
 
           <div className="space-y-1">
@@ -147,7 +146,9 @@ export function BookingCard({
               )}
             >
               <Users size={13} className="text-muted-dark shrink-0" />
-              <span className="truncate">{rental.product?.category?.name || 'Vastu Rental'}</span>
+              <span className="truncate">
+                {rental.product?.category?.name || 'Vastu Rental'}
+              </span>
             </div>
           </div>
         </div>

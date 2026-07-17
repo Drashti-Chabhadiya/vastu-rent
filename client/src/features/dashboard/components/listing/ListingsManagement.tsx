@@ -186,6 +186,47 @@ export const ListingsManagement = ({
     </div>
   )
 
+  // Profile Completeness Check
+  const u = currentUser as any
+  const fields = [
+    { key: 'name', value: u?.name },
+    { key: 'email', value: u?.email },
+    { key: 'image', value: u?.image },
+    { key: 'phone', value: u?.phone },
+    { key: 'gender', value: u?.gender },
+    { key: 'language', value: u?.language },
+    { key: 'dob', value: u?.dob },
+    { key: 'addressLine1', value: u?.addressLine1 },
+    { key: 'street', value: u?.street },
+    { key: 'city', value: u?.city },
+    { key: 'state', value: u?.state },
+    { key: 'pincode', value: u?.pincode },
+  ]
+  const filledFields = fields.filter(
+    (f) => f.value && String(f.value).trim() !== '',
+  )
+  const completenessPercent = Math.round(
+    (filledFields.length / fields.length) * 100,
+  )
+
+  const handleCreateListingClick = () => {
+    if (u?.role === 'admin') {
+      setIsAddOpen(true)
+      return
+    }
+
+    if (completenessPercent < 90) {
+      toast.error(
+        `Your profile is only ${completenessPercent}% complete. You must complete at least 90% of your profile to add listings. Please update your details in your Profile Settings.`,
+        {
+          duration: 6000,
+        },
+      )
+      return
+    }
+    setIsAddOpen(true)
+  }
+
   return (
     <motion.div
       variants={stagger}
@@ -234,7 +275,7 @@ export const ListingsManagement = ({
           </div>
         ) : null}
         <Button
-          onClick={() => setIsAddOpen(true)}
+          onClick={handleCreateListingClick}
           className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-2xl px-6 h-14 font-extrabold shadow-lg shadow-dash-brand/20 transition-all active:scale-95 flex items-center gap-2"
         >
           <Plus size={20} strokeWidth={3} />

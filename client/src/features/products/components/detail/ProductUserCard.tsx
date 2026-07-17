@@ -1,5 +1,12 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Star, Calendar, MessageCircle, CheckCircle2 } from 'lucide-react'
+import {
+  Star,
+  Calendar,
+  MessageCircle,
+  CheckCircle2,
+  Instagram,
+  Facebook,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
 import { useCreateConversation } from '#/hook'
@@ -9,9 +16,15 @@ import { useState } from 'react'
 
 interface ProductUserCardProps {
   user: any
+  instagramUrl?: string
+  facebookUrl?: string
 }
 
-export const ProductUserCard = ({ user }: ProductUserCardProps) => {
+export const ProductUserCard = ({
+  user,
+  instagramUrl,
+  facebookUrl,
+}: ProductUserCardProps) => {
   const { data: session } = authClient.useSession()
   const navigate = useNavigate()
   const [isStartingChat, setIsStartingChat] = useState(false)
@@ -97,6 +110,44 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
           Usually responds in a few hours
         </div>
       </div>
+
+      {(instagramUrl || facebookUrl) && (
+        <div className="pt-3 border-t border-border/30 space-y-2">
+          <p className="text-[11px] font-black text-muted-foreground uppercase tracking-wider">
+            Social Links
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {instagramUrl && (
+              <a
+                href={
+                  instagramUrl.startsWith('http')
+                    ? instagramUrl
+                    : `https://instagram.com/${instagramUrl}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-pink-200/50 bg-pink-50/40 text-pink-700 text-xs font-bold hover:bg-pink-50 transition-colors"
+              >
+                <Instagram size={13} className="text-pink-600" /> Instagram
+              </a>
+            )}
+            {facebookUrl && (
+              <a
+                href={
+                  facebookUrl.startsWith('http')
+                    ? facebookUrl
+                    : `https://facebook.com/${facebookUrl}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-200/50 bg-blue-50/40 text-blue-700 text-xs font-bold hover:bg-blue-50 transition-colors"
+              >
+                <Facebook size={13} className="text-blue-600" /> Facebook
+              </a>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <Link to="/users/$id" params={{ id: user.id || '' }}>

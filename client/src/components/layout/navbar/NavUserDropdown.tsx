@@ -12,7 +12,6 @@ import {
   User,
   LogOut,
   LayoutDashboard,
-  Heart,
   ChevronRight,
   ChevronDown,
   Leaf,

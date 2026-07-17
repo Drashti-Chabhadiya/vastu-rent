@@ -263,7 +263,7 @@ export function ProductDetail({ id }: { id: string }) {
     } catch (err: any) {
       alert(
         err.response?.data?.message ||
-        'Booking failed. Please make sure you are logged in.',
+          'Booking failed. Please make sure you are logged in.',
       )
     } finally {
       setIsPaying(false)
@@ -302,13 +302,22 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-      ]
+          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+        ]
   const liked = isLiked(product.id)
 
   const productInfo = [
     { label: 'Category', value: product.category?.name || 'Uncategorized' },
     { label: 'Condition', value: product.condition || 'Good' },
+    {
+      label: 'Listing Source',
+      value:
+        product.listingType === 'shop'
+          ? product.shopName
+            ? `🏪 Shop: ${product.shopName}`
+            : '🏪 From Shop / Store'
+          : '🏠 From Home',
+    },
     { label: 'Min. Rental', value: `${product.minDuration || 1} day(s)` },
     {
       label: 'Max. Rental',
@@ -375,7 +384,11 @@ export function ProductDetail({ id }: { id: string }) {
 
           {/* Sidebar: Lister & Calendar (Desktop Only) */}
           <div className="col-span-1 lg:col-span-7 xl:col-span-3 order-3 lg:order-4 xl:order-3 space-y-6">
-            <ProductUserCard user={product.user} />
+            <ProductUserCard
+              user={product.user}
+              instagramUrl={product.instagramUrl}
+              facebookUrl={product.facebookUrl}
+            />
 
             <div className="hidden xl:block">
               <AvailabilityCalendar

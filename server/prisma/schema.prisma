@@ -4,14 +4,12 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
-
-
 
 enum Role {
   user
@@ -38,11 +36,11 @@ model User {
   stripeSubscriptionId  String?
 
   // Bank & UPI Settlement details
-  upiId          String?
-  bankName       String?
-  accountNumber  String?
-  ifscCode       String?
-  accountHolder  String?
+  upiId         String?
+  bankName      String?
+  accountNumber String?
+  ifscCode      String?
+  accountHolder String?
 
   // Alert preferences
   bookingAlerts    Boolean @default(true)
@@ -50,60 +48,68 @@ model User {
   marketingAlerts  Boolean @default(false)
 
   // Custom Profile Details & Preferences
-  gender            String?
-  location          String?
-  phone             String?
-  language          String?
-  dob               String?
-  currency          String?   @default("INR")
-  twoFactorEnabled  Boolean   @default(false)
-  showProfile       Boolean   @default(true)
-  showOnline        Boolean   @default(true)
-  allowData         Boolean   @default(true)
-  lastActive        DateTime  @default(now())
-  isGreenMember     Boolean   @default(false)
-  bio               String?   @default("Hey there! I am using VastuRent.")
-  
+  gender String?
+  phone  String?
+
+  // Structured Address Fields
+  addressLine1     String?
+  addressLine2     String?
+  street           String?
+  city             String?
+  state            String?
+  pincode          String?
+  country          String?  @default("India")
+  language         String?
+  dob              String?
+  currency         String?  @default("INR")
+  twoFactorEnabled Boolean  @default(false)
+  showProfile      Boolean  @default(true)
+  showOnline       Boolean  @default(true)
+  allowData        Boolean  @default(true)
+  lastActive       DateTime @default(now())
+  isGreenMember    Boolean  @default(false)
+  bio              String?  @default("Hey there! I am using VastuRent.")
+
   // Relations
-  sessions      Session[]
-  accounts      Account[]
-  products      Product[] // User એ લિસ્ટ કરેલી વસ્તુઓ (Lister)
-  rentals       Rental[]  // User એ ભાડે લીધેલી વસ્તુઓ (Renter)
-  reviews       Review[]  // User એ આપેલા Reviews
-  likes         Like[]    // User એ લાઈક કરેલી વસ્તુઓ
-  deleteRequests DeleteProductRequest[] @relation("AdminRequests")
-  categoryRequests CategoryRequest[]
-  categories       Category[]
+  sessions               Session[]
+  accounts               Account[]
+  products               Product[] // User એ લિસ્ટ કરેલી વસ્તુઓ (Lister)
+  rentals                Rental[] // User એ ભાડે લીધેલી વસ્તુઓ (Renter)
+  reviews                Review[] // User એ આપેલા Reviews
+  likes                  Like[] // User એ લાઈક કરેલી વસ્તુઓ
+  deleteRequests         DeleteProductRequest[]  @relation("AdminRequests")
+  categoryRequests       CategoryRequest[]
+  categories             Category[]
   deleteCategoryRequests DeleteCategoryRequest[] @relation("CategoryDeleteRequests")
-  disputes         Dispute[]         @relation("ReportedDisputes")
-  notifications    Notification[]
-  deviceTokens     DeviceToken[]
-  payouts          Payout[]
-  cloudinaryConfig CloudinaryConfig?
-  stories          Story[]
-  coupons          Coupon[]
-  recentSearches   RecentSearch[]
+  disputes               Dispute[]               @relation("ReportedDisputes")
+  notifications          Notification[]
+  deviceTokens           DeviceToken[]
+  payouts                Payout[]
+  cloudinaryConfig       CloudinaryConfig?
+  stories                Story[]
+  coupons                Coupon[]
+  recentSearches         RecentSearch[]
 
   // Chat relations
   conversationsAsOne Conversation[] @relation("ParticipantOne")
   conversationsAsTwo Conversation[] @relation("ParticipantTwo")
-  sentMessages      Message[]      @relation("SentMessages")
+  sentMessages       Message[]      @relation("SentMessages")
 
   @@map("user")
 }
 
 model Story {
-  id        String   @id @default(cuid())
-  title     String
-  excerpt   String
-  content   String?  // Optional detailed content
-  tag       String   // e.g., "Living", "Hosts", "Impact"
-  readTime  String   // e.g., "5 min"
-  imageUrl  String   // Cover image URL
-  
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  
+  id       String  @id @default(cuid())
+  title    String
+  excerpt  String
+  content  String? // Optional detailed content
+  tag      String // e.g., "Living", "Hosts", "Impact"
+  readTime String // e.g., "5 min"
+  imageUrl String // Cover image URL
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -114,14 +120,14 @@ model Session {
   id        String   @id @default(cuid())
   expiresAt DateTime
   token     String   @unique
-  
-  ipAddress String?
-  userAgent String?
+
+  ipAddress  String?
+  userAgent  String?
   deviceName String?
-  
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -141,9 +147,9 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("account")
 }
@@ -151,96 +157,103 @@ model Account {
 // --- Marketplace Specific Tables ---
 
 model Category {
-  id        String    @id @default(cuid())
-  name      String    @unique // e.g., "Electronics", "Clothing", "Tools"
-  icon      String?   // Lucide icon name
-  color     String?   // Hex color for the icon/category
-  image     String?   // Uploaded image URL
-  createdAt DateTime  @default(now())
-  products  Product[]
-  userId    String?
-  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id             String                  @id @default(cuid())
+  name           String                  @unique // e.g., "Electronics", "Clothing", "Tools"
+  icon           String? // Lucide icon name
+  color          String? // Hex color for the icon/category
+  image          String? // Uploaded image URL
+  createdAt      DateTime                @default(now())
+  products       Product[]
+  userId         String?
+  user           User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
   deleteRequests DeleteCategoryRequest[] @relation("CategoryDeleteRequests")
 }
 
 model Product {
   id              String   @id @default(cuid())
-  title           String   // e.g., "Canon EOS R5" or "Designer Wedding Dress"
+  title           String // e.g., "Canon EOS R5" or "Designer Wedding Dress"
   description     String
-  price           Float    // Rent per day/hour
+  price           Float // Rent per day/hour
   securityDeposit Float    @default(0) // Refundable deposit
-  location        String   // કઈ જગ્યાએ વસ્તુ ઉપલબ્ધ છે
   images          String[] // Image URLs
   isAvailable     Boolean  @default(true)
   city            String
-  
+  listingType     String   @default("home") // "home" = Rented from Home, "shop" = Rented from Shop/Store
+
   // New Enhanced Fields
-  condition       String?  // e.g., "Like New", "Good", "Fair"
-  features        String[] // ["WiFi", "4K Video", "Touchscreen"]
-  deliveryOptions String[] // ["Pickup", "Delivery", "Self-Pickup"]
+  condition           String? // e.g., "Like New", "Good", "Fair"
+  features            String[] // ["WiFi", "4K Video", "Touchscreen"]
+  deliveryOptions     String[] // ["Pickup", "Delivery", "Self-Pickup"]
   pickupReturnDetails String?
-  tags            String[] // ["Photography", "Camera", "Canon"]
-  minDuration     Int      @default(1) // Minimum rental days
-  maxDuration     Int?     // Maximum rental days (null for unlimited)
-  
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
-  
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  
-  rentals     Rental[]
-  reviews     Review[]
-  likes       Like[]
+  tags                String[] // ["Photography", "Camera", "Canon"]
+  minDuration         Int      @default(1) // Minimum rental days
+  maxDuration         Int? // Maximum rental days (null for unlimited)
+  instagramUrl        String?
+  facebookUrl         String?
+  shopName            String?
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  rentals        Rental[]
+  reviews        Review[]
+  likes          Like[]
   deleteRequests DeleteProductRequest[]
-  coupons     Coupon[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  coupons        Coupon[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@map("product")
 }
 
 model Rental {
-  id         String   @id @default(cuid())
-  productId  String
-  product    Product  @relation(fields: [productId], references: [id])
-  
-  renterId   String
-  renter     User     @relation(fields: [renterId], references: [id])
-  
-  startDate  DateTime
-  endDate    DateTime
-  totalPrice Float
-  rentalFee  Float    // Actual rental cost (price * duration)
-  depositAmount Float @default(0) // Security deposit paid
-  
-  status     String   @default("pending") // "pending", "confirmed", "picked_up", "in_use", "returned", "completed", "cancelled"
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  renterId String
+  renter   User   @relation(fields: [renterId], references: [id])
+
+  startDate     DateTime
+  endDate       DateTime
+  totalPrice    Float
+  rentalFee     Float // Actual rental cost (price * duration)
+  depositAmount Float    @default(0) // Security deposit paid
+
+  status        String @default("pending") // "pending", "confirmed", "picked_up", "in_use", "returned", "completed", "cancelled"
   paymentStatus String @default("pending") // "pending", "partial", "paid", "refunded"
-  paymentMethod String @default("online")  // "online", "cash"
-  
-  pickupOTP  String?
-  returnOTP  String?
-  
-  transactionId String? // Razorpay transaction ID
-  
-  couponId   String?
-  coupon     Coupon?  @relation(fields: [couponId], references: [id], onDelete: SetNull)
-  
-  dispute    Dispute?
-  
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  paymentMethod String @default("online") // "online", "cash"
+
+  pickupOTP String?
+  returnOTP String?
+
+  transactionId String? // Payment gateway transaction ID
+
+  couponId String?
+  coupon   Coupon? @relation(fields: [couponId], references: [id], onDelete: SetNull)
+
+  dispute Dispute?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rental")
 }
 
 model Review {
-  id        String   @id @default(cuid())
-  rating    Int      @default(5)
-  comment   String?
-  
+  id      String  @id @default(cuid())
+  rating  Int     @default(5)
+  comment String?
+
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -248,22 +261,23 @@ model Review {
 }
 
 model Verification {
-  id         String    @id @default(cuid())
+  id         String   @id @default(cuid())
   identifier String
   value      String
   expiresAt  DateTime
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("verification")
 }
+
 model Like {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([userId, productId])
@@ -271,15 +285,15 @@ model Like {
 }
 
 model DeleteProductRequest {
-  id          String   @id @default(cuid())
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  adminId     String
-  admin       User     @relation("AdminRequests", fields: [adminId], references: [id])
-  status      String   @default("pending") // "pending", "approved", "rejected"
-  reason      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  adminId   String
+  admin     User     @relation("AdminRequests", fields: [adminId], references: [id])
+  status    String   @default("pending") // "pending", "approved", "rejected"
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("delete_product_request")
 }
@@ -303,59 +317,59 @@ model DeleteCategoryRequest {
 }
 
 model CategoryRequest {
-  id          String   @id @default(cuid())
-  name        String
-  icon        String?
-  color       String?
-  image       String?
+  id            String   @id @default(cuid())
+  name          String
+  icon          String?
+  color         String?
+  image         String?
   status        String   @default("pending") // "pending", "approved", "rejected"
-  reason        String?  // reason for rejection
+  reason        String? // reason for rejection
   description   String?
   requestReason String?
   userId        String
   user          User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("category_request")
 }
 
 model Coupon {
-  id          String    @id @default(cuid())
-  code        String    @unique
-  discount    Float     // Percentage discount or fixed value
-  type        String    @default("percentage") // "percentage" or "fixed"
-  maxDiscount Float?    // Maximum discount amount for percentage type
-  minBooking  Float?    // Minimum booking price to apply coupon
-  startDate   DateTime
-  endDate     DateTime
-  isActive    Boolean   @default(true)
-  usageLimit  Int?      // Max global redemptions (null = unlimited) — FCFS
-  usedCount   Int       @default(0)
-  perUserLimit Int?     // Max redemptions per individual user (null = unlimited, 1 = once per user)
-  userId      String?
-  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId   String?
-  product     Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  rentals     Rental[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String   @id @default(cuid())
+  code         String   @unique
+  discount     Float // Percentage discount or fixed value
+  type         String   @default("percentage") // "percentage" or "fixed"
+  maxDiscount  Float? // Maximum discount amount for percentage type
+  minBooking   Float? // Minimum booking price to apply coupon
+  startDate    DateTime
+  endDate      DateTime
+  isActive     Boolean  @default(true)
+  usageLimit   Int? // Max global redemptions (null = unlimited) — FCFS
+  usedCount    Int      @default(0)
+  perUserLimit Int? // Max redemptions per individual user (null = unlimited, 1 = once per user)
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId    String?
+  product      Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rentals      Rental[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("coupon")
 }
 
 model Dispute {
-  id          String   @id @default(cuid())
-  rentalId    String   @unique
-  rental      Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  rentalId     String   @unique
+  rental       Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
   reportedById String
-  reportedBy  User     @relation("ReportedDisputes", fields: [reportedById], references: [id])
-  reason      String
-  description String
-  status      String   @default("open") // "open", "resolved", "dismissed"
-  resolution  String?  // resolution description
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  reportedBy   User     @relation("ReportedDisputes", fields: [reportedById], references: [id])
+  reason       String
+  description  String
+  status       String   @default("open") // "open", "resolved", "dismissed"
+  resolution   String? // resolution description
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("dispute")
 }
@@ -379,21 +393,21 @@ model DeviceToken {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   token     String   @unique
-  platform  String?  // e.g. 'web', 'android', 'ios'
+  platform  String? // e.g. 'web', 'android', 'ios'
   createdAt DateTime @default(now())
 
   @@map("device_token")
 }
 
 model Payout {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  amount        Float
-  status        String   @default("pending") // pending, approved, rejected, paid
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Float
+  status    String   @default("pending") // pending, approved, rejected, paid
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("payout")
 }
@@ -413,24 +427,24 @@ model CloudinaryConfig {
 }
 
 model Conversation {
-  id               String    @id @default(cuid())
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   participantOneId String
-  participantOne   User      @relation("ParticipantOne", fields: [participantOneId], references: [id], onDelete: Cascade)
+  participantOne   User   @relation("ParticipantOne", fields: [participantOneId], references: [id], onDelete: Cascade)
 
   participantTwoId String
-  participantTwo   User      @relation("ParticipantTwo", fields: [participantTwoId], references: [id], onDelete: Cascade)
+  participantTwo   User   @relation("ParticipantTwo", fields: [participantTwoId], references: [id], onDelete: Cascade)
 
-  messages         Message[]
+  messages Message[]
 
-  pinnedBy             String[]  @default([])
-  mutedBy              String[]  @default([])
-  archivedBy           String[]  @default([])
-  blockedBy            String[]  @default([])
-  reportedBy           String[]  @default([])
-  disappearingDuration Int       @default(0)
+  pinnedBy             String[] @default([])
+  mutedBy              String[] @default([])
+  archivedBy           String[] @default([])
+  blockedBy            String[] @default([])
+  reportedBy           String[] @default([])
+  disappearingDuration Int      @default(0)
   settings             Json?
 
   @@unique([participantOneId, participantTwoId])
@@ -442,33 +456,32 @@ model Message {
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
-  senderId       String
-  sender         User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId String
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
 
-  content        String
-  attachments    String[]     @default([])
-  isRead         Boolean      @default(false)
-  isEdited       Boolean      @default(false)
-  isDeleted      Boolean      @default(false)
-  deletedBy      String[]     @default([])
-  deliveredAt    DateTime?
-  readAt         DateTime?
-  isForwarded    Boolean      @default(false)
+  content     String
+  attachments String[]  @default([])
+  isRead      Boolean   @default(false)
+  isEdited    Boolean   @default(false)
+  isDeleted   Boolean   @default(false)
+  deletedBy   String[]  @default([])
+  deliveredAt DateTime?
+  readAt      DateTime?
+  isForwarded Boolean   @default(false)
 
-  replyToId      String?
-  replyTo        Message?     @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
-  replies        Message[]    @relation("MessageReplies")
+  replyToId String?
+  replyTo   Message?  @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies   Message[] @relation("MessageReplies")
 
-  starredBy            String[]  @default([])
-  pinnedBy             String[]  @default([])
-  reactions            Json?
+  starredBy String[] @default([])
+  pinnedBy  String[] @default([])
+  reactions Json?
 
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("message")
 }
-
 
 model RecentSearch {
   id        String   @id @default(cuid())
@@ -480,5 +493,3 @@ model RecentSearch {
   @@unique([userId, query])
   @@map("recent_search")
 }
-
-

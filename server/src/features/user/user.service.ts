@@ -123,7 +123,6 @@ export class UserService {
       averageRating,
       reviewCount,
       emailVerified: user.emailVerified,
-      location: user.location,
       language: user.language,
       phone: user.phone,
       showProfile: user.showProfile,
@@ -145,7 +144,6 @@ export class UserService {
     settlementAlerts?: boolean;
     marketingAlerts?: boolean;
     gender?: string;
-    location?: string;
     phone?: string;
     language?: string;
     dob?: string;
@@ -155,6 +153,13 @@ export class UserService {
     showOnline?: boolean;
     allowData?: boolean;
     bio?: string;
+    addressLine1?: string;
+    addressLine2?: string;
+    street?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    country?: string;
   }) {
     const userBefore = await prisma.user.findUnique({
       where: { id },
@@ -173,7 +178,6 @@ export class UserService {
         settlementAlerts: data.settlementAlerts !== undefined ? data.settlementAlerts : undefined,
         marketingAlerts: data.marketingAlerts !== undefined ? data.marketingAlerts : undefined,
         gender: data.gender !== undefined ? data.gender : undefined,
-        location: data.location !== undefined ? data.location : undefined,
         phone: data.phone !== undefined ? data.phone : undefined,
         language: data.language !== undefined ? data.language : undefined,
         dob: data.dob !== undefined ? data.dob : undefined,
@@ -183,6 +187,13 @@ export class UserService {
         showOnline: data.showOnline !== undefined ? data.showOnline : undefined,
         allowData: data.allowData !== undefined ? data.allowData : undefined,
         bio: data.bio !== undefined ? data.bio : undefined,
+        addressLine1: data.addressLine1 !== undefined ? data.addressLine1 : undefined,
+        addressLine2: data.addressLine2 !== undefined ? data.addressLine2 : undefined,
+        street: data.street !== undefined ? data.street : undefined,
+        city: data.city !== undefined ? data.city : undefined,
+        state: data.state !== undefined ? data.state : undefined,
+        pincode: data.pincode !== undefined ? data.pincode : undefined,
+        country: data.country !== undefined ? data.country : undefined,
       }
     });
 

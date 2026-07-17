@@ -185,6 +185,9 @@ export const translations = {
     'Trust & Safety': 'Trust & Safety',
     'Terms of Service': 'Terms of Service',
     'Country/region switched to': 'Country/region switched to',
+    'Rental Address Title': 'Rental Address',
+    'Rental Address Subtitle':
+      'Please enter the address from where you want to rent out your items.',
   },
   hi: {
     // Header
@@ -361,6 +364,9 @@ export const translations = {
     'Trust & Safety': 'विश्वास और सुरक्षा',
     'Terms of Service': 'सेवा की शर्तें',
     'Country/region switched to': 'देश/क्षेत्र बदलकर किया गया',
+    'Rental Address Title': 'किराए पर देने का पता (Rental Address)',
+    'Rental Address Subtitle':
+      'कृपया वह पता भरें जहाँ से आप अपनी वस्तुएं किराए पर देना चाहते हैं।',
   },
   gu: {
     // Header
@@ -536,6 +542,9 @@ export const translations = {
     'Trust & Safety': 'વિશ્વાસ અને સુરક્ષા',
     'Terms of Service': 'સેવાની શરતો',
     'Country/region switched to': 'દેશ/પ્રદેશ બદલીને કરવામાં આવ્યો',
+    'Rental Address Title': 'વસ્તુ આપવાનું સરનામું (Rental Address)',
+    'Rental Address Subtitle':
+      'તમે જે જગ્યાએથી તમારી પ્રોડક્ટ્સ રેન્ટ (Rent) પર આપવા માંગો છો તેનું સાચું સરનામું અહિંયા ભરો.',
   },
 } as const
 

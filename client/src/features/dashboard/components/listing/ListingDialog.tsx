@@ -66,6 +66,10 @@ export const ListingDialog = ({
       userId: '',
       images: [],
       securityDeposit: 0,
+      listingType: 'home',
+      instagramUrl: '',
+      facebookUrl: '',
+      shopName: '',
     },
   })
 
@@ -91,6 +95,10 @@ export const ListingDialog = ({
           tags: product.tags || [],
           minDuration: product.minDuration || 1,
           maxDuration: product.maxDuration || undefined,
+          listingType: product.listingType || 'home',
+          instagramUrl: product.instagramUrl || '',
+          facebookUrl: product.facebookUrl || '',
+          shopName: product.shopName || '',
         })
       } else {
         form.reset({
@@ -110,6 +118,10 @@ export const ListingDialog = ({
           tags: [],
           minDuration: 1,
           maxDuration: undefined,
+          listingType: 'home',
+          instagramUrl: '',
+          facebookUrl: '',
+          shopName: '',
         })
       }
     }
