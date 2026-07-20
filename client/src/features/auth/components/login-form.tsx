@@ -12,6 +12,14 @@ import type { LoginSchema } from '#/schema'
 import { toast } from 'sonner'
 import { SocialAuth } from './social-auth'
 import { Capacitor } from '@capacitor/core'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 
 export function LoginForm() {
   const navigate = useNavigate()
@@ -72,14 +80,15 @@ export function LoginForm() {
     }
   }
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginSchema>({
+  const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
+  const { formState: { isSubmitting } } = form
 
   const onSubmit = async (values: LoginSchema) => {
     setServerError(null)
@@ -100,7 +109,9 @@ export function LoginForm() {
         setIsUnverified(true)
         setUnverifiedEmail(values.email)
       } else {
-        setServerError(error.message ?? 'Login failed. Please try again.')
+        const errMsg = error.message ?? 'Login failed. Please try again.'
+        setServerError(errMsg)
+        toast.error(errMsg)
       }
       return
     }
@@ -286,88 +297,106 @@ export function LoginForm() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5">
-          {/* Email Field */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Email Address
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('email')}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.email.message}
-              </p>
-            )}
-          </Field>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, (formErrors) => {
+            const firstError = Object.values(formErrors)[0]?.message
+            toast.error(
+              typeof firstError === 'string'
+                ? firstError
+                : 'Please fill in all required fields.',
+            )
+          })}
+        >
+          <div className="space-y-5">
+            {/* Email Field */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    Email Address
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Mail
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type="email"
+                        placeholder="Enter your email"
+                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Password Field */}
-          <Field>
-            <div className="flex items-center justify-between mb-1.5">
-              <FieldLabel className="text-[13px] font-bold text-foreground">
-                Password
-              </FieldLabel>
-              <Button
-                type="button"
-                variant="link"
-                onClick={() => setIsForgotPassword(true)}
-                className="text-[13px] font-bold text-primary p-0 h-auto hover:underline"
-              >
-                Forgot Password?
-              </Button>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('password')}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <Eye
-                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-                    strokeWidth={2}
-                  />
-                ) : (
-                  <EyeOff
-                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-                    strokeWidth={2}
-                  />
-                )}
-              </Button>
-            </div>
-            {errors.password && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.password.message}
-              </p>
-            )}
-          </Field>
+            {/* Password Field */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <FormLabel className="text-[13px] font-bold text-foreground">
+                      Password
+                    </FormLabel>
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={() => setIsForgotPassword(true)}
+                      className="text-[13px] font-bold text-primary p-0 h-auto hover:underline"
+                    >
+                      Forgot Password?
+                    </Button>
+                  </div>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Lock
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent z-10"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <Eye
+                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            strokeWidth={2}
+                          />
+                        ) : (
+                          <EyeOff
+                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            strokeWidth={2}
+                          />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
           {/* Remember Me */}
           <div className="flex items-center pt-1 pb-1">
@@ -470,6 +499,7 @@ export function LoginForm() {
           </Button>
         </div>
       </form>
+    </Form>
 
       {/* Or continue with */}
       <div className="mt-8 mb-6 flex items-center">

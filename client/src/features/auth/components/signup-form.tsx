@@ -10,19 +10,31 @@ import { useState, useEffect } from 'react'
 import { Mail, Lock, EyeOff, User, Eye } from 'lucide-react'
 import { authClient } from '#/lib/auth/auth-client'
 import { SocialAuth } from './social-auth'
+import { toast } from 'sonner'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 
 export function SignupForm() {
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<SignupSchema>({
+  const form = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
     mode: 'onChange',
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   })
+  const { formState: { isSubmitting } } = form
 
   // Verification-related states
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
@@ -51,7 +63,9 @@ export function SignupForm() {
     })
 
     if (error) {
-      setServerError(error.message ?? 'Registration failed. Please try again.')
+      const errMsg = error.message ?? 'Registration failed. Please try again.'
+      setServerError(errMsg)
+      toast.error(errMsg)
       return
     }
 
@@ -206,141 +220,168 @@ export function SignupForm() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5">
-          {/* Full Name */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Full Name
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <User
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                placeholder="Enter your name"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('name')}
-              />
-            </div>
-            {errors.name && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.name.message}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, (formErrors) => {
+            const firstError = Object.values(formErrors)[0]?.message
+            toast.error(
+              typeof firstError === 'string'
+                ? firstError
+                : 'Please fill in all required fields.',
+            )
+          })}
+        >
+          <div className="space-y-5">
+            {/* Full Name */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    Full Name
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <User
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        placeholder="Enter your name"
+                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    Email Address
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Mail
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type="email"
+                        placeholder="Enter your email"
+                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Password */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    Password
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Lock
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Create password"
+                        className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent z-10"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <Eye
+                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            strokeWidth={2}
+                          />
+                        ) : (
+                          <EyeOff
+                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            strokeWidth={2}
+                          />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Confirm Password */}
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    Confirm Password
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Lock
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Confirm password"
+                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {serverError && (
+              <p className="text-center text-sm text-destructive font-medium">
+                {serverError}
               </p>
             )}
-          </Field>
 
-          {/* Email */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Email Address
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('email')}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.email.message}
-              </p>
-            )}
-          </Field>
-
-          {/* Password */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Password
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Create password"
-                className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('password')}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <Eye
-                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-                    strokeWidth={2}
-                  />
-                ) : (
-                  <EyeOff
-                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-                    strokeWidth={2}
-                  />
-                )}
-              </Button>
-            </div>
-            {errors.password && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.password.message}
-              </p>
-            )}
-          </Field>
-
-          {/* Confirm Password */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Confirm Password
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Confirm password"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('confirmPassword')}
-              />
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </Field>
-
-          {serverError && (
-            <p className="text-center text-sm text-destructive font-medium">
-              {serverError}
-            </p>
-          )}
-
-          <Button type="submit" disabled={isSubmitting} className="w-full mt-2">
-            {isSubmitting ? 'Creating Account...' : 'Create Account'}
-          </Button>
-        </div>
-      </form>
+            <Button type="submit" disabled={isSubmitting} className="w-full mt-2">
+              {isSubmitting ? 'Creating Account...' : 'Create Account'}
+            </Button>
+          </div>
+        </form>
+      </Form>
 
       {/* Or continue with */}
       <div className="mt-8 mb-6 flex items-center">

@@ -27,6 +27,7 @@ import { billingRoutes } from "./features/billing/billing.routes.js";
 import { settingsRoutes } from "./features/settings/settings.routes.js";
 import { deleteRequestRoutes } from "./features/delete-request/delete-request.routes.js";
 import { categoryDeleteRequestRoutes } from "./features/category-delete-request/category-delete-request.routes.js";
+import locationRoutes from "./features/location/location.routes.js";
 
 
 export const app = Fastify({ logger: true, trustProxy: true });
@@ -101,6 +102,7 @@ app.register(billingRoutes, { prefix: "/api/billing" });
 app.register(settingsRoutes, { prefix: "/api/settings" });
 app.register(deleteRequestRoutes, { prefix: "/api/delete-requests" });
 app.register(categoryDeleteRequestRoutes, { prefix: "/api/category-delete-requests" });
+app.register(locationRoutes, { prefix: "/api/locations" });
 
 // Aliases for backward compatibility with the frontend
 app.register(productRoutes, { prefix: "/api/admin/products" });

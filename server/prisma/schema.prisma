@@ -493,3 +493,43 @@ model RecentSearch {
   @@unique([userId, query])
   @@map("recent_search")
 }
+
+model Country {
+  id        Int     @id
+  name      String
+  iso2      String?
+  iso3      String?
+  phonecode String?
+  emoji     String?
+  states    State[]
+
+  @@index([name])
+  @@map("countries")
+}
+
+model State {
+  id         Int     @id
+  country_id Int
+  name       String
+  state_code String?
+  
+  country    Country @relation(fields: [country_id], references: [id])
+  cities     City[]
+
+  @@index([name])
+  @@map("states")
+}
+
+model City {
+  id         Int     @id
+  state_id   Int
+  country_id Int
+  name       String
+  latitude   String?
+  longitude  String?
+
+  state      State  @relation(fields: [state_id], references: [id])
+  
+  @@index([name])
+  @@map("cities")
+}
