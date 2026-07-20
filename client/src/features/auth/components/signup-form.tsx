@@ -2,7 +2,6 @@ import { signupSchema } from '#/schema'
 import type { SignupSchema } from '#/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Field, FieldLabel } from '@/components/ui/field'
 import { Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,6 +10,8 @@ import { Mail, Lock, EyeOff, User, Eye } from 'lucide-react'
 import { authClient } from '#/lib/auth/auth-client'
 import { SocialAuth } from './social-auth'
 import { toast } from 'sonner'
+import { useTranslation } from '#/context/TranslationContext'
+import { LanguageSelector } from '@/components/ui/language-selector'
 import {
   Form,
   FormControl,
@@ -21,6 +22,7 @@ import {
 } from '@/components/ui/form'
 
 export function SignupForm() {
+  const { t } = useTranslation()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -178,23 +180,26 @@ export function SignupForm() {
 
   return (
     <div className="w-full relative">
-      {/* Top Right "Already have account? Sign in" */}
-      <div className="absolute -top-6 right-0 sm:-top-16 flex items-center gap-1.5 text-sm font-medium">
-        <span className="text-muted-foreground/85">Already have account?</span>
-        <Link
-          to="/login"
-          className="text-primary font-bold hover:bg-primary-light transition-colors"
-        >
-          Sign in
-        </Link>
+      {/* Top Bar with Language Selector & Switch Link */}
+      <div className="absolute -top-8 right-0 sm:-top-16 flex items-center gap-3">
+        <LanguageSelector />
+        <div className="hidden sm:flex items-center gap-1.5 text-sm font-medium">
+          <span className="text-muted-foreground/85">{t('Already have account?')}</span>
+          <Link
+            to="/login"
+            className="text-primary font-bold hover:bg-primary-light transition-colors"
+          >
+            {t('Sign in')}
+          </Link>
+        </div>
       </div>
 
       <div className="mb-8">
         <h1 className="text-[32px] font-bold text-text-dark tracking-tight">
-          Create Account
+          {t('Create Account')}
         </h1>
         <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
-          Join thousands of users renting smarter everyday.
+          {t('Join thousands of users renting smarter everyday.')}
         </p>
       </div>
 
@@ -205,7 +210,7 @@ export function SignupForm() {
             to="/login"
             className="py-3 text-[15px] font-semibold text-muted-foreground/70 text-center w-full hover:text-muted-foreground"
           >
-            Login
+            {t('Login')}
           </Link>
           <div className="h-[1px] w-full bg-muted"></div>
         </div>
@@ -214,7 +219,7 @@ export function SignupForm() {
             variant="ghost"
             className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100"
           >
-            Sign Up
+            {t('Sign Up')}
           </Button>
           <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
         </div>
@@ -239,7 +244,7 @@ export function SignupForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                    Full Name
+                    {t('Full Name')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -250,7 +255,7 @@ export function SignupForm() {
                         />
                       </div>
                       <Input
-                        placeholder="Enter your name"
+                        placeholder={t('Enter your name')}
                         className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
@@ -268,7 +273,7 @@ export function SignupForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                    Email Address
+                    {t('Email Address')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -280,7 +285,7 @@ export function SignupForm() {
                       </div>
                       <Input
                         type="email"
-                        placeholder="Enter your email"
+                        placeholder={t('Enter your email')}
                         className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
@@ -298,7 +303,7 @@ export function SignupForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                    Password
+                    {t('Password')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -310,7 +315,7 @@ export function SignupForm() {
                       </div>
                       <Input
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Create password"
+                        placeholder={t('Create password')}
                         className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
@@ -347,7 +352,7 @@ export function SignupForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                    Confirm Password
+                    {t('Confirm Password')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -359,7 +364,7 @@ export function SignupForm() {
                       </div>
                       <Input
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Confirm password"
+                        placeholder={t('Confirm Password')}
                         className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
@@ -377,7 +382,7 @@ export function SignupForm() {
             )}
 
             <Button type="submit" disabled={isSubmitting} className="w-full mt-2">
-              {isSubmitting ? 'Creating Account...' : 'Create Account'}
+              {isSubmitting ? `${t('Create Account')}...` : t('Create Account')}
             </Button>
           </div>
         </form>
@@ -387,7 +392,7 @@ export function SignupForm() {
       <div className="mt-8 mb-6 flex items-center">
         <div className="h-[1px] flex-1 bg-muted"></div>
         <span className="px-4 text-[13px] font-medium text-muted-foreground/70">
-          or continue with
+          {t('or continue with')}
         </span>
         <div className="h-[1px] flex-1 bg-muted"></div>
       </div>

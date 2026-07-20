@@ -81,4 +81,98 @@ export default async function locationRoutes(fastify: FastifyInstance) {
     })
     return cities
   })
+
+  // GET /api/locations/pincode/:code
+  fastify.get('/pincode/:code', async (request, reply) => {
+    const { code } = request.params as { code: string }
+    const cleanCode = code?.trim()
+
+    if (!cleanCode || !/^[1-9][0-9]{5}$/.test(cleanCode)) {
+      return reply.status(400).send({ valid: false, message: 'Invalid 6-digit Pincode format' })
+    }
+
+    // 1. Check PostgreSQL Database first
+    const existingPincode = await prisma.pincode.findUnique({
+      where: { pincode: cleanCode },
+    })
+
+    if (existingPincode) {
+      return {
+        valid: true,
+        pincode: existingPincode.pincode,
+        district: existingPincode.district,
+        state: existingPincode.state,
+        country: existingPincode.country,
+        source: 'database',
+      }
+    }
+
+    // 2. Fetch from External Free API if not in DB
+    try {
+      const res = await fetch(`https://api.postalpincode.in/pincode/${cleanCode}`)
+      const data = await res.json() as any
+
+      if (Array.isArray(data) && data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
+        const postOffice = data[0].PostOffice[0]
+        const district = postOffice.District || postOffice.Block || postOffice.Name || ''
+        const state = postOffice.State || ''
+
+        // Save to Database for future instant lookups
+        const saved = await prisma.pincode.create({
+          data: {
+            pincode: cleanCode,
+            district,
+            state,
+            country: 'India',
+          },
+        })
+
+        return {
+          valid: true,
+          pincode: saved.pincode,
+          district: saved.district,
+          state: saved.state,
+          country: saved.country,
+          source: 'api_fetched',
+        }
+      }
+    } catch (err) {
+      // Fallback or ignore fetch error
+    }
+
+    // Secondary fallback to Zippopotam
+    try {
+      const res = await fetch(`https://api.zippopotam.us/in/${cleanCode}`)
+      if (res.ok) {
+        const data = await res.json() as any
+        if (data?.places?.length > 0) {
+          const district = data.places[0]['place name'] || ''
+          const state = data.places[0]['state'] || ''
+
+          const saved = await prisma.pincode.create({
+            data: {
+              pincode: cleanCode,
+              district,
+              state,
+              country: 'India',
+            },
+          })
+
+          return {
+            valid: true,
+            pincode: saved.pincode,
+            district: saved.district,
+            state: saved.state,
+            country: saved.country,
+            source: 'api_fetched',
+          }
+        }
+      }
+    } catch (err) {
+      // Fallback error
+    }
+
+    return reply.status(404).send({ valid: false, message: 'Invalid Pincode. Please check your 6-digit postal code.' })
+  })
 }
+

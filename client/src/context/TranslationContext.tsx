@@ -188,6 +188,26 @@ export const translations = {
     'Rental Address Title': 'Rental Address',
     'Rental Address Subtitle':
       'Please enter the address from where you want to rent out your items.',
+
+    // Auth Pages (Login / Signup)
+    'Welcome Back!': 'Welcome Back!',
+    'Login to your account and continue renting.':
+      'Login to your account and continue renting.',
+    'Create Account': 'Create Account',
+    'Join thousands of users renting smarter everyday.':
+      'Join thousands of users renting smarter everyday.',
+    'New here?': 'New here?',
+    'Already have account?': 'Already have account?',
+    Login: 'Login',
+    'Sign Up': 'Sign Up',
+    'Confirm Password': 'Confirm Password',
+    'Remember me': 'Remember me',
+    'Forgot Password?': 'Forgot Password?',
+    'or continue with': 'or continue with',
+    'By continuing, you agree to our': 'By continuing, you agree to our',
+    'Enter your name': 'Enter your name',
+    'Enter your password': 'Enter your password',
+    'Create password': 'Create password',
   },
   hi: {
     // Header
@@ -367,6 +387,26 @@ export const translations = {
     'Rental Address Title': 'किराए पर देने का पता (Rental Address)',
     'Rental Address Subtitle':
       'कृपया वह पता भरें जहाँ से आप अपनी वस्तुएं किराए पर देना चाहते हैं।',
+
+    // Auth Pages (Login / Signup)
+    'Welcome Back!': 'वापसी पर आपका स्वागत है!',
+    'Login to your account and continue renting.':
+      'अपने खाते में लॉगिन करें और किराए पर लेना जारी रखें।',
+    'Create Account': 'खाता बनाएं',
+    'Join thousands of users renting smarter everyday.':
+      'हर दिन समझदारी से किराए पर लेने वाले हजारों उपयोगकर्ताओं से जुड़ें।',
+    'New here?': 'यहाँ नए हैं?',
+    'Already have account?': 'क्या आपका पहले से खाता है?',
+    Login: 'लॉगिन',
+    'Sign Up': 'साइन अप',
+    'Confirm Password': 'पासवर्ड की पुष्टि करें',
+    'Remember me': 'मुझे याद रखें',
+    'Forgot Password?': 'पासवर्ड भूल गए?',
+    'or continue with': 'या इसके साथ जारी रखें',
+    'By continuing, you agree to our': 'जारी रखकर, आप हमारी से सहमत होते हैं',
+    'Enter your name': 'अपना नाम दर्ज करें',
+    'Enter your password': 'अपना पासवर्ड दर्ज करें',
+    'Create password': 'पासवर्ड बनाएं',
   },
   gu: {
     // Header
@@ -545,6 +585,26 @@ export const translations = {
     'Rental Address Title': 'વસ્તુ આપવાનું સરનામું (Rental Address)',
     'Rental Address Subtitle':
       'તમે જે જગ્યાએથી તમારી પ્રોડક્ટ્સ રેન્ટ (Rent) પર આપવા માંગો છો તેનું સાચું સરનામું અહિંયા ભરો.',
+
+    // Auth Pages (Login / Signup)
+    'Welcome Back!': 'પાછા આવવા બદલ સ્વાગત છે!',
+    'Login to your account and continue renting.':
+      'તમારા એકાઉન્ટમાં લોગિન કરો અને રેન્ટ પર આપવાનું ચાલુ રાખો.',
+    'Create Account': 'એકાઉન્ટ બનાવો',
+    'Join thousands of users renting smarter everyday.':
+      'દરરોજ સ્માર્ટ રીતે રેન્ટ પર લેનારા હજારો યુઝર્સ સાથે જોડાઓ.',
+    'New here?': 'અહીં નવા છો?',
+    'Already have account?': 'પહેલેથી જ એકાઉન્ટ છે?',
+    Login: 'લોગિન',
+    'Sign Up': 'સાઇન અપ',
+    'Confirm Password': 'પાસવર્ડ કન્ફર્મ કરો',
+    'Remember me': 'મને યાદ રાખો',
+    'Forgot Password?': 'પાસવર્ડ ભૂલી ગયા છો?',
+    'or continue with': 'અથવા આના વડે આગળ વધો',
+    'By continuing, you agree to our': 'આગળ વધીને, તમે અમારી શરતો સ્વીકારો છો',
+    'Enter your name': 'તમારું નામ દાખલ કરો',
+    'Enter your password': 'તમારો પાસવર્ડ દાખલ કરો',
+    'Create password': 'પાસવર્ડ બનાવો',
   },
 } as const
 
@@ -641,7 +701,7 @@ export function TranslationProvider({
     }
   }, [session, language, setLanguageState])
 
-  // Dynamically set cookie and load translate widget script on mount/language changes
+  // Dynamically set cookie and load translate widget script on mount/language changes without full page reload
   useEffect(() => {
     if (typeof window === 'undefined') return
     const targetCookieVal = language === 'en' ? null : `/en/${language}`
@@ -650,10 +710,8 @@ export function TranslationProvider({
     if (language !== 'en' && currentCookie !== targetCookieVal) {
       setCookie('googtrans', `/en/${language}`)
       loadGoogleTranslateScript()
-      window.location.reload()
     } else if (language === 'en' && currentCookie) {
       eraseCookie('googtrans')
-      window.location.reload()
     } else if (language !== 'en') {
       loadGoogleTranslateScript()
     }

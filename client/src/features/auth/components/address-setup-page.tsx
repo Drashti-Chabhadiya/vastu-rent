@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   MapPin,
   Home,
@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   ArrowRight,
   Store,
+  Loader2,
 } from 'lucide-react'
 import { apiClient } from '#/lib/api'
 import { useTranslation } from '#/context/TranslationContext'
@@ -38,6 +39,7 @@ export function AddressSetupPage() {
 
   const [countryId, setCountryId] = useState<number | undefined>(101) // Default India (ID: 101)
   const [stateId, setStateId] = useState<number | undefined>()
+  const [isPincodeLoading, setIsPincodeLoading] = useState(false)
 
   const form = useForm<AddressSchema>({
     resolver: zodResolver(addressSchema) as any,
@@ -56,15 +58,58 @@ export function AddressSetupPage() {
   })
   const { formState: { isSubmitting } } = form
 
+  const pincodeValue = form.watch('pincode')
+
+  useEffect(() => {
+    if (pincodeValue && pincodeValue.length === 6 && /^[1-9][0-9]{5}$/.test(pincodeValue)) {
+      let isSubscribed = true
+      setIsPincodeLoading(true)
+
+      apiClient.get(`/locations/pincode/${pincodeValue}`)
+        .then(async (res) => {
+          if (!isSubscribed) return
+          const data = res.data
+          if (data?.valid) {
+            form.clearErrors('pincode')
+            if (data.state) {
+              form.setValue('state', data.state, { shouldValidate: true })
+              try {
+                const stateRes = await apiClient.get(`/locations/states/search?q=${encodeURIComponent(data.state)}&countryId=${countryId || 101}`)
+                if (stateRes.data && stateRes.data.length > 0) {
+                  const matchedState = stateRes.data.find(
+                    (s: any) => s.name.toLowerCase() === data.state.toLowerCase()
+                  ) || stateRes.data[0]
+                  setStateId(matchedState.id)
+                }
+              } catch (e) {
+                // ignore state lookup error
+              }
+            }
+            if (data.district) {
+              form.setValue('city', data.district, { shouldValidate: true })
+            }
+            toast.success(`Pincode verified: ${data.district}, ${data.state}`)
+          }
+        })
+        .catch((err) => {
+          if (!isSubscribed) return
+          const errMsg = err?.response?.data?.message || 'Invalid 6-digit Pincode'
+          form.setError('pincode', { type: 'manual', message: errMsg })
+        })
+        .finally(() => {
+          if (isSubscribed) setIsPincodeLoading(false)
+        })
+
+      return () => {
+        isSubscribed = false
+      }
+    }
+  }, [pincodeValue, countryId, form])
+
   const handleAddressTypeChange = (type: 'home' | 'shop') => {
+    if (type === addressType) return
     setAddressType(type)
-    form.reset(
-      {
-        addressType: type,
-        country: 'India',
-      } as any,
-      { keepValues: false },
-    )
+    form.setValue('addressType', type, { shouldValidate: true })
   }
 
   const onSubmit = async (values: AddressSchema) => {
@@ -185,11 +230,10 @@ export function AddressSetupPage() {
                       <button
                         type="button"
                         onClick={() => handleAddressTypeChange('home')}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${
-                          addressType === 'home'
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                        }`}
+                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${addressType === 'home'
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                          }`}
                       >
                         <Home className="h-4 w-4" strokeWidth={2} />
                         Home Address
@@ -197,11 +241,10 @@ export function AddressSetupPage() {
                       <button
                         type="button"
                         onClick={() => handleAddressTypeChange('shop')}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${
-                          addressType === 'shop'
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                        }`}
+                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${addressType === 'shop'
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                          }`}
                       >
                         <Building2 className="h-4 w-4" strokeWidth={2} />
                         Shop Address
@@ -412,9 +455,14 @@ export function AddressSetupPage() {
                                 inputMode="numeric"
                                 maxLength={6}
                                 placeholder="e.g. 395001"
-                                className="w-full h-12 pl-10 pr-3 rounded-xl border border-border bg-background text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all relative z-0"
+                                className="w-full h-12 pl-10 pr-9 rounded-xl border border-border bg-background text-[14px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all relative z-0"
                                 {...field}
                               />
+                              {isPincodeLoading && (
+                                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none z-10">
+                                  <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                                </div>
+                              )}
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -459,14 +507,14 @@ export function AddressSetupPage() {
                     )}
                   />
 
-                  {/* Country — read-only */}
+                  {/* Country */}
                   <FormField
                     control={form.control}
                     name="country"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                          Country
+                          Country <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
@@ -476,10 +524,17 @@ export function AddressSetupPage() {
                                 strokeWidth={2}
                               />
                             </div>
-                            <Input
-                              className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-muted/40 text-[14px] text-foreground/70 cursor-not-allowed"
-                              readOnly
-                              {...field}
+                            <LocationCombobox
+                              type="country"
+                              value={field.value}
+                              onChange={(val, id) => {
+                                form.setValue('country', val, { shouldValidate: true })
+                                setCountryId(id)
+                                setStateId(undefined)
+                                form.setValue('state', '', { shouldValidate: true })
+                                form.setValue('city', '', { shouldValidate: true })
+                              }}
+                              placeholder="Search country..."
                             />
                           </div>
                         </FormControl>

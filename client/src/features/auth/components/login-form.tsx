@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Field, FieldLabel } from '@/components/ui/field'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -12,6 +11,8 @@ import type { LoginSchema } from '#/schema'
 import { toast } from 'sonner'
 import { SocialAuth } from './social-auth'
 import { Capacitor } from '@capacitor/core'
+import { useTranslation } from '#/context/TranslationContext'
+import { LanguageSelector } from '@/components/ui/language-selector'
 import {
   Form,
   FormControl,
@@ -20,8 +21,10 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Field, FieldLabel } from '#/components/ui/field'
 
 export function LoginForm() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -188,10 +191,10 @@ export function LoginForm() {
         ) : (
           <form onSubmit={handleForgotPasswordSubmit}>
             <div className="space-y-5">
-              <Field>
-                <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                  Email Address
-                </FieldLabel>
+              <div>
+                <label className="block text-[13px] font-bold text-foreground mb-1.5">
+                  {t('Email Address')}
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail
@@ -202,13 +205,13 @@ export function LoginForm() {
                   <Input
                     type="email"
                     required
-                    placeholder="Enter your email"
+                    placeholder={t('Enter your email')}
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
                     className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                   />
                 </div>
-              </Field>
+              </div>
 
               {resetError && (
                 <p className="text-xs text-destructive mt-1 font-medium text-center">
@@ -255,23 +258,26 @@ export function LoginForm() {
 
   return (
     <div className="w-full relative">
-      {/* Top Right "New here? Sign up" */}
-      <div className="absolute -top-6 right-0 sm:-top-16 flex items-center gap-1.5 text-sm font-medium">
-        <span className="text-muted-foreground/85">New here?</span>
-        <Link
-          to="/signup"
-          className="text-primary font-bold hover:bg-primary-light transition-colors"
-        >
-          Sign up
-        </Link>
+      {/* Top Bar with Language Selector & Switch Link */}
+      <div className="absolute -top-8 right-0 sm:-top-16 flex items-center gap-3">
+        <LanguageSelector />
+        <div className="hidden sm:flex items-center gap-1.5 text-sm font-medium">
+          <span className="text-muted-foreground/85">{t('New here?')}</span>
+          <Link
+            to="/signup"
+            className="text-primary font-bold hover:bg-primary-light transition-colors"
+          >
+            {t('Sign Up')}
+          </Link>
+        </div>
       </div>
 
       <div className="mb-8">
         <h1 className="text-[32px] font-bold text-text-dark tracking-tight">
-          Welcome Back!
+          {t('Welcome Back!')}
         </h1>
         <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
-          Login to your account and continue renting.
+          {t('Login to your account and continue renting.')}
         </p>
       </div>
 
@@ -282,7 +288,7 @@ export function LoginForm() {
             variant="ghost"
             className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100"
           >
-            Login
+            {t('Login')}
           </Button>
           <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
         </div>
@@ -291,7 +297,7 @@ export function LoginForm() {
             to="/signup"
             className="py-3 text-[15px] font-semibold text-muted-foreground/70 text-center w-full hover:text-muted-foreground"
           >
-            Sign Up
+            {t('Sign Up')}
           </Link>
           <div className="h-[1px] w-full bg-muted"></div>
         </div>
@@ -316,7 +322,7 @@ export function LoginForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                    Email Address
+                    {t('Email Address')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -328,7 +334,7 @@ export function LoginForm() {
                       </div>
                       <Input
                         type="email"
-                        placeholder="Enter your email"
+                        placeholder={t('Enter your email')}
                         className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
@@ -347,7 +353,7 @@ export function LoginForm() {
                 <FormItem>
                   <div className="flex items-center justify-between mb-1.5">
                     <FormLabel className="text-[13px] font-bold text-foreground">
-                      Password
+                      {t('Password')}
                     </FormLabel>
                     <Button
                       type="button"
@@ -355,7 +361,7 @@ export function LoginForm() {
                       onClick={() => setIsForgotPassword(true)}
                       className="text-[13px] font-bold text-primary p-0 h-auto hover:underline"
                     >
-                      Forgot Password?
+                      {t('Forgot Password?')}
                     </Button>
                   </div>
                   <FormControl>
@@ -368,7 +374,7 @@ export function LoginForm() {
                       </div>
                       <Input
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter your password"
+                        placeholder={t('Enter your password')}
                         className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
@@ -398,114 +404,114 @@ export function LoginForm() {
               )}
             />
 
-          {/* Remember Me */}
-          <div className="flex items-center pt-1 pb-1">
-            <Button
-              type="button"
-              variant="ghost"
-              className="flex items-center gap-2.5 p-0 h-auto hover:bg-transparent active:scale-100"
-              onClick={() => setRememberMe(!rememberMe)}
-            >
-              <div
-                className={`w-4 h-4 rounded-[4px] flex items-center justify-center border transition-colors ${rememberMe ? 'bg-primary border-primary' : 'bg-card border-border/120'}`}
+            {/* Remember Me */}
+            <div className="flex items-center pt-1 pb-1">
+              <Button
+                type="button"
+                variant="ghost"
+                className="flex items-center gap-2.5 p-0 h-auto hover:bg-transparent active:scale-100"
+                onClick={() => setRememberMe(!rememberMe)}
               >
-                {rememberMe && (
-                  <Check
-                    className="h-3 w-3 text-primary-foreground"
-                    strokeWidth={3}
-                  />
-                )}
+                <div
+                  className={`w-4 h-4 rounded-[4px] flex items-center justify-center border transition-colors ${rememberMe ? 'bg-primary border-primary' : 'bg-card border-border/120'}`}
+                >
+                  {rememberMe && (
+                    <Check
+                      className="h-3 w-3 text-primary-foreground"
+                      strokeWidth={3}
+                    />
+                  )}
+                </div>
+                <span className="text-[13px] font-bold text-foreground">
+                  {t('Remember me')}
+                </span>
+              </Button>
+            </div>
+
+            {serverError && (
+              <p className="text-center text-sm text-destructive font-medium">
+                {serverError}
+              </p>
+            )}
+
+            {isUnverified && (
+              <div className="bg-warning/30 border border-warning-foreground/20 rounded-xl p-4 text-center sm:text-left animate-in fade-in duration-300">
+                <div className="flex gap-2.5 items-start">
+                  <div className="text-warning-foreground mt-0.5 shrink-0">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                  </div>
+                  <div className="flex-1 text-left">
+                    <h4 className="text-[14px] font-bold text-warning-foreground font-sans">
+                      Verification Required
+                    </h4>
+                    <p className="mt-1 text-[13px] text-warning-foreground/90 leading-relaxed font-medium">
+                      Your email is not verified yet. Please check your inbox for
+                      the verification link sent to{' '}
+                      <strong className="text-foreground break-all">
+                        {unverifiedEmail}
+                      </strong>
+                      .
+                    </p>
+
+                    {resendSuccess && (
+                      <p className="mt-2 text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded inline-block animate-in fade-in duration-200">
+                        Verification link resent successfully!
+                      </p>
+                    )}
+                    {resendError && (
+                      <p className="mt-2 text-xs text-destructive font-semibold bg-danger px-2 py-1 rounded inline-block">
+                        {resendError}
+                      </p>
+                    )}
+
+                    <Button
+                      type="button"
+                      variant="link"
+                      disabled={resendLoading || resendCooldown > 0}
+                      onClick={handleResend}
+                      className="mt-3 text-[13px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 p-0 h-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {resendLoading ? (
+                        <span className="flex items-center gap-1">
+                          <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                          Resending...
+                        </span>
+                      ) : resendCooldown > 0 ? (
+                        `Resend email in ${resendCooldown}s`
+                      ) : (
+                        'Resend verification email'
+                      )}
+                    </Button>
+                  </div>
+                </div>
               </div>
-              <span className="text-[13px] font-bold text-foreground">
-                Remember me
-              </span>
+            )}
+
+            {/* Login Button */}
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? `${t('Login')}...` : t('Login')}
             </Button>
           </div>
-
-          {serverError && (
-            <p className="text-center text-sm text-destructive font-medium">
-              {serverError}
-            </p>
-          )}
-
-          {isUnverified && (
-            <div className="bg-warning/30 border border-warning-foreground/20 rounded-xl p-4 text-center sm:text-left animate-in fade-in duration-300">
-              <div className="flex gap-2.5 items-start">
-                <div className="text-warning-foreground mt-0.5 shrink-0">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
-                </div>
-                <div className="flex-1 text-left">
-                  <h4 className="text-[14px] font-bold text-warning-foreground font-sans">
-                    Verification Required
-                  </h4>
-                  <p className="mt-1 text-[13px] text-warning-foreground/90 leading-relaxed font-medium">
-                    Your email is not verified yet. Please check your inbox for
-                    the verification link sent to{' '}
-                    <strong className="text-foreground break-all">
-                      {unverifiedEmail}
-                    </strong>
-                    .
-                  </p>
-
-                  {resendSuccess && (
-                    <p className="mt-2 text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded inline-block animate-in fade-in duration-200">
-                      Verification link resent successfully!
-                    </p>
-                  )}
-                  {resendError && (
-                    <p className="mt-2 text-xs text-destructive font-semibold bg-danger px-2 py-1 rounded inline-block">
-                      {resendError}
-                    </p>
-                  )}
-
-                  <Button
-                    type="button"
-                    variant="link"
-                    disabled={resendLoading || resendCooldown > 0}
-                    onClick={handleResend}
-                    className="mt-3 text-[13px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 p-0 h-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {resendLoading ? (
-                      <span className="flex items-center gap-1">
-                        <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
-                        Resending...
-                      </span>
-                    ) : resendCooldown > 0 ? (
-                      `Resend email in ${resendCooldown}s`
-                    ) : (
-                      'Resend verification email'
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Login Button */}
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? 'Logging in...' : 'Login'}
-          </Button>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
 
       {/* Or continue with */}
       <div className="mt-8 mb-6 flex items-center">
         <div className="h-[1px] flex-1 bg-muted"></div>
         <span className="px-4 text-[13px] font-medium text-muted-foreground/70">
-          or continue with
+          {t('or continue with')}
         </span>
         <div className="h-[1px] flex-1 bg-muted"></div>
       </div>

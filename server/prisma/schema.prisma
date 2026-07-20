@@ -533,3 +533,16 @@ model City {
   @@index([name])
   @@map("cities")
 }
+
+model Pincode {
+  id        Int      @id @default(autoincrement())
+  pincode   String   @unique
+  district  String?
+  state     String?
+  country   String   @default("India")
+  createdAt DateTime @default(now())
+
+  @@index([pincode])
+  @@map("pincodes")
+}
+
