@@ -15,8 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { useQuery } from '@tanstack/react-query'
-import { apiClient } from '#/lib/api'
+import { useLocations } from '#/hook'
 
 interface LocationComboboxProps {
   type: 'country' | 'state' | 'city'
@@ -46,31 +45,17 @@ export function LocationCombobox({
     return () => clearTimeout(timer)
   }, [search])
 
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ['location', type, parentId, debouncedSearch],
-    queryFn: async () => {
-      // Don't fetch states if no country, don't fetch cities if no state
-      if (type === 'state' && !parentId) return []
-      if (type === 'city' && !parentId) return []
-
-      const params = new URLSearchParams()
-      if (type === 'state' && parentId) params.append('countryId', parentId.toString())
-      if (type === 'city' && parentId) params.append('stateId', parentId.toString())
-
-      let endpoint = '/locations/countries'
-      if (type === 'state') endpoint = '/locations/states'
-      if (type === 'city') endpoint = '/locations/cities'
-
-      if (debouncedSearch) {
-        endpoint += '/search'
-        params.append('q', debouncedSearch)
-      }
-
-      const { data } = await apiClient.get(`${endpoint}?${params.toString()}`)
-      return data as { id: number; name: string }[]
+  const { data: items = [], isLoading } = useLocations(
+    {
+      type,
+      parentId,
+      search: debouncedSearch,
     },
-    enabled: type === 'country' || !!parentId,
-  })
+    {
+      enabled: type === 'country' || !!parentId,
+    }
+  )
+
 
   // If value is a known name and we don't have it in the list yet, we don't strictly need it in the dropdown since value is controlled.
   
@@ -108,7 +93,7 @@ export function LocationCombobox({
                 <CommandItem
                   key={item.id}
                   value={item.name}
-                  onSelect={(currentValue) => {
+                  onSelect={() => {
                     onChange(item.name, item.id)
                     setOpen(false)
                   }}

@@ -112,6 +112,8 @@ export const useUpdateUserSettings = () => {
       state?: string
       pincode?: string
       country?: string
+      shopName?: string
+      addressType?: string
     }) => {
       const res = await apiClient.patch('/users/settings', data)
       return res.data.user

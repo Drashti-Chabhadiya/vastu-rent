@@ -18,7 +18,6 @@ import {
   Store,
   Loader2,
 } from 'lucide-react'
-import { apiClient } from '#/lib/api'
 import { useTranslation } from '#/context/TranslationContext'
 import { toast } from 'sonner'
 import { LocationCombobox } from '@/components/ui/location-combobox'
@@ -30,6 +29,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import {
+  usePincodeLookup,
+  useStateSearch,
+  useUpdateUserSettings,
+} from '#/hook'
 
 export function AddressSetupPage() {
   const { t } = useTranslation()
@@ -39,7 +43,8 @@ export function AddressSetupPage() {
 
   const [countryId, setCountryId] = useState<number | undefined>(101) // Default India (ID: 101)
   const [stateId, setStateId] = useState<number | undefined>()
-  const [isPincodeLoading, setIsPincodeLoading] = useState(false)
+
+  const updateUserSettings = useUpdateUserSettings()
 
   const form = useForm<AddressSchema>({
     resolver: zodResolver(addressSchema) as any,
@@ -59,52 +64,57 @@ export function AddressSetupPage() {
   const { formState: { isSubmitting } } = form
 
   const pincodeValue = form.watch('pincode')
+  const isValidPincodeFormat = Boolean(
+    pincodeValue && pincodeValue.length === 6 && /^[1-9][0-9]{5}$/.test(pincodeValue)
+  )
 
+  // 1. Pincode lookup powered by React Query custom hook
+  const {
+    data: pincodeData,
+    isLoading: isPincodeLoading,
+    error: pincodeQueryError,
+  } = usePincodeLookup(pincodeValue, {
+    enabled: isValidPincodeFormat,
+  })
+
+  // 2. State ID lookup powered by React Query custom hook
+  const { data: matchedStates } = useStateSearch(pincodeData?.state, countryId, {
+    enabled: Boolean(pincodeData?.valid && pincodeData?.state),
+  })
+
+  // Auto-fill city & state when pincodeData returns valid details
   useEffect(() => {
-    if (pincodeValue && pincodeValue.length === 6 && /^[1-9][0-9]{5}$/.test(pincodeValue)) {
-      let isSubscribed = true
-      setIsPincodeLoading(true)
-
-      apiClient.get(`/locations/pincode/${pincodeValue}`)
-        .then(async (res) => {
-          if (!isSubscribed) return
-          const data = res.data
-          if (data?.valid) {
-            form.clearErrors('pincode')
-            if (data.state) {
-              form.setValue('state', data.state, { shouldValidate: true })
-              try {
-                const stateRes = await apiClient.get(`/locations/states/search?q=${encodeURIComponent(data.state)}&countryId=${countryId || 101}`)
-                if (stateRes.data && stateRes.data.length > 0) {
-                  const matchedState = stateRes.data.find(
-                    (s: any) => s.name.toLowerCase() === data.state.toLowerCase()
-                  ) || stateRes.data[0]
-                  setStateId(matchedState.id)
-                }
-              } catch (e) {
-                // ignore state lookup error
-              }
-            }
-            if (data.district) {
-              form.setValue('city', data.district, { shouldValidate: true })
-            }
-            toast.success(`Pincode verified: ${data.district}, ${data.state}`)
-          }
-        })
-        .catch((err) => {
-          if (!isSubscribed) return
-          const errMsg = err?.response?.data?.message || 'Invalid 6-digit Pincode'
-          form.setError('pincode', { type: 'manual', message: errMsg })
-        })
-        .finally(() => {
-          if (isSubscribed) setIsPincodeLoading(false)
-        })
-
-      return () => {
-        isSubscribed = false
+    if (pincodeData?.valid) {
+      form.clearErrors('pincode')
+      if (pincodeData.state) {
+        form.setValue('state', pincodeData.state, { shouldValidate: true })
       }
+      if (pincodeData.district) {
+        form.setValue('city', pincodeData.district, { shouldValidate: true })
+      }
+      toast.success(`Pincode verified: ${pincodeData.district}, ${pincodeData.state}`)
     }
-  }, [pincodeValue, countryId, form])
+  }, [pincodeData, form])
+
+  // Sync stateId when matchedStates is fetched
+  useEffect(() => {
+    const currentState = pincodeData?.state
+    if (matchedStates && matchedStates.length > 0 && currentState) {
+      const matched =
+        matchedStates.find((s) => s.name.toLowerCase() === currentState.toLowerCase()) ||
+        matchedStates[0]
+      setStateId(matched.id)
+    }
+  }, [matchedStates, pincodeData])
+
+  // Set field validation error on query failure
+  useEffect(() => {
+    if (pincodeQueryError) {
+      const errMsg =
+        (pincodeQueryError as any)?.response?.data?.message || 'Invalid 6-digit Pincode'
+      form.setError('pincode', { type: 'manual', message: errMsg })
+    }
+  }, [pincodeQueryError, form])
 
   const handleAddressTypeChange = (type: 'home' | 'shop') => {
     if (type === addressType) return
@@ -115,7 +125,9 @@ export function AddressSetupPage() {
   const onSubmit = async (values: AddressSchema) => {
     setServerError(null)
     try {
-      await apiClient.patch('/users/settings', {
+      await updateUserSettings.mutateAsync({
+        addressType: values.addressType,
+        shopName: values.shopName || '',
         addressLine1: values.addressLine1,
         addressLine2: values.addressLine2 || '',
         street: values.street,
@@ -123,7 +135,6 @@ export function AddressSetupPage() {
         state: values.state,
         pincode: values.pincode,
         country: values.country,
-        shopName: values.shopName || '',
       })
 
       setSuccess(true)
@@ -551,10 +562,10 @@ export function AddressSetupPage() {
 
                   <Button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || updateUserSettings.isPending}
                     className="w-full h-12 mt-2 rounded-xl bg-primary text-primary-foreground font-bold text-[15px] hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? (
+                    {isSubmitting || updateUserSettings.isPending ? (
                       <>
                         <span className="w-4 h-4 border-2 border-primary-foreground/40 border-t-white rounded-full animate-spin" />
                         Saving Address...
