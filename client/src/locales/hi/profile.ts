@@ -84,4 +84,43 @@ export const profile = {
   'Failed to update preference.': 'प्राथमिकता अपडेट करने में विफल।',
   'Failed to update currency.': 'मुद्रा अपडेट करने में विफल।',
   'Failed to update 2FA settings.': '2FA सेटिंग्स अपडेट करने में विफल।',
+
+  // Sidebar & Navigation
+  'My Bookings': 'मेरी बुकिंग',
+  'My Listings': 'मेरी लिस्टिंग',
+  Reviews: 'समीक्षाएं (Reviews)',
+  Messages: 'संदेश (Messages)',
+  Notifications: 'सूचनाएं (Notifications)',
+  Settings: 'सेटिंग्स',
+  'Help & Support': 'सहायता और समर्थन',
+  Wishlist: 'विशलिस्ट',
+  'Log out': 'लॉग आउट (Log out)',
+  'Are you sure you want to log out of your Vastu account?':
+    'क्या आप वाकई अपने वास्तु खाते से लॉग आउट करना चाहते हैं?',
+  'Yes, log out': 'हां, लॉग आउट करें',
+  Cancel: 'रद्द करें',
+  'Logging out...': 'लॉग आउट हो रहा है...',
+  'Grow your bookings': 'अपनी बुकिंग बढ़ाएं',
+  'List more. Earn more.': 'अधिक सूचीबद्ध करें। अधिक कमाएं।',
+  'View impact': 'प्रभाव देखें',
+  'Green Member': 'ग्रीन सदस्य',
+  "You're saving the planet!": 'आप ग्रह को बचा रहे हैं!',
+  'Back to Account Menu': 'खाता मेनू पर वापस जाएं',
+
+  // Rental Address Section
+  'Rental Address': 'किराये का पता (Rental Address)',
+  'Rental Address Subtitle':
+    'वह सही पता यहाँ दर्ज करें जहाँ से आप अपने उत्पादों को किराये पर देना चाहते हैं।',
+  'Address Type': 'पते का प्रकार (Address Type)',
+  'Home Address': 'घर का पता (Home Address)',
+  'Shop Address': 'दुकान का पता (Shop Address)',
+  'Shop Name': 'दुकान का नाम',
+  'Shop / Home Name (Optional)': 'दुकान / घर का नाम (वैकल्पिक)',
+  'Address Line 1': 'पता पंक्ति १',
+  'Address Line 2 (Optional)': 'पता पंक्ति २ (वैकल्पिक)',
+  'Street / Area': 'गली / क्षेत्र',
+  City: 'शहर',
+  State: 'राज्य',
+  Country: 'देश',
+  Pincode: 'पिनकोड',
 }

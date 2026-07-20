@@ -181,17 +181,17 @@ export function SignupForm() {
   return (
     <div className="w-full relative">
       {/* Top Bar with Language Selector & Switch Link */}
-      <div className="absolute -top-8 right-0 sm:-top-16 flex items-center gap-3">
-        <LanguageSelector />
-        <div className="hidden sm:flex items-center gap-1.5 text-sm font-medium">
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-1.5 text-sm font-medium">
           <span className="text-muted-foreground/85">{t('Already have account?')}</span>
           <Link
             to="/login"
-            className="text-primary font-bold hover:bg-primary-light transition-colors"
+            className="text-primary font-bold hover:underline transition-colors"
           >
             {t('Sign in')}
           </Link>
         </div>
+        <LanguageSelector />
       </div>
 
       <div className="mb-8">

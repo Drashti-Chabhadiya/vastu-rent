@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
 import featureKitchen from '../../../../public/assets/feature-kitchen.jpg'
 import { CreditCard, Leaf, ShieldCheck, Star } from 'lucide-react'
+import { useTranslation } from '#/context/TranslationContext'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -16,6 +17,8 @@ const stagger: Variants = {
 }
 
 export function Editorial() {
+  const { t } = useTranslation()
+
   return (
     <section className="bg-surface/70">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 py-24 md:px-10 md:py-32 lg:grid-cols-12 lg:gap-16">
@@ -53,15 +56,15 @@ export function Editorial() {
             variants={fadeUp}
             className="mt-5 font-display text-[clamp(1.85rem,3.4vw,2.75rem)] leading-[1.1] tracking-tight text-foreground text-balance"
           >
-            Less ownership. <span className="italic">More presence.</span>
+            {t('Less ownership. More presence.')}
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className="mt-6 text-[15.5px] leading-relaxed text-muted-foreground"
           >
-            Vastu is built on a simple belief: a well-made object should be
-            used, not stored. We connect homes that have, with homes that need —
-            turning idle quality into shared abundance.
+            {t(
+              'Vastu is built on a simple belief: a well-made object should be used, not stored. We connect homes that have, with homes that need — turning idle quality into shared abundance.',
+            )}
           </motion.p>
 
           <motion.div
@@ -71,23 +74,23 @@ export function Editorial() {
             {[
               {
                 icon: ShieldCheck,
-                t: 'Trusted community',
-                d: 'Verified profiles, transparent reviews, real neighbors.',
+                t: t('Trusted community'),
+                d: t('Verified profiles, transparent reviews, real neighbors.'),
               },
               {
                 icon: CreditCard,
-                t: 'Secure payments',
-                d: 'Escrow protection, fair pricing, no surprises.',
+                t: t('Secure payments'),
+                d: t('Escrow protection, fair pricing, no surprises.'),
               },
               {
                 icon: Leaf,
-                t: 'Sustainable living',
-                d: 'Every rental keeps another object out of landfill.',
+                t: t('Sustainable living'),
+                d: t('Every rental keeps another object out of landfill.'),
               },
               {
                 icon: Star,
-                t: 'Editor curated',
-                d: 'Listings hand-picked for quality and care.',
+                t: t('Editor curated'),
+                d: t('Listings hand-picked for quality and care.'),
               },
             ].map((f) => (
               <div

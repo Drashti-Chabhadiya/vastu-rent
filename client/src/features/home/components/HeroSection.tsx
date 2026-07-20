@@ -4,6 +4,7 @@ import { ShieldCheck, Leaf, CreditCard, ArrowRight, Star } from 'lucide-react'
 import heroImg from '../../../../public/assets/hero-living.jpg'
 import featureNook from '../../../../public/assets/feature-nook.jpg'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -18,6 +19,8 @@ const stagger: Variants = {
 }
 
 export function HeroSection() {
+  const { t } = useTranslation()
+
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 pb-16 pt-12 md:px-10 md:pt-16 lg:grid-cols-12 lg:gap-14 lg:pb-24">
@@ -33,25 +36,23 @@ export function HeroSection() {
             className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Issue 04 · Spring Catalogue
+            {t('Issue 04 · Spring Catalogue')}
           </motion.div>
 
           <motion.h1
             variants={fadeUp}
             className="mt-7 font-display text-[clamp(2.75rem,6vw,5.25rem)] leading-[1.02] tracking-[-0.03em] text-foreground text-balance"
           >
-            Rent anything.
+            {t('Rent anything.')}
             <br />
-            <span className="italic text-primary">Live in harmony.</span>
+            <span className="italic text-primary">{t('Live in harmony.')}</span>
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
             className="mt-7 max-w-md text-[15.5px] leading-relaxed text-muted-foreground text-pretty"
           >
-            A quietly curated marketplace for the things you need, only when you
-            need them. Quality lent between neighbors — gentler on your home,
-            kinder to the planet.
+            {t('Hero Description')}
           </motion.p>
 
           <motion.div
@@ -62,7 +63,7 @@ export function HeroSection() {
               href="#categories"
               className="group inline-flex items-center gap-3 rounded-full bg-primary py-3.5 pl-6 pr-3 text-[14px] font-medium text-primary-foreground shadow-soft transition-all hover:shadow-lift"
             >
-              Explore the catalogue
+              {t('Explore the catalogue')}
               <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/15 transition-transform duration-500 group-hover:translate-x-0.5">
                 <ArrowRight className="h-4 w-4" />
               </span>
@@ -71,7 +72,7 @@ export function HeroSection() {
               href="#how-it-works"
               className="text-[14px] text-foreground/80 underline decoration-border decoration-1 underline-offset-[6px] transition-colors hover:text-primary hover:decoration-primary"
             >
-              How it works
+              {t('How it works')}
             </a>
           </motion.div>
 
@@ -80,9 +81,9 @@ export function HeroSection() {
             className="mt-14 grid grid-cols-3 gap-6 border-t border-border pt-8"
           >
             {[
-              { k: '5,000+', v: 'Active members' },
-              { k: '10,000+', v: 'Items in rotation' },
-              { k: '25k kg', v: 'CO₂ saved' },
+              { k: '5,000+', v: t('Active members') },
+              { k: '10,000+', v: t('Items in rotation') },
+              { k: '25k kg', v: t('CO₂ saved') },
             ].map((s) => (
               <div key={s.v}>
                 <div className="font-display text-2xl text-foreground md:text-3xl">
@@ -119,7 +120,7 @@ export function HeroSection() {
               className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-background/90 px-3.5 py-2 text-[11px] uppercase tracking-[0.18em] text-foreground backdrop-blur-md"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Featured · The Linen Armchair
+              {t('Featured · The Linen Armchair')}
             </motion.div>
 
             {/* product card overlay */}
@@ -149,7 +150,7 @@ export function HeroSection() {
                   variant="link"
                   className="mt-1.5 text-[11px] uppercase tracking-[0.18em] text-primary hover:underline p-0 h-auto"
                 >
-                  Reserve
+                  {t('Reserve')}
                 </Button>
               </div>
             </motion.div>
@@ -178,16 +179,16 @@ export function HeroSection() {
       <div className="border-y border-border bg-surface/60">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-x-10 gap-y-4 px-6 py-5 text-[12px] uppercase tracking-[0.2em] text-muted-foreground md:px-10">
           <span className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-primary" /> Verified hosts
+            <ShieldCheck className="h-4 w-4 text-primary" /> {t('Verified hosts')}
           </span>
           <span className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-primary" /> Secure payments
+            <CreditCard className="h-4 w-4 text-primary" /> {t('Secure payments')}
           </span>
           <span className="flex items-center gap-2">
-            <Leaf className="h-4 w-4 text-primary" /> Circular by design
+            <Leaf className="h-4 w-4 text-primary" /> {t('Circular by design')}
           </span>
           <span className="hidden items-center gap-2 md:flex">
-            <Star className="h-4 w-4 text-primary" /> 4.9 average rating
+            <Star className="h-4 w-4 text-primary" /> {t('4.9 average rating')}
           </span>
           <span className="hidden items-center gap-2 lg:flex">
             Featured in Kinfolk · Cereal · Apartamento

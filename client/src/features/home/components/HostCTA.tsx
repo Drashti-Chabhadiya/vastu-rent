@@ -2,10 +2,12 @@ import { Plus, BookOpen } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
+import { useTranslation } from '#/context/TranslationContext'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 export function HostCTA() {
+  const { t } = useTranslation()
   const { data: session } = authClient.useSession()
 
   // Logged-in users go straight to their listings dashboard to create a listing.
@@ -25,18 +27,17 @@ export function HostCTA() {
         <div className="relative grid grid-cols-1 items-end gap-10 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <div className="text-[11px] uppercase tracking-[0.22em] text-primary-foreground/70">
-              — Become a host
+              {t('— Become a host')}
             </div>
             <h2 className="mt-5 font-display text-[clamp(2rem,4.5vw,4rem)] leading-[1.02] tracking-tight text-balance">
-              Lend the things you love.
+              {t('Lend the things you love.')}
               <br />
-              <span className="italic opacity-90">Earn while they rest.</span>
+              <span className="italic opacity-90">{t('Earn while they rest.')}</span>
             </h2>
           </div>
           <div className="lg:col-span-5">
             <p className="text-[15.5px] leading-relaxed text-primary-foreground/80">
-              Open your shelves to neighbors, set your own terms, and turn the
-              objects you've already invested in into a gentle stream of income.
+              {t('Host CTA Description')}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               {/* Button 1: List your first item */}
@@ -44,7 +45,7 @@ export function HostCTA() {
                 to={listItemHref}
                 className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3.5 text-[14px] font-medium text-foreground transition-all hover:bg-background/90 active:scale-[0.97]"
               >
-                List your first item
+                {t('List your first item')}
                 <Plus className="h-4 w-4" />
               </Link>
 
@@ -54,7 +55,7 @@ export function HostCTA() {
                 className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 px-6 py-3.5 text-[14px] font-medium text-primary-foreground transition-all hover:bg-primary-foreground/10 active:scale-[0.97]"
               >
                 <BookOpen className="h-4 w-4" />
-                Read the host guide
+                {t('Read the host guide')}
               </Link>
             </div>
           </div>

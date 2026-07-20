@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { Input } from '#/components/ui/input'
@@ -9,48 +10,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
-import { Pencil, Calendar, MapPin } from 'lucide-react'
+import {
+  Pencil,
+  Calendar,
+  MapPin,
+  Home,
+  Building2,
+  Store,
+  Map,
+  Navigation,
+  Hash,
+  Globe,
+  Loader2,
+} from 'lucide-react'
 import { Loader } from '#/components/ui/loader'
 import { useTranslation } from '#/context/TranslationContext'
-
-const INDIAN_STATES = [
-  'Andhra Pradesh',
-  'Arunachal Pradesh',
-  'Assam',
-  'Bihar',
-  'Chhattisgarh',
-  'Goa',
-  'Gujarat',
-  'Haryana',
-  'Himachal Pradesh',
-  'Jharkhand',
-  'Karnataka',
-  'Kerala',
-  'Madhya Pradesh',
-  'Maharashtra',
-  'Manipur',
-  'Meghalaya',
-  'Mizoram',
-  'Nagaland',
-  'Odisha',
-  'Punjab',
-  'Rajasthan',
-  'Sikkim',
-  'Tamil Nadu',
-  'Telangana',
-  'Tripura',
-  'Uttar Pradesh',
-  'Uttarakhand',
-  'West Bengal',
-  'Andaman and Nicobar Islands',
-  'Chandigarh',
-  'Dadra and Nagar Haveli and Daman and Diu',
-  'Delhi',
-  'Jammu and Kashmir',
-  'Ladakh',
-  'Lakshadweep',
-  'Puducherry',
-]
+import { LanguageSelector } from '@/components/ui/language-selector'
+import { LocationCombobox } from '@/components/ui/location-combobox'
+import { usePincodeLookup, useStateSearch } from '#/hook'
+import { toast } from 'sonner'
 
 interface PersonalInfoFormProps {
   name: string
@@ -83,7 +61,12 @@ interface PersonalInfoFormProps {
   pincode: string
   setPincode: (val: string) => void
   country: string
-  errors: Record<string, string>
+  setCountry?: (val: string) => void
+  shopName?: string
+  setShopName?: (val: string) => void
+  addressType?: 'home' | 'shop'
+  setAddressType?: (val: 'home' | 'shop') => void
+  errors?: Record<string, string>
 }
 
 export function PersonalInfoForm({
@@ -93,8 +76,8 @@ export function PersonalInfoForm({
   setGender,
   phone,
   setPhone,
-  language,
-  setLanguage,
+  language: _language,
+  setLanguage: _setLanguage,
   dob,
   setDob,
   email,
@@ -115,9 +98,65 @@ export function PersonalInfoForm({
   pincode,
   setPincode,
   country,
-  errors,
+  setCountry,
+  shopName = '',
+  setShopName,
+  addressType = 'home',
+  setAddressType,
+  errors = {},
 }: PersonalInfoFormProps) {
   const { t } = useTranslation()
+
+  const [countryId, setCountryId] = useState<number | undefined>(101) // Default India (ID: 101)
+  const [stateId, setStateId] = useState<number | undefined>()
+
+  // Live pincode lookup integration
+  const isValidPincodeFormat = Boolean(
+    pincode && pincode.length === 6 && /^[1-9][0-9]{5}$/.test(pincode),
+  )
+
+  const { data: pincodeData, isLoading: isPincodeLoading } = usePincodeLookup(
+    pincode,
+    {
+      enabled: isEditing && isValidPincodeFormat,
+    },
+  )
+
+  // State ID search query for dynamic combobox linking
+  const { data: matchedStates } = useStateSearch(
+    pincodeData?.state || state,
+    countryId,
+    {
+      enabled: Boolean(pincodeData?.state || state),
+    },
+  )
+
+  // Auto-fill city & state when pincode lookup returns valid details
+  useEffect(() => {
+    if (isEditing && pincodeData?.valid) {
+      if (pincodeData.state) {
+        setState(pincodeData.state)
+      }
+      if (pincodeData.district) {
+        setCity(pincodeData.district)
+      }
+      toast.success(
+        `Pincode verified: ${pincodeData.district}, ${pincodeData.state}`,
+      )
+    }
+  }, [pincodeData, isEditing, setState, setCity])
+
+  // Sync stateId when matchedStates resolves from DB
+  useEffect(() => {
+    const currentStateName = pincodeData?.state || state
+    if (matchedStates && matchedStates.length > 0 && currentStateName) {
+      const matched =
+        matchedStates.find(
+          (s) => s.name.toLowerCase() === currentStateName.toLowerCase(),
+        ) || matchedStates[0]
+      setStateId(matched.id)
+    }
+  }, [matchedStates, pincodeData, state])
 
   return (
     <div className="lg:col-span-2 lg:pl-4">
@@ -261,39 +300,13 @@ export function PersonalInfoForm({
         <div className="space-y-1.5">
           <Label
             htmlFor="language"
-            className="text-xs font-bold text-muted-foreground/70"
+            className="text-xs font-bold text-muted-foreground/70 block mb-1"
           >
             {t('Preferred Language')}
           </Label>
-          <Select
-            value={language}
-            onValueChange={setLanguage}
-            disabled={!isEditing}
-          >
-            <SelectTrigger
-              id="language"
-              translate="no"
-              className={cn(
-                'notranslate w-full h-11 px-4 rounded-xl border border-border font-semibold text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-muted-light/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-muted-foreground/70',
-                isEditing
-                  ? 'bg-card border-primary ring-2 ring-primary/5'
-                  : 'bg-muted-light/50 [&>span]:opacity-100',
-              )}
-            >
-              <SelectValue placeholder={t('Select Language')} />
-            </SelectTrigger>
-            <SelectContent className="notranslate" translate="no">
-              <SelectItem value="English" className="notranslate">
-                English
-              </SelectItem>
-              <SelectItem value="Hindi" className="notranslate">
-                हिन्दी (Hindi)
-              </SelectItem>
-              <SelectItem value="Gujarati" className="notranslate">
-                ગુજરાતી (Gujarati)
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="pt-0.5">
+            <LanguageSelector className="w-full justify-between h-11 px-4 rounded-xl border-border bg-card font-semibold text-sm shadow-none" />
+          </div>
         </div>
 
         {/* Date of Birth */}
@@ -325,17 +338,88 @@ export function PersonalInfoForm({
           </div>
         </div>
 
-        {/* Rental Address Section */}
+        {/* Rental Address Section Header */}
         <div className="col-span-full border-t border-border/30 pt-6 mt-4">
           <h4 className="font-extrabold text-foreground text-sm flex items-center gap-2 mb-1">
             <MapPin size={16} className="text-primary" />
-            {t('વસ્તુ આપવાનું સરનામું (Rental Address)')}
+            {t('Rental Address')}
           </h4>
           <p className="text-[11px] text-muted-foreground/85 font-medium mb-4">
-            {t(
-              'તમે જે જગ્યાએથી તમારી પ્રોડક્ટ્સ રેન્ટ (Rent) પર આપવા માંગો છો તેનું સાચું સરનામું અહિંયા ભરો.',
-            )}
+            {t('Rental Address Subtitle')}
           </p>
+        </div>
+
+        {/* Address Type Toggle (Home vs Shop Address) */}
+        <div className="col-span-full rounded-2xl border border-border/40 bg-muted/20 p-4 mb-1">
+          <p className="text-[12px] font-bold text-foreground mb-2.5">
+            {t('Address Type')}
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              disabled={!isEditing}
+              onClick={() => setAddressType?.('home')}
+              className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
+                addressType === 'home'
+                  ? 'border-primary bg-primary/10 text-primary font-bold'
+                  : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+              } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+              <Home className="h-4 w-4" strokeWidth={2} />
+              {t('Home Address')}
+            </button>
+            <button
+              type="button"
+              disabled={!isEditing}
+              onClick={() => setAddressType?.('shop')}
+              className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
+                addressType === 'shop'
+                  ? 'border-primary bg-primary/10 text-primary font-bold'
+                  : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+              } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+              <Building2 className="h-4 w-4" strokeWidth={2} />
+              {t('Shop Address')}
+            </button>
+          </div>
+        </div>
+
+        {/* Shop / Home Name */}
+        <div className="space-y-1.5 col-span-full">
+          <Label
+            htmlFor="shopName"
+            className="text-xs font-bold text-muted-foreground/70"
+          >
+            {addressType === 'shop'
+              ? t('Shop Name')
+              : t('Shop / Home Name (Optional)')}
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              {addressType === 'shop' ? (
+                <Store className="h-4 w-4 text-muted-foreground/60" />
+              ) : (
+                <Home className="h-4 w-4 text-muted-foreground/60" />
+              )}
+            </div>
+            <Input
+              id="shopName"
+              value={shopName}
+              placeholder={
+                addressType === 'shop'
+                  ? t('e.g. Raju Camera Store')
+                  : t("e.g. Ramesh's Home")
+              }
+              onChange={(e) => setShopName?.(e.target.value)}
+              disabled={!isEditing}
+              className={cn(
+                'h-11 pl-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                isEditing
+                  ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                  : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+              )}
+            />
+          </div>
         </div>
 
         {/* Address Line 1 */}
@@ -346,21 +430,26 @@ export function PersonalInfoForm({
           >
             {t('Address Line 1')}
           </Label>
-          <Input
-            id="addressLine1"
-            value={addressLine1}
-            placeholder={t('House No., Building Name, Suite')}
-            onChange={(e) => setAddressLine1(e.target.value)}
-            disabled={!isEditing}
-            className={cn(
-              'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-              isEditing
-                ? errors.addressLine1
-                  ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
-                  : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
-            )}
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              <Home className="h-4 w-4 text-muted-foreground/60" />
+            </div>
+            <Input
+              id="addressLine1"
+              value={addressLine1}
+              placeholder={t('House No., Building Name, Suite')}
+              onChange={(e) => setAddressLine1(e.target.value)}
+              disabled={!isEditing}
+              className={cn(
+                'h-11 pl-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                isEditing
+                  ? errors.addressLine1
+                    ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
+                    : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                  : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+              )}
+            />
+          </div>
           {errors.addressLine1 && (
             <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
               {errors.addressLine1}
@@ -376,19 +465,24 @@ export function PersonalInfoForm({
           >
             {t('Address Line 2 (Optional)')}
           </Label>
-          <Input
-            id="addressLine2"
-            value={addressLine2}
-            placeholder={t('Floor, Apartment, Phase (Optional)')}
-            onChange={(e) => setAddressLine2(e.target.value)}
-            disabled={!isEditing}
-            className={cn(
-              'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-              isEditing
-                ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
-            )}
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              <Building2 className="h-4 w-4 text-muted-foreground/60" />
+            </div>
+            <Input
+              id="addressLine2"
+              value={addressLine2}
+              placeholder={t('Floor, Apartment, Phase (Optional)')}
+              onChange={(e) => setAddressLine2(e.target.value)}
+              disabled={!isEditing}
+              className={cn(
+                'h-11 pl-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                isEditing
+                  ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                  : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+              )}
+            />
+          </div>
         </div>
 
         {/* Street */}
@@ -399,21 +493,26 @@ export function PersonalInfoForm({
           >
             {t('Street / Area')}
           </Label>
-          <Input
-            id="street"
-            value={street}
-            placeholder={t('Street name, landmark, locality')}
-            onChange={(e) => setStreet(e.target.value)}
-            disabled={!isEditing}
-            className={cn(
-              'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-              isEditing
-                ? errors.street
-                  ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
-                  : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
-            )}
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              <Map className="h-4 w-4 text-muted-foreground/60" />
+            </div>
+            <Input
+              id="street"
+              value={street}
+              placeholder={t('Street name, landmark, locality')}
+              onChange={(e) => setStreet(e.target.value)}
+              disabled={!isEditing}
+              className={cn(
+                'h-11 pl-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                isEditing
+                  ? errors.street
+                    ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
+                    : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                  : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+              )}
+            />
+          </div>
           {errors.street && (
             <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
               {errors.street}
@@ -421,36 +520,7 @@ export function PersonalInfoForm({
           )}
         </div>
 
-        {/* City & Pincode */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="city"
-            className="text-xs font-bold text-muted-foreground/70"
-          >
-            {t('City')}
-          </Label>
-          <Input
-            id="city"
-            value={city}
-            placeholder={t('e.g. Surat')}
-            onChange={(e) => setCity(e.target.value)}
-            disabled={!isEditing}
-            className={cn(
-              'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-              isEditing
-                ? errors.city
-                  ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
-                  : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
-            )}
-          />
-          {errors.city && (
-            <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
-              {errors.city}
-            </p>
-          )}
-        </div>
-
+        {/* Pincode (with Live Auto-fill & Loader) */}
         <div className="space-y-1.5">
           <Label
             htmlFor="pincode"
@@ -458,22 +528,32 @@ export function PersonalInfoForm({
           >
             {t('Pincode')}
           </Label>
-          <Input
-            id="pincode"
-            value={pincode}
-            maxLength={6}
-            placeholder={t('e.g. 395001')}
-            onChange={(e) => setPincode(e.target.value)}
-            disabled={!isEditing}
-            className={cn(
-              'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-              isEditing
-                ? errors.pincode
-                  ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
-                  : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              <Hash className="h-4 w-4 text-muted-foreground/60" />
+            </div>
+            <Input
+              id="pincode"
+              value={pincode}
+              maxLength={6}
+              placeholder={t('e.g. 395001')}
+              onChange={(e) => setPincode(e.target.value)}
+              disabled={!isEditing}
+              className={cn(
+                'h-11 pl-10 pr-9 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                isEditing
+                  ? errors.pincode
+                    ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
+                    : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                  : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+              )}
+            />
+            {isPincodeLoading && (
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none z-10">
+                <Loader2 className="h-4 w-4 text-primary animate-spin" />
+              </div>
             )}
-          />
+          </div>
           {errors.pincode && (
             <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
               {errors.pincode}
@@ -481,7 +561,38 @@ export function PersonalInfoForm({
           )}
         </div>
 
-        {/* State & Country */}
+        {/* City (Dynamic LocationCombobox) */}
+        <div className="space-y-1.5">
+          <Label
+            htmlFor="city"
+            className="text-xs font-bold text-muted-foreground/70"
+          >
+            {t('City')}
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              <Navigation className="h-4 w-4 text-muted-foreground/60" />
+            </div>
+            <LocationCombobox
+              type="city"
+              value={city}
+              parentId={stateId}
+              onChange={(val) => {
+                setCity(val)
+              }}
+              placeholder={t('Search city...')}
+              disabled={!isEditing}
+              className="h-11 pl-10"
+            />
+          </div>
+          {errors.city && (
+            <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
+              {errors.city}
+            </p>
+          )}
+        </div>
+
+        {/* State (Dynamic LocationCombobox) */}
         <div className="space-y-1.5">
           <Label
             htmlFor="state"
@@ -489,28 +600,24 @@ export function PersonalInfoForm({
           >
             {t('State')}
           </Label>
-          <Select value={state} onValueChange={setState} disabled={!isEditing}>
-            <SelectTrigger
-              id="state"
-              className={cn(
-                'w-full h-11 px-4 rounded-xl border border-border font-semibold text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-muted-light/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-muted-foreground/70',
-                isEditing
-                  ? errors.state
-                    ? 'bg-card border-destructive ring-2 ring-destructive/10'
-                    : 'bg-card border-primary ring-2 ring-primary/5'
-                  : 'bg-muted-light/50 [&>span]:opacity-100',
-              )}
-            >
-              <SelectValue placeholder={t('Select State')} />
-            </SelectTrigger>
-            <SelectContent className="max-h-[200px] overflow-y-auto custom-scrollbar">
-              {INDIAN_STATES.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {t(s)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              <MapPin className="h-4 w-4 text-muted-foreground/60" />
+            </div>
+            <LocationCombobox
+              type="state"
+              value={state}
+              parentId={countryId}
+              onChange={(val, id) => {
+                setState(val)
+                setStateId(id)
+                setCity('')
+              }}
+              placeholder={t('Search state...')}
+              disabled={!isEditing}
+              className="h-11 pl-10"
+            />
+          </div>
           {errors.state && (
             <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
               {errors.state}
@@ -518,6 +625,7 @@ export function PersonalInfoForm({
           )}
         </div>
 
+        {/* Country (Dynamic LocationCombobox) */}
         <div className="space-y-1.5">
           <Label
             htmlFor="country"
@@ -525,12 +633,25 @@ export function PersonalInfoForm({
           >
             {t('Country')}
           </Label>
-          <Input
-            id="country"
-            value={country}
-            disabled
-            className="h-11 rounded-xl border-border bg-muted-light/50 text-foreground/75 font-semibold text-sm disabled:opacity-100 disabled:cursor-default"
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
+              <Globe className="h-4 w-4 text-muted-foreground/60" />
+            </div>
+            <LocationCombobox
+              type="country"
+              value={country}
+              onChange={(val, id) => {
+                setCountry?.(val)
+                setCountryId(id)
+                setStateId(undefined)
+                setState('')
+                setCity('')
+              }}
+              placeholder={t('Search country...')}
+              disabled={!isEditing}
+              className="h-11 pl-10"
+            />
+          </div>
         </div>
       </div>
 

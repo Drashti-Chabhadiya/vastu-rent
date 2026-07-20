@@ -84,4 +84,43 @@ export const profile = {
   'Failed to update preference.': 'Failed to update preference.',
   'Failed to update currency.': 'Failed to update currency.',
   'Failed to update 2FA settings.': 'Failed to update 2FA settings.',
+
+  // Sidebar & Navigation
+  'My Bookings': 'My Bookings',
+  'My Listings': 'My Listings',
+  Reviews: 'Reviews',
+  Messages: 'Messages',
+  Notifications: 'Notifications',
+  Settings: 'Settings',
+  'Help & Support': 'Help & Support',
+  Wishlist: 'Wishlist',
+  'Log out': 'Log out',
+  'Are you sure you want to log out of your Vastu account?':
+    'Are you sure you want to log out of your Vastu account?',
+  'Yes, log out': 'Yes, log out',
+  Cancel: 'Cancel',
+  'Logging out...': 'Logging out...',
+  'Grow your bookings': 'Grow your bookings',
+  'List more. Earn more.': 'List more. Earn more.',
+  'View impact': 'View impact',
+  'Green Member': 'Green Member',
+  "You're saving the planet!": "You're saving the planet!",
+  'Back to Account Menu': 'Back to Account Menu',
+
+  // Rental Address Section
+  'Rental Address': 'Rental Address',
+  'Rental Address Subtitle':
+    'Enter the correct address from where you want to rent out your products.',
+  'Address Type': 'Address Type',
+  'Home Address': 'Home Address',
+  'Shop Address': 'Shop Address',
+  'Shop Name': 'Shop Name',
+  'Shop / Home Name (Optional)': 'Shop / Home Name (Optional)',
+  'Address Line 1': 'Address Line 1',
+  'Address Line 2 (Optional)': 'Address Line 2 (Optional)',
+  'Street / Area': 'Street / Area',
+  City: 'City',
+  State: 'State',
+  Country: 'Country',
+  Pincode: 'Pincode',
 }

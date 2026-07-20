@@ -22,6 +22,8 @@ export function useProfileData() {
   const [state, setState] = useState('')
   const [pincode, setPincode] = useState('')
   const [country, setCountry] = useState('India')
+  const [shopName, setShopName] = useState('')
+  const [addressType, setAddressType] = useState<'home' | 'shop'>('home')
 
   // Notification states
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -101,6 +103,8 @@ export function useProfileData() {
       setState(u.state || '')
       setPincode(u.pincode || '')
       setCountry(u.country || 'India')
+      setShopName(u.shopName || '')
+      setAddressType((u.addressType as 'home' | 'shop') || 'home')
     }
   }, [session])
 
@@ -229,6 +233,10 @@ export function useProfileData() {
     setPincode,
     country,
     setCountry,
+    shopName,
+    setShopName,
+    addressType,
+    setAddressType,
 
     // Notifications preferences
     emailNotifications,

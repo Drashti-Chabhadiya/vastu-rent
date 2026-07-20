@@ -54,6 +54,10 @@ export function UserProfileSettingsCard() {
     setPincode,
     country,
     setCountry,
+    shopName,
+    setShopName,
+    addressType,
+    setAddressType,
   } = useProfileData()
 
   const { t, changeLanguage } = useTranslation()
@@ -156,6 +160,8 @@ export function UserProfileSettingsCard() {
         state,
         pincode,
         country,
+        shopName,
+        addressType,
         bookingAlerts: emailNotifications,
         settlementAlerts: smsNotifications,
         marketingAlerts: marketingEmails,
@@ -400,6 +406,11 @@ export function UserProfileSettingsCard() {
           setPincode={setPincode}
           country={country}
           setCountry={setCountry}
+          shopName={shopName}
+          setShopName={setShopName}
+          addressType={addressType}
+          setAddressType={setAddressType}
+          errors={errors}
         />
       </div>
 

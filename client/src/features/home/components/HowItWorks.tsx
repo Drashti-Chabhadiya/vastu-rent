@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
+import { useTranslation } from '#/context/TranslationContext'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -13,25 +14,27 @@ const stagger: Variants = {
   show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
 }
 
-const steps = [
-  {
-    n: '01',
-    t: 'Discover',
-    d: 'Browse a quietly curated catalogue from neighbors near you.',
-  },
-  {
-    n: '02',
-    t: 'Reserve',
-    d: 'Pick your dates, message the host, pay through secure escrow.',
-  },
-  {
-    n: '03',
-    t: 'Live with it',
-    d: 'Pick up or have it delivered. Use it, love it, return it.',
-  },
-]
-
 export function HowItWorks() {
+  const { t } = useTranslation()
+
+  const steps = [
+    {
+      n: '01',
+      t: t('Discover'),
+      d: t('Browse a quietly curated catalogue from neighbors near you.'),
+    },
+    {
+      n: '02',
+      t: t('Reserve'),
+      d: t('Pick your dates, message the host, pay through secure escrow.'),
+    },
+    {
+      n: '03',
+      t: t('Live with it'),
+      d: t('Pick up or have it delivered. Use it, love it, return it.'),
+    },
+  ]
+
   return (
     <section
       id="how-it-works"
@@ -40,14 +43,15 @@ export function HowItWorks() {
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">
           <div className="text-[11px] uppercase tracking-[0.22em] text-primary">
-            — How it works
+            {t('— How it works')}
           </div>
           <h2 className="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] leading-[1.05] tracking-tight text-foreground text-balance">
-            A calm, three-step ritual.
+            {t('A calm, three-step ritual.')}
           </h2>
           <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-muted-foreground">
-            No subscriptions. No clutter. Just the things you need, for as long
-            as you need them.
+            {t(
+              'No subscriptions. No clutter. Just the things you need, for as long as you need them.',
+            )}
           </p>
         </div>
 

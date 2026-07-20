@@ -83,4 +83,43 @@ export const profile = {
   'Failed to update preference.': 'પસંદગી અપડેટ કરવામાં નિષ્ફળ.',
   'Failed to update currency.': 'ચલણ અપડેટ કરવામાં નિષ્ફળ.',
   'Failed to update 2FA settings.': '2FA સેટિંગ્સ અપડેટ કરવામાં નિષ્ફળ.',
+
+  // Sidebar & Navigation
+  'My Bookings': 'મારા બુકિંગ',
+  'My Listings': 'મારું લિસ્ટિંગ',
+  Reviews: 'સમીક્ષાઓ (Reviews)',
+  Messages: 'સંદેશાઓ (Messages)',
+  Notifications: 'સૂચનાઓ (Notifications)',
+  Settings: 'સેટિંગ્સ',
+  'Help & Support': 'મદદ અને સપોર્ટ',
+  Wishlist: 'વિશલિસ્ટ',
+  'Log out': 'લૉગ આઉટ (Log out)',
+  'Are you sure you want to log out of your Vastu account?':
+    'શું તમે ખરેખર તમારા વાસ્તુ એકાઉન્ટમાંથી લૉગ આઉટ કરવા માંગો છો?',
+  'Yes, log out': 'હા, લૉગ આઉટ કરો',
+  Cancel: 'રદ કરો',
+  'Logging out...': 'લૉગ આઉટ થઈ રહ્યું છે...',
+  'Grow your bookings': 'તમારા બુકિંગ વધારો',
+  'List more. Earn more.': 'વધુ યાદી આપો. વધુ કમાઓ.',
+  'View impact': 'અસર જુઓ',
+  'Green Member': 'ગ્રીન સભ્ય',
+  "You're saving the planet!": 'તમે પૃથ્વી બચાવી રહ્યા છો!',
+  'Back to Account Menu': 'એકાઉન્ટ મેનૂ પર પાછા જાઓ',
+
+  // Rental Address Section
+  'Rental Address': 'વસ્તુ આપવાનું સરનામું (Rental Address)',
+  'Rental Address Subtitle':
+    'તમે જે જગ્યાએથી તમારી પ્રોડક્ટ્સ રેન્ટ (Rent) પર આપવા માંગો છો તેનું સાચું સરનામું અહિંયા ભરો.',
+  'Address Type': 'સરનામાનો પ્રકાર (Address Type)',
+  'Home Address': 'ઘરનું સરનામું (Home Address)',
+  'Shop Address': 'દુકાનનું સરનામું (Shop Address)',
+  'Shop Name': 'દુકાનનું નામ',
+  'Shop / Home Name (Optional)': 'દુકાન / ઘરનું નામ (મરજિયાત)',
+  'Address Line 1': 'સરનામું લાઇન ૧',
+  'Address Line 2 (Optional)': 'સરનામું લાઇન ૨ (મરજિયાત)',
+  'Street / Area': 'શેરી / વિસ્તાર',
+  City: 'શહેર',
+  State: 'રાજ્ય',
+  Country: 'દેશ',
+  Pincode: 'પીનકોડ',
 }

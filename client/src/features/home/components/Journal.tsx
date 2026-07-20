@@ -5,6 +5,7 @@ import { Link } from '@tanstack/react-router'
 import { useStories } from '#/hook'
 import { cn } from '../../../lib/utils'
 import { ExploreLink } from '#/components/common/ExploreLink'
+import { useTranslation } from '#/context/TranslationContext'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -19,6 +20,7 @@ const stagger: Variants = {
 }
 
 export function Journal() {
+  const { t } = useTranslation()
   const { data: fetchedStories } = useStories()
 
   const displayStories =
@@ -48,7 +50,7 @@ export function Journal() {
                 'text-primary',
               )}
             >
-              — Journal
+              {t('— Journal')}
             </div>
             <h2
               className={cn(
@@ -60,11 +62,11 @@ export function Journal() {
                 'text-foreground',
               )}
             >
-              Stories from the catalogue.
+              {t('Stories from the catalogue.')}
             </h2>
           </div>
           <ExploreLink to="/journal" className="hidden md:inline-flex">
-            Read the journal
+            {t('Read the journal')}
           </ExploreLink>
         </div>
 
@@ -191,7 +193,7 @@ export function Journal() {
                     {p.excerpt}
                   </p>
                   <ExploreLink className="mt-6 text-foreground group-hover:text-primary group-hover:gap-3 text-[12px] font-semibold transition-all">
-                    Read story
+                    {t('Read story')}
                   </ExploreLink>
                 </Link>
               </motion.div>

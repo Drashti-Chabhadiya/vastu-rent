@@ -20,6 +20,8 @@ import { Button } from '#/components/ui/button'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
 import { UserAvatar } from '#/components/common/UserAvatar'
 
+import { useTranslation } from '#/context/TranslationContext'
+
 // ─── Logout Confirmation Dialog ───────────────────────────────────────────────
 function LogoutDialog({
   open,
@@ -32,6 +34,7 @@ function LogoutDialog({
   onConfirm: () => void
   loading: boolean
 }) {
+  const { t } = useTranslation()
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -43,9 +46,9 @@ function LogoutDialog({
         <div className="w-16 h-16 rounded-full bg-primary-soft flex items-center justify-center mb-5">
           <LogOut size={28} className="text-primary" strokeWidth={2} />
         </div>
-        <h2 className="text-xl font-extrabold text-foreground mb-2">Log out</h2>
+        <h2 className="text-xl font-extrabold text-foreground mb-2">{t('Log out')}</h2>
         <p className="text-[13px] text-muted-foreground/85 font-medium leading-relaxed mb-7">
-          Are you sure you want to log out of your Vastu account?
+          {t('Are you sure you want to log out of your Vastu account?')}
         </p>
         <Button
           onClick={onConfirm}
@@ -55,10 +58,10 @@ function LogoutDialog({
           {loading ? (
             <>
               <span className="w-4 h-4 border-2 border-card/40 border-t-white rounded-full animate-spin" />
-              Logging out...
+              {t('Logging out...')}
             </>
           ) : (
-            'Yes, log out'
+            t('Yes, log out')
           )}
         </Button>
         <Button
@@ -67,7 +70,7 @@ function LogoutDialog({
           disabled={loading}
           className="w-full h-11 rounded-xl border border-border bg-card hover:bg-muted-light text-sm font-semibold text-foreground/80 transition-colors cursor-pointer disabled:opacity-60"
         >
-          Cancel
+          {t('Cancel')}
         </Button>
       </div>
     </div>
@@ -76,6 +79,7 @@ function LogoutDialog({
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 export function ProfileLayout() {
+  const { t } = useTranslation()
   const [session, setSession] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [logoutOpen, setLogoutOpen] = useState(false)
@@ -214,7 +218,7 @@ export function ProfileLayout() {
                               : 'text-muted-dark group-hover:text-foreground/80',
                           )}
                         />
-                        <span>{item.label}</span>
+                        <span>{t(item.label)}</span>
                       </Link>
                     )
                   })}
@@ -229,7 +233,7 @@ export function ProfileLayout() {
                       size={16}
                       className="shrink-0 text-destructive/80"
                     />
-                    <span>Log out</span>
+                    <span>{t('Log out')}</span>
                   </Button>
                 </nav>
               </div>
@@ -241,16 +245,16 @@ export function ProfileLayout() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h4 className="font-extrabold text-primary text-[11px]">
-                    Green Member
+                    {t('Green Member')}
                   </h4>
                   <p className="text-[10px] text-primary/80 font-semibold leading-normal mt-0.5">
-                    You're saving the planet!
+                    {t("You're saving the planet!")}
                   </p>
                   <Link
                     to="/help"
                     className="text-primary text-[10px] font-black flex items-center gap-0.5 mt-2 hover:underline"
                   >
-                    View Impact <ChevronRight size={9} strokeWidth={3} />
+                    {t('View impact')} <ChevronRight size={9} strokeWidth={3} />
                   </Link>
                 </div>
               </div>

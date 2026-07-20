@@ -20,6 +20,7 @@ import { NavDesktopMenu } from './navbar/NavDesktopMenu'
 import { NavUserDropdown } from './navbar/NavUserDropdown'
 import { NavMobileMenu } from './navbar/NavMobileMenu'
 import { ThemeToggle } from './ThemeToggle'
+import { LanguageSelector } from '@/components/ui/language-selector'
 
 export function Navbar() {
   const { t } = useTranslation()
@@ -202,6 +203,9 @@ export function Navbar() {
                 )}
               </Button>
             </Link>
+
+            {/* Language Selector */}
+            <LanguageSelector />
 
             {/* Theme Toggle */}
             <ThemeToggle />
