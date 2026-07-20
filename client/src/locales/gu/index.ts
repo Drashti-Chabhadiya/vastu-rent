@@ -5,6 +5,10 @@ import { login } from './login'
 import { nearbyDeals } from './nearby-deals'
 import { profile } from './profile'
 import { register } from './register'
+import { pricing } from './pricing'
+import { lister } from './lister'
+import { contact } from './contact'
+import { pages } from './pages'
 
 export const gu = {
   ...common,
@@ -14,4 +18,8 @@ export const gu = {
   ...nearbyDeals,
   ...profile,
   ...register,
+  ...pricing,
+  ...lister,
+  ...contact,
+  ...pages,
 }

@@ -14,41 +14,47 @@ import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { authClient } from '#/lib/auth/auth-client'
-
-const features = [
-  {
-    icon: <Coins className="w-8 h-8 text-primary" />,
-    title: 'Earn Extra Income',
-    description:
-      'Turn your idle items into a steady stream of passive income without any extra effort.',
-  },
-  {
-    icon: <Camera className="w-8 h-8 text-info-foreground" />,
-    title: 'Easy Listing',
-    description:
-      'Upload photos, set your price, and list your item in less than 2 minutes.',
-  },
-  {
-    icon: <ShieldCheck className="w-8 h-8 text-primary" />,
-    title: 'Verified Renters',
-    description:
-      'All renters are verified through our platform to ensure your items are in safe hands.',
-  },
-  {
-    icon: <Zap className="w-8 h-8 text-yellow-600" />,
-    title: 'Instant Management',
-    description:
-      'Manage all your rentals, bookings, and earnings from your personalized dashboard.',
-  },
-]
+import { useTranslation } from '#/context/TranslationContext'
 
 export function BecomeListerPage() {
+  const { t } = useTranslation()
   const { data: session } = authClient.useSession()
   const isLoggedIn = !!session?.user
 
   // Logged-in users go straight to their listings dashboard.
   // Guests go to sign up first.
   const ctaHref = isLoggedIn ? '/account/listings' : '/signup'
+
+  const features = [
+    {
+      icon: <Coins className="w-8 h-8 text-primary" />,
+      title: t('Earn Extra Income'),
+      description: t(
+        'Turn your idle items into a steady stream of passive income without any extra effort.',
+      ),
+    },
+    {
+      icon: <Camera className="w-8 h-8 text-info-foreground" />,
+      title: t('Easy Listing'),
+      description: t(
+        'Upload photos, set your price, and list your item in less than 2 minutes.',
+      ),
+    },
+    {
+      icon: <ShieldCheck className="w-8 h-8 text-primary" />,
+      title: t('Verified Renters'),
+      description: t(
+        'All renters are verified through our platform to ensure your items are in safe hands.',
+      ),
+    },
+    {
+      icon: <Zap className="w-8 h-8 text-yellow-600" />,
+      title: t('Instant Management'),
+      description: t(
+        'Manage all your rentals, bookings, and earnings from your personalized dashboard.',
+      ),
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-card pb-20">
@@ -75,35 +81,33 @@ export function BecomeListerPage() {
           >
             <motion.div variants={fadeUp}>
               <Badge className="mb-6 bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-1.5 rounded-full font-bold text-sm">
-                JOIN 5,000+ LISTERS
+                {t('JOIN 5,000+ LISTERS')}
               </Badge>
             </motion.div>
             <motion.h1
               variants={fadeUp}
               className="text-5xl sm:text-6xl font-extrabold tracking-tight mb-8 leading-tight"
             >
-              Turn Your Things Into{' '}
-              <span className="text-primary">Earnings</span>
+              {t('Turn Your Things Into')}{' '}
+              <span className="text-primary">{t('Earnings')}</span>
             </motion.h1>
             <motion.p
               variants={fadeUp}
               className="text-xl text-muted-dark mb-10 leading-relaxed"
             >
-              Don't let your items gather dust. List them on Vastu-Rent and
-              start earning money today. It's safe, easy, and free to get
-              started.
+              {t('Lister Hero Description')}
             </motion.p>
             <motion.div variants={fadeUp}>
               <Link to={ctaHref}>
                 <Button size="lg" className="flex items-center gap-3">
                   {isLoggedIn ? (
                     <>
-                      Go to My Listings
+                      {t('Go to My Listings')}
                       <LayoutDashboard size={20} />
                     </>
                   ) : (
                     <>
-                      Start Listing Now
+                      {t('Start Listing Now')}
                       <ArrowRight size={20} />
                     </>
                   )}
@@ -128,14 +132,15 @@ export function BecomeListerPage() {
               variants={fadeUp}
               className="text-4xl font-bold text-foreground mb-4"
             >
-              Why list on Vastu-Rent?
+              {t('Why list on Vastu-Rent?')}
             </motion.h2>
             <motion.p
               variants={fadeUp}
               className="text-muted-foreground text-lg max-w-2xl mx-auto"
             >
-              We provide the tools and security you need to share your items
-              with confidence.
+              {t(
+                'We provide the tools and security you need to share your items with confidence.',
+              )}
             </motion.p>
           </motion.div>
 
@@ -200,14 +205,12 @@ export function BecomeListerPage() {
                 ))}
               </div>
               <h3 className="text-3xl font-bold text-foreground mb-8 italic leading-snug">
-                "Listing my professional camera equipment on Vastu-Rent has been
-                a game-changer. I've earned over ₹45,000 in just three months,
-                and every renter has been respectful and professional."
+                {t('Lister Quote')}
               </h3>
               <div>
                 <p className="text-xl font-bold text-primary">Rahul Sharma</p>
                 <p className="text-muted-foreground/85">
-                  Professional Photographer, Surat
+                  {t('Professional Photographer, Surat')}
                 </p>
               </div>
             </div>
@@ -228,19 +231,21 @@ export function BecomeListerPage() {
             variants={fadeUp}
             className="text-4xl font-bold text-foreground mb-8"
           >
-            Your items could be earning for you right now.
+            {t('Your items could be earning for you right now.')}
           </motion.h2>
           <motion.div variants={fadeUp}>
             <Link to={ctaHref}>
               <Button size="lg">
-                {isLoggedIn ? 'Go to My Listings' : 'Get Started for Free'}
+                {isLoggedIn
+                  ? t('Go to My Listings')
+                  : t('Get Started for Free')}
               </Button>
             </Link>
           </motion.div>
           <motion.p variants={fadeUp} className="mt-6 text-muted-foreground/85">
             {isLoggedIn
-              ? 'Create your first listing in under 2 minutes.'
-              : 'No hidden fees. No listing costs. Just earnings.'}
+              ? t('Create your first listing in under 2 minutes.')
+              : t('No hidden fees. No listing costs. Just earnings.')}
           </motion.p>
         </motion.div>
       </section>

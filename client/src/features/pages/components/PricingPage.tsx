@@ -17,8 +17,10 @@ import { Card, CardContent } from '#/components/ui/card'
 import { Switch } from '#/components/ui/switch'
 import { authClient } from '#/lib/auth/auth-client'
 import { useSettings, useCreateCheckoutSession } from '#/hook'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function PricingPage() {
+  const { t, formatNumber } = useTranslation()
   const [isYearly, setIsYearly] = useState(false)
   const { data: session } = authClient.useSession()
   const { data: settings } = useSettings()
@@ -40,6 +42,17 @@ export function PricingPage() {
     isYearly ? Math.round(rawProPrice * 0.8) : rawProPrice
   const getBusinessPrice = () =>
     isYearly ? Math.round(rawBusinessPrice * 0.8) : rawBusinessPrice
+
+  const formatBilledText = (price: number, rawPrice: number) => {
+    if (isYearly) {
+      const yearlyPrice = price * 12
+      const yearlySavings = (rawPrice - price) * 12
+      return t('Billed annually as ₹{amount} (Save ₹{savings})')
+        .replace('{amount}', formatNumber(yearlyPrice))
+        .replace('{savings}', formatNumber(yearlySavings))
+    }
+    return t('Billed monthly as ₹{amount}').replace('{amount}', formatNumber(price))
+  }
 
   const starterFeatures: string[] = settings?.pricing?.starterFeatures || [
     'List up to 5 items',
@@ -116,22 +129,22 @@ export function PricingPage() {
             <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Pricing Plans
+                {t('Pricing Plans')}
               </div>
             </motion.div>
             <motion.h1
               variants={fadeUp}
               className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
-              Simple, transparent <br />
-              <span className="italic text-primary">pricing.</span>
+              {t('Simple, transparent pricing.')}
             </motion.h1>
             <motion.p
               variants={fadeUp}
               className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
             >
-              Choose the perfect plan to rent your items and start earning with
-              Vastu.
+              {t(
+                'Choose the perfect plan to rent your items and start earning with Vastu.',
+              )}
             </motion.p>
           </motion.div>
 
@@ -164,7 +177,7 @@ export function PricingPage() {
           <span
             className={`text-sm font-semibold transition-colors ${!isYearly ? 'text-brand-ink' : 'text-muted-foreground'}`}
           >
-            Monthly billing
+            {t('Monthly billing')}
           </span>
 
           <Switch
@@ -176,10 +189,10 @@ export function PricingPage() {
           <span
             className={`text-sm font-semibold transition-colors ${isYearly ? 'text-brand-ink' : 'text-muted-foreground'}`}
           >
-            Yearly billing
+            {t('Yearly billing')}
           </span>
           <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary">
-            Save up to 20%
+            {t('Save up to 20%')}
           </span>
         </div>
       </motion.section>
@@ -205,10 +218,10 @@ export function PricingPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-brand-ink text-lg">
-                        Starter
+                        {t('Starter')}
                       </h3>
                       <p className="text-xs text-muted-foreground">
-                        Perfect for getting started.
+                        {t('Perfect for getting started.')}
                       </p>
                     </div>
                   </div>
@@ -217,14 +230,14 @@ export function PricingPage() {
                   <div className="mt-8">
                     <div className="flex items-baseline text-brand-ink">
                       <span className="text-4xl font-extrabold tracking-tight">
-                        ₹{rawStarterPrice}
+                        ₹{formatNumber(rawStarterPrice)}
                       </span>
                       <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                        /month
+                        {t('/month')}
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      No setup fees. No hidden charges.
+                      {t('No setup fees. No hidden charges.')}
                     </p>
                   </div>
                 </div>
@@ -236,7 +249,7 @@ export function PricingPage() {
                     variant="outline"
                     className="w-full rounded-full border border-border py-6 text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98]"
                   >
-                    Get Started
+                    {t('Get Started')}
                   </Button>
                 </div>
 
@@ -249,7 +262,7 @@ export function PricingPage() {
                     <li key={i} className="flex items-center gap-3">
                       <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
                       <span className="text-[13.5px] text-muted-foreground leading-relaxed">
-                        {f}
+                        {t(f)}
                       </span>
                     </li>
                   ))}
@@ -263,7 +276,7 @@ export function PricingPage() {
             <Card className="relative border-2 border-primary rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-md flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 h-full">
               {/* Most Popular Badge */}
               <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
-                Most Popular
+                {t('Most Popular')}
               </span>
 
               <CardContent className="p-0 flex flex-col h-full justify-between">
@@ -274,9 +287,11 @@ export function PricingPage() {
                       <Home className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-brand-ink text-lg">Pro</h3>
+                      <h3 className="font-bold text-brand-ink text-lg">
+                        {t('Pro')}
+                      </h3>
                       <p className="text-xs text-muted-foreground">
-                        For growing renters.
+                        {t('For growing renters.')}
                       </p>
                     </div>
                   </div>
@@ -285,16 +300,14 @@ export function PricingPage() {
                   <div className="mt-8">
                     <div className="flex items-baseline text-brand-ink">
                       <span className="text-4xl font-extrabold tracking-tight">
-                        ₹{getProPrice()}
+                        ₹{formatNumber(getProPrice())}
                       </span>
                       <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                        /month
+                        {t('/month')}
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      {isYearly
-                        ? `Billed annually as ₹${getProPrice() * 12} (Save ₹${(rawProPrice - getProPrice()) * 12})`
-                        : `Billed monthly as ₹${rawProPrice}`}
+                      {formatBilledText(getProPrice(), rawProPrice)}
                     </p>
                   </div>
                 </div>
@@ -302,10 +315,10 @@ export function PricingPage() {
                 {/* Action */}
                 <div className="mt-8">
                   <Button
-                    // onClick={() => handleSelectPlan('Pro')}
+                    onClick={() => handleSelectPlan('Pro')}
                     className="w-full rounded-full bg-primary py-6 text-sm font-bold text-primary-foreground hover:bg-primary/95 active:scale-[0.98]"
                   >
-                    Choose Pro
+                    {t('Choose Pro')}
                   </Button>
                 </div>
 
@@ -318,7 +331,7 @@ export function PricingPage() {
                     <li key={i} className="flex items-center gap-3">
                       <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
                       <span className="text-[13.5px] text-brand-ink font-medium leading-relaxed">
-                        {f}
+                        {t(f)}
                       </span>
                     </li>
                   ))}
@@ -339,10 +352,10 @@ export function PricingPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-brand-ink text-lg">
-                        Business
+                        {t('Business')}
                       </h3>
                       <p className="text-xs text-muted-foreground">
-                        For serious sellers & businesses.
+                        {t('For serious sellers & businesses.')}
                       </p>
                     </div>
                   </div>
@@ -351,16 +364,14 @@ export function PricingPage() {
                   <div className="mt-8">
                     <div className="flex items-baseline text-brand-ink">
                       <span className="text-4xl font-extrabold tracking-tight">
-                        ₹{getBusinessPrice()}
+                        ₹{formatNumber(getBusinessPrice())}
                       </span>
                       <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                        /month
+                        {t('/month')}
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      {isYearly
-                        ? `Billed annually as ₹${getBusinessPrice() * 12} (Save ₹${(rawBusinessPrice - getBusinessPrice()) * 12})`
-                        : `Billed monthly as ₹${rawBusinessPrice}`}
+                      {formatBilledText(getBusinessPrice(), rawBusinessPrice)}
                     </p>
                   </div>
                 </div>
@@ -368,11 +379,11 @@ export function PricingPage() {
                 {/* Action */}
                 <div className="mt-8">
                   <Button
-                    // onClick={() => handleSelectPlan('Business')}
+                    onClick={() => handleSelectPlan('Business')}
                     variant="outline"
                     className="w-full rounded-full border border-border py-6 text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98]"
                   >
-                    Choose Business
+                    {t('Choose Business')}
                   </Button>
                 </div>
 
@@ -385,7 +396,7 @@ export function PricingPage() {
                     <li key={i} className="flex items-center gap-3">
                       <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
                       <span className="text-[13.5px] text-muted-foreground leading-relaxed">
-                        {f}
+                        {t(f)}
                       </span>
                     </li>
                   ))}
@@ -411,25 +422,27 @@ export function PricingPage() {
             </div>
             <div>
               <h3 className="font-bold text-brand-ink text-lg">
-                Trusted. Secure. Hassle-free.
+                {t('Trusted. Secure. Hassle-free.')}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Your data is protected and payments are 100% secure with Vastu.
+                {t(
+                  'Your data is protected and payments are 100% secure with Vastu.',
+                )}
               </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-6 text-brand-ink text-sm font-semibold">
             <div className="flex items-center gap-2">
               <CreditCard className="h-4.5 w-4.5 text-primary" />
-              <span>Secure Payments</span>
+              <span>{t('Secure Payments')}</span>
             </div>
             <div className="flex items-center gap-2">
               <Lock className="h-4.5 w-4.5 text-primary" />
-              <span>Data Protection</span>
+              <span>{t('Data Protection')}</span>
             </div>
             <div className="flex items-center gap-2">
               <Headphones className="h-4.5 w-4.5 text-primary" />
-              <span>24/7 Support</span>
+              <span>{t('24/7 Support')}</span>
             </div>
           </div>
         </div>

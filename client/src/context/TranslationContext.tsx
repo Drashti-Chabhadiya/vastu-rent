@@ -58,5 +58,13 @@ export function useTranslation() {
     return dict[key] || translations.en[key as TranslationKey] || key
   }
 
-  return { language, changeLanguage, t }
+  const formatNumber = (val: number | string): string => {
+    const num = typeof val === 'number' ? val : parseFloat(String(val))
+    if (isNaN(num)) return String(val)
+    if (language === 'gu') return num.toLocaleString('gu-IN')
+    if (language === 'hi') return num.toLocaleString('hi-IN')
+    return num.toLocaleString('en-IN')
+  }
+
+  return { language, changeLanguage, t, formatNumber }
 }

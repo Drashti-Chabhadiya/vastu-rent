@@ -38,6 +38,7 @@ import {
 import { useSettings } from '#/hook'
 import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 const getIcon = (name: string, className = 'h-6 w-6 text-primary') => {
   switch (name) {
@@ -61,6 +62,7 @@ const getIcon = (name: string, className = 'h-6 w-6 text-primary') => {
 }
 
 export function TrustPage() {
+  const { t } = useTranslation()
   const { data: settings } = useSettings()
 
   // Report form state
@@ -73,12 +75,12 @@ export function TrustPage() {
     e.preventDefault()
 
     if (!description.trim()) {
-      toast.error('Please describe the concern details.')
+      toast.error(t('Please describe the concern details.'))
       return
     }
 
     toast.success(
-      'Thank you. Your report has been submitted to Vastu Trust & Safety.',
+      t('Thank you. Your report has been submitted to Vastu Trust & Safety.'),
     )
     setTargetId('')
     setDescription('')
@@ -100,27 +102,31 @@ export function TrustPage() {
   ) || [
     {
       icon: <Shield className="h-6 w-6 text-primary" />,
-      title: 'Secure platform',
-      description:
+      title: t('Secure platform'),
+      description: t(
         'We use industry-leading security measures to protect your data and payments.',
+      ),
     },
     {
       icon: <UserCheck className="h-6 w-6 text-primary" />,
-      title: 'Verified members',
-      description:
+      title: t('Verified members'),
+      description: t(
         'Hosts and renters go through verification checks to build trust in our community.',
+      ),
     },
     {
       icon: <MessageSquare className="h-6 w-6 text-primary" />,
-      title: 'Fair & transparent',
-      description:
+      title: t('Fair & transparent'),
+      description: t(
         'Clear policies, honest communication and support when you need it.',
+      ),
     },
     {
       icon: <Headphones className="h-6 w-6 text-primary" />,
-      title: '24/7 support',
-      description:
+      title: t('24/7 support'),
+      description: t(
         'Our dedicated support team is always here to help you, any time.',
+      ),
     },
   ]
 
@@ -133,28 +139,32 @@ export function TrustPage() {
   ) || [
     {
       icon: <MessageSquare className="h-5 w-5 text-primary" />,
-      title: 'Communicate on Vastu',
-      description: 'Keep all conversations and payments within Vastu.',
+      title: t('Communicate on Vastu'),
+      description: t('Keep all conversations and payments within Vastu.'),
     },
     {
       icon: <UserCheck className="h-5 w-5 text-primary" />,
-      title: 'Verify before you book',
-      description: 'Check profiles, reviews and verification badges.',
+      title: t('Verify before you book'),
+      description: t('Check profiles, reviews and verification badges.'),
     },
     {
       icon: <MapPin className="h-5 w-5 text-primary" />,
-      title: 'Meet safely',
-      description: 'Visit the place and meet in public when possible.',
+      title: t('Meet safely'),
+      description: t('Visit the place and meet in public when possible.'),
     },
     {
       icon: <FileText className="h-5 w-5 text-primary" />,
-      title: 'Read the listing carefully',
-      description: 'Review house rules, policies and cancellation terms.',
+      title: t('Read the listing carefully'),
+      description: t(
+        'Review house rules, policies and cancellation terms.',
+      ),
     },
     {
       icon: <Flag className="h-5 w-5 text-primary" />,
-      title: 'Report suspicious activity',
-      description: 'Help us keep the community safe by reporting concerns.',
+      title: t('Report suspicious activity'),
+      description: t(
+        'Help us keep the community safe by reporting concerns.',
+      ),
     },
   ]
 
@@ -173,22 +183,22 @@ export function TrustPage() {
             <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Trust & safety
+                {t('Trust & safety')}
               </div>
             </motion.div>
             <motion.h1
               variants={fadeUp}
               className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
-              Your trust is <br />
-              <span className="italic text-primary">our priority.</span>
+              {t('Trust Hero Title')}
             </motion.h1>
             <motion.p
               variants={fadeUp}
               className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
             >
-              At Vastu, we’re building a community where everyone can rent and
-              host with confidence.
+              {t(
+                "At Vastu, we're building a community where everyone can rent and host with confidence.",
+              )}
             </motion.p>
           </motion.div>
 
@@ -204,7 +214,6 @@ export function TrustPage() {
               alt="Beautiful Vastu Arched Room"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
-            {/* Soft decorative shading */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
           </motion.div>
         </div>
@@ -223,14 +232,15 @@ export function TrustPage() {
             variants={fadeUp}
             className="text-2xl font-bold text-brand-ink tracking-tight sm:text-3xl"
           >
-            Our commitment to you
+            {t('Our commitment to you')}
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className="text-muted-foreground mt-2 text-sm max-w-xl leading-relaxed"
           >
-            We work around the clock to keep Vastu safe, secure and reliable for
-            our community.
+            {t(
+              'We work around the clock to keep Vastu safe, secure and reliable for our community.',
+            )}
           </motion.p>
         </motion.div>
 
@@ -278,13 +288,13 @@ export function TrustPage() {
               variants={fadeUp}
               className="text-2xl font-bold text-brand-ink tracking-tight"
             >
-              Safety tips for a secure experience
+              {t('Safety tips for a secure experience')}
             </motion.h2>
             <motion.p
               variants={fadeUp}
               className="text-muted-foreground mt-2 text-sm"
             >
-              Follow these simple tips to protect yourself and others.
+              {t('Follow these simple tips to protect yourself and others.')}
             </motion.p>
 
             <motion.div
@@ -325,7 +335,6 @@ export function TrustPage() {
             viewport={{ once: true }}
             className="lg:col-span-5 bg-primary/5 border border-brand/10 rounded-[2.5rem] p-8 sm:p-10 shadow-sm relative overflow-hidden"
           >
-            {/* Elegant background circles */}
             <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-primary/5 blur-xl pointer-events-none" />
 
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-background border border-primary/10 shadow-sm shrink-0">
@@ -333,18 +342,19 @@ export function TrustPage() {
             </div>
 
             <h3 className="font-bold text-brand-ink text-xl mt-6">
-              Your privacy matters
+              {t('Your privacy matters')}
             </h3>
             <p className="text-muted-foreground text-sm leading-relaxed mt-2">
-              We collect only what we need to provide a better experience and
-              never share your personal information without consent.
+              {t(
+                'We collect only what we need to provide a better experience and never share your personal information without consent.',
+              )}
             </p>
 
             <div className="mt-6 space-y-4">
               {[
-                'Encrypted and secure data',
-                'Private and protected payments',
-                'No spam, ever',
+                t('Encrypted and secure data'),
+                t('Private and protected payments'),
+                t('No spam, ever'),
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
@@ -360,7 +370,7 @@ export function TrustPage() {
                 to="/help"
                 className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline group"
               >
-                Learn more about our Privacy Policy
+                {t('Learn more about our Privacy Policy')}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
@@ -383,11 +393,12 @@ export function TrustPage() {
             </div>
             <div>
               <h3 className="font-bold text-brand-ink text-lg">
-                See something that doesn’t look right?
+                {t("See something that doesn't look right?")}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Report it to us. Your report helps us take action and keep the
-                community safe for everyone.
+                {t(
+                  'Report it to us. Your report helps us take action and keep the community safe for everyone.',
+                )}
               </p>
             </div>
           </div>
@@ -395,7 +406,7 @@ export function TrustPage() {
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="group rounded-full bg-brand-surface-warm border border-primary/20 hover:border-primary px-6 py-4.5 h-auto text-sm font-bold text-brand-ink shadow-sm transition-all hover:bg-background active:scale-[0.98] inline-flex items-center gap-2 [&_svg]:size-4">
-                  Report a concern
+                  {t('Report a concern')}
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                 </Button>
               </DialogTrigger>
@@ -403,17 +414,18 @@ export function TrustPage() {
                 <DialogHeader>
                   <DialogTitle className="text-xl font-bold text-brand-ink flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-primary" />
-                    Report a concern
+                    {t('Report a concern')}
                   </DialogTitle>
                   <DialogDescription className="text-sm text-muted-foreground">
-                    Please provide details about the issue. Our Vastu trust team
-                    will investigate and take immediate actions.
+                    {t(
+                      'Please provide details about the issue. Our Vastu trust team will investigate and take immediate actions.',
+                    )}
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSendReport} className="mt-4 space-y-4">
                   <div className="space-y-2">
                     <Label className="text-[13px] font-bold text-brand-ink">
-                      What kind of concern is this?
+                      {t('What kind of concern is this?')}
                     </Label>
                     <Select value={reportType} onValueChange={setReportType}>
                       <SelectTrigger className="w-full rounded-xl border border-border h-11 text-sm bg-transparent">
@@ -424,25 +436,25 @@ export function TrustPage() {
                           value="listing"
                           className="cursor-pointer rounded-lg"
                         >
-                          Suspicious/Incorrect Listing
+                          {t('Suspicious/Incorrect Listing')}
                         </SelectItem>
                         <SelectItem
                           value="user"
                           className="cursor-pointer rounded-lg"
                         >
-                          Inappropriate/Fraudulent User
+                          {t('Inappropriate/Fraudulent User')}
                         </SelectItem>
                         <SelectItem
                           value="payment"
                           className="cursor-pointer rounded-lg"
                         >
-                          Payment issues / Off-platform requests
+                          {t('Payment issues / Off-platform requests')}
                         </SelectItem>
                         <SelectItem
                           value="other"
                           className="cursor-pointer rounded-lg"
                         >
-                          Other safety issues
+                          {t('Other safety issues')}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -450,7 +462,7 @@ export function TrustPage() {
 
                   <div className="space-y-2">
                     <Label className="text-[13px] font-bold text-brand-ink">
-                      Reference URL / Listing / User ID (Optional)
+                      {t('Reference URL / Listing / User ID (Optional)')}
                     </Label>
                     <Input
                       placeholder="e.g. VASTU-12345"
@@ -462,10 +474,10 @@ export function TrustPage() {
 
                   <div className="space-y-2">
                     <Label className="text-[13px] font-bold text-brand-ink">
-                      Detailed Description
+                      {t('Detailed Description')}
                     </Label>
                     <Textarea
-                      placeholder="Describe the issue in detail..."
+                      placeholder={t('Describe the issue in detail...')}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       rows={4}
@@ -478,7 +490,7 @@ export function TrustPage() {
                       type="submit"
                       className="w-full rounded-full bg-primary hover:bg-primary/95 text-white font-bold h-11 text-sm"
                     >
-                      Submit report
+                      {t('Submit report')}
                     </Button>
                   </DialogFooter>
                 </form>

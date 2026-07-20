@@ -15,38 +15,48 @@ import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
-
-const faqs = [
-  {
-    category: 'General',
-    questions: [
-      {
-        q: 'What is Vastu-Rent?',
-        a: 'Vastu-Rent is a community-based rental platform where you can rent almost anything from people in your neighborhood or earn money by listing your own items for rent.',
-      },
-      {
-        q: 'How do I start renting?',
-        a: "Simply browse the categories, find an item you need, select your dates, and proceed to book. You'll need to verify your identity before your first rental.",
-      },
-    ],
-  },
-  {
-    category: 'Payments',
-    questions: [
-      {
-        q: 'How does payment work?',
-        a: 'All payments are processed securely through our platform. We hold the funds until the rental is successfully completed to protect both the renter and the lister.',
-      },
-      {
-        q: 'Is there a security deposit?',
-        a: "Depending on the item and the lister's preference, some rentals may require a security deposit which is fully refunded once the item is returned in good condition.",
-      },
-    ],
-  },
-]
+import { useTranslation } from '#/context/TranslationContext'
 
 export function HelpPage() {
+  const { t } = useTranslation()
   const [openIndex, setOpenIndex] = useState<string | null>('General-0')
+
+  const faqs = [
+    {
+      category: t('General'),
+      questions: [
+        {
+          q: t('What is Vastu-Rent?'),
+          a: t(
+            'Vastu-Rent is a community-based rental platform where you can rent almost anything from people in your neighborhood or earn money by listing your own items for rent.',
+          ),
+        },
+        {
+          q: t('How do I start renting?'),
+          a: t(
+            "Simply browse the categories, find an item you need, select your dates, and proceed to book. You'll need to verify your identity before your first rental.",
+          ),
+        },
+      ],
+    },
+    {
+      category: t('Payments'),
+      questions: [
+        {
+          q: t('How does payment work?'),
+          a: t(
+            'All payments are processed securely through our platform. We hold the funds until the rental is successfully completed to protect both the renter and the lister.',
+          ),
+        },
+        {
+          q: t('Is there a security deposit?'),
+          a: t(
+            "Depending on the item and the lister's preference, some rentals may require a security deposit which is fully refunded once the item is returned in good condition.",
+          ),
+        },
+      ],
+    },
+  ]
 
   const toggleFaq = (id: string) => {
     setOpenIndex(openIndex === id ? null : id)
@@ -66,7 +76,7 @@ export function HelpPage() {
             variants={fadeUp}
             className="text-3xl sm:text-4xl font-extrabold text-primary-foreground mb-8"
           >
-            How can we help you today?
+            {t('How can we help you today?')}
           </motion.h1>
           <motion.div
             variants={fadeUp}
@@ -78,7 +88,7 @@ export function HelpPage() {
             />
             <Input
               type="text"
-              placeholder="Search for answers..."
+              placeholder={t('Search for answers...')}
               className="w-full h-16 pl-16 pr-8 bg-card rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-lg shadow-xl"
             />
           </motion.div>
@@ -96,23 +106,23 @@ export function HelpPage() {
           {[
             {
               icon: <HelpCircle className="text-info-foreground" />,
-              title: 'Getting Started',
-              count: '12 articles',
+              title: t('Getting Started'),
+              count: t('12 articles'),
             },
             {
               icon: <FileText className="text-primary" />,
-              title: 'Account & Billing',
-              count: '8 articles',
+              title: t('Account & Billing'),
+              count: t('8 articles'),
             },
             {
               icon: <Settings className="text-purple-500" />,
-              title: 'Using the App',
-              count: '15 articles',
+              title: t('Using the App'),
+              count: t('15 articles'),
             },
             {
               icon: <Shield className="text-destructive" />,
-              title: 'Safety & Security',
-              count: '10 articles',
+              title: t('Safety & Security'),
+              count: t('10 articles'),
             },
           ].map((item, i) => (
             <motion.div
@@ -141,7 +151,7 @@ export function HelpPage() {
           viewport={{ once: true }}
           className="text-2xl font-bold text-foreground mb-8 px-2"
         >
-          Frequently Asked Questions
+          {t('Frequently Asked Questions')}
         </motion.h2>
         <motion.div
           variants={stagger}
@@ -157,7 +167,7 @@ export function HelpPage() {
               </h3>
               <div className="bg-card rounded-[32px] border border-border/30 shadow-sm overflow-hidden">
                 {cat.questions.map((faq, faqIdx) => {
-                  const id = `${cat.category}-${faqIdx}`
+                  const id = `${catIdx}-${faqIdx}`
                   const isOpen = openIndex === id
                   return (
                     <div
@@ -211,11 +221,12 @@ export function HelpPage() {
       >
         <div className="bg-primary/5 border border-brand/10 rounded-[40px] p-10 sm:p-16 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Still need help?
+            {t('Still need help?')}
           </h2>
           <p className="text-muted-foreground mb-12 max-w-xl mx-auto">
-            Our support team is available 24/7 to help you with any questions or
-            issues you might have.
+            {t(
+              'Our support team is available 24/7 to help you with any questions or issues you might have.',
+            )}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8">
             <div className="flex items-center gap-4">
@@ -224,7 +235,7 @@ export function HelpPage() {
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
-                  Email us
+                  {t('Email us')}
                 </p>
                 <p className="font-bold text-foreground">
                   support@vastu-rent.com
@@ -237,10 +248,10 @@ export function HelpPage() {
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
-                  Live Chat
+                  {t('Live Chat')}
                 </p>
                 <p className="font-bold text-foreground">
-                  Start a conversation
+                  {t('Start a conversation')}
                 </p>
               </div>
             </div>
@@ -250,7 +261,7 @@ export function HelpPage() {
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
-                  Call us
+                  {t('Call us')}
                 </p>
                 <p className="font-bold text-foreground">+91 79 4000 0000</p>
               </div>

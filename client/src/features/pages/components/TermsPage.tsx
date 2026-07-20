@@ -16,10 +16,11 @@ import {
 } from '#/components/ui/collapsible'
 import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
-
 import { useSettings } from '#/hook'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function TermsPage() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('intro')
   const { data: settings } = useSettings()
@@ -29,83 +30,71 @@ export function TermsPage() {
   const dynamicSections = settings?.terms?.sections || [
     {
       id: 'intro',
-      title: '1. Introduction',
-      content:
-        'Welcome to Vastu. These Terms of Service ("Terms") govern your access to and use of the Vastu website, mobile application, and any related services (collectively, the "Platform") operated by Vastu Rentals Private Limited ("we", "us", or "our").\n\nBy accessing or using our Platform, you agree to be bound by these Terms.',
+      title: t('terms.intro.title'),
+      content: t('terms.intro.content'),
     },
     {
       id: 'eligibility',
-      title: '2. Eligibility',
-      content:
-        'You must be at least 18 years old and legally capable of entering into binding contracts to use Vastu. By using our Platform, you represent and warrant that you meet these requirements.',
+      title: t('terms.eligibility.title'),
+      content: t('terms.eligibility.content'),
     },
     {
       id: 'accounts',
-      title: '3. User Accounts',
-      content:
-        'To access certain features, you may need to create an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use.',
+      title: t('terms.accounts.title'),
+      content: t('terms.accounts.content'),
     },
     {
       id: 'bookings',
-      title: '4. Listings and Bookings',
-      content:
-        'Users can list items for rent and book items listed by others. We do not own the items listed on Vastu and act solely as an intermediary between users.\n\nWe reserve the right to remove any listing or user that violates these Terms or our policies.',
+      title: t('terms.bookings.title'),
+      content: t('terms.bookings.content'),
     },
     {
       id: 'payments',
-      title: '5. Payments and Fees',
-      content:
-        'All payments must be made through our secure payment system. We may charge service fees for certain transactions, which will be clearly displayed before you complete a booking.\n\nYou agree to pay all applicable fees and taxes.',
+      title: t('terms.payments.title'),
+      content: t('terms.payments.content'),
     },
     {
       id: 'cancellations',
-      title: '6. Cancellations and Refunds',
-      content:
-        'Cancellation policies and refund eligibility are governed by the terms specified at the time of booking. Users must resolve disputes through Vastu support in alignment with our formal Refund Policy.',
+      title: t('terms.cancellations.title'),
+      content: t('terms.cancellations.content'),
     },
     {
       id: 'conduct',
-      title: '7. User Conduct',
-      content:
-        "Users agree to behave professionally, not list prohibited items, and not bypass Vastu's secure system or direct transactions off-platform. Any attempt to negotiate or transact off-platform will lead to account suspension.",
+      title: t('terms.conduct.title'),
+      content: t('terms.conduct.content'),
     },
     {
       id: 'intellectual',
-      title: '8. Intellectual Property',
-      content:
-        'All content, designs, trademarks, logos, and code displayed on the Vastu Platform are owned by Vastu Rentals and protected by copyright and intellectual property laws.',
+      title: t('terms.intellectual.title'),
+      content: t('terms.intellectual.content'),
     },
     {
       id: 'liability',
-      title: '9. Limitation of Liability',
-      content:
-        'Vastu acts as a secure platform and venue, and is not liable for any physical damages, loss of earnings, or disputes arising between users. Renters and hosts accept all operational risks.',
+      title: t('terms.liability.title'),
+      content: t('terms.liability.content'),
     },
     {
       id: 'indemnity',
-      title: '10. Indemnification',
-      content:
-        'Users agree to defend, indemnify, and hold harmless Vastu, its affiliates, and its officers from any claims, losses, or legal expenses arising from their use of the platform or violation of these Terms.',
+      title: t('terms.indemnity.title'),
+      content: t('terms.indemnity.content'),
     },
     {
       id: 'changes',
-      title: '11. Changes to Terms',
-      content:
-        'Vastu reserves the right to modify these Terms at any time. Your continued use of the platform after updates have been published constitutes acceptance of the new terms.',
+      title: t('terms.changes.title'),
+      content: t('terms.changes.content'),
     },
     {
       id: 'governing',
-      title: '12. Governing Law',
-      content:
-        'These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. All disputes are subject to exclusive jurisdiction in Bengaluru.',
+      title: t('terms.governing.title'),
+      content: t('terms.governing.content'),
     },
     {
       id: 'contact',
-      title: '13. Contact Us',
-      content:
-        'For any questions regarding these Terms of Service, please contact us at support@vastu.com or through our Contact page.',
+      title: t('terms.contact.title'),
+      content: t('terms.contact.content'),
     },
   ]
+
 
   interface TermsNavSection {
     id: string
@@ -138,7 +127,6 @@ export function TermsPage() {
     setActiveSection(id)
   }
 
-  // Monitor scroll to update active sidebar section highlight
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY + 120
@@ -174,26 +162,26 @@ export function TermsPage() {
             <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Terms of Service
+                {t('Terms of Service')}
               </div>
             </motion.div>
             <motion.h1
               variants={fadeUp}
               className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
-              Clear terms. <br />
-              <span className="italic text-primary">Trusted platform.</span>
+              {t('Clear terms.')} <br />
+              <span className="italic text-primary">{t('Trusted platform.')}</span>
             </motion.h1>
             <motion.p
               variants={fadeUp}
               className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
             >
-              These Terms of Service govern your use of Vastu. <br />
-              By using our platform, you agree to these terms.
+              {t('These Terms of Service govern your use of Vastu.')} <br />
+              {t('By using our platform, you agree to these terms.')}
             </motion.p>
             <motion.div variants={fadeUp} className="mt-8">
               <span className="inline-flex rounded-full bg-primary px-5 py-3 text-[13px] font-bold text-primary-foreground">
-                Last updated: {lastUpdated}
+                {t('Last updated:')} {lastUpdated}
               </span>
             </motion.div>
           </motion.div>
@@ -230,7 +218,7 @@ export function TermsPage() {
               <Card className="border border-border/30 rounded-[2rem] bg-card p-6 shadow-sm">
                 <CardContent className="p-0">
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground block mb-4">
-                    On this page
+                    {t('On this page')}
                   </span>
                   <nav className="flex flex-col gap-1">
                     {sections.map((sec) => {
@@ -274,17 +262,17 @@ export function TermsPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-brand-ink text-sm">
-                      Questions about these terms?
+                      {t('Questions about these terms?')}
                     </h4>
                     <p className="text-[12px] text-muted-foreground mt-1">
-                      We’re here to help.
+                      {t("We're here to help.")}
                     </p>
                   </div>
                   <Link
                     to="/contact"
                     className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline group"
                   >
-                    Contact Support
+                    {t('Contact Support')}
                     <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </CardContent>
@@ -361,7 +349,7 @@ export function TermsPage() {
                       variant="outline"
                       className="rounded-full border border-border px-8 py-5 h-auto text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98] inline-flex items-center gap-2 cursor-pointer"
                     >
-                      {isOpen ? 'Collapse terms' : 'View all terms'}
+                      {isOpen ? t('Collapse terms') : t('View all terms')}
                       {isOpen ? (
                         <ChevronUp className="h-4 w-4" />
                       ) : (
@@ -382,10 +370,11 @@ export function TermsPage() {
                 <ShieldAlert className="h-5 w-5 text-primary" />
               </div>
               <div className="text-sm">
-                <h4 className="font-bold text-brand-ink">Important</h4>
+                <h4 className="font-bold text-brand-ink">{t('Important')}</h4>
                 <p className="text-muted-foreground mt-1 leading-relaxed">
-                  These Terms may be updated from time to time. Continued use of
-                  Vastu after changes means you accept the updated Terms.
+                  {t(
+                    'These Terms may be updated from time to time. Continued use of Vastu after changes means you accept the updated Terms.',
+                  )}
                 </p>
               </div>
             </motion.div>
