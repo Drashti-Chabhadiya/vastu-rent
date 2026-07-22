@@ -241,9 +241,7 @@ export function CouponsTable({
                         <span
                           className={cn(
                             'px-2 py-0.5 rounded border text-[9px] font-extrabold uppercase tracking-wide',
-                            scenarioColorMap[
-                              scenario.color
-                            ],
+                            scenarioColorMap[scenario.color],
                           )}
                         >
                           {t(scenario.label)}

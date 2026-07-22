@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { useTranslationStore } from '#/store/useTranslationStore'
-import { translations   } from '#/locales'
-import type {LanguageCode, TranslationKey} from '#/locales';
+import { translations } from '#/locales'
+import type { LanguageCode, TranslationKey } from '#/locales'
 
 export { translations, type LanguageCode }
 

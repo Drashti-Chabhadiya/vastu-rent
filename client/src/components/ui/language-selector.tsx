@@ -1,6 +1,6 @@
 import { Globe, Check, ChevronDown } from 'lucide-react'
-import { useTranslation  } from '#/context/TranslationContext'
-import type {LanguageCode} from '#/context/TranslationContext';
+import { useTranslation } from '#/context/TranslationContext'
+import type { LanguageCode } from '#/context/TranslationContext'
 import {
   DropdownMenu,
   DropdownMenuContent,

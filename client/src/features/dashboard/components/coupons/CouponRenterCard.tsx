@@ -48,9 +48,7 @@ export function CouponRenterCard({
             <span
               className={cn(
                 'text-[9px] font-extrabold px-2 py-0.5 rounded border uppercase tracking-wide',
-                scenarioColorMap[
-                  scenario.color
-                ],
+                scenarioColorMap[scenario.color],
               )}
             >
               {t(scenario.label)}
