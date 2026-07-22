@@ -649,7 +649,7 @@ export const dashboard = {
     'આ લિસ્ટિંગ માર્કેટપ્લેસમાંથી દૂર કરવામાં આવશે, અને તમામ સંકળાયેલ ભાડાનો ઇતિહાસ આર્કાઇવ કરવામાં આવશે. આ ક્રિયા પાછી ખેંચી શકાતી નથી.',
   'Add New Listing': 'નવું લિસ્ટિંગ ઉમેરો',
   Reviews: 'સમીક્ષાઓ',
-  "Reviews you\'ve written for your stays and hosts.":
+  "Reviews you've written for your stays and hosts.":
     'તમારા રોકાણ અને યજમાનો માટે તમે લખેલી સમીક્ષાઓ.',
   'All Ratings': 'તમામ રેટિંગ્સ',
   Stars: 'સ્ટાર્સ',
@@ -672,7 +672,7 @@ export const dashboard = {
   'Edit Reply': 'જવાબ સંપાદિત કરો',
   'Reply to Review': 'સમીક્ષાનો જવાબ આપો',
   'Posted on': 'પર પોસ્ટ કર્યું',
-  "That\'s all your reviews!": 'આ તમારી બધી સમીક્ષાઓ છે!',
+  "That's all your reviews!": 'આ તમારી બધી સમીક્ષાઓ છે!',
   'Keep sharing your experience and help our community.':
     'તમારો અનુભવ શેર કરવાનું ચાલુ રાખો અને અમારા સમુદાયને મદદ કરો.',
   'Review deleted successfully': 'સમીક્ષા સફળતાપૂર્વક ડિલીટ થઈ',
@@ -685,7 +685,7 @@ export const dashboard = {
   'All Reviews': 'તમામ સમીક્ષાઓ',
   Listings: 'લિસ્ટિંગ્સ',
   Hosts: 'યજમાનો',
-  "You don\'t have any reviews listed under this category right now.":
+  "You don't have any reviews listed under this category right now.":
     'તમારા પાસે આ શ્રેણી હેઠળ હાલમાં કોઈ સમીક્ષાઓ નથી.',
   Messages: 'સંદેશાઓ',
   'Stay connected and build real rapports.':
@@ -782,7 +782,7 @@ export const dashboard = {
   'Manage devices that can access your account.':
     'જે ઉપકરણો તમારા એકાઉન્ટને ઍક્સેસ કરી શકે છે તેનું સંચાલન કરો.',
   'View Devices': 'ઉપકરણો જુઓ',
-  "Choose how Vastu-Rent\'s interface appears on your device. Dark mode extends battery life and reduces eye strain.":
+  "Choose how Vastu-Rent's interface appears on your device. Dark mode extends battery life and reduces eye strain.":
     'તમારા ઉપકરણ પર વાસ્તુ-રેન્ટનું ઇન્ટરફેસ કેવી રીતે દેખાય છે તે પસંદ કરો. ડાર્ક મોડ બેટરી જીવન લંબાવે છે અને આંખનો તાણ ઘટાડે છે.',
   'Light Mode': 'લાઇટ મોડ',
   'Sleek paper cream theme with high readability.':

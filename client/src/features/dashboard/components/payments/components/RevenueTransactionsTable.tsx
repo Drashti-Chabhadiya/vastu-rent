@@ -23,7 +23,7 @@ export const RevenueTransactionsTable = ({
   // Dynamic products list for filtering transactions
   const uniqueProducts = Array.from(
     new Set(
-      recentTransactions.map((t: any) => t.product?.title).filter(Boolean),
+      recentTransactions.map((item: any) => item.product?.title).filter(Boolean),
     ),
   )
 

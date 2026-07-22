@@ -650,8 +650,8 @@ export const dashboard = {
     'This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.',
   'Add New Listing': 'Add New Listing',
   Reviews: 'Reviews',
-  "Reviews you\'ve written for your stays and hosts.":
-    "Reviews you\'ve written for your stays and hosts.",
+  "Reviews you've written for your stays and hosts.":
+    "Reviews you've written for your stays and hosts.",
   'All Ratings': 'All Ratings',
   Stars: 'Stars',
   '5 Stars': '5 Stars',
@@ -673,7 +673,7 @@ export const dashboard = {
   'Edit Reply': 'Edit Reply',
   'Reply to Review': 'Reply to Review',
   'Posted on': 'Posted on',
-  "That\'s all your reviews!": "That\'s all your reviews!",
+  "That's all your reviews!": "That's all your reviews!",
   'Keep sharing your experience and help our community.':
     'Keep sharing your experience and help our community.',
   'Review deleted successfully': 'Review deleted successfully',
@@ -686,8 +686,8 @@ export const dashboard = {
   'All Reviews': 'All Reviews',
   Listings: 'Listings',
   Hosts: 'Hosts',
-  "You don\'t have any reviews listed under this category right now.":
-    "You don\'t have any reviews listed under this category right now.",
+  "You don't have any reviews listed under this category right now.":
+    "You don't have any reviews listed under this category right now.",
   Messages: 'Messages',
   'Stay connected and build real rapports.':
     'Stay connected and build real rapports.',
@@ -781,8 +781,8 @@ export const dashboard = {
   'Manage devices that can access your account.':
     'Manage devices that can access your account.',
   'View Devices': 'View Devices',
-  "Choose how Vastu-Rent\'s interface appears on your device. Dark mode extends battery life and reduces eye strain.":
-    "Choose how Vastu-Rent\'s interface appears on your device. Dark mode extends battery life and reduces eye strain.",
+  "Choose how Vastu-Rent's interface appears on your device. Dark mode extends battery life and reduces eye strain.":
+    "Choose how Vastu-Rent's interface appears on your device. Dark mode extends battery life and reduces eye strain.",
   'Light Mode': 'Light Mode',
   'Sleek paper cream theme with high readability.':
     'Sleek paper cream theme with high readability.',
