@@ -2,7 +2,7 @@ import { Home, Users, ShieldCheck, Star } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 
 export function StatsSection() {
-  const { t } = useTranslation()
+  const { t, formatDigits } = useTranslation()
 
   const stats = [
     {
@@ -12,7 +12,7 @@ export function StatsSection() {
           strokeWidth={1.5}
         />
       ),
-      value: '25,000+',
+      value: formatDigits('25,000+'),
       label: t('Items Available'),
     },
     {
@@ -22,7 +22,7 @@ export function StatsSection() {
           strokeWidth={1.5}
         />
       ),
-      value: '15,000+',
+      value: formatDigits('15,000+'),
       label: t('Happy Customers'),
     },
     {
@@ -32,7 +32,7 @@ export function StatsSection() {
           strokeWidth={1.5}
         />
       ),
-      value: '98%',
+      value: formatDigits('98%'),
       label: t('Verified & Trusted'),
     },
     {
@@ -42,7 +42,7 @@ export function StatsSection() {
           strokeWidth={1.5}
         />
       ),
-      value: '4.8/5',
+      value: formatDigits('4.8/5'),
       label: t('Customer Rating'),
     },
   ]

@@ -12,6 +12,7 @@ import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { cn } from '#/lib/utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 import { useProductBookingStore } from '../../../../store/useProductBookingStore'
 
@@ -36,6 +37,7 @@ export const ProductInfoSection = ({
   applyCouponIsPending,
   availabilityCalendar,
 }: ProductInfoSectionProps) => {
+  const { formatCurrency, formatDate, formatDigits, formatNumber, t } = useTranslation()
   const {
     paymentMethod,
     setPaymentMethod,
@@ -76,25 +78,25 @@ export const ProductInfoSection = ({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
             <span className="font-bold text-foreground text-sm">
-              {product.rating || '4.6'}
+              {formatDigits(product.rating || '4.6')}
             </span>
             <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
           </div>
           <span className="text-muted-foreground/85 text-sm font-medium cursor-pointer">
-            ({product.reviewsCount || '0'} Reviews)
+            ({formatDigits(product.reviewsCount || '0')} Reviews)
           </span>
         </div>
 
         <div className="flex items-baseline gap-1.5 pt-1">
           <span className="text-3xl font-black text-primary">
-            ₹{product.price.toLocaleString()}
+            {formatCurrency(product.price)}
           </span>
           <span className="text-sm font-bold text-muted-foreground/85">
             /day
           </span>
           {product.securityDeposit > 0 && (
             <span className="ml-3 text-xs font-medium text-muted-foreground/70">
-              + ₹{product.securityDeposit.toLocaleString()} deposit
+              + {formatCurrency(product.securityDeposit)} deposit
             </span>
           )}
         </div>
@@ -118,7 +120,7 @@ export const ProductInfoSection = ({
                 {info.label}
               </span>
               <span className="col-span-2 text-sm font-medium text-foreground">
-                {info.value}
+                {formatDigits(info.value)}
               </span>
             </div>
           ))}
@@ -155,7 +157,7 @@ export const ProductInfoSection = ({
                 {feature.title}
               </p>
               <p className="text-[10px] text-muted-foreground/85">
-                {feature.desc}
+                {formatDigits(feature.desc)}
               </p>
             </div>
           </div>
@@ -172,7 +174,7 @@ export const ProductInfoSection = ({
             Save more with longer rentals!
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Rent for a week or more and get up to 20% off.
+            {formatDigits('Rent for a week or more and get up to 20% off.')}
           </p>
         </div>
       </div>
@@ -225,7 +227,7 @@ export const ProductInfoSection = ({
 
       <div className="flex flex-col sm:flex-row xl:flex-col min-[1400px]:flex-row gap-3 pt-2">
         <Button
-          // onClick={handleRentNow}
+          onClick={handleRentNow}
           disabled={createRentalIsPending || isPaying}
           className="w-full sm:flex-1 h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
         >
@@ -257,9 +259,9 @@ export const ProductInfoSection = ({
           <div className="flex items-center justify-between text-xs text-foreground/80">
             <span className="font-bold">Dates:</span>
             <span>
-              {startDate.toLocaleDateString('en-IN')}{' '}
+              {formatDate(startDate)}{' '}
               {endDate
-                ? `→ ${endDate.toLocaleDateString('en-IN')}`
+                ? `→ ${formatDate(endDate)}`
                 : '→ Pick end date'}
             </span>
           </div>
@@ -267,9 +269,9 @@ export const ProductInfoSection = ({
             <>
               <div className="flex items-center justify-between text-xs text-foreground/80">
                 <span className="font-bold">
-                  Rental Fee ({rentalDays} days):
+                  Rental Fee ({formatNumber(rentalDays)} days):
                 </span>
-                <span>₹{totalPrice.toLocaleString()}</span>
+                <span>{formatCurrency(totalPrice)}</span>
               </div>
 
               {/* Coupon Row */}
@@ -328,7 +330,7 @@ export const ProductInfoSection = ({
               {appliedCoupon && (
                 <div className="flex items-center justify-between text-xs text-emerald-600 font-bold bg-emerald-50/50 p-2 rounded-lg">
                   <span>Coupon Discount ({appliedCoupon.code}):</span>
-                  <span>- ₹{discountAmount.toLocaleString()}</span>
+                  <span>- {formatCurrency(discountAmount)}</span>
                 </div>
               )}
 
@@ -336,12 +338,12 @@ export const ProductInfoSection = ({
                 <span className="font-bold">
                   Security Deposit (Refundable):
                 </span>
-                <span>₹{(product.securityDeposit || 0).toLocaleString()}</span>
+                <span>{formatCurrency(product.securityDeposit || 0)}</span>
               </div>
               <div className="pt-2 border-t border-brand/10 flex items-center justify-between text-sm text-foreground font-black">
                 <span>Total Payable:</span>
                 <span className="text-primary">
-                  ₹{finalPayable.toLocaleString()}
+                  {formatCurrency(finalPayable)}
                 </span>
               </div>
             </>

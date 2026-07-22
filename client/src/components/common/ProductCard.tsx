@@ -4,6 +4,7 @@ import { Button } from '#/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { useWishlist } from '#/hook'
 import { cn } from '#/lib/utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ProductCardProps {
   product: {
@@ -23,6 +24,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
   const { toggleLike, isLiked } = useWishlist()
+  const { formatCurrency, formatDigits, t } = useTranslation()
   const liked = isLiked(product.id)
   const mainImage =
     product.images?.[0] ||
@@ -106,7 +108,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-end justify-between mb-3 mt-auto">
           <div className="flex items-baseline gap-1">
             <span className="text-lg font-bold text-primary-light">
-              ₹{product.price.toLocaleString()}
+              {formatCurrency(product.price)}
             </span>
             <span className="text-xs font-medium text-muted-foreground/85">
               /day
@@ -115,10 +117,10 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
             <span className="text-xs font-bold text-foreground/80">
-              {product.rating || '5.0'}
+              {formatDigits(product.rating || '5.0')}
             </span>
             <span className="text-xs font-medium text-muted-foreground/70">
-              ({product.reviewsCount || '0'})
+              ({formatDigits(product.reviewsCount || 0)})
             </span>
           </div>
         </div>
@@ -130,7 +132,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-        <Button className="w-full shrink-0">Rent Now</Button>
+        <Button className="w-full shrink-0">{t('rentNow') || 'Rent Now'}</Button>
       </div>
     </Link>
   )
