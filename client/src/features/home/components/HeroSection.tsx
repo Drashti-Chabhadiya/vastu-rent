@@ -68,7 +68,7 @@ export function HeroSection() {
             className="mt-6 font-display text-[clamp(2.25rem,4.5vw,4.25rem)] leading-[1.05] tracking-[-0.03em] text-foreground font-extrabold"
           >
             <span className="block">{t('Rent anything.')}</span>
-            <span className="italic text-primary block mt-1 whitespace-nowrap">
+            <span className="italic text-primary block mt-1 sm:whitespace-nowrap">
               {t('Live in harmony.')}
             </span>
           </motion.h1>

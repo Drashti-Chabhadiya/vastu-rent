@@ -1,15 +1,22 @@
 import { useState, useRef } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
-import { cn } from '#/lib/utils'
-import { Mail, Calendar, Camera, Phone, Pencil, Sparkles } from 'lucide-react'
 import { PersonalInfoForm } from './PersonalInfoForm'
 import { ImageEditorModal } from './ImageEditorModal'
+import { UserProfileSummaryCard } from './UserProfileSummaryCard'
 import { LoadingOverlay } from '#/components/ui/loader'
 import { toast } from 'sonner'
 import { useTranslation, normalizeLanguage } from '#/context/TranslationContext'
 import { useProfileData } from '#/hook'
 
-export function UserProfileSettingsCard() {
+interface UserProfileSettingsCardProps {
+  viewSection?: 'all' | 'personal' | 'address'
+  hideLeftSummary?: boolean
+}
+
+export function UserProfileSettingsCard({
+  viewSection = 'all',
+  hideLeftSummary = false,
+}: UserProfileSettingsCardProps) {
   const {
     name,
     setName,
@@ -108,21 +115,26 @@ export function UserProfileSettingsCard() {
 
   const handleSaveChanges = async () => {
     const newErrors: Record<string, string> = {}
-    if (!name.trim()) newErrors.name = 'Full Name is required'
-    if (phone.trim() && !/^\d{10}$/.test(phone.trim())) {
-      newErrors.phone = 'Phone number must be a valid 10-digit number'
-    } else if (!phone.trim()) {
-      newErrors.phone = 'Phone number is required'
+    if (viewSection === 'all' || viewSection === 'personal') {
+      if (!name.trim()) newErrors.name = 'Full Name is required'
+      if (phone.trim() && !/^\d{10}$/.test(phone.trim())) {
+        newErrors.phone = 'Phone number must be a valid 10-digit number'
+      } else if (!phone.trim()) {
+        newErrors.phone = 'Phone number is required'
+      }
     }
-    if (!addressLine1.trim())
-      newErrors.addressLine1 = 'Address Line 1 is required'
-    if (!street.trim()) newErrors.street = 'Street / Area is required'
-    if (!city.trim()) newErrors.city = 'City is required'
-    if (!state.trim()) newErrors.state = 'State is required'
-    if (!pincode.trim()) {
-      newErrors.pincode = 'Pincode is required'
-    } else if (!/^\d{6}$/.test(pincode.trim())) {
-      newErrors.pincode = 'Pincode must be exactly 6 digits'
+
+    if (viewSection === 'all' || viewSection === 'address') {
+      if (!addressLine1.trim())
+        newErrors.addressLine1 = 'Address Line 1 is required'
+      if (!street.trim()) newErrors.street = 'Street / Area is required'
+      if (!city.trim()) newErrors.city = 'City is required'
+      if (!state.trim()) newErrors.state = 'State is required'
+      if (!pincode.trim()) {
+        newErrors.pincode = 'Pincode is required'
+      } else if (!/^\d{6}$/.test(pincode.trim())) {
+        newErrors.pincode = 'Pincode must be exactly 6 digits'
+      }
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -216,7 +228,7 @@ export function UserProfileSettingsCard() {
   )
 
   return (
-    <div className="bg-card rounded-[32px] border border-border/30 shadow-sm p-8 relative">
+    <div className="bg-card rounded-[32px] border border-border/30 shadow-sm p-6 sm:p-8 relative">
       {isSaving && (
         <LoadingOverlay
           message={t('Saving profile changes...')}
@@ -224,156 +236,7 @@ export function UserProfileSettingsCard() {
         />
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left User Summary Column */}
-        <div className="lg:border-r lg:border-border/30 lg:pr-8 flex flex-col items-center text-center">
-          <div className="relative group">
-            <div className="w-32 h-32 rounded-full bg-primary/5 border border-border/30 shadow-sm flex items-center justify-center text-4xl font-extrabold text-primary overflow-hidden relative">
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="w-full h-full object-cover animate-fade-in"
-                />
-              ) : session.user.image ? (
-                <img
-                  src={session.user.image}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                session.user.name.charAt(0).toUpperCase() || 'U'
-              )}
-              {isEditing && (
-                <div
-                  onClick={handleImageClick}
-                  className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center text-primary-foreground cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Camera size={24} className="mb-1 animate-scale-in" />
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-center">
-                    {t('Edit Profile')}
-                  </span>
-                </div>
-              )}
-            </div>
-            {/* Pencil Edit Overlay Button on Bottom-Right */}
-            <div
-              onClick={handleImageClick}
-              className="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-card border border-border shadow-sm flex items-center justify-center cursor-pointer text-primary hover:scale-105 active:scale-95 transition-all"
-            >
-              <Pencil size={12} className="text-primary" />
-            </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
-
-          <h4 className="font-extrabold text-foreground text-xl mt-4 font-display">
-            {session.user.name}
-          </h4>
-          <span className="inline-flex items-center gap-1 rounded-full bg-primary-soft text-primary text-[10px] font-bold px-3 py-1 mt-2">
-            <svg
-              className="h-3 w-3 text-primary shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={3}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            {t('Verified Member')}
-          </span>
-
-          {/* Profile Completeness Widget */}
-          <div className="w-full mt-6 bg-muted-light/30 border border-border/20 rounded-2xl p-4 text-left">
-            <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
-                {t('Completeness')}
-              </span>
-              <span
-                className={cn(
-                  'text-xs font-black',
-                  completenessPercent === 100
-                    ? 'text-primary'
-                    : 'text-amber-500',
-                )}
-              >
-                {completenessPercent}%
-              </span>
-            </div>
-            {/* Progress Bar */}
-            <div className="w-full h-2 bg-muted-light rounded-full overflow-hidden mb-3">
-              <div
-                className={cn(
-                  'h-full transition-all duration-500 rounded-full',
-                  completenessPercent === 100 ? 'bg-primary' : 'bg-amber-500',
-                )}
-                style={{ width: `${completenessPercent}%` }}
-              />
-            </div>
-
-            {/* Missing fields list */}
-            {missingFields.length > 0 ? (
-              <div className="space-y-1.5">
-                <p className="text-[9px] font-bold text-muted-dark uppercase tracking-wider">
-                  {t('Pending Details:')}
-                </p>
-                <ul className="space-y-1 pl-1">
-                  {missingFields.map((f) => (
-                    <li
-                      key={f.key}
-                      className="text-[10px] font-semibold text-amber-600 flex items-center gap-1.5"
-                    >
-                      <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
-                      {t(f.label)}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1.5 text-[10px] font-black text-primary">
-                <Sparkles
-                  size={11}
-                  className="fill-primary-soft shrink-0 animate-bounce"
-                />
-                {t('Profile fully complete!')}
-              </div>
-            )}
-          </div>
-
-          {/* Dynamic Contact Details */}
-          <div className="mt-6 space-y-4 text-left w-full max-w-[240px]">
-            <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-              <Mail size={16} className="text-muted-foreground/70 shrink-0" />
-              <span className="truncate">{session.user.email}</span>
-            </div>
-            <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-              <Phone size={16} className="text-muted-foreground/70 shrink-0" />
-              <span className={cn(!phone && 'italic text-muted-foreground/50')}>
-                {phone || t('Not specified')}
-              </span>
-            </div>
-            <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
-              <Calendar
-                size={16}
-                className="text-muted-foreground/70 shrink-0"
-              />
-              <span>
-                {t('Member since')} {joinDate}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Personal Information Form Column */}
+      {hideLeftSummary ? (
         <PersonalInfoForm
           name={name}
           setName={setName}
@@ -411,8 +274,66 @@ export function UserProfileSettingsCard() {
           addressType={addressType}
           setAddressType={setAddressType}
           errors={errors}
+          viewSection={viewSection}
         />
-      </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left User Summary Column (Reusable & Mobile Responsive) */}
+          <UserProfileSummaryCard
+            session={session}
+            imagePreview={imagePreview}
+            isEditing={isEditing}
+            handleImageClick={handleImageClick}
+            fileInputRef={fileInputRef}
+            handleFileChange={handleFileChange}
+            completenessPercent={completenessPercent}
+            missingFields={missingFields}
+            phone={phone}
+            joinDate={joinDate}
+          />
+
+          {/* Right Personal Information Form Column */}
+          <PersonalInfoForm
+            name={name}
+            setName={setName}
+            gender={gender}
+            setGender={setGender}
+            location={location}
+            setLocation={setLocation}
+            phone={phone}
+            setPhone={setPhone}
+            language={language}
+            setLanguage={setLanguage}
+            dob={dob}
+            setDob={setDob}
+            email={session.user.email}
+            isEditing={isEditing}
+            handleEditClick={handleEditClick}
+            handleSaveChanges={handleSaveChanges}
+            isSaving={isSaving}
+            addressLine1={addressLine1}
+            setAddressLine1={setAddressLine1}
+            addressLine2={addressLine2}
+            setAddressLine2={setAddressLine2}
+            street={street}
+            setStreet={setStreet}
+            city={city}
+            setCity={setCity}
+            state={state}
+            setState={setState}
+            pincode={pincode}
+            setPincode={setPincode}
+            country={country}
+            setCountry={setCountry}
+            shopName={shopName}
+            setShopName={setShopName}
+            addressType={addressType}
+            setAddressType={setAddressType}
+            errors={errors}
+            viewSection={viewSection}
+          />
+        </div>
+      )}
 
       <ImageEditorModal
         isOpen={isEditorOpen}
@@ -428,3 +349,4 @@ export function UserProfileSettingsCard() {
     </div>
   )
 }
+

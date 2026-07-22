@@ -67,6 +67,7 @@ interface PersonalInfoFormProps {
   addressType?: 'home' | 'shop'
   setAddressType?: (val: 'home' | 'shop') => void
   errors?: Record<string, string>
+  viewSection?: 'all' | 'personal' | 'address'
 }
 
 export function PersonalInfoForm({
@@ -104,6 +105,7 @@ export function PersonalInfoForm({
   addressType = 'home',
   setAddressType,
   errors = {},
+  viewSection = 'all',
 }: PersonalInfoFormProps) {
   const { t } = useTranslation()
 
@@ -159,11 +161,24 @@ export function PersonalInfoForm({
   }, [matchedStates, pincodeData, state])
 
   return (
-    <div className="lg:col-span-2 lg:pl-4">
+    <div className="lg:col-span-2 w-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-extrabold text-foreground text-base font-display">
-          {t('Personal Information')}
-        </h3>
+        <div>
+          <h3 className="font-extrabold text-foreground text-base font-display">
+            {viewSection === 'personal'
+              ? t('Personal Information')
+              : viewSection === 'address'
+                ? t('Rental Address')
+                : t('Personal & Address Details')}
+          </h3>
+          <p className="text-xs text-muted-foreground/80 font-medium mt-0.5">
+            {viewSection === 'personal'
+              ? t('Manage your account identity and contact information.')
+              : viewSection === 'address'
+                ? t('Manage your primary rental address for bookings and items.')
+                : t('Manage your personal and rental address information.')}
+          </p>
+        </div>
         <Button
           variant="outline"
           size="sm"
@@ -188,166 +203,175 @@ export function PersonalInfoForm({
 
       {/* Form Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-        {/* Full Name */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="fullName"
-            className="text-xs font-bold text-muted-foreground/70"
-          >
-            {t('Full Name')}
-          </Label>
-          <Input
-            id="fullName"
-            value={name}
-            placeholder={t('Not specified')}
-            onChange={(e) => setName(e.target.value)}
-            disabled={!isEditing}
-            className={cn(
-              'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-              isEditing
-                ? errors.name
-                  ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
-                  : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
-            )}
-          />
-          {errors.name && (
-            <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
-              {errors.name}
-            </p>
-          )}
-        </div>
-
-        {/* Gender */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="gender"
-            className="text-xs font-bold text-muted-foreground/70"
-          >
-            {t('Gender')}
-          </Label>
-          <Select
-            value={gender}
-            onValueChange={setGender}
-            disabled={!isEditing}
-          >
-            <SelectTrigger
-              id="gender"
-              className={cn(
-                'w-full h-11 px-4 rounded-xl border border-border font-semibold text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-muted-light/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-muted-foreground/70',
-                isEditing
-                  ? 'bg-card border-primary ring-2 ring-primary/5'
-                  : 'bg-muted-light/50 [&>span]:opacity-100',
+        {/* ─── Personal Information Fields ─── */}
+        {(viewSection === 'all' || viewSection === 'personal') && (
+          <>
+            {/* Full Name */}
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="fullName"
+                className="text-xs font-bold text-muted-foreground/70"
+              >
+                {t('Full Name')}
+              </Label>
+              <Input
+                id="fullName"
+                value={name}
+                placeholder={t('Not specified')}
+                onChange={(e) => setName(e.target.value)}
+                disabled={!isEditing}
+                className={cn(
+                  'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                  isEditing
+                    ? errors.name
+                      ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
+                      : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                    : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+                )}
+              />
+              {errors.name && (
+                <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
+                  {errors.name}
+                </p>
               )}
-            >
-              <SelectValue placeholder={t('Select Gender')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Female">{t('Female')}</SelectItem>
-              <SelectItem value="Male">{t('Male')}</SelectItem>
-              <SelectItem value="Other">{t('Other')}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+            </div>
 
-        {/* Email Address */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="email"
-            className="text-xs font-bold text-muted-foreground/70"
-          >
-            {t('Email Address')}
-          </Label>
-          <Input
-            id="email"
-            value={email}
-            disabled
-            className="h-11 rounded-xl border-border bg-muted-light/50 text-foreground font-semibold text-sm disabled:opacity-100 disabled:cursor-default"
-          />
-        </div>
+            {/* Gender */}
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="gender"
+                className="text-xs font-bold text-muted-foreground/70"
+              >
+                {t('Gender')}
+              </Label>
+              <Select
+                value={gender}
+                onValueChange={setGender}
+                disabled={!isEditing}
+              >
+                <SelectTrigger
+                  id="gender"
+                  className={cn(
+                    'w-full h-11 px-4 rounded-xl border border-border font-semibold text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-100 disabled:bg-muted-light/50 disabled:cursor-default transition-all shadow-none cursor-pointer data-[placeholder]:text-muted-foreground/70',
+                    isEditing
+                      ? 'bg-card border-primary ring-2 ring-primary/5'
+                      : 'bg-muted-light/50 [&>span]:opacity-100',
+                  )}
+                >
+                  <SelectValue placeholder={t('Select Gender')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Female">{t('Female')}</SelectItem>
+                  <SelectItem value="Male">{t('Male')}</SelectItem>
+                  <SelectItem value="Other">{t('Other')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-        {/* Phone Number */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="phone"
-            className="text-xs font-bold text-muted-foreground/70"
-          >
-            {t('Phone Number')}
-          </Label>
-          <Input
-            id="phone"
-            value={phone}
-            placeholder={t('Not specified')}
-            onChange={(e) => setPhone(e.target.value)}
-            disabled={!isEditing}
-            className={cn(
-              'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-              isEditing
-                ? errors.phone
-                  ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
-                  : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
-            )}
-          />
-          {errors.phone && (
-            <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
-              {errors.phone}
-            </p>
-          )}
-        </div>
+            {/* Email Address */}
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="email"
+                className="text-xs font-bold text-muted-foreground/70"
+              >
+                {t('Email Address')}
+              </Label>
+              <Input
+                id="email"
+                value={email}
+                disabled
+                className="h-11 rounded-xl border-border bg-muted-light/50 text-foreground font-semibold text-sm disabled:opacity-100 disabled:cursor-default"
+              />
+            </div>
 
-        {/* Preferred Language */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="language"
-            className="text-xs font-bold text-muted-foreground/70 block mb-1"
-          >
-            {t('Preferred Language')}
-          </Label>
-          <div className="pt-0.5">
-            <LanguageSelector className="w-full justify-between h-11 px-4 rounded-xl border-border bg-card font-semibold text-sm shadow-none" />
-          </div>
-        </div>
-
-        {/* Date of Birth */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="dob"
-            className="text-xs font-bold text-muted-foreground/70"
-          >
-            {t('Date of Birth')}
-          </Label>
-          <div className="relative">
-            <Input
-              id="dob"
-              value={dob}
-              placeholder={t('Not specified')}
-              onChange={(e) => setDob(e.target.value)}
-              disabled={!isEditing}
-              className={cn(
-                'h-11 pr-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
-                isEditing
-                  ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
-                  : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+            {/* Phone Number */}
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="phone"
+                className="text-xs font-bold text-muted-foreground/70"
+              >
+                {t('Phone Number')}
+              </Label>
+              <Input
+                id="phone"
+                value={phone}
+                placeholder={t('Not specified')}
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={!isEditing}
+                className={cn(
+                  'h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                  isEditing
+                    ? errors.phone
+                      ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
+                      : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                    : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+                )}
+              />
+              {errors.phone && (
+                <p className="text-[11px] font-bold text-destructive mt-1 animate-in fade-in duration-200">
+                  {errors.phone}
+                </p>
               )}
-            />
-            <Calendar
-              size={16}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/70 pointer-events-none"
-            />
-          </div>
-        </div>
+            </div>
 
-        {/* Rental Address Section Header */}
-        <div className="col-span-full border-t border-border/30 pt-6 mt-4">
-          <h4 className="font-extrabold text-foreground text-sm flex items-center gap-2 mb-1">
-            <MapPin size={16} className="text-primary" />
-            {t('Rental Address')}
-          </h4>
-          <p className="text-[11px] text-muted-foreground/85 font-medium mb-4">
-            {t('Rental Address Subtitle')}
-          </p>
-        </div>
+            {/* Preferred Language */}
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="language"
+                className="text-xs font-bold text-muted-foreground/70 block mb-1"
+              >
+                {t('Preferred Language')}
+              </Label>
+              <div className="pt-0.5">
+                <LanguageSelector className="w-full justify-between h-11 px-4 rounded-xl border-border bg-card font-semibold text-sm shadow-none" />
+              </div>
+            </div>
+
+            {/* Date of Birth */}
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="dob"
+                className="text-xs font-bold text-muted-foreground/70"
+              >
+                {t('Date of Birth')}
+              </Label>
+              <div className="relative">
+                <Input
+                  id="dob"
+                  value={dob}
+                  placeholder={t('Not specified')}
+                  onChange={(e) => setDob(e.target.value)}
+                  disabled={!isEditing}
+                  className={cn(
+                    'h-11 pr-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                    isEditing
+                      ? 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                      : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+                  )}
+                />
+                <Calendar
+                  size={16}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/70 pointer-events-none"
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* ─── Rental Address Fields ─── */}
+        {(viewSection === 'all' || viewSection === 'address') && (
+          <>
+            {viewSection === 'all' && (
+              <div className="col-span-full border-t border-border/30 pt-6 mt-4">
+                <h4 className="font-extrabold text-foreground text-sm flex items-center gap-2 mb-1">
+                  <MapPin size={16} className="text-primary" />
+                  {t('Rental Address')}
+                </h4>
+                <p className="text-[11px] text-muted-foreground/85 font-medium mb-4">
+                  {t('Rental Address Subtitle')}
+                </p>
+              </div>
+            )}
 
         {/* Address Type Toggle (Home vs Shop Address) */}
         <div className="col-span-full rounded-2xl border border-border/40 bg-muted/20 p-4 mb-1">
@@ -653,6 +677,8 @@ export function PersonalInfoForm({
             />
           </div>
         </div>
+          </>
+        )}
       </div>
 
       {/* Action Save Button */}

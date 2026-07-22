@@ -319,7 +319,7 @@ function RootDocument() {
     routerState.location.pathname.startsWith('/account/messages')
 
   return (
-    <div className={cn('bg-card', 'font-sans', 'antialiased')}>
+    <div className={cn('bg-card', 'font-sans', 'antialiased', 'min-h-screen', 'w-full')}>
       <QueryClientProvider client={queryClient}>
         <TranslationProvider>
           <NotificationListener />

@@ -269,10 +269,14 @@
 
 .dark {
   /* Cream / paper background, deep forest green primary, ink navy text overrides */
-  --background: oklch(0.12 0.015 152); /* Deep dark obsidian slate-emerald */
-  --surface: oklch(0.14 0.018 152); /* Slightly lighter dark surface */
-  --foreground: oklch(0.92 0.01 150); /* Crispy clear light text */
-  --ink: oklch(0.97 0.005 150); /* Clean white for headings */
+  --background: oklch(0.12 0.015 152);
+  /* Deep dark obsidian slate-emerald */
+  --surface: oklch(0.14 0.018 152);
+  /* Slightly lighter dark surface */
+  --foreground: oklch(0.92 0.01 150);
+  /* Crispy clear light text */
+  --ink: oklch(0.97 0.005 150);
+  /* Clean white for headings */
 
   --card: oklch(0.15 0.02 152);
   --card-foreground: oklch(0.92 0.01 150);
@@ -280,9 +284,11 @@
   --popover: oklch(0.15 0.02 152);
   --popover-foreground: oklch(0.92 0.01 150);
 
-  --primary: oklch(0.68 0.12 152); /* vibrant emerald accent */
+  --primary: oklch(0.68 0.12 152);
+  /* vibrant emerald accent */
   --primary-foreground: oklch(0.12 0.015 152);
-  --primary-soft: oklch(0.18 0.035 152); /* deep forest green tint */
+  --primary-soft: oklch(0.18 0.035 152);
+  /* deep forest green tint */
   --primary-hover: oklch(0.72 0.14 152);
   --primary-border: oklch(0.24 0.04 152);
 
@@ -344,40 +350,35 @@
   .bg-white {
     background-color: var(--color-card) !important;
   }
+
   .bg-white\/70 {
-    background-color: color-mix(
-      in oklab,
-      var(--color-card) 70%,
-      transparent
-    ) !important;
+    background-color: color-mix(in oklab,
+        var(--color-card) 70%,
+        transparent) !important;
   }
+
   .bg-white\/80 {
-    background-color: color-mix(
-      in oklab,
-      var(--color-card) 80%,
-      transparent
-    ) !important;
+    background-color: color-mix(in oklab,
+        var(--color-card) 80%,
+        transparent) !important;
   }
+
   .bg-white\/90 {
-    background-color: color-mix(
-      in oklab,
-      var(--color-card) 90%,
-      transparent
-    ) !important;
+    background-color: color-mix(in oklab,
+        var(--color-card) 90%,
+        transparent) !important;
   }
+
   .bg-white\/10 {
-    background-color: color-mix(
-      in oklab,
-      var(--color-card) 10%,
-      transparent
-    ) !important;
+    background-color: color-mix(in oklab,
+        var(--color-card) 10%,
+        transparent) !important;
   }
+
   .bg-white\/20 {
-    background-color: color-mix(
-      in oklab,
-      var(--color-card) 20%,
-      transparent
-    ) !important;
+    background-color: color-mix(in oklab,
+        var(--color-card) 20%,
+        transparent) !important;
   }
 }
 
@@ -399,8 +400,8 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-feature-settings: 'ss01', 'cv11';
-    /* Prevent content shift when keyboard opens */
-    overscroll-behavior: none;
+    width: 100%;
+    overflow-x: clip;
   }
 
   h1,
@@ -441,10 +442,8 @@
   }
 
   .bg-grain {
-    background-image: radial-gradient(
-      rgba(20, 35, 25, 0.025) 1px,
-      transparent 1px
-    );
+    background-image: radial-gradient(rgba(20, 35, 25, 0.025) 1px,
+        transparent 1px);
     background-size: 3px 3px;
   }
 
@@ -468,7 +467,7 @@
   }
 
   /* Hide all elements on the parent document */
-  body > * {
+  body>* {
     display: none !important;
   }
 
@@ -539,6 +538,7 @@
 iframe.goog-te-menu-frame {
   display: none !important;
 }
+
 body {
   top: 0 !important;
 }

@@ -14,7 +14,6 @@ import { ArrowUpRight, Sparkles } from 'lucide-react'
 
 const navLinks = [
   { label: 'Catalogue', path: '/', hash: 'categories' },
-  { label: 'How it works', path: '/', hash: 'how-it-works' },
   { label: 'Pricing', path: '/pricing' },
   { label: 'Become a host', path: '/become-lister' },
 ]

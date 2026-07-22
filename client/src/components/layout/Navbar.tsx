@@ -204,11 +204,15 @@ export function Navbar() {
               </Button>
             </Link>
 
-            {/* Language Selector */}
-            <LanguageSelector />
+            {/* Language Selector (hidden on mobile, accessible in mobile drawer) */}
+            <div className="hidden sm:block">
+              <LanguageSelector />
+            </div>
 
-            {/* Theme Toggle */}
-            <ThemeToggle />
+            {/* Theme Toggle (hidden on mobile, accessible in mobile drawer) */}
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
 
             {/* User Menu */}
             {isPending ? (
