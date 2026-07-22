@@ -15,6 +15,7 @@ import { Button } from '#/components/ui/button'
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { LoadingOverlay } from '#/components/ui/loader'
+import { useTranslation } from '#/context/TranslationContext'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +32,7 @@ import { fadeUp, stagger } from '#/lib/animations'
 
 export const MyBookings = () => {
   const { data: rentals, isLoading, refetch } = useMyRentals()
+  const { t } = useTranslation()
   const [isVerifying, setIsVerifying] = useState(false)
   const verifyBookingSession = useVerifyBookingSession()
   const [activeTab, setActiveTab] = useState<
@@ -49,14 +51,14 @@ export const MyBookings = () => {
     if (sessionId && rentalId) {
       const verifySession = async () => {
         setIsVerifying(true)
-        const toastId = toast.loading('Verifying your booking payment...')
+        const toastId = toast.loading(t('Verifying your booking payment...'))
         try {
           const res = await verifyBookingSession.mutateAsync({
             sessionId,
             rentalId,
           })
           if (res?.success) {
-            toast.success('🎉 Booking confirmed and paid successfully!', {
+            toast.success(t('🎉 Booking confirmed and paid successfully!'), {
               id: toastId,
             })
             await refetch()
@@ -67,7 +69,7 @@ export const MyBookings = () => {
               window.location.pathname,
             )
           } else {
-            toast.error('Could not verify your booking payment.', {
+            toast.error(t('Could not verify your booking payment.'), {
               id: toastId,
             })
           }
@@ -75,7 +77,7 @@ export const MyBookings = () => {
           console.error('Booking session verification failed:', error)
           toast.error(
             error.response?.data?.message ||
-              'Booking payment verification failed.',
+            t('Booking payment verification failed.'),
             { id: toastId },
           )
         } finally {
@@ -116,7 +118,7 @@ export const MyBookings = () => {
       {
         onSuccess: () => {
           toast.success(
-            'Dispute reported successfully! Vastu Support is reviewing it.',
+            t('Dispute reported successfully! Vastu Support is reviewing it.'),
           )
           setIsDisputeDialogOpen(false)
           setDisputeReason('')
@@ -126,7 +128,7 @@ export const MyBookings = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-              'Failed to submit dispute. Try again.',
+            t('Failed to submit dispute. Try again.'),
           )
         },
       },
@@ -237,7 +239,7 @@ export const MyBookings = () => {
     >
       {isVerifying && (
         <LoadingOverlay
-          message="Verifying payment..."
+          message={t('Verifying payment...')}
           className="rounded-[32px] z-50 animate-fade-in"
         />
       )}
@@ -262,10 +264,10 @@ export const MyBookings = () => {
               'tracking-tight',
             )}
           >
-            My Bookings
+            {t('My Bookings')}
           </h1>
           <p className={cn('text-sm', 'text-muted-foreground/70', 'font-bold')}>
-            Manage your upcoming and past bookings.
+            {t('Manage your upcoming and past bookings.')}
           </p>
         </div>
         <DropdownMenu>
@@ -290,10 +292,10 @@ export const MyBookings = () => {
             >
               <SlidersHorizontal size={14} className="text-muted-dark" />
               {paymentFilter === 'all'
-                ? 'Filter'
+                ? t('Filter')
                 : paymentFilter === 'paid'
-                  ? 'Paid Bookings'
-                  : 'Unpaid Bookings'}
+                  ? t('Paid Bookings')
+                  : t('Unpaid Bookings')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -313,7 +315,7 @@ export const MyBookings = () => {
                 paymentFilter === 'all' && 'text-primary bg-primary/5',
               )}
             >
-              All Payments
+              {t('All Payments')}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setPaymentFilter('paid')}
@@ -322,7 +324,7 @@ export const MyBookings = () => {
                 paymentFilter === 'paid' && 'text-primary bg-primary/5',
               )}
             >
-              Paid Bookings
+              {t('Paid Bookings')}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setPaymentFilter('pending')}
@@ -331,7 +333,7 @@ export const MyBookings = () => {
                 paymentFilter === 'pending' && 'text-primary bg-primary/5',
               )}
             >
-              Pending Payment
+              {t('Pending Payment')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -366,7 +368,7 @@ export const MyBookings = () => {
                 )}
               >
                 <span>
-                  {tab} ({counts[tab]})
+                  {t(tab)} ({counts[tab]})
                 </span>
                 {isActive && (
                   <div
@@ -419,7 +421,7 @@ export const MyBookings = () => {
             <Calendar className="text-muted-dark" size={32} />
           </div>
           <h3 className={cn('text-lg', 'font-extrabold', 'text-foreground/90')}>
-            No {activeTab} bookings
+            {t('No')} {t(activeTab)} {t('bookings')}
           </h3>
           <p
             className={cn(
@@ -431,7 +433,7 @@ export const MyBookings = () => {
               'font-bold',
             )}
           >
-            You don't have any bookings matching this status right now.
+            {t("You don't have any bookings matching this status right now.")}
           </p>
         </motion.div>
       ) : (
@@ -515,7 +517,7 @@ export const MyBookings = () => {
           </div>
           <div>
             <h4 className={cn('font-extrabold', 'text-foreground', 'text-sm')}>
-              Need help with your booking?
+              {t('Need help with your booking?')}
             </h4>
             <p
               className={cn(
@@ -525,7 +527,7 @@ export const MyBookings = () => {
                 'mt-0.5',
               )}
             >
-              Our support team is here to assist you.
+              {t('Our support team is here to assist you.')}
             </p>
           </div>
         </div>
@@ -550,7 +552,7 @@ export const MyBookings = () => {
             size={15}
             className={cn('text-muted-dark', 'shrink-0')}
           />
-          Contact Support
+          {t('Contact Support')}
         </Button>
       </motion.div>
 
@@ -573,7 +575,7 @@ export const MyBookings = () => {
         setUploadedImages={setUploadedImages}
         onSubmit={() => {
           if (!comment.trim()) {
-            toast.error('Please enter a comment.')
+            toast.error(t('Please enter a comment.'))
             return
           }
           let finalComment = comment
@@ -588,14 +590,14 @@ export const MyBookings = () => {
             },
             {
               onSuccess: () => {
-                toast.success('Review submitted successfully!')
+                toast.success(t('Review submitted successfully!'))
                 setIsReviewDialogOpen(false)
                 setRating(5)
                 setComment('')
                 setUploadedImages([])
               },
               onError: () => {
-                toast.error('Failed to submit review. Please try again.')
+                toast.error(t('Failed to submit review. Please try again.'))
               },
             },
           )

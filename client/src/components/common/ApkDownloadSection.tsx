@@ -16,8 +16,10 @@ import { useState, useEffect } from 'react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { cn } from '#/lib/utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 const ApkDownloadSection = () => {
+  const { t } = useTranslation()
   const [downloadUrl, setDownloadUrl] = useState('')
   const [qrUrl, setQrUrl] = useState('')
   const [qrLoaded, setQrLoaded] = useState(false)
@@ -73,42 +75,48 @@ const ApkDownloadSection = () => {
 
   const androidSteps = [
     {
-      title: 'Download APK',
-      description:
+      title: t('Download APK'),
+      description: t(
         'Scan the QR code or click the button to start downloading the file.',
+      ),
       icon: <Download className="w-5 h-5" />,
     },
     {
-      title: 'Allow Unknown Sources',
-      description:
+      title: t('Allow Unknown Sources'),
+      description: t(
         'Go to Settings > Security and enable "Install from Unknown Sources".',
+      ),
       icon: <ShieldCheck className="w-5 h-5" />,
     },
     {
-      title: 'Install & Launch',
-      description:
+      title: t('Install & Launch'),
+      description: t(
         'Open the file and follow prompts to start using Vastu Rent.',
+      ),
       icon: <CheckCircle2 className="w-5 h-5" />,
     },
   ]
 
   const iosSteps = [
     {
-      title: 'Scan QR Code',
-      description:
+      title: t('Scan QR Code'),
+      description: t(
         'Scan the QR code to open the Vastu Rent website in Safari browser.',
+      ),
       icon: <Globe className="w-5 h-5" />,
     },
     {
-      title: 'Tap Share Button',
-      description:
+      title: t('Tap Share Button'),
+      description: t(
         'Tap the Share button in Safari (box icon with upward arrow) at the bottom.',
+      ),
       icon: <ExternalLink className="w-5 h-5" />,
     },
     {
-      title: 'Add to Home Screen',
-      description:
+      title: t('Add to Home Screen'),
+      description: t(
         'Select "Add to Home Screen" from the menu to install it on your device.',
+      ),
       icon: <CheckCircle2 className="w-5 h-5" />,
     },
   ]
@@ -143,7 +151,7 @@ const ApkDownloadSection = () => {
                       : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light',
                   )}
                 >
-                  Android
+                  {t('Android')}
                 </Button>
                 <Button
                   onClick={() => setActivePlatform('ios')}
@@ -154,7 +162,7 @@ const ApkDownloadSection = () => {
                       : 'bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted-light',
                   )}
                 >
-                  iOS (iPhone)
+                  {t('iOS (iPhone)')}
                 </Button>
               </div>
 
@@ -165,27 +173,32 @@ const ApkDownloadSection = () => {
               >
                 <Smartphone className="w-4 h-4" />
                 {activePlatform === 'android'
-                  ? 'Now Available for Android'
-                  : 'Installs instantly on iOS'}
+                  ? t('Now Available for Android')
+                  : t('Installs instantly on iOS')}
               </motion.div>
               <h1 className="text-5xl lg:text-7xl font-display text-foreground leading-[1.05] tracking-tight">
                 {activePlatform === 'android' ? (
                   <>
-                    Download{' '}
+                    {t('Download')}{' '}
                     <span className="text-primary italic">Vastu Rent</span>{' '}
-                    Mobile App
+                    {t('Mobile App')}
                   </>
                 ) : (
                   <>
-                    Add <span className="text-primary italic">Vastu Rent</span>{' '}
-                    to Home Screen
+                    {t('Add')}{' '}
+                    <span className="text-primary italic">Vastu Rent</span>{' '}
+                    {t('to Home Screen')}
                   </>
                 )}
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-sans">
                 {activePlatform === 'android'
-                  ? 'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.'
-                  : 'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.'}
+                  ? t(
+                    'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.',
+                  )
+                  : t(
+                    'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.',
+                  )}
               </p>
             </div>
 
@@ -204,16 +217,16 @@ const ApkDownloadSection = () => {
                   </div>
                   <div className="flex flex-col items-start leading-tight">
                     <span className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em] mb-0.5">
-                      {APK_CONFIG.VERSION} Stable
+                      {APK_CONFIG.VERSION} {t('Stable')}
                     </span>
-                    <span>Download APK</span>
+                    <span>{t('Download APK')}</span>
                   </div>
                 </motion.a>
 
                 <div className="flex flex-col gap-2 font-sans">
                   <div className="flex items-center gap-2 text-primary font-bold">
                     <ShieldCheck className="w-5 h-5 text-primary" />
-                    <span>100% Safe & Virus Free</span>
+                    <span>{t('100% Safe & Virus Free')}</span>
                   </div>
                   <div className="text-muted-foreground text-sm flex items-center gap-3">
                     <span className="font-medium text-foreground">
@@ -243,23 +256,23 @@ const ApkDownloadSection = () => {
                   </div>
                   <div className="flex flex-col items-start leading-tight">
                     <span className="text-[10px] opacity-70 font-bold uppercase tracking-[0.2em] mb-0.5">
-                      Safari Web App
+                      {t('Safari Web App')}
                     </span>
-                    <span>Open Web Version</span>
+                    <span>{t('Open Web Version')}</span>
                   </div>
                 </motion.button>
 
                 <div className="flex flex-col gap-2 font-sans">
                   <div className="flex items-center gap-2 text-primary font-bold">
                     <CheckCircle2 className="w-5 h-5 text-primary" />
-                    <span>Install via Safari</span>
+                    <span>{t('Install via Safari')}</span>
                   </div>
                   <div className="text-muted-foreground text-sm flex items-center gap-3">
                     <span className="font-medium text-foreground">
-                      No Store Needed
+                      {t('No Store Needed')}
                     </span>
                     <span className="w-1 h-1 bg-border rounded-full" />
-                    <span>iOS 16.4+ Supported</span>
+                    <span>{t('iOS 16.4+ Supported')}</span>
                   </div>
                 </div>
               </div>
@@ -310,8 +323,9 @@ const ApkDownloadSection = () => {
                       <AlertTriangle className="w-6 h-6 text-warning-foreground flex-shrink-0" />
                       <div className="space-y-3 w-full">
                         <p className="text-xs font-bold text-warning-foreground font-sans leading-relaxed">
-                          Localhost detected! To scan with your phone, enter
-                          your PC's local IP address below.
+                          {t(
+                            "Localhost detected! To scan with your phone, enter your PC's local IP address below.",
+                          )}
                         </p>
                         <div className="flex gap-2">
                           <Input
@@ -338,7 +352,7 @@ const ApkDownloadSection = () => {
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-card z-20">
                         <RefreshCw className="w-10 h-10 text-primary animate-spin" />
                         <span className="text-xs font-sans text-muted-foreground">
-                          Generating QR...
+                          {t('Generating QR...')}
                         </span>
                       </div>
                     )}
@@ -354,23 +368,27 @@ const ApkDownloadSection = () => {
                 <div className="space-y-3 px-4">
                   <h3 className="text-2xl font-display text-foreground leading-tight">
                     {activePlatform === 'android'
-                      ? 'Scan to Install'
-                      : 'Scan on iPhone'}
+                      ? t('Scan to Install')
+                      : t('Scan on iPhone')}
                   </h3>
                   <p className="text-sm text-muted-foreground font-sans leading-relaxed">
                     {activePlatform === 'android'
-                      ? 'Point your camera at this code to download the APK directly to your phone.'
-                      : 'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.'}
+                      ? t(
+                        'Point your camera at this code to download the APK directly to your phone.',
+                      )
+                      : t(
+                        'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.',
+                      )}
                   </p>
                 </div>
 
                 {/* Status Badges */}
                 <div className="flex flex-wrap justify-center gap-3 pt-4 border-t border-border/50">
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-soft text-primary-hover text-[10px] font-bold rounded-full border border-primary-border uppercase tracking-wider">
-                    <CheckCircle2 className="w-3 h-3" /> Secure Link
+                    <CheckCircle2 className="w-3 h-3" /> {t('Secure Link')}
                   </div>
                   <div className="flex items-center gap-2 px-3 py-1.5 bg-info text-info-foreground text-[10px] font-bold rounded-full border border-info-foreground/20 uppercase tracking-wider">
-                    <Globe className="w-3 h-3" /> Global Access
+                    <Globe className="w-3 h-3" /> {t('Global Access')}
                   </div>
                 </div>
 
@@ -397,12 +415,12 @@ const ApkDownloadSection = () => {
                         ) : (
                           <Copy className="w-3 h-3" />
                         )}
-                        {copied ? 'Copied' : 'Copy'}
+                        {copied ? t('Copied') : t('Copy')}
                       </div>
                     </Button>
                   </div>
                   <p className="text-[10px] text-muted-foreground font-sans text-center opacity-40">
-                    Share this link with your device
+                    {t('Share this link with your device')}
                   </p>
                 </div>
               </div>
@@ -419,3 +437,4 @@ const ApkDownloadSection = () => {
 }
 
 export default ApkDownloadSection
+

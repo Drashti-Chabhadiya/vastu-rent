@@ -34,4 +34,29 @@ export const header = {
   'View all categories': 'બધી શ્રેણીઓ જુઓ',
   'Explore items in': 'આમાં વસ્તુઓ શોધો',
   'Loading categories...': 'શ્રેણીઓ લોડ થઈ રહી છે...',
+  'My Profile': 'મારી પ્રોફાઇલ',
+  'Become a Green Member': 'ગ્રીન મેમ્બર બનો',
+  'List items and verify your details to earn the green badge and stand out!':
+    'ગ્રીન બેજ મેળવવા અને અલગ દેખાવા માટે વસ્તુઓ લિસ્ટ કરો અને તમારી વિગતો ચકાસો!',
+  'Email Verified': 'ઈમેલ ચકાસાયેલ',
+  'Phone Added': 'ફોન ઉમેરાયેલ',
+  'Location Added': 'સ્થાન ઉમેરાયેલ',
+  '1+ Active Listings': '૧+ સક્રિય લિસ્ટિંગ',
+  'Green Member': 'ગ્રીન મેમ્બર',
+  "You're saving the planet!": 'તમે પૃથ્વીને બચાવી રહ્યા છો!',
+  'Theme & Appearance': 'થીમ અને રૂપરેખા',
+  Light: 'લાઇટ',
+  Dark: 'ડાર્ક',
+  System: 'સિસ્ટમ',
+
+  'Vastu Catalog': 'વાસ્તુ કેટલોગ',
+  'Find items for every aspect of life.': 'જીવનના દરેક પાસાં માટે વસ્તુઓ શોધો.',
+  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.': 'તમે વિશ્વાસ કરો છો તે પાડોશીઓ પાસેથી કાળજીપૂર્વક રાખેલી ભાડાની વસ્તુઓ બ્રાઉઝ કરો. તમારા વોલેટ માટે સારું, ગ્રહ માટે શ્રેષ્ઠ.',
+  'Explore all categories': 'બધી કેટેગરીઝ એક્સપ્લોર કરો',
+  'All Categories': 'બધી કેટેગરી',
+  'items': 'વસ્તુઓ',
+  'No categories found': 'કોઈ કેટેગરીઓ મળી નથી',
+
 }
+
+

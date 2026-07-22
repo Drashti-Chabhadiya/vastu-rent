@@ -9,6 +9,7 @@ import { pricing } from './pricing'
 import { lister } from './lister'
 import { contact } from './contact'
 import { pages } from './pages'
+import { dashboard } from './dashboard'
 
 export const hi = {
   ...common,
@@ -22,4 +23,6 @@ export const hi = {
   ...lister,
   ...contact,
   ...pages,
+  ...dashboard,
 }
+

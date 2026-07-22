@@ -1,5 +1,6 @@
 import { TrendingUp, TrendingDown } from 'lucide-react'
 import { cn } from '#/lib/utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface StatCardProps {
   title: string
@@ -51,6 +52,8 @@ export const StatCard = ({
   iconColor,
   sparklineData,
 }: StatCardProps) => {
+  const { t } = useTranslation()
+
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
@@ -81,7 +84,7 @@ export const StatCard = ({
             {change}
           </span>
           <span className="text-xs text-dash-text-muted ml-1">
-            from last week
+            {t('from last week')}
           </span>
         </div>
         <div className="opacity-60">

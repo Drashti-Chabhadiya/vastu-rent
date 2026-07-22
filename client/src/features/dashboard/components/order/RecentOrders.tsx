@@ -1,6 +1,7 @@
 import { useOrders } from '#/hook'
 import { cn } from '#/lib/utils'
 import { ExploreLink } from '#/components/common/ExploreLink'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface Order {
   id: string
@@ -20,6 +21,7 @@ interface Order {
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
+  const { t } = useTranslation()
   const styles: Record<string, string> = {
     completed: 'bg-primary-soft text-primary',
     confirmed: 'bg-info text-info-foreground',
@@ -37,18 +39,19 @@ const StatusBadge = ({ status }: { status: string }) => {
         styles[status] || 'bg-muted-light text-muted-foreground',
       )}
     >
-      {status}
+      {t(status)}
     </span>
   )
 }
 
 export const RecentOrders = () => {
+  const { t, formatCurrency, formatDate } = useTranslation()
   const { data: orders = [], isLoading } = useOrders()
 
   if (isLoading) {
     return (
       <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
-        <h3 className="font-bold text-dash-text mb-6">Recent Orders</h3>
+        <h3 className="font-bold text-dash-text mb-6">{t('Recent Orders')}</h3>
 
         <div className="space-y-4">
           {Array.from({ length: 5 }).map((_, index) => (
@@ -79,16 +82,16 @@ export const RecentOrders = () => {
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-bold text-dash-text">Recent Orders</h3>
+        <h3 className="font-bold text-dash-text">{t('Recent Orders')}</h3>
 
-        <ExploreLink to="/account/orders">View All</ExploreLink>
+        <ExploreLink to="/account/orders">{t('View All')}</ExploreLink>
       </div>
 
       <div className="space-y-4">
         {orders.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-sm text-dash-text-muted">
-              No recent orders found
+              {t('No recent orders found')}
             </p>
           </div>
         ) : (
@@ -122,17 +125,13 @@ export const RecentOrders = () => {
                     <span className="w-1 h-1 bg-muted-dark/20 rounded-full"></span>
 
                     <span className="text-[11px] text-dash-text-muted">
-                      {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
+                      {formatDate(order.createdAt)}
                     </span>
                   </div>
 
                   {order.renter?.name && (
                     <p className="text-[11px] text-dash-text-muted mt-1">
-                      By {order.renter.name}
+                      {t('By {name}').replace('{name}', order.renter.name)}
                     </p>
                   )}
                 </div>
@@ -140,7 +139,7 @@ export const RecentOrders = () => {
 
               <div className="text-right">
                 <p className="text-sm font-bold text-dash-text mb-1">
-                  ₹{order.totalPrice}
+                  {formatCurrency(order.totalPrice)}
                 </p>
 
                 <StatusBadge status={order.status} />

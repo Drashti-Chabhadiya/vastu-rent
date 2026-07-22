@@ -6,6 +6,7 @@ import { Textarea } from '#/components/ui/textarea'
 import { Loader } from '#/components/ui/loader'
 import { cn } from '#/lib/utils'
 import { SettingsSectionShell } from './SettingsSectionShell'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ProfileInfoSectionProps {
   name: string
@@ -42,10 +43,11 @@ export function ProfileInfoSection({
   setImgPreview,
   userEmail,
 }: ProfileInfoSectionProps) {
+  const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title="Profile Information"
-      description="Update your personal details and how others see you."
+      title={t("Profile Information")}
+      description={t("Update your personal details and how others see you.")}
     >
       <div
         className={cn(
@@ -65,7 +67,7 @@ export function ProfileInfoSection({
               'text-muted-foreground/85',
             )}
           >
-            Full Name
+            {t('Full Name')}
           </Label>
           <Input
             id="s-name"
@@ -91,7 +93,7 @@ export function ProfileInfoSection({
               'text-muted-foreground/85',
             )}
           >
-            Email Address
+            {t('Email Address')}
           </Label>
           <Input
             id="s-email"
@@ -118,7 +120,7 @@ export function ProfileInfoSection({
               'text-muted-foreground/85',
             )}
           >
-            Phone Number
+            {t('Phone Number')}
           </Label>
           <Input
             id="s-phone"
@@ -144,7 +146,7 @@ export function ProfileInfoSection({
               'text-muted-foreground/85',
             )}
           >
-            Location
+            {t('Location')}
           </Label>
           <Input
             id="s-loc"
@@ -170,7 +172,7 @@ export function ProfileInfoSection({
               'text-muted-foreground/85',
             )}
           >
-            Bio
+            {t('Bio')}
           </Label>
           <div className="relative">
             <Textarea
@@ -179,7 +181,7 @@ export function ProfileInfoSection({
               onChange={(e) => setBio(e.target.value)}
               maxLength={160}
               rows={4}
-              placeholder="Tell others a little about yourself..."
+              placeholder={t("Tell others a little about yourself...")}
               className={cn(
                 'rounded-xl',
                 'border-border',
@@ -213,7 +215,7 @@ export function ProfileInfoSection({
         <Label
           className={cn('text-xs', 'font-semibold', 'text-muted-foreground/85')}
         >
-          Profile Photo
+          {t('Profile Photo')}
         </Label>
         <div
           className={cn(
@@ -284,7 +286,7 @@ export function ProfileInfoSection({
                 'font-medium',
               )}
             >
-              JPG, PNG or GIF. Max size of 2MB.
+              {t('JPG, PNG or GIF. Max size of 2MB.')}
             </p>
           </div>
           <Button
@@ -311,7 +313,7 @@ export function ProfileInfoSection({
               'shrink-0',
             )}
           >
-            <Upload size={13} /> Change Photo
+            <Upload size={13} />{t(' Change Photo')}
           </Button>
           <input
             ref={fileRef}
@@ -353,7 +355,7 @@ export function ProfileInfoSection({
         )}
       >
         {busy && <Loader variant="white" size={14} />}
-        {busy ? 'Saving...' : 'Save Changes'}
+        {busy ? t('Saving...') : t('Save Changes')}
       </Button>
     </SettingsSectionShell>
   )

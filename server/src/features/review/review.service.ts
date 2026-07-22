@@ -38,7 +38,7 @@ export class ReviewService {
           select: {
             id: true,
             title: true,
-            location: true,
+            city: true,
             images: true,
             user: { select: { id: true, name: true, image: true, showProfile: true } }
           }

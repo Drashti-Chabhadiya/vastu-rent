@@ -11,6 +11,7 @@ import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { Dialog, DialogContent } from '#/components/ui/dialog'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface DetailedBookingDialogProps {
   order: any
@@ -25,6 +26,7 @@ export const DetailedBookingDialog = ({
   onStatusUpdate,
   isPendingStatusUpdate,
 }: DetailedBookingDialogProps) => {
+  const { t } = useTranslation()
   const [pendingAction, setPendingAction] = useState<
     'confirm' | 'reject' | null
   >(null)
@@ -45,26 +47,26 @@ export const DetailedBookingDialog = ({
       case 'active':
         return (
           <Badge className="bg-emerald-50 text-emerald-600 border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <CheckCircle2 size={10} /> Confirmed
+            <CheckCircle2 size={10} /> {t('Confirmed')}
           </Badge>
         )
       case 'completed':
         return (
           <Badge className="bg-info text-info-foreground border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <CheckCircle2 size={10} /> Completed
+            <CheckCircle2 size={10} /> {t('Completed')}
           </Badge>
         )
       case 'rejected':
       case 'cancelled':
         return (
           <Badge className="bg-danger text-destructive border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <XCircle size={10} /> Cancelled
+            <XCircle size={10} /> {t('Cancelled')}
           </Badge>
         )
       default:
         return (
           <Badge className="bg-warning text-warning-foreground border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <Clock size={10} /> Pending
+            <Clock size={10} /> {t('Pending')}
           </Badge>
         )
     }
@@ -86,7 +88,7 @@ export const DetailedBookingDialog = ({
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6">
               <span className="text-[9px] font-black uppercase tracking-widest text-primary bg-emerald-50/95 px-2 py-0.5 rounded">
-                {order.product?.category?.name || 'Item'}
+                {order.product?.category?.name || t('Item')}
               </span>
               <h3 className="text-xl font-extrabold text-primary-foreground leading-tight font-display mt-2">
                 {order.product?.title}
@@ -100,7 +102,7 @@ export const DetailedBookingDialog = ({
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-card p-4 rounded-2xl border border-border/30 space-y-1">
                 <span className="text-[8px] font-black text-muted-dark uppercase tracking-widest block">
-                  Customer Info
+                  {t('Customer Info')}
                 </span>
                 <div className="text-xs font-bold text-foreground/90 flex items-center gap-1.5">
                   <UserIcon size={12} className="text-muted-dark" />
@@ -116,13 +118,13 @@ export const DetailedBookingDialog = ({
 
               <div className="bg-card p-4 rounded-2xl border border-border/30 space-y-1">
                 <span className="text-[8px] font-black text-muted-dark uppercase tracking-widest block">
-                  Status & Method
+                  {t('Status & Method')}
                 </span>
                 <div className="flex gap-1.5 items-center">
                   {getStatusBadge(order.status)}
                 </div>
                 <span className="text-[10px] font-black uppercase text-muted-dark block tracking-tight pt-1">
-                  Via {order.paymentMethod === 'cash' ? 'Cash / CoD' : 'Online'}
+                  {t('Via {method}').replace('{method}', order.paymentMethod === 'cash' ? t('Cash / CoD') : t('Online'))}
                 </span>
               </div>
             </div>
@@ -130,12 +132,12 @@ export const DetailedBookingDialog = ({
             {/* Booking dates and rental duration info */}
             <div className="bg-card p-5 rounded-2xl border border-border/30 space-y-3">
               <span className="text-[8px] font-black text-muted-dark uppercase tracking-widest block">
-                Reserved Duration
+                {t('Reserved Duration')}
               </span>
               <div className="flex items-center justify-between text-xs font-bold text-foreground/80">
                 <div className="flex flex-col">
                   <span className="text-[9px] text-muted-dark uppercase">
-                    From
+                    {t('From')}
                   </span>
                   <span>
                     {format(new Date(order.startDate), 'dd MMM yyyy')}
@@ -144,15 +146,15 @@ export const DetailedBookingDialog = ({
                 <ChevronRight size={14} className="text-muted-dark mt-2" />
                 <div className="flex flex-col text-right">
                   <span className="text-[9px] text-muted-dark uppercase">
-                    To
+                    {t('To')}
                   </span>
                   <span>{format(new Date(order.endDate), 'dd MMM yyyy')}</span>
                 </div>
               </div>
               <div className="border-t border-border/30 pt-2 flex items-center justify-between text-[11px] font-bold text-muted-foreground/85">
-                <span>Total Rental Period</span>
+                <span>{t('Total Rental Period')}</span>
                 <span className="text-primary font-black">
-                  {calculateDuration(order.startDate, order.endDate)} Days
+                  {t('{duration} Days').replace('{duration}', calculateDuration(order.startDate, order.endDate).toString())}
                 </span>
               </div>
             </div>
@@ -160,19 +162,19 @@ export const DetailedBookingDialog = ({
             {/* Earnings info and pricing breakdown */}
             <div className="bg-card p-5 rounded-2xl border border-border/30 space-y-2 text-xs font-semibold text-muted-foreground/85">
               <div className="flex justify-between">
-                <span>Daily rate</span>
+                <span>{t('Daily rate')}</span>
                 <span className="text-foreground/90 font-bold">
                   ₹{(order.product?.price || order.totalPrice).toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Security deposit</span>
+                <span>{t('Security deposit')}</span>
                 <span className="text-foreground/90 font-bold">
                   ₹{(order.depositAmount || 0).toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between text-[13px] font-black text-primary border-t border-border/30 pt-2">
-                <span>Total Earnings</span>
+                <span>{t('Total Earnings')}</span>
                 <span>₹{order.totalPrice.toLocaleString()}</span>
               </div>
             </div>
@@ -185,7 +187,7 @@ export const DetailedBookingDialog = ({
                   className="flex-1 h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer"
                   disabled={isPendingStatusUpdate}
                 >
-                  <CheckCircle2 size={14} /> Confirm Booking
+                  <CheckCircle2 size={14} /> {t('Confirm Booking')}
                 </Button>
                 <Button
                   onClick={() => setPendingAction('reject')}
@@ -193,13 +195,13 @@ export const DetailedBookingDialog = ({
                   className="flex-1 h-12 rounded-xl bg-card hover:bg-danger text-destructive border border-destructive/30 font-black text-[11px] flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
                   disabled={isPendingStatusUpdate}
                 >
-                  <XCircle size={14} /> Reject Request
+                  <XCircle size={14} /> {t('Reject Request')}
                 </Button>
               </div>
             ) : (
               <div className="text-center py-4 bg-muted/50/50 rounded-2xl border border-border/30">
                 <span className="text-[10px] font-black text-muted-foreground/85 uppercase tracking-widest">
-                  Request already processed
+                  {t('Request already processed')}
                 </span>
               </div>
             )}
@@ -224,16 +226,16 @@ export const DetailedBookingDialog = ({
         onCancel={() => setPendingAction(null)}
         title={
           pendingAction === 'confirm'
-            ? 'Confirm Booking?'
-            : 'Reject Booking Request?'
+            ? t('Confirm Booking?')
+            : t('Reject Booking Request?')
         }
         description={
           pendingAction === 'confirm'
-            ? `Are you sure you want to accept this rental booking request for "${order.product?.title || 'this item'}"? The dates will be reserved in your calendar, and the renter will receive a notification.`
-            : `Are you sure you want to reject this rental booking request for "${order.product?.title || 'this item'}"? The dates will remain available, and the renter will be notified.`
+            ? t('Are you sure you want to accept this rental booking request for "{title}"? The dates will be reserved in your calendar, and the renter will receive a notification.').replace('{title}', order.product?.title || t('this item'))
+            : t('Are you sure you want to reject this rental booking request for "{title}"? The dates will remain available, and the renter will be notified.').replace('{title}', order.product?.title || t('this item'))
         }
         confirmText={
-          pendingAction === 'confirm' ? 'Confirm Booking' : 'Reject Request'
+          pendingAction === 'confirm' ? t('Confirm Booking') : t('Reject Request')
         }
         variant={pendingAction === 'confirm' ? 'success' : 'danger'}
         isPending={isPendingStatusUpdate}

@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ListingsTableProps {
   products: any[]
@@ -28,6 +29,7 @@ export const ListingsTable = ({
   onEdit,
   currentUser,
 }: ListingsTableProps) => {
+  const { t, formatCurrency } = useTranslation()
   return (
     <div className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden">
       <div className="overflow-x-auto custom-scrollbar">
@@ -35,22 +37,22 @@ export const ListingsTable = ({
           <TableHeader>
             <TableRow className="border-b border-border/30 bg-muted-light/50 hover:bg-transparent">
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                Listing Info
+                {t('Listing Info')}
               </TableHead>
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                Category
+                {t('Category')}
               </TableHead>
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                Provider
+                {t('Provider')}
               </TableHead>
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-center h-auto">
-                Price / Day
+                {t('Price / Day')}
               </TableHead>
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-center h-auto">
-                Visibility
+                {t('Visibility')}
               </TableHead>
               <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-right h-auto">
-                Management
+                {t('Management')}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -99,7 +101,7 @@ export const ListingsTable = ({
                   colSpan={6}
                   className="px-6 py-20 text-center text-dash-text-soft font-bold uppercase tracking-widest"
                 >
-                  No listings available
+                  {t('No listings available')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -135,13 +137,13 @@ export const ListingsTable = ({
                       variant="outline"
                       className="rounded-lg bg-card border-border/30 text-dash-text-soft font-bold text-[10px] uppercase tracking-wider h-6"
                     >
-                      {item.category?.name || 'Uncategorized'}
+                      {item.category?.name || t('Uncategorized')}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="text-xs font-extrabold text-dash-text">
-                        {item.user?.name || 'Vastu System'}
+                        {item.user?.name || t('Vastu System')}
                       </span>
                       <span className="text-[10px] text-dash-text-soft font-bold">
                         {item.user?.email}
@@ -149,14 +151,9 @@ export const ListingsTable = ({
                     </div>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center gap-1">
-                      <span className="text-[10px] font-bold text-dash-text-soft">
-                        ₹
-                      </span>
-                      <span className="text-sm font-extrabold text-dash-text">
-                        {item.price?.toLocaleString()}
-                      </span>
-                    </div>
+                    <span className="text-sm font-extrabold text-dash-text">
+                      {formatCurrency(item.price)}
+                    </span>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-center">
                     <Button
@@ -172,12 +169,12 @@ export const ListingsTable = ({
                       {item.isAvailable ? (
                         <>
                           <Eye size={12} strokeWidth={2.5} />
-                          <span>Public</span>
+                          <span>{t('Public')}</span>
                         </>
                       ) : (
                         <>
                           <EyeOff size={12} strokeWidth={2.5} />
-                          <span>Hidden</span>
+                          <span>{t('Hidden')}</span>
                         </>
                       )}
                     </Button>

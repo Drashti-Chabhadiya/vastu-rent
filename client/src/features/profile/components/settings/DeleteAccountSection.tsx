@@ -5,6 +5,7 @@ import { Label } from '#/components/ui/label'
 import { Loader } from '#/components/ui/loader'
 import { cn } from '#/lib/utils'
 import { SettingsSectionShell } from './SettingsSectionShell'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface DeleteAccountSectionProps {
   delInput: string
@@ -19,18 +20,19 @@ export function DeleteAccountSection({
   delLoading,
   handleDeleteAccount,
 }: DeleteAccountSectionProps) {
+  const { t } = useTranslation()
   const items = [
-    'Your profile and personal information',
-    'All your listings and rental history',
-    'All bookings and payment records',
-    'Your reviews and ratings',
-    'All messages and conversations',
+    t('Your profile and personal information'),
+    t('All your listings and rental history'),
+    t('All bookings and payment records'),
+    t('Your reviews and ratings'),
+    t('All messages and conversations'),
   ]
 
   return (
     <SettingsSectionShell
-      title="Delete Account"
-      description="Permanently remove your account and all associated data."
+      title={t("Delete Account")}
+      description={t("Permanently remove your account and all associated data.")}
     >
       {/* Warning card */}
       <div
@@ -73,9 +75,7 @@ export function DeleteAccountSection({
               'leading-relaxed',
             )}
           >
-            Deleting your account will permanently remove all your listings,
-            bookings, reviews, messages, and personal data. This cannot be
-            undone.
+            {t("Deleting your account will permanently remove all your listings, bookings, reviews, messages, and personal data. This cannot be undone.")}
           </p>
         </div>
       </div>
@@ -125,18 +125,18 @@ export function DeleteAccountSection({
         <Label
           className={cn('text-xs', 'font-semibold', 'text-muted-foreground')}
         >
-          Type{' '}
+          {t("Type")}{' '}
           <span
             className={cn('font-black', 'text-destructive', 'tracking-widest')}
           >
             DELETE
-          </span>{' '}
-          to confirm
+          </span>{' '}{t("to confirm")}
+          
         </Label>
         <Input
           value={delInput}
           onChange={(e) => setDelInput(e.target.value)}
-          placeholder="Type DELETE here"
+          placeholder={t("Type DELETE here")}
           className={cn(
             'h-10',
             'rounded-xl',
@@ -176,7 +176,7 @@ export function DeleteAccountSection({
         )}
       >
         {delLoading && <Loader variant="white" size={14} />}
-        {delLoading ? 'Deleting...' : 'Delete My Account'}
+        {delLoading ? t('Deleting...') : t('Delete My Account')}
       </Button>
     </SettingsSectionShell>
   )

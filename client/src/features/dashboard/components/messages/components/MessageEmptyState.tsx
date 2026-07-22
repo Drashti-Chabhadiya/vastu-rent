@@ -1,5 +1,6 @@
 import { Leaf, Calendar, Headset } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
+import { useTranslation } from '#/context/TranslationContext'
 import { useChatStore } from '../../../../../store/useChatStore'
 import { toast } from 'sonner'
 
@@ -10,6 +11,7 @@ interface MessageEmptyStateProps {
 export function MessageEmptyState({
   showCards = true,
 }: MessageEmptyStateProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { setShowNewChat } = useChatStore()
 
@@ -27,11 +29,10 @@ export function MessageEmptyState({
       {/* ── Welcome Header ── */}
       <div className="max-w-md mb-6">
         <h3 className="text-2xl sm:text-[25px] font-bold text-brand-ink tracking-tight font-display">
-          Welcome to your conversations
+          {t('Welcome to your conversations')}
         </h3>
         <p className="text-sm text-slate-500 mt-2.5 px-4 leading-relaxed font-medium font-sans max-w-sm mx-auto">
-          Select a chat from the list to view your conversation or start a new
-          one.
+          {t('Select a chat from the list to view your conversation or start a new one.')}
         </p>
       </div>
 
@@ -48,10 +49,10 @@ export function MessageEmptyState({
             </span>
             <div>
               <span className="text-[13px] font-bold text-brand-primary-deep block font-sans tracking-tight">
-                Browse Listings
+                {t('Browse Listings')}
               </span>
               <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
-                Explore homes
+                {t('Explore homes')}
               </span>
             </div>
           </div>
@@ -73,10 +74,10 @@ export function MessageEmptyState({
             </span>
             <div>
               <span className="text-[13px] font-bold text-brand-primary-deep block font-sans tracking-tight">
-                My Bookings
+                {t('My Bookings')}
               </span>
               <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
-                View reservations
+                {t('View reservations')}
               </span>
             </div>
           </div>
@@ -96,10 +97,10 @@ export function MessageEmptyState({
             </span>
             <div>
               <span className="text-[13px] font-bold text-brand-primary-deep block font-sans tracking-tight">
-                Support
+                {t('Support')}
               </span>
               <span className="text-[11px] font-normal text-slate-400 block mt-0.5 font-sans">
-                Get help
+                {t('Get help')}
               </span>
             </div>
           </div>

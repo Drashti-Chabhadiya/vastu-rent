@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useOrders, useUpdateRentalStatus } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
+import { useTranslation } from '#/context/TranslationContext'
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -29,6 +30,7 @@ import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 
 export const RentalsCalendar = () => {
+  const { t, formatNumber, formatDate } = useTranslation()
   const { data: orders, isLoading } = useOrders()
   const { data: session } = authClient.useSession()
   const currentUser = session?.user
@@ -51,14 +53,14 @@ export const RentalsCalendar = () => {
       { id, status: newStatus },
       {
         onSuccess: () => {
-          toast.success(`Booking request successfully ${newStatus}!`)
+          toast.success(t('Booking request successfully {newStatus}!').replace('{newStatus}', newStatus))
           // Refresh details card if open
           if (selectedOrder && selectedOrder.id === id) {
             setSelectedOrder({ ...selectedOrder, status: newStatus })
           }
         },
         onError: () => {
-          toast.error('Failed to update booking status')
+          toast.error(t('Failed to update booking status'))
         },
       },
     )
@@ -174,11 +176,10 @@ export const RentalsCalendar = () => {
         <div className="space-y-1">
           <h2 className="text-2xl font-extrabold text-dash-text flex items-center gap-3">
             <CalendarIcon className="text-primary" size={28} />
-            Rentals Calendar
+            {t('Rentals & Bookings Calendar')}
           </h2>
           <p className="text-dash-text-soft text-sm font-medium">
-            Track product reserved schedules, monitor date occupancy, and
-            prevent double bookings.
+            {t('Visual overview of rental duration and availability schedules.')}
           </p>
         </div>
 
@@ -197,7 +198,7 @@ export const RentalsCalendar = () => {
                     : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
                 }`}
               >
-                My Rentals
+                {t('My Rentals')}
               </Button>
               <Button
                 variant="ghost"
@@ -211,10 +212,11 @@ export const RentalsCalendar = () => {
                     : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
                 }`}
               >
-                All Platform Rentals
+                {t('All Platform Rentals')}
               </Button>
             </div>
           ) : null}
+
 
           {/* Date Month Selector */}
           <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
@@ -227,7 +229,7 @@ export const RentalsCalendar = () => {
               <ChevronLeft size={16} />
             </Button>
             <span className="text-sm font-extrabold text-foreground/90 min-w-[100px] text-center font-display uppercase tracking-wider font-sans">
-              {format(currentMonth, 'MMMM yyyy')}
+              {formatDate(currentMonth, { month: 'long', year: 'numeric' })}
             </span>
             <Button
               variant="ghost"
@@ -259,13 +261,13 @@ export const RentalsCalendar = () => {
       >
         {/* Days of the Week headers */}
         <div className="grid grid-cols-7 border-b border-border/30 bg-muted-light/50 text-center py-4 text-[10px] font-black text-muted-dark uppercase tracking-widest">
-          <div>Sun</div>
-          <div>Mon</div>
-          <div>Tue</div>
-          <div>Wed</div>
-          <div>Thu</div>
-          <div>Fri</div>
-          <div>Sat</div>
+          <div>{t('Sun')}</div>
+          <div>{t('Mon')}</div>
+          <div>{t('Tue')}</div>
+          <div>{t('Wed')}</div>
+          <div>{t('Thu')}</div>
+          <div>{t('Fri')}</div>
+          <div>{t('Sat')}</div>
         </div>
 
         {/* Days cells */}
@@ -297,13 +299,13 @@ export const RentalsCalendar = () => {
                           : 'text-muted-dark',
                     )}
                   >
-                    {format(day, 'd')}
+                    {formatNumber(parseInt(format(day, 'd')))}
                   </span>
 
                   {bookings.length > 0 && (
                     <span className="text-[8px] font-black uppercase text-muted-dark shrink-0 bg-muted/50 px-1.5 py-0.5 rounded">
-                      {bookings.length}{' '}
-                      {bookings.length === 1 ? 'Book' : 'Books'}
+                      {formatNumber(bookings.length)}{' '}
+                      {bookings.length === 1 ? t('Book') : t('Books')}
                     </span>
                   )}
                 </div>
@@ -325,7 +327,7 @@ export const RentalsCalendar = () => {
                   ))}
                   {bookings.length > 3 && (
                     <div className="text-[8px] font-bold text-muted-dark text-center uppercase tracking-tighter">
-                      + {bookings.length - 3} more
+                      + {formatNumber(bookings.length - 3)} {t('more')}
                     </div>
                   )}
                 </div>
@@ -345,12 +347,10 @@ export const RentalsCalendar = () => {
         </div>
         <div className="space-y-1">
           <h4 className="text-sm font-black text-foreground/90 uppercase tracking-wider">
-            Reserved occupancy validation
+            {t('Reserved occupancy validation')}
           </h4>
           <p className="text-xs font-semibold text-muted-foreground/85 leading-relaxed max-w-2xl">
-            Confirming a booking (Cash or Online) automatically blocks the
-            specific listing dates from being reserved by other renters.
-            Rejected/Cancelled requests immediately free the dates.
+            {t('Confirming a booking (Cash or Online) automatically blocks the specific listing dates from being reserved by other renters. Rejected/Cancelled requests immediately free the dates.')}
           </p>
         </div>
       </motion.div>

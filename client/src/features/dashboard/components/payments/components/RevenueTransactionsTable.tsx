@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface RevenueTransactionsTableProps {
   recentTransactions: any[]
@@ -16,6 +17,7 @@ interface RevenueTransactionsTableProps {
 export const RevenueTransactionsTable = ({
   recentTransactions = [],
 }: RevenueTransactionsTableProps) => {
+  const { t } = useTranslation()
   const [selectedProduct, setSelectedProduct] = useState('all')
 
   // Dynamic products list for filtering transactions
@@ -35,10 +37,10 @@ export const RevenueTransactionsTable = ({
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <div>
           <h3 className="text-[15px] font-black text-foreground/90">
-            Recent Revenue Transactions
+            {t('Recent Revenue Transactions')}
           </h3>
           <p className="text-[11px] font-bold text-muted-dark mt-0.5">
-            Successful orders received from customers.
+            {t('Successful orders received from customers.')}
           </p>
         </div>
 
@@ -47,14 +49,14 @@ export const RevenueTransactionsTable = ({
           <Filter size={12} className="text-muted-dark" />
           <Select value={selectedProduct} onValueChange={setSelectedProduct}>
             <SelectTrigger className="h-8 rounded-lg bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none text-[10px] font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 w-[140px] px-2.5 transition-all">
-              <SelectValue placeholder="All Products" />
+              <SelectValue placeholder={t('All Products')} />
             </SelectTrigger>
             <SelectContent className="bg-card rounded-lg shadow-2xl border-none p-1 animate-in fade-in zoom-in-95 duration-200 max-h-[200px]">
               <SelectItem
                 value="all"
                 className="text-[10px] font-bold text-dash-text-soft rounded-md focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                All Products
+                {t('All Products')}
               </SelectItem>
               {uniqueProducts.map((p: any) => (
                 <SelectItem
@@ -74,7 +76,7 @@ export const RevenueTransactionsTable = ({
         {filteredTransactions.length === 0 ? (
           <div className="text-center py-10 bg-muted-light rounded-2xl border border-border/30">
             <span className="text-xs font-black text-muted-dark uppercase tracking-widest">
-              No successful orders found
+              {t('No successful orders found')}
             </span>
           </div>
         ) : (
@@ -115,7 +117,7 @@ export const RevenueTransactionsTable = ({
                     ₹{trans.totalPrice.toLocaleString()}
                   </span>
                   <span className="text-[8px] font-bold text-muted-dark block">
-                    Gross
+                    {t('Gross')}
                   </span>
                 </div>
                 <ChevronRight

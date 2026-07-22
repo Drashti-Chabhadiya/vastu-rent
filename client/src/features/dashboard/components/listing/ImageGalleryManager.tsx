@@ -4,6 +4,7 @@ import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { useUploadProductImages } from '#/hook'
 import { Loader } from '#/components/ui/loader'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ImageGalleryManagerProps {
   images: string[]
@@ -16,6 +17,7 @@ export const ImageGalleryManager = ({
   onChange,
   onUploadStatusChange,
 }: ImageGalleryManagerProps) => {
+  const { t } = useTranslation()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { mutateAsync: uploadImages, isPending: uploading } =
     useUploadProductImages()
@@ -76,7 +78,7 @@ export const ImageGalleryManager = ({
                 size={24}
                 className="group-hover:text-dash-brand transition-colors"
               />
-              <span className="text-[10px] font-bold uppercase">Add Photo</span>
+              <span className="text-[10px] font-bold uppercase">{t('Add Photo')}</span>
             </>
           )}
         </Button>
@@ -97,7 +99,7 @@ export const ImageGalleryManager = ({
               <div className="flex items-center justify-between">
                 {i === 0 ? (
                   <Badge className="bg-dash-success text-primary-foreground border-none font-bold text-[8px] uppercase px-1.5 py-0 h-4">
-                    Cover
+                    {t('Cover')}
                   </Badge>
                 ) : (
                   <Button

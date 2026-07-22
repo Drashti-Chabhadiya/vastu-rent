@@ -2,6 +2,7 @@ import { Copy, CheckCircle2, Tag, Building, Users } from 'lucide-react'
 import type { Coupon } from '#/hook/use-coupons'
 import { cn } from '#/lib/utils'
 import { getScenarioLabel, scenarioColorMap } from '#/lib/coupon-utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CouponRenterCardProps {
   coupon: Coupon
@@ -14,10 +15,11 @@ export function CouponRenterCard({
   copiedCode,
   onCopy,
 }: CouponRenterCardProps) {
+  const { t } = useTranslation()
   const discountText =
     coupon.type === 'percentage'
-      ? `${coupon.discount}% OFF`
-      : `₹${coupon.discount} OFF`
+      ? `${coupon.discount}% ${t('OFF')}`
+      : `₹${coupon.discount} ${t('OFF')}`
 
   const scenario = getScenarioLabel(coupon.usageLimit, coupon.perUserLimit)
   const slotsLeft = coupon.usageLimit
@@ -35,21 +37,21 @@ export function CouponRenterCard({
       <div>
         <div className="flex items-start justify-between gap-2 flex-wrap">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg border border-emerald-100 uppercase tracking-wide">
-            <Tag size={10} /> Active Deal
+            <Tag size={10} /> {t('Active Deal')}
           </div>
           <div className="flex items-center gap-1.5 flex-wrap">
             {coupon.minBooking && (
               <span className="text-[10px] text-muted-dark font-bold bg-muted-light px-2 py-0.5 rounded">
-                Min. ₹{coupon.minBooking.toLocaleString()}
+                {t('Min.')} ₹{coupon.minBooking.toLocaleString()}
               </span>
             )}
             <span
               className={cn(
                 'text-[9px] font-extrabold px-2 py-0.5 rounded border uppercase tracking-wide',
-                scenarioColorMap[scenario.color],
+                scenarioColorMap[scenario.color as keyof typeof scenarioColorMap],
               )}
             >
-              {scenario.label}
+              {t(scenario.label)}
             </span>
           </div>
         </div>
@@ -60,7 +62,7 @@ export function CouponRenterCard({
 
         {coupon.maxDiscount && (
           <p className="text-[10px] font-bold text-muted-dark mt-0.5">
-            Save up to ₹{coupon.maxDiscount.toLocaleString()}
+            {t('Save up to')} ₹{coupon.maxDiscount.toLocaleString()}
           </p>
         )}
 
@@ -68,7 +70,7 @@ export function CouponRenterCard({
           <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground/85 mt-2">
             <Building size={11} className="text-muted-dark" />
             <span className="truncate max-w-[180px]">
-              Valid on: {coupon.product.title}
+              {t('Valid on:')} {coupon.product.title}
             </span>
           </div>
         )}
@@ -77,7 +79,7 @@ export function CouponRenterCard({
           <div className="flex items-center gap-1 text-[10px] font-bold text-warning-foreground mt-1.5">
             <Users size={11} />
             <span>
-              {slotsLeft} slot{slotsLeft !== 1 ? 's' : ''} remaining
+              {slotsLeft} {slotsLeft !== 1 ? t('slots remaining') : t('slot remaining')}
             </span>
           </div>
         )}
@@ -95,11 +97,11 @@ export function CouponRenterCard({
                 size={11}
                 className="text-emerald-500 animate-bounce"
               />{' '}
-              Copied!
+              {t('Copied!')}
             </>
           ) : (
             <>
-              <Copy size={11} /> Copy Code
+              <Copy size={11} /> {t('Copy Code')}
             </>
           )}
         </span>

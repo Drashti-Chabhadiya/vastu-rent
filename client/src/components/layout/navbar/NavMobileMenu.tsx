@@ -179,7 +179,7 @@ export function NavMobileMenu({
                     theme === 'light' ? 'text-primary' : 'text-muted-foreground'
                   }
                 />
-                <span>Light</span>
+                <span>{t('Light')}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -197,7 +197,7 @@ export function NavMobileMenu({
                     theme === 'dark' ? 'text-primary' : 'text-muted-foreground'
                   }
                 />
-                <span>Dark</span>
+                <span>{t('Dark')}</span>
               </Button>
               <Button
                 variant="ghost"
@@ -215,10 +215,11 @@ export function NavMobileMenu({
                     theme === 'auto' ? 'text-primary' : 'text-muted-foreground'
                   }
                 />
-                <span>System</span>
+                <span>{t('System')}</span>
               </Button>
             </div>
           </div>
+
         </div>
 
         {/* Bottom Actions */}

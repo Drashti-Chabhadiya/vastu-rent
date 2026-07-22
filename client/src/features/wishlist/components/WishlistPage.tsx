@@ -23,8 +23,10 @@ import { Input } from '#/components/ui/input'
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function WishlistPage() {
+  const { t, formatNumber } = useTranslation()
   const { wishlist, dislike, isLoading: wishlistLoading } = useWishlist()
   const {
     data: products,
@@ -106,7 +108,7 @@ export function WishlistPage() {
               size={16}
               className="group-hover:-translate-x-0.5 transition-transform"
             />
-            Back to Home
+            {t('Back to Home')}
           </Link>
         </motion.div>
 
@@ -122,16 +124,19 @@ export function WishlistPage() {
                   />
                 </div>
                 <span className="text-xs font-black uppercase tracking-widest text-danger-foreground bg-danger px-3 py-1 rounded-full">
-                  My Wishlist
+                  {t('My Wishlist')}
                 </span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-black text-foreground leading-tight">
-                Saved Items
+                {t('Saved Items')}
               </h1>
               <p className="text-sm text-muted-foreground/85 font-medium mt-1">
                 {isPageLoading
-                  ? 'Loading your saved items…'
-                  : `${wishlist.length} item${wishlist.length !== 1 ? 's' : ''} saved for later`}
+                  ? t('Loading your saved items…')
+                  : t('{count} items saved for later').replace(
+                      '{count}',
+                      formatNumber(wishlist.length),
+                    )}
               </p>
             </div>
 
@@ -141,7 +146,10 @@ export function WishlistPage() {
                 <div className="flex items-center gap-2 bg-card border border-border/30 shadow-sm px-4 py-2.5 rounded-2xl">
                   <TrendingUp size={14} className="text-primary" />
                   <span className="text-xs font-black text-foreground/80">
-                    {products.length} saved
+                    {t('{count} saved').replace(
+                      '{count}',
+                      formatNumber(products.length),
+                    )}
                   </span>
                 </div>
                 <Button
@@ -155,7 +163,7 @@ export function WishlistPage() {
                     size={13}
                     className={isFetching ? 'animate-spin' : ''}
                   />
-                  Refresh
+                  {t('Refresh')}
                 </Button>
               </div>
             )}
@@ -173,7 +181,7 @@ export function WishlistPage() {
               />
               <Input
                 type="text"
-                placeholder="Search saved items…"
+                placeholder={t('Search saved items…')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full h-11 pl-10 pr-9 rounded-2xl bg-card border border-border/30 shadow-sm text-sm font-medium text-foreground/90 placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all"
@@ -207,12 +215,12 @@ export function WishlistPage() {
                   />
                   <span>
                     {sortBy === 'default'
-                      ? 'Default Order'
+                      ? t('Default Order')
                       : sortBy === 'name'
-                        ? 'Name A–Z'
+                        ? t('Name A–Z')
                         : sortBy === 'price-asc'
-                          ? 'Price: Low → High'
-                          : 'Price: High → Low'}
+                          ? t('Price: Low → High')
+                          : t('Price: High → Low')}
                   </span>
                 </div>
                 <ChevronDown
@@ -227,10 +235,10 @@ export function WishlistPage() {
                 <div className="absolute top-full mt-2 left-0 right-0 bg-card border border-border/30 rounded-2xl shadow-xl z-50 overflow-hidden py-1.5 animate-in fade-in slide-in-from-top-1 duration-150">
                   {(
                     [
-                      { value: 'default', label: 'Default Order' },
-                      { value: 'name', label: 'Name A–Z' },
-                      { value: 'price-asc', label: 'Price: Low → High' },
-                      { value: 'price-desc', label: 'Price: High → Low' },
+                      { value: 'default', label: t('Default Order') },
+                      { value: 'name', label: t('Name A–Z') },
+                      { value: 'price-asc', label: t('Price: Low → High') },
+                      { value: 'price-desc', label: t('Price: High → Low') },
                     ] as const
                   ).map((opt) => (
                     <Button
@@ -269,7 +277,7 @@ export function WishlistPage() {
                     ? 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-sm'
                     : 'text-muted-foreground/70 hover:text-primary hover:bg-primary/5'
                 }`}
-                title="Grid view"
+                title={t('Grid view')}
               >
                 <Grid3X3 size={15} />
               </Button>
@@ -281,7 +289,7 @@ export function WishlistPage() {
                     ? 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-sm'
                     : 'text-muted-foreground/70 hover:text-primary hover:bg-primary/5'
                 }`}
-                title="List view"
+                title={t('List view')}
               >
                 <List size={15} />
               </Button>
@@ -301,9 +309,9 @@ export function WishlistPage() {
             {/* Result count when searching */}
             {searchQuery && (
               <p className="text-xs font-bold text-primary/70 mb-4 uppercase tracking-wider">
-                {filteredProducts.length} result
-                {filteredProducts.length !== 1 ? 's' : ''} for &ldquo;
-                {searchQuery}&rdquo;
+                {t('{count} result(s) for "{query}"')
+                  .replace('{count}', formatNumber(filteredProducts.length))
+                  .replace('{query}', searchQuery)}
               </p>
             )}
 
@@ -324,7 +332,7 @@ export function WishlistPage() {
                     {clearConfirmId === product.id ? (
                       <div className="absolute inset-0 bg-card/95 rounded-3xl flex flex-col items-center justify-center gap-3 z-10 animate-in fade-in duration-150">
                         <p className="text-xs font-bold text-foreground/80 text-center px-4">
-                          Remove from wishlist?
+                          {t('Remove from wishlist?')}
                         </p>
                         <div className="flex gap-2">
                           <Button
@@ -333,7 +341,7 @@ export function WishlistPage() {
                             size="sm"
                             className="h-8 px-4 text-xs"
                           >
-                            Remove
+                            {t('Remove')}
                           </Button>
                           <Button
                             onClick={() => setClearConfirmId(null)}
@@ -341,7 +349,7 @@ export function WishlistPage() {
                             size="sm"
                             className="h-8 px-4 text-xs"
                           >
-                            Cancel
+                            {t('Cancel')}
                           </Button>
                         </div>
                       </div>
@@ -351,7 +359,7 @@ export function WishlistPage() {
                         variant="outline"
                         size="icon"
                         className="absolute top-3 right-3 z-10 w-8 h-8 bg-card/90 backdrop-blur-sm border border-border/30 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-danger hover:border-danger/30 shadow-sm"
-                        title="Remove from wishlist"
+                        title={t('Remove from wishlist')}
                       >
                         <Trash2
                           size={13}
@@ -397,7 +405,7 @@ export function WishlistPage() {
                       </Link>
                       {product.category?.name && (
                         <span className="inline-block text-[10px] font-black uppercase tracking-wider text-primary bg-primary/5 px-2 py-0.5 rounded-md mt-1">
-                          {product.category.name}
+                          {t(product.category.name)}
                         </span>
                       )}
                       <p className="text-xs text-muted-foreground/85 mt-1.5 line-clamp-1">
@@ -406,9 +414,9 @@ export function WishlistPage() {
                     </div>
                     <div className="flex flex-col items-end gap-2 shrink-0">
                       <p className="text-sm font-black text-foreground">
-                        ₹{(product.price ?? 0).toLocaleString('en-IN')}
+                        ₹{formatNumber(product.price ?? 0)}
                         <span className="text-[10px] font-bold text-muted-foreground/70">
-                          /day
+                          {t('/day')}
                         </span>
                       </p>
                       <div className="flex gap-2">
@@ -417,7 +425,7 @@ export function WishlistPage() {
                             size="sm"
                             className="h-7 px-3 text-[11px] rounded-lg"
                           >
-                            View
+                            {t('View')}
                           </Button>
                         </Link>
                         <Button
@@ -426,7 +434,7 @@ export function WishlistPage() {
                           size="sm"
                           className="h-7 px-3 text-[11px] rounded-lg bg-danger hover:bg-danger text-destructive hover:text-destructive border-none shadow-none active:scale-[0.98] transition-all"
                         >
-                          Remove
+                          {t('Remove')}
                         </Button>
                       </div>
                     </div>
@@ -442,17 +450,17 @@ export function WishlistPage() {
               <Search size={24} className="text-primary/30" />
             </div>
             <h2 className="text-lg font-bold text-foreground mb-1">
-              No results for &ldquo;{searchQuery}&rdquo;
+              {t('No results for "{query}"').replace('{query}', searchQuery)}
             </h2>
             <p className="text-sm text-muted-foreground/85 mb-4">
-              Try adjusting your search terms.
+              {t('Try adjusting your search terms.')}
             </p>
             <Button
               variant="link"
               onClick={() => setSearchQuery('')}
               className="text-sm font-bold text-primary hover:text-primary/80 hover:underline transition-colors p-0 h-auto"
             >
-              Clear search
+              {t('Clear search')}
             </Button>
           </div>
         ) : (
@@ -469,11 +477,12 @@ export function WishlistPage() {
             </div>
 
             <h2 className="text-2xl font-black text-foreground mb-2">
-              Your wishlist is empty
+              {t('Your wishlist is empty')}
             </h2>
             <p className="text-sm text-muted-foreground/85 font-medium mb-8 max-w-xs leading-relaxed">
-              Browse our catalogue and tap the heart icon on any item to save it
-              here for later.
+              {t(
+                'Browse our catalogue and tap the heart icon on any item to save it here for later.',
+              )}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -483,7 +492,7 @@ export function WishlistPage() {
                   className="flex items-center gap-2 shadow-lg shadow-primary/20"
                 >
                   <ShoppingBag size={16} />
-                  Browse Catalogue
+                  {t('Browse Catalogue')}
                 </Button>
               </Link>
               <Link to="/" hash="categories">
@@ -493,7 +502,7 @@ export function WishlistPage() {
                   className="flex items-center gap-2"
                 >
                   <Grid3X3 size={16} />
-                  Explore Categories
+                  {t('Explore Categories')}
                 </Button>
               </Link>
             </div>
@@ -501,7 +510,7 @@ export function WishlistPage() {
             {/* Category suggestions */}
             <div className="mt-12 text-left w-full max-w-xl">
               <p className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 mb-4 text-center">
-                Popular right now
+                {t('Popular right now')}
               </p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {[
@@ -517,7 +526,7 @@ export function WishlistPage() {
                     to="/products"
                     className="px-4 py-2 bg-card border border-border/30 rounded-xl text-xs font-bold text-muted-foreground hover:border-primary/30 hover:text-primary hover:bg-primary/5 transition-all shadow-sm"
                   >
-                    {cat}
+                    {t(cat)}
                   </Link>
                 ))}
               </div>
@@ -528,3 +537,4 @@ export function WishlistPage() {
     </div>
   )
 }
+

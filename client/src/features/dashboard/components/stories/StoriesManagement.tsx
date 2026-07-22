@@ -16,7 +16,10 @@ import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 
+import { useTranslation } from '#/context/TranslationContext'
+
 export function StoriesManagement() {
+  const { t } = useTranslation()
   const { data: stories, isLoading } = useStories()
   const createStory = useCreateStory()
   const updateStory = useUpdateStory()
@@ -112,10 +115,10 @@ export function StoriesManagement() {
       >
         <div>
           <h2 className="text-2xl font-black text-dash-text tracking-tight">
-            Stories Management
+            {t('Catalogue Stories')}
           </h2>
           <p className="text-dash-text-soft font-medium mt-1">
-            Add, edit, and manage stories in the catalogue.
+            {t('Add, edit, and manage stories in the catalogue.')}
           </p>
         </div>
         <Button
@@ -123,7 +126,7 @@ export function StoriesManagement() {
           className="rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-bold px-5 h-11 flex items-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-dash-brand/10"
         >
           <Plus size={16} strokeWidth={2.5} />
-          Add Story
+          {t('Create Story')}
         </Button>
       </motion.div>
 
@@ -196,7 +199,7 @@ export function StoriesManagement() {
           <div className="bg-card rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="p-6 border-b border-border/30 flex justify-between items-center sticky top-0 bg-card z-10">
               <h3 className="text-xl font-black text-foreground">
-                {editingId ? 'Edit Story' : 'Create New Story'}
+                {editingId ? t('Edit Story') : t('Create New Story')}
               </h3>
               <Button
                 variant="ghost"
@@ -213,19 +216,19 @@ export function StoriesManagement() {
               className="p-6 space-y-5 relative min-h-[300px]"
             >
               {uploadImage.isPending && (
-                <LoadingOverlay message="Uploading cover photo..." />
+                <LoadingOverlay message={t('Uploading cover photo...')} />
               )}
               {(createStory.isPending || updateStory.isPending) && (
                 <LoadingOverlay
                   message={
-                    editingId ? 'Saving story...' : 'Publishing story...'
+                    editingId ? t('Saving story...') : t('Publishing story...')
                   }
                 />
               )}
 
               <div className="space-y-2">
                 <Label className="text-sm font-bold text-foreground/80">
-                  Title
+                  {t('Title')}
                 </Label>
                 <Input
                   required
@@ -233,14 +236,14 @@ export function StoriesManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
-                  placeholder="e.g. The art of the seasonal swap"
+                  placeholder={t('e.g. The art of the seasonal swap')}
                   className="h-12 rounded-xl"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label className="text-sm font-bold text-foreground/80">
-                  Excerpt / Short Description
+                  {t('Excerpt / Short Description')}
                 </Label>
                 <Textarea
                   required
@@ -248,7 +251,7 @@ export function StoriesManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, excerpt: e.target.value })
                   }
-                  placeholder="A brief summary of the story..."
+                  placeholder={t('A brief summary of the story...')}
                   className="w-full h-24 p-3 border border-border rounded-xl outline-none focus:ring-2 focus:ring-dash-brand focus:border-transparent transition-all resize-none"
                 />
               </div>
@@ -256,7 +259,7 @@ export function StoriesManagement() {
               <div className="grid grid-cols-2 gap-5">
                 <div className="space-y-2">
                   <Label className="text-sm font-bold text-foreground/80">
-                    Category Tag
+                    {t('Category Tag')}
                   </Label>
                   <Input
                     required
@@ -264,13 +267,13 @@ export function StoriesManagement() {
                     onChange={(e) =>
                       setFormData({ ...formData, tag: e.target.value })
                     }
-                    placeholder="e.g. Living, Hosts, Impact"
+                    placeholder={t('e.g. Living, Hosts, Impact')}
                     className="h-12 rounded-xl"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-bold text-foreground/80">
-                    Read Time
+                    {t('Read Time')}
                   </Label>
                   <Input
                     required
@@ -278,7 +281,7 @@ export function StoriesManagement() {
                     onChange={(e) =>
                       setFormData({ ...formData, readTime: e.target.value })
                     }
-                    placeholder="e.g. 5 min"
+                    placeholder={t('e.g. 5 min')}
                     className="h-12 rounded-xl"
                   />
                 </div>
@@ -286,7 +289,7 @@ export function StoriesManagement() {
 
               <div className="space-y-2">
                 <Label className="text-sm font-bold text-foreground/80">
-                  Cover Image
+                  {t('Cover Image')}
                 </Label>
                 <div className="flex gap-4 items-center">
                   {formData.imageUrl && (
@@ -311,7 +314,7 @@ export function StoriesManagement() {
                       {uploadImage.isPending ? (
                         <Loader variant="brand" />
                       ) : (
-                        'Click to Upload Image'
+                        t('Click to Upload Image')
                       )}
                     </Label>
                   </div>
@@ -324,7 +327,7 @@ export function StoriesManagement() {
                   onClick={handleCloseModal}
                   className="rounded-full font-bold h-12 px-6 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none active:scale-[0.98] cursor-pointer"
                 >
-                  Cancel
+                  {t('Cancel')}
                 </Button>
                 <Button
                   type="submit"
@@ -338,9 +341,9 @@ export function StoriesManagement() {
                   {createStory.isPending || updateStory.isPending ? (
                     <Loader variant="white" />
                   ) : editingId ? (
-                    'Save Changes'
+                    t('Save Changes')
                   ) : (
-                    'Publish Story'
+                    t('Publish Story')
                   )}
                 </Button>
               </div>

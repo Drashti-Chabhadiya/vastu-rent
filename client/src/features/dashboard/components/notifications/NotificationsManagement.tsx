@@ -25,7 +25,10 @@ import {
   getNotificationColorClasses,
 } from '#/lib/notification-utils'
 
+import { useTranslation } from '#/context/TranslationContext'
+
 export const NotificationsManagement = () => {
+  const { t, formatNumber } = useTranslation()
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
   const userRole = session?.user?.role || 'user'
@@ -116,7 +119,7 @@ export const NotificationsManagement = () => {
     >
       {/* Section heading */}
       <h2 className={cn('text-lg', 'font-black', 'text-foreground')}>
-        Live System Alerts &amp; Notifications
+        {t('Platform Alerts')}
       </h2>
 
       {/* Two-column grid */}
@@ -155,7 +158,7 @@ export const NotificationsManagement = () => {
                 )}
               />
               <Input
-                placeholder="Search notifications..."
+                placeholder={t('Search listings...')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className={cn(
@@ -189,7 +192,7 @@ export const NotificationsManagement = () => {
                   'cursor-pointer',
                 )}
               >
-                <SelectValue placeholder="All Alerts" />
+                <SelectValue placeholder={t('All Statuses')} />
               </SelectTrigger>
               <SelectContent
                 className={cn(
@@ -208,7 +211,7 @@ export const NotificationsManagement = () => {
                     'cursor-pointer',
                   )}
                 >
-                  All Alerts
+                  {t('All Statuses')}
                 </SelectItem>
                 <SelectItem
                   value="unread"
@@ -219,7 +222,7 @@ export const NotificationsManagement = () => {
                     'cursor-pointer',
                   )}
                 >
-                  Unread Only
+                  {t('Unread Alerts')}
                 </SelectItem>
                 <SelectItem
                   value="booking"
@@ -230,7 +233,7 @@ export const NotificationsManagement = () => {
                     'cursor-pointer',
                   )}
                 >
-                  Bookings
+                  {t('Booking Requests')}
                 </SelectItem>
                 <SelectItem
                   value="payment"
@@ -241,7 +244,7 @@ export const NotificationsManagement = () => {
                     'cursor-pointer',
                   )}
                 >
-                  Payments
+                  {t('Earnings Payouts')}
                 </SelectItem>
                 <SelectItem
                   value="alert"
@@ -252,7 +255,7 @@ export const NotificationsManagement = () => {
                     'cursor-pointer',
                   )}
                 >
-                  Alerts
+                  {t('Platform Alerts')}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -310,7 +313,7 @@ export const NotificationsManagement = () => {
                     'text-muted-dark',
                   )}
                 >
-                  No notifications found.
+                  {t('All caught up! No alerts.')}
                 </p>
               </div>
             ) : (
@@ -412,15 +415,15 @@ export const NotificationsManagement = () => {
               >
                 Showing{' '}
                 <span className={cn('font-black', 'text-foreground/80')}>
-                  {startIndex + 1}
+                  {formatNumber(startIndex + 1)}
                 </span>{' '}
                 to{' '}
                 <span className={cn('font-black', 'text-foreground/80')}>
-                  {Math.min(endIndex, totalItems)}
+                  {formatNumber(Math.min(endIndex, totalItems))}
                 </span>{' '}
                 of{' '}
                 <span className={cn('font-black', 'text-foreground/80')}>
-                  {totalItems}
+                  {formatNumber(totalItems)}
                 </span>{' '}
                 notifications
               </p>
@@ -444,7 +447,7 @@ export const NotificationsManagement = () => {
                     'disabled:opacity-40',
                   )}
                 >
-                  Previous
+                  {t('Back')}
                 </Button>
 
                 {getPageNumbers().map((page, idx) =>
@@ -476,7 +479,7 @@ export const NotificationsManagement = () => {
                           : 'border border-border text-muted-foreground hover:bg-muted-light bg-card',
                       )}
                     >
-                      {page}
+                      {formatNumber(page)}
                     </Button>
                   ),
                 )}
@@ -502,7 +505,7 @@ export const NotificationsManagement = () => {
                     'disabled:opacity-40',
                   )}
                 >
-                  Next
+                  {t('Next')}
                 </Button>
               </div>
             </div>
@@ -531,7 +534,7 @@ export const NotificationsManagement = () => {
                 'mb-0.5',
               )}
             >
-              Notification Summary
+              {t('Account Notifications')}
             </h3>
             <p
               className={cn(
@@ -541,7 +544,7 @@ export const NotificationsManagement = () => {
                 'mb-5',
               )}
             >
-              System summary stats.
+              {t('Unread Alerts')}
             </p>
 
             {/* Unread count row */}
@@ -576,7 +579,7 @@ export const NotificationsManagement = () => {
                     'text-muted-foreground',
                   )}
                 >
-                  Unread count
+                  {t('Unread Alerts')}
                 </span>
               </div>
               <span
@@ -587,7 +590,7 @@ export const NotificationsManagement = () => {
                     : 'bg-muted-light text-muted-dark',
                 )}
               >
-                {unreadCount}
+                {formatNumber(unreadCount)}
               </span>
             </div>
 
@@ -615,7 +618,7 @@ export const NotificationsManagement = () => {
                 )}
               >
                 <CheckCheck size={13} />
-                Mark all as read
+                {t('Mark all read')}
               </Button>
             )}
           </div>

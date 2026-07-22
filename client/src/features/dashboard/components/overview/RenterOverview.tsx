@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface RenterOverviewProps {
   myRentals: any[] | undefined
@@ -34,6 +35,7 @@ export const RenterOverview = ({
   likedLoading,
   notifications,
 }: RenterOverviewProps) => {
+  const { t, formatNumber } = useTranslation()
   const totalSpent =
     myRentals
       ?.filter((r: any) => r.status === 'approved' || r.status === 'completed')
@@ -66,12 +68,14 @@ export const RenterOverview = ({
               'mb-1',
             )}
           >
-            Renter Portal
+            {t('Renter Portal')}
           </h1>
           <p
             className={cn('text-sm', 'text-muted-foreground/85', 'font-medium')}
           >
-            Track your active rentals, saved properties, and booking schedules.
+            {t(
+              'Track your active rentals, saved properties, and booking schedules.',
+            )}
           </p>
         </div>
         <Link to="/products">
@@ -94,7 +98,7 @@ export const RenterOverview = ({
             )}
           >
             <Compass size={18} />
-            Browse Properties
+            {t('Browse Properties')}
           </Button>
         </Link>
       </div>
@@ -110,9 +114,16 @@ export const RenterOverview = ({
         )}
       >
         <StatCard
-          title="Active Rental Properties"
-          value={rentalsLoading ? '...' : activeRentals.length.toString()}
-          change={`${myRentals?.length || 0} Total Orders`}
+          title={t('Active Rental Properties')}
+          value={
+            rentalsLoading
+              ? '...'
+              : formatNumber(activeRentals.length)
+          }
+          change={t('{count} Total Orders').replace(
+            '{count}',
+            formatNumber(myRentals?.length || 0),
+          )}
           isPositive={activeRentals.length > 0}
           icon={CalendarDays}
           iconBg="bg-primary-soft"
@@ -120,9 +131,9 @@ export const RenterOverview = ({
           sparklineData={[1, 0, 2, 1, 3, 2, activeRentals.length]}
         />
         <StatCard
-          title="Total Renter Expenditure"
-          value={rentalsLoading ? '...' : `₹ ${totalSpent.toLocaleString()}`}
-          change="Processed Payments"
+          title={t('Total Renter Expenditure')}
+          value={rentalsLoading ? '...' : `₹ ${formatNumber(totalSpent)}`}
+          change={t('Processed Payments')}
           isPositive={true}
           icon={IndianRupee}
           iconBg="bg-emerald-50"
@@ -130,11 +141,13 @@ export const RenterOverview = ({
           sparklineData={[1000, 3000, 2500, 5000, 4000, 6000, totalSpent]}
         />
         <StatCard
-          title="Saved Wishlist Listings"
+          title={t('Saved Wishlist Listings')}
           value={
-            likedLoading ? '...' : likedProducts?.length?.toString() || '0'
+            likedLoading
+              ? '...'
+              : formatNumber(likedProducts?.length || 0)
           }
-          change="Favorites Bookmarked"
+          change={t('Favorites Bookmarked')}
           isPositive={true}
           icon={Heart}
           iconBg="bg-primary-soft"
@@ -142,9 +155,9 @@ export const RenterOverview = ({
           sparklineData={[2, 4, 3, 5, 4, 6, likedProducts?.length || 0]}
         />
         <StatCard
-          title="Account Notifications"
-          value={unreadCount.toString()}
-          change={unreadCount > 0 ? 'Unread Alerts' : 'All caught up'}
+          title={t('Account Notifications')}
+          value={formatNumber(unreadCount)}
+          change={unreadCount > 0 ? t('Unread Alerts') : t('All caught up')}
           isPositive={unreadCount === 0}
           icon={Clock}
           iconBg="bg-emerald-50"
@@ -169,7 +182,7 @@ export const RenterOverview = ({
         >
           <div className="mb-6">
             <h3 className={cn('text-xl', 'font-black', 'text-foreground')}>
-              Active Rented Properties
+              {t('Active Rented Properties')}
             </h3>
             <p
               className={cn(
@@ -178,7 +191,9 @@ export const RenterOverview = ({
                 'font-medium',
               )}
             >
-              Timeline of your approved rentals currently active or upcoming.
+              {t(
+                'Timeline of your approved rentals currently active or upcoming.',
+              )}
             </p>
           </div>
 
@@ -202,19 +217,19 @@ export const RenterOverview = ({
                 <TableHeader>
                   <TableRow className="border-b border-border/30 hover:bg-transparent">
                     <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
-                      Listing
+                      {t('Listing')}
                     </TableHead>
                     <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
-                      Landlord
+                      {t('Landlord')}
                     </TableHead>
                     <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
-                      Rental Dates
+                      {t('Rental Dates')}
                     </TableHead>
                     <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider h-auto">
-                      Rental Cost
+                      {t('Rental Cost')}
                     </TableHead>
                     <TableHead className="pb-3 font-semibold text-xs text-muted-foreground/70 uppercase tracking-wider text-right h-auto">
-                      Status
+                      {t('Status')}
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -264,7 +279,7 @@ export const RenterOverview = ({
                         {new Date(rental.endDate).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="py-4 font-black text-foreground">
-                        ₹ {rental.totalPrice?.toLocaleString()}
+                        ₹ {formatNumber(rental.totalPrice || 0)}
                       </TableCell>
                       <TableCell className="py-4 text-right">
                         <span
@@ -279,7 +294,7 @@ export const RenterOverview = ({
                                   : 'bg-muted/50 text-muted-foreground',
                           )}
                         >
-                          {rental.status}
+                          {t(rental.status)}
                         </span>
                       </TableCell>
                     </TableRow>
@@ -307,7 +322,7 @@ export const RenterOverview = ({
                 className={cn('text-muted-dark', 'mb-4', 'animate-pulse')}
               />
               <h4 className={cn('font-bold', 'text-foreground', 'mb-1')}>
-                No active rentals yet
+                {t('No active rentals yet')}
               </h4>
               <p
                 className={cn(
@@ -317,8 +332,9 @@ export const RenterOverview = ({
                   'mb-4',
                 )}
               >
-                You haven't rented any property yet. Browse our listings to get
-                started!
+                {t(
+                  "You haven't rented any property yet. Browse our listings to get started!",
+                )}
               </p>
               <Link to="/products">
                 <Button
@@ -336,7 +352,7 @@ export const RenterOverview = ({
                     'gap-1',
                   )}
                 >
-                  Explore Properties
+                  {t('Explore Properties')}
                   <ArrowUpRight size={14} />
                 </Button>
               </Link>
@@ -362,7 +378,7 @@ export const RenterOverview = ({
             <h3
               className={cn('text-xl', 'font-black', 'text-foreground', 'mb-1')}
             >
-              Saved Favorites
+              {t('Saved Favorites')}
             </h3>
             <p
               className={cn(
@@ -372,7 +388,7 @@ export const RenterOverview = ({
                 'mb-6',
               )}
             >
-              List of properties bookmarked for later consideration.
+              {t('List of properties bookmarked for later consideration.')}
             </p>
 
             {likedLoading ? (
@@ -447,7 +463,7 @@ export const RenterOverview = ({
                             'font-bold',
                           )}
                         >
-                          ₹ {listing.price.toLocaleString()} / day
+                          ₹ {formatNumber(listing.price)} {t('/day')}
                         </p>
                       </div>
                     </div>
@@ -477,10 +493,10 @@ export const RenterOverview = ({
               <div className={cn('text-center', 'py-12')}>
                 <Heart size={48} className={cn('text-muted-dark', 'mb-4')} />
                 <h4 className={cn('font-bold', 'text-foreground', 'mb-1')}>
-                  Wishlist is empty
+                  {t('Wishlist is empty')}
                 </h4>
                 <p className={cn('text-xs', 'text-muted-foreground/85')}>
-                  Your liked listings will show up here.
+                  {t('Your liked listings will show up here.')}
                 </p>
               </div>
             )}
@@ -505,7 +521,7 @@ export const RenterOverview = ({
                 'gap-1',
               )}
             >
-              Manage Wishlist
+              {t('Manage Wishlist')}
               <Heart size={16} />
             </Button>
           </Link>
@@ -514,3 +530,4 @@ export const RenterOverview = ({
     </div>
   )
 }
+

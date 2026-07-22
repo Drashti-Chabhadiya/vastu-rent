@@ -3,8 +3,10 @@ import { Input } from '#/components/ui/input'
 import { Textarea } from '#/components/ui/textarea'
 import { TabsContent } from '#/components/ui/tabs'
 import { useSiteSettingsStore } from '../../../../../../store/useSiteSettingsStore'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function ContactSettingsTab() {
+  const { t } = useTranslation()
   const {
     contactEmail,
     setContactEmail,
@@ -24,10 +26,10 @@ export function ContactSettingsTab() {
       <div className="space-y-1">
         <h4 className="text-[14px] font-extrabold text-dash-brand flex items-center gap-2">
           <Mail size={16} className="text-dash-brand" />
-          Contact Information Details
+          {t('Contact Information Details')}
         </h4>
         <p className="text-[11px] font-semibold text-muted-dark leading-relaxed">
-          These details appear on the public Contact Us page.
+          {t('These details appear on the public Contact Us page.')}
         </p>
       </div>
 
@@ -35,7 +37,7 @@ export function ContactSettingsTab() {
         {/* Support Email Address */}
         <div className="space-y-1.5">
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-            Support Email Address
+            {t('Support Email Address')}
           </label>
           <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
@@ -59,7 +61,7 @@ export function ContactSettingsTab() {
         {/* Support Phone Number */}
         <div className="space-y-1.5">
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-            Support Phone Number
+            {t('Support Phone Number')}
           </label>
           <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
@@ -84,7 +86,7 @@ export function ContactSettingsTab() {
       {/* Contact Page Hero Description */}
       <div className="space-y-1.5">
         <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block flex items-center gap-1">
-          ✨ Contact Page Hero Description
+          ✨ {t('Contact Page Hero Description')}
         </label>
         <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-start justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
           <Textarea
@@ -103,7 +105,7 @@ export function ContactSettingsTab() {
       {/* Office Address */}
       <div className="space-y-1.5">
         <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-          Office Address
+          {t('Office Address')}
         </label>
         <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
           <div className="flex items-center gap-3.5 flex-1 min-w-0">
@@ -131,11 +133,10 @@ export function ContactSettingsTab() {
         </div>
         <div>
           <span className="text-sm font-bold text-dash-brand block">
-            Changes Reflect Instantly
+            {t('Changes Reflect Instantly')}
           </span>
           <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
-            Any updates you make here will be visible on the live site
-            immediately.
+            {t('Any updates you make here will be visible on the live site immediately.')}
           </span>
         </div>
       </div>

@@ -11,12 +11,14 @@ import { CreateCouponModal } from './CreateCouponModal'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CouponsManagementProps {
   isRenterView?: boolean
 }
 
 export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
+  const { t, formatNumber } = useTranslation()
   const { data: coupons, isLoading } = useCoupons()
   const deleteMutation = useDeleteCoupon()
   const approveMutation = useApproveCoupon()
@@ -77,7 +79,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
   // ── Admin / User Stats ───────────────────────────────────────
   const adminStats = [
     {
-      label: 'Active Coupons',
+      label: t('Active Coupons'),
       value:
         coupons?.filter((c) => c.isActive && new Date(c.endDate) >= new Date())
           .length || 0,
@@ -85,7 +87,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     },
     {
-      label: 'Pending Approval',
+      label: t('Pending Approval'),
       value:
         coupons?.filter((c) => !c.isActive && new Date(c.endDate) >= new Date())
           .length || 0,
@@ -93,7 +95,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       color: 'bg-amber-50 text-amber-700 border-amber-100',
     },
     {
-      label: 'Total Generated',
+      label: t('Total Generated'),
       value: coupons?.length || 0,
       icon: Grid,
       color: 'bg-warning text-warning-foreground border-amber-100',
@@ -111,14 +113,15 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       {/* Breadcrumb */}
       <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
-          <span>Dashboard</span>
+          <span>{t('Dashboard')}</span>
           <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold uppercase tracking-widest">
-            Coupons Management
+            {t('Coupon Code Management')}
           </span>
         </div>
-        <h1 className="text-xl font-black text-foreground">Coupons</h1>
+        <h1 className="text-xl font-black text-foreground">{t('Manage Coupons')}</h1>
       </motion.div>
+
 
       {/* Admin Stats */}
       {isAdmin && (
@@ -138,7 +141,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
                     {stat.label}
                   </p>
                   <p className="text-2xl font-black text-foreground/90 mt-1">
-                    {stat.value}
+                    {formatNumber(stat.value)}
                   </p>
                 </div>
                 <div
@@ -173,7 +176,7 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
                   : 'border-transparent text-muted-dark hover:text-muted-foreground',
               )}
             >
-              {tab === 'my' ? 'My Listings Coupons' : 'Platform Wide Coupons'}
+              {tab === 'my' ? t('My Listings Coupons') : t('Platform Wide Coupons')}
             </Button>
           ))}
         </motion.div>
@@ -215,10 +218,10 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
       <ReusableAlertDialog
         isOpen={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
-        title="Delete Coupon"
-        description="Are you sure you want to delete this coupon? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('Delete Coupon')}
+        description={t('Are you sure you want to delete this coupon? This action cannot be undone.')}
+        confirmText={t('Delete')}
+        cancelText={t('Cancel')}
         variant="danger"
         isPending={deleteMutation.isPending}
         onConfirm={async () => {

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from '#/context/TranslationContext'
 import type { CSSProperties } from 'react'
 import {
   Search,
@@ -39,6 +40,7 @@ import { useChatStore } from '../../../../../store/useChatStore'
 import { toast } from 'sonner'
 
 export function ConversationList() {
+  const { t } = useTranslation()
   const { data: session } = authClient.useSession()
   const myShowOnline = (session?.user as any)?.showOnline !== false
   const [clearChatConvId, setClearChatConvId] = useState<string | null>(null)
@@ -228,7 +230,7 @@ export function ConversationList() {
             showDetailsPanel && 'hidden',
           )}
         >
-          Stay connected and build real rapports.
+          {t('Stay connected and build real rapports.')}
         </p>
       </div>
 
@@ -243,7 +245,7 @@ export function ConversationList() {
               className="absolute left-4 top-[14px] text-muted-dark"
             />
             <Input
-              placeholder="Search messages..."
+              placeholder={t('Search messages...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-11 pl-11 pr-4 bg-muted-light/80 hover:bg-muted-light border-none rounded-full text-[13px] font-medium focus-visible:ring-1 focus-visible:ring-emerald-500/20"
@@ -325,7 +327,7 @@ export function ConversationList() {
                 className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer flex items-center"
               >
                 <Settings size={13} className="mr-2" />
-                <span>Chat Settings</span>
+                <span>{t('Chat Settings')}</span>
               </DropdownMenuItem>
 
               {(filterOnline || filterGreen || sortBy !== 'recent') && (
@@ -386,7 +388,7 @@ export function ConversationList() {
                       : 'bg-muted-light hover:bg-muted/60 text-muted-foreground',
                   )}
                 >
-                  <span className="truncate">{tabLabel}</span>
+                  <span className="truncate">{t(tabLabel)}</span>
                   {tabUnread > 0 && (
                     <span
                       className={cn(
@@ -467,8 +469,8 @@ export function ConversationList() {
               )}
             >
               {searchQuery
-                ? 'No conversations match your search.'
-                : 'No conversations yet.'}
+                ? t('No conversations match your search.')
+                : t('No conversations yet.')}
             </p>
           </div>
         ) : (
@@ -623,7 +625,7 @@ export function ConversationList() {
                             className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer"
                           >
                             <Pin size={13} className="mr-2 rotate-45" />
-                            {isPinned ? 'Unpin Chat' : 'Pin Chat'}
+                            {isPinned ? t('Unpin Chat') : t('Pin Chat')}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={async (e) => {
@@ -633,7 +635,7 @@ export function ConversationList() {
                             className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer"
                           >
                             <BellOff size={13} className="mr-2" />
-                            {isMuted ? 'Unmute' : 'Mute'}
+                            {isMuted ? t('Unmute') : t('Mute')}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={(e) => {
@@ -681,9 +683,9 @@ export function ConversationList() {
             }
           }
         }}
-        title="Clear Chat?"
-        description="Are you sure you want to clear this chat? This action cannot be undone."
-        confirmText="Clear"
+        title={t("Clear Chat?")}
+        description={t("Are you sure you want to clear this chat? This action cannot be undone.")}
+        confirmText={t("Clear")}
         variant="danger"
       />
 

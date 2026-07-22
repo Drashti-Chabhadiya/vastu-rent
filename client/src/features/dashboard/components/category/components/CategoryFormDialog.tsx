@@ -25,6 +25,7 @@ import { IconSelector } from './IconSelector'
 import { cn } from '#/lib/utils'
 import { useUploadProductImage } from '#/hook'
 import { LoadingOverlay } from '#/components/ui/loader'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CategoryFormDialogProps {
   isOpen: boolean
@@ -43,6 +44,7 @@ export const CategoryFormDialog = ({
   isPending,
   isRequest = false,
 }: CategoryFormDialogProps) => {
+  const { t } = useTranslation()
   const [categoryName, setCategoryName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState<string>('Folder')
   const [selectedColor, setSelectedColor] = useState<string>(
@@ -105,7 +107,7 @@ export const CategoryFormDialog = ({
         setCategoryImage(url)
       } catch (error) {
         console.error('Upload Error:', error)
-        alert('Failed to upload image. Please try again.')
+        alert(t('Failed to upload image. Please try again.'))
       }
     }
   }
@@ -143,17 +145,17 @@ export const CategoryFormDialog = ({
           <DialogHeader>
             <DialogTitle className="text-2xl font-extrabold tracking-tight">
               {isRequest
-                ? 'Propose Category'
+                ? t('Propose Category')
                 : editingCategory
-                  ? 'Update Category'
-                  : 'New Category'}
+                  ? t('Update Category')
+                  : t('New Category')}
             </DialogTitle>
             <p className="text-primary-foreground/70 text-sm font-medium mt-1">
               {isRequest
-                ? 'Propose a new collection. Admins will review and approve your suggestion.'
+                ? t('Propose a new collection. Admins will review and approve your suggestion.')
                 : editingCategory
-                  ? 'Modify the category name and properties.'
-                  : 'Create a new collection for your rentals.'}
+                  ? t('Modify the category name and properties.')
+                  : t('Create a new collection for your rentals.')}
             </p>
           </DialogHeader>
         </div>
@@ -163,19 +165,19 @@ export const CategoryFormDialog = ({
           className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-foreground relative min-h-[300px]"
         >
           {isUploading && (
-            <LoadingOverlay message="Uploading category image..." />
+            <LoadingOverlay message={t('Uploading category image...')} />
           )}
           {isPending && (
-            <LoadingOverlay message="Submitting category details..." />
+            <LoadingOverlay message={t('Submitting category details...')} />
           )}
 
           <div className="space-y-2.5">
             <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
               <Tag size={14} className="text-dash-brand" />
-              Category Name
+              {t('Category Name')}
             </label>
             <Input
-              placeholder="e.g. Electronics, Furniture..."
+              placeholder={t('e.g. Electronics, Furniture...')}
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
               className="h-12 bg-card border-border rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
@@ -188,11 +190,11 @@ export const CategoryFormDialog = ({
               <div className="space-y-2.5">
                 <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                   <LucideIcons.FileText size={14} className="text-dash-brand" />
-                  Description
+                  {t('Description')}
                 </label>
                 <Textarea
                   required
-                  placeholder="Briefly describe what items belong in this category..."
+                  placeholder={t('Briefly describe what items belong in this category...')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full min-h-[80px] bg-card border border-border rounded-xl p-3 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
@@ -205,11 +207,11 @@ export const CategoryFormDialog = ({
                     size={14}
                     className="text-dash-brand"
                   />
-                  Request Reason
+                  {t('Request Reason')}
                 </label>
                 <Textarea
                   required
-                  placeholder="Why is this category needed? (e.g., I have 10 cameras to list)"
+                  placeholder={t('Why is this category needed? (e.g., I have 10 cameras to list)')}
                   value={requestReason}
                   onChange={(e) => setRequestReason(e.target.value)}
                   className="w-full min-h-[80px] bg-card border border-border rounded-xl p-3 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
@@ -226,7 +228,7 @@ export const CategoryFormDialog = ({
                 ) : (
                   <Type size={14} className="text-dash-brand" />
                 )}
-                {useImage ? 'Category Image' : 'Category Icon'}
+                {useImage ? t('Category Image') : t('Category Icon')}
               </label>
               <Button
                 type="button"
@@ -234,7 +236,7 @@ export const CategoryFormDialog = ({
                 onClick={() => setUseImage(!useImage)}
                 className="text-[12px] font-extrabold text-primary hover:text-primary-hover hover:underline p-0 h-auto active:scale-[0.98] transition-all"
               >
-                {useImage ? 'Use Icon instead' : 'Upload Image instead'}
+                {useImage ? t('Use Icon instead') : t('Upload Image instead')}
               </Button>
             </div>
 
@@ -265,10 +267,10 @@ export const CategoryFormDialog = ({
                       </div>
                       <div className="text-center text-foreground">
                         <p className="text-sm font-bold">
-                          Click to upload image
+                          {t('Click to upload image')}
                         </p>
                         <p className="text-xs text-muted-foreground/85 mt-1">
-                          PNG, JPG or SVG (max. 2MB)
+                          {t('PNG, JPG or SVG (max. 2MB)')}
                         </p>
                       </div>
                     </>
@@ -288,7 +290,7 @@ export const CategoryFormDialog = ({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between px-1">
                     <span className="text-[12px] font-bold text-muted-foreground/85">
-                      Brand Color & Shades
+                      {t('Brand Color & Shades')}
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-bold text-muted-foreground/70 uppercase">
@@ -327,7 +329,7 @@ export const CategoryFormDialog = ({
                           className="w-8 h-8 rounded-full border-2 border-card p-0 overflow-hidden cursor-pointer shadow-sm transition-all hover:scale-110"
                         />
                         <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-primary-foreground text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                          Custom Shade
+                          {t('Custom Shade')}
                         </div>
                       </div>
                     </div>
@@ -360,7 +362,7 @@ export const CategoryFormDialog = ({
                 {/* Icon Selector */}
                 <div className="space-y-3">
                   <span className="text-[12px] font-bold text-muted-foreground/85 ml-1">
-                    Select Icon
+                    {t('Select Icon')}
                   </span>
                   <IconSelector
                     selectedIcon={selectedIcon}
@@ -375,7 +377,7 @@ export const CategoryFormDialog = ({
           <div className="pt-6 border-t border-border/30">
             <label className="text-[13px] font-bold text-foreground mb-4 block flex items-center gap-2">
               <Check size={14} className="text-dash-brand" />
-              Card Preview
+              {t('Card Preview')}
             </label>
 
             <div className="max-w-xs mx-auto">
@@ -427,7 +429,7 @@ export const CategoryFormDialog = ({
 
                     <div>
                       <h3 className="text-lg font-extrabold text-foreground">
-                        {categoryName || 'Category Name'}
+                        {categoryName || t('Category Name')}
                       </h3>
                       <div className="flex items-center gap-2 mt-2">
                         <div
@@ -450,7 +452,7 @@ export const CategoryFormDialog = ({
                               color: !useImage ? selectedColor : '#4b5563',
                             }}
                           >
-                            0 Items
+                            0 {t('Items')}
                           </span>
                         </div>
                       </div>
@@ -460,7 +462,7 @@ export const CategoryFormDialog = ({
 
                 <div className="mt-6 pt-4 border-t border-border/30 flex items-center justify-between">
                   <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">
-                    Manage Collection
+                    {t('Manage Collection')}
                   </span>
                   <ArrowRight size={16} className="text-muted-dark" />
                 </div>
@@ -474,7 +476,7 @@ export const CategoryFormDialog = ({
               onClick={() => onOpenChange(false)}
               className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none active:scale-[0.98]"
             >
-              Cancel
+              {t('Cancel')}
             </Button>
             <Button
               type="submit"
@@ -484,17 +486,17 @@ export const CategoryFormDialog = ({
               {isRequest ? (
                 <>
                   <Check size={18} strokeWidth={3} />
-                  Submit Proposal
+                  {t('Submit Proposal')}
                 </>
               ) : editingCategory ? (
                 <>
                   <Check size={18} strokeWidth={3} />
-                  Save Changes
+                  {t('Save Changes')}
                 </>
               ) : (
                 <>
                   <Plus size={18} strokeWidth={3} />
-                  Create Category
+                  {t('Create Category')}
                 </>
               )}
             </Button>

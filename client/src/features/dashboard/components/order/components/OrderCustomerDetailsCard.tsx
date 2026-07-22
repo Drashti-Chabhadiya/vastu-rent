@@ -1,4 +1,5 @@
 import { User as UserIcon, MapPin } from 'lucide-react'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface OrderCustomerDetailsCardProps {
   order: any
@@ -7,10 +8,11 @@ interface OrderCustomerDetailsCardProps {
 export const OrderCustomerDetailsCard = ({
   order,
 }: OrderCustomerDetailsCardProps) => {
+  const { t } = useTranslation()
   return (
     <div className="bg-card p-10 rounded-[2rem] border border-border/30 shadow-sm">
       <h3 className="text-[14px] font-black text-foreground mb-8">
-        Customer Details
+        {t('Customer Details')}
       </h3>
       <div className="grid grid-cols-2 gap-20">
         <div className="flex items-center gap-5">
@@ -32,17 +34,17 @@ export const OrderCustomerDetailsCard = ({
 
         <div className="space-y-2">
           <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest block">
-            Pickup & Location Details
+            {t('Pickup & Location Details')}
           </span>
           <div className="text-[12px] font-bold text-muted-foreground leading-relaxed space-y-1">
             <p className="font-black text-foreground flex items-center gap-1.5 text-xs">
-              <MapPin size={12} className="text-primary" /> Primary Location:
+              <MapPin size={12} className="text-primary" /> {t('Primary Location:')}
             </p>
-            <p>{order.product?.location || 'Self-Pickup'}</p>
+            <p>{order.product?.location || t('Self-Pickup')}</p>
             {order.product?.pickupReturnDetails && (
               <>
                 <p className="font-black text-foreground flex items-center gap-1.5 text-xs pt-1.5">
-                  Pickup Directions:
+                  {t('Pickup Directions:')}
                 </p>
                 <p className="text-muted-foreground/85 text-[11px] font-medium leading-relaxed">
                   {order.product.pickupReturnDetails}
@@ -53,7 +55,7 @@ export const OrderCustomerDetailsCard = ({
               order.product.deliveryOptions.length > 0 && (
                 <>
                   <p className="font-black text-foreground flex items-center gap-1.5 text-xs pt-1.5">
-                    Fulfillment Modes:
+                    {t('Fulfillment Modes:')}
                   </p>
                   <p className="text-muted-foreground/85 text-[11px] font-medium">
                     {order.product.deliveryOptions.join(', ')}

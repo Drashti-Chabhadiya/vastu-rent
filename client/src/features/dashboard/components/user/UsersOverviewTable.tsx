@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface UsersOverviewTableProps {
   users?: any[]
@@ -19,11 +20,13 @@ export const UsersOverviewTable = ({
   isLoading,
   onViewAll,
 }: UsersOverviewTableProps) => {
+  const { t } = useTranslation()
+
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-bold text-dash-text">Recent Users</h3>
-        <ExploreLink onClick={onViewAll}>View All</ExploreLink>
+        <h3 className="font-bold text-dash-text">{t('Recent Users')}</h3>
+        <ExploreLink onClick={onViewAll}>{t('View All')}</ExploreLink>
       </div>
 
       <div className="overflow-x-auto scrollbar-hide">
@@ -31,13 +34,13 @@ export const UsersOverviewTable = ({
           <TableHeader>
             <TableRow className="border-b border-border/30 hover:bg-transparent">
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase pr-2 h-auto">
-                Name
+                {t('Name')}
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase pr-2 h-auto">
-                Email
+                {t('Email')}
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right pl-2 h-auto">
-                Role
+                {t('Role')}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -48,7 +51,7 @@ export const UsersOverviewTable = ({
                   colSpan={3}
                   className="py-4 text-center text-xs text-dash-text-muted"
                 >
-                  Loading...
+                  {t('Loading...')}
                 </TableCell>
               </TableRow>
             ) : users.length === 0 ? (
@@ -57,7 +60,7 @@ export const UsersOverviewTable = ({
                   colSpan={3}
                   className="py-4 text-center text-xs text-dash-text-muted"
                 >
-                  No users found
+                  {t('No users found')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -89,7 +92,7 @@ export const UsersOverviewTable = ({
                   </TableCell>
                   <TableCell className="py-4 text-right pl-2">
                     <span className="text-[10px] font-bold px-2 py-1 rounded bg-muted-light text-dash-text-soft uppercase">
-                      {user.role}
+                      {t(user.role)}
                     </span>
                   </TableCell>
                 </TableRow>

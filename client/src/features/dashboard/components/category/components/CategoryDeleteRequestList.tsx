@@ -8,6 +8,7 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CategoryDeleteRequestListProps {
   requests: any[]
@@ -28,34 +29,35 @@ export const CategoryDeleteRequestList = ({
   requestsLoading,
   onDeleteConfirm,
 }: CategoryDeleteRequestListProps) => {
+  const { t } = useTranslation()
   return (
     <div className="bg-card rounded-xl border border-border/30 shadow-sm overflow-hidden animate-in fade-in duration-300">
       <div className="p-6 border-b border-border/30 flex items-center justify-between">
         <h3 className="font-bold text-foreground flex items-center gap-2">
           <Trash2 className="text-destructive" size={18} />
-          Category Deletion Pipeline
+          {t('Category Deletion Pipeline')}
         </h3>
       </div>
 
       <div className="divide-y divide-border/30">
         {requestsLoading ? (
           <div className="p-8 text-center text-muted-foreground/70 animate-pulse">
-            Loading requests...
+            {t('Loading requests...')}
           </div>
         ) : requests.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground/70">
             <FileText className="mx-auto w-12 h-12 text-muted-foreground/30 mb-3" />
             <p className="font-bold text-muted-foreground/85">
-              No deletion requests found
+              {t('No deletion requests found')}
             </p>
             <p className="text-xs mt-1">
-              Active categories requested for deletion will display here.
+              {t('Active categories requested for deletion will display here.')}
             </p>
           </div>
         ) : (
           requests.map((req: any) => {
             const categoryName =
-              req.categoryName || req.category?.name || 'Unknown Category'
+              req.categoryName || req.category?.name || t('Unknown Category')
             const categoryIcon =
               req.categoryIcon || req.category?.icon || 'Folder'
             const categoryColor =
@@ -125,17 +127,17 @@ export const CategoryDeleteRequestList = ({
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">
-                      Delete "{categoryName}"
+                      {t('Delete "{categoryName}"').replace('{categoryName}', categoryName)}
                     </h4>
                     <p className="text-xs text-muted-foreground/70 mt-1">
-                      Requested by{' '}
-                      {req.user?.name || req.user?.email || 'Unknown User'} •{' '}
+                      {t('Requested by')}{' '}
+                      {req.user?.name || req.user?.email || t('Unknown User')} •{' '}
                       {new Date(req.createdAt).toLocaleDateString()}
                     </p>
                     {req.reason && (
                       <p className="text-xs text-muted-foreground mt-2 bg-danger/10 px-3 py-1.5 rounded-xl border border-danger/30 w-full max-w-lg italic">
                         <span className="font-bold text-[10px] text-destructive uppercase block tracking-wide mb-0.5 not-italic">
-                          Reason for Deletion
+                          {t('Reason for Deletion')}
                         </span>
                         "{req.reason}"
                       </p>
@@ -150,35 +152,32 @@ export const CategoryDeleteRequestList = ({
                         <div className="space-y-0.5">
                           <p className="font-extrabold text-[10px] uppercase tracking-wider text-warning-foreground font-black">
                             {isAdmin
-                              ? 'Approved: 24-Hour Deletion Window'
-                              : 'Action Required: 24-Hour Delete Permission'}
+                              ? t('Approved: 24-Hour Deletion Window')
+                              : t('Action Required: 24-Hour Delete Permission')}
                           </p>
                           <p className="font-semibold text-warning-foreground/95 leading-relaxed">
                             {isAdmin ? (
                               <>
-                                This deletion request has been approved. The
-                                proposing user has until{' '}
+                                {t('This deletion request has been approved. The proposing user has until')}{' '}
                                 <span className="font-black text-warning-foreground underline">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>{' '}
-                                to complete the deletion (Expires in{' '}
-                                <span className="font-black text-warning-foreground underline">
+                                {t('to complete the deletion (Expires in')} <span className="font-black text-warning-foreground underline">
                                   {timeRemainingStr}
                                 </span>
                                 ).
                               </>
                             ) : (
                               <>
-                                Admin approved this deletion. You must complete
-                                the deletion before the permission expires on{' '}
+                                {t('Admin approved this deletion. You must complete the deletion before the permission expires on')}{' '}
                                 <span className="font-black text-warning-foreground underline">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>{' '}
-                                (Expires in{' '}
+                                ({t('Expires in')}{' '}
                                 <span className="font-black text-warning-foreground underline">
                                   {timeRemainingStr}
                                 </span>
@@ -198,29 +197,28 @@ export const CategoryDeleteRequestList = ({
                         />
                         <div className="space-y-0.5">
                           <p className="font-extrabold text-[10px] uppercase tracking-wider text-muted-dark font-black">
-                            Delete Permission Expired
+                            {t('Delete Permission Expired')}
                           </p>
                           <p className="font-semibold text-muted-foreground/80 leading-relaxed">
                             {isAdmin ? (
                               <>
-                                The 24-hour deletion window expired on{' '}
+                                {t('The 24-hour deletion window expired on')}{' '}
                                 <span className="font-bold text-foreground">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>{' '}
-                                without action. The proposing user must submit a
-                                new request.
+                                {t('without action. The proposing user must submit a new request.')}
                               </>
                             ) : (
                               <>
-                                The 24-hour deletion window expired on{' '}
+                                {t('The 24-hour deletion window expired on')}{' '}
                                 <span className="font-bold text-foreground">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>
-                                . You must submit a new deletion request.
+                                {t('. You must submit a new deletion request.')}
                               </>
                             )}
                           </p>
@@ -246,7 +244,7 @@ export const CategoryDeleteRequestList = ({
                     }`}
                   >
                     {req.status === 'approved' && isExpired
-                      ? 'expired'
+                      ? t('expired')
                       : req.status}
                   </span>
 
@@ -256,10 +254,10 @@ export const CategoryDeleteRequestList = ({
                       variant="destructive"
                       onClick={() => onDeleteConfirm?.(req)}
                       className="rounded-xl h-9 px-3 flex items-center justify-center gap-1.5 font-bold text-xs cursor-pointer shadow-sm active:scale-[0.98] transition-all"
-                      title="Delete Category Now"
+                      title={t('Delete Category Now')}
                     >
                       <Trash2 size={14} />
-                      <span>Delete</span>
+                      <span>{t('Delete')}</span>
                     </Button>
                   )}
 
@@ -269,14 +267,14 @@ export const CategoryDeleteRequestList = ({
                       <Button
                         onClick={() => onApproveRequest(req)}
                         className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl h-9 w-9 p-0 flex items-center justify-center shadow-sm cursor-pointer"
-                        title="Approve & Grant Permission to Delete"
+                        title={t('Approve & Grant Permission to Delete')}
                       >
                         <Check size={18} />
                       </Button>
                       <Button
                         onClick={() => onRejectRequest(req)}
                         className="bg-danger hover:bg-danger text-destructive rounded-xl h-9 w-9 p-0 flex items-center justify-center cursor-pointer"
-                        title="Reject Request"
+                        title={t('Reject Request')}
                       >
                         <X size={18} />
                       </Button>

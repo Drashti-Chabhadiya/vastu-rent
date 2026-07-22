@@ -1,6 +1,7 @@
 import * as LucideIcons from 'lucide-react'
 import { Folder, Layers, Edit2, Trash2, ArrowRight } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CategoryCardProps {
   category: any
@@ -17,6 +18,7 @@ export const CategoryCard = ({
   onOpenEdit,
   onOpenDelete,
 }: CategoryCardProps) => {
+  const { t, formatNumber } = useTranslation()
   const isAdmin = currentUser?.role === 'admin'
   const isOwner = category.userId === currentUser?.id
 
@@ -83,7 +85,7 @@ export const CategoryCard = ({
                   className="text-[11px] font-extrabold uppercase tracking-wider"
                   style={{ color: category.color || 'var(--color-primary)' }}
                 >
-                  {category._count?.products || 0} Items
+                  {formatNumber(category._count?.products || 0)} {t('Items')}
                 </span>
               </div>
             </div>
@@ -119,7 +121,7 @@ export const CategoryCard = ({
         className="mt-6 pt-4 border-t border-border/30 flex items-center justify-between cursor-pointer group/manage"
       >
         <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest group-hover/manage:text-dash-brand transition-colors">
-          Manage Collection
+          {t('Manage Collection')}
         </span>
         <ArrowRight
           size={16}

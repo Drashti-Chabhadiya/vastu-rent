@@ -8,6 +8,7 @@ import {
   FolderPlus,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CategoryRequestListProps {
   requests: any[]
@@ -28,17 +29,18 @@ export const CategoryRequestList = ({
   onRequestCreate,
   requestsLoading,
 }: CategoryRequestListProps) => {
+  const { t } = useTranslation()
   return (
     <div className="bg-card rounded-xl border border-border/30 shadow-sm overflow-hidden animate-in fade-in duration-300">
       <div className="p-6 border-b border-border/30 flex items-center justify-between">
-        <h3 className="font-bold text-foreground">Category Request Pipeline</h3>
+        <h3 className="font-bold text-foreground">{t('Category Request Pipeline')}</h3>
         {isUser && onRequestCreate && (
           <Button
             onClick={onRequestCreate}
             className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-xl h-10 px-6 font-bold flex items-center gap-2 cursor-pointer"
           >
             <FolderPlus size={16} />
-            Request Category
+            {t('Request Category')}
           </Button>
         )}
       </div>
@@ -46,16 +48,16 @@ export const CategoryRequestList = ({
       <div className="divide-y divide-border/30">
         {requestsLoading ? (
           <div className="p-8 text-center text-muted-foreground/70">
-            Loading requests...
+            {t('Loading requests...')}
           </div>
         ) : requests.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground/70">
             <FileText className="mx-auto w-12 h-12 text-muted-foreground/30 mb-3" />
             <p className="font-bold text-muted-foreground/85">
-              No requests found
+              {t('No requests found')}
             </p>
             <p className="text-xs mt-1">
-              Requested category proposals will display here.
+              {t('Requested category proposals will display here.')}
             </p>
           </div>
         ) : (
@@ -101,14 +103,14 @@ export const CategoryRequestList = ({
                   <div>
                     <h4 className="font-bold text-foreground">{req.name}</h4>
                     <p className="text-xs text-muted-foreground/70 mt-1">
-                      Requested by{' '}
-                      {req.user?.name || req.user?.email || 'Unknown User'} •{' '}
+                      {t('Requested by')}{' '}
+                      {req.user?.name || req.user?.email || t('Unknown User')} •{' '}
                       {new Date(req.createdAt).toLocaleDateString()}
                     </p>
                     {req.description && (
                       <p className="text-xs text-muted-foreground mt-2 bg-muted-light/80 px-3 py-1.5 rounded-xl border border-border/30/50 w-full max-w-lg">
                         <span className="font-bold text-[10px] text-muted-foreground/70 uppercase block tracking-wide mb-0.5">
-                          Description
+                          {t('Description')}
                         </span>
                         {req.description}
                       </p>
@@ -116,7 +118,7 @@ export const CategoryRequestList = ({
                     {req.requestReason && (
                       <p className="text-xs text-muted-foreground mt-2 bg-emerald-50/20 px-3 py-1.5 rounded-xl border border-emerald-50/50 w-full max-w-lg">
                         <span className="font-bold text-[10px] text-emerald-600/70 uppercase block tracking-wide mb-0.5">
-                          Proposed Reason
+                          {t('Proposed Reason')}
                         </span>
                         {req.requestReason}
                       </p>
@@ -124,7 +126,7 @@ export const CategoryRequestList = ({
                     {req.status === 'rejected' && req.reason && (
                       <div className="flex items-center gap-1.5 text-xs text-destructive font-medium mt-2 bg-danger px-2 py-1 rounded-md w-fit border border-danger/30">
                         <AlertCircle size={12} />
-                        Reason: {req.reason}
+                        {t('Reason: {reason}').replace('{reason}', req.reason)}
                       </div>
                     )}
                   </div>
@@ -150,14 +152,14 @@ export const CategoryRequestList = ({
                       <Button
                         onClick={() => onApproveRequest(req)}
                         className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl h-9 w-9 p-0 flex items-center justify-center shadow-sm cursor-pointer"
-                        title="Approve & Create Category"
+                        title={t('Approve & Create Category')}
                       >
                         <Check size={18} />
                       </Button>
                       <Button
                         onClick={() => onRejectRequest(req)}
                         className="bg-danger hover:bg-danger text-destructive rounded-xl h-9 w-9 p-0 flex items-center justify-center cursor-pointer"
-                        title="Reject Request"
+                        title={t('Reject Request')}
                       >
                         <X size={18} />
                       </Button>

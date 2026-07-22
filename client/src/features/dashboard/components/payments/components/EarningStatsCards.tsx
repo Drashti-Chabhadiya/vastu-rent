@@ -1,4 +1,5 @@
 import { TrendingUp, Calendar, Coins, CheckCircle2 } from 'lucide-react'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface EarningStatsCardsProps {
   stats: {
@@ -13,37 +14,38 @@ interface EarningStatsCardsProps {
 }
 
 export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
+  const { t, formatNumber, formatCurrency } = useTranslation()
   const cards = [
     {
-      title: 'Total Revenue',
+      title: t('Total Revenue'),
       value: stats.totalEarnings,
-      description: 'All successful orders',
+      description: t('All successful orders'),
       icon: TrendingUp,
       bgClass: 'bg-emerald-50 text-emerald-600',
       isCount: false,
     },
     {
-      title: 'Monthly Revenue',
+      title: t('Monthly Revenue'),
       value: stats.monthlyEarnings,
-      description: 'This current month',
+      description: t('This current month'),
       icon: Calendar,
       bgClass: 'bg-info text-info-foreground',
       descClass: 'text-info-foreground font-medium',
       isCount: false,
     },
     {
-      title: 'Total Bookings',
+      title: t('Total Bookings'),
       value: stats.totalBookings,
-      description: 'Bookings received',
+      description: t('Bookings received'),
       icon: Coins,
       bgClass: 'bg-warning text-warning-foreground',
       descClass: 'text-warning-foreground',
       isCount: true,
     },
     {
-      title: 'Withdrawn Paid',
+      title: t('Withdrawn Paid'),
       value: stats.completedPayouts,
-      description: 'Successfully settled',
+      description: t('Successfully settled'),
       icon: CheckCircle2,
       bgClass: 'bg-indigo-50 text-indigo-600',
       descClass: 'text-indigo-500',
@@ -70,8 +72,7 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
                 {card.title}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                {card.isCount ? '' : '₹'}
-                {card.value.toLocaleString()}
+                {card.isCount ? formatNumber(card.value) : formatCurrency(card.value)}
               </h3>
               <span
                 className={`text-[9px] font-bold text-muted-dark block ${card.descClass || ''}`}

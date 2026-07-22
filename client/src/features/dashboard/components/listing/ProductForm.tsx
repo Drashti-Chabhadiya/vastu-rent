@@ -35,6 +35,7 @@ import {
   Instagram,
   Facebook,
 } from 'lucide-react'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface Category {
   id: string
@@ -63,6 +64,7 @@ export const ProductForm = ({
   currentUser,
   onUploadStatusChange,
 }: ProductFormProps) => {
+  const { t } = useTranslation()
   const isLister = currentUser?.role !== 'admin'
   const [requestCategoryOpen, setRequestCategoryOpen] = useState(false)
   const createRequestMutation = useCreateCategoryRequest()
@@ -80,7 +82,7 @@ export const ProductForm = ({
           <div className="text-center p-8">
             <PackagePlus size={32} className="text-muted-dark mx-auto mb-3" />
             <p className="text-sm font-bold text-muted-foreground/70 uppercase tracking-widest">
-              No photos uploaded
+              {t('No photos uploaded')}
             </p>
           </div>
         )}
@@ -94,11 +96,11 @@ export const ProductForm = ({
             <FormItem className="col-span-full">
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Type size={14} className="text-dash-brand" />
-                Product Title
+                {t('Product Title')}
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="e.g. Canon EOS R5 Camera"
+                  placeholder={t('e.g. Canon EOS R5 Camera')}
                   {...field}
                   className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
@@ -115,7 +117,7 @@ export const ProductForm = ({
             <FormItem className="col-span-full">
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <ImageIcon size={14} className="text-dash-brand" />
-                Product Photos
+                {t('Product Photos')}
               </FormLabel>
               <FormControl>
                 <ImageGalleryManager
@@ -136,11 +138,11 @@ export const ProductForm = ({
             <FormItem className="col-span-full">
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <AlignLeft size={14} className="text-dash-brand" />
-                Description
+                {t('Description')}
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe the item, features, and condition..."
+                  placeholder={t('Describe the item, features, and condition...')}
                   {...field}
                   className="min-h-[120px] w-full px-4 py-3 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
@@ -157,7 +159,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <IndianRupee size={14} className="text-dash-brand" />
-                Price / Day
+                {t('Price / Day')}
               </FormLabel>
               <FormControl>
                 <Input
@@ -178,7 +180,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <ShieldCheck size={14} className="text-dash-brand" />
-                Security Deposit (Refundable)
+                {t('Security Deposit (Refundable)')}
               </FormLabel>
               <FormControl>
                 <Input
@@ -200,7 +202,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <MapPin size={14} className="text-dash-brand" />
-                City
+                {t('City')}
               </FormLabel>
               <FormControl>
                 <Input
@@ -221,7 +223,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <MapPin size={14} className="text-dash-brand" />
-                Location
+                {t('Location')}
               </FormLabel>
               <FormControl>
                 <Input
@@ -242,7 +244,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Tag size={14} className="text-dash-brand" />
-                Category
+                {t('Category')}
               </FormLabel>
               <Select
                 onValueChange={field.onChange}
@@ -250,7 +252,7 @@ export const ProductForm = ({
               >
                 <FormControl>
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all">
-                    <SelectValue placeholder="Select Category" />
+                    <SelectValue placeholder={t('Select Category')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
@@ -272,7 +274,7 @@ export const ProductForm = ({
                   onClick={() => setRequestCategoryOpen(true)}
                   className="text-[11px] font-bold text-dash-brand hover:underline cursor-pointer p-0 h-auto"
                 >
-                  Can't find your category? Request it here.
+                  {t("Can't find your category? Request it here.")}
                 </Button>
               </div>
               <FormMessage />
@@ -290,16 +292,16 @@ export const ProductForm = ({
             const payload = {
               ...data,
               requestReason:
-                data.requestReason?.trim() || 'Requested from Add Listing form',
+                data.requestReason?.trim() || t('Requested from Add Listing form'),
             }
             createRequestMutation.mutate(payload, {
               onSuccess: () => {
-                toast.success('Category request proposed successfully!')
+                toast.success(t('Category request proposed successfully!'))
                 setRequestCategoryOpen(false)
               },
               onError: (err: any) => {
                 toast.error(
-                  err.response?.data?.message || 'Failed to send request',
+                  err.response?.data?.message || t('Failed to send request'),
                 )
               },
             })
@@ -313,7 +315,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <User size={14} className="text-dash-brand" />
-                Provider
+                {t('Provider')}
               </FormLabel>
               <Select
                 onValueChange={field.onChange}
@@ -324,7 +326,7 @@ export const ProductForm = ({
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all disabled:opacity-100 disabled:bg-muted-light">
                     <SelectValue
                       placeholder={
-                        isLister ? currentUser.name : 'Select Provider'
+                        isLister ? currentUser.name : t('Select Provider')
                       }
                     />
                   </SelectTrigger>
@@ -377,7 +379,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Instagram size={14} className="text-pink-600" />
-                Instagram Link (Optional)
+                {t('Instagram Link (Optional)')}
               </FormLabel>
               <FormControl>
                 <Input
@@ -399,7 +401,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Facebook size={14} className="text-blue-600" />
-                Facebook Link (Optional)
+                {t('Facebook Link (Optional)')}
               </FormLabel>
               <FormControl>
                 <Input

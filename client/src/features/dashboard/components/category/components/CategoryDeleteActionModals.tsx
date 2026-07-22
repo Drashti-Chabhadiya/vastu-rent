@@ -1,6 +1,7 @@
 import * as LucideIcons from 'lucide-react'
 import { Trash2 } from 'lucide-react'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CategoryDeleteActionModalsProps {
   rejectingRequest: any
@@ -23,17 +24,18 @@ export const CategoryDeleteActionModals = ({
   onApproveConfirm,
   isPending,
 }: CategoryDeleteActionModalsProps) => {
+  const { t } = useTranslation()
   const renderRequestDetails = (req: any, type: 'approve' | 'reject') => {
     if (!req) return null
     const categoryName =
-      req.categoryName || req.category?.name || 'Unknown Category'
+      req.categoryName || req.category?.name || t('Unknown Category')
     const categoryIcon = req.categoryIcon || req.category?.icon || 'Folder'
     const categoryColor = req.categoryColor || req.category?.color || '#3b82f6'
     const categoryImage = req.category?.image
-    const proposerName = req.user?.name || req.user?.email || 'Unknown User'
+    const proposerName = req.user?.name || req.user?.email || t('Unknown User')
     const categoryCreatedAt = req.category?.createdAt
       ? new Date(req.category.createdAt).toLocaleDateString()
-      : 'Unknown Date'
+      : t('Unknown Date')
 
     const productsCount = req.productsCount || 0
     const listingsUsersCount = req.listingsUsersCount || 0
@@ -72,7 +74,7 @@ export const CategoryDeleteActionModals = ({
           )}
           <div className="min-w-0 flex-1">
             <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block mb-0.5">
-              Category to Delete
+              {t('Category to Delete')}
             </span>
             <h5 className="font-extrabold text-foreground text-sm truncate">
               {categoryName}
@@ -84,14 +86,14 @@ export const CategoryDeleteActionModals = ({
         <div className="space-y-2.5 bg-muted-light/25 border border-border/15 p-3.5 rounded-xl text-xs">
           <div className="flex justify-between items-center pb-2 border-b border-border/10">
             <span className="text-muted-foreground font-semibold">
-              Requested By
+              {t('Requested By')}
             </span>
             <span className="font-bold text-foreground">{proposerName}</span>
           </div>
 
           <div className="flex justify-between items-center pb-2 border-b border-border/10">
             <span className="text-muted-foreground font-semibold">
-              Request Date
+              {t('Request Date')}
             </span>
             <span className="font-bold text-foreground">
               {new Date(req.createdAt).toLocaleDateString()}
@@ -100,7 +102,7 @@ export const CategoryDeleteActionModals = ({
 
           <div className="flex justify-between items-center pb-2 border-b border-border/10">
             <span className="text-muted-foreground font-semibold">
-              Category Created
+              {t('Category Created')}
             </span>
             <span className="font-bold text-foreground">
               {categoryCreatedAt}
@@ -110,7 +112,7 @@ export const CategoryDeleteActionModals = ({
           {req.reason && (
             <div className="space-y-1 pt-1.5">
               <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
-                Reason for Deletion
+                {t('Reason for Deletion')}
               </span>
               <p className="italic text-muted-foreground/90 bg-danger/5 border border-danger/10 px-3 py-2 rounded-lg leading-relaxed">
                 "{req.reason}"
@@ -122,12 +124,12 @@ export const CategoryDeleteActionModals = ({
         {/* Category Usage Stats Grid */}
         <div className="space-y-2">
           <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
-            Category Usage Stats
+            {t('Category Usage Stats')}
           </span>
           <div className="grid grid-cols-2 gap-2 bg-muted-light/20 border border-border/10 p-3 rounded-xl">
             <div className="bg-card border border-border/20 p-2.5 rounded-lg text-center shadow-xs">
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
-                Total Listings
+                {t('Total Listings')}
               </span>
               <span className="text-sm font-black text-foreground">
                 {productsCount}
@@ -135,7 +137,7 @@ export const CategoryDeleteActionModals = ({
             </div>
             <div className="bg-card border border-border/20 p-2.5 rounded-lg text-center shadow-xs">
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
-                Listing Owners
+                {t('Listing Owners')}
               </span>
               <span className="text-sm font-black text-foreground">
                 {listingsUsersCount}
@@ -143,7 +145,7 @@ export const CategoryDeleteActionModals = ({
             </div>
             <div className="bg-card border border-border/20 p-2.5 rounded-lg text-center shadow-xs">
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
-                Total Bookings
+                {t('Total Bookings')}
               </span>
               <span className="text-sm font-black text-foreground">
                 {rentalsCount}
@@ -151,7 +153,7 @@ export const CategoryDeleteActionModals = ({
             </div>
             <div className="bg-card border border-border/20 p-2.5 rounded-lg text-center shadow-xs">
               <span className="text-[9px] font-bold text-muted-foreground uppercase block mb-0.5">
-                Renter Users
+                {t('Renter Users')}
               </span>
               <span className="text-sm font-black text-foreground">
                 {distinctRentersCount}
@@ -165,10 +167,12 @@ export const CategoryDeleteActionModals = ({
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider">
-                Linked Listings (Sample)
+                {t('Linked Listings (Sample)')}
               </span>
               <span className="text-[9px] text-muted-foreground font-semibold">
-                Showing {sampleProducts.length} of {productsCount}
+                {t('Showing {x} of {y}')
+                  .replace('{x}', sampleProducts.length.toString())
+                  .replace('{y}', productsCount.toString())}
               </span>
             </div>
             <div className="bg-muted-light/20 border border-border/10 rounded-xl overflow-hidden divide-y divide-border/10">
@@ -182,7 +186,7 @@ export const CategoryDeleteActionModals = ({
                       {prod.title}
                     </span>
                     <span className="text-[9px] text-muted-foreground truncate block">
-                      Owner: {prod.user?.name || prod.user?.email || 'Unknown'}
+                      {t('Owner:')} {prod.user?.name || prod.user?.email || t('Unknown')}
                     </span>
                   </div>
                   <span className="font-black text-primary flex-shrink-0 bg-primary-soft/30 px-2 py-0.5 rounded text-[10px]">
@@ -197,8 +201,8 @@ export const CategoryDeleteActionModals = ({
         {/* Action Prompt Note */}
         <p className="text-[11px] leading-relaxed text-muted-foreground/80 font-medium px-1">
           {type === 'approve'
-            ? 'Approving this deletion request will grant the user temporary permission to delete the category within a 24-hour window. The category will not be deleted immediately.'
-            : 'Are you sure you want to reject this category deletion request? The category will remain active.'}
+            ? t('Approving this deletion request will grant the user temporary permission to delete the category within a 24-hour window. The category will not be deleted immediately.')
+            : t('Are you sure you want to reject this category deletion request? The category will remain active.')}
         </p>
       </div>
     )
@@ -212,13 +216,13 @@ export const CategoryDeleteActionModals = ({
         onOpenChange={(open) => !open && onRejectClose()}
         onConfirm={onRejectConfirm}
         onCancel={onRejectClose}
-        title="Reject Deletion Request"
+        title={t('Reject Deletion Request')}
         description={renderRequestDetails(rejectingRequest, 'reject')}
-        confirmText="Reject Request"
-        cancelText="Cancel"
+        confirmText={t('Reject Request')}
+        cancelText={t('Cancel')}
         variant="danger"
         isPending={isPending}
-        pendingText="Rejecting..."
+        pendingText={t('Rejecting...')}
       />
 
       {/* Admin Approval Confirmation Dialog */}
@@ -227,14 +231,14 @@ export const CategoryDeleteActionModals = ({
         onOpenChange={(open) => !open && onApproveClose()}
         onConfirm={onApproveConfirm}
         onCancel={onApproveClose}
-        title="Approve Deletion Request"
+        title={t('Approve Deletion Request')}
         description={renderRequestDetails(approvingRequest, 'approve')}
-        confirmText="Approve Request"
-        cancelText="Cancel"
+        confirmText={t('Approve Request')}
+        cancelText={t('Cancel')}
         variant="success"
         icon={Trash2}
         isPending={isPending}
-        pendingText="Approving..."
+        pendingText={t('Approving...')}
       />
     </>
   )

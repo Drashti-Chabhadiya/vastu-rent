@@ -3,15 +3,17 @@ import { useAdminRecentReviews } from '#/hook'
 import { ExploreLink } from '#/components/common/ExploreLink'
 import { UserAvatar } from '#/components/common/UserAvatar'
 import { parseCommentImagesAndReply } from '#/lib/review-utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 export const RecentReviews = () => {
+  const { t, formatDate } = useTranslation()
   const { data: reviews = [], isLoading } = useAdminRecentReviews()
 
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-bold text-dash-text">Recent Reviews</h3>
-        <ExploreLink to="/account/reviews">View All</ExploreLink>
+        <h3 className="font-bold text-dash-text">{t('Recent Reviews')}</h3>
+        <ExploreLink to="/account/reviews">{t('View All')}</ExploreLink>
       </div>
 
       {isLoading ? (
@@ -30,10 +32,10 @@ export const RecentReviews = () => {
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <Star size={36} className="text-muted-foreground/30 mb-3" />
           <p className="text-sm font-bold text-muted-foreground/70">
-            No reviews yet
+            {t('No reviews yet')}
           </p>
           <p className="text-xs text-muted-dark mt-1">
-            Reviews will appear here once tenants start rating listings.
+            {t('Reviews will appear here once tenants start rating listings.')}
           </p>
         </div>
       ) : (
@@ -91,11 +93,7 @@ export const RecentReviews = () => {
                     {review.product?.title}
                   </p>
                   <p className="text-[9px] text-dash-text-muted">
-                    {new Date(review.createdAt).toLocaleDateString('en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {formatDate(review.createdAt)}
                   </p>
                 </div>
               </div>

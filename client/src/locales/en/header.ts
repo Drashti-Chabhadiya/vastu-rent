@@ -34,4 +34,29 @@ export const header = {
   'View all categories': 'View all categories',
   'Explore items in': 'Explore items in',
   'Loading categories...': 'Loading categories...',
+  'My Profile': 'My Profile',
+  'Become a Green Member': 'Become a Green Member',
+  'List items and verify your details to earn the green badge and stand out!':
+    'List items and verify your details to earn the green badge and stand out!',
+  'Email Verified': 'Email Verified',
+  'Phone Added': 'Phone Added',
+  'Location Added': 'Location Added',
+  '1+ Active Listings': '1+ Active Listings',
+  'Green Member': 'Green Member',
+  "You're saving the planet!": "You're saving the planet!",
+  'Theme & Appearance': 'Theme & Appearance',
+  Light: 'Light',
+  Dark: 'Dark',
+  System: 'System',
+
+  'Vastu Catalog': 'Vastu Catalog',
+  'Find items for every aspect of life.': 'Find items for every aspect of life.',
+  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.': 'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.',
+  'Explore all categories': 'Explore all categories',
+  'All Categories': 'All Categories',
+  'items': 'items',
+  'No categories found': 'No categories found',
+
 }
+
+

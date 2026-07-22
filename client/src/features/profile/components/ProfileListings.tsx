@@ -1,5 +1,6 @@
 import { authClient } from '#/lib/auth/auth-client'
 import { useState, useEffect } from 'react'
+import { useTranslation } from '#/context/TranslationContext'
 import {
   Plus,
   MapPin,
@@ -40,6 +41,7 @@ import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 
 export function ProfileListings() {
+  const { t } = useTranslation()
   const [session, setSession] = useState<any>(null)
   const [isAuthLoading, setIsAuthLoading] = useState(true)
   const { data: listings, isLoading: isListingsLoading } = useMyListings()
@@ -173,11 +175,11 @@ export function ProfileListings() {
     ) || 55640
   const avgRatingValue = listings?.length
     ? (
-        listings.reduce(
-          (sum: number, item: any) => sum + (parseFloat(item.rating) || 4.8),
-          0,
-        ) / listings.length
-      ).toFixed(1)
+      listings.reduce(
+        (sum: number, item: any) => sum + (parseFloat(item.rating) || 4.8),
+        0,
+      ) / listings.length
+    ).toFixed(1)
     : '4.8'
 
   return (
@@ -194,10 +196,10 @@ export function ProfileListings() {
       >
         <div className="space-y-1">
           <h1 className="text-3xl font-black text-foreground tracking-tight">
-            My Listings
+            {t('My Listings')}
           </h1>
           <p className="text-sm text-muted-foreground/70 font-bold">
-            Manage your listed items and track their performance.
+            {t('Manage your listed items and track their performance.')}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -206,7 +208,7 @@ export function ProfileListings() {
             className="bg-primary hover:bg-primary-hover text-primary-foreground font-black text-xs px-5 h-10 rounded-full flex items-center gap-1.5 active:scale-95 shadow-sm cursor-pointer border-none shadow-primary/15"
           >
             <Plus size={15} strokeWidth={3} />
-            Add New Listing
+            {t('Add New Listing')}
           </Button>
           <Button
             variant="outline"
@@ -229,7 +231,7 @@ export function ProfileListings() {
             )}
           >
             <SlidersHorizontal size={14} className="text-muted-dark" />
-            Filter
+            {t('Filter')}
           </Button>
         </div>
       </motion.div>
@@ -246,7 +248,7 @@ export function ProfileListings() {
               className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-dark"
             />
             <Input
-              placeholder="Search listings..."
+              placeholder={t('Search listings...')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-10 pl-10 pr-4 bg-card border-border rounded-full text-xs font-semibold placeholder:text-muted-dark focus-visible:ring-1 focus-visible:ring-primary/20"
@@ -255,14 +257,14 @@ export function ProfileListings() {
 
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="h-10 border-border bg-card rounded-full font-bold text-xs text-muted-foreground focus:ring-1 focus:ring-primary/20 px-4 shadow-sm">
-              <SelectValue placeholder="Category" />
+              <SelectValue placeholder={t('Category')} />
             </SelectTrigger>
             <SelectContent className="bg-card rounded-2xl shadow-xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
               <SelectItem
                 value="all"
                 className="rounded-xl font-bold py-2.5 px-3 focus:bg-muted-light cursor-pointer text-xs text-muted-foreground"
               >
-                All Categories
+                {t('All Categories')}
               </SelectItem>
               {categories?.map((cat: any) => (
                 <SelectItem
@@ -278,26 +280,26 @@ export function ProfileListings() {
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="h-10 border-border bg-card rounded-full font-bold text-xs text-muted-foreground focus:ring-1 focus:ring-primary/20 px-4 shadow-sm">
-              <SelectValue placeholder="Availability" />
+              <SelectValue placeholder={t('Availability')} />
             </SelectTrigger>
             <SelectContent className="bg-card rounded-2xl shadow-xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
               <SelectItem
                 value="all"
                 className="rounded-xl font-bold py-2.5 px-3 focus:bg-muted-light cursor-pointer text-xs text-muted-foreground"
               >
-                Any Availability
+                {t('Any Availability')}
               </SelectItem>
               <SelectItem
                 value="available"
                 className="rounded-xl font-bold py-2.5 px-3 focus:bg-muted-light cursor-pointer text-xs text-muted-foreground"
               >
-                Active Listings
+                {t('Active Listings')}
               </SelectItem>
               <SelectItem
                 value="unavailable"
                 className="rounded-xl font-bold py-2.5 px-3 focus:bg-muted-light cursor-pointer text-xs text-muted-foreground"
               >
-                Inactive Listings
+                {t('Inactive Listings')}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -331,7 +333,7 @@ export function ProfileListings() {
               )}
             >
               <span>
-                {tab.label} ({counts[tab.id]})
+                {t(tab.label)} ({counts[tab.id]})
               </span>
               {isActive && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
@@ -351,11 +353,10 @@ export function ProfileListings() {
             <Package className="w-8 h-8 text-muted-dark" />
           </div>
           <h3 className="text-lg font-extrabold text-foreground/90">
-            No {activeTab} listings yet
+            {t('No')} {t(activeTab)} {t('listings yet')}
           </h3>
           <p className="text-muted-dark text-xs max-w-xs mx-auto mt-1.5 font-bold">
-            Start earning by listing your unused items today. It's quick, easy,
-            and secure.
+            {t("Start earning by listing your unused items today. It's quick, easy, and secure.")}
           </p>
           <Button
             onClick={() => setIsAddOpen(true)}
@@ -413,14 +414,14 @@ export function ProfileListings() {
                   <div className="flex flex-wrap items-center gap-4 text-[11px] font-extrabold text-muted-dark mt-4">
                     <div className="flex items-center gap-1.5">
                       <Eye size={13} className="text-muted-dark stroke-[2.5]" />
-                      <span>{item.views || 120} Views</span>
+                      <span>{item.views || 120} {t('Views')}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar
                         size={13}
                         className="text-muted-dark stroke-[2.5]"
                       />
-                      <span>{item.bookingsCount || 24} Bookings</span>
+                      <span>{item.bookingsCount || 24} {t('Bookings')}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Star
@@ -428,7 +429,7 @@ export function ProfileListings() {
                         className="text-muted-dark stroke-[2.5]"
                       />
                       <span>
-                        {parseFloat(item.rating || '4.8').toFixed(1)} Rating
+                        {parseFloat(item.rating || '4.8').toFixed(1)} {t('Rating')}
                       </span>
                     </div>
                   </div>
@@ -442,7 +443,7 @@ export function ProfileListings() {
                       {item.price}
                     </span>
                     <span className="text-muted-dark text-[10px] font-bold">
-                      / day
+                      {t('/ day')}
                     </span>
                   </div>
 
@@ -455,7 +456,7 @@ export function ProfileListings() {
                       }}
                       className="rounded-full border-border text-foreground/80 font-black text-xs px-5 h-9 w-full md:w-auto flex items-center justify-center hover:bg-muted-light cursor-pointer shadow-sm active:scale-95"
                     >
-                      Edit
+                      {t('Edit')}
                     </Button>
 
                     {/* Dropdown container */}
@@ -489,7 +490,7 @@ export function ProfileListings() {
                               }}
                               className="w-full text-left px-3.5 py-2 text-xs font-bold text-destructive hover:bg-danger hover:text-destructive rounded-xl flex items-center gap-2 cursor-pointer transition-colors justify-start h-auto"
                             >
-                              <Trash2 size={12} /> Delete Listing
+                              <Trash2 size={12} /> {t('Delete Listing')}
                             </Button>
                           </div>
                         </>
@@ -603,11 +604,11 @@ export function ProfileListings() {
           createMutation.mutate(data, {
             onSuccess: () => {
               setIsAddOpen(false)
-              toast.success('Listing created successfully!')
+              toast.success(t('Listing created successfully!'))
             },
             onError: (err: any) => {
               toast.error(
-                err.response?.data?.message || 'Failed to create listing',
+                err.response?.data?.message || t('Failed to create listing'),
               )
             },
           })
@@ -634,11 +635,11 @@ export function ProfileListings() {
               onSuccess: () => {
                 setIsEditOpen(false)
                 setProductToEdit(null)
-                toast.success('Listing updated successfully!')
+                toast.success(t('Listing updated successfully!'))
               },
               onError: (err: any) => {
                 toast.error(
-                  err.response?.data?.message || 'Failed to update listing',
+                  err.response?.data?.message || t('Failed to update listing'),
                 )
               },
             },
@@ -658,24 +659,24 @@ export function ProfileListings() {
           if (!productToDelete) return
           deleteProduct.mutate(productToDelete.id, {
             onSuccess: () => {
-              toast.success('Listing deleted successfully')
+              toast.success(t('Listing deleted successfully'))
               setProductToDelete(null)
             },
             onError: (err: any) => {
               toast.error(
-                err.response?.data?.message || 'Failed to delete listing',
+                err.response?.data?.message || t('Failed to delete listing'),
               )
             },
           })
         }}
         onCancel={() => setProductToDelete(null)}
-        title="Delete Listing permanently?"
+        title={t("Delete Listing permanently?")}
         description={
           productToDelete
-            ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
+            ? `${t('Are you sure you want to permanently delete')} "${productToDelete.title}"? ${t('This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.')}`
             : ''
         }
-        confirmText="Delete"
+        confirmText={t("Delete")}
         variant="danger"
         isPending={deleteProduct.isPending}
       />

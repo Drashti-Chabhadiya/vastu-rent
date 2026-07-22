@@ -3,6 +3,7 @@ import { Ticket } from 'lucide-react'
 import type { Coupon } from '#/hook/use-coupons'
 import { CouponRenterCard } from './CouponRenterCard'
 import { Skeleton } from '#/components/ui/skeleton'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function CouponRenterSkeleton() {
   return (
@@ -40,6 +41,7 @@ export function CouponRenterView({
   coupons,
   isLoading,
 }: CouponRenterViewProps) {
+  const { t } = useTranslation()
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
   const handleCopy = (code: string) => {
@@ -57,11 +59,10 @@ export function CouponRenterView({
       <div className="flex flex-col items-center justify-center py-16 bg-card border border-border/30 rounded-[2rem] p-8 shadow-sm">
         <Ticket className="text-muted-dark w-16 h-16 mb-4 rotate-[-10deg]" />
         <h3 className="text-lg font-black text-foreground/90">
-          No Coupons Available
+          {t('No Coupons Available')}
         </h3>
         <p className="text-xs text-muted-dark mt-1 max-w-xs text-center font-bold">
-          Check back later for active platform-wide and listing-restricted
-          deals.
+          {t('Check back later for active platform-wide and listing-restricted deals.')}
         </p>
       </div>
     )

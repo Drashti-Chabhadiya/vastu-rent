@@ -53,18 +53,42 @@ export function useTranslation() {
   const language = useTranslationStore((state) => state.language)
   const changeLanguage = useTranslationStore((state) => state.changeLanguage)
 
+  const locale = language === 'gu' ? 'gu-IN' : language === 'hi' ? 'hi-IN' : 'en-IN'
+
   const t = (key: TranslationKey | string): string => {
+    if (!key) return ''
     const dict = translations[language] as Record<string, string>
     return dict[key] || translations.en[key as TranslationKey] || key
   }
 
+  const numberingOptions =
+    language === 'gu'
+      ? { numberingSystem: 'gujr' }
+      : language === 'hi'
+        ? { numberingSystem: 'deva' }
+        : {}
+
   const formatNumber = (val: number | string): string => {
-    const num = typeof val === 'number' ? val : parseFloat(String(val))
+    if (val === null || val === undefined || val === '') return ''
+    const num = typeof val === 'number' ? val : parseFloat(String(val).replace(/,/g, ''))
     if (isNaN(num)) return String(val)
-    if (language === 'gu') return num.toLocaleString('gu-IN')
-    if (language === 'hi') return num.toLocaleString('hi-IN')
-    return num.toLocaleString('en-IN')
+    return num.toLocaleString(locale, numberingOptions)
   }
 
-  return { language, changeLanguage, t, formatNumber }
+  const formatCurrency = (val: number | string): string => {
+    if (val === null || val === undefined || val === '') return '₹0'
+    const cleanStr = String(val).replace(/[^0-9.-]/g, '')
+    const num = parseFloat(cleanStr)
+    if (isNaN(num)) return String(val)
+    return `₹${num.toLocaleString(locale, numberingOptions)}`
+  }
+
+  const formatDate = (dateVal: Date | string | number, options?: Intl.DateTimeFormatOptions): string => {
+    if (!dateVal) return ''
+    const date = new Date(dateVal)
+    if (isNaN(date.getTime())) return String(dateVal)
+    return date.toLocaleDateString(locale, { ...numberingOptions, ...(options || { year: 'numeric', month: 'short', day: 'numeric' }) })
+  }
+
+  return { language, changeLanguage, t, formatNumber, formatCurrency, formatDate }
 }

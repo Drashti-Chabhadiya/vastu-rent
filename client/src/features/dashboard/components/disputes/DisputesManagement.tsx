@@ -22,8 +22,10 @@ import {
 } from '#/components/ui/dialog'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 export const DisputesManagement = () => {
+  const { t, formatCurrency, formatDate } = useTranslation()
   const { data: disputes, isLoading } = useDisputes()
   const resolveMutation = useResolveDispute()
   const { data: session } = authClient.useSession()
@@ -69,15 +71,15 @@ export const DisputesManagement = () => {
       {/* Breadcrumbs */}
       <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
-          <span>Dashboard</span>
+          <span>{t('Dashboard')}</span>
           <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold uppercase tracking-widest">
-            Disputes
+            {t('Handle Disputes')}
           </span>
         </div>
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-black text-foreground">
-            Disputes & Disputes Reports
+            {t('Handle Disputes')}
           </h1>
         </div>
       </motion.div>
@@ -92,10 +94,10 @@ export const DisputesManagement = () => {
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h3 className="text-[15px] font-black text-foreground">
-                Incoming Disputes
+                {t('Open Disputes')}
               </h3>
               <p className="text-[11px] font-bold text-muted-dark">
-                Review reported issues for orders and items.
+                {t('Review reported issues for orders and items.')}
               </p>
             </div>
           </div>
@@ -105,19 +107,19 @@ export const DisputesManagement = () => {
               <TableHeader>
                 <TableRow className="border-b border-border/30 hover:bg-transparent">
                   <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
-                    Dispute Detail
+                    {t('Dispute Detail')}
                   </TableHead>
                   <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
-                    Rental ID
+                    {t('Order ID')}
                   </TableHead>
                   <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
-                    Reported By
+                    {t('Complainant')}
                   </TableHead>
                   <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
-                    Date
+                    {t('Date')}
                   </TableHead>
                   <TableHead className="text-left px-4 py-3 text-[9px] font-black text-muted-dark uppercase tracking-widest h-auto">
-                    Status
+                    {t('Status')}
                   </TableHead>
                   <TableHead className="px-4 py-3 h-auto"></TableHead>
                 </TableRow>
@@ -129,7 +131,7 @@ export const DisputesManagement = () => {
                       colSpan={6}
                       className="text-center py-10 text-xs text-muted-dark"
                     >
-                      Loading disputes...
+                      {t('Loading...')}
                     </TableCell>
                   </TableRow>
                 ) : disputes?.length === 0 ? (
@@ -138,7 +140,7 @@ export const DisputesManagement = () => {
                       colSpan={6}
                       className="text-center py-10 text-xs text-muted-dark"
                     >
-                      No disputes reported.
+                      {t('No disputes found')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -172,7 +174,7 @@ export const DisputesManagement = () => {
                         </p>
                       </TableCell>
                       <TableCell className="px-4 py-5 text-[10px] font-bold text-muted-foreground/85">
-                        {new Date(dispute.createdAt).toLocaleDateString()}
+                        {formatDate(dispute.createdAt)}
                       </TableCell>
                       <TableCell className="px-4 py-5">
                         <Badge
@@ -184,7 +186,7 @@ export const DisputesManagement = () => {
                                 : 'bg-muted/50 text-muted-foreground/85'
                           }`}
                         >
-                          {dispute.status}
+                          {t(dispute.status)}
                         </Badge>
                       </TableCell>
                       <TableCell className="px-4 py-5 text-right">
@@ -207,13 +209,13 @@ export const DisputesManagement = () => {
             <>
               <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
                 <h3 className="text-[15px] font-black text-foreground mb-6 uppercase tracking-widest">
-                  Dispute Case
+                  {t('Dispute ID')} #{selectedDispute.id?.substring(0, 8)}
                 </h3>
 
                 <div className="space-y-4">
                   <div>
                     <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block mb-1">
-                      Issue reason
+                      {t('Reason')}
                     </span>
                     <p className="text-[12px] font-black text-foreground">
                       {selectedDispute.reason}
@@ -221,7 +223,7 @@ export const DisputesManagement = () => {
                   </div>
                   <div>
                     <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block mb-1">
-                      Detailed Description
+                      {t('Description')}
                     </span>
                     <p className="text-[11px] font-bold text-muted-foreground leading-relaxed">
                       {selectedDispute.description}
@@ -229,17 +231,17 @@ export const DisputesManagement = () => {
                   </div>
                   <div>
                     <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block mb-1">
-                      Product Details
+                      {t('Product Details')}
                     </span>
                     <p className="text-[11px] font-black text-foreground/80">
-                      {selectedDispute.rental?.product?.title || 'Unknown Item'}{' '}
-                      (₹{selectedDispute.rental?.product?.price}/day)
+                      {selectedDispute.rental?.product?.title || t('Unknown Item')}{' '}
+                      ({formatCurrency(selectedDispute.rental?.product?.price)}/{t('Day')})
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block mb-1">
-                        Reported By
+                        {t('Complainant')}
                       </span>
                       <p className="text-[10px] font-black text-foreground">
                         {selectedDispute.reportedBy?.name || 'Anonymous'}
@@ -250,10 +252,10 @@ export const DisputesManagement = () => {
                     </div>
                     <div>
                       <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block mb-1">
-                        Status
+                        {t('Status')}
                       </span>
                       <Badge className="bg-danger text-danger-foreground border-none px-2.5 py-0.5 text-[8px] font-black uppercase tracking-wider">
-                        {selectedDispute.status}
+                        {t(selectedDispute.status)}
                       </Badge>
                     </div>
                   </div>
@@ -261,7 +263,7 @@ export const DisputesManagement = () => {
                   {selectedDispute.resolution && (
                     <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
                       <span className="text-[9px] font-black text-emerald-800 uppercase tracking-widest block mb-1">
-                        Official Resolution
+                        {t('Resolved')}
                       </span>
                       <p className="text-[11px] font-bold text-emerald-700">
                         {selectedDispute.resolution}
@@ -275,7 +277,7 @@ export const DisputesManagement = () => {
               {isAdmin && selectedDispute.status === 'open' && (
                 <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-3">
                   <h3 className="text-[13px] font-black text-foreground mb-1 uppercase tracking-widest">
-                    Dispute Actions
+                    {t('Actions')}
                   </h3>
                   <Button
                     onClick={() => {
@@ -284,7 +286,7 @@ export const DisputesManagement = () => {
                     }}
                     className="w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer"
                   >
-                    <CheckCircle2 size={16} /> Resolve Dispute Case
+                    <CheckCircle2 size={16} /> {t('Resolve Dispute')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -294,15 +296,14 @@ export const DisputesManagement = () => {
                     variant="ghost"
                     className="w-full h-12 rounded-xl text-danger-foreground hover:bg-danger font-black text-[11px] flex items-center justify-center gap-2 border border-danger/30 active:scale-[0.98] transition-all cursor-pointer"
                   >
-                    <XCircle size={16} /> Dismiss Dispute Case
+                    <XCircle size={16} /> {t('Reject')}
                   </Button>
                 </div>
               )}
             </>
           ) : (
             <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm text-center text-muted-dark py-12">
-              Select a dispute from the list to display its metrics and action
-              controls.
+              {t('No disputes found')}
             </div>
           )}
         </div>
@@ -319,11 +320,10 @@ export const DisputesManagement = () => {
           </div>
           <div>
             <h4 className="text-[15px] font-black text-foreground">
-              Dispute Management Center
+              {t('Safety Guarantee')}
             </h4>
             <p className="text-[11px] font-bold text-muted-foreground/85">
-              Admins verify facts from both renters and hosts to guarantee
-              payouts and transaction safety.
+              {t('Your details are protected using industry-grade SSL encryption and are kept confidential.')}
             </p>
           </div>
         </div>
@@ -335,23 +335,22 @@ export const DisputesManagement = () => {
           <DialogHeader className="text-left">
             <DialogTitle className="text-xl font-black text-foreground tracking-tight mb-2">
               {resolveType === 'resolved'
-                ? 'Resolve Dispute'
-                : 'Dismiss Dispute'}
+                ? t('Resolve Dispute')
+                : t('Reject')}
             </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground/85">
-              Write the official resolution verdict. Both renter and landlord
-              will receive notifications.
+              {t('Write the official resolution verdict.')}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleResolveSubmit} className="space-y-4 mt-4">
             <div>
               <label className="text-xs font-bold text-muted-foreground/70 uppercase tracking-wider block mb-1">
-                Veritable Verdict Remarks
+                {t('Comment')}
               </label>
               <Textarea
                 required
-                placeholder="Provide detailed feedback on this resolution..."
+                placeholder={t('Provide detailed feedback on this resolution...')}
                 value={resolutionText}
                 onChange={(e) => setResolutionText(e.target.value)}
                 className="w-full border border-border rounded-xl p-3 h-28 focus:ring-1 focus:ring-dash-brand text-sm resize-none"
@@ -368,8 +367,8 @@ export const DisputesManagement = () => {
               }`}
             >
               {resolveMutation.isPending
-                ? 'Submitting resolution...'
-                : 'Submit Verdict'}
+                ? t('Loading...')
+                : t('Submit Request')}
             </Button>
           </form>
         </DialogContent>

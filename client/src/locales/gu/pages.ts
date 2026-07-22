@@ -1,6 +1,6 @@
 export const pages = {
   // ─── Help Page ────────────────────────────────────────────
-  'How can we help you today?': 'આज અમે તમને કઈ રીતે મદદ કરી શકીએ?',
+  'How can we help you today?': 'આજ અમે તમને કઈ રીતે મદદ કરી શકીએ?',
   'Search for answers...': 'જવાબ શોધો...',
   'Getting Started': 'શરૂઆત કેવી રીતે કરવી',
   '12 articles': '૧૨ લેખ',
@@ -160,7 +160,163 @@ export const pages = {
   // ─── Categories Page ──────────────────────────────────────
   'Browse by Categories': 'કેટેગરી પ્રમાણે શોધો',
   'Discover a wide range of rental items organized by categories to help you find exactly what you need.':
-    'ભાડાની વસ્તુઓ કેટેગરી પ્રમાણે ગોઠવેલ છે — ચોક્કસ જે જોઈએ તે ઝડપથી શોધો.',
+    'ભાડાની વસ્તુઓ કેટેગરી પ્રમાણે ગોઠવેલ છે — ચોક્કસ જે જોઈએ તે ઝડપથી શોધો।',
   'active listings': 'સક્રિય લિસ્ટિંગ',
   'Explore Now': 'અન્વેષણ કરો',
+
+  // ─── Download Page & APK Section ──────────────────────────
+  'Need help with the installation?': 'શું તમને ઇન્સ્ટોલેશનમાં મદદ જોઈએ છે?',
+  "If you're having trouble installing the APK, please check our help guide or contact our support team. We're here to help you get started.":
+    'જો તમને APK ઇન્સ્ટોલ કરવામાં તકલીફ પડતી હોય, તો અમારી હેલ્પ ગાઇડ જુઓ અથવા સપોર્ટ ટીમનો સંપર્ક કરો. અમે તમારી મદદ માટે અહીં છીએ.',
+  'Read Help Guide': 'હેલ્પ ગાઇડ વાંચો',
+  Android: 'એન્ડ્રોઇડ',
+  'iOS (iPhone)': 'iOS (આઇફોન)',
+  'Now Available for Android': 'હવે એન્ડ્રોઇડ માટે ઉપલબ્ધ',
+  'Installs instantly on iOS': 'iOS પર તુરંત ઇન્સ્ટોલ થાય છે',
+  Download: 'ડાઉનલોડ કરો',
+  'Mobile App': 'મોબાઇલ એપ',
+  Add: 'ઉમેરો',
+  'to Home Screen': 'હોમ સ્ક્રીન પર',
+  'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.':
+    'તમારા એન્ડ્રોઇડ ડિવાઇસ પર વાસ્તુ રેન્ટનો પૂરો અનુભવ મેળવો. ઝડપી લિસ્ટિંગ, રીઅલ-ટાઇમ બુકિંગ અપડેટ્સ અને વિશિષ્ટ મોબાઇલ ફીચર્સ.',
+  'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.':
+    'તમારા આઇફોન પર વાસ્તુ રેન્ટનો પૂરો અનુભવ મેળવો. સફારી બ્રાઉઝર વડે સીધા તમારા હોમ સ્ક્રીન પર વાસ્તુ રેન્ટ ઉમેરો અને વાપરો.',
+  Stable: 'સ્ટેબલ',
+  'Download APK': 'APK ડાઉનલોડ કરો',
+  '100% Safe & Virus Free': '૧૦૦% સુરક્ષિત અને વાયરસ મુક્ત',
+  'Safari Web App': 'સફારી વેબ એપ',
+  'Open Web Version': 'વેબ વર્ઝન ખોલો',
+  'Install via Safari': 'સફારી દ્વારા ઇન્સ્ટોલ કરો',
+  'No Store Needed': 'કોઈ સ્ટોરની જરૂર નથી',
+  'iOS 16.4+ Supported': 'iOS 16.4+ સપોર્ટેડ',
+  'Allow Unknown Sources': 'અજ્ઞાત સ્ત્રોતોને મંજૂરી આપો',
+  'Go to Settings > Security and enable "Install from Unknown Sources".':
+    'સેટિંગ્સ > સિક્યોરિટીમાં જાઓ અને "અજ્ઞાત સ્ત્રોતોમાંથી ઇન્સ્ટોલ કરો" સક્ષમ કરો.',
+  'Install & Launch': 'ઇન્સ્ટોલ અને લોન્ચ કરો',
+  'Open the file and follow prompts to start using Vastu Rent.':
+    'ફાઇલ ખોલો અને વાસ્તુ રેન્ટનો ઉપયોગ શરૂ કરવા માર્ગદર્શિકા અનુસરો.',
+  'Scan QR Code': 'QR કોડ સ્કેન કરો',
+  'Scan the QR code to open the Vastu Rent website in Safari browser.':
+    'સફારી બ્રાઉઝરમાં વાસ્તુ રેન્ટ વેબસાઇટ ખોલવા માટે QR કોડ સ્કેન કરો.',
+  'Scan the QR code or click the button to start downloading the file.':
+    'ફાઇલ ડાઉનલોડ શરૂ કરવા QR કોડ સ્કેન કરો અથવા બટન પર ક્લિક કરો.',
+  'Tap Share Button': 'શેર બટન પર ટેપ કરો',
+  'Tap the Share button in Safari (box icon with upward arrow) at the bottom.':
+    'નીચે સફારીમાં શેર બટન (ઉપર એરો વાળા બોક્સ આઇકન) પર ટેપ કરો.',
+  'Add to Home Screen': 'હોમ સ્ક્રીન પર ઉમેરો',
+  'Select "Add to Home Screen" from the menu to install it on your device.':
+    'તમારા ડિવાઇસ પર ઇન્સ્ટોલ કરવા માટે મેનૂમાંથી "હોમ સ્ક્રીન પર ઉમેરો" પસંદ કરો.',
+  'Localhost detected! To scan with your phone, enter your PC\'s local IP address below.':
+    'લોકલહોસ્ટ મળ્યું! તમારા ફોન વડે સ્કેન કરવા માટે, નીચે તમારા પીસીનું લોકલ IP લખો.',
+  'Generating QR...': 'QR જનરેટ થઈ રહ્યું છે...',
+  'Scan to Install': 'ઇન્સ્ટોલ કરવા માટે સ્કેન કરો',
+  'Scan on iPhone': 'iPhone પર સ્કેન કરો',
+  'Point your camera at this code to download the APK directly to your phone.':
+    'તમારા ફોન પર સીધું APK ડાઉનલોડ કરવા માટે કેમેરા આ કોડ પર રાખો.',
+  'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.':
+    'સફારી બ્રાઉઝરમાં વાસ્તુ રેન્ટ ખોલવા માટે તમારા આઇફોન કેમેરાથી આ કોડ સ્કેન કરો.',
+  'Secure Link': 'સુરક્ષિત લિંક',
+  'Global Access': 'ગ્લોબલ એક્સેસ',
+  Copy: 'કોપી',
+  Copied: 'કોપી થઈ ગયું',
+  'Share this link with your device': 'આ લિંક તમારા ડિવાઇસ સાથે શેર કરો',
+
+  // ─── Wishlist Page ─────────────────────────────────────────
+  'Back to Home': 'મુખ્ય પૃષ્ઠ પર પાછા જાઓ',
+  'My Wishlist': 'મારી વિશ્લિસ્ટ',
+  'Saved Items': 'સાચવેલી વસ્તુઓ',
+  'Loading your saved items…': 'તમારી સાચવેલી વસ્તુઓ લોડ થઈ રહી છે…',
+  '{count} items saved for later': '{count} વસ્તુઓ પછી માટે સાચવી',
+  '{count} saved': '{count} સાચવેલ',
+  Refresh: 'રિફ્રેશ કરો',
+  'Search saved items…': 'સાચવેલી વસ્તુઓમાં શોધો…',
+  'Default Order': 'ડિફૉલ્ટ ક્રમ',
+  'Name A–Z': 'નામ A–Z',
+  'Price: Low → High': 'કિંમત: ઓછી થી વધુ',
+  'Price: High → Low': 'કિંમત: વધુ થી ઓછી',
+  'Grid view': 'ગ્રીડ વ્યૂ',
+  'List view': 'યાદી વ્યૂ',
+  '{count} result(s) for "{query}"': '"{query}" માટે {count} પરિણામ',
+  'Remove from wishlist?': 'વિશ્લિસ્ટમાંથી દૂર કરો?',
+  Remove: 'દૂર કરો',
+  Cancel: 'રદ્દ કરો',
+  'Remove from wishlist': 'વિશ્લિસ્ટમાંથી દૂર કરો',
+  View: 'જુઓ',
+  '/day': '/દિવસ',
+  'No results for "{query}"': '"{query}" માટે કોઈ પરિણામ મળ્યું નથી',
+  'Try adjusting your search terms.': 'કૃપા કરીને શોધો શબ્દો બદલીને પ્રયાસ કરો.',
+  'Clear search': 'શોધ સાફ કરો',
+  'Your wishlist is empty': 'તમારી વિશ્લિસ્ટ ખાલી છે',
+  'Browse our catalogue and tap the heart icon on any item to save it here for later.':
+    'અમારો કેટલોગ બ્રાઉઝ કરો અને પછી માટે સાચવવા કોઈ પણ વસ્તુ પર હાર્ટ આઇકન પર ટેપ કરો.',
+  'Browse Catalogue': 'કેટલોગ બ્રાઉઝ કરો',
+  'Explore Categories': 'કેટેગરી શોધો',
+  'Popular right now': 'હવે લોકપ્રિય',
+
+  // ─── Dashboard ─────────────────────────────────────────────
+  'Renter Portal': 'ભાડૂ પોર્ટલ',
+  'Track your active rentals, saved properties, and booking schedules.':
+    'તમારા સક્રિય ભાડા, સાચવેલી વસ્તુઓ અને બુકિંગ શિડ્યુલ ટ્રેક કરો.',
+  'Browse Properties': 'વસ્તુઓ બ્રાઉઝ કરો',
+  'Active Rental Properties': 'સક્રિય ભાડાની વસ્તુઓ',
+  '{count} Total Orders': '{count} કુલ ઓર્ડર',
+  'Total Renter Expenditure': 'કુલ ભાડા ખર્ચ',
+  'Processed Payments': 'પ્રોસેસ્ડ ચૂકવણી',
+  'Saved Wishlist Listings': 'વિશ્લિસ્ટમાં સાચવેલ લિસ્ટિંગ',
+  'Favorites Bookmarked': 'પસંદગી બુકમાર્ક',
+  'Account Notifications': 'એકાઉન્ટ નોટિફિકેશન',
+  'Unread Alerts': 'વણવાંચેલા એલર્ટ',
+  'All caught up': 'બધું વંચાઈ ગયું',
+  'Active Rented Properties': 'સક્રિય ભાડે લીધેલ વસ્તુઓ',
+  'Timeline of your approved rentals currently active or upcoming.':
+    'હાલમાં સક્રિય અથવા આગામી મંજૂર થયેલ ભાડાની સમયરેખા.',
+  Listing: 'લિસ્ટિંગ',
+  Landlord: 'મકાનમાલિક/હોસ્ટ',
+  'Rental Dates': 'ભાડાની તારીખો',
+  'Rental Cost': 'ભાડાનો ખર્ચ',
+  Status: 'સ્થિતિ',
+  'No active rentals yet': 'હજી સુધી કોઈ સક્રિય ભાડું નથી',
+  "You haven't rented any property yet. Browse our listings to get started!":
+    'તમે હજી સુધી કોઈ વસ્તુ ભાડે લીધી નથી. શરૂ કરવા અમારું લિસ્ટિંગ બ્રાઉઝ કરો!',
+  'Explore Properties': 'વસ્તુઓ શોધો',
+  'Saved Favorites': 'સાચવેલ પસંદગીઓ',
+  'List of properties bookmarked for later consideration.':
+    'પછીથી જોવા માટે બુકમાર્ક કરેલ વસ્તુઓની યાદી.',
+  'Wishlist is empty': 'વિશ્લિસ્ટ ખાલી છે',
+  'Your liked listings will show up here.':
+    'તમારી ગમેલી લિસ્ટિંગ અહીં દેખાશે.',
+  'Manage Wishlist': 'વિશ્લિસ્ટ મેનેજ કરો',
+  'Total Users': 'કુલ વપરાશકર્તાઓ',
+  'Total Listings': 'કુલ લિસ્ટિંગ',
+  'Total Bookings': 'કુલ બુકિંગ',
+  'Total Revenue': 'કુલ આવક',
+  'Last 7 Days': 'છેલ્લા ૭ દિવસ',
+  'Last 30 Days': 'છેલ્લા ૩૦ દિવસ',
+  'This Month': 'આ મહિને',
+  'Platform Alerts': 'પ્લેટફોર્મ એલર્ટ',
+  'Marking...': 'માર્ક થઈ રહ્યું છે...',
+  'Mark all read': 'બધા વંચાયેલ માર્ક કરો',
+  'All caught up! No alerts.': 'બધું વંચાઈ ગયું! કોઈ એલર્ટ નથી.',
+  'View all notifications ({count})': 'બધી નોટિફિકેશન જુઓ ({count})',
+  'Propose Categories': 'કેટેગરી પ્રસ્તાવિત કરો',
+  'Booking Requests': 'બુકિંગ વિનંતીઓ',
+  'Rentals Calendar': 'ભાડા કલેન્ડર',
+  'Earnings Payouts': 'કમાણી અને ચૂકવણી',
+  'Manage Coupons': 'કૂપન મેનેજ કરો',
+  'Manage Users': 'વપરાશકર્તાઓ મેનેજ કરો',
+  'Manage Listings': 'લિસ્ટિંગ મેનેજ કરો',
+  'Manage Categories': 'કેટેગરી મેનેજ કરો',
+  'Stories (Catalogue)': 'સ્ટોરીઝ (કેટલોગ)',
+  'Handle Disputes': 'વિવાદો ઉકેલો',
+  'Deletion Requests': 'હટાવવાની વિનંતીઓ',
+  'Go Premium': 'પ્રીમિયમ મેળવો',
+  'Unlock advance charts, calendar sync, and featured listing spots.':
+    'અદ્યતન ચાર્ટ, કલેન્ડર સિંક અને ખાસ લિસ્ટિંગ અનલોક કરો.',
+  'Upgrade Account': 'એકાઉન્ટ અપગ્રેડ કરો',
+  'My Account': 'મારું એકાઉન્ટ',
+  'View Public Site': 'પબ્લિક સાઇટ જુઓ',
+  "Welcome back! Here's what's happening with your platform.":
+    'પાછા ફરવા બદલ સ્વાગત છે! તમારા પ્લેટફોર્મ પર આ થઈ રહ્યું છે.',
 }
+
+

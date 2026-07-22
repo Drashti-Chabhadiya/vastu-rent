@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from '#/context/TranslationContext'
 import {
   Trash2,
   Star,
@@ -73,6 +74,7 @@ const StarRating = ({ rating }: { rating: number }) => {
 }
 
 export const ReviewsManagement = () => {
+  const { t } = useTranslation()
   const { data: sessionData } = authClient.useSession()
   const currentUserId = sessionData?.user?.id
   const [search] = useState('')
@@ -128,30 +130,30 @@ export const ReviewsManagement = () => {
   // Map server reviews to uniform UI cards structure from the API response
   const reviews = serverReviews
     ? serverReviews.map((r: any) => ({
-        id: r.id,
-        productId: r.product?.id,
-        title: r.product?.title || 'Rental Item',
-        location: r.product?.location || 'India',
-        rating: r.rating || 5,
-        dates: formatStayDates(r.createdAt),
-        comment: r.comment || 'Perfect rental experience!',
-        host: {
-          name: r.product?.user?.name || 'Vastu Lister',
-          avatar:
-            r.product?.user?.image ||
-            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-        },
-        reviewer: {
-          id: r.user?.id,
-          name: r.user?.name || 'Vastu Renter',
-          avatar: r.user?.image,
-        },
-        postedDate: formatPostedDate(r.createdAt),
-        type: r.product ? 'listings' : 'hosts',
-        image:
-          r.product?.images?.[0] ||
-          'https://images.unsplash.com/photo-1545241047-6083a3684587',
-      }))
+      id: r.id,
+      productId: r.product?.id,
+      title: r.product?.title || 'Rental Item',
+      location: r.product?.location || 'India',
+      rating: r.rating || 5,
+      dates: formatStayDates(r.createdAt),
+      comment: r.comment || 'Perfect rental experience!',
+      host: {
+        name: r.product?.user?.name || 'Vastu Lister',
+        avatar:
+          r.product?.user?.image ||
+          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+      },
+      reviewer: {
+        id: r.user?.id,
+        name: r.user?.name || 'Vastu Renter',
+        avatar: r.user?.image,
+      },
+      postedDate: formatPostedDate(r.createdAt),
+      type: r.product ? 'listings' : 'hosts',
+      image:
+        r.product?.images?.[0] ||
+        'https://images.unsplash.com/photo-1545241047-6083a3684587',
+    }))
     : []
 
   // Local Search filtering
@@ -239,10 +241,10 @@ export const ReviewsManagement = () => {
       >
         <div className="space-y-1">
           <h1 className="text-3xl font-black text-foreground tracking-tight">
-            Reviews
+            {t('Reviews')}
           </h1>
           <p className="text-sm text-muted-foreground/70 font-bold">
-            Reviews you've written for your stays and hosts.
+            {t("Reviews you've written for your stays and hosts.")}
           </p>
         </div>
         <DropdownMenu>
@@ -252,7 +254,7 @@ export const ReviewsManagement = () => {
               className="rounded-xl border-border text-foreground/80 font-bold h-10 px-5 flex items-center gap-2 hover:bg-muted-light/50 shadow-sm shrink-0 cursor-pointer"
             >
               <FilterIcon size={14} className="text-muted-foreground/85" />
-              {ratingFilter === 'all' ? 'All Ratings' : `${ratingFilter} Stars`}
+              {ratingFilter === 'all' ? t('All Ratings') : `${ratingFilter} ${t('Stars')}`}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-card border-border/30/80 rounded-xl shadow-lg p-1 min-w-[150px]">
@@ -263,7 +265,7 @@ export const ReviewsManagement = () => {
                 ratingFilter === 'all' && 'text-primary bg-primary/5',
               )}
             >
-              All Ratings
+              {t('All Ratings')}
             </DropdownMenuItem>
             {[5, 4, 3, 2, 1].map((stars) => (
               <DropdownMenuItem
@@ -284,7 +286,7 @@ export const ReviewsManagement = () => {
                   ))}
                 </div>
                 <span className="font-bold text-muted-foreground">
-                  ({stars} Stars)
+                  ({stars} {t('Stars')})
                 </span>
               </DropdownMenuItem>
             ))}
@@ -316,7 +318,7 @@ export const ReviewsManagement = () => {
               )}
             >
               <span>
-                {tab.label} ({counts[tab.id as keyof typeof counts]})
+                {t(tab.label)} ({counts[tab.id as keyof typeof counts]})
               </span>
               {isActive && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-primary rounded-full" />
@@ -336,10 +338,10 @@ export const ReviewsManagement = () => {
             <Star className="text-muted-dark fill-slate-300" size={32} />
           </div>
           <h3 className="text-lg font-extrabold text-foreground/90">
-            No {activeTab} reviews
+            {t('No')} {t(activeTab)} {t('reviews')}
           </h3>
           <p className="text-muted-dark text-xs mt-1.5 max-w-xs text-center font-bold">
-            You don't have any reviews listed under this category right now.
+            {t("You don't have any reviews listed under this category right now.")}
           </p>
         </motion.div>
       ) : (
@@ -513,7 +515,7 @@ export const ReviewsManagement = () => {
                   )}
                 </div>
 
-                {/* View Listing Button */}
+                {/* {t('View Listing')} Button */}
                 {review.productId ? (
                   <a
                     href={`/products/${review.productId}`}
@@ -525,7 +527,7 @@ export const ReviewsManagement = () => {
                       variant="outline"
                       className="rounded-xl border-border text-primary font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 hover:bg-muted-light/50 shadow-sm active:scale-95 cursor-pointer w-full"
                     >
-                      View Listing
+                      {t('View Listing')}
                       <ChevronRight
                         size={14}
                         className="text-primary stroke-[2.5]"
@@ -538,7 +540,7 @@ export const ReviewsManagement = () => {
                     disabled
                     className="rounded-xl border-border text-muted-dark font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 opacity-50 w-full mt-3 md:mt-0"
                   >
-                    View Listing
+                    {t('View Listing')}
                     <ChevronRight size={14} className="text-muted-dark" />
                   </Button>
                 )}
@@ -549,7 +551,7 @@ export const ReviewsManagement = () => {
                     {replyingReviewId === review.id ? (
                       <div className="space-y-2">
                         <Textarea
-                          placeholder="Write your response..."
+                          placeholder={t('Write your response...')}
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
                           className="w-full p-2 border border-border rounded-xl text-xs outline-none focus:border-primary/50 font-medium min-h-[60px] resize-none"
@@ -590,7 +592,7 @@ export const ReviewsManagement = () => {
                           const parsed = parseCommentImagesAndReply(
                             review.comment,
                           )
-                          return parsed.reply ? 'Edit Reply' : 'Reply to Review'
+                          return parsed.reply ? t('Edit Reply') : t('Reply to Review')
                         })()}
                       </Button>
                     )}
@@ -599,7 +601,7 @@ export const ReviewsManagement = () => {
 
                 {/* Posted Date */}
                 <span className="text-[11px] text-muted-dark font-semibold text-left mt-2 md:mt-0">
-                  Posted on {review.postedDate}
+                  {t('Posted on')} {review.postedDate}
                 </span>
               </div>
             </motion.div>
@@ -614,10 +616,10 @@ export const ReviewsManagement = () => {
       >
         <div className="text-primary font-black text-xs flex items-center gap-1.5">
           <Leaf size={14} fill="currentColor" className="stroke-[2.5]" />
-          That's all your reviews!
+          {t("That's all your reviews!")}
         </div>
         <p className="text-muted-dark text-[10px] font-bold text-center mt-1">
-          Keep sharing your experience and help our community.
+          {t('Keep sharing your experience and help our community.')}
         </p>
       </motion.div>
 
@@ -630,18 +632,18 @@ export const ReviewsManagement = () => {
           if (reviewToDelete) {
             deleteMutation.mutate(reviewToDelete, {
               onSuccess: () => {
-                toast.success('Review deleted successfully')
+                toast.success(t('Review deleted successfully'))
               },
               onError: () => {
-                toast.error('Failed to delete review')
+                toast.error(t('Failed to delete review'))
               },
             })
             setReviewToDelete(null)
           }
         }}
-        title="Delete Review"
-        description="Are you sure you want to permanently delete this review? This action cannot be undone."
-        confirmText="Delete"
+        title={t("Delete Review")}
+        description={t("Are you sure you want to permanently delete this review? This action cannot be undone.")}
+        confirmText={t("Delete")}
         variant="danger"
       />
     </motion.div>

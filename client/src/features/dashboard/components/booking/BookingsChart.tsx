@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { useBookingsOverTime } from '#/hook'
 import { cn } from '../../../../lib/utils'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 type Period = 'week' | 'month' | 'year'
 
@@ -24,6 +25,7 @@ const PERIOD_LABELS: Record<Period, string> = {
 }
 
 export const BookingsChart = () => {
+  const { t } = useTranslation()
   const [period, setPeriod] = useState<Period>('week')
   const [open, setOpen] = useState(false)
   const { data = [], isLoading } = useBookingsOverTime(period)
@@ -42,7 +44,7 @@ export const BookingsChart = () => {
     >
       {/* Header */}
       <div className={cn('flex', 'items-center', 'justify-between', 'mb-8')}>
-        <h3 className={cn('font-bold', 'text-dash-text')}>Bookings Overview</h3>
+        <h3 className={cn('font-bold', 'text-dash-text')}>{t('Bookings Overview')}</h3>
 
         <div className="relative">
           <Button
@@ -51,7 +53,7 @@ export const BookingsChart = () => {
             onClick={() => setOpen((v) => !v)}
             className="flex items-center gap-2 px-3 py-1.5 h-auto border border-border rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-border/120 active:scale-[0.98]"
           >
-            {PERIOD_LABELS[period]}
+            {t(PERIOD_LABELS[period])}
             <ChevronDown size={14} className="text-muted-foreground/70" />
           </Button>
           {open && (
@@ -95,7 +97,7 @@ export const BookingsChart = () => {
                     'active:scale-[0.98]',
                   )}
                 >
-                  {PERIOD_LABELS[p]}
+                  {t(PERIOD_LABELS[p])}
                 </Button>
               ))}
             </div>
@@ -131,7 +133,7 @@ export const BookingsChart = () => {
               'font-medium',
             )}
           >
-            No booking data for this period
+            {t('No booking data for this period')}
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">

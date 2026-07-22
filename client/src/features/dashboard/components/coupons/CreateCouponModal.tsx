@@ -34,6 +34,7 @@ import {
 } from '#/components/ui/dialog'
 import { Badge } from '#/components/ui/badge'
 import { LoadingOverlay } from '#/components/ui/loader'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CreateCouponModalProps {
   isOpen: boolean
@@ -48,6 +49,7 @@ export function CreateCouponModal({
   isAdmin,
   onClose,
 }: CreateCouponModalProps) {
+  const { t } = useTranslation()
   const createMutation = useCreateCoupon()
   const { data: myListings } = useMyListings()
 
@@ -84,13 +86,13 @@ export function CreateCouponModal({
     if (gl && pu)
       return {
         icon: ShieldCheck,
-        label: `First ${gl} users total, max ${pu}× each`,
+        label: `${t('First')} ${gl} ${t('users total, max')} ${pu}× ${t('each')}`,
         color: 'text-violet-700 bg-violet-50 border-violet-100',
       }
     if (gl)
       return {
         icon: Globe,
-        label: `First ${gl} users (First Come First Serve)`,
+        label: `${t('First')} ${gl} ${t('users (First Come First Serve)')}`,
         color: scenarioColorMap['amber'],
       }
     if (pu)
@@ -98,13 +100,13 @@ export function CreateCouponModal({
         icon: Users,
         label:
           pu === 1
-            ? 'Every user can use once only'
-            : `Every user can use ${pu} times`,
+            ? t('Every user can use once only')
+            : `${t('Every user can use')} ${pu} ${t('times')}`,
         color: scenarioColorMap['rose'],
       }
     return {
       icon: Ticket,
-      label: 'Unlimited — anyone can use anytime',
+      label: t('Unlimited — anyone can use anytime'),
       color: scenarioColorMap['emerald'],
     }
   })()
@@ -144,15 +146,14 @@ export function CreateCouponModal({
                 <Ticket className="text-primary-foreground" size={24} />
               </div>
               <Badge className="bg-card/20 text-primary-foreground border-none font-bold text-[10px] uppercase tracking-widest hover:bg-card/20">
-                Voucher Campaign
+                {t('Voucher Campaign')}
               </Badge>
             </div>
             <DialogTitle className="text-2xl font-extrabold tracking-tight text-primary-foreground">
-              Create Coupon
+              {t('Create Coupon')}
             </DialogTitle>
             <p className="text-primary-foreground/70 text-sm font-medium mt-1">
-              Configure discount rules, limits, and scope for your voucher
-              campaign.
+              {t('Configure discount rules, limits, and scope for your voucher campaign.')}
             </p>
           </DialogHeader>
         </div>
@@ -162,7 +163,7 @@ export function CreateCouponModal({
           className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar text-foreground relative min-h-[300px]"
         >
           {createMutation.isPending && (
-            <LoadingOverlay message="Generating coupon voucher..." />
+            <LoadingOverlay message={t('Generating coupon voucher...')} />
           )}
 
           {/* Live scenario preview */}
@@ -175,7 +176,7 @@ export function CreateCouponModal({
             <previewScenario.icon size={18} className="flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-wider opacity-85">
-                Scenario Preview
+                {t('Scenario Preview')}
               </p>
               <p className="text-[13px] font-bold mt-0.5">
                 {previewScenario.label}
@@ -187,11 +188,11 @@ export function CreateCouponModal({
           <div className="space-y-2.5">
             <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
               <Ticket size={14} className="text-dash-brand" />
-              Voucher Code
+              {t('Voucher Code')}
             </label>
             <Input
               required
-              placeholder="e.g. WELCOME50, FIRST100"
+              placeholder={t('e.g. WELCOME50, FIRST100')}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               className="h-12 bg-card border-border rounded-xl text-[15px] placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-black uppercase tracking-widest text-dash-brand shadow-sm"
@@ -203,24 +204,24 @@ export function CreateCouponModal({
             <div className="space-y-2.5">
               <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Percent size={14} className="text-dash-brand" />
-                Discount Type
+                {t('Discount Type')}
               </label>
               <Select value={type} onValueChange={(val: any) => setType(val)}>
                 <SelectTrigger className="w-full h-12 border border-border rounded-xl px-4 bg-card text-[15px] font-medium text-foreground focus:ring-1 focus:ring-dash-brand/30 hover:bg-muted-light/50 transition-all shadow-sm">
-                  <SelectValue placeholder="Discount Type" />
+                  <SelectValue placeholder={t('Discount Type')} />
                 </SelectTrigger>
                 <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
                   <SelectItem
                     value="percentage"
                     className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
                   >
-                    Percentage (%)
+                    {t('Percentage (%)')}
                   </SelectItem>
                   <SelectItem
                     value="fixed"
                     className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
                   >
-                    Fixed Flat (₹)
+                    {t('Fixed Flat (₹)')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -228,12 +229,12 @@ export function CreateCouponModal({
             <div className="space-y-2.5">
               <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Coins size={14} className="text-dash-brand" />
-                Discount Value
+                {t('Discount Value')}
               </label>
               <Input
                 required
                 type="number"
-                placeholder="e.g. 10 or 150"
+                placeholder={t('e.g. 10 or 150')}
                 value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
                 className="h-12 bg-card border-border rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
@@ -246,18 +247,18 @@ export function CreateCouponModal({
             <div className="space-y-2.5">
               <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Package size={14} className="text-dash-brand" />
-                Applicable Listing
+                {t('Applicable Listing')}
               </label>
               <Select value={productId} onValueChange={setProductId}>
                 <SelectTrigger className="w-full h-12 border border-border rounded-xl px-4 bg-card text-[15px] font-medium text-foreground focus:ring-1 focus:ring-dash-brand/30 hover:bg-muted-light/50 transition-all shadow-sm">
-                  <SelectValue placeholder="All My Listings" />
+                  <SelectValue placeholder={t('All My Listings')} />
                 </SelectTrigger>
                 <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200 max-h-[200px]">
                   <SelectItem
                     value="all"
                     className="text-[14px] font-medium text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
                   >
-                    All My Listings
+                    {t('All My Listings')}
                   </SelectItem>
                   {myListings.map((p: any) => (
                     <SelectItem
@@ -278,11 +279,11 @@ export function CreateCouponModal({
             <div className="space-y-2.5">
               <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <TrendingUp size={14} className="text-dash-brand" />
-                Max Discount (₹)
+                {t('Max Discount (₹)')}
               </label>
               <Input
                 type="number"
-                placeholder="Unlimited"
+                placeholder={t('Unlimited')}
                 value={maxDiscount}
                 onChange={(e) => setMaxDiscount(e.target.value)}
                 className="h-12 bg-card border-border rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
@@ -291,11 +292,11 @@ export function CreateCouponModal({
             <div className="space-y-2.5">
               <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <ClipboardList size={14} className="text-dash-brand" />
-                Min Booking (₹)
+                {t('Min Booking (₹)')}
               </label>
               <Input
                 type="number"
-                placeholder="None"
+                placeholder={t('None')}
                 value={minBooking}
                 onChange={(e) => setMinBooking(e.target.value)}
                 className="h-12 bg-card border-border rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
@@ -307,7 +308,7 @@ export function CreateCouponModal({
           <div className="space-y-2.5">
             <label className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
               <Calendar size={14} className="text-dash-brand" />
-              Expiry Date
+              {t('Expiry Date')}
             </label>
             <Input
               required
@@ -323,42 +324,42 @@ export function CreateCouponModal({
             <div className="flex items-center gap-2 mb-4">
               <Info size={14} className="text-dash-brand" />
               <p className="text-[13px] font-bold text-foreground">
-                Redemption Limits
+                {t('Redemption Limits')}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2.5">
                 <label className="text-[12px] font-bold text-muted-foreground/85 ml-1 flex items-center gap-2">
                   <Globe size={13} className="text-muted-foreground/70" />
-                  Global Limit (FCFS)
+                  {t('Global Limit (FCFS)')}
                 </label>
                 <Input
                   type="number"
                   min="1"
-                  placeholder="∞ Unlimited"
+                  placeholder={t('∞ Unlimited')}
                   value={usageLimit}
                   onChange={(e) => setUsageLimit(e.target.value)}
                   className="h-12 bg-card border-border rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
                 <p className="text-[10px] text-muted-foreground/70 font-medium ml-1">
-                  Total times anyone can use this code.
+                  {t('Total times anyone can use this code.')}
                 </p>
               </div>
               <div className="space-y-2.5">
                 <label className="text-[12px] font-bold text-muted-foreground/85 ml-1 flex items-center gap-2">
                   <Users size={13} className="text-muted-foreground/70" />
-                  Per-User Limit
+                  {t('Per-User Limit')}
                 </label>
                 <Input
                   type="number"
                   min="1"
-                  placeholder="∞ Unlimited"
+                  placeholder={t('∞ Unlimited')}
                   value={perUserLimit}
                   onChange={(e) => setPerUserLimit(e.target.value)}
                   className="h-12 bg-card border-border rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
                 <p className="text-[10px] text-muted-foreground/70 font-medium ml-1">
-                  Max uses per individual renter (1 = once).
+                  {t('Max uses per individual renter (1 = once).')}
                 </p>
               </div>
             </div>
@@ -366,8 +367,7 @@ export function CreateCouponModal({
 
           {!isAdmin && (
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900 text-sm font-medium">
-              Coupon requests from non-admin users will be reviewed by an admin
-              and activated after approval.
+              {t('Coupon requests from non-admin users will be reviewed by an admin and activated after approval.')}
             </div>
           )}
           <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-border/30">
@@ -376,7 +376,7 @@ export function CreateCouponModal({
               onClick={handleClose}
               className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
             >
-              Discard
+              {t('Discard')}
             </Button>
             <Button
               type="submit"
@@ -384,7 +384,7 @@ export function CreateCouponModal({
               className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
               <Plus size={18} strokeWidth={3} />
-              {createMutation.isPending ? 'Generating...' : 'Generate Coupon'}
+              {createMutation.isPending ? t('Generating...') : t('Generate Coupon')}
             </Button>
           </DialogFooter>
         </form>

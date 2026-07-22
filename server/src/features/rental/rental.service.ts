@@ -171,7 +171,6 @@ export class RentalService {
                 name: true,
                 email: true,
                 image: true,
-                location: true,
               },
             },
             reviews: {
@@ -196,7 +195,6 @@ export class RentalService {
                 name: true,
                 email: true,
                 image: true,
-                location: true,
               },
             },
           },
@@ -237,7 +235,6 @@ export class RentalService {
                 name: true,
                 email: true,
                 image: true,
-                location: true,
               },
             },
           },

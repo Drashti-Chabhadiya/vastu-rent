@@ -17,6 +17,7 @@ import { listingSchema } from '#/schema'
 import type { ListingSchema } from '#/schema'
 import { ProductForm } from './ProductForm'
 import { LoadingOverlay } from '#/components/ui/loader'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface Category {
   id: string
@@ -51,6 +52,7 @@ export const ListingDialog = ({
   currentUser,
   product,
 }: ListingDialogProps) => {
+  const { t } = useTranslation()
   const isEditMode = !!product
   const [isUploadingImages, setIsUploadingImages] = useState(false)
 
@@ -147,11 +149,12 @@ export const ListingDialog = ({
                 />
               </div>
               <Badge className="bg-card/20 text-primary-foreground border-none font-bold text-[10px] uppercase tracking-widest">
-                {isEditMode ? 'Marketplace Management' : 'Marketplace Admin'}
+                {isEditMode ? t('Marketplace Management') : t('Marketplace Admin')}
               </Badge>
             </div>
             <DialogTitle className="text-2xl font-extrabold tracking-tight text-primary-foreground">
-              {isEditMode ? 'Edit Listing Details' : 'Create New Listing'}
+              {isEditMode ? t('Edit Listing Details') : t('Create New Listing')}
+
             </DialogTitle>
           </DialogHeader>
         </div>
@@ -162,12 +165,12 @@ export const ListingDialog = ({
             className="p-8 space-y-8 relative min-h-[300px]"
           >
             {isUploadingImages && (
-              <LoadingOverlay message="Uploading listing photos..." />
+              <LoadingOverlay message={t('Uploading listing photos...')} />
             )}
             {isLoading && (
               <LoadingOverlay
                 message={
-                  isEditMode ? 'Saving changes...' : 'Publishing listing...'
+                  isEditMode ? t('Saving changes...') : t('Publishing listing...')
                 }
               />
             )}
@@ -187,7 +190,7 @@ export const ListingDialog = ({
                 onClick={() => onOpenChange(false)}
                 className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
               >
-                {isEditMode ? 'Cancel' : 'Discard'}
+                {isEditMode ? t('Cancel') : t('Discard')}
               </Button>
               <Button
                 type="submit"
@@ -197,11 +200,11 @@ export const ListingDialog = ({
                 <SubmitIcon size={18} strokeWidth={isEditMode ? 2 : 3} />
                 {isEditMode
                   ? isLoading
-                    ? 'Saving...'
-                    : 'Save Changes'
+                    ? t('Saving...')
+                    : t('Save Changes')
                   : isLoading
-                    ? 'Publishing...'
-                    : 'Publish to Marketplace'}
+                    ? t('Publishing...')
+                    : t('Publish to Marketplace')}
               </Button>
             </DialogFooter>
           </form>

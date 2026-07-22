@@ -1,6 +1,7 @@
 import { Switch } from '#/components/ui/switch'
 import { cn } from '#/lib/utils'
 import { SettingsSectionShell, Row } from './SettingsSectionShell'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface NotificationsSectionProps {
   emailN: boolean
@@ -20,15 +21,16 @@ export function NotificationsSection({
   pushN,
   handleTogglePreference,
 }: NotificationsSectionProps) {
+  const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title="Notifications"
-      description="Choose how and when you want to be notified."
+      title={t("Notifications")}
+      description={t("Choose how and when you want to be notified.")}
     >
       <div className={cn('divide-y', 'divide-border/30')}>
         <Row
-          label="Email Notifications"
-          desc="Booking updates, approvals and receipts."
+          label={t("Email Notifications")}
+          desc={t("Booking updates, approvals and receipts.")}
         >
           <Switch
             checked={emailN}
@@ -36,8 +38,8 @@ export function NotificationsSection({
           />
         </Row>
         <Row
-          label="SMS Notifications"
-          desc="Text messages for bookings and payments."
+          label={t("SMS Notifications")}
+          desc={t("Text messages for bookings and payments.")}
         >
           <Switch
             checked={smsN}
@@ -45,8 +47,8 @@ export function NotificationsSection({
           />
         </Row>
         <Row
-          label="Marketing Emails"
-          desc="Offers, promotions and new features."
+          label={t("Marketing Emails")}
+          desc={t("Offers, promotions and new features.")}
         >
           <Switch
             checked={mktN}
@@ -54,8 +56,8 @@ export function NotificationsSection({
           />
         </Row>
         <Row
-          label="Push Notifications"
-          desc="Real-time alerts on your device."
+          label={t("Push Notifications")}
+          desc={t("Real-time alerts on your device.")}
           last
         >
           <Switch

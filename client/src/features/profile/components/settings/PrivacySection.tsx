@@ -1,6 +1,7 @@
 import { Switch } from '#/components/ui/switch'
 import { cn } from '#/lib/utils'
 import { SettingsSectionShell, Row } from './SettingsSectionShell'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface PrivacySectionProps {
   showProf: boolean
@@ -15,15 +16,16 @@ export function PrivacySection({
   allowData,
   handleTogglePrivacy,
 }: PrivacySectionProps) {
+  const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title="Privacy"
-      description="Control your data and privacy settings."
+      title={t("Privacy")}
+      description={t("Control your data and privacy settings.")}
     >
       <div className={cn('divide-y', 'divide-border/30')}>
         <Row
-          label="Show profile to other users"
-          desc="Let renters and hosts see your public profile."
+          label={t("Show profile to other users")}
+          desc={t("Let renters and hosts see your public profile.")}
         >
           <Switch
             checked={showProf}
@@ -31,8 +33,8 @@ export function PrivacySection({
           />
         </Row>
         <Row
-          label="Show online status"
-          desc="Let others see when you are active."
+          label={t("Show online status")}
+          desc={t("Let others see when you are active.")}
         >
           <Switch
             checked={showOnline}
@@ -40,8 +42,8 @@ export function PrivacySection({
           />
         </Row>
         <Row
-          label="Allow data for personalisation"
-          desc="Help us improve your recommendations."
+          label={t("Allow data for personalisation")}
+          desc={t("Help us improve your recommendations.")}
           last
         >
           <Switch

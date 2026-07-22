@@ -14,10 +14,12 @@ import { useSearchChatUsers, useCreateConversation } from '#/hook'
 import { toast } from 'sonner'
 import { UserAvatar } from './UserAvatar'
 import { authClient } from '#/lib/auth/auth-client'
+import { useTranslation } from '#/context/TranslationContext'
 
 import { useChatStore } from '../../../../../store/useChatStore'
 
 export function NewChatDialog() {
+  const { t } = useTranslation()
   const {
     showNewChat: open,
     setShowNewChat: onOpenChange,
@@ -61,10 +63,10 @@ export function NewChatDialog() {
       onOpenChange(false)
       await switchConversation(conv.id)
       setShowMobileChat(true)
-      toast.success(`Chat opened with ${targetName}!`)
+      toast.success(`${t('Chat opened with')} ${targetName}!`)
     } catch (err: any) {
       toast.error(
-        err?.response?.data?.message || 'Could not start conversation.',
+        err?.response?.data?.message || t('Could not start conversation.'),
       )
     } finally {
       setStartingChatWith(null)
@@ -97,7 +99,7 @@ export function NewChatDialog() {
             )}
           >
             <UserPlus size={18} className="text-primary" />
-            Start New Conversation
+            {t('Start New Conversation')}
           </DialogTitle>
         </DialogHeader>
 
@@ -115,7 +117,7 @@ export function NewChatDialog() {
             />
             <Input
               autoFocus
-              placeholder="Search by name..."
+              placeholder={t('Search by name...')}
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
               className={cn(
@@ -174,7 +176,7 @@ export function NewChatDialog() {
             >
               <MessageSquare size={24} className="text-muted-foreground/30" />
               <p className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}>
-                {userSearch ? 'No users found' : 'Start typing to search users'}
+                {userSearch ? t('No users found') : t('Start typing to search users')}
               </p>
             </div>
           ) : (
@@ -235,7 +237,7 @@ export function NewChatDialog() {
                       'capitalize',
                     )}
                   >
-                    {u.role}
+                    {t(u.role)}
                   </p>
                 </div>
                 {startingChatWith === u.id ? (
@@ -253,7 +255,7 @@ export function NewChatDialog() {
                       'shrink-0',
                     )}
                   >
-                    Chat
+                    {t('Chat')}
                   </span>
                 )}
               </Button>

@@ -3,16 +3,18 @@ import { SettingsSectionShell } from './SettingsSectionShell'
 import { Sun, Moon, Laptop, CheckCircle2 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Card } from '#/components/ui/card'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function ThemeSection() {
+  const { t } = useTranslation()
   const { theme, setTheme } = useTheme()
 
   const choices = [
     {
       id: 'light',
-      name: 'Light Mode',
+      name: t('Light Mode'),
       icon: Sun,
-      description: 'Sleek paper cream theme with high readability.',
+      description: t('Sleek paper cream theme with high readability.'),
       preview: (
         <div className="relative w-full h-24 rounded-lg overflow-hidden flex flex-col p-2 space-y-1.5 border transition-colors duration-300 bg-light-preview-bg border-light-preview-border">
           {/* Header */}
@@ -39,9 +41,9 @@ export function ThemeSection() {
     },
     {
       id: 'dark',
-      name: 'Dark Mode',
+      name: t('Dark Mode'),
       icon: Moon,
-      description: 'Obsidian emerald dark theme, comfortable on the eyes.',
+      description: t('Obsidian emerald dark theme, comfortable on the eyes.'),
       preview: (
         <div className="relative w-full h-24 rounded-lg overflow-hidden flex flex-col p-2 space-y-1.5 border transition-colors duration-300 bg-dark-preview-bg border-dark-preview-border">
           {/* Header */}
@@ -68,9 +70,9 @@ export function ThemeSection() {
     },
     {
       id: 'auto',
-      name: 'System Default',
+      name: t('System Default'),
       icon: Laptop,
-      description: 'Automatically matches your device display mode.',
+      description: t('Automatically matches your device display mode.'),
       preview: (
         <div className="relative w-full h-24 rounded-lg overflow-hidden flex p-1.5 gap-1.5 border transition-colors duration-300 bg-muted/40 border-border/30">
           {/* Left Mini Light Preview */}
@@ -100,8 +102,8 @@ export function ThemeSection() {
 
   return (
     <SettingsSectionShell
-      title="Theme & Appearance"
-      description="Choose how Vastu-Rent's interface appears on your device. Dark mode extends battery life and reduces eye strain."
+      title={t("Theme & Appearance")}
+      description={t("Choose how Vastu-Rent's interface appears on your device. Dark mode extends battery life and reduces eye strain.")}
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {choices.map((choice) => {

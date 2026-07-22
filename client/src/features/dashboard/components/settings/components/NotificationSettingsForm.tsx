@@ -4,6 +4,7 @@ import { registerDeviceForPush } from '#/lib/fcm'
 import { toast } from 'sonner'
 import { BellRing, Save } from 'lucide-react'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface NotificationSettingsFormProps {
   bookingAlerts: boolean
@@ -24,6 +25,7 @@ export const NotificationSettingsForm = ({
   handleNotificationSave,
   isSaving,
 }: NotificationSettingsFormProps) => {
+  const { t } = useTranslation()
   const [pushEnabled, setPushEnabled] = useState(false)
   const [hasPermissionSupport, setHasPermissionSupport] = useState(false)
 
@@ -53,32 +55,32 @@ export const NotificationSettingsForm = ({
   const handlePushToggle = async (val: boolean) => {
     if (!val) {
       toast.info(
-        'To completely block push notifications, click the lock/settings icon in your browser address bar and reset notification permissions.',
+        t('To completely block push notifications, click the lock/settings icon in your browser address bar and reset notification permissions.'),
       )
       setPushEnabled(false)
       return
     }
 
     const toastId = toast.loading(
-      'Requesting browser notification permissions...',
+      t('Requesting browser notification permissions...'),
     )
     try {
       const token = await registerDeviceForPush()
       if (token) {
         setPushEnabled(true)
-        toast.success('Browser push notifications successfully enabled! 🔔', {
+        toast.success(t('Browser push notifications successfully enabled! 🔔'), {
           id: toastId,
         })
       } else {
         setPushEnabled(false)
         toast.error(
-          'Failed to enable push notifications. Please ensure you select "Allow" when prompted.',
+          t('Failed to enable push notifications. Please ensure you select "Allow" when prompted.'),
           { id: toastId },
         )
       }
     } catch (err) {
       setPushEnabled(false)
-      toast.error('Could not request notification permissions.', {
+      toast.error(t('Could not request notification permissions.'), {
         id: toastId,
       })
     }
@@ -107,10 +109,10 @@ export const NotificationSettingsForm = ({
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
         <div>
           <h3 className="text-xl font-extrabold text-dash-brand font-display tracking-tight leading-none">
-            Notification Preferences
+            {t('Notification Preferences')}
           </h3>
           <p className="text-[12px] font-semibold text-muted-dark mt-2">
-            Control when and how you receive alerts.
+            {t('Control when and how you receive alerts.')}
           </p>
         </div>
         <Button
@@ -119,7 +121,7 @@ export const NotificationSettingsForm = ({
           className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand"
         >
           <Save size={13} />
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? t('Saving...') : t('Save Changes')}
         </Button>
       </div>
 
@@ -133,11 +135,10 @@ export const NotificationSettingsForm = ({
                   size={14}
                   className="text-emerald-600 animate-bounce"
                 />
-                Browser Push Notifications
+                {t('Browser Push Notifications')}
               </h4>
               <p className="text-[11px] font-semibold text-brand-primary-deep/90 leading-normal">
-                Receive instant real-time updates for bookings, payments, and
-                messaging directly on this device.
+                {t('Receive instant real-time updates for bookings, payments, and messaging directly on this device.')}
               </p>
             </div>
             <Switch
@@ -151,10 +152,10 @@ export const NotificationSettingsForm = ({
         <div className="flex items-center justify-between p-4.5 rounded-2xl border border-border bg-muted-light/30 hover:bg-muted-light/80 transition-all duration-200">
           <div className="space-y-0.5">
             <h4 className="text-sm font-bold text-slate-800">
-              New Booking Alerts
+              {t('New Booking Alerts')}
             </h4>
             <p className="text-[11px] font-semibold text-slate-500 leading-normal">
-              Receive alert when renter requests a product booking.
+              {t('Receive alert when renter requests a product booking.')}
             </p>
           </div>
           <Switch
@@ -167,10 +168,10 @@ export const NotificationSettingsForm = ({
         <div className="flex items-center justify-between p-4.5 rounded-2xl border border-border bg-muted-light/30 hover:bg-muted-light/80 transition-all duration-200">
           <div className="space-y-0.5">
             <h4 className="text-sm font-bold text-slate-800">
-              Payout Settlements
+              {t('Payout Settlements')}
             </h4>
             <p className="text-[11px] font-semibold text-slate-500 leading-normal">
-              Get notified when money settles to your bank.
+              {t('Get notified when money settles to your bank.')}
             </p>
           </div>
           <Switch
@@ -183,10 +184,10 @@ export const NotificationSettingsForm = ({
         <div className="flex items-center justify-between p-4.5 rounded-2xl border border-border bg-muted-light/30 hover:bg-muted-light/80 transition-all duration-200">
           <div className="space-y-0.5">
             <h4 className="text-sm font-bold text-slate-800">
-              Marketing Updates
+              {t('Marketing Updates')}
             </h4>
             <p className="text-[11px] font-semibold text-slate-500 leading-normal">
-              Receive monthly platform optimization guides.
+              {t('Receive monthly platform optimization guides.')}
             </p>
           </div>
           <Switch
