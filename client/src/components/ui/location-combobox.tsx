@@ -53,12 +53,11 @@ export function LocationCombobox({
     },
     {
       enabled: type === 'country' || !!parentId,
-    }
+    },
   )
 
-
   // If value is a known name and we don't have it in the list yet, we don't strictly need it in the dropdown since value is controlled.
-  
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -70,7 +69,7 @@ export function LocationCombobox({
           className={cn(
             'w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-background text-[14px] font-normal focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all justify-between',
             !value && 'text-muted-foreground/60',
-            className
+            className,
           )}
         >
           {value || placeholder || `Select ${type}...`}
@@ -101,7 +100,7 @@ export function LocationCombobox({
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === item.name ? 'opacity-100' : 'opacity-0'
+                      value === item.name ? 'opacity-100' : 'opacity-0',
                     )}
                   />
                   {item.name}

@@ -72,7 +72,9 @@ export const EarningStatsCards = ({ stats }: EarningStatsCardsProps) => {
                 {card.title}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                {card.isCount ? formatNumber(card.value) : formatCurrency(card.value)}
+                {card.isCount
+                  ? formatNumber(card.value)
+                  : formatCurrency(card.value)}
               </h3>
               <span
                 className={`text-[9px] font-bold text-muted-dark block ${card.descClass || ''}`}

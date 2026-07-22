@@ -9,8 +9,8 @@ export function PaymentMethodsSection() {
   const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title={t("Payment Methods")}
-      description={t("Manage your saved payment methods and billing details.")}
+      title={t('Payment Methods')}
+      description={t('Manage your saved payment methods and billing details.')}
     >
       <div
         className={cn(
@@ -63,7 +63,7 @@ export function PaymentMethodsSection() {
             'cursor-pointer',
           )}
         >
-          {t("Add Payment Method")}
+          {t('Add Payment Method')}
         </Button>
       </div>
     </SettingsSectionShell>

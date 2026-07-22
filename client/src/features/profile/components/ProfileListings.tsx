@@ -175,11 +175,11 @@ export function ProfileListings() {
     ) || 55640
   const avgRatingValue = listings?.length
     ? (
-      listings.reduce(
-        (sum: number, item: any) => sum + (parseFloat(item.rating) || 4.8),
-        0,
-      ) / listings.length
-    ).toFixed(1)
+        listings.reduce(
+          (sum: number, item: any) => sum + (parseFloat(item.rating) || 4.8),
+          0,
+        ) / listings.length
+      ).toFixed(1)
     : '4.8'
 
   return (
@@ -356,7 +356,9 @@ export function ProfileListings() {
             {t('No')} {t(activeTab)} {t('listings yet')}
           </h3>
           <p className="text-muted-dark text-xs max-w-xs mx-auto mt-1.5 font-bold">
-            {t("Start earning by listing your unused items today. It's quick, easy, and secure.")}
+            {t(
+              "Start earning by listing your unused items today. It's quick, easy, and secure.",
+            )}
           </p>
           <Button
             onClick={() => setIsAddOpen(true)}
@@ -414,14 +416,18 @@ export function ProfileListings() {
                   <div className="flex flex-wrap items-center gap-4 text-[11px] font-extrabold text-muted-dark mt-4">
                     <div className="flex items-center gap-1.5">
                       <Eye size={13} className="text-muted-dark stroke-[2.5]" />
-                      <span>{item.views || 120} {t('Views')}</span>
+                      <span>
+                        {item.views || 120} {t('Views')}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar
                         size={13}
                         className="text-muted-dark stroke-[2.5]"
                       />
-                      <span>{item.bookingsCount || 24} {t('Bookings')}</span>
+                      <span>
+                        {item.bookingsCount || 24} {t('Bookings')}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Star
@@ -429,7 +435,8 @@ export function ProfileListings() {
                         className="text-muted-dark stroke-[2.5]"
                       />
                       <span>
-                        {parseFloat(item.rating || '4.8').toFixed(1)} {t('Rating')}
+                        {parseFloat(item.rating || '4.8').toFixed(1)}{' '}
+                        {t('Rating')}
                       </span>
                     </div>
                   </div>
@@ -670,13 +677,13 @@ export function ProfileListings() {
           })
         }}
         onCancel={() => setProductToDelete(null)}
-        title={t("Delete Listing permanently?")}
+        title={t('Delete Listing permanently?')}
         description={
           productToDelete
             ? `${t('Are you sure you want to permanently delete')} "${productToDelete.title}"? ${t('This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.')}`
             : ''
         }
-        confirmText={t("Delete")}
+        confirmText={t('Delete')}
         variant="danger"
         isPending={deleteProduct.isPending}
       />

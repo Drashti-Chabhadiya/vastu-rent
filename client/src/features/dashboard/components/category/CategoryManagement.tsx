@@ -200,7 +200,8 @@ export const CategoryManagement = ({
         },
         onError: (err: any) => {
           toast.error(
-            err.response?.data?.message || t('Failed to submit deletion request'),
+            err.response?.data?.message ||
+              t('Failed to submit deletion request'),
           )
         },
       },
@@ -235,7 +236,9 @@ export const CategoryManagement = ({
           toast.success(t('Category deletion request rejected'))
         },
         onError: (err: any) => {
-          toast.error(err.response?.data?.message || t('Failed to reject request'))
+          toast.error(
+            err.response?.data?.message || t('Failed to reject request'),
+          )
         },
       },
     )
@@ -256,14 +259,18 @@ export const CategoryManagement = ({
   const deleteRequestDialogDescription = (
     <div className="space-y-4 text-left">
       <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
-        {t('You cannot delete "{category}" directly because it is approved. Please submit a request to the platform admins.').replace('{category}', categoryToDelete?.name)}
+        {t(
+          'You cannot delete "{category}" directly because it is approved. Please submit a request to the platform admins.',
+        ).replace('{category}', categoryToDelete?.name)}
       </p>
       <div className="space-y-2">
         <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
           {t('Reason for Deletion')}
         </label>
         <Textarea
-          placeholder={t('Explain why this category is no longer needed or should be removed...')}
+          placeholder={t(
+            'Explain why this category is no longer needed or should be removed...',
+          )}
           value={deleteRequestReason}
           onChange={(e) => setDeleteRequestReason(e.target.value)}
           className="min-h-[90px] rounded-xl border-border/30 bg-muted-light/50 focus-visible:ring-dash-brand text-foreground w-full p-3 text-sm"
@@ -363,7 +370,6 @@ export const CategoryManagement = ({
               </Button>
             )}
           </div>
-
 
           {/* Categories Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

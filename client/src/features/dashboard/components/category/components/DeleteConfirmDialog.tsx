@@ -26,7 +26,10 @@ export const DeleteConfirmDialog = ({
   const defaultDescription = (
     <div className="text-center w-full">
       <span className="inline-block">
-        {t('Are you sure you want to delete "{item}"?').replace('{item}', itemName || t('this item'))}
+        {t('Are you sure you want to delete "{item}"?').replace(
+          '{item}',
+          itemName || t('this item'),
+        )}
       </span>
       <span className="text-muted-dark text-xs font-bold mt-4 block bg-muted-light py-2.5 px-4 rounded-xl border border-border/30">
         {t('This action is permanent and cannot be reversed.')}

@@ -51,7 +51,12 @@ export const OrdersManagement = () => {
       { id, status: newStatus },
       {
         onSuccess: () => {
-          toast.success(t('Order status updated to {newStatus}').replace('{newStatus}', newStatus))
+          toast.success(
+            t('Order status updated to {newStatus}').replace(
+              '{newStatus}',
+              newStatus,
+            ),
+          )
         },
         onError: () => {
           toast.error(t('Failed to update status'))
@@ -134,7 +139,9 @@ export const OrdersManagement = () => {
         <div className="w-20 h-20 bg-muted-light rounded-full flex items-center justify-center mb-4">
           <ShoppingCart className="text-muted-dark" size={40} />
         </div>
-        <h3 className="text-xl font-bold text-dash-text">{t('No Orders Found')}</h3>
+        <h3 className="text-xl font-bold text-dash-text">
+          {t('No Orders Found')}
+        </h3>
         <p className="text-dash-text-soft mt-2 max-w-xs text-center font-medium">
           {t('There are no rental orders for your products yet.')}
         </p>
@@ -230,13 +237,14 @@ export const OrdersManagement = () => {
         ) : null}
       </motion.div>
 
-
       {filteredOrders.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-card rounded-[2rem] border border-dashed border-border">
           <div className="w-20 h-20 bg-muted-light rounded-full flex items-center justify-center mb-4">
             <ShoppingCart className="text-muted-dark" size={40} />
           </div>
-          <h3 className="text-xl font-bold text-dash-text">{t('No Orders Found')}</h3>
+          <h3 className="text-xl font-bold text-dash-text">
+            {t('No Orders Found')}
+          </h3>
           <p className="text-dash-text-soft mt-2 max-w-xs text-center font-medium">
             {currentView === 'my'
               ? t('There are no rental orders for your products yet.')
@@ -402,8 +410,12 @@ export const OrdersManagement = () => {
         }
         description={
           pendingAction?.action === 'confirm'
-            ? t('Are you sure you want to accept this rental booking request for "{title}"? The booking status will be updated to Confirmed, and the renter will receive a notification.').replace('{title}', pendingAction.title || t('this product'))
-            : t('Are you sure you want to reject this rental booking request for "{title}"? This request will be cancelled, and the renter will be notified.').replace('{title}', pendingAction?.title || t('this product'))
+            ? t(
+                'Are you sure you want to accept this rental booking request for "{title}"? The booking status will be updated to Confirmed, and the renter will receive a notification.',
+              ).replace('{title}', pendingAction.title || t('this product'))
+            : t(
+                'Are you sure you want to reject this rental booking request for "{title}"? This request will be cancelled, and the renter will be notified.',
+              ).replace('{title}', pendingAction?.title || t('this product'))
         }
         confirmText={
           pendingAction?.action === 'confirm'

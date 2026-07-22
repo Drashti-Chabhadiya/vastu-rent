@@ -26,8 +26,8 @@ export function ConnectedAccountsSection() {
 
   return (
     <SettingsSectionShell
-      title={t("Connected Accounts")}
-      description={t("Link your social accounts for faster sign-in.")}
+      title={t('Connected Accounts')}
+      description={t('Link your social accounts for faster sign-in.')}
     >
       <div className={cn('divide-y', 'divide-border/30')}>
         {accounts.map(({ name, icon, hint }, i, arr) => {

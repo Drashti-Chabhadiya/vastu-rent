@@ -11,7 +11,8 @@ export const common = {
 
   // Global Footer & General
   'Need help?': 'Need help?',
-  'Our support team is here for you 24/7.': 'Our support team is here for you 24/7.',
+  'Our support team is here for you 24/7.':
+    'Our support team is here for you 24/7.',
   'Visit Help Center': 'Visit Help Center',
   'Contact Support': 'Contact Support',
   'A trusted community marketplace for renting and hosting quality items. Live simply. Live in harmony.':

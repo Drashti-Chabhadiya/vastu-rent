@@ -13,7 +13,9 @@ export const Route = createFileRoute('/_authenticated/account/notifications')({
             {t('My Notifications')}
           </h1>
           <p className="text-[13px] text-muted-foreground/85 mt-2 font-medium">
-            {t('Stay updated on your booking status, approval updates, and marketplace reviews.')}
+            {t(
+              'Stay updated on your booking status, approval updates, and marketplace reviews.',
+            )}
           </p>
         </div>
 

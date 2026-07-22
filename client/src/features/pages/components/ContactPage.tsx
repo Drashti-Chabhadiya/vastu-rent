@@ -108,7 +108,7 @@ export function ContactPage() {
       } else {
         toast.error(
           error.response?.data?.message ||
-          t('Failed to send message. Please try again.'),
+            t('Failed to send message. Please try again.'),
         )
       }
     } finally {

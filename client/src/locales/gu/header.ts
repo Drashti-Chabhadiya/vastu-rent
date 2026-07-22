@@ -51,12 +51,10 @@ export const header = {
 
   'Vastu Catalog': 'વાસ્તુ કેટલોગ',
   'Find items for every aspect of life.': 'જીવનના દરેક પાસાં માટે વસ્તુઓ શોધો.',
-  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.': 'તમે વિશ્વાસ કરો છો તે પાડોશીઓ પાસેથી કાળજીપૂર્વક રાખેલી ભાડાની વસ્તુઓ બ્રાઉઝ કરો. તમારા વોલેટ માટે સારું, ગ્રહ માટે શ્રેષ્ઠ.',
+  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.':
+    'તમે વિશ્વાસ કરો છો તે પાડોશીઓ પાસેથી કાળજીપૂર્વક રાખેલી ભાડાની વસ્તુઓ બ્રાઉઝ કરો. તમારા વોલેટ માટે સારું, ગ્રહ માટે શ્રેષ્ઠ.',
   'Explore all categories': 'બધી કેટેગરીઝ એક્સપ્લોર કરો',
   'All Categories': 'બધી કેટેગરી',
-  'items': 'વસ્તુઓ',
+  items: 'વસ્તુઓ',
   'No categories found': 'કોઈ કેટેગરીઓ મળી નથી',
-
 }
-
-

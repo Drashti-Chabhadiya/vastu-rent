@@ -48,7 +48,8 @@ export const pages = {
   'Encrypted and secure data': 'एन्क्रिप्टेड और सुरक्षित डेटा',
   'Private and protected payments': 'निजी और संरक्षित भुगतान',
   'No spam, ever': 'कभी स्पैम नहीं',
-  'Learn more about our Privacy Policy': 'हमारी गोपनीयता नीति के बारे में अधिक जानें',
+  'Learn more about our Privacy Policy':
+    'हमारी गोपनीयता नीति के बारे में अधिक जानें',
   "See something that doesn't look right?": 'कुछ गलत लग रहा है?',
   'Report it to us. Your report helps us take action and keep the community safe for everyone.':
     'हमें बताएं। आपकी रिपोर्ट समुदाय को सुरक्षित रखने में मदद करती है।',
@@ -58,9 +59,11 @@ export const pages = {
   'What kind of concern is this?': 'यह शिकायत किस प्रकार की है?',
   'Suspicious/Incorrect Listing': 'संदिग्ध/गलत लिस्टिंग',
   'Inappropriate/Fraudulent User': 'अनुचित/धोखाधड़ी वाला उपयोगकर्ता',
-  'Payment issues / Off-platform requests': 'भुगतान समस्या / ऑफ-प्लेटफ़ॉर्म अनुरोध',
+  'Payment issues / Off-platform requests':
+    'भुगतान समस्या / ऑफ-प्लेटफ़ॉर्म अनुरोध',
   'Other safety issues': 'अन्य सुरक्षा समस्याएँ',
-  'Reference URL / Listing / User ID (Optional)': 'संदर्भ URL / Listing / User ID (वैकल्पिक)',
+  'Reference URL / Listing / User ID (Optional)':
+    'संदर्भ URL / Listing / User ID (वैकल्पिक)',
   'Detailed Description': 'विस्तृत विवरण',
   'Describe the issue in detail...': 'समस्या का विस्तार से वर्णन करें...',
   'Submit report': 'रिपोर्ट सबमिट करें',
@@ -206,7 +209,7 @@ export const pages = {
   'Add to Home Screen': 'होम स्क्रीन पर जोड़ें',
   'Select "Add to Home Screen" from the menu to install it on your device.':
     'अपने डिवाइस पर इंस्टॉल करने के लिए मेनू से "होम स्क्रीन पर जोड़ें" चुनें।',
-  'Localhost detected! To scan with your phone, enter your PC\'s local IP address below.':
+  "Localhost detected! To scan with your phone, enter your PC's local IP address below.":
     'लोकलहोस्ट पाया गया! अपने फोन से स्कैन करने के लिए, नीचे अपने पीसी का लोकल आईपी दर्ज करें।',
   'Generating QR...': 'QR जनरेट हो रहा है...',
   'Scan to Install': 'इंस्टॉल करने के लिए स्कैन करें',
@@ -244,7 +247,8 @@ export const pages = {
   View: 'देखें',
   '/day': '/दिन',
   'No results for "{query}"': '"{query}" के लिए कोई परिणाम नहीं मिला',
-  'Try adjusting your search terms.': 'कृपया अपनी खोज शब्दों को बदलने का प्रयास करें।',
+  'Try adjusting your search terms.':
+    'कृपया अपनी खोज शब्दों को बदलने का प्रयास करें।',
   'Clear search': 'खोज साफ़ करें',
   'Your wishlist is empty': 'आपकी विशलिस्ट खाली है',
   'Browse our catalogue and tap the heart icon on any item to save it here for later.':
@@ -318,5 +322,3 @@ export const pages = {
   "Welcome back! Here's what's happening with your platform.":
     'वापसी पर स्वागत है! आपके प्लेटफ़ॉर्म पर यह सब हो रहा है।',
 }
-
-

@@ -11,8 +11,7 @@ export const contact = {
   'Email us': 'Email us',
   'We typically reply within 24 hours.': 'We typically reply within 24 hours.',
   'Call us': 'Call us',
-  'Mon - Fri, 9:00 AM - 6:00 PM (IST)':
-    'Mon - Fri, 9:00 AM - 6:00 PM (IST)',
+  'Mon - Fri, 9:00 AM - 6:00 PM (IST)': 'Mon - Fri, 9:00 AM - 6:00 PM (IST)',
   'Live chat': 'Live chat',
   'Chat with our support team': 'Chat with our support team',
   'Available 24/7': 'Available 24/7',
@@ -39,8 +38,7 @@ export const contact = {
   // Toasts
   'Please enter your full name.': 'Please enter your full name.',
   'Please enter your email address.': 'Please enter your email address.',
-  'Please enter a valid email address.':
-    'Please enter a valid email address.',
+  'Please enter a valid email address.': 'Please enter a valid email address.',
   'Please write a message before sending.':
     'Please write a message before sending.',
   'Message is too long. Limit is 1000 characters.':

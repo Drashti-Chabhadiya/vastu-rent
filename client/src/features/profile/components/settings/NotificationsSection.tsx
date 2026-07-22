@@ -24,13 +24,13 @@ export function NotificationsSection({
   const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title={t("Notifications")}
-      description={t("Choose how and when you want to be notified.")}
+      title={t('Notifications')}
+      description={t('Choose how and when you want to be notified.')}
     >
       <div className={cn('divide-y', 'divide-border/30')}>
         <Row
-          label={t("Email Notifications")}
-          desc={t("Booking updates, approvals and receipts.")}
+          label={t('Email Notifications')}
+          desc={t('Booking updates, approvals and receipts.')}
         >
           <Switch
             checked={emailN}
@@ -38,8 +38,8 @@ export function NotificationsSection({
           />
         </Row>
         <Row
-          label={t("SMS Notifications")}
-          desc={t("Text messages for bookings and payments.")}
+          label={t('SMS Notifications')}
+          desc={t('Text messages for bookings and payments.')}
         >
           <Switch
             checked={smsN}
@@ -47,8 +47,8 @@ export function NotificationsSection({
           />
         </Row>
         <Row
-          label={t("Marketing Emails")}
-          desc={t("Offers, promotions and new features.")}
+          label={t('Marketing Emails')}
+          desc={t('Offers, promotions and new features.')}
         >
           <Switch
             checked={mktN}
@@ -56,8 +56,8 @@ export function NotificationsSection({
           />
         </Row>
         <Row
-          label={t("Push Notifications")}
-          desc={t("Real-time alerts on your device.")}
+          label={t('Push Notifications')}
+          desc={t('Real-time alerts on your device.')}
           last
         >
           <Switch

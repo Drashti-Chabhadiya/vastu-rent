@@ -53,7 +53,9 @@ export const PayoutSettingsForm = ({
             {t('Payout Settlements')}
           </h3>
           <p className="text-[12px] font-semibold text-muted-dark mt-2">
-            {t('Configure bank accounts or UPI IDs to receive earnings settlements.')}
+            {t(
+              'Configure bank accounts or UPI IDs to receive earnings settlements.',
+            )}
           </p>
         </div>
         <Button
@@ -76,7 +78,9 @@ export const PayoutSettingsForm = ({
             {t('Verify Payout Details')}
           </span>
           <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
-            {t('Settlements are processed via bank accounts or UPI within 24-48 hours of approved payout withdrawal requests. Ensure details are fully accurate.')}
+            {t(
+              'Settlements are processed via bank accounts or UPI within 24-48 hours of approved payout withdrawal requests. Ensure details are fully accurate.',
+            )}
           </span>
         </div>
       </div>

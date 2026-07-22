@@ -77,7 +77,7 @@ export const MyBookings = () => {
           console.error('Booking session verification failed:', error)
           toast.error(
             error.response?.data?.message ||
-            t('Booking payment verification failed.'),
+              t('Booking payment verification failed.'),
             { id: toastId },
           )
         } finally {
@@ -128,7 +128,7 @@ export const MyBookings = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            t('Failed to submit dispute. Try again.'),
+              t('Failed to submit dispute. Try again.'),
           )
         },
       },

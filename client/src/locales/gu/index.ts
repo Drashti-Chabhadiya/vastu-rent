@@ -25,4 +25,3 @@ export const gu = {
   ...pages,
   ...dashboard,
 }
-

@@ -62,7 +62,9 @@ export function CouponRenterView({
           {t('No Coupons Available')}
         </h3>
         <p className="text-xs text-muted-dark mt-1 max-w-xs text-center font-bold">
-          {t('Check back later for active platform-wide and listing-restricted deals.')}
+          {t(
+            'Check back later for active platform-wide and listing-restricted deals.',
+          )}
         </p>
       </div>
     )

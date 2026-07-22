@@ -537,4 +537,3 @@ export function WishlistPage() {
     </div>
   )
 }
-

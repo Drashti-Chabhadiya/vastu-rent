@@ -121,12 +121,16 @@ export function SettingsPage() {
     try {
       await deleteAccountRequest.mutateAsync()
       toast.success(
-        t('Account deletion request submitted. Our team will process it within 48 hours.'),
+        t(
+          'Account deletion request submitted. Our team will process it within 48 hours.',
+        ),
       )
       setDelInput('')
     } catch {
       toast.error(
-        t('Failed to submit deletion request. Please contact support@vastu.com.'),
+        t(
+          'Failed to submit deletion request. Please contact support@vastu.com.',
+        ),
       )
     } finally {
       setDelLoading(false)

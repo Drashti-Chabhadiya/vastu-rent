@@ -128,7 +128,9 @@ export const ReportsManagement = () => {
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black text-foreground">{t('Platform Analytics')}</h1>
+          <h1 className="text-xl font-black text-foreground">
+            {t('Platform Analytics')}
+          </h1>
           <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border/30 shadow-sm">
             <div className="flex items-center gap-2 px-4 py-1.5 border-r border-border/30">
               <Calendar size={14} className="text-dash-brand" />
@@ -152,7 +154,9 @@ export const ReportsManagement = () => {
         className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-x-auto scrollbar-hide"
       >
         <div className="mb-8">
-          <h3 className="text-[15px] font-black text-foreground">{t('Overview')}</h3>
+          <h3 className="text-[15px] font-black text-foreground">
+            {t('Overview')}
+          </h3>
         </div>
         <div className="flex gap-6 min-w-max pb-2">
           {stats.map((stat, i) => (

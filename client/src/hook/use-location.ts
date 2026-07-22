@@ -21,7 +21,7 @@ export interface LocationItem {
 // 1. Fetch pincode details (district, state, country)
 export const usePincodeLookup = (
   pincode: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) => {
   return useQuery<PincodeResponse>({
     queryKey: ['pincode-lookup', pincode],
@@ -39,14 +39,14 @@ export const usePincodeLookup = (
 export const useStateSearch = (
   q?: string,
   countryId?: number,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) => {
   return useQuery<LocationItem[]>({
     queryKey: ['state-lookup-by-name', q, countryId],
     queryFn: async () => {
       if (!q) return []
       const { data } = await apiClient.get(
-        `/locations/states/search?q=${encodeURIComponent(q)}&countryId=${countryId || 101}`
+        `/locations/states/search?q=${encodeURIComponent(q)}&countryId=${countryId || 101}`,
       )
       return data
     },
@@ -66,7 +66,7 @@ export const useLocations = (
     parentId?: number
     search?: string
   },
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) => {
   return useQuery<LocationItem[]>({
     queryKey: ['location', type, parentId, search],
@@ -75,8 +75,10 @@ export const useLocations = (
       if (type === 'city' && !parentId) return []
 
       const params = new URLSearchParams()
-      if (type === 'state' && parentId) params.append('countryId', parentId.toString())
-      if (type === 'city' && parentId) params.append('stateId', parentId.toString())
+      if (type === 'state' && parentId)
+        params.append('countryId', parentId.toString())
+      if (type === 'city' && parentId)
+        params.append('stateId', parentId.toString())
 
       let endpoint = '/locations/countries'
       if (type === 'state') endpoint = '/locations/states'

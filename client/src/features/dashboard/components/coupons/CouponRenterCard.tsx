@@ -48,7 +48,9 @@ export function CouponRenterCard({
             <span
               className={cn(
                 'text-[9px] font-extrabold px-2 py-0.5 rounded border uppercase tracking-wide',
-                scenarioColorMap[scenario.color as keyof typeof scenarioColorMap],
+                scenarioColorMap[
+                  scenario.color
+                ],
               )}
             >
               {t(scenario.label)}
@@ -79,7 +81,8 @@ export function CouponRenterCard({
           <div className="flex items-center gap-1 text-[10px] font-bold text-warning-foreground mt-1.5">
             <Users size={11} />
             <span>
-              {slotsLeft} {slotsLeft !== 1 ? t('slots remaining') : t('slot remaining')}
+              {slotsLeft}{' '}
+              {slotsLeft !== 1 ? t('slots remaining') : t('slot remaining')}
             </span>
           </div>
         )}

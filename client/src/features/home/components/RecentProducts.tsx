@@ -30,7 +30,8 @@ export function RecentProducts() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 relative z-10 border-b border-border/10 pb-6">
           <div>
             <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-2.5">
-              <Sparkles className="h-3.5 w-3.5 animate-spin-slow" /> {t('Fresh Inventory')}
+              <Sparkles className="h-3.5 w-3.5 animate-spin-slow" />{' '}
+              {t('Fresh Inventory')}
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink tracking-tight leading-none">
               {t('Recent Additions')}
@@ -39,7 +40,9 @@ export function RecentProducts() {
               {t('Be the first to rent these brand new listings.')}
             </p>
           </div>
-          <ExploreLink to="/products">{t('Explore all new arrivals')}</ExploreLink>
+          <ExploreLink to="/products">
+            {t('Explore all new arrivals')}
+          </ExploreLink>
         </div>
 
         <div className="relative z-10">

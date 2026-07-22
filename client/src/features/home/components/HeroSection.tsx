@@ -179,10 +179,12 @@ export function HeroSection() {
       <div className="border-y border-border bg-surface/60">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-x-10 gap-y-4 px-6 py-5 text-[12px] uppercase tracking-[0.2em] text-muted-foreground md:px-10">
           <span className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-primary" /> {t('Verified hosts')}
+            <ShieldCheck className="h-4 w-4 text-primary" />{' '}
+            {t('Verified hosts')}
           </span>
           <span className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-primary" /> {t('Secure payments')}
+            <CreditCard className="h-4 w-4 text-primary" />{' '}
+            {t('Secure payments')}
           </span>
           <span className="flex items-center gap-2">
             <Leaf className="h-4 w-4 text-primary" /> {t('Circular by design')}

@@ -40,8 +40,7 @@ export const contact = {
   // Toasts
   'Please enter your full name.': 'कृपया अपना पूरा नाम दर्ज करें।',
   'Please enter your email address.': 'कृपया अपना ईमेल पता दर्ज करें।',
-  'Please enter a valid email address.':
-    'कृपया एक वैध ईमेल पता दर्ज करें।',
+  'Please enter a valid email address.': 'कृपया एक वैध ईमेल पता दर्ज करें।',
   'Please write a message before sending.':
     'कृपया भेजने से पहले एक संदेश लिखें।',
   'Message is too long. Limit is 1000 characters.':

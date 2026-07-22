@@ -25,11 +25,11 @@ export function AccountSecuritySection({
   const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title={t("Account & Security")}
-      description={t("Manage your password and keep your account secure.")}
+      title={t('Account & Security')}
+      description={t('Manage your password and keep your account secure.')}
     >
       <div className={cn('divide-y', 'divide-border/30')}>
-        <Row label={t("Password")} desc="••••••••••••••••">
+        <Row label={t('Password')} desc="••••••••••••••••">
           <Button
             variant="ghost"
             onClick={() => setPwOpen(true)}
@@ -49,12 +49,12 @@ export function AccountSecuritySection({
               'p-0',
             )}
           >
-            {t("Change Password")} <ChevronRight size={14} />
+            {t('Change Password')} <ChevronRight size={14} />
           </Button>
         </Row>
         <Row
-          label={t("Two-Factor Authentication")}
-          desc={t("Add an extra layer of security to your account.")}
+          label={t('Two-Factor Authentication')}
+          desc={t('Add an extra layer of security to your account.')}
         >
           <Switch
             checked={tfaEnabled}
@@ -68,8 +68,8 @@ export function AccountSecuritySection({
           />
         </Row>
         <Row
-          label={t("Login Sessions")}
-          desc={t("View and manage your active sessions.")}
+          label={t('Login Sessions')}
+          desc={t('View and manage your active sessions.')}
         >
           <Button
             variant="ghost"
@@ -90,12 +90,12 @@ export function AccountSecuritySection({
               'p-0',
             )}
           >
-            {t("View Sessions")} <ChevronRight size={14} />
+            {t('View Sessions')} <ChevronRight size={14} />
           </Button>
         </Row>
         <Row
-          label={t("Trusted Devices")}
-          desc={t("Manage devices that can access your account.")}
+          label={t('Trusted Devices')}
+          desc={t('Manage devices that can access your account.')}
           last
         >
           <Button
@@ -117,7 +117,7 @@ export function AccountSecuritySection({
               'p-0',
             )}
           >
-            {t("View Devices")} <ChevronRight size={14} />
+            {t('View Devices')} <ChevronRight size={14} />
           </Button>
         </Row>
       </div>

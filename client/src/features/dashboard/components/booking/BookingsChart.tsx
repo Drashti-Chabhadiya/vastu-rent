@@ -44,7 +44,9 @@ export const BookingsChart = () => {
     >
       {/* Header */}
       <div className={cn('flex', 'items-center', 'justify-between', 'mb-8')}>
-        <h3 className={cn('font-bold', 'text-dash-text')}>{t('Bookings Overview')}</h3>
+        <h3 className={cn('font-bold', 'text-dash-text')}>
+          {t('Bookings Overview')}
+        </h3>
 
         <div className="relative">
           <Button

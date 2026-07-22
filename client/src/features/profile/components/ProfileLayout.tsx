@@ -46,7 +46,9 @@ function LogoutDialog({
         <div className="w-16 h-16 rounded-full bg-primary-soft flex items-center justify-center mb-5">
           <LogOut size={28} className="text-primary" strokeWidth={2} />
         </div>
-        <h2 className="text-xl font-extrabold text-foreground mb-2">{t('Log out')}</h2>
+        <h2 className="text-xl font-extrabold text-foreground mb-2">
+          {t('Log out')}
+        </h2>
         <p className="text-[13px] text-muted-foreground/85 font-medium leading-relaxed mb-7">
           {t('Are you sure you want to log out of your Vastu account?')}
         </p>

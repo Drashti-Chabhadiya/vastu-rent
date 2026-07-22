@@ -124,7 +124,12 @@ export const DetailedBookingDialog = ({
                   {getStatusBadge(order.status)}
                 </div>
                 <span className="text-[10px] font-black uppercase text-muted-dark block tracking-tight pt-1">
-                  {t('Via {method}').replace('{method}', order.paymentMethod === 'cash' ? t('Cash / CoD') : t('Online'))}
+                  {t('Via {method}').replace(
+                    '{method}',
+                    order.paymentMethod === 'cash'
+                      ? t('Cash / CoD')
+                      : t('Online'),
+                  )}
                 </span>
               </div>
             </div>
@@ -154,7 +159,13 @@ export const DetailedBookingDialog = ({
               <div className="border-t border-border/30 pt-2 flex items-center justify-between text-[11px] font-bold text-muted-foreground/85">
                 <span>{t('Total Rental Period')}</span>
                 <span className="text-primary font-black">
-                  {t('{duration} Days').replace('{duration}', calculateDuration(order.startDate, order.endDate).toString())}
+                  {t('{duration} Days').replace(
+                    '{duration}',
+                    calculateDuration(
+                      order.startDate,
+                      order.endDate,
+                    ).toString(),
+                  )}
                 </span>
               </div>
             </div>
@@ -231,11 +242,17 @@ export const DetailedBookingDialog = ({
         }
         description={
           pendingAction === 'confirm'
-            ? t('Are you sure you want to accept this rental booking request for "{title}"? The dates will be reserved in your calendar, and the renter will receive a notification.').replace('{title}', order.product?.title || t('this item'))
-            : t('Are you sure you want to reject this rental booking request for "{title}"? The dates will remain available, and the renter will be notified.').replace('{title}', order.product?.title || t('this item'))
+            ? t(
+                'Are you sure you want to accept this rental booking request for "{title}"? The dates will be reserved in your calendar, and the renter will receive a notification.',
+              ).replace('{title}', order.product?.title || t('this item'))
+            : t(
+                'Are you sure you want to reject this rental booking request for "{title}"? The dates will remain available, and the renter will be notified.',
+              ).replace('{title}', order.product?.title || t('this item'))
         }
         confirmText={
-          pendingAction === 'confirm' ? t('Confirm Booking') : t('Reject Request')
+          pendingAction === 'confirm'
+            ? t('Confirm Booking')
+            : t('Reject Request')
         }
         variant={pendingAction === 'confirm' ? 'success' : 'danger'}
         isPending={isPendingStatusUpdate}

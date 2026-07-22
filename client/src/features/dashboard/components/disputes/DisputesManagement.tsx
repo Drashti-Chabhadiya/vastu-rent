@@ -234,8 +234,10 @@ export const DisputesManagement = () => {
                       {t('Product Details')}
                     </span>
                     <p className="text-[11px] font-black text-foreground/80">
-                      {selectedDispute.rental?.product?.title || t('Unknown Item')}{' '}
-                      ({formatCurrency(selectedDispute.rental?.product?.price)}/{t('Day')})
+                      {selectedDispute.rental?.product?.title ||
+                        t('Unknown Item')}{' '}
+                      ({formatCurrency(selectedDispute.rental?.product?.price)}/
+                      {t('Day')})
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -323,7 +325,9 @@ export const DisputesManagement = () => {
               {t('Safety Guarantee')}
             </h4>
             <p className="text-[11px] font-bold text-muted-foreground/85">
-              {t('Your details are protected using industry-grade SSL encryption and are kept confidential.')}
+              {t(
+                'Your details are protected using industry-grade SSL encryption and are kept confidential.',
+              )}
             </p>
           </div>
         </div>
@@ -334,9 +338,7 @@ export const DisputesManagement = () => {
         <DialogContent className="bg-card rounded-3xl max-w-md w-full p-8 border border-border/30 shadow-2xl animate-scale-in">
           <DialogHeader className="text-left">
             <DialogTitle className="text-xl font-black text-foreground tracking-tight mb-2">
-              {resolveType === 'resolved'
-                ? t('Resolve Dispute')
-                : t('Reject')}
+              {resolveType === 'resolved' ? t('Resolve Dispute') : t('Reject')}
             </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground/85">
               {t('Write the official resolution verdict.')}
@@ -350,7 +352,9 @@ export const DisputesManagement = () => {
               </label>
               <Textarea
                 required
-                placeholder={t('Provide detailed feedback on this resolution...')}
+                placeholder={t(
+                  'Provide detailed feedback on this resolution...',
+                )}
                 value={resolutionText}
                 onChange={(e) => setResolutionText(e.target.value)}
                 className="w-full border border-border rounded-xl p-3 h-28 focus:ring-1 focus:ring-dash-brand text-sm resize-none"

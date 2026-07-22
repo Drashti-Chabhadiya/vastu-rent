@@ -31,8 +31,10 @@ export function DeleteAccountSection({
 
   return (
     <SettingsSectionShell
-      title={t("Delete Account")}
-      description={t("Permanently remove your account and all associated data.")}
+      title={t('Delete Account')}
+      description={t(
+        'Permanently remove your account and all associated data.',
+      )}
     >
       {/* Warning card */}
       <div
@@ -75,7 +77,9 @@ export function DeleteAccountSection({
               'leading-relaxed',
             )}
           >
-            {t("Deleting your account will permanently remove all your listings, bookings, reviews, messages, and personal data. This cannot be undone.")}
+            {t(
+              'Deleting your account will permanently remove all your listings, bookings, reviews, messages, and personal data. This cannot be undone.',
+            )}
           </p>
         </div>
       </div>
@@ -125,18 +129,18 @@ export function DeleteAccountSection({
         <Label
           className={cn('text-xs', 'font-semibold', 'text-muted-foreground')}
         >
-          {t("Type")}{' '}
+          {t('Type')}{' '}
           <span
             className={cn('font-black', 'text-destructive', 'tracking-widest')}
           >
             DELETE
-          </span>{' '}{t("to confirm")}
-          
+          </span>{' '}
+          {t('to confirm')}
         </Label>
         <Input
           value={delInput}
           onChange={(e) => setDelInput(e.target.value)}
-          placeholder={t("Type DELETE here")}
+          placeholder={t('Type DELETE here')}
           className={cn(
             'h-10',
             'rounded-xl',

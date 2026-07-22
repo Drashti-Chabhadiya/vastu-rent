@@ -29,11 +29,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import {
-  usePincodeLookup,
-  useStateSearch,
-  useUpdateUserSettings,
-} from '#/hook'
+import { usePincodeLookup, useStateSearch, useUpdateUserSettings } from '#/hook'
 
 export function AddressSetupPage() {
   const { t } = useTranslation()
@@ -61,11 +57,15 @@ export function AddressSetupPage() {
       country: 'India',
     } as any,
   })
-  const { formState: { isSubmitting } } = form
+  const {
+    formState: { isSubmitting },
+  } = form
 
   const pincodeValue = form.watch('pincode')
   const isValidPincodeFormat = Boolean(
-    pincodeValue && pincodeValue.length === 6 && /^[1-9][0-9]{5}$/.test(pincodeValue)
+    pincodeValue &&
+    pincodeValue.length === 6 &&
+    /^[1-9][0-9]{5}$/.test(pincodeValue),
   )
 
   // 1. Pincode lookup powered by React Query custom hook
@@ -78,9 +78,13 @@ export function AddressSetupPage() {
   })
 
   // 2. State ID lookup powered by React Query custom hook
-  const { data: matchedStates } = useStateSearch(pincodeData?.state, countryId, {
-    enabled: Boolean(pincodeData?.valid && pincodeData?.state),
-  })
+  const { data: matchedStates } = useStateSearch(
+    pincodeData?.state,
+    countryId,
+    {
+      enabled: Boolean(pincodeData?.valid && pincodeData?.state),
+    },
+  )
 
   // Auto-fill city & state when pincodeData returns valid details
   useEffect(() => {
@@ -92,7 +96,9 @@ export function AddressSetupPage() {
       if (pincodeData.district) {
         form.setValue('city', pincodeData.district, { shouldValidate: true })
       }
-      toast.success(`Pincode verified: ${pincodeData.district}, ${pincodeData.state}`)
+      toast.success(
+        `Pincode verified: ${pincodeData.district}, ${pincodeData.state}`,
+      )
     }
   }, [pincodeData, form])
 
@@ -101,8 +107,9 @@ export function AddressSetupPage() {
     const currentState = pincodeData?.state
     if (matchedStates && matchedStates.length > 0 && currentState) {
       const matched =
-        matchedStates.find((s) => s.name.toLowerCase() === currentState.toLowerCase()) ||
-        matchedStates[0]
+        matchedStates.find(
+          (s) => s.name.toLowerCase() === currentState.toLowerCase(),
+        ) || matchedStates[0]
       setStateId(matched.id)
     }
   }, [matchedStates, pincodeData])
@@ -111,7 +118,8 @@ export function AddressSetupPage() {
   useEffect(() => {
     if (pincodeQueryError) {
       const errMsg =
-        (pincodeQueryError as any)?.response?.data?.message || 'Invalid 6-digit Pincode'
+        (pincodeQueryError as any)?.response?.data?.message ||
+        'Invalid 6-digit Pincode'
       form.setError('pincode', { type: 'manual', message: errMsg })
     }
   }, [pincodeQueryError, form])
@@ -174,7 +182,6 @@ export function AddressSetupPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-
       <div className="flex-1 flex items-start justify-center px-4 py-8 sm:py-12">
         <div className="w-full max-w-lg animate-in fade-in slide-in-from-bottom-4 duration-400">
           {/* Heading */}
@@ -234,17 +241,18 @@ export function AddressSetupPage() {
                 <div className="space-y-5">
                   <div className="rounded-2xl border border-border/40 bg-muted/20 p-4">
                     <p className="text-[13px] font-bold text-foreground mb-3">
-                      Please indicate whether the address you're setting up for your
-                      listing is your home address or your shop address.
+                      Please indicate whether the address you're setting up for
+                      your listing is your home address or your shop address.
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => handleAddressTypeChange('home')}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${addressType === 'home'
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                          }`}
+                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${
+                          addressType === 'home'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                        }`}
                       >
                         <Home className="h-4 w-4" strokeWidth={2} />
                         Home Address
@@ -252,10 +260,11 @@ export function AddressSetupPage() {
                       <button
                         type="button"
                         onClick={() => handleAddressTypeChange('shop')}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${addressType === 'shop'
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                          }`}
+                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition-all ${
+                          addressType === 'shop'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                        }`}
                       >
                         <Building2 className="h-4 w-4" strokeWidth={2} />
                         Shop Address
@@ -275,7 +284,8 @@ export function AddressSetupPage() {
                         <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
                           {addressType === 'shop' ? (
                             <>
-                              Shop Name <span className="text-destructive">*</span>
+                              Shop Name{' '}
+                              <span className="text-destructive">*</span>
                             </>
                           ) : (
                             <>
@@ -325,7 +335,8 @@ export function AddressSetupPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                          Address Line 1 <span className="text-destructive">*</span>
+                          Address Line 1{' '}
+                          <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
@@ -387,7 +398,8 @@ export function AddressSetupPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
-                          Street / Area <span className="text-destructive">*</span>
+                          Street / Area{' '}
+                          <span className="text-destructive">*</span>
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
@@ -432,7 +444,9 @@ export function AddressSetupPage() {
                                 value={field.value}
                                 parentId={stateId}
                                 onChange={(val) => {
-                                  form.setValue('city', val, { shouldValidate: true })
+                                  form.setValue('city', val, {
+                                    shouldValidate: true,
+                                  })
                                 }}
                                 placeholder="Search city..."
                                 disabled={!stateId}
@@ -504,9 +518,13 @@ export function AddressSetupPage() {
                               value={field.value}
                               parentId={countryId}
                               onChange={(val, id) => {
-                                form.setValue('state', val, { shouldValidate: true })
+                                form.setValue('state', val, {
+                                  shouldValidate: true,
+                                })
                                 setStateId(id)
-                                form.setValue('city', '', { shouldValidate: true })
+                                form.setValue('city', '', {
+                                  shouldValidate: true,
+                                })
                               }}
                               placeholder="Search state..."
                               disabled={!countryId}
@@ -539,11 +557,17 @@ export function AddressSetupPage() {
                               type="country"
                               value={field.value}
                               onChange={(val, id) => {
-                                form.setValue('country', val, { shouldValidate: true })
+                                form.setValue('country', val, {
+                                  shouldValidate: true,
+                                })
                                 setCountryId(id)
                                 setStateId(undefined)
-                                form.setValue('state', '', { shouldValidate: true })
-                                form.setValue('city', '', { shouldValidate: true })
+                                form.setValue('state', '', {
+                                  shouldValidate: true,
+                                })
+                                form.setValue('city', '', {
+                                  shouldValidate: true,
+                                })
                               }}
                               placeholder="Search country..."
                             />

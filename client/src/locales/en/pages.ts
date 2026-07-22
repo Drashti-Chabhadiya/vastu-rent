@@ -34,7 +34,7 @@ export const pages = {
   // ─── Trust & Safety Page ──────────────────────────────────
   'Trust & safety': 'Trust & safety',
   'Trust Hero Title': 'Your trust is our priority.',
-  'At Vastu, we\'re building a community where everyone can rent and host with confidence.':
+  "At Vastu, we're building a community where everyone can rent and host with confidence.":
     "At Vastu, we're building a community where everyone can rent and host with confidence.",
   'Our commitment to you': 'Our commitment to you',
   'We work around the clock to keep Vastu safe, secure and reliable for our community.':
@@ -49,7 +49,8 @@ export const pages = {
   'Private and protected payments': 'Private and protected payments',
   'No spam, ever': 'No spam, ever',
   'Learn more about our Privacy Policy': 'Learn more about our Privacy Policy',
-  'See something that doesn\'t look right?': "See something that doesn't look right?",
+  "See something that doesn't look right?":
+    "See something that doesn't look right?",
   'Report it to us. Your report helps us take action and keep the community safe for everyone.':
     'Report it to us. Your report helps us take action and keep the community safe for everyone.',
   'Report a concern': 'Report a concern',
@@ -58,13 +59,16 @@ export const pages = {
   'What kind of concern is this?': 'What kind of concern is this?',
   'Suspicious/Incorrect Listing': 'Suspicious/Incorrect Listing',
   'Inappropriate/Fraudulent User': 'Inappropriate/Fraudulent User',
-  'Payment issues / Off-platform requests': 'Payment issues / Off-platform requests',
+  'Payment issues / Off-platform requests':
+    'Payment issues / Off-platform requests',
   'Other safety issues': 'Other safety issues',
-  'Reference URL / Listing / User ID (Optional)': 'Reference URL / Listing / User ID (Optional)',
+  'Reference URL / Listing / User ID (Optional)':
+    'Reference URL / Listing / User ID (Optional)',
   'Detailed Description': 'Detailed Description',
   'Describe the issue in detail...': 'Describe the issue in detail...',
   'Submit report': 'Submit report',
-  'Please describe the concern details.': 'Please describe the concern details.',
+  'Please describe the concern details.':
+    'Please describe the concern details.',
   'Thank you. Your report has been submitted to Vastu Trust & Safety.':
     'Thank you. Your report has been submitted to Vastu Trust & Safety.',
   'Secure platform': 'Secure platform',
@@ -205,7 +209,7 @@ export const pages = {
   'Add to Home Screen': 'Add to Home Screen',
   'Select "Add to Home Screen" from the menu to install it on your device.':
     'Select "Add to Home Screen" from the menu to install it on your device.',
-  'Localhost detected! To scan with your phone, enter your PC\'s local IP address below.':
+  "Localhost detected! To scan with your phone, enter your PC's local IP address below.":
     "Localhost detected! To scan with your phone, enter your PC's local IP address below.",
   'Generating QR...': 'Generating QR...',
   'Scan to Install': 'Scan to Install',
@@ -317,6 +321,3 @@ export const pages = {
   "Welcome back! Here's what's happening with your platform.":
     "Welcome back! Here's what's happening with your platform.",
 }
-
-
-

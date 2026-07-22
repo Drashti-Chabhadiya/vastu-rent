@@ -61,7 +61,9 @@ export function CouponSidebar({
   const RULES = [
     t('User coupons apply only to listings created by that user.'),
     t('Listing-restricted coupons apply solely to that specific item.'),
-    t('usedCount auto-increments on booking and decrements on cancellation/rejection.'),
+    t(
+      'usedCount auto-increments on booking and decrements on cancellation/rejection.',
+    ),
     t('Per-user redemption count is verified at checkout atomically.'),
   ]
 
@@ -75,14 +77,17 @@ export function CouponSidebar({
           {t('Voucher Campaigns')}
         </h3>
         <p className="text-[11px] font-bold text-muted-dark mb-6 leading-relaxed">
-          {t('Launch targeted discount campaigns with flexible limits — per user, global FCFS, or combined.')}
+          {t(
+            'Launch targeted discount campaigns with flexible limits — per user, global FCFS, or combined.',
+          )}
         </p>
         {canCreate && (
           <Button
             onClick={onCreateClick}
             className="w-full h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-dash-brand/20 active:scale-95 transition-all"
           >
-            <Ticket size={16} className="rotate-[-10deg]" /> {t('Add New Coupon')}
+            <Ticket size={16} className="rotate-[-10deg]" />{' '}
+            {t('Add New Coupon')}
           </Button>
         )}
       </div>
@@ -103,7 +108,7 @@ export function CouponSidebar({
                 key={s.title}
                 className={cn(
                   'flex gap-3 items-start p-3 rounded-xl border',
-                  scenarioColorMap[s.color as keyof typeof scenarioColorMap],
+                  scenarioColorMap[s.color],
                 )}
               >
                 <div className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 bg-card/60">

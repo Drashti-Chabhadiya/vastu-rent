@@ -119,9 +119,10 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
             {t('Coupon Code Management')}
           </span>
         </div>
-        <h1 className="text-xl font-black text-foreground">{t('Manage Coupons')}</h1>
+        <h1 className="text-xl font-black text-foreground">
+          {t('Manage Coupons')}
+        </h1>
       </motion.div>
-
 
       {/* Admin Stats */}
       {isAdmin && (
@@ -176,7 +177,9 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
                   : 'border-transparent text-muted-dark hover:text-muted-foreground',
               )}
             >
-              {tab === 'my' ? t('My Listings Coupons') : t('Platform Wide Coupons')}
+              {tab === 'my'
+                ? t('My Listings Coupons')
+                : t('Platform Wide Coupons')}
             </Button>
           ))}
         </motion.div>
@@ -219,7 +222,9 @@ export const CouponsManagement = ({ isRenterView }: CouponsManagementProps) => {
         isOpen={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
         title={t('Delete Coupon')}
-        description={t('Are you sure you want to delete this coupon? This action cannot be undone.')}
+        description={t(
+          'Are you sure you want to delete this coupon? This action cannot be undone.',
+        )}
         confirmText={t('Delete')}
         cancelText={t('Cancel')}
         variant="danger"

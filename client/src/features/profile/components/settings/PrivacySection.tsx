@@ -19,13 +19,13 @@ export function PrivacySection({
   const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title={t("Privacy")}
-      description={t("Control your data and privacy settings.")}
+      title={t('Privacy')}
+      description={t('Control your data and privacy settings.')}
     >
       <div className={cn('divide-y', 'divide-border/30')}>
         <Row
-          label={t("Show profile to other users")}
-          desc={t("Let renters and hosts see your public profile.")}
+          label={t('Show profile to other users')}
+          desc={t('Let renters and hosts see your public profile.')}
         >
           <Switch
             checked={showProf}
@@ -33,8 +33,8 @@ export function PrivacySection({
           />
         </Row>
         <Row
-          label={t("Show online status")}
-          desc={t("Let others see when you are active.")}
+          label={t('Show online status')}
+          desc={t('Let others see when you are active.')}
         >
           <Switch
             checked={showOnline}
@@ -42,8 +42,8 @@ export function PrivacySection({
           />
         </Row>
         <Row
-          label={t("Allow data for personalisation")}
-          desc={t("Help us improve your recommendations.")}
+          label={t('Allow data for personalisation')}
+          desc={t('Help us improve your recommendations.')}
           last
         >
           <Switch

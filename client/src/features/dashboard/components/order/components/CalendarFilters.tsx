@@ -19,7 +19,7 @@ interface CalendarFiltersProps {
 
 export const CalendarFilters = ({
   selectedProduct,
-  setSelectedProduct, 
+  setSelectedProduct,
   selectedStatus,
   setSelectedStatus,
   uniqueProducts,

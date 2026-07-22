@@ -152,7 +152,9 @@ export const CategoryFormDialog = ({
             </DialogTitle>
             <p className="text-primary-foreground/70 text-sm font-medium mt-1">
               {isRequest
-                ? t('Propose a new collection. Admins will review and approve your suggestion.')
+                ? t(
+                    'Propose a new collection. Admins will review and approve your suggestion.',
+                  )
                 : editingCategory
                   ? t('Modify the category name and properties.')
                   : t('Create a new collection for your rentals.')}
@@ -194,7 +196,9 @@ export const CategoryFormDialog = ({
                 </label>
                 <Textarea
                   required
-                  placeholder={t('Briefly describe what items belong in this category...')}
+                  placeholder={t(
+                    'Briefly describe what items belong in this category...',
+                  )}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full min-h-[80px] bg-card border border-border rounded-xl p-3 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"
@@ -211,7 +215,9 @@ export const CategoryFormDialog = ({
                 </label>
                 <Textarea
                   required
-                  placeholder={t('Why is this category needed? (e.g., I have 10 cameras to list)')}
+                  placeholder={t(
+                    'Why is this category needed? (e.g., I have 10 cameras to list)',
+                  )}
                   value={requestReason}
                   onChange={(e) => setRequestReason(e.target.value)}
                   className="w-full min-h-[80px] bg-card border border-border rounded-xl p-3 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-dash-brand/30 focus:border-dash-brand transition-all font-medium shadow-sm"

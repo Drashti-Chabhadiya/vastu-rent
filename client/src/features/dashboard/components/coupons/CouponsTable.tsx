@@ -99,20 +99,30 @@ export function CouponsTable({
           <TableHeader>
             <TableRow className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
               <TableHead className="text-left px-4 py-3">{t('Code')}</TableHead>
-              <TableHead className="text-left px-4 py-3">{t('Discount')}</TableHead>
+              <TableHead className="text-left px-4 py-3">
+                {t('Discount')}
+              </TableHead>
               <TableHead className="text-left px-4 py-3">
                 {t('Configuration')}
               </TableHead>
               <TableHead className="text-left px-4 py-3">
                 {t('Min. Booking')}
               </TableHead>
-              <TableHead className="text-left px-4 py-3">{t('Expiry')}</TableHead>
-              <TableHead className="text-left px-4 py-3">{t('Redeemed')}</TableHead>
+              <TableHead className="text-left px-4 py-3">
+                {t('Expiry')}
+              </TableHead>
+              <TableHead className="text-left px-4 py-3">
+                {t('Redeemed')}
+              </TableHead>
               {canManage && (
-                <TableHead className="text-left px-4 py-3">{t('Status')}</TableHead>
+                <TableHead className="text-left px-4 py-3">
+                  {t('Status')}
+                </TableHead>
               )}
               {canManage && (
-                <TableHead className="px-4 py-3 text-right">{t('Actions')}</TableHead>
+                <TableHead className="px-4 py-3 text-right">
+                  {t('Actions')}
+                </TableHead>
               )}
             </TableRow>
           </TableHeader>
@@ -188,7 +198,9 @@ export function CouponsTable({
                           onClick={() => handleCopy(coupon.code)}
                           className="flex items-center gap-1 text-[8px] font-bold mt-1 opacity-70 hover:opacity-100 p-0 h-auto font-sans active:scale-[0.98] transition-all hover:bg-transparent"
                         >
-                          {copiedCode === coupon.code ? t('Copied!') : t('Copy')}{' '}
+                          {copiedCode === coupon.code
+                            ? t('Copied!')
+                            : t('Copy')}{' '}
                           <Copy size={8} />
                         </Button>
                       </div>
@@ -229,7 +241,9 @@ export function CouponsTable({
                         <span
                           className={cn(
                             'px-2 py-0.5 rounded border text-[9px] font-extrabold uppercase tracking-wide',
-                            scenarioColorMap[scenario.color as keyof typeof scenarioColorMap],
+                            scenarioColorMap[
+                              scenario.color
+                            ],
                           )}
                         >
                           {t(scenario.label)}
@@ -277,7 +291,8 @@ export function CouponsTable({
                       </div>
                       {coupon.perUserLimit && (
                         <p className="text-[8px] font-bold text-muted-dark mt-1">
-                          {t('Max')} {formatNumber(coupon.perUserLimit)}× {t('per user')}
+                          {t('Max')} {formatNumber(coupon.perUserLimit)}×{' '}
+                          {t('per user')}
                         </p>
                       )}
                     </TableCell>
@@ -293,7 +308,9 @@ export function CouponsTable({
                               : 'bg-amber-50 text-amber-700 border border-amber-100',
                           )}
                         >
-                          {coupon.isActive ? t('Active') : t('Pending Approval')}
+                          {coupon.isActive
+                            ? t('Active')
+                            : t('Pending Approval')}
                         </span>
                       </TableCell>
                     )}

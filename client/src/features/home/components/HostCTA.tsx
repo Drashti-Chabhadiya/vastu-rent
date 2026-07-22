@@ -32,7 +32,9 @@ export function HostCTA() {
             <h2 className="mt-5 font-display text-[clamp(2rem,4.5vw,4rem)] leading-[1.02] tracking-tight text-balance">
               {t('Lend the things you love.')}
               <br />
-              <span className="italic opacity-90">{t('Earn while they rest.')}</span>
+              <span className="italic opacity-90">
+                {t('Earn while they rest.')}
+              </span>
             </h2>
           </div>
           <div className="lg:col-span-5">

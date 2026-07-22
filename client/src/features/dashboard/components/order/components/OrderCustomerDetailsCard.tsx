@@ -38,7 +38,8 @@ export const OrderCustomerDetailsCard = ({
           </span>
           <div className="text-[12px] font-bold text-muted-foreground leading-relaxed space-y-1">
             <p className="font-black text-foreground flex items-center gap-1.5 text-xs">
-              <MapPin size={12} className="text-primary" /> {t('Primary Location:')}
+              <MapPin size={12} className="text-primary" />{' '}
+              {t('Primary Location:')}
             </p>
             <p>{order.product?.location || t('Self-Pickup')}</p>
             {order.product?.pickupReturnDetails && (

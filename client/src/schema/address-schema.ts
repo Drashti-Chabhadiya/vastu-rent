@@ -13,12 +13,8 @@ export const addressSchema = z
       .string()
       .min(1, 'Street / Area is required')
       .min(2, 'Street / Area must be at least 2 characters'),
-    city: z
-      .string()
-      .min(1, 'Please select or enter a city'),
-    state: z
-      .string()
-      .min(1, 'Please select or enter a state'),
+    city: z.string().min(1, 'Please select or enter a city'),
+    state: z.string().min(1, 'Please select or enter a state'),
     pincode: z
       .string()
       .min(1, 'Pincode is required')

@@ -90,7 +90,9 @@ export function LoginForm() {
       password: '',
     },
   })
-  const { formState: { isSubmitting } } = form
+  const {
+    formState: { isSubmitting },
+  } = form
 
   const onSubmit = async (values: LoginSchema) => {
     setServerError(null)
@@ -456,8 +458,8 @@ export function LoginForm() {
                       Verification Required
                     </h4>
                     <p className="mt-1 text-[13px] text-warning-foreground/90 leading-relaxed font-medium">
-                      Your email is not verified yet. Please check your inbox for
-                      the verification link sent to{' '}
+                      Your email is not verified yet. Please check your inbox
+                      for the verification link sent to{' '}
                       <strong className="text-foreground break-all">
                         {unverifiedEmail}
                       </strong>

@@ -53,7 +53,12 @@ export const RentalsCalendar = () => {
       { id, status: newStatus },
       {
         onSuccess: () => {
-          toast.success(t('Booking request successfully {newStatus}!').replace('{newStatus}', newStatus))
+          toast.success(
+            t('Booking request successfully {newStatus}!').replace(
+              '{newStatus}',
+              newStatus,
+            ),
+          )
           // Refresh details card if open
           if (selectedOrder && selectedOrder.id === id) {
             setSelectedOrder({ ...selectedOrder, status: newStatus })
@@ -179,7 +184,9 @@ export const RentalsCalendar = () => {
             {t('Rentals & Bookings Calendar')}
           </h2>
           <p className="text-dash-text-soft text-sm font-medium">
-            {t('Visual overview of rental duration and availability schedules.')}
+            {t(
+              'Visual overview of rental duration and availability schedules.',
+            )}
           </p>
         </div>
 
@@ -216,7 +223,6 @@ export const RentalsCalendar = () => {
               </Button>
             </div>
           ) : null}
-
 
           {/* Date Month Selector */}
           <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
@@ -350,7 +356,9 @@ export const RentalsCalendar = () => {
             {t('Reserved occupancy validation')}
           </h4>
           <p className="text-xs font-semibold text-muted-foreground/85 leading-relaxed max-w-2xl">
-            {t('Confirming a booking (Cash or Online) automatically blocks the specific listing dates from being reserved by other renters. Rejected/Cancelled requests immediately free the dates.')}
+            {t(
+              'Confirming a booking (Cash or Online) automatically blocks the specific listing dates from being reserved by other renters. Rejected/Cancelled requests immediately free the dates.',
+            )}
           </p>
         </div>
       </motion.div>

@@ -176,7 +176,9 @@ export function NewChatDialog() {
             >
               <MessageSquare size={24} className="text-muted-foreground/30" />
               <p className={cn('text-[11px]', 'font-bold', 'text-muted-dark')}>
-                {userSearch ? t('No users found') : t('Start typing to search users')}
+                {userSearch
+                  ? t('No users found')
+                  : t('Start typing to search users')}
               </p>
             </div>
           ) : (

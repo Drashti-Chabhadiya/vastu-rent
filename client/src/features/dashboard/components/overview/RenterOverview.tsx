@@ -115,11 +115,7 @@ export const RenterOverview = ({
       >
         <StatCard
           title={t('Active Rental Properties')}
-          value={
-            rentalsLoading
-              ? '...'
-              : formatNumber(activeRentals.length)
-          }
+          value={rentalsLoading ? '...' : formatNumber(activeRentals.length)}
           change={t('{count} Total Orders').replace(
             '{count}',
             formatNumber(myRentals?.length || 0),
@@ -143,9 +139,7 @@ export const RenterOverview = ({
         <StatCard
           title={t('Saved Wishlist Listings')}
           value={
-            likedLoading
-              ? '...'
-              : formatNumber(likedProducts?.length || 0)
+            likedLoading ? '...' : formatNumber(likedProducts?.length || 0)
           }
           change={t('Favorites Bookmarked')}
           isPositive={true}
@@ -530,4 +524,3 @@ export const RenterOverview = ({
     </div>
   )
 }
-

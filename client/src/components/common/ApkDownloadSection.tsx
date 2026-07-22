@@ -194,11 +194,11 @@ const ApkDownloadSection = () => {
               <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-sans">
                 {activePlatform === 'android'
                   ? t(
-                    'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.',
-                  )
+                      'Get the full Vastu Rent experience on your Android device. Fast listings, real-time booking updates, and exclusive mobile features.',
+                    )
                   : t(
-                    'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.',
-                  )}
+                      'Get the full Vastu Rent experience on your iPhone. Tap, add, and run Vastu Rent directly from your Home Screen with Safari browser.',
+                    )}
               </p>
             </div>
 
@@ -374,11 +374,11 @@ const ApkDownloadSection = () => {
                   <p className="text-sm text-muted-foreground font-sans leading-relaxed">
                     {activePlatform === 'android'
                       ? t(
-                        'Point your camera at this code to download the APK directly to your phone.',
-                      )
+                          'Point your camera at this code to download the APK directly to your phone.',
+                        )
                       : t(
-                        'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.',
-                      )}
+                          'Scan this code with your iPhone camera to open Vastu Rent in Safari browser.',
+                        )}
                   </p>
                 </div>
 
@@ -437,4 +437,3 @@ const ApkDownloadSection = () => {
 }
 
 export default ApkDownloadSection
-

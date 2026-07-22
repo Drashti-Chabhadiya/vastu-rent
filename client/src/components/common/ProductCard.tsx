@@ -132,7 +132,9 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-        <Button className="w-full shrink-0">{t('rentNow') || 'Rent Now'}</Button>
+        <Button className="w-full shrink-0">
+          {t('rentNow') || 'Rent Now'}
+        </Button>
       </div>
     </Link>
   )

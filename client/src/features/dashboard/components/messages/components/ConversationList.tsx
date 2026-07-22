@@ -683,9 +683,11 @@ export function ConversationList() {
             }
           }
         }}
-        title={t("Clear Chat?")}
-        description={t("Are you sure you want to clear this chat? This action cannot be undone.")}
-        confirmText={t("Clear")}
+        title={t('Clear Chat?')}
+        description={t(
+          'Are you sure you want to clear this chat? This action cannot be undone.',
+        )}
+        confirmText={t('Clear')}
         variant="danger"
       />
 

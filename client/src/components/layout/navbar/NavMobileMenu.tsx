@@ -219,7 +219,6 @@ export function NavMobileMenu({
               </Button>
             </div>
           </div>
-
         </div>
 
         {/* Bottom Actions */}

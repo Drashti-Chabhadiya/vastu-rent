@@ -78,8 +78,7 @@ export const profile = {
   'Profile changes saved successfully!':
     'પ્રોફાઇલ ફેરફારો સફળતાપૂર્વક સાચવવામાં આવ્યા!',
   'Failed to save changes. Please try again.': 'કૃપા કરીને ફરીથી પ્રયાસ કરો.',
-  'Preferences auto-saved successfully!':
-    'પસંદગીઓ સફળતાપૂર્વક સાચવવામાં આવી!',
+  'Preferences auto-saved successfully!': 'પસંદગીઓ સફળતાપૂર્વક સાચવવામાં આવી!',
   'Failed to update preference.': 'પસંદગી અપડેટ કરવામાં નિષ્ફળ.',
   'Failed to update currency.': 'ચલણ અપડેટ કરવામાં નિષ્ફળ.',
   'Failed to update 2FA settings.': '2FA સેટિંગ્સ અપડેટ કરવામાં નિષ્ફળ.',

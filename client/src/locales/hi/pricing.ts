@@ -13,7 +13,8 @@ export const pricing = {
   // Plans & Badges
   Starter: 'स्टार्टर',
   'Perfect for getting started.': 'शुरुआत करने के लिए एकदम सही।',
-  'No setup fees. No hidden charges.': 'कोई सेटअप शुल्क नहीं। कोई छिपा हुआ शुल्क नहीं।',
+  'No setup fees. No hidden charges.':
+    'कोई सेटअप शुल्क नहीं। कोई छिपा हुआ शुल्क नहीं।',
   'Get Started': 'शुरू करें',
   Pro: 'प्रो',
   'For growing renters.': 'बढ़ते किराएदारों के लिए।',

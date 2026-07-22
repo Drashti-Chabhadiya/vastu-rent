@@ -186,7 +186,8 @@ export const CategoryDeleteActionModals = ({
                       {prod.title}
                     </span>
                     <span className="text-[9px] text-muted-foreground truncate block">
-                      {t('Owner:')} {prod.user?.name || prod.user?.email || t('Unknown')}
+                      {t('Owner:')}{' '}
+                      {prod.user?.name || prod.user?.email || t('Unknown')}
                     </span>
                   </div>
                   <span className="font-black text-primary flex-shrink-0 bg-primary-soft/30 px-2 py-0.5 rounded text-[10px]">
@@ -201,8 +202,12 @@ export const CategoryDeleteActionModals = ({
         {/* Action Prompt Note */}
         <p className="text-[11px] leading-relaxed text-muted-foreground/80 font-medium px-1">
           {type === 'approve'
-            ? t('Approving this deletion request will grant the user temporary permission to delete the category within a 24-hour window. The category will not be deleted immediately.')
-            : t('Are you sure you want to reject this category deletion request? The category will remain active.')}
+            ? t(
+                'Approving this deletion request will grant the user temporary permission to delete the category within a 24-hour window. The category will not be deleted immediately.',
+              )
+            : t(
+                'Are you sure you want to reject this category deletion request? The category will remain active.',
+              )}
         </p>
       </div>
     )

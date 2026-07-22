@@ -221,7 +221,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             {/* Popover Header */}
             <div className="px-5 py-4 border-b border-border/30 flex items-center justify-between bg-muted-light/20">
               <span className="text-xs font-black text-foreground/90 uppercase tracking-wider flex items-center gap-1.5">
-                <Bell size={13} className="text-primary" /> {t('Platform Alerts')}
+                <Bell size={13} className="text-primary" />{' '}
+                {t('Platform Alerts')}
               </span>
               {unreadCount > 0 && (
                 <Button
@@ -319,4 +320,3 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
     </header>
   )
 }
-

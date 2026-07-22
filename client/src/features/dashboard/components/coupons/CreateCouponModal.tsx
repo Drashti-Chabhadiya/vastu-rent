@@ -153,7 +153,9 @@ export function CreateCouponModal({
               {t('Create Coupon')}
             </DialogTitle>
             <p className="text-primary-foreground/70 text-sm font-medium mt-1">
-              {t('Configure discount rules, limits, and scope for your voucher campaign.')}
+              {t(
+                'Configure discount rules, limits, and scope for your voucher campaign.',
+              )}
             </p>
           </DialogHeader>
         </div>
@@ -367,7 +369,9 @@ export function CreateCouponModal({
 
           {!isAdmin && (
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900 text-sm font-medium">
-              {t('Coupon requests from non-admin users will be reviewed by an admin and activated after approval.')}
+              {t(
+                'Coupon requests from non-admin users will be reviewed by an admin and activated after approval.',
+              )}
             </div>
           )}
           <DialogFooter className="gap-3 sm:gap-3 pt-4 border-t border-border/30">
@@ -384,7 +388,9 @@ export function CreateCouponModal({
               className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
               <Plus size={18} strokeWidth={3} />
-              {createMutation.isPending ? t('Generating...') : t('Generate Coupon')}
+              {createMutation.isPending
+                ? t('Generating...')
+                : t('Generate Coupon')}
             </Button>
           </DialogFooter>
         </form>

@@ -55,7 +55,9 @@ export const NotificationSettingsForm = ({
   const handlePushToggle = async (val: boolean) => {
     if (!val) {
       toast.info(
-        t('To completely block push notifications, click the lock/settings icon in your browser address bar and reset notification permissions.'),
+        t(
+          'To completely block push notifications, click the lock/settings icon in your browser address bar and reset notification permissions.',
+        ),
       )
       setPushEnabled(false)
       return
@@ -68,13 +70,18 @@ export const NotificationSettingsForm = ({
       const token = await registerDeviceForPush()
       if (token) {
         setPushEnabled(true)
-        toast.success(t('Browser push notifications successfully enabled! 🔔'), {
-          id: toastId,
-        })
+        toast.success(
+          t('Browser push notifications successfully enabled! 🔔'),
+          {
+            id: toastId,
+          },
+        )
       } else {
         setPushEnabled(false)
         toast.error(
-          t('Failed to enable push notifications. Please ensure you select "Allow" when prompted.'),
+          t(
+            'Failed to enable push notifications. Please ensure you select "Allow" when prompted.',
+          ),
           { id: toastId },
         )
       }
@@ -138,7 +145,9 @@ export const NotificationSettingsForm = ({
                 {t('Browser Push Notifications')}
               </h4>
               <p className="text-[11px] font-semibold text-brand-primary-deep/90 leading-normal">
-                {t('Receive instant real-time updates for bookings, payments, and messaging directly on this device.')}
+                {t(
+                  'Receive instant real-time updates for bookings, payments, and messaging directly on this device.',
+                )}
               </p>
             </div>
             <Switch

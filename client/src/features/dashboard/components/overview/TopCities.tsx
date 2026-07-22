@@ -21,9 +21,7 @@ export const TopCities = () => {
       )}
     >
       <div className={cn('flex', 'items-center', 'justify-between', 'mb-6')}>
-        <h3 className={cn('font-bold', 'text-dash-text')}>
-          {t('Top Cities')}
-        </h3>
+        <h3 className={cn('font-bold', 'text-dash-text')}>{t('Top Cities')}</h3>
         <ExploreLink to="/products">{t('View All')}</ExploreLink>
       </div>
 
@@ -61,7 +59,9 @@ export const TopCities = () => {
             {t('No city data yet')}
           </p>
           <p className={cn('text-xs', 'text-muted-dark', 'mt-1')}>
-            {t('Cities will appear once listings are added with location info.')}
+            {t(
+              'Cities will appear once listings are added with location info.',
+            )}
           </p>
         </div>
       ) : (

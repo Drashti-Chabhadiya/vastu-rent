@@ -210,7 +210,6 @@ export const PaymentsManagement = () => {
             </div>
           ) : null}
 
-
           {/* Date Month Selector */}
           <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
             <Calendar size={14} className="text-emerald-600" />
@@ -433,10 +432,13 @@ export const PaymentsManagement = () => {
                   {t('Safety Settlement Guarantee')}
                 </h3>
                 <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
-                  {t('Platform settlements are fully paid out with 0% commission fees. Payout requests are verified by auditing dispute histories and cleared within 24-48 hours.')}
+                  {t(
+                    'Platform settlements are fully paid out with 0% commission fees. Payout requests are verified by auditing dispute histories and cleared within 24-48 hours.',
+                  )}
                 </p>
                 <div className="border-t border-border/30 pt-4 flex items-center gap-2 text-[10px] font-black text-muted-dark uppercase tracking-widest">
-                  <Lock size={12} className="text-emerald-600" /> {t('BANK-LEVEL SSL ENCRYPTED')}
+                  <Lock size={12} className="text-emerald-600" />{' '}
+                  {t('BANK-LEVEL SSL ENCRYPTED')}
                 </div>
               </motion.div>
             </div>

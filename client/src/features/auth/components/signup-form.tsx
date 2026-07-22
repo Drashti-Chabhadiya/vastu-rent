@@ -36,7 +36,9 @@ export function SignupForm() {
       confirmPassword: '',
     },
   })
-  const { formState: { isSubmitting } } = form
+  const {
+    formState: { isSubmitting },
+  } = form
 
   // Verification-related states
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
@@ -183,7 +185,9 @@ export function SignupForm() {
       {/* Top Bar with Language Selector & Switch Link */}
       <div className="flex items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-1.5 text-sm font-medium">
-          <span className="text-muted-foreground/85">{t('Already have account?')}</span>
+          <span className="text-muted-foreground/85">
+            {t('Already have account?')}
+          </span>
           <Link
             to="/login"
             className="text-primary font-bold hover:underline transition-colors"
@@ -381,7 +385,11 @@ export function SignupForm() {
               </p>
             )}
 
-            <Button type="submit" disabled={isSubmitting} className="w-full mt-2">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full mt-2"
+            >
               {isSubmitting ? `${t('Create Account')}...` : t('Create Account')}
             </Button>
           </div>

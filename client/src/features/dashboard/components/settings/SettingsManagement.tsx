@@ -77,8 +77,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            err.message ||
-            'Failed to save bank details',
+              err.message ||
+              'Failed to save bank details',
           )
         },
       },
@@ -109,8 +109,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            err.message ||
-            'Failed to update notification settings',
+              err.message ||
+              'Failed to update notification settings',
           )
         },
       },
@@ -152,13 +152,13 @@ export const SettingsManagement = () => {
     },
     ...(isAdmin
       ? [
-        {
-          id: 'site-content',
-          label: t('Site Content Settings'),
-          desc: t('Customize contact, pricing, trust, and terms'),
-          icon: Settings,
-        },
-      ]
+          {
+            id: 'site-content',
+            label: t('Site Content Settings'),
+            desc: t('Customize contact, pricing, trust, and terms'),
+            icon: Settings,
+          },
+        ]
       : []),
     {
       id: 'security',
@@ -186,7 +186,9 @@ export const SettingsManagement = () => {
         <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
           <span>{t('Dashboard')}</span>
           <ChevronRight size={10} className="text-muted-foreground/60" />
-          <span className="text-dash-brand font-bold">{t('Platform Settings')}</span>
+          <span className="text-dash-brand font-bold">
+            {t('Platform Settings')}
+          </span>
         </div>
         <div className="flex items-center justify-between">
           <h1 className="font-display text-2xl font-semibold text-foreground/90 tracking-tight">
@@ -200,7 +202,6 @@ export const SettingsManagement = () => {
           </div>
         </div>
       </motion.div>
-
 
       <motion.div
         variants={fadeUp}
@@ -216,16 +217,18 @@ export const SettingsManagement = () => {
               key={item.id}
               variant="ghost"
               onClick={() => setActiveSubTab(item.id)}
-              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${activeSubTab === item.id
+              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
+                activeSubTab === item.id
                   ? 'bg-brand-green-bubble text-brand-primary-deep hover:bg-brand-green-bubble hover:text-brand-primary-deep'
                   : 'text-slate-600 hover:bg-slate-50'
-                }`}
+              }`}
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${activeSubTab === item.id
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${
+                  activeSubTab === item.id
                     ? 'bg-white text-brand-primary-deep border-brand-green-border shadow-sm'
                     : 'bg-slate-100 border-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm'
-                  }`}
+                }`}
               >
                 <item.icon
                   size={18}
@@ -234,18 +237,20 @@ export const SettingsManagement = () => {
               </div>
               <div className="min-w-0 text-left">
                 <p
-                  className={`font-sans text-[13px] leading-snug font-bold ${activeSubTab === item.id
+                  className={`font-sans text-[13px] leading-snug font-bold ${
+                    activeSubTab === item.id
                       ? 'text-brand-primary-deep'
                       : 'text-slate-800'
-                    }`}
+                  }`}
                 >
                   {item.label}
                 </p>
                 <p
-                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${activeSubTab === item.id
+                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
+                    activeSubTab === item.id
                       ? 'text-brand-primary-deep/80'
                       : 'text-slate-400'
-                    }`}
+                  }`}
                 >
                   {item.desc}
                 </p>
@@ -296,7 +301,9 @@ export const SettingsManagement = () => {
                 {t('Security & Access')}
               </h3>
               <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-                {t('Security controls, password changes, two-factor authentication, active login sessions, and trusted devices are managed securely under your main Account Settings page.')}
+                {t(
+                  'Security controls, password changes, two-factor authentication, active login sessions, and trusted devices are managed securely under your main Account Settings page.',
+                )}
               </p>
               <Link to="/account">
                 <Button className="mt-2 bg-brand-primary-deep hover:bg-brand-primary-darker text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm">
@@ -312,7 +319,9 @@ export const SettingsManagement = () => {
                 {t('API & Integrations')}
               </h3>
               <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-                {t('Configure third-party API webhooks, web services, rental syndication channels, and application credentials.')}
+                {t(
+                  'Configure third-party API webhooks, web services, rental syndication channels, and application credentials.',
+                )}
               </p>
               <Button
                 disabled
@@ -379,7 +388,9 @@ export const SettingsManagement = () => {
               {t('Safety Guarantee')}
             </h3>
             <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
-              {t('Your details are protected using industry-grade SSL encryption and are kept confidential.')}
+              {t(
+                'Your details are protected using industry-grade SSL encryption and are kept confidential.',
+              )}
             </p>
           </div>
         </div>

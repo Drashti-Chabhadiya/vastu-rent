@@ -52,7 +52,10 @@ export const OrderProductDetailsCard = ({
             {format(new Date(order.endDate), 'dd MMM yyyy')}
           </span>
           <Badge className="bg-muted text-muted-foreground border-none px-4 py-1 rounded-full font-bold text-[11px]">
-            {t('{duration} Days').replace('{duration}', calculateDuration(order.startDate, order.endDate).toString())}
+            {t('{duration} Days').replace(
+              '{duration}',
+              calculateDuration(order.startDate, order.endDate).toString(),
+            )}
           </Badge>
         </div>
       </div>

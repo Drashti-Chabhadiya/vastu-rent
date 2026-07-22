@@ -127,7 +127,10 @@ export const CategoryDeleteRequestList = ({
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">
-                      {t('Delete "{categoryName}"').replace('{categoryName}', categoryName)}
+                      {t('Delete "{categoryName}"').replace(
+                        '{categoryName}',
+                        categoryName,
+                      )}
                     </h4>
                     <p className="text-xs text-muted-foreground/70 mt-1">
                       {t('Requested by')}{' '}
@@ -158,20 +161,25 @@ export const CategoryDeleteRequestList = ({
                           <p className="font-semibold text-warning-foreground/95 leading-relaxed">
                             {isAdmin ? (
                               <>
-                                {t('This deletion request has been approved. The proposing user has until')}{' '}
+                                {t(
+                                  'This deletion request has been approved. The proposing user has until',
+                                )}{' '}
                                 <span className="font-black text-warning-foreground underline">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>{' '}
-                                {t('to complete the deletion (Expires in')} <span className="font-black text-warning-foreground underline">
+                                {t('to complete the deletion (Expires in')}{' '}
+                                <span className="font-black text-warning-foreground underline">
                                   {timeRemainingStr}
                                 </span>
                                 ).
                               </>
                             ) : (
                               <>
-                                {t('Admin approved this deletion. You must complete the deletion before the permission expires on')}{' '}
+                                {t(
+                                  'Admin approved this deletion. You must complete the deletion before the permission expires on',
+                                )}{' '}
                                 <span className="font-black text-warning-foreground underline">
                                   {new Date(
                                     approvedAtTime + 24 * 60 * 60 * 1000,
@@ -208,7 +216,9 @@ export const CategoryDeleteRequestList = ({
                                     approvedAtTime + 24 * 60 * 60 * 1000,
                                   ).toLocaleString()}
                                 </span>{' '}
-                                {t('without action. The proposing user must submit a new request.')}
+                                {t(
+                                  'without action. The proposing user must submit a new request.',
+                                )}
                               </>
                             ) : (
                               <>

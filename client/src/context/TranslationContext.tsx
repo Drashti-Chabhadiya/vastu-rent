@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { useTranslationStore } from '#/store/useTranslationStore'
-import { translations, type LanguageCode, type TranslationKey } from '#/locales'
+import { translations   } from '#/locales'
+import type {LanguageCode, TranslationKey} from '#/locales';
 
 export { translations, type LanguageCode }
 
@@ -27,17 +28,31 @@ const GUJR_DIGITS = ['૦', '૧', '૨', '૩', '૪', '૫', '૬', '૭', '�
 const EN_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 const DIGIT_TO_INDEX: Record<string, number> = {}
-EN_DIGITS.forEach((ch, i) => { DIGIT_TO_INDEX[ch] = i })
-DEVA_DIGITS.forEach((ch, i) => { DIGIT_TO_INDEX[ch] = i })
-GUJR_DIGITS.forEach((ch, i) => { DIGIT_TO_INDEX[ch] = i })
+EN_DIGITS.forEach((ch, i) => {
+  DIGIT_TO_INDEX[ch] = i
+})
+DEVA_DIGITS.forEach((ch, i) => {
+  DIGIT_TO_INDEX[ch] = i
+})
+GUJR_DIGITS.forEach((ch, i) => {
+  DIGIT_TO_INDEX[ch] = i
+})
 
 const ALL_DIGITS_REGEX = /[0-9०-९૦-૯]/g
 
-export function convertDigits(text: string | number | null | undefined, targetLang: LanguageCode): string {
+export function convertDigits(
+  text: string | number | null | undefined,
+  targetLang: LanguageCode,
+): string {
   if (text === null || text === undefined) return ''
   const str = String(text)
   if (!str) return ''
-  const targetMap = targetLang === 'hi' ? DEVA_DIGITS : targetLang === 'gu' ? GUJR_DIGITS : EN_DIGITS
+  const targetMap =
+    targetLang === 'hi'
+      ? DEVA_DIGITS
+      : targetLang === 'gu'
+        ? GUJR_DIGITS
+        : EN_DIGITS
   return str.replace(ALL_DIGITS_REGEX, (match) => {
     const idx = DIGIT_TO_INDEX[match]
     return idx !== undefined ? targetMap[idx] : match
@@ -131,7 +146,10 @@ export function TranslationProvider({
     // Set up MutationObserver to convert newly inserted or updated text nodes dynamically
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'characterData' && mutation.target.nodeType === Node.TEXT_NODE) {
+        if (
+          mutation.type === 'characterData' &&
+          mutation.target.nodeType === Node.TEXT_NODE
+        ) {
           processTextNode(mutation.target as Text, language)
         } else if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {
@@ -161,7 +179,8 @@ export function useTranslation() {
   const language = useTranslationStore((state) => state.language)
   const changeLanguage = useTranslationStore((state) => state.changeLanguage)
 
-  const locale = language === 'gu' ? 'gu-IN' : language === 'hi' ? 'hi-IN' : 'en-IN'
+  const locale =
+    language === 'gu' ? 'gu-IN' : language === 'hi' ? 'hi-IN' : 'en-IN'
 
   const numberingOptions =
     language === 'gu'
@@ -184,7 +203,8 @@ export function useTranslation() {
 
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
-        const formattedVal = typeof v === 'number' ? formatNumber(v) : formatDigits(v)
+        const formattedVal =
+          typeof v === 'number' ? formatNumber(v) : formatDigits(v)
         text = text.replace(new RegExp(`{{${k}}}`, 'g'), formattedVal)
       })
     }
@@ -202,7 +222,8 @@ export function useTranslation() {
   }
 
   const formatCurrency = (val: number | string | null | undefined): string => {
-    if (val === null || val === undefined || val === '') return formatDigits('₹0')
+    if (val === null || val === undefined || val === '')
+      return formatDigits('₹0')
     const cleanStr = String(val).replace(/[^0-9.-]/g, '')
     const num = parseFloat(cleanStr)
     if (isNaN(num)) return formatDigits(val)
@@ -233,4 +254,3 @@ export function useTranslation() {
     formatDigits,
   }
 }
-

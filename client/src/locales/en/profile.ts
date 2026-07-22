@@ -39,11 +39,9 @@ export const profile = {
 
   // Preferences
   Preferences: 'Preferences',
-  'Customize your experience on Vastu.':
-    'Customize your experience on Vastu.',
+  'Customize your experience on Vastu.': 'Customize your experience on Vastu.',
   'Email Notifications': 'Email Notifications',
-  'Stay updated with important updates':
-    'Stay updated with important updates',
+  'Stay updated with important updates': 'Stay updated with important updates',
   'SMS Notifications': 'SMS Notifications',
   'Receive text messages for bookings': 'Receive text messages for bookings',
   'Marketing Emails': 'Marketing Emails',
@@ -75,8 +73,7 @@ export const profile = {
     'You have reached your listing limit. Upgrade your subscription plan to create new listings.',
 
   // Notifications toasts
-  'Profile changes saved successfully!':
-    'Profile changes saved successfully!',
+  'Profile changes saved successfully!': 'Profile changes saved successfully!',
   'Failed to save changes. Please try again.':
     'Failed to save changes. Please try again.',
   'Preferences auto-saved successfully!':

@@ -101,7 +101,9 @@ export function Categories() {
           <p className="text-[15px] leading-relaxed text-muted-foreground">
             {t('Catalogue Description')}
           </p>
-          <ExploreLink to="/categories">{t('Explore all categories')}</ExploreLink>
+          <ExploreLink to="/categories">
+            {t('Explore all categories')}
+          </ExploreLink>
         </div>
       </div>
 

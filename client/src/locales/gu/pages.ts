@@ -58,9 +58,11 @@ export const pages = {
   'What kind of concern is this?': 'આ ફરિયાદ કઈ પ્રકારની છે?',
   'Suspicious/Incorrect Listing': 'શંકાસ્પદ/ખોટી લિસ્ટિંગ',
   'Inappropriate/Fraudulent User': 'અયોગ્ય/ફ્રોડ વપરાશકર્તા',
-  'Payment issues / Off-platform requests': 'ચૂકવણી સમસ્યા / ઑફ-પ્લેટફોર્મ વ્યવહાર',
+  'Payment issues / Off-platform requests':
+    'ચૂકવણી સમસ્યા / ઑફ-પ્લેટફોર્મ વ્યવહાર',
   'Other safety issues': 'અન્ય સુરક્ષા સમસ્યાઓ',
-  'Reference URL / Listing / User ID (Optional)': 'સંદર્ભ URL / Listing / User ID (વૈકલ્પિક)',
+  'Reference URL / Listing / User ID (Optional)':
+    'સંદર્ભ URL / Listing / User ID (વૈકલ્પિક)',
   'Detailed Description': 'વિગતવાર વર્ણન',
   'Describe the issue in detail...': 'સમસ્યા વિગતવાર વર્ણન કરો...',
   'Submit report': 'ફરિયાદ સબમિટ કરો',
@@ -206,7 +208,7 @@ export const pages = {
   'Add to Home Screen': 'હોમ સ્ક્રીન પર ઉમેરો',
   'Select "Add to Home Screen" from the menu to install it on your device.':
     'તમારા ડિવાઇસ પર ઇન્સ્ટોલ કરવા માટે મેનૂમાંથી "હોમ સ્ક્રીન પર ઉમેરો" પસંદ કરો.',
-  'Localhost detected! To scan with your phone, enter your PC\'s local IP address below.':
+  "Localhost detected! To scan with your phone, enter your PC's local IP address below.":
     'લોકલહોસ્ટ મળ્યું! તમારા ફોન વડે સ્કેન કરવા માટે, નીચે તમારા પીસીનું લોકલ IP લખો.',
   'Generating QR...': 'QR જનરેટ થઈ રહ્યું છે...',
   'Scan to Install': 'ઇન્સ્ટોલ કરવા માટે સ્કેન કરો',
@@ -244,7 +246,8 @@ export const pages = {
   View: 'જુઓ',
   '/day': '/દિવસ',
   'No results for "{query}"': '"{query}" માટે કોઈ પરિણામ મળ્યું નથી',
-  'Try adjusting your search terms.': 'કૃપા કરીને શોધો શબ્દો બદલીને પ્રયાસ કરો.',
+  'Try adjusting your search terms.':
+    'કૃપા કરીને શોધો શબ્દો બદલીને પ્રયાસ કરો.',
   'Clear search': 'શોધ સાફ કરો',
   'Your wishlist is empty': 'તમારી વિશ્લિસ્ટ ખાલી છે',
   'Browse our catalogue and tap the heart icon on any item to save it here for later.':
@@ -283,8 +286,7 @@ export const pages = {
   'List of properties bookmarked for later consideration.':
     'પછીથી જોવા માટે બુકમાર્ક કરેલ વસ્તુઓની યાદી.',
   'Wishlist is empty': 'વિશ્લિસ્ટ ખાલી છે',
-  'Your liked listings will show up here.':
-    'તમારી ગમેલી લિસ્ટિંગ અહીં દેખાશે.',
+  'Your liked listings will show up here.': 'તમારી ગમેલી લિસ્ટિંગ અહીં દેખાશે.',
   'Manage Wishlist': 'વિશ્લિસ્ટ મેનેજ કરો',
   'Total Users': 'કુલ વપરાશકર્તાઓ',
   'Total Listings': 'કુલ લિસ્ટિંગ',
@@ -318,5 +320,3 @@ export const pages = {
   "Welcome back! Here's what's happening with your platform.":
     'પાછા ફરવા બદલ સ્વાગત છે! તમારા પ્લેટફોર્મ પર આ થઈ રહ્યું છે.',
 }
-
-

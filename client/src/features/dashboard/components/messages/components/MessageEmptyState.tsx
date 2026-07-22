@@ -32,7 +32,9 @@ export function MessageEmptyState({
           {t('Welcome to your conversations')}
         </h3>
         <p className="text-sm text-slate-500 mt-2.5 px-4 leading-relaxed font-medium font-sans max-w-sm mx-auto">
-          {t('Select a chat from the list to view your conversation or start a new one.')}
+          {t(
+            'Select a chat from the list to view your conversation or start a new one.',
+          )}
         </p>
       </div>
 

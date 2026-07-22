@@ -46,8 +46,8 @@ export function ProfileInfoSection({
   const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title={t("Profile Information")}
-      description={t("Update your personal details and how others see you.")}
+      title={t('Profile Information')}
+      description={t('Update your personal details and how others see you.')}
     >
       <div
         className={cn(
@@ -181,7 +181,7 @@ export function ProfileInfoSection({
               onChange={(e) => setBio(e.target.value)}
               maxLength={160}
               rows={4}
-              placeholder={t("Tell others a little about yourself...")}
+              placeholder={t('Tell others a little about yourself...')}
               className={cn(
                 'rounded-xl',
                 'border-border',
@@ -313,7 +313,8 @@ export function ProfileInfoSection({
               'shrink-0',
             )}
           >
-            <Upload size={13} />{t(' Change Photo')}
+            <Upload size={13} />
+            {t(' Change Photo')}
           </Button>
           <input
             ref={fileRef}

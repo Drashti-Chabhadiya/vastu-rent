@@ -78,7 +78,9 @@ export const ImageGalleryManager = ({
                 size={24}
                 className="group-hover:text-dash-brand transition-colors"
               />
-              <span className="text-[10px] font-bold uppercase">{t('Add Photo')}</span>
+              <span className="text-[10px] font-bold uppercase">
+                {t('Add Photo')}
+              </span>
             </>
           )}
         </Button>

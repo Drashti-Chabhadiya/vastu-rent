@@ -155,16 +155,12 @@ export function TrustPage() {
     {
       icon: <FileText className="h-5 w-5 text-primary" />,
       title: t('Read the listing carefully'),
-      description: t(
-        'Review house rules, policies and cancellation terms.',
-      ),
+      description: t('Review house rules, policies and cancellation terms.'),
     },
     {
       icon: <Flag className="h-5 w-5 text-primary" />,
       title: t('Report suspicious activity'),
-      description: t(
-        'Help us keep the community safe by reporting concerns.',
-      ),
+      description: t('Help us keep the community safe by reporting concerns.'),
     },
   ]
 

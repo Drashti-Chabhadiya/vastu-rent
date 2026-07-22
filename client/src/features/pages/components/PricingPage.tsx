@@ -51,7 +51,10 @@ export function PricingPage() {
         .replace('{amount}', formatNumber(yearlyPrice))
         .replace('{savings}', formatNumber(yearlySavings))
     }
-    return t('Billed monthly as ₹{amount}').replace('{amount}', formatNumber(price))
+    return t('Billed monthly as ₹{amount}').replace(
+      '{amount}',
+      formatNumber(price),
+    )
   }
 
   const starterFeatures: string[] = settings?.pricing?.starterFeatures || [

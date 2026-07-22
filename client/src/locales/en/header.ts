@@ -50,13 +50,12 @@ export const header = {
   System: 'System',
 
   'Vastu Catalog': 'Vastu Catalog',
-  'Find items for every aspect of life.': 'Find items for every aspect of life.',
-  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.': 'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.',
+  'Find items for every aspect of life.':
+    'Find items for every aspect of life.',
+  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.':
+    'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.',
   'Explore all categories': 'Explore all categories',
   'All Categories': 'All Categories',
-  'items': 'items',
+  items: 'items',
   'No categories found': 'No categories found',
-
 }
-
-

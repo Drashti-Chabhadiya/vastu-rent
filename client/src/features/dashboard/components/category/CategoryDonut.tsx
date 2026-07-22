@@ -67,7 +67,9 @@ export const CategoryDonut = () => {
 
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
-      <h3 className="font-bold text-dash-text mb-8">{t('Listings by Category')}</h3>
+      <h3 className="font-bold text-dash-text mb-8">
+        {t('Listings by Category')}
+      </h3>
 
       <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-8">
         {/* Donut Chart */}

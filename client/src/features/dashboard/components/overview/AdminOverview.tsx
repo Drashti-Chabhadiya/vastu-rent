@@ -66,9 +66,7 @@ export const AdminOverview = ({
         <StatCard
           title={t('Total Users')}
           value={
-            statsLoading
-              ? '...'
-              : formatNumber(statsData?.totalUsers || 0)
+            statsLoading ? '...' : formatNumber(statsData?.totalUsers || 0)
           }
           change={statsLoading ? '...' : formatChange(usersChange)}
           isPositive={usersChange >= 0}
@@ -80,9 +78,7 @@ export const AdminOverview = ({
         <StatCard
           title={t('Total Listings')}
           value={
-            statsLoading
-              ? '...'
-              : formatNumber(statsData?.totalListings || 0)
+            statsLoading ? '...' : formatNumber(statsData?.totalListings || 0)
           }
           change={statsLoading ? '...' : formatChange(listingsChange)}
           isPositive={listingsChange >= 0}
@@ -94,9 +90,7 @@ export const AdminOverview = ({
         <StatCard
           title={t('Total Bookings')}
           value={
-            statsLoading
-              ? '...'
-              : formatNumber(statsData?.totalBookings || 0)
+            statsLoading ? '...' : formatNumber(statsData?.totalBookings || 0)
           }
           change={statsLoading ? '...' : formatChange(bookingsChange)}
           isPositive={bookingsChange >= 0}
@@ -184,4 +178,3 @@ export const AdminOverview = ({
     </motion.div>
   )
 }
-

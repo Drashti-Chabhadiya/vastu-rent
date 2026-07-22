@@ -142,7 +142,9 @@ export const ProductForm = ({
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder={t('Describe the item, features, and condition...')}
+                  placeholder={t(
+                    'Describe the item, features, and condition...',
+                  )}
                   {...field}
                   className="min-h-[120px] w-full px-4 py-3 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
@@ -292,7 +294,8 @@ export const ProductForm = ({
             const payload = {
               ...data,
               requestReason:
-                data.requestReason?.trim() || t('Requested from Add Listing form'),
+                data.requestReason?.trim() ||
+                t('Requested from Add Listing form'),
             }
             createRequestMutation.mutate(payload, {
               onSuccess: () => {

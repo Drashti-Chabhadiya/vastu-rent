@@ -149,12 +149,13 @@ export const ListingDialog = ({
                 />
               </div>
               <Badge className="bg-card/20 text-primary-foreground border-none font-bold text-[10px] uppercase tracking-widest">
-                {isEditMode ? t('Marketplace Management') : t('Marketplace Admin')}
+                {isEditMode
+                  ? t('Marketplace Management')
+                  : t('Marketplace Admin')}
               </Badge>
             </div>
             <DialogTitle className="text-2xl font-extrabold tracking-tight text-primary-foreground">
               {isEditMode ? t('Edit Listing Details') : t('Create New Listing')}
-
             </DialogTitle>
           </DialogHeader>
         </div>
@@ -170,7 +171,9 @@ export const ListingDialog = ({
             {isLoading && (
               <LoadingOverlay
                 message={
-                  isEditMode ? t('Saving changes...') : t('Publishing listing...')
+                  isEditMode
+                    ? t('Saving changes...')
+                    : t('Publishing listing...')
                 }
               />
             )}

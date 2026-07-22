@@ -37,7 +37,8 @@ export const ProductInfoSection = ({
   applyCouponIsPending,
   availabilityCalendar,
 }: ProductInfoSectionProps) => {
-  const { formatCurrency, formatDate, formatDigits, formatNumber, t } = useTranslation()
+  const { formatCurrency, formatDate, formatDigits, formatNumber, t } =
+    useTranslation()
   const {
     paymentMethod,
     setPaymentMethod,
@@ -260,9 +261,7 @@ export const ProductInfoSection = ({
             <span className="font-bold">Dates:</span>
             <span>
               {formatDate(startDate)}{' '}
-              {endDate
-                ? `→ ${formatDate(endDate)}`
-                : '→ Pick end date'}
+              {endDate ? `→ ${formatDate(endDate)}` : '→ Pick end date'}
             </span>
           </div>
           {endDate && (

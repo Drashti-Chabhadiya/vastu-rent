@@ -95,7 +95,6 @@ export function TermsPage() {
     },
   ]
 
-
   interface TermsNavSection {
     id: string
     label: string
@@ -170,7 +169,9 @@ export function TermsPage() {
               className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
               {t('Clear terms.')} <br />
-              <span className="italic text-primary">{t('Trusted platform.')}</span>
+              <span className="italic text-primary">
+                {t('Trusted platform.')}
+              </span>
             </motion.h1>
             <motion.p
               variants={fadeUp}

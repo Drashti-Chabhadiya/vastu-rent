@@ -44,7 +44,8 @@ export const home = {
   'No popular items found in your area.':
     'आपके क्षेत्र में कोई लोकप्रिय वस्तु नहीं मिली।',
   'No newly added items found.': 'कोई नई जोड़ी गई वस्तुएं नहीं मिलीं।',
-  'Check back later for fresh listings!': 'नई वस्तुओं के लिए बाद में दोबारा जांचें!',
+  'Check back later for fresh listings!':
+    'नई वस्तुओं के लिए बाद में दोबारा जांचें!',
 
   // Host CTA
   '— Become a host': '— होस्ट बनें',

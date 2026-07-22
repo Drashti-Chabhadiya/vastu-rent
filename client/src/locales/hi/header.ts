@@ -51,12 +51,10 @@ export const header = {
 
   'Vastu Catalog': 'वास्तु कैटलॉग',
   'Find items for every aspect of life.': 'जीवन के हर पहलू के लिए सामान खोजें।',
-  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.': 'अपने भरोसेमंद पड़ोसियों से ध्यानपूर्वक रखी गई किराये की वस्तुएं ब्राउज़ करें। आपके बटुए के लिए अच्छा, ग्रह के लिए बेहतरीन।',
+  'Browse carefully kept rental items from neighbors you trust. Good for your wallet, great for the planet.':
+    'अपने भरोसेमंद पड़ोसियों से ध्यानपूर्वक रखी गई किराये की वस्तुएं ब्राउज़ करें। आपके बटुए के लिए अच्छा, ग्रह के लिए बेहतरीन।',
   'Explore all categories': 'सभी श्रेणियां एक्सप्लोर करें',
   'All Categories': 'सभी श्रेणियां',
-  'items': 'वस्तुएं',
+  items: 'वस्तुएं',
   'No categories found': 'कोई श्रेणी नहीं मिली',
-
 }
-
-

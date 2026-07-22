@@ -129,7 +129,9 @@ export const ListingsManagement = ({
         setProductToDelete(null)
       },
       onError: (err: any) => {
-        toast.error(err.response?.data?.message || t('Failed to delete listing'))
+        toast.error(
+          err.response?.data?.message || t('Failed to delete listing'),
+        )
       },
     })
   }
@@ -155,7 +157,8 @@ export const ListingsManagement = ({
         },
         onError: (err: any) => {
           toast.error(
-            err.response?.data?.message || t('Failed to submit deletion request'),
+            err.response?.data?.message ||
+              t('Failed to submit deletion request'),
           )
         },
       },
@@ -165,20 +168,26 @@ export const ListingsManagement = ({
   const deleteTitle = t('Delete Listing permanently?')
 
   const deleteDescription = productToDelete
-    ? t('Are you sure you want to permanently delete "{title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.').replace('{title}', productToDelete.title)
+    ? t(
+        'Are you sure you want to permanently delete "{title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.',
+      ).replace('{title}', productToDelete.title)
     : ''
 
   const deleteRequestDialogDescription = (
     <div className="space-y-4 text-left">
       <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
-        {t('Since you do not own "{title}", you must submit a deletion request with a valid reason.').replace('{title}', productToDelete?.title)}
+        {t(
+          'Since you do not own "{title}", you must submit a deletion request with a valid reason.',
+        ).replace('{title}', productToDelete?.title)}
       </p>
       <div className="space-y-2">
         <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
           {t('Reason for Deletion')}
         </label>
         <Textarea
-          placeholder={t('Please explain why this listing should be deleted (e.g., violation of policies, outdated, duplicate)...')}
+          placeholder={t(
+            'Please explain why this listing should be deleted (e.g., violation of policies, outdated, duplicate)...',
+          )}
           value={deleteReason}
           onChange={(e) => setDeleteReason(e.target.value)}
           className="min-h-[100px] rounded-xl border-border/30 bg-muted-light/50 focus-visible:ring-dash-brand text-foreground w-full p-3 text-sm"
@@ -218,7 +227,9 @@ export const ListingsManagement = ({
 
     if (completenessPercent < 90) {
       toast.error(
-        t('Your profile is only {percent}% complete. You must complete at least 90% of your profile to add listings. Please update your details in your Profile Settings.').replace('{percent}', completenessPercent.toString()),
+        t(
+          'Your profile is only {percent}% complete. You must complete at least 90% of your profile to add listings. Please update your details in your Profile Settings.',
+        ).replace('{percent}', completenessPercent.toString()),
         {
           duration: 6000,
         },
@@ -246,7 +257,9 @@ export const ListingsManagement = ({
             {t('Marketplace Management')}
           </h1>
           <p className="text-dash-text-soft font-medium text-sm ml-1">
-            {t('Manage your rental inventory, pricing, and provider assignments.')}
+            {t(
+              'Manage your rental inventory, pricing, and provider assignments.',
+            )}
           </p>
         </div>
         {isAdmin ? (
@@ -284,7 +297,6 @@ export const ListingsManagement = ({
         </Button>
       </motion.div>
 
-
       {/* Filters Bar */}
       <motion.div variants={fadeUp}>
         <ListingsFilters
@@ -309,7 +321,10 @@ export const ListingsManagement = ({
               {
                 onSuccess: () => {
                   toast.success(
-                    t('Listing is now {status}').replace('{status}', isAvailable ? t('public') : t('hidden'))
+                    t('Listing is now {status}').replace(
+                      '{status}',
+                      isAvailable ? t('public') : t('hidden'),
+                    ),
                   )
                 },
                 onError: (err: any) => {

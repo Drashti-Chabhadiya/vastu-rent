@@ -224,8 +224,12 @@ export const DeleteRequestsManagement = () => {
         }
         description={
           pendingAction?.status === 'approved'
-            ? t('Are you sure you want to approve this listing deletion request? The listing will be permanently removed from the application.')
-            : t('Are you sure you want to reject this listing deletion request? The request will be cancelled and the listing will remain active.')
+            ? t(
+                'Are you sure you want to approve this listing deletion request? The listing will be permanently removed from the application.',
+              )
+            : t(
+                'Are you sure you want to reject this listing deletion request? The request will be cancelled and the listing will remain active.',
+              )
         }
         confirmText={
           pendingAction?.status === 'approved' ? t('Approve') : t('Reject')

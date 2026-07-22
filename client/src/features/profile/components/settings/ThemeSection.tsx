@@ -102,8 +102,10 @@ export function ThemeSection() {
 
   return (
     <SettingsSectionShell
-      title={t("Theme & Appearance")}
-      description={t("Choose how Vastu-Rent's interface appears on your device. Dark mode extends battery life and reduces eye strain.")}
+      title={t('Theme & Appearance')}
+      description={t(
+        "Choose how Vastu-Rent's interface appears on your device. Dark mode extends battery life and reduces eye strain.",
+      )}
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {choices.map((choice) => {

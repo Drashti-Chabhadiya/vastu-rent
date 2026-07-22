@@ -20,7 +20,8 @@ export const pricing = {
   'Most Popular': 'સૌથી લોકપ્રિય',
   'Choose Pro': 'પ્રો પ્લાન પસંદ કરો',
   Business: 'બિઝનેસ',
-  'For serious sellers & businesses.': 'વ્યાવસાયિક વિક્રેતાઓ અને વ્યવસાયો માટે.',
+  'For serious sellers & businesses.':
+    'વ્યાવસાયિક વિક્રેતાઓ અને વ્યવસાયો માટે.',
   'Choose Business': 'બિઝનેસ પ્લાન પસંદ કરો',
   '/month': '/મહિનો',
 

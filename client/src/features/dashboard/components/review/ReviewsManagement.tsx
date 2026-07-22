@@ -130,30 +130,30 @@ export const ReviewsManagement = () => {
   // Map server reviews to uniform UI cards structure from the API response
   const reviews = serverReviews
     ? serverReviews.map((r: any) => ({
-      id: r.id,
-      productId: r.product?.id,
-      title: r.product?.title || 'Rental Item',
-      location: r.product?.location || 'India',
-      rating: r.rating || 5,
-      dates: formatStayDates(r.createdAt),
-      comment: r.comment || 'Perfect rental experience!',
-      host: {
-        name: r.product?.user?.name || 'Vastu Lister',
-        avatar:
-          r.product?.user?.image ||
-          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-      },
-      reviewer: {
-        id: r.user?.id,
-        name: r.user?.name || 'Vastu Renter',
-        avatar: r.user?.image,
-      },
-      postedDate: formatPostedDate(r.createdAt),
-      type: r.product ? 'listings' : 'hosts',
-      image:
-        r.product?.images?.[0] ||
-        'https://images.unsplash.com/photo-1545241047-6083a3684587',
-    }))
+        id: r.id,
+        productId: r.product?.id,
+        title: r.product?.title || 'Rental Item',
+        location: r.product?.location || 'India',
+        rating: r.rating || 5,
+        dates: formatStayDates(r.createdAt),
+        comment: r.comment || 'Perfect rental experience!',
+        host: {
+          name: r.product?.user?.name || 'Vastu Lister',
+          avatar:
+            r.product?.user?.image ||
+            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+        },
+        reviewer: {
+          id: r.user?.id,
+          name: r.user?.name || 'Vastu Renter',
+          avatar: r.user?.image,
+        },
+        postedDate: formatPostedDate(r.createdAt),
+        type: r.product ? 'listings' : 'hosts',
+        image:
+          r.product?.images?.[0] ||
+          'https://images.unsplash.com/photo-1545241047-6083a3684587',
+      }))
     : []
 
   // Local Search filtering
@@ -254,7 +254,9 @@ export const ReviewsManagement = () => {
               className="rounded-xl border-border text-foreground/80 font-bold h-10 px-5 flex items-center gap-2 hover:bg-muted-light/50 shadow-sm shrink-0 cursor-pointer"
             >
               <FilterIcon size={14} className="text-muted-foreground/85" />
-              {ratingFilter === 'all' ? t('All Ratings') : `${ratingFilter} ${t('Stars')}`}
+              {ratingFilter === 'all'
+                ? t('All Ratings')
+                : `${ratingFilter} ${t('Stars')}`}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-card border-border/30/80 rounded-xl shadow-lg p-1 min-w-[150px]">
@@ -341,7 +343,9 @@ export const ReviewsManagement = () => {
             {t('No')} {t(activeTab)} {t('reviews')}
           </h3>
           <p className="text-muted-dark text-xs mt-1.5 max-w-xs text-center font-bold">
-            {t("You don't have any reviews listed under this category right now.")}
+            {t(
+              "You don't have any reviews listed under this category right now.",
+            )}
           </p>
         </motion.div>
       ) : (
@@ -592,7 +596,9 @@ export const ReviewsManagement = () => {
                           const parsed = parseCommentImagesAndReply(
                             review.comment,
                           )
-                          return parsed.reply ? t('Edit Reply') : t('Reply to Review')
+                          return parsed.reply
+                            ? t('Edit Reply')
+                            : t('Reply to Review')
                         })()}
                       </Button>
                     )}
@@ -641,9 +647,11 @@ export const ReviewsManagement = () => {
             setReviewToDelete(null)
           }
         }}
-        title={t("Delete Review")}
-        description={t("Are you sure you want to permanently delete this review? This action cannot be undone.")}
-        confirmText={t("Delete")}
+        title={t('Delete Review')}
+        description={t(
+          'Are you sure you want to permanently delete this review? This action cannot be undone.',
+        )}
+        confirmText={t('Delete')}
         variant="danger"
       />
     </motion.div>

@@ -33,7 +33,9 @@ export const CategoryRequestList = ({
   return (
     <div className="bg-card rounded-xl border border-border/30 shadow-sm overflow-hidden animate-in fade-in duration-300">
       <div className="p-6 border-b border-border/30 flex items-center justify-between">
-        <h3 className="font-bold text-foreground">{t('Category Request Pipeline')}</h3>
+        <h3 className="font-bold text-foreground">
+          {t('Category Request Pipeline')}
+        </h3>
         {isUser && onRequestCreate && (
           <Button
             onClick={onRequestCreate}
