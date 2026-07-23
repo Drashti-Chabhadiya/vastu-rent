@@ -24,7 +24,9 @@ export function ProductsExplorePage() {
             {t('Explore Marketplace')}
           </h1>
           <p className="text-lg text-muted-foreground/85 max-w-2xl">
-            {t('Find everything you need, from high-end cameras to designer outfits, available for rent near you.')}
+            {t(
+              'Find everything you need, from high-end cameras to designer outfits, available for rent near you.',
+            )}
           </p>
         </div>
 
@@ -72,7 +74,9 @@ export function ProductsExplorePage() {
                 {t('No items found')}
               </h3>
               <p className="text-muted-foreground/85 max-w-md mx-auto">
-                {t("We couldn't find any items matching your search. Try adjusting your keywords or filters.")}
+                {t(
+                  "We couldn't find any items matching your search. Try adjusting your keywords or filters.",
+                )}
               </p>
               <Button
                 variant="outline"

@@ -68,10 +68,10 @@ export const ListingsManagement = ({
   const { data: adminProducts, isLoading: isAdminLoading } = useAdminProducts(
     isAdmin
       ? {
-        search,
-        categoryId: categoryFilter === 'all' ? undefined : categoryFilter,
-        status: statusFilter === 'all' ? undefined : statusFilter,
-      }
+          search,
+          categoryId: categoryFilter === 'all' ? undefined : categoryFilter,
+          status: statusFilter === 'all' ? undefined : statusFilter,
+        }
       : undefined,
   )
 
@@ -158,7 +158,7 @@ export const ListingsManagement = ({
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            t('Failed to submit deletion request'),
+              t('Failed to submit deletion request'),
           )
         },
       },
@@ -169,8 +169,8 @@ export const ListingsManagement = ({
 
   const deleteDescription = productToDelete
     ? t(
-      'Are you sure you want to permanently delete "{title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.',
-    ).replace('{title}', productToDelete.title)
+        'Are you sure you want to permanently delete "{title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.',
+      ).replace('{title}', productToDelete.title)
     : ''
 
   const deleteRequestDialogDescription = (
@@ -266,20 +266,22 @@ export const ListingsManagement = ({
             <Button
               variant="ghost"
               onClick={() => setCurrentView('my')}
-              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${currentView === 'my'
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${
+                currentView === 'my'
                   ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
                   : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
-                }`}
+              }`}
             >
               {t('My Listings')}
             </Button>
             <Button
               variant="ghost"
               onClick={() => setCurrentView('all')}
-              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${currentView === 'all'
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto ${
+                currentView === 'all'
                   ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
                   : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
-                }`}
+              }`}
             >
               {t('All Listings')}
             </Button>
@@ -327,7 +329,7 @@ export const ListingsManagement = ({
                 onError: (err: any) => {
                   toast.error(
                     err.response?.data?.message ||
-                    t('Failed to update visibility'),
+                      t('Failed to update visibility'),
                   )
                 },
               },

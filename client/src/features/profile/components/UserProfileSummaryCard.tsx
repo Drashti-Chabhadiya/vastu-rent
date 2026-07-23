@@ -1,6 +1,14 @@
 import React from 'react'
 import { cn } from '#/lib/utils'
-import { Mail, Calendar, Camera, Phone, Pencil, Sparkles, Check } from 'lucide-react'
+import {
+  Mail,
+  Calendar,
+  Camera,
+  Phone,
+  Pencil,
+  Sparkles,
+  Check,
+} from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 
 interface UserProfileSummaryCardProps {
@@ -97,9 +105,7 @@ export function UserProfileSummaryCard({
           <span
             className={cn(
               'text-xs font-black',
-              completenessPercent === 100
-                ? 'text-primary'
-                : 'text-amber-500',
+              completenessPercent === 100 ? 'text-primary' : 'text-amber-500',
             )}
           >
             {completenessPercent}%

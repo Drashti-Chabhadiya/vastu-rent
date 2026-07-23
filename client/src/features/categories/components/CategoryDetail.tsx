@@ -76,7 +76,9 @@ export function CategoryDetail() {
                 variants={fadeUp}
                 className="text-lg text-muted-foreground max-w-2xl"
               >
-                {t('Explore our curated collection of items available for rent. High quality, affordable, and ready for you.')}
+                {t(
+                  'Explore our curated collection of items available for rent. High quality, affordable, and ready for you.',
+                )}
               </motion.p>
             </div>
 

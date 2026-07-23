@@ -160,10 +160,8 @@ export function ProfileListings() {
 
   // True dynamic total performance stats aggregated from actual database listings
   const totalViews =
-    listings?.reduce(
-      (sum: number, item: any) => sum + (item.views || 0),
-      0,
-    ) || 0
+    listings?.reduce((sum: number, item: any) => sum + (item.views || 0), 0) ||
+    0
   const totalBookings =
     listings?.reduce(
       (sum: number, item: any) => sum + (item.bookingsCount || 0),
@@ -175,18 +173,19 @@ export function ProfileListings() {
       0,
     ) || 0
 
-  const ratedListings = listings?.filter((item: any) => parseFloat(item.rating || '0') > 0) || []
+  const ratedListings =
+    listings?.filter((item: any) => parseFloat(item.rating || '0') > 0) || []
   const avgRatingValue = ratedListings.length
     ? (
-      ratedListings.reduce(
-        (sum: number, item: any) => sum + parseFloat(item.rating),
-        0,
-      ) / ratedListings.length
-    ).toFixed(1)
+        ratedListings.reduce(
+          (sum: number, item: any) => sum + parseFloat(item.rating),
+          0,
+        ) / ratedListings.length
+      ).toFixed(1)
     : '0.0'
 
   const handleAddListing = () => {
-    const u = session?.user as any
+    const u = session?.user
     if (
       u &&
       (!u.name ||
@@ -516,7 +515,8 @@ export function ProfileListings() {
                               }}
                               className="w-full text-left px-3.5 py-2 text-xs font-bold text-foreground hover:bg-muted rounded-xl flex items-center gap-2.5 cursor-pointer transition-colors justify-start h-auto"
                             >
-                              <Pencil size={13} className="text-primary" /> {t('Edit')}
+                              <Pencil size={13} className="text-primary" />{' '}
+                              {t('Edit')}
                             </Button>
 
                             <Button

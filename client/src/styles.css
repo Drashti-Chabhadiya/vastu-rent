@@ -352,33 +352,43 @@
   }
 
   .bg-white\/70 {
-    background-color: color-mix(in oklab,
-        var(--color-card) 70%,
-        transparent) !important;
+    background-color: color-mix(
+      in oklab,
+      var(--color-card) 70%,
+      transparent
+    ) !important;
   }
 
   .bg-white\/80 {
-    background-color: color-mix(in oklab,
-        var(--color-card) 80%,
-        transparent) !important;
+    background-color: color-mix(
+      in oklab,
+      var(--color-card) 80%,
+      transparent
+    ) !important;
   }
 
   .bg-white\/90 {
-    background-color: color-mix(in oklab,
-        var(--color-card) 90%,
-        transparent) !important;
+    background-color: color-mix(
+      in oklab,
+      var(--color-card) 90%,
+      transparent
+    ) !important;
   }
 
   .bg-white\/10 {
-    background-color: color-mix(in oklab,
-        var(--color-card) 10%,
-        transparent) !important;
+    background-color: color-mix(
+      in oklab,
+      var(--color-card) 10%,
+      transparent
+    ) !important;
   }
 
   .bg-white\/20 {
-    background-color: color-mix(in oklab,
-        var(--color-card) 20%,
-        transparent) !important;
+    background-color: color-mix(
+      in oklab,
+      var(--color-card) 20%,
+      transparent
+    ) !important;
   }
 }
 
@@ -442,8 +452,10 @@
   }
 
   .bg-grain {
-    background-image: radial-gradient(rgba(20, 35, 25, 0.025) 1px,
-        transparent 1px);
+    background-image: radial-gradient(
+      rgba(20, 35, 25, 0.025) 1px,
+      transparent 1px
+    );
     background-size: 3px 3px;
   }
 
@@ -467,7 +479,7 @@
   }
 
   /* Hide all elements on the parent document */
-  body>* {
+  body > * {
     display: none !important;
   }
 

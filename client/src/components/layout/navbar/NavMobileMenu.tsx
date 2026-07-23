@@ -142,7 +142,10 @@ export function NavMobileMenu({
                   onClick={onClose}
                   className="flex items-center gap-3 py-2 px-3 rounded-xl text-xs font-bold text-foreground/85 hover:bg-primary/5 hover:text-primary transition-colors"
                 >
-                  <User size={16} className="text-muted-foreground/80 shrink-0" />
+                  <User
+                    size={16}
+                    className="text-muted-foreground/80 shrink-0"
+                  />
                   <span>{t('My Profile')}</span>
                 </Link>
                 <Link
@@ -150,7 +153,10 @@ export function NavMobileMenu({
                   onClick={onClose}
                   className="flex items-center gap-3 py-2 px-3 rounded-xl text-xs font-bold text-foreground/85 hover:bg-primary/5 hover:text-primary transition-colors"
                 >
-                  <Calendar size={16} className="text-muted-foreground/80 shrink-0" />
+                  <Calendar
+                    size={16}
+                    className="text-muted-foreground/80 shrink-0"
+                  />
                   <span>{t('My Bookings')}</span>
                 </Link>
                 <Link
@@ -158,7 +164,10 @@ export function NavMobileMenu({
                   onClick={onClose}
                   className="flex items-center gap-3 py-2 px-3 rounded-xl text-xs font-bold text-foreground/85 hover:bg-primary/5 hover:text-primary transition-colors"
                 >
-                  <Percent size={16} className="text-muted-foreground/80 shrink-0" />
+                  <Percent
+                    size={16}
+                    className="text-muted-foreground/80 shrink-0"
+                  />
                   <span>{t('My Listings')}</span>
                 </Link>
                 <Link
@@ -166,7 +175,10 @@ export function NavMobileMenu({
                   onClick={onClose}
                   className="flex items-center gap-3 py-2 px-3 rounded-xl text-xs font-bold text-foreground/85 hover:bg-primary/5 hover:text-primary transition-colors"
                 >
-                  <Settings size={16} className="text-muted-foreground/80 shrink-0" />
+                  <Settings
+                    size={16}
+                    className="text-muted-foreground/80 shrink-0"
+                  />
                   <span>{t('Settings')}</span>
                 </Link>
               </div>

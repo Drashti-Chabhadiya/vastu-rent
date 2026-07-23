@@ -1,7 +1,15 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
-import { ShieldCheck, Leaf, CreditCard, ArrowRight, Star, Search, Sparkles } from 'lucide-react'
+import {
+  ShieldCheck,
+  Leaf,
+  CreditCard,
+  ArrowRight,
+  Star,
+  Search,
+  Sparkles,
+} from 'lucide-react'
 import heroImg from '../../../../public/assets/hero-living.jpg'
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/context/TranslationContext'
@@ -93,7 +101,10 @@ export function HeroSection() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('Search listings...') || 'Search for camera, tools, furniture...'}
+                placeholder={
+                  t('Search listings...') ||
+                  'Search for camera, tools, furniture...'
+                }
                 className="w-full bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
               />
             </div>
@@ -185,7 +196,9 @@ export function HeroSection() {
               <div className="text-right shrink-0">
                 <div className="font-extrabold text-lg text-primary">
                   {formatDigits('₹1,250')}
-                  <span className="text-xs font-normal text-muted-foreground">/day</span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    /day
+                  </span>
                 </div>
                 <Link
                   to="/products"
@@ -214,7 +227,8 @@ export function HeroSection() {
             <Leaf className="h-4 w-4 text-primary" /> {t('Circular by design')}
           </span>
           <span className="hidden items-center gap-2 md:flex">
-            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /> {t('4.9 average rating')}
+            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />{' '}
+            {t('4.9 average rating')}
           </span>
         </div>
       </div>

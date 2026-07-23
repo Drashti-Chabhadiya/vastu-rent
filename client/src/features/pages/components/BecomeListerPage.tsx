@@ -200,7 +200,7 @@ export function BecomeListerPage() {
                 alt="Happy Lister"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  ; (e.target as any).src =
+                  ;(e.target as any).src =
                     'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Lister'
                 }}
               />

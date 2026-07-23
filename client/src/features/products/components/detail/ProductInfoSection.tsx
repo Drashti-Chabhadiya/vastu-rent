@@ -81,7 +81,10 @@ export const ProductHeaderSection = ({
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
           {productInfo.map((info) => (
-            <div key={info.label} className="flex justify-between sm:grid sm:grid-cols-3 border-b border-border/10 pb-2 sm:border-0 sm:pb-0">
+            <div
+              key={info.label}
+              className="flex justify-between sm:grid sm:grid-cols-3 border-b border-border/10 pb-2 sm:border-0 sm:pb-0"
+            >
               <span className="col-span-1 text-sm text-muted-foreground/85">
                 {t(info.label)}
               </span>
@@ -300,7 +303,10 @@ export const ProductBookingSection = ({
             <>
               <div className="flex items-center justify-between text-xs text-foreground/80">
                 <span className="font-bold">
-                  {t('Rental Fee ({count} days):').replace('{count}', formatNumber(rentalDays))}
+                  {t('Rental Fee ({count} days):').replace(
+                    '{count}',
+                    formatNumber(rentalDays),
+                  )}
                 </span>
                 <span>{formatCurrency(totalPrice)}</span>
               </div>
@@ -360,7 +366,12 @@ export const ProductBookingSection = ({
 
               {appliedCoupon && (
                 <div className="flex items-center justify-between text-xs text-emerald-600 font-bold bg-emerald-50/50 p-2 rounded-lg">
-                  <span>{t('Coupon Discount ({code}):').replace('{code}', appliedCoupon.code)}</span>
+                  <span>
+                    {t('Coupon Discount ({code}):').replace(
+                      '{code}',
+                      appliedCoupon.code,
+                    )}
+                  </span>
                   <span>- {formatCurrency(discountAmount)}</span>
                 </div>
               )}

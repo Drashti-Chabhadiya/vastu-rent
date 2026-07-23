@@ -157,7 +157,9 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     </div>
                   ) : (
                     <p className="text-[11px] text-muted-dark font-bold">
-                      {t('Your search history is empty. Try searching for "Furniture" or "Books".')}
+                      {t(
+                        'Your search history is empty. Try searching for "Furniture" or "Books".',
+                      )}
                     </p>
                   )}
                 </div>
@@ -257,7 +259,9 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                   {t('No matching products found')}
                 </h3>
                 <p className="text-[10px] text-muted-dark font-bold max-w-xs px-4">
-                  {t('We couldn\'t find anything matching your search terms. Try searching for general terms like "Furniture" or "Books".')}
+                  {t(
+                    'We couldn\'t find anything matching your search terms. Try searching for general terms like "Furniture" or "Books".',
+                  )}
                 </p>
               </div>
             )}
@@ -280,7 +284,9 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                   }}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-3 font-bold transition-all active:scale-95 h-11 text-xs cursor-pointer shadow-sm"
                 >
-                  {t('View All Results ({count})', { count: formatDigits(filteredProducts.length) })}
+                  {t('View All Results ({count})', {
+                    count: formatDigits(filteredProducts.length),
+                  })}
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </div>

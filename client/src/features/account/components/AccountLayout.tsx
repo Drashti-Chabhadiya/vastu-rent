@@ -160,7 +160,14 @@ export function AccountLayout() {
       href: '/account/listings',
     },
     ...(hasListings
-      ? [{ id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' }]
+      ? [
+          {
+            id: 'reviews',
+            label: 'Reviews',
+            icon: Star,
+            href: '/account/reviews',
+          },
+        ]
       : []),
     {
       id: 'messages',

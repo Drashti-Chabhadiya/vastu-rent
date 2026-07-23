@@ -319,9 +319,7 @@ export function NavUserDropdown({
                         hasListings ? 'bg-emerald-500' : 'bg-muted-dark/30',
                       )}
                     />
-                    <span
-                      className={hasListings ? 'text-foreground/70' : ''}
-                    >
+                    <span className={hasListings ? 'text-foreground/70' : ''}>
                       {t('1+ Active Listings')}
                     </span>
                   </div>
@@ -452,9 +450,13 @@ export function NavUserDropdown({
                   'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
                 )}
               >
-                <Star className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                <Star
+                  className={cn('h-4', 'w-4', 'text-muted-foreground/85')}
+                />
                 <div>
-                  <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
+                  <p
+                    className={cn('text-sm', 'font-medium', 'text-foreground')}
+                  >
                     {t('Reviews')}
                   </p>
                   <p className={cn('text-xs', 'text-muted-foreground/85')}>

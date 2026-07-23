@@ -44,7 +44,11 @@ export const addressSchema = z
       .string()
       .min(1, 'Pincode is required')
       .regex(/^\d{6}$/, 'Pincode must contain 6 digits only'),
-    googleMapLink: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+    googleMapLink: z
+      .string()
+      .url('Please enter a valid URL')
+      .optional()
+      .or(z.literal('')),
     country: z.string().default('India'),
   })
   .superRefine((data, ctx) => {
@@ -57,10 +61,6 @@ export const addressSchema = z
     }
   })
 
-export const profileSchema = z.intersection(
-  personalSchema,
-  addressSchema
-)
-
+export const profileSchema = z.intersection(personalSchema, addressSchema)
 
 export type ProfileSchema = z.infer<typeof profileSchema>

@@ -605,6 +605,6 @@ export const dashboard = {
   'No active listings yet': 'अभी तक कोई सक्रिय लिस्टिंग नहीं है',
   'No inactive listings yet': 'अभी तक कोई निष्क्रिय लिस्टिंग नहीं है',
   'No draft listings yet': 'अभी तक कोई ड्राफ्ट लिस्टिंग नहीं है',
-  "Start earning by listing your unused items today. It's quick, easy, and secure.": 'आज ही अपनी इस्तेमाल न होने वाली चीज़ों को लिस्ट करके कमाई शुरू करें। यह तेज़, आसान और सुरक्षित है'
-
+  "Start earning by listing your unused items today. It's quick, easy, and secure.":
+    'आज ही अपनी इस्तेमाल न होने वाली चीज़ों को लिस्ट करके कमाई शुरू करें। यह तेज़, आसान और सुरक्षित है',
 }

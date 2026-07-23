@@ -121,7 +121,14 @@ export function ProfileLayout() {
     },
     { id: 'wishlist', label: 'Wishlist', icon: Heart, href: '/wishlist' },
     ...(hasListings
-      ? [{ id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' }]
+      ? [
+          {
+            id: 'reviews',
+            label: 'Reviews',
+            icon: Star,
+            href: '/account/reviews',
+          },
+        ]
       : []),
     {
       id: 'messages',
@@ -270,12 +277,12 @@ export function ProfileLayout() {
             {/* Main Content */}
             <main className="flex-1 min-w-0 w-full">
               {activeTab === 'personal' ||
-                activeTab === 'bookings' ||
-                activeTab === 'listings' ||
-                activeTab === 'reviews' ||
-                activeTab === 'messages' ||
-                activeTab === 'notifications' ||
-                activeTab === 'settings' ? (
+              activeTab === 'bookings' ||
+              activeTab === 'listings' ||
+              activeTab === 'reviews' ||
+              activeTab === 'messages' ||
+              activeTab === 'notifications' ||
+              activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

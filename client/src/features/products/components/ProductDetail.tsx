@@ -200,7 +200,10 @@ export function ProductDetail({ id }: { id: string }) {
       }
 
       if (hasBookedInRange) {
-        showAlert('This range includes dates that are already booked.', 'Unavailable Dates')
+        showAlert(
+          'This range includes dates that are already booked.',
+          'Unavailable Dates',
+        )
         setStartDate(clicked)
         setEndDate(null)
         return
@@ -245,7 +248,10 @@ export function ProductDetail({ id }: { id: string }) {
     }
 
     if (!startDate || !endDate) {
-      showAlert('Please select start and end dates on the calendar.', 'Missing Dates')
+      showAlert(
+        'Please select start and end dates on the calendar.',
+        'Missing Dates',
+      )
       return
     }
     const days =
@@ -287,8 +293,8 @@ export function ProductDetail({ id }: { id: string }) {
     } catch (err: any) {
       showAlert(
         err.response?.data?.message ||
-        'Booking failed. Please make sure you are logged in.',
-        'Booking Failed'
+          'Booking failed. Please make sure you are logged in.',
+        'Booking Failed',
       )
     } finally {
       setIsPaying(false)
@@ -327,8 +333,8 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-      ]
+          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+        ]
   const liked = isLiked(product.id)
 
   const productInfo = [
@@ -337,16 +343,21 @@ export function ProductDetail({ id }: { id: string }) {
     {
       label: 'Listing Source',
       value:
-        (product.listingType === 'shop' || product.user?.addressType === 'shop')
-          ? (product.shopName || product.user?.shopName)
+        product.listingType === 'shop' || product.user?.addressType === 'shop'
+          ? product.shopName || product.user?.shopName
             ? `🏪 ${t('Shop:')} ${product.shopName || product.user?.shopName}`
             : `🏪 ${t('From Shop / Store')}`
           : `🏠 ${t('From Home')}`,
     },
-    { label: 'Min. Rental', value: `${product.minDuration || 1} ${t('day(s)')}` },
+    {
+      label: 'Min. Rental',
+      value: `${product.minDuration || 1} ${t('day(s)')}`,
+    },
     {
       label: 'Max. Rental',
-      value: product.maxDuration ? `${product.maxDuration} ${t('days')}` : t('Unlimited'),
+      value: product.maxDuration
+        ? `${product.maxDuration} ${t('days')}`
+        : t('Unlimited'),
     },
     { label: 'Location', value: product.location || 'Surat, Gujarat' },
     {
@@ -386,10 +397,7 @@ export function ProductDetail({ id }: { id: string }) {
             />
 
             {/* Product Title, Rating, Specs Table & Trust Badges */}
-            <ProductHeaderSection
-              product={product}
-              productInfo={productInfo}
-            />
+            <ProductHeaderSection product={product} productInfo={productInfo} />
 
             {/* Product Tabs (Description, Details, Reviews, FAQs) */}
             <ProductTabs
@@ -486,7 +494,10 @@ export function ProductDetail({ id }: { id: string }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setAlertOpen(false)} className="rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary-hover">
+            <AlertDialogAction
+              onClick={() => setAlertOpen(false)}
+              className="rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary-hover"
+            >
               OK
             </AlertDialogAction>
           </AlertDialogFooter>

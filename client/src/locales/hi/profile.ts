@@ -132,7 +132,8 @@ export const profile = {
   Pincode: 'पिनकोड',
   'Please complete your profile and rental address first before creating a listing.':
     'अपनी लिस्टिंग जोड़ने से पहले कृपया अपना प्रोफ़ाइल और पता पूरा करें।',
-  'Complete Profile to Add Listings': 'लिस्टिंग जोड़ने के लिए प्रोफ़ाइल पूरा करें',
+  'Complete Profile to Add Listings':
+    'लिस्टिंग जोड़ने के लिए प्रोफ़ाइल पूरा करें',
   'Please complete your rental address details below so customers can contact you and pick up items from your location.':
     'वास्तु पर अपना सामान लिस्ट करने के लिए कृपया नीचे अपना सही पता दर्ज करें।',
   'Complete Your Profile First': 'पहले अपनी प्रोफ़ाइल पूरी करें',

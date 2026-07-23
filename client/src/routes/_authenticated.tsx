@@ -5,7 +5,6 @@ import { authClient } from '#/lib/auth/auth-client'
 // on client-side routing with redundant session network fetches.
 let cachedSession: any = null
 
-
 function AuthenticatedLayout() {
   return <Outlet />
 }

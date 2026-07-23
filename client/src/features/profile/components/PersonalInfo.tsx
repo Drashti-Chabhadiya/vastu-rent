@@ -12,7 +12,7 @@ import { PreferencesCard } from './PreferencesCard'
 import { SubscriptionPlanCard } from './SubscriptionPlanCard'
 import { UserProfileSettingsCard } from './UserProfileSettingsCard'
 import { ProfileTabBar } from './ProfileTabBar'
-import type { ProfileTab } from './ProfileTabBar';
+import type { ProfileTab } from './ProfileTabBar'
 import { motion, AnimatePresence } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 import { Button } from '#/components/ui/button'
@@ -51,12 +51,15 @@ export function PersonalInfo() {
   const { data: myListings, isLoading: isListingsLoading } = useMyListings()
   const verifyCheckoutSession = useVerifyCheckoutSession()
 
-  const [completeProfileModalOpen, setCompleteProfileModalOpen] = useState(() => {
-    return typeof window !== 'undefined' && (
-      window.location.search.includes('completeProfile=true') ||
-      window.location.search.includes('fromListing=true')
-    )
-  })
+  const [completeProfileModalOpen, setCompleteProfileModalOpen] = useState(
+    () => {
+      return (
+        typeof window !== 'undefined' &&
+        (window.location.search.includes('completeProfile=true') ||
+          window.location.search.includes('fromListing=true'))
+      )
+    },
+  )
 
   // Tab management state synced with URL hash
   const [activeTab, setActiveTab] = useState<ProfileTab>(() => {
@@ -64,10 +67,11 @@ export function PersonalInfo() {
     if (['personal', 'address', 'security', 'subscription'].includes(hash)) {
       return hash as ProfileTab
     }
-    if (typeof window !== 'undefined' && (
-      window.location.search.includes('completeProfile=true') ||
-      window.location.search.includes('fromListing=true')
-    )) {
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.search.includes('completeProfile=true') ||
+        window.location.search.includes('fromListing=true'))
+    ) {
       return 'address'
     }
     return 'personal'

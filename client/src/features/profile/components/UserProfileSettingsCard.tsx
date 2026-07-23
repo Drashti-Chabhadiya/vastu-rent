@@ -72,7 +72,7 @@ export function UserProfileSettingsCard({
     phone: phone || '',
     language: (session?.user as any)?.language || language || 'en',
     dob: dob || '',
-    addressType: (addressType as 'home' | 'shop') || 'home',
+    addressType: (addressType) || 'home',
     shopName: shopName || '',
     addressLine1: addressLine1 || '',
     addressLine2: addressLine2 || '',
@@ -188,7 +188,8 @@ export function UserProfileSettingsCard({
         if (values.addressType) payload.addressType = values.addressType
         if (values.shopName !== undefined) payload.shopName = values.shopName
         if (values.addressLine1) payload.addressLine1 = values.addressLine1
-        if (values.addressLine2 !== undefined) payload.addressLine2 = values.addressLine2
+        if (values.addressLine2 !== undefined)
+          payload.addressLine2 = values.addressLine2
         if (values.street) payload.street = values.street
         if (values.city) payload.city = values.city
         if (values.state) payload.state = values.state
@@ -218,9 +219,9 @@ export function UserProfileSettingsCard({
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      year: 'numeric',
-    })
+        month: 'short',
+        year: 'numeric',
+      })
     : 'Jan 2024'
 
   const formValues = form.watch()
@@ -234,9 +235,17 @@ export function UserProfileSettingsCard({
     },
     { key: 'phone', label: 'Phone Number', value: formValues.phone },
     { key: 'gender', label: 'Gender', value: formValues.gender },
-    { key: 'language', label: 'Preferred Language', value: formValues.language },
+    {
+      key: 'language',
+      label: 'Preferred Language',
+      value: formValues.language,
+    },
     { key: 'dob', label: 'Date of Birth', value: formValues.dob },
-    { key: 'addressLine1', label: 'Address Line 1', value: formValues.addressLine1 },
+    {
+      key: 'addressLine1',
+      label: 'Address Line 1',
+      value: formValues.addressLine1,
+    },
     { key: 'street', label: 'Street / Area', value: formValues.street },
     { key: 'city', label: 'City', value: formValues.city },
     { key: 'state', label: 'State', value: formValues.state },
@@ -290,7 +299,10 @@ export function UserProfileSettingsCard({
           {/* Right Personal Information Form Column */}
           <div className="lg:col-span-2">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <PersonalInfoForm
                   form={form}
                   email={session?.user.email || ''}
@@ -319,4 +331,3 @@ export function UserProfileSettingsCard({
     </div>
   )
 }
-

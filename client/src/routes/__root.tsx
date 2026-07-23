@@ -132,11 +132,11 @@ function NotificationListener() {
         } else if (Notification.permission === 'default') {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
-              registerDeviceForPush().catch(() => { })
+              registerDeviceForPush().catch(() => {})
             }
           })
         } else if (Notification.permission === 'granted') {
-          registerDeviceForPush().catch(() => { })
+          registerDeviceForPush().catch(() => {})
         }
       }
     }
@@ -319,7 +319,15 @@ function RootDocument() {
     routerState.location.pathname.startsWith('/account/messages')
 
   return (
-    <div className={cn('bg-card', 'font-sans', 'antialiased', 'min-h-screen', 'w-full')}>
+    <div
+      className={cn(
+        'bg-card',
+        'font-sans',
+        'antialiased',
+        'min-h-screen',
+        'w-full',
+      )}
+    >
       <QueryClientProvider client={queryClient}>
         <TranslationProvider>
           <NotificationListener />

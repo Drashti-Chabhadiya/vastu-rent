@@ -139,7 +139,9 @@ export function PersonalInfoForm({
             {viewSection === 'personal'
               ? t('Manage your account identity and contact information.')
               : viewSection === 'address'
-                ? t('Manage your primary rental address for bookings and items.')
+                ? t(
+                    'Manage your primary rental address for bookings and items.',
+                  )
                 : t('Manage your personal and rental address information.')}
           </p>
         </div>
@@ -204,7 +206,8 @@ export function PersonalInfoForm({
               name="gender"
               render={({ field }) => {
                 const normalizedValue = field.value?.trim()
-                  ? field.value.trim().charAt(0).toUpperCase() + field.value.trim().slice(1).toLowerCase()
+                  ? field.value.trim().charAt(0).toUpperCase() +
+                    field.value.trim().slice(1).toLowerCase()
                   : ''
                 return (
                   <FormItem className="space-y-1.5">
@@ -294,7 +297,7 @@ export function PersonalInfoForm({
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    value={(field.value || undefined) as string | undefined}
+                    value={(field.value || undefined)}
                     disabled={!isEditing}
                   >
                     <FormControl>
@@ -380,10 +383,11 @@ export function PersonalInfoForm({
                       type="button"
                       disabled={!isEditing}
                       onClick={() => field.onChange('home')}
-                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${field.value === 'home'
+                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
+                        field.value === 'home'
                           ? 'border-primary bg-primary/10 text-primary font-bold'
                           : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                        } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
                       <Home className="h-4 w-4" strokeWidth={2} />
                       {t('Home Address')}
@@ -392,10 +396,11 @@ export function PersonalInfoForm({
                       type="button"
                       disabled={!isEditing}
                       onClick={() => field.onChange('shop')}
-                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${field.value === 'shop'
+                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
+                        field.value === 'shop'
                           ? 'border-primary bg-primary/10 text-primary font-bold'
                           : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                        } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
                       <Building2 className="h-4 w-4" strokeWidth={2} />
                       {t('Shop Address')}
@@ -652,7 +657,7 @@ export function PersonalInfoForm({
                         className={cn(
                           'h-11 pl-10',
                           form.formState.errors.city &&
-                          'border-destructive ring-2 ring-destructive/10',
+                            'border-destructive ring-2 ring-destructive/10',
                         )}
                       />
                     </FormControl>
@@ -689,7 +694,7 @@ export function PersonalInfoForm({
                         className={cn(
                           'h-11 pl-10',
                           form.formState.errors.state &&
-                          'border-destructive ring-2 ring-destructive/10',
+                            'border-destructive ring-2 ring-destructive/10',
                         )}
                       />
                     </FormControl>

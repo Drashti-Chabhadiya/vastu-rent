@@ -137,7 +137,8 @@ export const ProductTabs = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <h4 className="font-bold text-foreground text-sm uppercase tracking-wider flex items-center gap-2">
-                  <Calendar size={16} className="text-primary" /> {t('Rental Terms')}
+                  <Calendar size={16} className="text-primary" />{' '}
+                  {t('Rental Terms')}
                 </h4>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground/85 flex justify-between">
@@ -164,7 +165,8 @@ export const ProductTabs = ({
               </div>
               <div className="space-y-3">
                 <h4 className="font-bold text-foreground text-sm uppercase tracking-wider flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-primary" /> {t('Delivery & Pickup')}
+                  <ShieldCheck size={16} className="text-primary" />{' '}
+                  {t('Delivery & Pickup')}
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {product.deliveryOptions?.map((opt: string) => (
@@ -399,11 +401,15 @@ export const ProductTabs = ({
             {[
               {
                 q: t('How do I return the item?'),
-                a: t('We will arrange a pickup on the last day of your rental.'),
+                a: t(
+                  'We will arrange a pickup on the last day of your rental.',
+                ),
               },
               {
                 q: t('Is there a security deposit?'),
-                a: t('Depending on the item and the lister\'s preference, some rentals may require a security deposit which is fully refunded once the item is returned in good condition.'),
+                a: t(
+                  "Depending on the item and the lister's preference, some rentals may require a security deposit which is fully refunded once the item is returned in good condition.",
+                ),
               },
             ].map((faq, i) => (
               <div key={i} className="space-y-1.5">
