@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
+import { useSessionContext } from '#/context/SessionContext'
 import { useNotifications, useMyListings } from '#/hook'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -92,7 +93,7 @@ function LogoutDialog({
 // ─── Layout ───────────────────────────────────────────────────────────────────
 export function AccountLayout() {
   const { t } = useTranslation()
-  const { data: sessionData, isPending: isLoading } = authClient.useSession()
+  const { data: sessionData, isPending: isLoading } = useSessionContext()
   const session = sessionData || null
   const [logoutOpen, setLogoutOpen] = useState(false)
   const [logoutLoading, setLogoutLoading] = useState(false)

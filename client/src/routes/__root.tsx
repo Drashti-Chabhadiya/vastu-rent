@@ -7,7 +7,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import {
-  QueryClient,
   QueryClientProvider,
   useQueryClient,
 } from '@tanstack/react-query'
@@ -15,7 +14,8 @@ import { cn } from '@/lib/utils'
 import { Footer, Navbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
 import { useEffect, useRef } from 'react'
-import { authClient } from '#/lib/auth/auth-client'
+import { SessionProvider, useSessionContext } from '#/context/SessionContext'
+import { queryClient } from '#/lib/query-client'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
 import { isNative, initNativePush } from '#/lib/push-notifications'
 // import { playNotificationSound } from '#/lib/sound'
@@ -27,34 +27,6 @@ import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 
 import { TranslationProvider } from '#/context/TranslationContext'
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // Keep cached data fresh for 30 seconds before considering it stale.
-      // This prevents unnecessary refetches when switching tabs / screens.
-      staleTime: 30_000,
-
-      // Retry failed requests up to 2 times with React Query's built-in
-      // exponential back-off before showing an error to the user.
-      retry: 2,
-
-      // 'offlineFirst' tells React Query to attempt queries regardless of
-      // what it thinks the network state is. In Capacitor WebViews the
-      // navigator.onLine / online event is unreliable, so without this flag
-      // queries can get stuck in a "paused" state and never fire.
-      networkMode: 'offlineFirst',
-
-      // Always re-fetch when the window/app regains focus so data is
-      // never stale after the user backgrounds and returns to the app.
-      refetchOnWindowFocus: true,
-    },
-    mutations: {
-      // Also run mutations without checking perceived network state.
-      networkMode: 'offlineFirst',
-    },
-  },
-})
 
 export const Route = createRootRoute({
   component: RootDocument,
@@ -104,7 +76,7 @@ function useAppResumeRefresh() {
 function NotificationListener() {
   const rqClient = useQueryClient()
   const navigate = useNavigate()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSessionContext()
   const token = session?.session.token
   const userRole = session?.user.role || 'user'
   const socketRef = useRef<Socket | null>(null)
@@ -329,6 +301,7 @@ function RootDocument() {
       )}
     >
       <QueryClientProvider client={queryClient}>
+        <SessionProvider>
         <TranslationProvider>
           <NotificationListener />
           {!isAuthPage && !isAdminPage && !isDashboardPage && (
@@ -348,6 +321,7 @@ function RootDocument() {
             </div>
           )}
         </TranslationProvider>
+        </SessionProvider>
       </QueryClientProvider>
       <Toaster position="top-right" />
       <TanStackDevtools

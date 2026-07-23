@@ -1,32 +1,14 @@
-import { Emoji, EmojiStyle } from 'emoji-picker-react'
 import {
   X,
   CheckSquare,
   Square,
   Reply,
-  MoreVertical,
-  Copy,
-  Smile,
-  Star,
-  Pin,
-  Forward,
-  Edit3,
-  Info,
-  Trash2,
-  ArrowRightLeft,
   CornerUpLeft,
+  ArrowRightLeft,
   ZoomIn,
-  CheckCheck,
-  Check,
   ImagePlus,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '#/components/ui/dropdown-menu'
 import { cn } from '#/lib/utils'
 import { UserAvatar } from './UserAvatar'
 import { VoicePlayer } from './VoicePlayer'
@@ -34,21 +16,23 @@ import { FileAttachment } from './FileAttachment'
 import {
   parseMessage,
   formatMsgTime,
-  getEmojiUnified,
   isImageUrl,
   isAudioUrl,
   highlightText,
 } from '#/lib/chat-utils'
 import { useChatStore } from '../../../../../store/useChatStore'
 import { toast } from 'sonner'
-import { authClient } from '#/lib/auth/auth-client'
+import { useSessionContext } from '#/context/SessionContext'
+import { MessageReactions } from './MessageReactions'
+import { MessageStatus } from './MessageStatus'
+import { MessageActions } from './MessageActions'
 
 interface MessageItemProps {
   msg: any
 }
 
 export function MessageItem({ msg }: MessageItemProps) {
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSessionContext()
   const {
     currentUserId,
     removeReaction,
@@ -170,7 +154,7 @@ export function MessageItem({ msg }: MessageItemProps) {
         'flex gap-2.5 group/msg relative p-1.5 rounded-2xl transition-all',
         isMultiSelectMode && 'cursor-pointer hover:bg-muted-light/45',
         selectedMsgIds.includes(msg.id) &&
-          'bg-primary-soft/50 border border-primary-border/20 shadow-sm',
+        'bg-primary-soft/50 border border-primary-border/20 shadow-sm',
         isMe ? 'flex-row-reverse ml-auto max-w-[82%]' : 'mr-auto max-w-[82%]',
       )}
       onMouseEnter={() => setHoveredMsgId(msg.id)}
@@ -194,60 +178,6 @@ export function MessageItem({ msg }: MessageItemProps) {
         </button>
       )}
 
-      {/* Quick Reactions Bar */}
-      {!msg.isDeleted &&
-        (isHovered || activeReactMsgId === msg.id) &&
-        !isMultiSelectMode && (
-          <div
-            className={cn(
-              'flex items-center gap-1.5 bg-card border border-border/30 shadow-md rounded-full px-2 py-1.5 absolute -top-8 z-20 animate-in zoom-in-95 duration-100',
-              isMe ? 'right-2' : 'left-10',
-            )}
-          >
-            {['👍', '❤️', '😂', '😮', '😢'].map((emoji) => {
-              const userReacted = msg.reactions?.some(
-                (r: any) => r.userId === currentUserId && r.emoji === emoji,
-              )
-              return (
-                <button
-                  key={emoji}
-                  type="button"
-                  onClick={async (e) => {
-                    e.stopPropagation()
-                    if (userReacted) {
-                      await removeReaction(msg.id)
-                    } else {
-                      await reactToMessage({ messageId: msg.id, emoji })
-                    }
-                    setActiveReactMsgId(null)
-                  }}
-                  className={cn(
-                    'hover:scale-125 transition-transform duration-100 p-1 cursor-pointer hover:drop-shadow-sm flex items-center justify-center rounded-full',
-                    userReacted && 'bg-primary/10',
-                  )}
-                >
-                  <Emoji
-                    unified={getEmojiUnified(emoji)}
-                    emojiStyle={EmojiStyle.APPLE}
-                    size={18}
-                  />
-                </button>
-              )
-            })}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                setFullReactMsgId(msg.id)
-                setActiveReactMsgId(null)
-              }}
-              className="hover:scale-125 transition-transform duration-100 px-1 text-sm font-black text-muted-dark hover:text-foreground cursor-pointer flex items-center justify-center shrink-0"
-              title="Plus reaction picker"
-            >
-              +
-            </button>
-          </div>
-        )}
 
       {/* Avatar for other person */}
       {!isMe && (
@@ -261,6 +191,7 @@ export function MessageItem({ msg }: MessageItemProps) {
       )}
 
       <div className={cn('flex flex-col gap-1 min-w-0')}>
+
         {/* Attachments rendering */}
         {!msg.isDeleted &&
           msg.attachments &&
@@ -456,101 +387,23 @@ export function MessageItem({ msg }: MessageItemProps) {
                 <span>{highlightText(msgText, searchText)}</span>
               </div>
 
-              {/* Inline Time + Read receipts */}
-              <span
-                className={cn(
-                  'inline-flex items-center gap-1 text-[9px] text-muted-dark/60 select-none whitespace-nowrap shrink-0 self-end mt-1',
-                )}
-              >
-                {formatMsgTime(msg.createdAt)}
-                {isStarred && (
-                  <Star
-                    size={9}
-                    className="text-amber-500 fill-amber-500 shrink-0"
-                  />
-                )}
-                {msg.pinnedBy && msg.pinnedBy.length > 0 && (
-                  <Pin size={9} className="text-primary rotate-45 shrink-0" />
-                )}
-                {msg.isEdited && !msg.isDeleted && (
-                  <span className="text-[9px] font-bold text-muted-dark/65 italic">
-                    edited
-                  </span>
-                )}
-                {isMe &&
-                  !msg.isDeleted &&
-                  (msg.isRead || !!msg.readAt ? (
-                    <CheckCheck
-                      size={11}
-                      className="text-emerald-500 fill-transparent"
-                      strokeWidth={2.5}
-                    />
-                  ) : msg.deliveredAt ? (
-                    <CheckCheck
-                      size={11}
-                      className="text-muted-dark/50 fill-transparent"
-                      strokeWidth={2.5}
-                    />
-                  ) : (
-                    <Check
-                      size={11}
-                      className="text-muted-dark"
-                      strokeWidth={2.5}
-                    />
-                  ))}
-              </span>
+              <MessageStatus msg={msg} isMe={isMe} isStarred={isStarred} />
             </div>
           )
         )}
 
-        {/* Reaction badges */}
-        {!msg.isDeleted && msg.reactions && msg.reactions.length > 0 && (
-          <div
-            className={cn(
-              'flex flex-wrap gap-1 mt-1',
-              isMe ? 'justify-end' : 'justify-start',
-            )}
-          >
-            {Array.from(new Set(msg.reactions.map((r: any) => r.emoji))).map(
-              (emoji: any) => {
-                const reactUsers = msg.reactions!.filter(
-                  (r: any) => r.emoji === emoji,
-                )
-                const userReacted = reactUsers.some(
-                  (r: any) => r.userId === currentUserId,
-                )
-                const tooltipText = `Reacted by: ${reactUsers.map((r: any) => r.name).join(', ')}`
-                return (
-                  <div
-                    key={emoji}
-                    title={tooltipText}
-                    onClick={async (e) => {
-                      e.stopPropagation()
-                      if (userReacted) {
-                        await removeReaction(msg.id)
-                      } else {
-                        await reactToMessage({ messageId: msg.id, emoji })
-                      }
-                    }}
-                    className={cn(
-                      'flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-bold cursor-pointer transition-all shadow-sm select-none',
-                      userReacted
-                        ? 'bg-brand-green-bubble border-brand-green-border text-emerald-800'
-                        : 'bg-card border-border/80 text-foreground hover:bg-muted-light/30',
-                    )}
-                  >
-                    <Emoji
-                      unified={getEmojiUnified(emoji)}
-                      emojiStyle={EmojiStyle.APPLE}
-                      size={12}
-                    />
-                    <span>{reactUsers.length}</span>
-                  </div>
-                )
-              },
-            )}
-          </div>
-        )}
+        <MessageReactions
+          msg={msg}
+          isMe={isMe}
+          isHovered={isHovered}
+          activeReactMsgId={activeReactMsgId}
+          isMultiSelectMode={isMultiSelectMode}
+          currentUserId={currentUserId}
+          removeReaction={removeReaction}
+          reactToMessage={reactToMessage}
+          setActiveReactMsgId={setActiveReactMsgId}
+          setFullReactMsgId={setFullReactMsgId}
+        />
       </div>
 
       {/* Hover Dropdown & Reply Actions */}
@@ -579,113 +432,24 @@ export function MessageItem({ msg }: MessageItemProps) {
 
         {/* Context Dropdown Menu */}
         {!isMultiSelectMode && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  'w-7 h-7 rounded-full flex items-center justify-center transition-all duration-150',
-                  'bg-muted/60 hover:bg-primary/10 text-muted-dark hover:text-primary border border-border/30',
-                  isHovered
-                    ? 'opacity-100 scale-100'
-                    : 'opacity-0 scale-75 pointer-events-none',
-                )}
-                title="Message Actions"
-              >
-                <MoreVertical size={12} strokeWidth={2.5} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align={isMe ? 'end' : 'start'}
-              className="rounded-xl border border-border/30 shadow-lg min-w-[140px]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {!msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={() => handleReplyInternal(msg, isMe)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Reply size={12} /> Reply
-                </DropdownMenuItem>
-              )}
-              {!msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={() => handleCopyTextInternal(msgText)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Copy size={12} /> Copy
-                </DropdownMenuItem>
-              )}
-              {!msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setActiveReactMsgId(msg.id)
-                  }}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Smile size={12} /> React
-                </DropdownMenuItem>
-              )}
-              {!msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={async () => await toggleStarMessage(msg.id)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Star
-                    size={12}
-                    className={isStarred ? 'text-amber-500 fill-amber-500' : ''}
-                  />
-                  {isStarred ? 'Unstar Message' : 'Star Message'}
-                </DropdownMenuItem>
-              )}
-              {!msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={async () => await togglePinMessage(msg.id)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Pin size={12} className="rotate-45" />
-                  {isPinned ? 'Unpin Message' : 'Pin Message'}
-                </DropdownMenuItem>
-              )}
-              {!msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={() => handleOpenForwardInternal(msg.id)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Forward size={12} /> Forward
-                </DropdownMenuItem>
-              )}
-              {isMe && !msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={() => {
-                    setEditingMsgId(msg.id)
-                    setEditingText(msgText)
-                  }}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Edit3 size={12} /> Edit
-                </DropdownMenuItem>
-              )}
-              {isMe && (
-                <DropdownMenuItem
-                  onClick={() => handleOpenInfoInternal(msg)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-foreground/90"
-                >
-                  <Info size={12} /> Info
-                </DropdownMenuItem>
-              )}
-              {!msg.isDeleted && (
-                <DropdownMenuItem
-                  onClick={() => handleOpenDeleteInternal(msg.id)}
-                  className="text-[10px] font-bold gap-2 cursor-pointer rounded-lg text-destructive focus:text-destructive focus:bg-danger"
-                >
-                  <Trash2 size={12} /> Delete
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <MessageActions
+            msg={msg}
+            isMe={isMe}
+            isHovered={isHovered}
+            isStarred={isStarred}
+            isPinned={isPinned}
+            msgText={msgText}
+            handleReplyInternal={handleReplyInternal}
+            handleCopyTextInternal={handleCopyTextInternal}
+            handleOpenDeleteInternal={handleOpenDeleteInternal}
+            handleOpenForwardInternal={handleOpenForwardInternal}
+            handleOpenInfoInternal={handleOpenInfoInternal}
+            setActiveReactMsgId={setActiveReactMsgId}
+            setEditingMsgId={setEditingMsgId}
+            setEditingText={setEditingText}
+            toggleStarMessage={toggleStarMessage}
+            togglePinMessage={togglePinMessage}
+          />
         )}
       </div>
     </div>

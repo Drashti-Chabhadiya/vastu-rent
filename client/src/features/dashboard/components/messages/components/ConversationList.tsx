@@ -3,9 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from '#/context/TranslationContext'
 import type { CSSProperties } from 'react'
 import {
-  Search,
   MessageSquare,
-  SlidersHorizontal,
   Pin,
   BellOff,
   Clock,
@@ -16,13 +14,12 @@ import {
   MoreVertical,
   ArrowLeft,
 } from 'lucide-react'
-import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
-import type { Conversation } from '../../../../../hook/use-chat'
+import type { Conversation } from '#/hook'
 import { UserAvatar } from './UserAvatar'
 import { formatMsgTime } from '#/lib/chat-utils'
-import { authClient } from '#/lib/auth/auth-client'
+import { useSessionContext } from '#/context/SessionContext'
 import { Skeleton } from '#/components/ui/skeleton'
 import {
   DropdownMenu,
@@ -30,22 +27,20 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuCheckboxItem,
 } from '#/components/ui/dropdown-menu'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { useChatStore } from '../../../../../store/useChatStore'
+import { ConversationSearchBar } from './ConversationSearchBar'
+import { ConversationSubTabs } from './ConversationSubTabs'
+import { ConversationSortDropdown } from './ConversationSortDropdown'
 import { toast } from 'sonner'
 
 export function ConversationList() {
   const { t } = useTranslation()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSessionContext()
   const myShowOnline = (session?.user as any)?.showOnline !== false
   const [clearChatConvId, setClearChatConvId] = useState<string | null>(null)
 
-  // Consume Zustand global state
   const {
     conversations,
     searchQuery,
@@ -158,7 +153,6 @@ export function ConversationList() {
           )}
         >
           <div className="flex items-center gap-3">
-            {/* Back button to Account Menu on mobile */}
             <Link
               to="/account"
               className={cn(
@@ -183,7 +177,6 @@ export function ConversationList() {
               showDetailsPanel && 'flex-col gap-2 justify-center',
             )}
           >
-            {/* Sort button */}
             <Button
               variant="ghost"
               size="icon"
@@ -202,7 +195,6 @@ export function ConversationList() {
               <ArrowLeftRight size={14} />
             </Button>
 
-            {/* Settings button */}
             <Button
               variant="ghost"
               size="icon"
@@ -234,178 +226,33 @@ export function ConversationList() {
         </p>
       </div>
 
-      {/* Search + Filter */}
+      {/* Search + Filter + SubTabs */}
       <div
         className={cn('px-6 pb-4 pt-1 shrink-0', showDetailsPanel && 'hidden')}
       >
-        <div className="flex items-center gap-2 mb-3">
-          <div className="relative flex-1">
-            <Search
-              size={16}
-              className="absolute left-4 top-[14px] text-muted-dark"
-            />
-            <Input
-              placeholder={t('Search messages...')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-11 pl-11 pr-4 bg-muted-light/80 hover:bg-muted-light border-none rounded-full text-[13px] font-medium focus-visible:ring-1 focus-visible:ring-emerald-500/20"
-            />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  'w-11 h-11 bg-muted-light/80 hover:bg-muted/50 rounded-full text-muted-foreground transition-all cursor-pointer shrink-0 border-none shadow-none',
-                  (filterOnline || filterGreen || sortBy !== 'recent') &&
-                    'text-brand-primary-deep bg-emerald-50 hover:bg-emerald-100',
-                )}
-              >
-                <SlidersHorizontal size={16} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="w-56 p-1.5 rounded-2xl shadow-xl border border-border/30 bg-card"
-            >
-              <DropdownMenuLabel className="text-xs font-black text-foreground/85 px-3 py-2">
-                Sort Conversations
-              </DropdownMenuLabel>
-              <DropdownMenuRadioGroup
-                value={sortBy}
-                onValueChange={(val: any) => setSortBy(val)}
-              >
-                <DropdownMenuRadioItem
-                  value="recent"
-                  className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
-                >
-                  Recent Activity
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="unread"
-                  className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
-                >
-                  Unread Messages First
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem
-                  value="name"
-                  className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
-                >
-                  Name (A to Z)
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-
-              <DropdownMenuSeparator className="my-1 border-border/10" />
-
-              <DropdownMenuLabel className="text-xs font-black text-foreground/85 px-3 py-2">
-                Filters
-              </DropdownMenuLabel>
-              <DropdownMenuCheckboxItem
-                checked={filterOnline}
-                onCheckedChange={setFilterOnline}
-                className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
-              >
-                Online/Active Only
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem
-                checked={filterGreen}
-                onCheckedChange={setFilterGreen}
-                className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
-              >
-                Green Members Only
-              </DropdownMenuCheckboxItem>
-
-              <DropdownMenuSeparator className="my-1 border-border/10" />
-              <DropdownMenuItem
-                onClick={() => {
-                  const isOpening =
-                    activePanel !== 'settings' || !showDetailsPanel
-                  setActivePanel(isOpening ? 'settings' : 'about')
-                  setShowDetailsPanel(isOpening)
-                }}
-                className="rounded-xl text-[11px] font-bold py-2 px-3 text-foreground/90 cursor-pointer flex items-center"
-              >
-                <Settings size={13} className="mr-2" />
-                <span>{t('Chat Settings')}</span>
-              </DropdownMenuItem>
-
-              {(filterOnline || filterGreen || sortBy !== 'recent') && (
-                <>
-                  <DropdownMenuSeparator className="my-1 border-border/10" />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSortBy('recent')
-                      setFilterOnline(false)
-                      setFilterGreen(false)
-                    }}
-                    className="rounded-xl text-[11px] font-black py-2 px-3 justify-center text-primary hover:bg-primary-soft cursor-pointer text-center"
-                  >
-                    Clear All Filters
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        {/* Sub-tabs Capsule Row */}
-        <div className="flex gap-1 pt-1 justify-between w-full">
-          {(['all', 'unread', 'bookings', 'support', 'archived'] as const).map(
-            (tab) => {
-              const tabUnread =
-                tab === 'unread'
-                  ? totalUnread
-                  : tab === 'all'
-                    ? totalUnread
-                    : tab === 'archived'
-                      ? conversations.filter((c) => c.isArchived).length
-                      : conversations
-                          .filter((c) => {
-                            if (tab === 'bookings')
-                              return c.otherParticipant.role === 'user'
-                            if (tab === 'support')
-                              return c.otherParticipant.role === 'admin'
-                            return false
-                          })
-                          .reduce((s, c) => s + c.unreadCount, 0)
-
-              const isActive = activeSubTab === tab
-              const tabLabel =
-                tab === 'archived'
-                  ? 'Archive'
-                  : tab.charAt(0).toUpperCase() + tab.slice(1)
-
-              return (
-                <Button
-                  key={tab}
-                  variant="ghost"
-                  onClick={() => setActiveSubTab(tab)}
-                  className={cn(
-                    'h-8 rounded-full px-2 text-[11px] font-bold cursor-pointer transition-all flex items-center justify-center gap-1 flex-1 shrink min-w-0 shadow-none border border-transparent',
-                    isActive
-                      ? 'bg-brand-primary-deep text-white hover:bg-brand-primary-darker hover:text-white'
-                      : 'bg-muted-light hover:bg-muted/60 text-muted-foreground',
-                  )}
-                >
-                  <span className="truncate">{t(tabLabel)}</span>
-                  {tabUnread > 0 && (
-                    <span
-                      className={cn(
-                        'px-1 h-4 rounded-full flex items-center justify-center text-[9px] font-black shrink-0 transition-colors min-w-[14px]',
-                        isActive
-                          ? 'bg-white text-brand-primary-deep'
-                          : 'bg-emerald-100 text-brand-primary-deep',
-                      )}
-                    >
-                      {tabUnread}
-                    </span>
-                  )}
-                </Button>
-              )
-            },
-          )}
-        </div>
+        <ConversationSearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        >
+          <ConversationSortDropdown
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            filterOnline={filterOnline}
+            setFilterOnline={setFilterOnline}
+            filterGreen={filterGreen}
+            setFilterGreen={setFilterGreen}
+            activePanel={activePanel}
+            showDetailsPanel={showDetailsPanel}
+            setActivePanel={setActivePanel}
+            setShowDetailsPanel={setShowDetailsPanel}
+          />
+        </ConversationSearchBar>
+        <ConversationSubTabs
+          activeSubTab={activeSubTab}
+          setActiveSubTab={setActiveSubTab}
+          conversations={conversations}
+          totalUnread={totalUnread}
+        />
       </div>
 
       {/* Chat Items */}
@@ -691,7 +538,6 @@ export function ConversationList() {
         variant="danger"
       />
 
-      {/* Floating Action Button */}
       <Button
         onClick={() => setShowNewChat(true)}
         className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-brand-primary-deep hover:bg-brand-primary-darker text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0"

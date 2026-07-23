@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { authClient } from '#/lib/auth/auth-client'
+import { useSessionContext } from '#/context/SessionContext'
 import { useTranslationStore } from '#/store/useTranslationStore'
 import { translations } from '#/locales'
 import type { LanguageCode, TranslationKey } from '#/locales'
@@ -116,7 +116,7 @@ export function TranslationProvider({
 }: {
   children: React.ReactNode
 }) {
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSessionContext()
   const language = useTranslationStore((state) => state.language)
   const setLanguageState = useTranslationStore(
     (state) => state.setLanguageState,

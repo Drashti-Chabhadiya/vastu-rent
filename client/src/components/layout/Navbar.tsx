@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
+import { useSessionContext, SESSION_QUERY_KEY } from '#/context/SessionContext'
+import { queryClient } from '#/lib/query-client'
 import { Logo } from '#/components/layout'
 import { useCategories, useWishlist } from '#/hook'
 import { useTranslation } from '#/context/TranslationContext'
@@ -24,21 +26,13 @@ import { LanguageSelector } from '@/components/ui/language-selector'
 
 export function Navbar() {
   const { t } = useTranslation()
-  const [session, setSession] = useState<any>(null)
-  const [isPending, setIsPending] = useState(true)
+  const { data: session, isPending } = useSessionContext()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
 
   const { count } = useWishlist()
   const { data: categories } = useCategories()
-
-  useEffect(() => {
-    authClient.getSession().then((res: any) => {
-      setSession(res.data)
-      setIsPending(false)
-    })
-  }, [])
 
   // Keyboard shortcut for search (Cmd+K or Ctrl+K)
   useEffect(() => {
@@ -53,10 +47,9 @@ export function Navbar() {
   }, [])
 
   const handleSignOut = async () => {
-    setIsPending(true)
     await authClient.signOut()
-    setSession(null)
-    setIsPending(false)
+    queryClient.setQueryData(SESSION_QUERY_KEY, null)
+    queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY })
     navigate({ to: '/' })
   }
 

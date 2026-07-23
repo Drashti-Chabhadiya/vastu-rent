@@ -133,9 +133,16 @@ export const useUpdateUserSettings = () => {
             },
           }
         })
+        queryClient.setQueryData(['auth-session'], (old: any) => {
+          if (!old) return old
+          return {
+            ...old,
+            user: { ...old.user, ...updatedUser },
+          }
+        })
       }
-      // Invalidate the session query to reload user data globally!
       queryClient.invalidateQueries({ queryKey: ['session'] })
+      queryClient.invalidateQueries({ queryKey: ['auth-session'] })
     },
   })
 }

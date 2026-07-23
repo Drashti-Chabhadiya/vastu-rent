@@ -14,7 +14,7 @@ import {
  *   - WebView origin is `capacitor://localhost`
  *   - Capacitor.isNativePlatform() = true
  *   - Must use the Render production URL directly (cookies don't work cross-domain)
- *   - Bearer token auth (localStorage) is the session mechanism
+ *   - Bearer token auth is the session mechanism
  *
  * Web browser (Vercel production):
  *   - window.location.hostname = new-vastu-rent-client.vercel.app

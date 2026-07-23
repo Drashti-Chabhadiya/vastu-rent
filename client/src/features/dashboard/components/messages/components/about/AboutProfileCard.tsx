@@ -17,7 +17,7 @@ export function AboutProfileCard({ otherParticipant }: AboutProfileCardProps) {
   const { checkOnline, setShowDetailsPanel, setShowConversationSearch } =
     useChatStore()
 
-  const otherPersonOnline = checkOnline(otherParticipant.id)
+  const otherPersonOnline = otherParticipant.isOnline || checkOnline(otherParticipant.id)
   const canSeeStatus =
     myShowOnline &&
     otherParticipant.lastActive !== null &&
