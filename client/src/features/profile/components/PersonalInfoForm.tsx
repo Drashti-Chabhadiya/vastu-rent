@@ -519,7 +519,7 @@ export function PersonalInfoForm({
               control={form.control}
               name="street"
               render={({ field }) => (
-                <FormItem className="space-y-1.5">
+                <FormItem className="space-y-1.5 col-span-full">
                   <FormLabel className="text-xs font-bold text-muted-foreground/70">
                     {t('Street / Area')}
                   </FormLabel>
@@ -552,7 +552,7 @@ export function PersonalInfoForm({
               control={form.control}
               name="googleMapLink"
               render={({ field }) => (
-                <FormItem className="space-y-1.5">
+                <FormItem className="space-y-1.5 col-span-full">
                   <div className="flex items-center justify-between">
                     <FormLabel className="text-xs font-bold text-muted-foreground/70">
                       {t('Google Map Link (Optional)')}
