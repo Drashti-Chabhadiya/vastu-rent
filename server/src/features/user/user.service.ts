@@ -160,6 +160,9 @@ export class UserService {
     state?: string;
     pincode?: string;
     country?: string;
+    shopName?: string;
+    addressType?: string;
+    googleMapLink?: string;
   }) {
     const userBefore = await prisma.user.findUnique({
       where: { id },
@@ -194,6 +197,9 @@ export class UserService {
         state: data.state !== undefined ? data.state : undefined,
         pincode: data.pincode !== undefined ? data.pincode : undefined,
         country: data.country !== undefined ? data.country : undefined,
+        shopName: data.shopName !== undefined ? data.shopName : undefined,
+        addressType: data.addressType !== undefined ? data.addressType : undefined,
+        googleMapLink: data.googleMapLink !== undefined ? data.googleMapLink : undefined,
       }
     });
 

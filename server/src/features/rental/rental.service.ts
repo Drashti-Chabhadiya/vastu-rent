@@ -4,6 +4,8 @@ import { sendBookingAlertEmail } from "../../lib/mail.js";
 import { syncGreenMemberStatus } from "../../lib/green-member.helper.js";
 import { rentalQueue } from "../../queues/queues.js";
 import { JOB_NAMES } from "../../constants/queue-keys.js";
+import { cacheDel, cacheDelPattern } from "../../lib/redis-cache.js";
+import { CACHE_KEYS } from "../../constants/cache-keys.js";
 
 export class RentalService {
   async createRental(data: {
@@ -147,6 +149,15 @@ export class RentalService {
       }
     } catch (err) {
       console.error("Failed to send booking alert email to lister:", err);
+    }
+
+    try {
+      await Promise.all([
+        cacheDel([CACHE_KEYS.PRODUCT_DETAIL(data.productId), CACHE_KEYS.PRODUCTS_RECENT]),
+        cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN),
+      ]);
+    } catch (err) {
+      console.error("Failed to invalidate product cache on booking creation:", err);
     }
 
     try {

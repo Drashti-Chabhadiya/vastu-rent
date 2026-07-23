@@ -94,9 +94,21 @@ export class ProductService {
   }
 
   async getProductById(id: string) {
+    // Increment view count in database first for live view tracking
+    const updated = await prisma.product.update({
+      where: { id },
+      data: { views: { increment: 1 } },
+      select: { views: true },
+    }).catch(() => null);
+
     const cacheKey = CACHE_KEYS.PRODUCT_DETAIL(id);
     const cached = await cacheGet<any>(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+      if (updated?.views !== undefined) {
+        cached.views = updated.views;
+      }
+      return cached;
+    }
 
     const product = await prisma.product.findUnique({
       where: { id },
@@ -127,6 +139,10 @@ export class ProductService {
     });
 
     if (!product) return null;
+
+    if (updated?.views !== undefined) {
+      product.views = updated.views;
+    }
 
     let userTotalRating = 0;
     let userReviewCount = 0;
@@ -191,9 +207,14 @@ export class ProductService {
       throw new Error("Forbidden: You have reached the limit of 50 listings for the Pro plan. Please upgrade to the Business plan to list more items.");
     }
 
+    const { location, ...cleanData } = data;
+    if (!cleanData.city && location) {
+      cleanData.city = location;
+    }
+
     const product = await prisma.product.create({
       data: {
-        ...data,
+        ...cleanData,
         price: parseFloat(data.price),
         securityDeposit: data.securityDeposit ? parseFloat(data.securityDeposit) : 0,
         images: data.images || [],
@@ -237,10 +258,15 @@ export class ProductService {
       throw new Error("Forbidden: You do not own this listing");
     }
 
+    const { location, ...cleanUpdateData } = data;
+    if (!cleanUpdateData.city && location) {
+      cleanUpdateData.city = location;
+    }
+
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
-        ...data,
+        ...cleanUpdateData,
         price: data.price ? parseFloat(data.price) : undefined,
       },
     });
@@ -324,10 +350,47 @@ export class ProductService {
   }
 
   async getUserListings(userId: string) {
-    return prisma.product.findMany({
+    const products = await prisma.product.findMany({
       where: { userId },
-      include: { category: true },
+      include: {
+        category: true,
+        reviews: { select: { rating: true } },
+        rentals: { select: { id: true, totalPrice: true, status: true } },
+        _count: { select: { reviews: true, rentals: true } },
+      },
       orderBy: { createdAt: "desc" },
+    });
+
+    return products.map((p: any) => {
+      const bookingsCount = p._count?.rentals || 0;
+      const reviewsCount = p._count?.reviews || 0;
+      const rating =
+        p.reviews && p.reviews.length > 0
+          ? (
+            p.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) /
+            p.reviews.length
+          ).toFixed(1)
+          : "0.0";
+      const earnings = p.rentals
+        ? p.rentals
+          .filter(
+            (r: any) =>
+              r.status === "completed" ||
+              r.status === "confirmed" ||
+              r.status === "in_use" ||
+              r.status === "returned"
+          )
+          .reduce((sum: number, r: any) => sum + (r.totalPrice || 0), 0)
+        : 0;
+
+      return {
+        ...p,
+        views: p.views || 0,
+        bookingsCount,
+        reviewsCount,
+        rating,
+        earnings,
+      };
     });
   }
 }

@@ -52,12 +52,15 @@ model User {
   phone  String?
 
   // Structured Address Fields
+  addressType      String?  @default("home")
+  shopName         String?
   addressLine1     String?
   addressLine2     String?
   street           String?
   city             String?
   state            String?
   pincode          String?
+  googleMapLink    String?
   country          String?  @default("India")
   language         String?
   dob              String?
@@ -179,6 +182,7 @@ model Product {
   isAvailable     Boolean  @default(true)
   city            String
   listingType     String   @default("home") // "home" = Rented from Home, "shop" = Rented from Shop/Store
+  views           Int      @default(0)
 
   // New Enhanced Fields
   condition           String? // e.g., "Like New", "Good", "Fair"
