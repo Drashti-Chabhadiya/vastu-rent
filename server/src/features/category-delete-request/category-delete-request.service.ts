@@ -1,5 +1,4 @@
 import { prisma } from '../../config/prisma.js'
-import { categoryService } from '../category/category.service.js'
 import {
   createAndDeliverNotification,
   notifyAllAdmins,
@@ -157,7 +156,7 @@ export class CategoryDeleteRequestService {
   async updateRequestStatus(
     requestId: string,
     status: 'approved' | 'rejected',
-    adminId: string,
+    _adminId: string,
   ) {
     const request = await prisma.deleteCategoryRequest.findUnique({
       where: { id: requestId },

@@ -29,7 +29,10 @@ export async function syncGreenMemberStatus(userId: string): Promise<boolean> {
     if (greenMemberConfig.requirePhone && !user.phone) {
       eligible = false
     }
-    if (greenMemberConfig.requireLocation && !user.location) {
+    if (
+      greenMemberConfig.requireLocation &&
+      !(user.city || user.addressLine1)
+    ) {
       eligible = false
     }
     if (user._count.products < greenMemberConfig.minListings) {

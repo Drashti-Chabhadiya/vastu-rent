@@ -11,7 +11,7 @@ const readSettingsFromFile = (): any => {
   try {
     const data = fs.readFileSync(settingsPath, 'utf-8')
     return JSON.parse(data)
-  } catch (error) {
+  } catch {
     return {}
   }
 }

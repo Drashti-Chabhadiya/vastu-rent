@@ -25,7 +25,7 @@ export class CategoryController {
     return { category }
   }
 
-  async deleteCategory(request: FastifyRequest, reply: FastifyReply) {
+  async deleteCategory(request: FastifyRequest, _reply: FastifyReply) {
     const { id } = request.params as any
 
     // Retrieve category details before deletion to get name and proposer ID

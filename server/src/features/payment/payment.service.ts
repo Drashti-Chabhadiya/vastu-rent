@@ -9,7 +9,7 @@ export class PaymentService {
    * Generate a simple internal payment reference ID.
    * No third-party gateway involved.
    */
-  generatePaymentReference(rentalId: string): string {
+  generatePaymentReference(_rentalId: string): string {
     return 'PAY-' + crypto.randomBytes(8).toString('hex').toUpperCase()
   }
 

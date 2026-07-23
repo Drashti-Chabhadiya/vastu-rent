@@ -490,12 +490,10 @@ export class ChatController {
         ) || allowedMimetypes.includes(data.mimetype)
 
       if (!isAllowed) {
-        return reply
-          .status(400)
-          .send({
-            message:
-              'Only image, audio, video, and document files (PDF, Word, Text, Zip) are allowed.',
-          })
+        return reply.status(400).send({
+          message:
+            'Only image, audio, video, and document files (PDF, Word, Text, Zip) are allowed.',
+        })
       }
 
       const buffer = await data.toBuffer()
@@ -520,12 +518,10 @@ export class ChatController {
           const result = await cloudinaryService.uploadImage(base64, 'chat')
           url = result.url
         } else {
-          return reply
-            .status(500)
-            .send({
-              message:
-                'Cloudinary is not configured. Please set up your credentials in settings.',
-            })
+          return reply.status(500).send({
+            message:
+              'Cloudinary is not configured. Please set up your credentials in settings.',
+          })
         }
       }
 
@@ -745,11 +741,9 @@ export class ChatController {
 
     if (mode === 'everyone') {
       if (message.senderId !== userId && session.user.role !== 'admin') {
-        return reply
-          .status(403)
-          .send({
-            message: 'Only the sender or an admin can delete for everyone',
-          })
+        return reply.status(403).send({
+          message: 'Only the sender or an admin can delete for everyone',
+        })
       }
 
       // 15-minute time limit for non-admin
@@ -757,12 +751,9 @@ export class ChatController {
       const isWithinTimeLimit =
         Date.now() - new Date(message.createdAt).getTime() < fifteenMinutes
       if (!isWithinTimeLimit && session.user.role !== 'admin') {
-        return reply
-          .status(400)
-          .send({
-            message:
-              'Time limit to delete this message has expired (15 minutes)',
-          })
+        return reply.status(400).send({
+          message: 'Time limit to delete this message has expired (15 minutes)',
+        })
       }
 
       const updated = await prisma.message.update({

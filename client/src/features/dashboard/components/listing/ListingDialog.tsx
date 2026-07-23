@@ -120,11 +120,10 @@ export const ListingDialog = ({
           tags: [],
           minDuration: 1,
           maxDuration: undefined,
-          listingType:
-            ((currentUser)?.addressType as 'home' | 'shop') || 'home',
+          listingType: (currentUser?.addressType as 'home' | 'shop') || 'home',
           instagramUrl: '',
           facebookUrl: '',
-          shopName: (currentUser)?.shopName || '',
+          shopName: currentUser?.shopName || '',
         })
       }
     }

@@ -93,7 +93,7 @@ export class CloudinaryService {
       const publicId = publicIdWithExt.split('.')[0]
 
       return publicId
-    } catch (error) {
+    } catch {
       return null
     }
   }

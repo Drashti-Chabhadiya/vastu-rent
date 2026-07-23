@@ -73,12 +73,10 @@ export class RentalController {
           .send({ message: 'Forbidden: User permissions required' })
       }
       if (rentalExists.product.userId !== user.id) {
-        return reply
-          .status(403)
-          .send({
-            message:
-              'Forbidden: You are not authorized to manage bookings for this product',
-          })
+        return reply.status(403).send({
+          message:
+            'Forbidden: You are not authorized to manage bookings for this product',
+        })
       }
     }
 

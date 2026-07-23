@@ -72,7 +72,7 @@ export function UserProfileSettingsCard({
     phone: phone || '',
     language: (session?.user as any)?.language || language || 'en',
     dob: dob || '',
-    addressType: (addressType) || 'home',
+    addressType: addressType || 'home',
     shopName: shopName || '',
     addressLine1: addressLine1 || '',
     addressLine2: addressLine2 || '',

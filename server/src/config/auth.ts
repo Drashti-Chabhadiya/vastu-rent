@@ -12,7 +12,7 @@ const getHostName = (urlStr?: string) => {
         ? urlStr
         : `https://${urlStr}`
     return new URL(formatted).host
-  } catch (e) {
+  } catch {
     return ''
   }
 }

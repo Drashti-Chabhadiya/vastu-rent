@@ -76,11 +76,9 @@ export class CouponController {
           where: { id: productId },
         })
         if (!product || product.userId !== session.user.id) {
-          return reply
-            .status(403)
-            .send({
-              message: 'You can only create coupons for your own listings',
-            })
+          return reply.status(403).send({
+            message: 'You can only create coupons for your own listings',
+          })
         }
         couponProductId = productId
       }
@@ -203,11 +201,9 @@ export class CouponController {
     }
 
     if (coupon.minBooking && totalPrice < coupon.minBooking) {
-      return reply
-        .status(400)
-        .send({
-          message: `Minimum booking value of ₹${coupon.minBooking} required`,
-        })
+      return reply.status(400).send({
+        message: `Minimum booking value of ₹${coupon.minBooking} required`,
+      })
     }
 
     // User or Product specific validation
@@ -234,11 +230,9 @@ export class CouponController {
       }
 
       if (coupon.userId && product.userId !== coupon.userId) {
-        return reply
-          .status(400)
-          .send({
-            message: `This coupon is only valid for listings from ${product.user?.name || 'this user'}`,
-          })
+        return reply.status(400).send({
+          message: `This coupon is only valid for listings from ${product.user?.name || 'this user'}`,
+        })
       }
     }
 

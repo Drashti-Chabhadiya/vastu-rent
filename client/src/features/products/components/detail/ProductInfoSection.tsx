@@ -170,7 +170,7 @@ export const ProductBookingSection = ({
   applyCouponIsPending,
   availabilityCalendar,
 }: ProductBookingSectionProps) => {
-  const { formatCurrency, formatDate, formatDigits, formatNumber, t } =
+  const { formatCurrency, formatDate, formatNumber, t } =
     useTranslation()
   const {
     paymentMethod,

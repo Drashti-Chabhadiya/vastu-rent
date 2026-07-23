@@ -213,12 +213,9 @@ export class UserController {
     const testApiSecret = process.env.CLOUDINARY_API_SECRET
 
     if (!testCloudName || !testApiKey || !testApiSecret) {
-      return reply
-        .status(400)
-        .send({
-          message:
-            'Cloudinary is not configured in environment variables (.env)',
-        })
+      return reply.status(400).send({
+        message: 'Cloudinary is not configured in environment variables (.env)',
+      })
     }
 
     try {

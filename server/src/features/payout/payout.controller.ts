@@ -15,11 +15,9 @@ export class PayoutController {
       const data = await payoutService.getEarningsDashboard(targetUserId)
       return data
     } catch (error: any) {
-      return reply
-        .status(500)
-        .send({
-          message: error.message || 'Failed to fetch earnings analytics',
-        })
+      return reply.status(500).send({
+        message: error.message || 'Failed to fetch earnings analytics',
+      })
     }
   }
 
@@ -51,11 +49,9 @@ export class PayoutController {
         await payoutService.getAllPayoutRequests()
       return { payouts, platformStats }
     } catch (error: any) {
-      return reply
-        .status(500)
-        .send({
-          message: error.message || 'Failed to retrieve payout requests',
-        })
+      return reply.status(500).send({
+        message: error.message || 'Failed to retrieve payout requests',
+      })
     }
   }
 
@@ -74,11 +70,9 @@ export class PayoutController {
       const payout = await payoutService.updatePayoutStatus(id, status, notes)
       return { payout }
     } catch (error: any) {
-      return reply
-        .status(400)
-        .send({
-          message: error.message || 'Failed to update payout request status',
-        })
+      return reply.status(400).send({
+        message: error.message || 'Failed to update payout request status',
+      })
     }
   }
 }

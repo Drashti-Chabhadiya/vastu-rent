@@ -31,7 +31,6 @@ import {
   ExternalLink,
 } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
-import { LanguageSelector } from '@/components/ui/language-selector'
 import { LocationCombobox } from '@/components/ui/location-combobox'
 import { usePincodeLookup, useStateSearch } from '#/hook'
 import { toast } from 'sonner'
@@ -61,7 +60,7 @@ export function PersonalInfoForm({
 
   const lastVerifiedPincode = useRef<string | null>(pincode)
 
-  const [countryId, setCountryId] = useState<number | undefined>(101) // Default India (ID: 101)
+  const [countryId] = useState<number | undefined>(101) // Default India (ID: 101)
   const [stateId, setStateId] = useState<number | undefined>()
 
   // Live pincode lookup integration
@@ -140,8 +139,8 @@ export function PersonalInfoForm({
               ? t('Manage your account identity and contact information.')
               : viewSection === 'address'
                 ? t(
-                    'Manage your primary rental address for bookings and items.',
-                  )
+                  'Manage your primary rental address for bookings and items.',
+                )
                 : t('Manage your personal and rental address information.')}
           </p>
         </div>
@@ -207,7 +206,7 @@ export function PersonalInfoForm({
               render={({ field }) => {
                 const normalizedValue = field.value?.trim()
                   ? field.value.trim().charAt(0).toUpperCase() +
-                    field.value.trim().slice(1).toLowerCase()
+                  field.value.trim().slice(1).toLowerCase()
                   : ''
                 return (
                   <FormItem className="space-y-1.5">
@@ -297,7 +296,7 @@ export function PersonalInfoForm({
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    value={(field.value || undefined)}
+                    value={field.value || undefined}
                     disabled={!isEditing}
                   >
                     <FormControl>
@@ -383,11 +382,10 @@ export function PersonalInfoForm({
                       type="button"
                       disabled={!isEditing}
                       onClick={() => field.onChange('home')}
-                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
-                        field.value === 'home'
-                          ? 'border-primary bg-primary/10 text-primary font-bold'
-                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                      } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${field.value === 'home'
+                        ? 'border-primary bg-primary/10 text-primary font-bold'
+                        : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                        } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
                       <Home className="h-4 w-4" strokeWidth={2} />
                       {t('Home Address')}
@@ -396,11 +394,10 @@ export function PersonalInfoForm({
                       type="button"
                       disabled={!isEditing}
                       onClick={() => field.onChange('shop')}
-                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
-                        field.value === 'shop'
-                          ? 'border-primary bg-primary/10 text-primary font-bold'
-                          : 'border-border bg-background text-muted-foreground hover:border-primary/40'
-                      } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all cursor-pointer ${field.value === 'shop'
+                        ? 'border-primary bg-primary/10 text-primary font-bold'
+                        : 'border-border bg-background text-muted-foreground hover:border-primary/40'
+                        } ${!isEditing ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
                       <Building2 className="h-4 w-4" strokeWidth={2} />
                       {t('Shop Address')}
@@ -522,7 +519,7 @@ export function PersonalInfoForm({
               control={form.control}
               name="street"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 col-span-full">
+                <FormItem className="space-y-1.5">
                   <FormLabel className="text-xs font-bold text-muted-foreground/70">
                     {t('Street / Area')}
                   </FormLabel>
@@ -555,7 +552,7 @@ export function PersonalInfoForm({
               control={form.control}
               name="googleMapLink"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 col-span-full">
+                <FormItem className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <FormLabel className="text-xs font-bold text-muted-foreground/70">
                       {t('Google Map Link (Optional)')}
@@ -657,7 +654,7 @@ export function PersonalInfoForm({
                         className={cn(
                           'h-11 pl-10',
                           form.formState.errors.city &&
-                            'border-destructive ring-2 ring-destructive/10',
+                          'border-destructive ring-2 ring-destructive/10',
                         )}
                       />
                     </FormControl>
@@ -671,7 +668,7 @@ export function PersonalInfoForm({
               control={form.control}
               name="state"
               render={({ field }) => (
-                <FormItem className="space-y-1.5 col-span-full">
+                <FormItem className="space-y-1.5">
                   <FormLabel className="text-xs font-bold text-muted-foreground/70">
                     {t('State')}
                   </FormLabel>
@@ -694,7 +691,7 @@ export function PersonalInfoForm({
                         className={cn(
                           'h-11 pl-10',
                           form.formState.errors.state &&
-                            'border-destructive ring-2 ring-destructive/10',
+                          'border-destructive ring-2 ring-destructive/10',
                         )}
                       />
                     </FormControl>

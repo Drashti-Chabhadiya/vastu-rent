@@ -41,12 +41,10 @@ export const StoryController = {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
       if (!isAdminRole(session.user.role)) {
-        return reply
-          .code(403)
-          .send({
-            success: false,
-            message: 'Forbidden: Only Admins can manage stories',
-          })
+        return reply.code(403).send({
+          success: false,
+          message: 'Forbidden: Only Admins can manage stories',
+        })
       }
 
       const { title, excerpt, content, tag, readTime, imageUrl } = request.body
@@ -75,12 +73,10 @@ export const StoryController = {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
       if (!isAdminRole(session.user.role)) {
-        return reply
-          .code(403)
-          .send({
-            success: false,
-            message: 'Forbidden: Only Admins can manage stories',
-          })
+        return reply.code(403).send({
+          success: false,
+          message: 'Forbidden: Only Admins can manage stories',
+        })
       }
 
       const { id } = request.params
@@ -109,12 +105,10 @@ export const StoryController = {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
       if (!isAdminRole(session.user.role)) {
-        return reply
-          .code(403)
-          .send({
-            success: false,
-            message: 'Forbidden: Only Admins can manage stories',
-          })
+        return reply.code(403).send({
+          success: false,
+          message: 'Forbidden: Only Admins can manage stories',
+        })
       }
 
       const { id } = request.params

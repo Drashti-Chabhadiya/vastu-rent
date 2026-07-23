@@ -3,7 +3,7 @@ import { prisma } from '../../config/prisma.js'
 
 export default async function locationRoutes(fastify: FastifyInstance) {
   // GET /api/locations/countries
-  fastify.get('/countries', async (request, reply) => {
+  fastify.get('/countries', async (_request, _reply) => {
     const countries = await prisma.country.findMany({
       take: 50,
       orderBy: { name: 'asc' },
@@ -12,7 +12,7 @@ export default async function locationRoutes(fastify: FastifyInstance) {
   })
 
   // GET /api/locations/countries/search?q=ind
-  fastify.get('/countries/search', async (request, reply) => {
+  fastify.get('/countries/search', async (request, _reply) => {
     const { q } = request.query as { q?: string }
     if (!q) return []
 
@@ -39,7 +39,7 @@ export default async function locationRoutes(fastify: FastifyInstance) {
   })
 
   // GET /api/locations/states/search?q=guj&countryId=101
-  fastify.get('/states/search', async (request, reply) => {
+  fastify.get('/states/search', async (request, _reply) => {
     const { q, countryId } = request.query as { q?: string; countryId?: string }
     if (!q) return []
 
@@ -69,7 +69,7 @@ export default async function locationRoutes(fastify: FastifyInstance) {
   })
 
   // GET /api/locations/cities/search?q=ahm&stateId=4030
-  fastify.get('/cities/search', async (request, reply) => {
+  fastify.get('/cities/search', async (request, _reply) => {
     const { q, stateId } = request.query as { q?: string; stateId?: string }
     if (!q) return []
 
@@ -147,7 +147,7 @@ export default async function locationRoutes(fastify: FastifyInstance) {
           source: 'api_fetched',
         }
       }
-    } catch (err) {
+    } catch {
       // Fallback or ignore fetch error
     }
 
@@ -179,15 +179,13 @@ export default async function locationRoutes(fastify: FastifyInstance) {
           }
         }
       }
-    } catch (err) {
+    } catch {
       // Fallback error
     }
 
-    return reply
-      .status(404)
-      .send({
-        valid: false,
-        message: 'Invalid Pincode. Please check your 6-digit postal code.',
-      })
+    return reply.status(404).send({
+      valid: false,
+      message: 'Invalid Pincode. Please check your 6-digit postal code.',
+    })
   })
 }

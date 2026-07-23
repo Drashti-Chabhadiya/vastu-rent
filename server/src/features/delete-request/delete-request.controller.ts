@@ -33,7 +33,7 @@ export class DeleteRequestController {
 
       const requests = await deleteRequestService.getAllRequests()
       return { requests }
-    } catch (error: any) {
+    } catch {
       return reply.status(500).send({ message: 'Internal server error' })
     }
   }
@@ -68,7 +68,7 @@ export class DeleteRequestController {
       const user = (request as any).user
       const requests = await deleteRequestService.getMyRequests(user.id)
       return { requests }
-    } catch (error: any) {
+    } catch {
       return reply.status(500).send({ message: 'Internal server error' })
     }
   }

@@ -5,48 +5,75 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Seeding locations...')
 
-  // 1. Create Country
-  const india = await prisma.country.upsert({
+  // 1. Create / Find Country
+  let india = await prisma.country.findFirst({
     where: { name: 'India' },
-    update: {},
-    create: { name: 'India' },
   })
-  console.log('Created country: India')
 
-  // 2. Create States
+  if (!india) {
+    india = await prisma.country.create({
+      data: {
+        id: 101,
+        name: 'India',
+        iso2: 'IN',
+        iso3: 'IND',
+        phonecode: '91',
+      },
+    })
+  }
+  console.log('Country: India (ID: ' + india.id + ')')
+
+  // 2. Create / Find States
   const states = [
-    'Gujarat',
-    'Maharashtra',
-    'Rajasthan',
-    'Delhi',
-    'Karnataka',
-    'Tamil Nadu',
+    { id: 12, name: 'Gujarat', state_code: 'GJ' },
+    { id: 20, name: 'Maharashtra', state_code: 'MH' },
+    { id: 29, name: 'Rajasthan', state_code: 'RJ' },
+    { id: 10, name: 'Delhi', state_code: 'DL' },
+    { id: 17, name: 'Karnataka', state_code: 'KA' },
+    { id: 31, name: 'Tamil Nadu', state_code: 'TN' },
   ]
 
-  for (const stateName of states) {
-    const state = await prisma.state.upsert({
-      where: { name_countryId: { name: stateName, countryId: india.id } },
-      update: {},
-      create: { name: stateName, countryId: india.id },
+  for (const s of states) {
+    let state = await prisma.state.findFirst({
+      where: { name: s.name, country_id: india.id },
     })
 
+    if (!state) {
+      state = await prisma.state.create({
+        data: {
+          id: s.id,
+          name: s.name,
+          country_id: india.id,
+          state_code: s.state_code,
+        },
+      })
+    }
+
     // 3. Create some sample cities for Gujarat
-    if (stateName === 'Gujarat') {
+    if (s.name === 'Gujarat') {
       const cities = [
-        'Surat',
-        'Ahmedabad',
-        'Vadodara',
-        'Rajkot',
-        'Bhavnagar',
-        'Jamnagar',
-        'Gandhinagar',
+        { id: 1, name: 'Surat' },
+        { id: 2, name: 'Ahmedabad' },
+        { id: 3, name: 'Vadodara' },
+        { id: 4, name: 'Rajkot' },
+        { id: 5, name: 'Bhavnagar' },
+        { id: 6, name: 'Jamnagar' },
+        { id: 7, name: 'Gandhinagar' },
       ]
-      for (const cityName of cities) {
-        await prisma.city.upsert({
-          where: { name_stateId: { name: cityName, stateId: state.id } },
-          update: {},
-          create: { name: cityName, stateId: state.id },
+      for (const c of cities) {
+        const existingCity = await prisma.city.findFirst({
+          where: { name: c.name, state_id: state.id },
         })
+        if (!existingCity) {
+          await prisma.city.create({
+            data: {
+              id: c.id,
+              name: c.name,
+              state_id: state.id,
+              country_id: india.id,
+            },
+          })
+        }
       }
     }
   }

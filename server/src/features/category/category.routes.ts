@@ -63,12 +63,10 @@ export async function categoryRoutes(fastify: FastifyInstance) {
           )
 
         if (!isAuthorized) {
-          return reply
-            .status(403)
-            .send({
-              message:
-                'Forbidden: You do not have permission to delete this category',
-            })
+          return reply.status(403).send({
+            message:
+              'Forbidden: You do not have permission to delete this category',
+          })
         }
 
         request.user = session.user

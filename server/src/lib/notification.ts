@@ -1,6 +1,5 @@
 import { prisma } from '../config/prisma.js'
 import { io } from './socket.js'
-import { sendPushToUser } from './fcm.js'
 import { notificationQueue } from '../queues/queues.js'
 import { JOB_NAMES } from '../constants/queue-keys.js'
 

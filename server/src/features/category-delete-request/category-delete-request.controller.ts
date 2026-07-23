@@ -44,7 +44,7 @@ export class CategoryDeleteRequestController {
         role || 'user',
       )
       return { requests }
-    } catch (error: any) {
+    } catch {
       return reply.status(500).send({ message: 'Internal server error' })
     }
   }
