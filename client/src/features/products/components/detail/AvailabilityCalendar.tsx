@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import { useProductBookingStore } from '../../../../store/useProductBookingStore'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface AvailabilityCalendarProps {
   today: Date
@@ -14,19 +15,20 @@ export const AvailabilityCalendar = ({
   productRentals,
   handleDayClick,
 }: AvailabilityCalendarProps) => {
+  const { t, formatDate, formatDigits } = useTranslation()
   const { calMonth, calYear, setCalMonth, setCalYear, startDate, endDate } =
     useProductBookingStore()
 
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate()
   const firstDay = new Date(calYear, calMonth, 1).getDay()
-  const monthName = new Date(calYear, calMonth).toLocaleString('default', {
+  const monthName = formatDate(new Date(calYear, calMonth, 1), {
     month: 'long',
   })
 
   return (
     <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-4">
       <h3 className="text-base font-bold text-foreground">
-        Check Availability
+        {t('Check Availability')}
       </h3>
       <div className="flex items-center justify-between">
         <Button
@@ -44,7 +46,7 @@ export const AvailabilityCalendar = ({
           <ChevronLeft size={16} />
         </Button>
         <p className="text-sm font-bold text-foreground">
-          {monthName} {calYear}
+          {monthName} {formatDigits(calYear)}
         </p>
         <Button
           type="button"
@@ -67,7 +69,7 @@ export const AvailabilityCalendar = ({
             key={d}
             className="text-[10px] font-bold text-muted-foreground/70 py-1"
           >
-            {d}
+            {t(d)}
           </div>
         ))}
         {Array.from({ length: firstDay }).map((_, i) => (
@@ -121,7 +123,7 @@ export const AvailabilityCalendar = ({
                       : 'text-foreground/80 hover:bg-muted/50 cursor-pointer',
               )}
             >
-              {day}
+              {formatDigits(day)}
               {isBooked && (
                 <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-destructive/80" />
               )}
@@ -132,15 +134,15 @@ export const AvailabilityCalendar = ({
       <div className="flex items-center justify-between text-[10px] text-muted-foreground/85 pt-1">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-sm bg-primary" />
-          Selected
+          {t('Selected')}
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-sm bg-primary/10" />
-          Range
+          {t('Range')}
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-sm bg-muted/50" />
-          Unavailable
+          {t('Unavailable')}
         </div>
       </div>
     </div>

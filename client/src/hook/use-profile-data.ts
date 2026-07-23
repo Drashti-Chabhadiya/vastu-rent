@@ -65,7 +65,11 @@ export function useProfileData() {
   } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
-      const res = await authClient.getSession()
+      const res = await authClient.getSession({
+        query: {
+          disableCookieCache: true,
+        },
+      })
       return res.data
     },
   })
@@ -78,7 +82,13 @@ export function useProfileData() {
       setPhone(u.phone || '')
       setLocation(u.location || '')
       setBio(u.bio || '')
-      setGender(u.gender || '')
+      const rawGender = (u.gender || u.Gender || '') as string
+      setGender(
+        rawGender.trim()
+          ? rawGender.trim().charAt(0).toUpperCase() +
+              rawGender.trim().slice(1).toLowerCase()
+          : '',
+      )
       setLanguage(u.language || '')
       setDob(u.dob || '')
       setCurrency(u.currency || 'INR')

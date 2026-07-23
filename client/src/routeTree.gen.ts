@@ -38,7 +38,6 @@ import { Route as ProfileBookingsRouteImport } from './routes/profile.bookings'
 import { Route as ProductsIdRouteImport } from './routes/products.$id'
 import { Route as JournalIdRouteImport } from './routes/journal.$id'
 import { Route as CategoriesIdRouteImport } from './routes/categories.$id'
-import { Route as AccountSetupAddressRouteImport } from './routes/account.setup-address'
 import { Route as AuthenticatedWishlistRouteImport } from './routes/_authenticated/wishlist'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
@@ -203,11 +202,6 @@ const CategoriesIdRoute = CategoriesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => CategoriesRoute,
 } as any)
-const AccountSetupAddressRoute = AccountSetupAddressRouteImport.update({
-  id: '/account/setup-address',
-  path: '/account/setup-address',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedWishlistRoute = AuthenticatedWishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
@@ -341,7 +335,6 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/wishlist': typeof AuthenticatedWishlistRoute
-  '/account/setup-address': typeof AccountSetupAddressRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/journal/$id': typeof JournalIdRoute
   '/products/$id': typeof ProductsIdRoute
@@ -385,7 +378,6 @@ export interface FileRoutesByTo {
   '/trust-safety': typeof TrustSafetyRoute
   '/verify-email': typeof VerifyEmailRoute
   '/wishlist': typeof AuthenticatedWishlistRoute
-  '/account/setup-address': typeof AccountSetupAddressRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/journal/$id': typeof JournalIdRoute
   '/products/$id': typeof ProductsIdRoute
@@ -436,7 +428,6 @@ export interface FileRoutesById {
   '/_authenticated/account': typeof AuthenticatedAccountRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/wishlist': typeof AuthenticatedWishlistRoute
-  '/account/setup-address': typeof AccountSetupAddressRoute
   '/categories/$id': typeof CategoriesIdRoute
   '/journal/$id': typeof JournalIdRoute
   '/products/$id': typeof ProductsIdRoute
@@ -487,7 +478,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/dashboard'
     | '/wishlist'
-    | '/account/setup-address'
     | '/categories/$id'
     | '/journal/$id'
     | '/products/$id'
@@ -531,7 +521,6 @@ export interface FileRouteTypes {
     | '/trust-safety'
     | '/verify-email'
     | '/wishlist'
-    | '/account/setup-address'
     | '/categories/$id'
     | '/journal/$id'
     | '/products/$id'
@@ -581,7 +570,6 @@ export interface FileRouteTypes {
     | '/_authenticated/account'
     | '/_authenticated/dashboard'
     | '/_authenticated/wishlist'
-    | '/account/setup-address'
     | '/categories/$id'
     | '/journal/$id'
     | '/products/$id'
@@ -629,7 +617,6 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   TrustSafetyRoute: typeof TrustSafetyRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
-  AccountSetupAddressRoute: typeof AccountSetupAddressRoute
   UsersIdRoute: typeof UsersIdRoute
 }
 
@@ -837,13 +824,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/categories/$id'
       preLoaderRoute: typeof CategoriesIdRouteImport
       parentRoute: typeof CategoriesRoute
-    }
-    '/account/setup-address': {
-      id: '/account/setup-address'
-      path: '/account/setup-address'
-      fullPath: '/account/setup-address'
-      preLoaderRoute: typeof AccountSetupAddressRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/wishlist': {
       id: '/_authenticated/wishlist'
@@ -1150,7 +1130,6 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   TrustSafetyRoute: TrustSafetyRoute,
   VerifyEmailRoute: VerifyEmailRoute,
-  AccountSetupAddressRoute: AccountSetupAddressRoute,
   UsersIdRoute: UsersIdRoute,
 }
 export const routeTree = rootRouteImport

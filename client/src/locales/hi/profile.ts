@@ -12,7 +12,7 @@ export const profile = {
   // Form Labels & Genders
   'Full Name': 'पूरा नाम',
   Gender: 'लिंग',
-  'Email Address': 'ईमेल पता',
+  'Email Address': 'अपना ईमेल',
   Location: 'स्थान',
   'Phone Number': 'फ़ोन नंबर',
   'Preferred Language': 'पसंदीदा भाषा',
@@ -109,11 +109,18 @@ export const profile = {
 
   // Rental Address Section
   'Rental Address': 'किराये का पता (Rental Address)',
+  'Rental Address Title': 'अपना किराये का पता सेट करें',
   'Rental Address Subtitle':
     'वह सही पता यहाँ दर्ज करें जहाँ से आप अपने उत्पादों को किराये पर देना चाहते हैं।',
+  'Where do you rent items from?': 'आप सामान कहाँ से किराये पर देते हैं?',
   'Address Type': 'पते का प्रकार (Address Type)',
   'Home Address': 'घर का पता (Home Address)',
   'Shop Address': 'दुकान का पता (Shop Address)',
+  'Shop / Business': 'दुकान / व्यवसाय',
+  'Renting items out of your house or apartment':
+    'अपने घर या अपार्टमेंट से सामान किराये पर देना',
+  'Renting items out of a shop or commercial location':
+    'दुकान या व्यावसायिक स्थान से सामान किराये पर देना',
   'Shop Name': 'दुकान का नाम',
   'Shop / Home Name (Optional)': 'दुकान / घर का नाम (वैकल्पिक)',
   'Address Line 1': 'पता पंक्ति १',
@@ -123,4 +130,16 @@ export const profile = {
   State: 'राज्य',
   Country: 'देश',
   Pincode: 'पिनकोड',
+  'Please complete your profile and rental address first before creating a listing.':
+    'अपनी लिस्टिंग जोड़ने से पहले कृपया अपना प्रोफ़ाइल और पता पूरा करें।',
+  'Complete Profile to Add Listings': 'लिस्टिंग जोड़ने के लिए प्रोफ़ाइल पूरा करें',
+  'Please complete your rental address details below so customers can contact you and pick up items from your location.':
+    'वास्तु पर अपना सामान लिस्ट करने के लिए कृपया नीचे अपना सही पता दर्ज करें।',
+  'Complete Your Profile First': 'पहले अपनी प्रोफ़ाइल पूरी करें',
+  'Please complete your address and profile details first before creating a listing on Vastu-Rent so renters can contact you and pick up items from your location.':
+    'वास्तु-रेंट पर लिस्टिंग बनाने से पहले कृपया अपनी प्रोफ़ाइल और पते का विवरण पूरा करें, ताकि किराएदार आपसे संपर्क कर सकें और आपके स्थान से सामान ले सकें।',
+  'Complete Profile Now': 'अभी प्रोफ़ाइल पूरी करें',
+  'Google Map Link (Optional)': 'Google Map Link (वैकल्पिक)',
+  'How to get Google Maps Link?': 'Google Maps Link कैसे प्राप्त करें?',
+  'Paste your Google Maps link here': 'अपना Google Maps लिंक यहाँ पेस्ट करें',
 }

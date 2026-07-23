@@ -106,11 +106,18 @@ export const profile = {
 
   // Rental Address Section
   'Rental Address': 'Rental Address',
+  'Rental Address Title': 'Setup Your Rental Address',
   'Rental Address Subtitle':
-    'Enter the correct address from where you want to rent out your products.',
+    'Enter the primary location from where you will be renting or delivering items.',
+  'Where do you rent items from?': 'Where do you rent items from?',
   'Address Type': 'Address Type',
   'Home Address': 'Home Address',
   'Shop Address': 'Shop Address',
+  'Shop / Business': 'Shop / Business',
+  'Renting items out of your house or apartment':
+    'Renting items out of your house or apartment',
+  'Renting items out of a shop or commercial location':
+    'Renting items out of a shop or commercial location',
   'Shop Name': 'Shop Name',
   'Shop / Home Name (Optional)': 'Shop / Home Name (Optional)',
   'Address Line 1': 'Address Line 1',
@@ -120,4 +127,16 @@ export const profile = {
   State: 'State',
   Country: 'Country',
   Pincode: 'Pincode',
+  'Please complete your profile and rental address first before creating a listing.':
+    'Please complete your profile and rental address first before creating a listing.',
+  'Complete Profile to Add Listings': 'Complete Profile to Add Listings',
+  'Please complete your rental address details below so customers can contact you and pick up items from your location.':
+    'Please complete your rental address details below so customers can contact you and pick up items from your location.',
+  'Complete Your Profile First': 'Complete Your Profile First',
+  'Please complete your address and profile details first before creating a listing on Vastu-Rent so renters can contact you and pick up items from your location.':
+    'Please complete your address and profile details first before creating a listing on Vastu-Rent so renters can contact you and pick up items from your location.',
+  'Complete Profile Now': 'Complete Profile Now',
+  'Google Map Link (Optional)': 'Google Map Link (Optional)',
+  'How to get Google Maps Link?': 'How to get Google Maps Link?',
+  'Paste your Google Maps link here': 'Paste your Google Maps link here',
 }

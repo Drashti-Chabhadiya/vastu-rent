@@ -11,9 +11,17 @@ import { AccountSecurityCard } from './AccountSecurityCard'
 import { PreferencesCard } from './PreferencesCard'
 import { SubscriptionPlanCard } from './SubscriptionPlanCard'
 import { UserProfileSettingsCard } from './UserProfileSettingsCard'
-import { ProfileTabBar, type ProfileTab } from './ProfileTabBar'
+import { ProfileTabBar } from './ProfileTabBar'
+import type { ProfileTab } from './ProfileTabBar';
 import { motion, AnimatePresence } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { Button } from '#/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from '#/components/ui/dialog'
 
 export function PersonalInfo() {
   const {
@@ -43,11 +51,24 @@ export function PersonalInfo() {
   const { data: myListings, isLoading: isListingsLoading } = useMyListings()
   const verifyCheckoutSession = useVerifyCheckoutSession()
 
+  const [completeProfileModalOpen, setCompleteProfileModalOpen] = useState(() => {
+    return typeof window !== 'undefined' && (
+      window.location.search.includes('completeProfile=true') ||
+      window.location.search.includes('fromListing=true')
+    )
+  })
+
   // Tab management state synced with URL hash
   const [activeTab, setActiveTab] = useState<ProfileTab>(() => {
     const hash = window.location.hash.replace('#', '')
     if (['personal', 'address', 'security', 'subscription'].includes(hash)) {
       return hash as ProfileTab
+    }
+    if (typeof window !== 'undefined' && (
+      window.location.search.includes('completeProfile=true') ||
+      window.location.search.includes('fromListing=true')
+    )) {
+      return 'address'
     }
     return 'personal'
   })
@@ -282,6 +303,37 @@ export function PersonalInfo() {
         handleToggleTwoFactor={handleToggleTwoFactor}
         userEmail={session.user.email}
       />
+
+      {/* Mandatory Profile Completion Dialog Modal */}
+      <Dialog
+        open={completeProfileModalOpen}
+        onOpenChange={setCompleteProfileModalOpen}
+      >
+        <DialogContent className="max-w-md rounded-3xl p-7 text-center border-border shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="w-16 h-16 bg-amber-500/15 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl font-extrabold">
+            📢
+          </div>
+          <DialogTitle className="text-xl font-extrabold text-foreground font-display">
+            {t('Complete Your Profile First')}
+          </DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground mt-2 leading-relaxed font-medium">
+            {t(
+              'Please complete your address and profile details first before creating a listing on Vastu-Rent so renters can contact you and pick up items from your location.',
+            )}
+          </DialogDescription>
+          <div className="mt-6 flex flex-col gap-3">
+            <Button
+              onClick={() => {
+                setCompleteProfileModalOpen(false)
+                handleTabChange('address')
+              }}
+              className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded-xl h-11 active:scale-98 transition-all cursor-pointer border-none shadow-md"
+            >
+              {t('Complete Profile Now')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   )
 }

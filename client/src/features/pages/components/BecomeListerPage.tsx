@@ -19,11 +19,21 @@ import { useTranslation } from '#/context/TranslationContext'
 export function BecomeListerPage() {
   const { t } = useTranslation()
   const { data: session } = authClient.useSession()
-  const isLoggedIn = !!session?.user
+  const user = session?.user as any
+  const isLoggedIn = !!user
+  const isProfileComplete = Boolean(user?.addressLine1 && user?.city)
 
-  // Logged-in users go straight to their listings dashboard.
-  // Guests go to sign up first.
-  const ctaHref = isLoggedIn ? '/account/listings' : '/signup'
+  let targetTo: any = '/signup'
+  let targetSearch: any = undefined
+
+  if (isLoggedIn) {
+    if (isProfileComplete) {
+      targetTo = '/account/listings'
+    } else {
+      targetTo = '/account'
+      targetSearch = { completeProfile: 'true' }
+    }
+  }
 
   const features = [
     {
@@ -98,7 +108,7 @@ export function BecomeListerPage() {
               {t('Lister Hero Description')}
             </motion.p>
             <motion.div variants={fadeUp}>
-              <Link to={ctaHref}>
+              <Link to={targetTo} search={targetSearch}>
                 <Button size="lg" className="flex items-center gap-3">
                   {isLoggedIn ? (
                     <>
@@ -190,7 +200,7 @@ export function BecomeListerPage() {
                 alt="Happy Lister"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  ;(e.target as any).src =
+                  ; (e.target as any).src =
                     'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Lister'
                 }}
               />
@@ -234,7 +244,7 @@ export function BecomeListerPage() {
             {t('Your items could be earning for you right now.')}
           </motion.h2>
           <motion.div variants={fadeUp}>
-            <Link to={ctaHref}>
+            <Link to={targetTo} search={targetSearch}>
               <Button size="lg">
                 {isLoggedIn
                   ? t('Go to My Listings')

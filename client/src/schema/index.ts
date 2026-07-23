@@ -9,3 +9,5 @@ export type { ListingSchema } from './listing-schema'
 
 export { addressSchema } from './address-schema'
 export type { AddressSchema } from './address-schema'
+
+export * from './profile-schema'

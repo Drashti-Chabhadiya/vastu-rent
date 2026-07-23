@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
-import { useNotifications } from '#/hook'
+import { useNotifications, useMyListings } from '#/hook'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
@@ -136,6 +136,9 @@ export function AccountLayout() {
       )
     : 0
 
+  const { data: myListings } = useMyListings()
+  const hasListings = myListings && myListings.length > 0
+
   const menuItems = [
     {
       id: 'personal',
@@ -156,7 +159,9 @@ export function AccountLayout() {
       icon: Building2,
       href: '/account/listings',
     },
-    { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
+    ...(hasListings
+      ? [{ id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' }]
+      : []),
     {
       id: 'messages',
       label: 'Messages',

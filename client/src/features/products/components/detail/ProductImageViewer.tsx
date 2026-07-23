@@ -598,16 +598,18 @@ export const ProductImageViewer = ({
             onClick={handleContainerClick}
             onDoubleClick={handleDoubleClick}
           >
-            {/* Previous slide arrow (only visible on desktop or if not swiping/dragging) */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                handlePrev()
-              }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/80 hover:text-white transition active:scale-95 hidden sm:flex"
-            >
-              <ChevronLeft size={24} />
-            </button>
+            {/* Previous slide arrow (only visible if more than 1 image) */}
+            {images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handlePrev()
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/80 hover:text-white transition active:scale-95 hidden sm:flex"
+              >
+                <ChevronLeft size={24} />
+              </button>
+            )}
 
             {/* Multi-image Horizontal Swipe Carousel Track */}
             <div
@@ -658,48 +660,52 @@ export const ProductImageViewer = ({
               })}
             </div>
 
-            {/* Next slide arrow (only visible on desktop or if not swiping/dragging) */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                handleNext()
-              }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/80 hover:text-white transition active:scale-95 hidden sm:flex"
-            >
-              <ChevronRight size={24} />
-            </button>
+            {/* Next slide arrow (only visible if more than 1 image) */}
+            {images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleNext()
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 flex items-center justify-center text-white/80 hover:text-white transition active:scale-95 hidden sm:flex"
+              >
+                <ChevronRight size={24} />
+              </button>
+            )}
           </div>
 
-          {/* Footer Slide Picker */}
-          <div className="w-full bg-gradient-to-t from-black/80 to-transparent p-4 pb-6 z-50 flex flex-col items-center gap-3">
-            <span className="text-xs text-white/40 sm:hidden">
-              Swipe left/right to change • Drag down or pinch to close
-            </span>
-            <div className="flex gap-2 overflow-x-auto max-w-full pb-2 scrollbar-thin scrollbar-thumb-white/20 justify-start sm:justify-center">
-              {images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    resetZoom()
-                    setSelectedImage(idx)
-                  }}
-                  className={cn(
-                    'relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 shrink-0 p-0',
-                    selectedImage === idx
-                      ? 'border-brand scale-105 shadow-lg shadow-black/50'
-                      : 'border-transparent opacity-40 hover:opacity-80',
-                  )}
-                >
-                  <img
-                    src={img}
-                    alt=""
-                    className="w-full h-full object-cover pointer-events-none"
-                  />
-                </button>
-              ))}
+          {/* Footer Slide Picker (only visible if more than 1 image) */}
+          {images.length > 1 && (
+            <div className="w-full bg-gradient-to-t from-black/80 to-transparent p-4 pb-6 z-50 flex flex-col items-center gap-3">
+              <span className="text-xs text-white/40 sm:hidden">
+                Swipe left/right to change • Drag down or pinch to close
+              </span>
+              <div className="flex gap-2 overflow-x-auto max-w-full pb-2 scrollbar-thin scrollbar-thumb-white/20 justify-start sm:justify-center">
+                {images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      resetZoom()
+                      setSelectedImage(idx)
+                    }}
+                    className={cn(
+                      'relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all duration-200 shrink-0 p-0',
+                      selectedImage === idx
+                        ? 'border-brand scale-105 shadow-lg shadow-black/50'
+                        : 'border-transparent opacity-40 hover:opacity-80',
+                    )}
+                  >
+                    <img
+                      src={img}
+                      alt=""
+                      className="w-full h-full object-cover pointer-events-none"
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

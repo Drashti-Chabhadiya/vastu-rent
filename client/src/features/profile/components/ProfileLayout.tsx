@@ -9,17 +9,17 @@ import {
   Bell,
   HelpCircle,
   LogOut,
-  Leaf,
   ChevronRight,
+  Leaf,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
+import { useMyListings } from '#/hook'
 import { useState, useEffect } from 'react'
 import { Button } from '#/components/ui/button'
 import { AccountLayoutSkeleton } from '#/components/skeletons'
 import { UserAvatar } from '#/components/common/UserAvatar'
-
 import { useTranslation } from '#/context/TranslationContext'
 
 // ─── Logout Confirmation Dialog ───────────────────────────────────────────────
@@ -102,6 +102,9 @@ export function ProfileLayout() {
     window.location.href = '/'
   }
 
+  const { data: myListings } = useMyListings()
+  const hasListings = myListings && myListings.length > 0
+
   const menuItems = [
     { id: 'personal', label: 'My Profile', icon: User, href: '/account' },
     {
@@ -117,7 +120,9 @@ export function ProfileLayout() {
       href: '/account/listings',
     },
     { id: 'wishlist', label: 'Wishlist', icon: Heart, href: '/wishlist' },
-    { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
+    ...(hasListings
+      ? [{ id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' }]
+      : []),
     {
       id: 'messages',
       label: 'Messages',
@@ -265,12 +270,12 @@ export function ProfileLayout() {
             {/* Main Content */}
             <main className="flex-1 min-w-0 w-full">
               {activeTab === 'personal' ||
-              activeTab === 'bookings' ||
-              activeTab === 'listings' ||
-              activeTab === 'reviews' ||
-              activeTab === 'messages' ||
-              activeTab === 'notifications' ||
-              activeTab === 'settings' ? (
+                activeTab === 'bookings' ||
+                activeTab === 'listings' ||
+                activeTab === 'reviews' ||
+                activeTab === 'messages' ||
+                activeTab === 'notifications' ||
+                activeTab === 'settings' ? (
                 <Outlet />
               ) : (
                 <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

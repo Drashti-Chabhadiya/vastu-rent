@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authClient } from '#/lib/auth/auth-client'
@@ -24,7 +24,6 @@ import {
 
 export function LoginForm() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
@@ -99,7 +98,7 @@ export function LoginForm() {
     setIsUnverified(false)
     setResendError(null)
 
-    const { data, error } = await authClient.signIn.email({
+    const { error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
       // No callbackURL — would cause a redirect response instead of JSON on the server
@@ -121,26 +120,13 @@ export function LoginForm() {
     }
 
     if (Capacitor.isNativePlatform()) {
-      // Poll getSession() to confirm the session is live (up to ~3 seconds)
-      let sessionOk = false
-      for (let i = 0; i < 6; i++) {
-        const { data: sessionData } = await authClient.getSession()
-        if (sessionData?.session) {
-          sessionOk = true
-          break
-        }
-        await new Promise((r) => setTimeout(r, 500))
-      }
-
-      if (sessionOk || data?.user) {
-        window.location.replace('/')
-      } else {
-        setServerError(
-          'Login succeeded but session could not be confirmed. Please try again.',
-        )
-      }
+      const searchParams = new URLSearchParams(window.location.search)
+      const targetRedirect = searchParams.get('redirect') || '/'
+      window.location.replace(targetRedirect)
     } else {
-      navigate({ to: '/' })
+      const searchParams = new URLSearchParams(window.location.search)
+      const targetRedirect = searchParams.get('redirect') || '/'
+      window.location.href = targetRedirect
     }
   }
 

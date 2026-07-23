@@ -78,27 +78,39 @@ export function ProductCard({ product }: ProductCardProps) {
             </Button>
           </div>
           {/* Listing Source Badge */}
-          <div className="absolute bottom-3 left-3 z-10">
-            <span
-              className={cn(
-                'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-md border',
-                product.listingType === 'shop'
-                  ? 'bg-amber-50/90 text-amber-700 border-amber-200/60'
-                  : 'bg-emerald-50/90 text-emerald-700 border-emerald-200/60',
-              )}
-            >
-              {product.listingType === 'shop' ? (
-                <Store className="w-3 h-3" strokeWidth={2.5} />
-              ) : (
-                <Home className="w-3 h-3" strokeWidth={2.5} />
-              )}
-              <span className="max-w-[90px] truncate">
-                {product.listingType === 'shop'
-                  ? product.shopName || 'Shop'
-                  : 'Home'}
-              </span>
-            </span>
-          </div>
+          {(() => {
+            const isShop =
+              product.listingType === 'shop' ||
+              (product as any).owner?.addressType === 'shop' ||
+              (product as any).user?.addressType === 'shop'
+            const displayShopName =
+              product.shopName ||
+              (product as any).owner?.shopName ||
+              (product as any).user?.shopName ||
+              t('From Shop / Store')
+
+            return (
+              <div className="absolute bottom-3 left-3 z-10">
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-md border',
+                    isShop
+                      ? 'bg-amber-50/90 text-amber-700 border-amber-200/60'
+                      : 'bg-emerald-50/90 text-emerald-700 border-emerald-200/60',
+                  )}
+                >
+                  {isShop ? (
+                    <Store className="w-3 h-3" strokeWidth={2.5} />
+                  ) : (
+                    <Home className="w-3 h-3" strokeWidth={2.5} />
+                  )}
+                  <span className="max-w-[90px] truncate">
+                    {isShop ? displayShopName : t('From Home')}
+                  </span>
+                </span>
+              </div>
+            )
+          })()}
         </div>
 
         <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
@@ -111,7 +123,7 @@ export function ProductCard({ product }: ProductCardProps) {
               {formatCurrency(product.price)}
             </span>
             <span className="text-xs font-medium text-muted-foreground/85">
-              /day
+              {t('/day')}
             </span>
           </div>
           <div className="flex items-center gap-1">
@@ -128,12 +140,12 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-1.5 text-muted-foreground/85 mb-4">
           <MapPin className="w-3.5 h-3.5 shrink-0" />
           <span className="text-xs font-medium truncate">
-            {product.location || 'Surat'}
+            {formatDigits(product.location || 'Surat')}
           </span>
         </div>
 
         <Button className="w-full shrink-0">
-          {t('rentNow') || 'Rent Now'}
+          {t('Rent Now')}
         </Button>
       </div>
     </Link>

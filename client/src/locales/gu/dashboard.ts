@@ -759,7 +759,7 @@ export const dashboard = {
   'Update your personal details and how others see you.':
     'તમારી વ્યક્તિગત વિગતો અને અન્ય લોકો તમને કેવી રીતે જુએ છે તે અપડેટ કરો.',
   'Full Name': 'પૂરું નામ',
-  'Email Address': 'ઇમેઇલ સરનામું',
+  'Email Address': 'તમારું ઇમેઇલ',
   'Phone Number': 'ફોન નંબર',
   Bio: 'બાયો',
   'Tell others a little about yourself...':
@@ -848,4 +848,8 @@ export const dashboard = {
   'Type DELETE here': 'અહીં DELETE લખો',
   'Deleting...': 'કાઢી નાખી રહ્યા છીએ...',
   'Delete My Account': 'મારું એકાઉન્ટ કાઢી નાખો',
+  'No all listings yet': 'હજુ સુધી કોઈ લિસ્ટિંગ નથી',
+  'No active listings yet': 'હજુ સુધી કોઈ એક્ટિવ લિસ્ટિંગ નથી',
+  'No inactive listings yet': 'હજુ સુધી કોઈ નિષ્ક્રિય લિસ્ટિંગ નથી',
+  'No draft listings yet': 'હજુ સુધી કોઈ ડ્રાફ્ટ લિસ્ટિંગ નથી',
 }

@@ -133,6 +133,8 @@ export const authClient = createAuthClient({
       state: { type: 'string', required: false },
       pincode: { type: 'string', required: false },
       country: { type: 'string', required: false },
+      shopName: { type: 'string', required: false },
+      addressType: { type: 'string', required: false },
     },
   },
 })

@@ -12,7 +12,7 @@ export const profile = {
   // Form Labels & Genders
   'Full Name': 'પૂરું નામ',
   Gender: 'જાતિ',
-  'Email Address': 'ઇમેઇલ સરનામું',
+  'Email Address': 'તમારું ઇમેઇલ',
   Location: 'સ્થાન',
   'Phone Number': 'ફોન નંબર',
   'Preferred Language': 'પસંદગીની ભાષા',
@@ -107,11 +107,18 @@ export const profile = {
 
   // Rental Address Section
   'Rental Address': 'વસ્તુ આપવાનું સરનામું (Rental Address)',
+  'Rental Address Title': 'તમારું રેન્ટલ સરનામું સુયોજિત કરો',
   'Rental Address Subtitle':
     'તમે જે જગ્યાએથી તમારી પ્રોડક્ટ્સ રેન્ટ (Rent) પર આપવા માંગો છો તેનું સાચું સરનામું અહિંયા ભરો.',
+  'Where do you rent items from?': 'તમે વસ્તુઓ ક્યાંથી રેન્ટ પર આપો છો?',
   'Address Type': 'સરનામાનો પ્રકાર (Address Type)',
   'Home Address': 'ઘરનું સરનામું (Home Address)',
   'Shop Address': 'દુકાનનું સરનામું (Shop Address)',
+  'Shop / Business': 'દુકાન / બિઝનેસ',
+  'Renting items out of your house or apartment':
+    'તમારા ઘર અથવા એપાર્ટમેન્ટમાંથી વસ્તુઓ ભાડે આપવી',
+  'Renting items out of a shop or commercial location':
+    'દુકાન અથવા વ્યાપારી સ્થળેથી વસ્તુઓ ભાડે આપવી',
   'Shop Name': 'દુકાનનું નામ',
   'Shop / Home Name (Optional)': 'દુકાન / ઘરનું નામ (મરજિયાત)',
   'Address Line 1': 'સરનામું લાઇન ૧',
@@ -121,4 +128,16 @@ export const profile = {
   State: 'રાજ્ય',
   Country: 'દેશ',
   Pincode: 'પીનકોડ',
+  'Please complete your profile and rental address first before creating a listing.':
+    'તમારી પ્રોડક્ટ લિસ્ટ કરવા માટે કૃપા કરીને પહેલા તમારું સરનામું અને પ્રોફાઇલ વિગતો પૂર્ણ કરો.',
+  'Complete Profile to Add Listings': 'લિસ્ટિંગ ઉમેરવા માટે પ્રોફાઇલ પૂરું કરો',
+  'Please complete your rental address details below so customers can contact you and pick up items from your location.':
+    'વાસ્તુ પર તમારી વસ્તુઓ લિસ્ટ કરવા માટે કૃપા કરીને નીચે તમારું સાચું સરનામું પૂર્ણ કરો.',
+  'Complete Your Profile First': 'પહેલા તમારી પ્રોફાઇલ પૂર્ણ કરો',
+  'Please complete your address and profile details first before creating a listing on Vastu-Rent so renters can contact you and pick up items from your location.':
+    'વાસ્તુ-રેન્ટ પર લિસ્ટિંગ બનાવતા પહેલા કૃપા કરીને તમારી પ્રોફાઇલ અને સરનામાની વિગતો પૂર્ણ કરો, જેથી ભાડુઆતો તમારો સંપર્ક કરી શકે અને તમારા સ્થાનેથી વસ્તુઓ મેળવી શકે.',
+  'Complete Profile Now': 'હમણાં પ્રોફાઇલ પૂર્ણ કરો',
+  'Google Map Link (Optional)': 'ગૂગલ મેપ લિંક (મરજિયાત)',
+  'How to get Google Maps Link?': 'ગૂગલ મેપ્સ લિંક કેવી રીતે મેળવવી?',
+  'Paste your Google Maps link here': 'અહીં તમારી ગૂગલ મેપ્સ લિંક પેસ્ટ કરો',
 }

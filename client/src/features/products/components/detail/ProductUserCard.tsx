@@ -13,6 +13,7 @@ import { useCreateConversation } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
 import { useState } from 'react'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ProductUserCardProps {
   user: any
@@ -25,6 +26,7 @@ export const ProductUserCard = ({
   instagramUrl,
   facebookUrl,
 }: ProductUserCardProps) => {
+  const { t, formatDate } = useTranslation()
   const { data: session } = authClient.useSession()
   const navigate = useNavigate()
   const [isStartingChat, setIsStartingChat] = useState(false)
@@ -61,7 +63,7 @@ export const ProductUserCard = ({
 
   return (
     <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-5">
-      <h3 className="text-base font-bold text-foreground">Listed by</h3>
+      <h3 className="text-base font-bold text-foreground">{t('Listed by')}</h3>
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-muted/50 overflow-hidden shrink-0">
           {user.image ? (
@@ -78,7 +80,7 @@ export const ProductUserCard = ({
         </div>
         <div>
           <p className="font-bold text-foreground text-sm">
-            {user.name || 'Verified Lister'}
+            {user.name || t('Verified Lister')}
           </p>
           <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
             <Star size={12} className="text-primary fill-brand" />
@@ -86,10 +88,10 @@ export const ProductUserCard = ({
               {user.rating || '0.0'}
             </span>
             <span className="text-xs text-muted-foreground/85">
-              ({user.listingsCount || 0} Listings)
+              ({user.listingsCount || 0} {t('Listings')})
             </span>
             <Badge className="bg-primary-soft text-primary-hover border-none px-1 py-0 rounded flex items-center gap-0.5 font-bold text-[8px] uppercase ml-1">
-              <CheckCircle2 size={8} /> Verified
+              <CheckCircle2 size={8} /> {t('Verified')}
             </Badge>
           </div>
         </div>
@@ -97,9 +99,9 @@ export const ProductUserCard = ({
       <div className="space-y-2.5">
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">
           <Calendar size={14} className="shrink-0" />
-          Member since{' '}
+          {t('Member since')}{' '}
           {user.createdAt
-            ? new Date(user.createdAt).toLocaleDateString('en-IN', {
+            ? formatDate(user.createdAt, {
                 month: 'long',
                 year: 'numeric',
               })
@@ -107,14 +109,14 @@ export const ProductUserCard = ({
         </div>
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">
           <MessageCircle size={14} className="shrink-0" />
-          Usually responds in a few hours
+          {t('Usually responds in a few hours')}
         </div>
       </div>
 
       {(instagramUrl || facebookUrl) && (
         <div className="pt-3 border-t border-border/30 space-y-2">
           <p className="text-[11px] font-black text-muted-foreground uppercase tracking-wider">
-            Social Links
+            {t('Social Links')}
           </p>
           <div className="flex flex-wrap gap-2">
             {instagramUrl && (
@@ -155,7 +157,7 @@ export const ProductUserCard = ({
             variant="outline"
             className="w-full h-10 rounded-xl border-border font-bold text-primary hover:bg-primary/5 hover:border-brand transition-colors"
           >
-            View Profile
+            {t('View Profile')}
           </Button>
         </Link>
 
@@ -165,7 +167,7 @@ export const ProductUserCard = ({
           className="w-full h-10 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold flex items-center justify-center gap-2 transition-colors"
         >
           <MessageCircle size={15} />
-          {isStartingChat ? 'Opening Chat...' : 'Contact Lister'}
+          {isStartingChat ? t('Opening Chat...') : t('Contact Lister')}
         </Button>
       </div>
     </div>

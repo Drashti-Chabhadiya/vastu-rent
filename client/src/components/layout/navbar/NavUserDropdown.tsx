@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { isAdminRole } from '#/lib/auth/roles'
+import { useMyListings } from '#/hook'
 
 interface NavUserDropdownProps {
   session: any
@@ -35,6 +36,9 @@ export function NavUserDropdown({
   onSignOut,
   t,
 }: NavUserDropdownProps) {
+  const { data: myListings } = useMyListings()
+  const hasListings = myListings && myListings.length > 0
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -309,8 +313,17 @@ export function NavUserDropdown({
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-muted-dark/30" />
-                    <span>{t('1+ Active Listings')}</span>
+                    <span
+                      className={cn(
+                        'w-1.5 h-1.5 rounded-full',
+                        hasListings ? 'bg-emerald-500' : 'bg-muted-dark/30',
+                      )}
+                    />
+                    <span
+                      className={hasListings ? 'text-foreground/70' : ''}
+                    >
+                      {t('1+ Active Listings')}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -384,7 +397,7 @@ export function NavUserDropdown({
             </Link>
           )}
 
-          {session.user && !isAdminRole(session.user.role) && (
+          {session.user && !isAdminRole(session.user.role) && hasListings && (
             <Link to="/dashboard">
               <DropdownMenuItem
                 className={cn(
@@ -432,23 +445,25 @@ export function NavUserDropdown({
             </Link>
           )}
 
-          <Link to="/account/reviews">
-            <DropdownMenuItem
-              className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
-              )}
-            >
-              <Star className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
-              <div>
-                <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
-                  {t('Reviews')}
-                </p>
-                <p className={cn('text-xs', 'text-muted-foreground/85')}>
-                  {t('Your feedback')}
-                </p>
-              </div>
-            </DropdownMenuItem>
-          </Link>
+          {hasListings && (
+            <Link to="/account/reviews">
+              <DropdownMenuItem
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors',
+                )}
+              >
+                <Star className={cn('h-4', 'w-4', 'text-muted-foreground/85')} />
+                <div>
+                  <p className={cn('text-sm', 'font-medium', 'text-foreground')}>
+                    {t('Reviews')}
+                  </p>
+                  <p className={cn('text-xs', 'text-muted-foreground/85')}>
+                    {t('Your feedback')}
+                  </p>
+                </div>
+              </DropdownMenuItem>
+            </Link>
+          )}
 
           <Link to="/account/messages">
             <DropdownMenuItem

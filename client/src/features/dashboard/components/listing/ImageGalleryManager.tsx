@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Plus, Trash2, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
@@ -33,7 +34,7 @@ export const ImageGalleryManager = ({
       onChange([...images, ...newUrls])
     } catch (error) {
       console.error('Upload Error:', error)
-      alert('Failed to upload one or more images. Please try again.')
+      toast.error('Failed to upload one or more images. Please try again.')
     }
   }
 

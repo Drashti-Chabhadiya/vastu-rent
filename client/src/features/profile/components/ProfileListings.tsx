@@ -15,6 +15,7 @@ import {
   Package,
   Trash2,
   Search,
+  Pencil,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
@@ -157,30 +158,56 @@ export function ProfileListings() {
       return matchesSearch && matchesCategory && matchesStatus
     }) || []
 
-  // Mocked/Dynamically aggregated total performance stats matching the designs
+  // True dynamic total performance stats aggregated from actual database listings
   const totalViews =
     listings?.reduce(
-      (sum: number, item: any) => sum + (item.views || 103),
+      (sum: number, item: any) => sum + (item.views || 0),
       0,
-    ) || 413
+    ) || 0
   const totalBookings =
     listings?.reduce(
-      (sum: number, item: any) => sum + (item.bookingsCount || 20),
+      (sum: number, item: any) => sum + (item.bookingsCount || 0),
       0,
-    ) || 80
+    ) || 0
   const totalEarnings =
     listings?.reduce(
-      (sum: number, item: any) => sum + (item.bookingsCount || 20) * item.price,
+      (sum: number, item: any) => sum + (item.earnings || 0),
       0,
-    ) || 55640
-  const avgRatingValue = listings?.length
+    ) || 0
+
+  const ratedListings = listings?.filter((item: any) => parseFloat(item.rating || '0') > 0) || []
+  const avgRatingValue = ratedListings.length
     ? (
-        listings.reduce(
-          (sum: number, item: any) => sum + (parseFloat(item.rating) || 4.8),
-          0,
-        ) / listings.length
-      ).toFixed(1)
-    : '4.8'
+      ratedListings.reduce(
+        (sum: number, item: any) => sum + parseFloat(item.rating),
+        0,
+      ) / ratedListings.length
+    ).toFixed(1)
+    : '0.0'
+
+  const handleAddListing = () => {
+    const u = session?.user as any
+    if (
+      u &&
+      (!u.name ||
+        !u.phone ||
+        !u.addressLine1 ||
+        !u.street ||
+        !u.city ||
+        !u.state ||
+        !u.pincode)
+    ) {
+      toast.error(
+        t(
+          'Please complete your profile and rental address first before creating a listing.',
+        ),
+        { duration: 4000 },
+      )
+      window.location.href = '/account?completeProfile=true#address'
+      return
+    }
+    setIsAddOpen(true)
+  }
 
   return (
     <motion.div
@@ -204,7 +231,7 @@ export function ProfileListings() {
         </div>
         <div className="flex items-center gap-3">
           <Button
-            onClick={() => setIsAddOpen(true)}
+            onClick={handleAddListing}
             className="bg-primary hover:bg-primary-hover text-primary-foreground font-black text-xs px-5 h-10 rounded-full flex items-center gap-1.5 active:scale-95 shadow-sm cursor-pointer border-none shadow-primary/15"
           >
             <Plus size={15} strokeWidth={3} />
@@ -353,7 +380,7 @@ export function ProfileListings() {
             <Package className="w-8 h-8 text-muted-dark" />
           </div>
           <h3 className="text-lg font-extrabold text-foreground/90">
-            {t('No')} {t(activeTab)} {t('listings yet')}
+            {t(`No ${activeTab} listings yet`)}
           </h3>
           <p className="text-muted-dark text-xs max-w-xs mx-auto mt-1.5 font-bold">
             {t(
@@ -361,10 +388,10 @@ export function ProfileListings() {
             )}
           </p>
           <Button
-            onClick={() => setIsAddOpen(true)}
+            onClick={handleAddListing}
             className="bg-primary hover:bg-primary-hover text-primary-foreground font-black text-xs px-6 h-10 rounded-full active:scale-95 transition-all mt-5 border-none shadow-sm cursor-pointer"
           >
-            Create First Listing
+            {t('Create First Listing')}
           </Button>
         </motion.div>
       ) : (
@@ -417,7 +444,7 @@ export function ProfileListings() {
                     <div className="flex items-center gap-1.5">
                       <Eye size={13} className="text-muted-dark stroke-[2.5]" />
                       <span>
-                        {item.views || 120} {t('Views')}
+                        {item.views || 0} {t('Views')}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -426,7 +453,7 @@ export function ProfileListings() {
                         className="text-muted-dark stroke-[2.5]"
                       />
                       <span>
-                        {item.bookingsCount || 24} {t('Bookings')}
+                        {item.bookingsCount || 0} {t('Bookings')}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -435,7 +462,9 @@ export function ProfileListings() {
                         className="text-muted-dark stroke-[2.5]"
                       />
                       <span>
-                        {parseFloat(item.rating || '4.8').toFixed(1)}{' '}
+                        {parseFloat(item.rating || '0.0') > 0
+                          ? parseFloat(item.rating).toFixed(1)
+                          : '0.0'}{' '}
                         {t('Rating')}
                       </span>
                     </div>
@@ -455,23 +484,12 @@ export function ProfileListings() {
                   </div>
 
                   <div className="flex items-center gap-2.5 w-full md:w-auto mt-4 md:mt-0 relative">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setProductToEdit(item)
-                        setIsEditOpen(true)
-                      }}
-                      className="rounded-full border-border text-foreground/80 font-black text-xs px-5 h-9 w-full md:w-auto flex items-center justify-center hover:bg-muted-light cursor-pointer shadow-sm active:scale-95"
-                    >
-                      {t('Edit')}
-                    </Button>
-
                     {/* Dropdown container */}
                     <div className="relative">
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
-                        className="rounded-full border border-border text-muted-dark hover:text-muted-foreground h-9 w-9 flex items-center justify-center shadow-sm cursor-pointer"
+                        className="rounded-full border border-border text-muted-dark hover:text-foreground hover:bg-muted/50 h-9 w-9 flex items-center justify-center shadow-sm cursor-pointer"
                         onClick={() =>
                           setOpenDropdownId(
                             openDropdownId === item.id ? null : item.id,
@@ -481,23 +499,35 @@ export function ProfileListings() {
                         <MoreVertical size={16} />
                       </Button>
 
-                      {/* Simple Custom React Dropdown */}
+                      {/* Custom React Dropdown Menu */}
                       {openDropdownId === item.id && (
                         <>
                           <div
                             className="fixed inset-0 z-40"
                             onClick={() => setOpenDropdownId(null)}
                           />
-                          <div className="absolute right-0 bottom-11 md:bottom-auto md:top-11 bg-card rounded-2xl shadow-xl border border-border/30 p-1.5 z-50 min-w-[130px] animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="absolute right-0 bottom-11 md:bottom-auto md:top-11 bg-card rounded-2xl shadow-xl border border-border/40 p-1.5 z-50 min-w-[150px] animate-in fade-in slide-in-from-top-2 duration-200 space-y-1">
+                            <Button
+                              variant="ghost"
+                              onClick={() => {
+                                setOpenDropdownId(null)
+                                setProductToEdit(item)
+                                setIsEditOpen(true)
+                              }}
+                              className="w-full text-left px-3.5 py-2 text-xs font-bold text-foreground hover:bg-muted rounded-xl flex items-center gap-2.5 cursor-pointer transition-colors justify-start h-auto"
+                            >
+                              <Pencil size={13} className="text-primary" /> {t('Edit')}
+                            </Button>
+
                             <Button
                               variant="ghost"
                               onClick={() => {
                                 setOpenDropdownId(null)
                                 setProductToDelete(item)
                               }}
-                              className="w-full text-left px-3.5 py-2 text-xs font-bold text-destructive hover:bg-danger hover:text-destructive rounded-xl flex items-center gap-2 cursor-pointer transition-colors justify-start h-auto"
+                              className="w-full text-left px-3.5 py-2 text-xs font-bold text-destructive hover:bg-danger hover:text-destructive rounded-xl flex items-center gap-2.5 cursor-pointer transition-colors justify-start h-auto"
                             >
-                              <Trash2 size={12} /> {t('Delete Listing')}
+                              <Trash2 size={13} /> {t('Delete Listing')}
                             </Button>
                           </div>
                         </>

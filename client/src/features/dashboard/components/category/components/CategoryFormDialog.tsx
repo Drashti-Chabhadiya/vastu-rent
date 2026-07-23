@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { toast } from 'sonner'
 import * as LucideIcons from 'lucide-react'
 import {
   Plus,
@@ -107,7 +108,7 @@ export const CategoryFormDialog = ({
         setCategoryImage(url)
       } catch (error) {
         console.error('Upload Error:', error)
-        alert(t('Failed to upload image. Please try again.'))
+        toast.error(t('Failed to upload image. Please try again.'))
       }
     }
   }

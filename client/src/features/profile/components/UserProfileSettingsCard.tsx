@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
 import { PersonalInfoForm } from './PersonalInfoForm'
 import { ImageEditorModal } from './ImageEditorModal'
@@ -7,6 +7,11 @@ import { LoadingOverlay } from '#/components/ui/loader'
 import { toast } from 'sonner'
 import { useTranslation, normalizeLanguage } from '#/context/TranslationContext'
 import { useProfileData } from '#/hook'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { profileSchema, personalSchema, addressSchema } from '#/schema'
+import type { ProfileSchema } from '#/schema'
+import { Form } from '#/components/ui/form'
 
 interface UserProfileSettingsCardProps {
   viewSection?: 'all' | 'personal' | 'address'
@@ -18,19 +23,10 @@ export function UserProfileSettingsCard({
   hideLeftSummary = false,
 }: UserProfileSettingsCardProps) {
   const {
-    name,
-    setName,
     phone,
-    setPhone,
-    location,
-    setLocation,
     gender,
-    setGender,
     language,
-    setLanguage,
     dob,
-    setDob,
-    currency,
     emailNotifications,
     smsNotifications,
     marketingEmails,
@@ -48,42 +44,89 @@ export function UserProfileSettingsCard({
     uploadImage,
     updateSettings,
     addressLine1,
-    setAddressLine1,
     addressLine2,
-    setAddressLine2,
     street,
-    setStreet,
     city,
-    setCity,
     state,
-    setState,
     pincode,
-    setPincode,
     country,
-    setCountry,
     shopName,
-    setShopName,
     addressType,
-    setAddressType,
   } = useProfileData()
 
   const { t, changeLanguage } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const isSaving = busy
 
+  const formatGender = (val?: string) => {
+    if (!val || !val.trim()) return ''
+    const trimmed = val.trim()
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase()
+  }
+
+  const getFormValues = (): ProfileSchema => ({
+    name: session?.user?.name || '',
+    gender: formatGender(gender || (session?.user as any)?.gender),
+    phone: phone || '',
+    language: (session?.user as any)?.language || language || 'en',
+    dob: dob || '',
+    addressType: (addressType as 'home' | 'shop') || 'home',
+    shopName: shopName || '',
+    addressLine1: addressLine1 || '',
+    addressLine2: addressLine2 || '',
+    street: street || '',
+    city: city || '',
+    state: state || '',
+    pincode: pincode || '',
+    country: country || 'India',
+  })
+
+  const activeSchema =
+    viewSection === 'personal'
+      ? personalSchema
+      : viewSection === 'address'
+        ? addressSchema
+        : profileSchema
+
+  const form = useForm<ProfileSchema>({
+    resolver: zodResolver(activeSchema) as any,
+    defaultValues: getFormValues(),
+  })
+
+  // Sync form with profile data when session/data loads
+  useEffect(() => {
+    if (!isEditing) {
+      form.reset(getFormValues())
+    }
+  }, [
+    session,
+    gender,
+    phone,
+    language,
+    dob,
+    addressType,
+    shopName,
+    addressLine1,
+    addressLine2,
+    street,
+    city,
+    state,
+    pincode,
+    country,
+    isEditing,
+    form,
+  ])
+
+  // Reset form when editing starts to grab latest data from session/profile hook
   const handleEditClick = () => {
-    setErrors({})
     if (isEditing) {
-      setName(session?.user.name || '')
       setImagePreview(null)
       setCroppedFile(null)
       setEditorImageSrc(null)
       setIsEditing(false)
-      const originalLang = (session?.user as any)?.language || ''
-      setLanguage(originalLang)
+      form.reset(getFormValues())
     } else {
       setIsEditing(true)
     }
@@ -113,42 +156,12 @@ export function UserProfileSettingsCard({
     setCroppedFile(file)
   }
 
-  const handleSaveChanges = async () => {
-    const newErrors: Record<string, string> = {}
-    if (viewSection === 'all' || viewSection === 'personal') {
-      if (!name.trim()) newErrors.name = 'Full Name is required'
-      if (phone.trim() && !/^\d{10}$/.test(phone.trim())) {
-        newErrors.phone = 'Phone number must be a valid 10-digit number'
-      } else if (!phone.trim()) {
-        newErrors.phone = 'Phone number is required'
-      }
-    }
-
-    if (viewSection === 'all' || viewSection === 'address') {
-      if (!addressLine1.trim())
-        newErrors.addressLine1 = 'Address Line 1 is required'
-      if (!street.trim()) newErrors.street = 'Street / Area is required'
-      if (!city.trim()) newErrors.city = 'City is required'
-      if (!state.trim()) newErrors.state = 'State is required'
-      if (!pincode.trim()) {
-        newErrors.pincode = 'Pincode is required'
-      } else if (!/^\d{6}$/.test(pincode.trim())) {
-        newErrors.pincode = 'Pincode must be exactly 6 digits'
-      }
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      toast.error(t('Please fix the errors in the form before saving.'))
-      return
-    }
-
-    setErrors({})
+  const onSubmit = async (values: ProfileSchema) => {
     try {
       // 1. Update name via better-auth if edited
-      if (name.trim() && name.trim() !== session?.user.name) {
+      if (values.name?.trim() && values.name.trim() !== session?.user.name) {
         await authClient.updateUser({
-          name: name.trim(),
+          name: values.name.trim(),
         })
       }
 
@@ -157,35 +170,43 @@ export function UserProfileSettingsCard({
         await uploadImage(croppedFile)
       }
 
-      // 3. Save other properties and alerts to the database
-      await updateSettings({
-        gender,
-        location,
-        phone,
-        language,
-        dob,
-        currency,
-        addressLine1,
-        addressLine2,
-        street,
-        city,
-        state,
-        pincode,
-        country,
-        shopName,
-        addressType,
+      // 3. Construct payload dynamically based on viewSection
+      const payload: Record<string, any> = {
         bookingAlerts: emailNotifications,
         settlementAlerts: smsNotifications,
         marketingAlerts: marketingEmails,
-      })
+      }
+
+      if (viewSection === 'personal' || viewSection === 'all') {
+        if (values.gender) payload.gender = values.gender
+        if (values.phone) payload.phone = values.phone
+        if (values.language) payload.language = values.language
+        if (values.dob) payload.dob = values.dob
+      }
+
+      if (viewSection === 'address' || viewSection === 'all') {
+        if (values.addressType) payload.addressType = values.addressType
+        if (values.shopName !== undefined) payload.shopName = values.shopName
+        if (values.addressLine1) payload.addressLine1 = values.addressLine1
+        if (values.addressLine2 !== undefined) payload.addressLine2 = values.addressLine2
+        if (values.street) payload.street = values.street
+        if (values.city) payload.city = values.city
+        if (values.state) payload.state = values.state
+        if (values.pincode) payload.pincode = values.pincode
+        if (values.country) payload.country = values.country
+      }
+
+      await updateSettings(payload)
 
       await refetch()
       setIsEditing(false)
       setImagePreview(null)
       setCroppedFile(null)
       setEditorImageSrc(null)
-      // Apply language change AFTER save so page reloads with new language
-      changeLanguage(normalizeLanguage(language))
+
+      if (values.language) {
+        changeLanguage(normalizeLanguage(values.language))
+      }
       toast.success(t('Profile changes saved successfully!'))
     } catch (error) {
       console.error('Save failed:', error)
@@ -197,28 +218,29 @@ export function UserProfileSettingsCard({
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Jan 2024'
 
+  const formValues = form.watch()
   const fields = [
-    { key: 'name', label: 'Full Name', value: name },
+    { key: 'name', label: 'Full Name', value: formValues.name },
     { key: 'email', label: 'Email Address', value: session?.user?.email },
     {
       key: 'image',
       label: 'Profile Photo',
       value: session?.user?.image || imagePreview,
     },
-    { key: 'phone', label: 'Phone Number', value: phone },
-    { key: 'gender', label: 'Gender', value: gender },
-    { key: 'language', label: 'Preferred Language', value: language },
-    { key: 'dob', label: 'Date of Birth', value: dob },
-    { key: 'addressLine1', label: 'Address Line 1', value: addressLine1 },
-    { key: 'street', label: 'Street / Area', value: street },
-    { key: 'city', label: 'City', value: city },
-    { key: 'state', label: 'State', value: state },
-    { key: 'pincode', label: 'Pincode', value: pincode },
+    { key: 'phone', label: 'Phone Number', value: formValues.phone },
+    { key: 'gender', label: 'Gender', value: formValues.gender },
+    { key: 'language', label: 'Preferred Language', value: formValues.language },
+    { key: 'dob', label: 'Date of Birth', value: formValues.dob },
+    { key: 'addressLine1', label: 'Address Line 1', value: formValues.addressLine1 },
+    { key: 'street', label: 'Street / Area', value: formValues.street },
+    { key: 'city', label: 'City', value: formValues.city },
+    { key: 'state', label: 'State', value: formValues.state },
+    { key: 'pincode', label: 'Pincode', value: formValues.pincode },
   ]
 
   const filledFields = fields.filter((f) => f.value && f.value.trim() !== '')
@@ -237,45 +259,18 @@ export function UserProfileSettingsCard({
       )}
 
       {hideLeftSummary ? (
-        <PersonalInfoForm
-          name={name}
-          setName={setName}
-          gender={gender}
-          setGender={setGender}
-          location={location}
-          setLocation={setLocation}
-          phone={phone}
-          setPhone={setPhone}
-          language={language}
-          setLanguage={setLanguage}
-          dob={dob}
-          setDob={setDob}
-          email={session.user.email}
-          isEditing={isEditing}
-          handleEditClick={handleEditClick}
-          handleSaveChanges={handleSaveChanges}
-          isSaving={isSaving}
-          addressLine1={addressLine1}
-          setAddressLine1={setAddressLine1}
-          addressLine2={addressLine2}
-          setAddressLine2={setAddressLine2}
-          street={street}
-          setStreet={setStreet}
-          city={city}
-          setCity={setCity}
-          state={state}
-          setState={setState}
-          pincode={pincode}
-          setPincode={setPincode}
-          country={country}
-          setCountry={setCountry}
-          shopName={shopName}
-          setShopName={setShopName}
-          addressType={addressType}
-          setAddressType={setAddressType}
-          errors={errors}
-          viewSection={viewSection}
-        />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <PersonalInfoForm
+              form={form}
+              email={session?.user.email || ''}
+              isEditing={isEditing}
+              handleEditClick={handleEditClick}
+              isSaving={isSaving}
+              viewSection={viewSection}
+            />
+          </form>
+        </Form>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left User Summary Column (Reusable & Mobile Responsive) */}
@@ -288,50 +283,25 @@ export function UserProfileSettingsCard({
             handleFileChange={handleFileChange}
             completenessPercent={completenessPercent}
             missingFields={missingFields}
-            phone={phone}
+            phone={form.watch('phone') || ''}
             joinDate={joinDate}
           />
 
           {/* Right Personal Information Form Column */}
-          <PersonalInfoForm
-            name={name}
-            setName={setName}
-            gender={gender}
-            setGender={setGender}
-            location={location}
-            setLocation={setLocation}
-            phone={phone}
-            setPhone={setPhone}
-            language={language}
-            setLanguage={setLanguage}
-            dob={dob}
-            setDob={setDob}
-            email={session.user.email}
-            isEditing={isEditing}
-            handleEditClick={handleEditClick}
-            handleSaveChanges={handleSaveChanges}
-            isSaving={isSaving}
-            addressLine1={addressLine1}
-            setAddressLine1={setAddressLine1}
-            addressLine2={addressLine2}
-            setAddressLine2={setAddressLine2}
-            street={street}
-            setStreet={setStreet}
-            city={city}
-            setCity={setCity}
-            state={state}
-            setState={setState}
-            pincode={pincode}
-            setPincode={setPincode}
-            country={country}
-            setCountry={setCountry}
-            shopName={shopName}
-            setShopName={setShopName}
-            addressType={addressType}
-            setAddressType={setAddressType}
-            errors={errors}
-            viewSection={viewSection}
-          />
+          <div className="lg:col-span-2">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <PersonalInfoForm
+                  form={form}
+                  email={session?.user.email || ''}
+                  isEditing={isEditing}
+                  handleEditClick={handleEditClick}
+                  isSaving={isSaving}
+                  viewSection={viewSection}
+                />
+              </form>
+            </Form>
+          </div>
         </div>
       )}
 

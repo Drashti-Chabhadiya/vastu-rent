@@ -24,7 +24,7 @@ export const contact = {
     'ફોર્મ ભરો અને અમારી ટીમ શક્ય તેટલી વહેલી તકે તમારો સંપર્ક કરશે.',
   'Full name': 'પૂરું નામ',
   'Enter your full name': 'તમારું પૂરું નામ લખો',
-  'Email address': 'ઇમેઇલ સરનામું',
+  'Email address': 'તમારું ઇમેઇલ',
   'Enter your email': 'તમારું ઇમેઇલ લખો',
   Subject: 'વિષય',
   'What is this regarding?': 'આ શેના વિશે છે?',

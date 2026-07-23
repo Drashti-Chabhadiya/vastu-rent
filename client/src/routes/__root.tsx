@@ -132,11 +132,11 @@ function NotificationListener() {
         } else if (Notification.permission === 'default') {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
-              registerDeviceForPush().catch(() => {})
+              registerDeviceForPush().catch(() => { })
             }
           })
         } else if (Notification.permission === 'granted') {
-          registerDeviceForPush().catch(() => {})
+          registerDeviceForPush().catch(() => { })
         }
       }
     }
