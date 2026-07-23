@@ -135,6 +135,9 @@ export const authClient = createAuthClient({
       country: { type: 'string', required: false },
       shopName: { type: 'string', required: false },
       addressType: { type: 'string', required: false },
+      googleMapLink: { type: 'string', required: false },
+      instagramUrl: { type: 'string', required: false },
+      facebookUrl: { type: 'string', required: false },
     },
   },
 })

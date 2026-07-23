@@ -7,7 +7,7 @@ export type { LoginSchema } from './login-schema'
 export { listingSchema } from './listing-schema'
 export type { ListingSchema } from './listing-schema'
 
-export { addressSchema } from './address-schema'
-export type { AddressSchema } from './address-schema'
+export { addressSchema } from './profile-schema'
+export type { AddressSchema } from './profile-schema'
 
 export * from './profile-schema'

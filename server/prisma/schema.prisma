@@ -35,6 +35,10 @@ model User {
   stripeCustomerId      String?
   stripeSubscriptionId  String?
 
+  // Social Links
+  instagramUrl          String?
+  facebookUrl           String?
+
   // Bank & UPI Settlement details
   upiId         String?
   bankName      String?
@@ -192,8 +196,6 @@ model Product {
   tags                String[] // ["Photography", "Camera", "Canon"]
   minDuration         Int      @default(1) // Minimum rental days
   maxDuration         Int? // Maximum rental days (null for unlimited)
-  instagramUrl        String?
-  facebookUrl         String?
   shopName            String?
 
   categoryId String

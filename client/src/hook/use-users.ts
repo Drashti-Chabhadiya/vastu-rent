@@ -114,11 +114,26 @@ export const useUpdateUserSettings = () => {
       country?: string
       shopName?: string
       addressType?: string
+      instagramUrl?: string
+      facebookUrl?: string
+      googleMapLink?: string
     }) => {
       const res = await apiClient.patch('/users/settings', data)
       return res.data.user
     },
-    onSuccess: () => {
+    onSuccess: (updatedUser) => {
+      if (updatedUser) {
+        queryClient.setQueryData(['session'], (oldSession: any) => {
+          if (!oldSession) return oldSession
+          return {
+            ...oldSession,
+            user: {
+              ...oldSession.user,
+              ...updatedUser,
+            },
+          }
+        })
+      }
       // Invalidate the session query to reload user data globally!
       queryClient.invalidateQueries({ queryKey: ['session'] })
     },

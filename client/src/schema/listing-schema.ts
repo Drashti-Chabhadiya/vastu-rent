@@ -29,8 +29,6 @@ export const listingSchema = z.object({
   minDuration: z.coerce.number().min(1).default(1),
   maxDuration: z.coerce.number().positive().optional(),
   listingType: z.enum(['home', 'shop']).default('home'),
-  instagramUrl: z.string().optional(),
-  facebookUrl: z.string().optional(),
   shopName: z.string().optional(),
 })
 

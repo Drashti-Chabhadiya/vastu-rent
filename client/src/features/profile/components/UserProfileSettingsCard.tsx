@@ -23,10 +23,6 @@ export function UserProfileSettingsCard({
   hideLeftSummary = false,
 }: UserProfileSettingsCardProps) {
   const {
-    phone,
-    gender,
-    language,
-    dob,
     emailNotifications,
     smsNotifications,
     marketingEmails,
@@ -43,15 +39,17 @@ export function UserProfileSettingsCard({
     busy,
     uploadImage,
     updateSettings,
-    addressLine1,
-    addressLine2,
-    street,
-    city,
-    state,
-    pincode,
-    country,
-    shopName,
-    addressType,
+    setAddressType,
+    setGoogleMapLink,
+    setInstagramUrl,
+    setFacebookUrl,
+    setAddressLine1,
+    setAddressLine2,
+    setStreet,
+    setCity,
+    setState,
+    setPincode,
+    setShopName,
   } = useProfileData()
 
   const { t, changeLanguage } = useTranslation()
@@ -66,22 +64,28 @@ export function UserProfileSettingsCard({
     return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase()
   }
 
-  const getFormValues = (): ProfileSchema => ({
-    name: session?.user?.name || '',
-    gender: formatGender(gender || (session?.user as any)?.gender),
-    phone: phone || '',
-    language: (session?.user as any)?.language || language || 'en',
-    dob: dob || '',
-    addressType: addressType || 'home',
-    shopName: shopName || '',
-    addressLine1: addressLine1 || '',
-    addressLine2: addressLine2 || '',
-    street: street || '',
-    city: city || '',
-    state: state || '',
-    pincode: pincode || '',
-    country: country || 'India',
-  })
+  const getFormValues = (): ProfileSchema => {
+    const u = (session?.user as any) || {}
+    return {
+      name: session?.user?.name || '',
+      gender: formatGender(u.gender),
+      phone: u.phone || '',
+      language: u.language || 'en',
+      dob: u.dob || '',
+      addressType: (u.addressType || 'home') as 'home' | 'shop',
+      shopName: u.shopName || '',
+      addressLine1: u.addressLine1 || '',
+      addressLine2: u.addressLine2 || '',
+      street: u.street || '',
+      city: u.city || '',
+      state: u.state || '',
+      pincode: u.pincode || '',
+      country: u.country || 'India',
+      googleMapLink: u.googleMapLink || '',
+      instagramUrl: u.instagramUrl || '',
+      facebookUrl: u.facebookUrl || '',
+    }
+  }
 
   const activeSchema =
     viewSection === 'personal'
@@ -100,24 +104,7 @@ export function UserProfileSettingsCard({
     if (!isEditing) {
       form.reset(getFormValues())
     }
-  }, [
-    session,
-    gender,
-    phone,
-    language,
-    dob,
-    addressType,
-    shopName,
-    addressLine1,
-    addressLine2,
-    street,
-    city,
-    state,
-    pincode,
-    country,
-    isEditing,
-    form,
-  ])
+  }, [session, isEditing, form])
 
   // Reset form when editing starts to grab latest data from session/profile hook
   const handleEditClick = () => {
@@ -182,8 +169,9 @@ export function UserProfileSettingsCard({
         if (values.phone) payload.phone = values.phone
         if (values.language) payload.language = values.language
         if (values.dob) payload.dob = values.dob
+        if (values.instagramUrl !== undefined) payload.instagramUrl = values.instagramUrl
+        if (values.facebookUrl !== undefined) payload.facebookUrl = values.facebookUrl
       }
-
       if (viewSection === 'address' || viewSection === 'all') {
         if (values.addressType) payload.addressType = values.addressType
         if (values.shopName !== undefined) payload.shopName = values.shopName
@@ -195,9 +183,44 @@ export function UserProfileSettingsCard({
         if (values.state) payload.state = values.state
         if (values.pincode) payload.pincode = values.pincode
         if (values.country) payload.country = values.country
+        if (values.googleMapLink !== undefined) payload.googleMapLink = values.googleMapLink
       }
 
-      await updateSettings(payload)
+      const updatedUser = await updateSettings(payload)
+
+      if (updatedUser) {
+        setGoogleMapLink(updatedUser.googleMapLink ?? '')
+        setInstagramUrl(updatedUser.instagramUrl ?? '')
+        setFacebookUrl(updatedUser.facebookUrl ?? '')
+        setAddressLine1(updatedUser.addressLine1 ?? '')
+        setAddressLine2(updatedUser.addressLine2 ?? '')
+        setStreet(updatedUser.street ?? '')
+        setCity(updatedUser.city ?? '')
+        setState(updatedUser.state ?? '')
+        setPincode(updatedUser.pincode ?? '')
+        setShopName(updatedUser.shopName ?? '')
+        if (updatedUser.addressType) setAddressType(updatedUser.addressType as 'home' | 'shop')
+
+        form.reset({
+          name: updatedUser.name || values.name || '',
+          gender: formatGender(updatedUser.gender || values.gender),
+          phone: updatedUser.phone || values.phone || '',
+          language: updatedUser.language || values.language || 'en',
+          dob: updatedUser.dob || values.dob || '',
+          addressType: (updatedUser.addressType || values.addressType || 'home') as 'home' | 'shop',
+          shopName: updatedUser.shopName ?? values.shopName ?? '',
+          addressLine1: updatedUser.addressLine1 || values.addressLine1 || '',
+          addressLine2: updatedUser.addressLine2 ?? values.addressLine2 ?? '',
+          street: updatedUser.street || values.street || '',
+          city: updatedUser.city || values.city || '',
+          state: updatedUser.state || values.state || '',
+          pincode: updatedUser.pincode || values.pincode || '',
+          country: updatedUser.country || values.country || 'India',
+          googleMapLink: updatedUser.googleMapLink ?? values.googleMapLink ?? '',
+          instagramUrl: updatedUser.instagramUrl ?? values.instagramUrl ?? '',
+          facebookUrl: updatedUser.facebookUrl ?? values.facebookUrl ?? '',
+        })
+      }
 
       await refetch()
       setIsEditing(false)
@@ -219,9 +242,9 @@ export function UserProfileSettingsCard({
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        year: 'numeric',
-      })
+      month: 'short',
+      year: 'numeric',
+    })
     : 'Jan 2024'
 
   const formValues = form.watch()

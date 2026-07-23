@@ -29,6 +29,8 @@ import {
   Hash,
   Loader2,
   ExternalLink,
+  Instagram,
+  Facebook,
 } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 import { LocationCombobox } from '@/components/ui/location-combobox'
@@ -351,6 +353,66 @@ export function PersonalInfoForm({
                 </FormItem>
               )}
             />
+
+            <FormField<ProfileSchema>
+              control={form.control}
+              name="instagramUrl"
+              render={({ field }) => (
+                <FormItem className="space-y-1.5">
+                  <FormLabel className="text-xs font-bold text-muted-foreground/70 flex items-center gap-2">
+                    <Instagram size={14} className="text-pink-600" />
+                    {t('Instagram Link (Optional)')}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://instagram.com/yourusername"
+                      {...field}
+                      value={field.value || ''}
+                      disabled={!isEditing}
+                      className={cn(
+                        'w-full h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                        isEditing
+                          ? form.formState.errors.instagramUrl
+                            ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
+                            : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                          : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-[11px] font-bold mt-1" />
+                </FormItem>
+              )}
+            />
+
+            <FormField<ProfileSchema>
+              control={form.control}
+              name="facebookUrl"
+              render={({ field }) => (
+                <FormItem className="space-y-1.5">
+                  <FormLabel className="text-xs font-bold text-muted-foreground/70 flex items-center gap-2">
+                    <Facebook size={14} className="text-blue-600" />
+                    {t('Facebook Link (Optional)')}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://facebook.com/yourusername"
+                      {...field}
+                      value={field.value || ''}
+                      disabled={!isEditing}
+                      className={cn(
+                        'w-full h-11 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',
+                        isEditing
+                          ? form.formState.errors.facebookUrl
+                            ? 'bg-card text-foreground border-destructive ring-2 ring-destructive/10 focus-visible:ring-destructive'
+                            : 'bg-card text-foreground border-primary ring-2 ring-primary/5'
+                          : 'bg-muted-light/50 text-foreground disabled:opacity-100 disabled:cursor-default',
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-[11px] font-bold mt-1" />
+                </FormItem>
+              )}
+            />
           </>
         )}
 
@@ -575,6 +637,7 @@ export function PersonalInfoForm({
                       <Input
                         placeholder={t('Paste your Google Maps link here')}
                         {...field}
+                        value={field.value || ''}
                         disabled={!isEditing}
                         className={cn(
                           'h-11 pl-10 rounded-xl border-border font-semibold text-sm transition-all focus:ring-primary/20',

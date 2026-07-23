@@ -134,6 +134,9 @@ export class UserService {
       lastActive: user.lastActive,
       isGreenMember: user.isGreenMember,
       bio: user.bio,
+      googleMapLink: user.googleMapLink,
+      instagramUrl: user.instagramUrl,
+      facebookUrl: user.facebookUrl,
     }
   }
 
@@ -169,6 +172,8 @@ export class UserService {
       shopName?: string
       addressType?: string
       googleMapLink?: string
+      instagramUrl?: string
+      facebookUrl?: string
     },
   ) {
     const userBefore = await prisma.user.findUnique({
@@ -218,6 +223,10 @@ export class UserService {
         addressLine2:
           data.addressLine2 !== undefined ? data.addressLine2 : undefined,
         street: data.street !== undefined ? data.street : undefined,
+        instagramUrl:
+          data.instagramUrl !== undefined ? data.instagramUrl : undefined,
+        facebookUrl:
+          data.facebookUrl !== undefined ? data.facebookUrl : undefined,
         city: data.city !== undefined ? data.city : undefined,
         state: data.state !== undefined ? data.state : undefined,
         pincode: data.pincode !== undefined ? data.pincode : undefined,

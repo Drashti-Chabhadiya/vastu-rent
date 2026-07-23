@@ -32,8 +32,6 @@ import {
   Image as ImageIcon,
   Type,
   ShieldCheck,
-  Instagram,
-  Facebook,
 } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 
@@ -375,49 +373,7 @@ export const ProductForm = ({
           )}
         />
 
-        <FormField<ListingSchema>
-          control={form.control}
-          name="instagramUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
-                <Instagram size={14} className="text-pink-600" />
-                {t('Instagram Link (Optional)')}
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://instagram.com/yourusername"
-                  {...field}
-                  value={field.value || ''}
-                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField<ListingSchema>
-          control={form.control}
-          name="facebookUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
-                <Facebook size={14} className="text-blue-600" />
-                {t('Facebook Link (Optional)')}
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://facebook.com/yourusername"
-                  {...field}
-                  value={field.value || ''}
-                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
       </div>
     </div>
   )

@@ -24,6 +24,9 @@ export function useProfileData() {
   const [country, setCountry] = useState('India')
   const [shopName, setShopName] = useState('')
   const [addressType, setAddressType] = useState<'home' | 'shop'>('home')
+  const [googleMapLink, setGoogleMapLink] = useState('')
+  const [instagramUrl, setInstagramUrl] = useState('')
+  const [facebookUrl, setFacebookUrl] = useState('')
 
   // Notification states
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -115,6 +118,9 @@ export function useProfileData() {
       setCountry(u.country || 'India')
       setShopName(u.shopName || '')
       setAddressType((u.addressType as 'home' | 'shop') || 'home')
+      setGoogleMapLink(u.googleMapLink || '')
+      setInstagramUrl(u.instagramUrl || '')
+      setFacebookUrl(u.facebookUrl || '')
     }
   }, [session])
 
@@ -247,6 +253,12 @@ export function useProfileData() {
     setShopName,
     addressType,
     setAddressType,
+    googleMapLink,
+    setGoogleMapLink,
+    instagramUrl,
+    setInstagramUrl,
+    facebookUrl,
+    setFacebookUrl,
 
     // Notifications preferences
     emailNotifications,
