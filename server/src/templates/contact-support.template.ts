@@ -1,8 +1,8 @@
 export interface ContactSupportTemplateOptions {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
+  name: string
+  email: string
+  subject: string
+  message: string
 }
 
 export function getContactSupportTemplate({
@@ -48,5 +48,5 @@ export function getContactSupportTemplate({
       </div>
     </body>
     </html>
-  `;
+  `
 }

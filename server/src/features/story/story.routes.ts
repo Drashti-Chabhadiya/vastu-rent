@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { StoryController } from "./story.controller.js";
+import { StoryController } from './story.controller.js'
 
 export async function storyRoutes(fastify: FastifyInstance) {
   // Public route to get stories

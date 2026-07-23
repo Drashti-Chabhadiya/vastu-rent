@@ -25,11 +25,14 @@ async function main() {
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true })
   }
-  
+
   const allDataFile = path.join(dataDir, 'countries+states+cities.json')
 
   console.log('Downloading dataset...')
-  await downloadFile('https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries+states+cities.json', allDataFile)
+  await downloadFile(
+    'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries+states+cities.json',
+    allDataFile,
+  )
 
   console.log('Parsing JSON file...')
   const rawData = fs.readFileSync(allDataFile, 'utf-8')
@@ -74,7 +77,9 @@ async function main() {
     }
   }
 
-  console.log(`Parsed ${countriesPayload.length} countries, ${statesPayload.length} states, ${citiesPayload.length} cities.`)
+  console.log(
+    `Parsed ${countriesPayload.length} countries, ${statesPayload.length} states, ${citiesPayload.length} cities.`,
+  )
 
   console.log('Inserting Countries...')
   await prisma.country.createMany({
@@ -101,12 +106,21 @@ async function main() {
   console.log('Adding pg_trgm extension and GIN indexes...')
   try {
     await prisma.$executeRawUnsafe(`CREATE EXTENSION IF NOT EXISTS pg_trgm;`)
-    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS idx_country_name_gin ON countries USING GIN (name gin_trgm_ops);`)
-    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS idx_state_name_gin ON states USING GIN (name gin_trgm_ops);`)
-    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS idx_city_name_gin ON cities USING GIN (name gin_trgm_ops);`)
+    await prisma.$executeRawUnsafe(
+      `CREATE INDEX IF NOT EXISTS idx_country_name_gin ON countries USING GIN (name gin_trgm_ops);`,
+    )
+    await prisma.$executeRawUnsafe(
+      `CREATE INDEX IF NOT EXISTS idx_state_name_gin ON states USING GIN (name gin_trgm_ops);`,
+    )
+    await prisma.$executeRawUnsafe(
+      `CREATE INDEX IF NOT EXISTS idx_city_name_gin ON cities USING GIN (name gin_trgm_ops);`,
+    )
     console.log('Successfully created GIN indexes.')
   } catch (err) {
-    console.warn('Could not create GIN indexes. Make sure PostgreSQL user has superuser privileges or pg_trgm is allowed.', err)
+    console.warn(
+      'Could not create GIN indexes. Make sure PostgreSQL user has superuser privileges or pg_trgm is allowed.',
+      err,
+    )
   }
 
   console.log('Seeding completed successfully!')

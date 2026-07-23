@@ -1,42 +1,46 @@
-import { FastifyRequest, FastifyReply } from "fastify";
-import { prisma } from "../../config/prisma.js";
-import { auth } from "../../config/auth.js";
-import { createAndDeliverNotification } from "../../lib/notification.js";
+import { FastifyRequest, FastifyReply } from 'fastify'
+import { prisma } from '../../config/prisma.js'
+import { auth } from '../../config/auth.js'
+import { createAndDeliverNotification } from '../../lib/notification.js'
 
 export class DisputeController {
   async getAllDisputes(_request: FastifyRequest, _reply: FastifyReply) {
     const disputes = await prisma.dispute.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
       include: {
         rental: {
           include: {
             product: {
-              select: { id: true, title: true, price: true }
+              select: { id: true, title: true, price: true },
             },
             renter: {
-              select: { id: true, name: true, email: true }
-            }
-          }
+              select: { id: true, name: true, email: true },
+            },
+          },
         },
         reportedBy: {
-          select: { id: true, name: true, email: true }
-        }
-      }
-    });
+          select: { id: true, name: true, email: true },
+        },
+      },
+    })
 
-    return { disputes };
+    return { disputes }
   }
 
   async createDispute(request: FastifyRequest, reply: FastifyReply) {
-    const session = await auth.api.getSession({ headers: request.headers as any });
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (!session) {
-      return reply.status(401).send({ message: "Unauthorized" });
+      return reply.status(401).send({ message: 'Unauthorized' })
     }
 
-    const { rentalId, reason, description } = request.body as any;
+    const { rentalId, reason, description } = request.body as any
 
     if (!rentalId || !reason || !description) {
-      return reply.status(400).send({ message: "Rental ID, reason, and description are required" });
+      return reply
+        .status(400)
+        .send({ message: 'Rental ID, reason, and description are required' })
     }
 
     const dispute = await prisma.dispute.create({
@@ -45,9 +49,9 @@ export class DisputeController {
         reportedById: session.user.id,
         reason,
         description,
-        status: "open"
-      }
-    });
+        status: 'open',
+      },
+    })
 
     // Notify admins of a new dispute
     try {
@@ -61,33 +65,35 @@ export class DisputeController {
       console.error('Failed to deliver dispute notification:', err)
     }
 
-    return { dispute };
+    return { dispute }
   }
 
   async resolveDispute(request: FastifyRequest, reply: FastifyReply) {
-    const { id } = request.params as any;
-    const { status, resolution } = request.body as any;
+    const { id } = request.params as any
+    const { status, resolution } = request.body as any
 
-    if (!["resolved", "dismissed"].includes(status)) {
-      return reply.status(400).send({ message: "Invalid status: Must be resolved or dismissed" });
+    if (!['resolved', 'dismissed'].includes(status)) {
+      return reply
+        .status(400)
+        .send({ message: 'Invalid status: Must be resolved or dismissed' })
     }
 
     const dispute = await prisma.dispute.findUnique({
       where: { id },
-      include: { rental: true }
-    });
+      include: { rental: true },
+    })
 
     if (!dispute) {
-      return reply.status(404).send({ message: "Dispute not found" });
+      return reply.status(404).send({ message: 'Dispute not found' })
     }
 
     const updated = await prisma.dispute.update({
       where: { id },
       data: {
         status,
-        resolution
-      }
-    });
+        resolution,
+      },
+    })
 
     // Notify the reported user & the renter
     try {
@@ -101,8 +107,8 @@ export class DisputeController {
       console.error('Failed to deliver dispute resolution notification:', err)
     }
 
-    return { success: true, dispute: updated };
+    return { success: true, dispute: updated }
   }
 }
 
-export const disputeController = new DisputeController();
+export const disputeController = new DisputeController()

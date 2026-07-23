@@ -1,12 +1,15 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
-import { sendContactSupportEmail, sendMarketingWelcomeEmail } from '../../lib/mail.js'
+import {
+  sendContactSupportEmail,
+  sendMarketingWelcomeEmail,
+} from '../../lib/mail.js'
 
 export const SupportController = {
   async submitContactInquiry(
     request: FastifyRequest<{
       Body: { name: string; email: string; subject: string; message: string }
     }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       const { name, email, subject, message } = request.body
@@ -23,7 +26,8 @@ export const SupportController = {
 
       return {
         success: true,
-        message: 'Your message has been sent successfully to the Vastu Support team.',
+        message:
+          'Your message has been sent successfully to the Vastu Support team.',
       }
     } catch (error: any) {
       request.log.error(error)
@@ -36,7 +40,7 @@ export const SupportController = {
 
   async submitNewsletterSubscription(
     request: FastifyRequest<{ Body: { email: string } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       const { email } = request.body

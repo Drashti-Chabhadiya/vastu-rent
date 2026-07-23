@@ -1,5 +1,5 @@
-import { prisma } from "../config/prisma.js";
-import { greenMemberConfig } from "../config/green-member.config.js";
+import { prisma } from '../config/prisma.js'
+import { greenMemberConfig } from '../config/green-member.config.js'
 
 /**
  * Checks a user's eligibility for the Green Member status,
@@ -17,40 +17,45 @@ export async function syncGreenMemberStatus(userId: string): Promise<boolean> {
           },
         },
       },
-    });
+    })
 
-    if (!user) return false;
+    if (!user) return false
 
-    let eligible = true;
+    let eligible = true
 
     if (greenMemberConfig.requireVerified && !user.emailVerified) {
-      eligible = false;
+      eligible = false
     }
     if (greenMemberConfig.requirePhone && !user.phone) {
-      eligible = false;
+      eligible = false
     }
     if (greenMemberConfig.requireLocation && !user.location) {
-      eligible = false;
+      eligible = false
     }
     if (user._count.products < greenMemberConfig.minListings) {
-      eligible = false;
+      eligible = false
     }
     if (user._count.rentals < greenMemberConfig.minRentals) {
-      eligible = false;
+      eligible = false
     }
 
-    const currentStatus = user.isGreenMember === true;
+    const currentStatus = user.isGreenMember === true
     if (eligible !== currentStatus) {
       await prisma.user.update({
         where: { id: userId },
         data: { isGreenMember: eligible },
-      });
-      console.log(`❇️ Green Member status updated to ${eligible} for user ${user.name || userId}`);
+      })
+      console.log(
+        `❇️ Green Member status updated to ${eligible} for user ${user.name || userId}`,
+      )
     }
 
-    return eligible;
+    return eligible
   } catch (error) {
-    console.error(`Error syncing Green Member status for user ${userId}:`, error);
-    return false;
+    console.error(
+      `Error syncing Green Member status for user ${userId}:`,
+      error,
+    )
+    return false
   }
 }

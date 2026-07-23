@@ -1,6 +1,6 @@
 export interface ResetPasswordTemplateOptions {
-  name: string;
-  clientResetPasswordUrl: string;
+  name: string
+  clientResetPasswordUrl: string
 }
 
 export function getResetPasswordTemplate({
@@ -110,7 +110,7 @@ export function getResetPasswordTemplate({
         </div>
         <div class="body">
           <h1>Reset Your Password</h1>
-          <p>Hi ${name || "there"},</p>
+          <p>Hi ${name || 'there'},</p>
           <p>We received a request to reset the password for your VastuRent account. No changes have been made yet. You can reset your password by clicking the button below:</p>
           
           <div class="btn-container">
@@ -136,5 +136,5 @@ export function getResetPasswordTemplate({
       </div>
     </body>
     </html>
-  `;
+  `
 }

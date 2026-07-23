@@ -28,7 +28,8 @@ export default async function locationRoutes(fastify: FastifyInstance) {
   // GET /api/locations/states?countryId=xxx
   fastify.get('/states', async (request, reply) => {
     const { countryId } = request.query as { countryId?: string }
-    if (!countryId) return reply.status(400).send({ error: 'countryId is required' })
+    if (!countryId)
+      return reply.status(400).send({ error: 'countryId is required' })
 
     const states = await prisma.state.findMany({
       where: { country_id: parseInt(countryId) },
@@ -56,7 +57,8 @@ export default async function locationRoutes(fastify: FastifyInstance) {
   // GET /api/locations/cities?stateId=xxx
   fastify.get('/cities', async (request, reply) => {
     const { stateId } = request.query as { stateId?: string }
-    if (!stateId) return reply.status(400).send({ error: 'stateId is required' })
+    if (!stateId)
+      return reply.status(400).send({ error: 'stateId is required' })
 
     const cities = await prisma.city.findMany({
       where: { state_id: parseInt(stateId) },
@@ -88,7 +90,9 @@ export default async function locationRoutes(fastify: FastifyInstance) {
     const cleanCode = code?.trim()
 
     if (!cleanCode || !/^[1-9][0-9]{5}$/.test(cleanCode)) {
-      return reply.status(400).send({ valid: false, message: 'Invalid 6-digit Pincode format' })
+      return reply
+        .status(400)
+        .send({ valid: false, message: 'Invalid 6-digit Pincode format' })
     }
 
     // 1. Check PostgreSQL Database first
@@ -109,12 +113,19 @@ export default async function locationRoutes(fastify: FastifyInstance) {
 
     // 2. Fetch from External Free API if not in DB
     try {
-      const res = await fetch(`https://api.postalpincode.in/pincode/${cleanCode}`)
-      const data = await res.json() as any
+      const res = await fetch(
+        `https://api.postalpincode.in/pincode/${cleanCode}`,
+      )
+      const data = (await res.json()) as any
 
-      if (Array.isArray(data) && data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
+      if (
+        Array.isArray(data) &&
+        data[0]?.Status === 'Success' &&
+        data[0]?.PostOffice?.length > 0
+      ) {
         const postOffice = data[0].PostOffice[0]
-        const district = postOffice.District || postOffice.Block || postOffice.Name || ''
+        const district =
+          postOffice.District || postOffice.Block || postOffice.Name || ''
         const state = postOffice.State || ''
 
         // Save to Database for future instant lookups
@@ -144,7 +155,7 @@ export default async function locationRoutes(fastify: FastifyInstance) {
     try {
       const res = await fetch(`https://api.zippopotam.us/in/${cleanCode}`)
       if (res.ok) {
-        const data = await res.json() as any
+        const data = (await res.json()) as any
         if (data?.places?.length > 0) {
           const district = data.places[0]['place name'] || ''
           const state = data.places[0]['state'] || ''
@@ -172,7 +183,11 @@ export default async function locationRoutes(fastify: FastifyInstance) {
       // Fallback error
     }
 
-    return reply.status(404).send({ valid: false, message: 'Invalid Pincode. Please check your 6-digit postal code.' })
+    return reply
+      .status(404)
+      .send({
+        valid: false,
+        message: 'Invalid Pincode. Please check your 6-digit postal code.',
+      })
   })
 }
-

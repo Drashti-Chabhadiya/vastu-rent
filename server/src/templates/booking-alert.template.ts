@@ -1,7 +1,7 @@
 export interface BookingAlertTemplateOptions {
-  title: string;
-  name: string;
-  message: string;
+  title: string
+  name: string
+  message: string
 }
 
 export function getBookingAlertTemplate({
@@ -29,7 +29,7 @@ export function getBookingAlertTemplate({
       <div class="container">
         <div class="header">VastuRent Alert</div>
         <h1>${title}</h1>
-        <p>Hi ${name || "User"},</p>
+        <p>Hi ${name || 'User'},</p>
         <p>${message}</p>
         <p>You received this email because you have Email Notifications enabled in your VastuRent settings.</p>
         <div class="footer">
@@ -38,5 +38,5 @@ export function getBookingAlertTemplate({
       </div>
     </body>
     </html>
-  `;
+  `
 }

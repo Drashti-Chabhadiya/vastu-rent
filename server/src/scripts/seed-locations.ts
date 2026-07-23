@@ -29,10 +29,18 @@ async function main() {
       update: {},
       create: { name: stateName, countryId: india.id },
     })
-    
+
     // 3. Create some sample cities for Gujarat
     if (stateName === 'Gujarat') {
-      const cities = ['Surat', 'Ahmedabad', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Gandhinagar']
+      const cities = [
+        'Surat',
+        'Ahmedabad',
+        'Vadodara',
+        'Rajkot',
+        'Bhavnagar',
+        'Jamnagar',
+        'Gandhinagar',
+      ]
       for (const cityName of cities) {
         await prisma.city.upsert({
           where: { name_stateId: { name: cityName, stateId: state.id } },

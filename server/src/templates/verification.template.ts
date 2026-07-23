@@ -1,6 +1,6 @@
 export interface VerificationTemplateOptions {
-  name: string;
-  clientVerificationUrl: string;
+  name: string
+  clientVerificationUrl: string
 }
 
 export function getVerificationTemplate({
@@ -110,7 +110,7 @@ export function getVerificationTemplate({
         </div>
         <div class="body">
           <h1>Confirm Your Email Address</h1>
-          <p>Hi ${name || "there"},</p>
+          <p>Hi ${name || 'there'},</p>
           <p>Welcome to VastuRent! We're excited to have you join our community. To complete your sign-up and secure your account, please verify your email address by clicking the button below:</p>
           
           <div class="btn-container">
@@ -136,5 +136,5 @@ export function getVerificationTemplate({
       </div>
     </body>
     </html>
-  `;
+  `
 }

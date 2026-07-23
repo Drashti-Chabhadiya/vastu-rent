@@ -6,5 +6,8 @@ export async function supportRoutes(fastify: FastifyInstance) {
   fastify.post('/contact', SupportController.submitContactInquiry)
 
   // Public route to subscribe to the email newsletter
-  fastify.post('/newsletter/subscribe', SupportController.submitNewsletterSubscription)
+  fastify.post(
+    '/newsletter/subscribe',
+    SupportController.submitNewsletterSubscription,
+  )
 }

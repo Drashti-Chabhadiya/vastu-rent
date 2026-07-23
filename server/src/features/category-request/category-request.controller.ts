@@ -1,41 +1,49 @@
-import { FastifyRequest, FastifyReply } from "fastify";
-import { prisma } from "../../config/prisma.js";
-import { auth } from "../../config/auth.js";
-import { createAndDeliverNotification, notifyAllAdmins } from "../../lib/notification.js";
-import { cacheDel } from "../../lib/redis-cache.js";
-import { CACHE_KEYS } from "../../constants/cache-keys.js";
+import { FastifyRequest, FastifyReply } from 'fastify'
+import { prisma } from '../../config/prisma.js'
+import { auth } from '../../config/auth.js'
+import {
+  createAndDeliverNotification,
+  notifyAllAdmins,
+} from '../../lib/notification.js'
+import { cacheDel } from '../../lib/redis-cache.js'
+import { CACHE_KEYS } from '../../constants/cache-keys.js'
 
 export class CategoryRequestController {
   async getAllRequests(request: FastifyRequest, reply: FastifyReply) {
-    const session = await auth.api.getSession({ headers: request.headers as any });
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (!session) {
-      return reply.status(401).send({ message: "Unauthorized" });
+      return reply.status(401).send({ message: 'Unauthorized' })
     }
 
-    const { role, id: userId } = session.user;
-    const isSearchAdmin = role === 'admin';
+    const { role, id: userId } = session.user
+    const isSearchAdmin = role === 'admin'
 
     const requests = await prisma.categoryRequest.findMany({
       where: isSearchAdmin ? {} : { userId: userId },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
       include: {
         user: {
-          select: { id: true, name: true, email: true }
-        }
-      }
-    });
-    return { requests };
+          select: { id: true, name: true, email: true },
+        },
+      },
+    })
+    return { requests }
   }
 
   async createRequest(request: FastifyRequest, reply: FastifyReply) {
-    const session = await auth.api.getSession({ headers: request.headers as any });
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (!session) {
-      return reply.status(401).send({ message: "Unauthorized" });
+      return reply.status(401).send({ message: 'Unauthorized' })
     }
 
-    const { name, icon, color, image, description, requestReason } = request.body as any;
+    const { name, icon, color, image, description, requestReason } =
+      request.body as any
     if (!name) {
-      return reply.status(400).send({ message: "Category name is required" });
+      return reply.status(400).send({ message: 'Category name is required' })
     }
 
     const categoryRequest = await prisma.categoryRequest.create({
@@ -47,9 +55,9 @@ export class CategoryRequestController {
         description,
         requestReason,
         userId: session.user.id,
-        status: "pending"
-      }
-    });
+        status: 'pending',
+      },
+    })
 
     // Create system notification for admins and requester (persist + deliver)
     try {
@@ -72,31 +80,31 @@ export class CategoryRequestController {
       console.error('Failed to deliver category request notification:', err)
     }
 
-    return { categoryRequest };
+    return { categoryRequest }
   }
 
   async updateStatus(request: FastifyRequest, reply: FastifyReply) {
-    const { id } = request.params as any;
-    const { status, reason } = request.body as any;
+    const { id } = request.params as any
+    const { status, reason } = request.body as any
 
-    if (!["approved", "rejected"].includes(status)) {
-      return reply.status(400).send({ message: "Invalid status" });
+    if (!['approved', 'rejected'].includes(status)) {
+      return reply.status(400).send({ message: 'Invalid status' })
     }
 
     const categoryReq = await prisma.categoryRequest.findUnique({
-      where: { id }
-    });
+      where: { id },
+    })
 
     if (!categoryReq) {
-      return reply.status(404).send({ message: "Category request not found" });
+      return reply.status(404).send({ message: 'Category request not found' })
     }
 
     const updated = await prisma.categoryRequest.update({
       where: { id },
-      data: { status, reason }
-    });
+      data: { status, reason },
+    })
 
-    if (status === "approved") {
+    if (status === 'approved') {
       // Create actual Category
       await prisma.category.create({
         data: {
@@ -104,12 +112,12 @@ export class CategoryRequestController {
           icon: categoryReq.icon,
           color: categoryReq.color,
           image: categoryReq.image,
-          userId: categoryReq.userId
-        }
-      });
+          userId: categoryReq.userId,
+        },
+      })
 
       // Invalidate categories cache
-      await cacheDel(CACHE_KEYS.CATEGORIES_ALL);
+      await cacheDel(CACHE_KEYS.CATEGORIES_ALL)
 
       // Notify the requesting User
       try {
@@ -138,8 +146,8 @@ export class CategoryRequestController {
       }
     }
 
-    return { success: true, request: updated };
+    return { success: true, request: updated }
   }
 }
 
-export const categoryRequestController = new CategoryRequestController();
+export const categoryRequestController = new CategoryRequestController()

@@ -116,12 +116,16 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
     })
 
     if (staleTokens.length > 0) {
-      await prisma.deviceToken.deleteMany({ where: { token: { in: staleTokens } } })
-      console.log(`Removed ${staleTokens.length} stale FCM token(s) for user ${userId}`)
+      await prisma.deviceToken.deleteMany({
+        where: { token: { in: staleTokens } },
+      })
+      console.log(
+        `Removed ${staleTokens.length} stale FCM token(s) for user ${userId}`,
+      )
     }
 
     console.log(
-      `FCM: sent to ${response.successCount}/${tokens.length} devices for user ${userId}`
+      `FCM: sent to ${response.successCount}/${tokens.length} devices for user ${userId}`,
     )
   } catch (err) {
     console.error('FCM sendPushToUser error:', err)

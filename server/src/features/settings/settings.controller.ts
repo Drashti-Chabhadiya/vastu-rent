@@ -36,7 +36,7 @@ export const settingsController = {
 
   async updateSettings(
     request: FastifyRequest<{ Body: { settings: any } }>,
-    reply: FastifyReply
+    reply: FastifyReply,
   ) {
     try {
       const { settings } = request.body
@@ -51,10 +51,18 @@ export const settingsController = {
       const currentSettings = readSettingsFromFile()
       const updatedSettings = {
         ...currentSettings,
-        contact: settings.contact ? { ...currentSettings.contact, ...settings.contact } : currentSettings.contact,
-        pricing: settings.pricing ? { ...currentSettings.pricing, ...settings.pricing } : currentSettings.pricing,
-        trust: settings.trust ? { ...currentSettings.trust, ...settings.trust } : currentSettings.trust,
-        terms: settings.terms ? { ...currentSettings.terms, ...settings.terms } : currentSettings.terms,
+        contact: settings.contact
+          ? { ...currentSettings.contact, ...settings.contact }
+          : currentSettings.contact,
+        pricing: settings.pricing
+          ? { ...currentSettings.pricing, ...settings.pricing }
+          : currentSettings.pricing,
+        trust: settings.trust
+          ? { ...currentSettings.trust, ...settings.trust }
+          : currentSettings.trust,
+        terms: settings.terms
+          ? { ...currentSettings.terms, ...settings.terms }
+          : currentSettings.terms,
       }
 
       writeSettingsToFile(updatedSettings)
