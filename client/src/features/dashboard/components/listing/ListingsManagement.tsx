@@ -3,6 +3,7 @@ import { Plus, PackagePlus } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { isAdminRole } from '#/lib/auth/roles'
 import { useTranslation } from '#/context/TranslationContext'
+import { useListingDraftStore } from '#/store/useListingDraftStore'
 // Sub-components
 import { ListingsTable } from './ListingsTable'
 import { ListingDialog } from './ListingDialog'
@@ -353,6 +354,7 @@ export const ListingsManagement = ({
             onSuccess: () => {
               setIsAddOpen(false)
               toast.success(t('Listing created successfully'))
+              useListingDraftStore.getState().clearDraft()
             },
             onError: (err: any) => {
               toast.error(

@@ -18,6 +18,7 @@ import type { ListingSchema } from '#/schema'
 import { ProductForm } from './ProductForm'
 import { LoadingOverlay } from '#/components/ui/loader'
 import { useTranslation } from '#/context/TranslationContext'
+import { useListingDraftStore } from '#/store/useListingDraftStore'
 
 interface Category {
   id: string
@@ -55,6 +56,7 @@ export const ListingDialog = ({
   const { t } = useTranslation()
   const isEditMode = !!product
   const [isUploadingImages, setIsUploadingImages] = useState(false)
+  const setDraft = useListingDraftStore((state) => state.setDraft)
 
   const form = useForm<ListingSchema>({
     resolver: zodResolver(listingSchema) as any,
@@ -99,29 +101,62 @@ export const ListingDialog = ({
           shopName: product.shopName || '',
         })
       } else {
-        form.reset({
-          title: '',
-          description: '',
-          price: 0,
-          securityDeposit: 0,
-          city: '',
-          location: '',
-          categoryId: '',
-          userId: currentUser?.id || '',
-          images: [],
-          condition: 'Good',
-          features: [],
-          deliveryOptions: ['Pickup'],
-          pickupReturnDetails: '',
-          tags: [],
-          minDuration: 1,
-          maxDuration: undefined,
-          listingType: (currentUser?.addressType as 'home' | 'shop') || 'home',
-          shopName: currentUser?.shopName || '',
-        })
+        const currentDraft = useListingDraftStore.getState().draft
+        if (currentDraft) {
+          form.reset({
+            title: currentDraft.title || '',
+            description: currentDraft.description || '',
+            price: currentDraft.price || 0,
+            securityDeposit: currentDraft.securityDeposit || 0,
+            city: currentDraft.city || '',
+            location: currentDraft.location || '',
+            categoryId: currentDraft.categoryId || '',
+            userId: currentDraft.userId || currentUser?.id || '',
+            images: currentDraft.images || [],
+            condition: currentDraft.condition || 'Good',
+            features: currentDraft.features || [],
+            deliveryOptions: currentDraft.deliveryOptions || ['Pickup'],
+            pickupReturnDetails: currentDraft.pickupReturnDetails || '',
+            tags: currentDraft.tags || [],
+            minDuration: currentDraft.minDuration || 1,
+            maxDuration: currentDraft.maxDuration || undefined,
+            listingType: currentDraft.listingType || (currentUser?.addressType as 'home' | 'shop') || 'home',
+            shopName: currentDraft.shopName || currentUser?.shopName || '',
+          })
+        } else {
+          form.reset({
+            title: '',
+            description: '',
+            price: 0,
+            securityDeposit: 0,
+            city: '',
+            location: '',
+            categoryId: '',
+            userId: currentUser?.id || '',
+            images: [],
+            condition: 'Good',
+            features: [],
+            deliveryOptions: ['Pickup'],
+            pickupReturnDetails: '',
+            tags: [],
+            minDuration: 1,
+            maxDuration: undefined,
+            listingType: (currentUser?.addressType as 'home' | 'shop') || 'home',
+            shopName: currentUser?.shopName || '',
+          })
+        }
       }
     }
   }, [open, product, currentUser, form])
+
+  const watchedValues = form.watch()
+
+  // Save to draft store when form values change, only if NOT in edit mode and dialog is open
+  useEffect(() => {
+    if (!product && open) {
+      setDraft(watchedValues)
+    }
+  }, [watchedValues, product, open, setDraft])
 
   const handleFormSubmit: SubmitHandler<ListingSchema> = (values) => {
     onSubmit(values)
@@ -184,7 +219,12 @@ export const ListingDialog = ({
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => onOpenChange(false)}
+                onClick={() => {
+                  if (!isEditMode) {
+                    useListingDraftStore.getState().clearDraft()
+                  }
+                  onOpenChange(false)
+                }}
                 className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
               >
                 {isEditMode ? t('Cancel') : t('Discard')}

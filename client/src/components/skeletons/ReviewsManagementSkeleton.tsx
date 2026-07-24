@@ -1,4 +1,4 @@
-const ReviewsManagementSkeleton = () => {
+export const ReviewsManagementSkeleton = () => {
   return (
     <div className="space-y-8 animate-pulse">
       <div className="flex justify-between items-center">
@@ -32,4 +32,3 @@ const ReviewsManagementSkeleton = () => {
   )
 }
 
-export default ReviewsManagementSkeleton

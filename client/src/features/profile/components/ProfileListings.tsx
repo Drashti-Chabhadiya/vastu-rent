@@ -14,44 +14,10 @@ import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useListingDraftStore } from '#/store/useListingDraftStore'
 import { ListingCard } from './ListingCard'
 import { ListingsStatsRow } from './ListingsStatsRow'
-
-function ListingsSkeleton() {
-  return (
-    <div className="space-y-8 animate-pulse">
-      <div className="flex justify-between items-center">
-        <div className="space-y-2">
-          <div className="h-8 bg-muted rounded-full w-48" />
-          <div className="h-4 bg-muted/50 rounded-full w-80" />
-        </div>
-        <div className="flex gap-3">
-          <div className="h-10 bg-muted rounded-full w-32" />
-          <div className="h-10 bg-muted rounded-full w-24" />
-        </div>
-      </div>
-      <div className="flex gap-6 border-b border-border/30 pb-2">
-        {[1, 2, 3, 4].map((i) => <div key={i} className="h-5 bg-muted rounded-full w-20" />)}
-      </div>
-      <div className="grid gap-4">
-        {[1, 2].map((i) => (
-          <div key={i} className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm flex flex-col md:flex-row gap-6">
-            <div className="w-28 h-28 rounded-2xl bg-muted/50 shrink-0" />
-            <div className="flex-1 space-y-3">
-              <div className="h-5 bg-muted rounded-full w-48" />
-              <div className="h-4 bg-muted-light/80 rounded-full w-32" />
-              <div className="h-4 bg-muted/50 rounded-full w-56 mt-4" />
-            </div>
-            <div className="w-48 flex flex-col items-end gap-2 shrink-0">
-              <div className="h-5 bg-muted rounded-full w-32" />
-              <div className="h-9 bg-muted-light/80 rounded-full w-28 mt-2" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+import { ProfileListingsSkeleton } from '#/components/skeletons'
 
 function EmptyListingsState({ label, onAdd }: { label: string; onAdd: () => void }) {
   const { t } = useTranslation()
@@ -132,7 +98,7 @@ export function ProfileListings() {
   const [productToEdit, setProductToEdit] = useState<any>(null)
   const [productToDelete, setProductToDelete] = useState<any>(null)
 
-  if (isListingsLoading) return <ListingsSkeleton />
+  if (isListingsLoading) return <ProfileListingsSkeleton />
 
   const counts = {
     all: listings?.length || 0,
@@ -217,7 +183,14 @@ export function ProfileListings() {
       <ListingsStatsRow totalViews={totalViews} totalBookings={totalBookings} totalEarnings={totalEarnings} avgRatingValue={avgRatingValue} />
 
       <ListingDialog open={isAddOpen} onOpenChange={setIsAddOpen}
-        onSubmit={(data) => createMutation.mutate(data, { onSuccess: () => { setIsAddOpen(false); toast.success(t('Listing created successfully!')) }, onError: (err: any) => toast.error(err.response?.data?.message || t('Failed to create listing')) })}
+        onSubmit={(data) => createMutation.mutate(data, {
+          onSuccess: () => {
+            setIsAddOpen(false);
+            toast.success(t('Listing created successfully!'));
+            useListingDraftStore.getState().clearDraft();
+          },
+          onError: (err: any) => toast.error(err.response?.data?.message || t('Failed to create listing'))
+        })}
         isLoading={createMutation.isPending} categories={categories || []} users={users || []} currentUser={session?.user} />
 
       <ListingDialog open={isEditOpen} onOpenChange={(open) => { setIsEditOpen(open); if (!open) setProductToEdit(null) }}

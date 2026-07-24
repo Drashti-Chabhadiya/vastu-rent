@@ -20,9 +20,9 @@ import {
   formatPostedDate,
   parseCommentImagesAndReply,
 } from '#/lib/review-utils'
-import ReviewsManagementSkeleton from './components/ReviewsManagementSkeleton'
 import EmptyReviewsState from './components/EmptyReviewsState'
 import ReviewCard from './components/ReviewCard'
+import { ReviewsManagementSkeleton } from '#/components/skeletons'
 
 export const ReviewsManagement = () => {
   const { t } = useTranslation()
@@ -77,30 +77,30 @@ export const ReviewsManagement = () => {
 
   const reviews = serverReviews
     ? serverReviews.map((r: any) => ({
-        id: r.id,
-        productId: r.product?.id,
-        title: r.product?.title || 'Rental Item',
-        location: r.product?.location || 'India',
-        rating: r.rating || 5,
-        dates: formatStayDates(r.createdAt),
-        comment: r.comment || 'Perfect rental experience!',
-        host: {
-          name: r.product?.user?.name || 'Vastu Lister',
-          avatar:
-            r.product?.user?.image ||
-            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-        },
-        reviewer: {
-          id: r.user?.id,
-          name: r.user?.name || 'Vastu Renter',
-          avatar: r.user?.image,
-        },
-        postedDate: formatPostedDate(r.createdAt),
-        type: r.product ? 'listings' : 'hosts',
-        image:
-          r.product?.images?.[0] ||
-          'https://images.unsplash.com/photo-1545241047-6083a3684587',
-      }))
+      id: r.id,
+      productId: r.product?.id,
+      title: r.product?.title || 'Rental Item',
+      location: r.product?.location || 'India',
+      rating: r.rating || 5,
+      dates: formatStayDates(r.createdAt),
+      comment: r.comment || 'Perfect rental experience!',
+      host: {
+        name: r.product?.user?.name || 'Vastu Lister',
+        avatar:
+          r.product?.user?.image ||
+          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+      },
+      reviewer: {
+        id: r.user?.id,
+        name: r.user?.name || 'Vastu Renter',
+        avatar: r.user?.image,
+      },
+      postedDate: formatPostedDate(r.createdAt),
+      type: r.product ? 'listings' : 'hosts',
+      image:
+        r.product?.images?.[0] ||
+        'https://images.unsplash.com/photo-1545241047-6083a3684587',
+    }))
     : []
 
   const searchedReviews = reviews.filter((r: any) => {
