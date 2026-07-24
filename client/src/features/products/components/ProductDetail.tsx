@@ -25,8 +25,8 @@ import {
   AlertDialogTitle,
 } from '#/components/ui/alert-dialog'
 import { AlertCircle } from 'lucide-react'
+import { useSessionContext } from '#/context/SessionContext'
 import { useState, useCallback, useEffect } from 'react'
-import { authClient } from '#/lib/auth/auth-client'
 import { useTranslation } from '#/context/TranslationContext'
 // Subcomponents import
 import { ProductBreadcrumbs } from './detail/ProductBreadcrumbs'
@@ -44,7 +44,7 @@ import { useProductBookingStore } from '../../../store/useProductBookingStore'
 export function ProductDetail({ id }: { id: string }) {
   const { t, formatDate } = useTranslation()
   const navigate = useNavigate()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSessionContext()
   const { data: product, isLoading, error } = useProduct(id)
   const { data: similarProducts } = useProducts({
     categoryId: product?.categoryId,
@@ -293,7 +293,7 @@ export function ProductDetail({ id }: { id: string }) {
     } catch (err: any) {
       showAlert(
         err.response?.data?.message ||
-          'Booking failed. Please make sure you are logged in.',
+        'Booking failed. Please make sure you are logged in.',
         'Booking Failed',
       )
     } finally {
@@ -333,13 +333,12 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-        ]
+        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+      ]
   const liked = isLiked(product.id)
 
   const productInfo = [
     { label: 'Category', value: product.category?.name || t('Uncategorized') },
-    { label: 'Condition', value: t(product.condition || 'Good') },
     {
       label: 'Listing Source',
       value:
@@ -439,8 +438,7 @@ export function ProductDetail({ id }: { id: string }) {
             {/* Lister User Card */}
             <ProductUserCard
               user={product.user}
-              instagramUrl={product.instagramUrl}
-              facebookUrl={product.facebookUrl}
+              session={session}
             />
           </div>
 

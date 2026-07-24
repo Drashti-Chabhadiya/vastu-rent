@@ -166,7 +166,15 @@ export class ProductService {
         reviews: {
           include: {
             user: {
-              select: { id: true, name: true, image: true, showProfile: true },
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                showProfile: true,
+                instagramUrl: true,
+                facebookUrl: true,
+                googleMapLink: true,
+              },
             },
           },
           orderBy: { createdAt: 'desc' },
@@ -216,6 +224,9 @@ export class ProductService {
         rating: userRating,
         listingsCount: product.user._count.products,
         showProfile: product.user.showProfile,
+        instagramUrl: product.user.instagramUrl,
+        facebookUrl: product.user.facebookUrl,
+        googleMapLink: product.user.googleMapLink,
       },
     }
 

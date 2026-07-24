@@ -36,8 +36,8 @@ model User {
   stripeSubscriptionId  String?
 
   // Social Links
-  instagramUrl          String?
-  facebookUrl           String?
+  instagramUrl String?
+  facebookUrl  String?
 
   // Bank & UPI Settlement details
   upiId         String?
@@ -189,7 +189,6 @@ model Product {
   views           Int      @default(0)
 
   // New Enhanced Fields
-  condition           String? // e.g., "Like New", "Good", "Fair"
   features            String[] // ["WiFi", "4K Video", "Touchscreen"]
   deliveryOptions     String[] // ["Pickup", "Delivery", "Self-Pickup"]
   pickupReturnDetails String?
@@ -518,9 +517,9 @@ model State {
   country_id Int
   name       String
   state_code String?
-  
-  country    Country @relation(fields: [country_id], references: [id])
-  cities     City[]
+
+  country Country @relation(fields: [country_id], references: [id])
+  cities  City[]
 
   @@index([name])
   @@map("states")
@@ -534,8 +533,8 @@ model City {
   latitude   String?
   longitude  String?
 
-  state      State  @relation(fields: [state_id], references: [id])
-  
+  state State @relation(fields: [state_id], references: [id])
+
   @@index([name])
   @@map("cities")
 }
@@ -551,4 +550,3 @@ model Pincode {
   @@index([pincode])
   @@map("pincodes")
 }
-

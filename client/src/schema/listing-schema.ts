@@ -18,7 +18,6 @@ export const listingSchema = z.object({
   images: z.array(z.string()).min(1, 'At least one image is required'),
 
   // New Enhanced Fields
-  condition: z.string().min(1, 'Condition is required').optional(),
   features: z.array(z.string()).default([]),
   deliveryOptions: z
     .array(z.string())

@@ -6,33 +6,32 @@ import {
   CheckCircle2,
   Instagram,
   Facebook,
+  MapPin,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
 import { useCreateConversation } from '#/hook'
-import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { useTranslation } from '#/context/TranslationContext'
 
 interface ProductUserCardProps {
   user: any
-  instagramUrl?: string
-  facebookUrl?: string
+  session?: any
 }
 
 export const ProductUserCard = ({
   user,
-  instagramUrl,
-  facebookUrl,
+  session,
 }: ProductUserCardProps) => {
   const { t, formatDate } = useTranslation()
-  const { data: session } = authClient.useSession()
   const navigate = useNavigate()
   const [isStartingChat, setIsStartingChat] = useState(false)
   const createConversation = useCreateConversation()
 
   if (!user) return null
+
+  const { instagramUrl, facebookUrl, googleMapLink } = user
 
   const handleContactHost = async () => {
     if (!session?.user) {
@@ -54,7 +53,7 @@ export const ProductUserCard = ({
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message ||
-          'Could not start conversation. Try again.',
+        'Could not start conversation. Try again.',
       )
     } finally {
       setIsStartingChat(false)
@@ -102,9 +101,9 @@ export const ProductUserCard = ({
           {t('Member since')}{' '}
           {user.createdAt
             ? formatDate(user.createdAt, {
-                month: 'long',
-                year: 'numeric',
-              })
+              month: 'long',
+              year: 'numeric',
+            })
             : 'May 2022'}
         </div>
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">
@@ -113,7 +112,7 @@ export const ProductUserCard = ({
         </div>
       </div>
 
-      {(instagramUrl || facebookUrl) && (
+      {(instagramUrl || facebookUrl || googleMapLink) && (
         <div className="pt-3 border-t border-border/30 space-y-2">
           <p className="text-[11px] font-black text-muted-foreground uppercase tracking-wider">
             {t('Social Links')}
@@ -145,6 +144,20 @@ export const ProductUserCard = ({
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-200/50 bg-blue-50/40 text-blue-700 text-xs font-bold hover:bg-blue-50 transition-colors"
               >
                 <Facebook size={13} className="text-blue-600" /> Facebook
+              </a>
+            )}
+            {googleMapLink && (
+              <a
+                href={
+                  googleMapLink.startsWith('http')
+                    ? googleMapLink
+                    : `https://${googleMapLink}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-green-200/50 bg-green-50/40 text-green-700 text-xs font-bold hover:bg-green-50 transition-colors"
+              >
+                <MapPin size={13} className="text-green-600" /> Map
               </a>
             )}
           </div>
