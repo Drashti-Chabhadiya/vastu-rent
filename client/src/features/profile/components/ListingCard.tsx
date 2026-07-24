@@ -47,7 +47,7 @@ export function ListingCard({ item, openDropdownId, setOpenDropdownId, onEdit, o
             </div>
             <div className="flex items-center gap-1 text-[11px] font-bold text-muted-dark">
               <MapPin size={12} className="text-primary" />
-              <span>{item.location}</span>
+              <span>{item.city}</span>
             </div>
           </div>
 
