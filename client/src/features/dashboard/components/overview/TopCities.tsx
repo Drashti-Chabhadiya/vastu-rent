@@ -2,8 +2,10 @@ import { useTopCities } from '#/hook'
 import { MapPin } from 'lucide-react'
 import { cn } from '../../../../lib/utils'
 import { ExploreLink } from '#/components/common/ExploreLink'
+import { useTranslation } from '#/context/TranslationContext'
 
 export const TopCities = () => {
+  const { t, formatNumber } = useTranslation()
   const { data: cities = [], isLoading } = useTopCities()
 
   return (
@@ -19,10 +21,8 @@ export const TopCities = () => {
       )}
     >
       <div className={cn('flex', 'items-center', 'justify-between', 'mb-6')}>
-        <h3 className={cn('font-bold', 'text-dash-text')}>
-          Top Cities by Listings
-        </h3>
-        <ExploreLink to="/products">View All</ExploreLink>
+        <h3 className={cn('font-bold', 'text-dash-text')}>{t('Top Cities')}</h3>
+        <ExploreLink to="/products">{t('View All')}</ExploreLink>
       </div>
 
       {isLoading ? (
@@ -56,10 +56,12 @@ export const TopCities = () => {
             className={cn('text-muted-foreground/30', 'mb-3')}
           />
           <p className={cn('text-sm', 'font-bold', 'text-muted-foreground/70')}>
-            No city data yet
+            {t('No city data yet')}
           </p>
           <p className={cn('text-xs', 'text-muted-dark', 'mt-1')}>
-            Cities will appear once listings are added with location info.
+            {t(
+              'Cities will appear once listings are added with location info.',
+            )}
           </p>
         </div>
       ) : (
@@ -111,7 +113,7 @@ export const TopCities = () => {
                   'w-12',
                 )}
               >
-                {city.count}
+                {formatNumber(city.count)}
               </span>
             </div>
           ))}

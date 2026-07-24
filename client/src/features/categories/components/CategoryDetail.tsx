@@ -9,8 +9,10 @@ import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function CategoryDetail() {
+  const { t, formatDigits } = useTranslation()
   const { id } = useParams({ from: '/categories/$id' })
   const { data: categories, isLoading: categoriesLoading } = useCategories()
   const { data: products, isLoading: productsLoading } = useProducts({
@@ -45,7 +47,7 @@ export function CategoryDetail() {
               className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground/85 hover:text-primary transition-colors mb-8"
             >
               <ArrowLeft size={16} />
-              Back to All Categories
+              {t('Back to All Categories')}
             </Link>
           </motion.div>
 
@@ -68,25 +70,25 @@ export function CategoryDetail() {
                 variants={fadeUp}
                 className="text-4xl font-extrabold text-foreground tracking-tight mb-3"
               >
-                {category?.name || 'Category Items'}
+                {t(category?.name || 'Category Items')}
               </motion.h1>
               <motion.p
                 variants={fadeUp}
                 className="text-lg text-muted-foreground max-w-2xl"
               >
-                Explore our curated collection of{' '}
-                {category?.name?.toLowerCase() || 'items'} available for rent.
-                High quality, affordable, and ready for you.
+                {t(
+                  'Explore our curated collection of items available for rent. High quality, affordable, and ready for you.',
+                )}
               </motion.p>
             </div>
 
             <motion.div variants={fadeUp} className="flex items-center gap-4">
               <div className="text-center px-6 py-3 bg-primary/5 rounded-2xl border border-brand/10">
                 <p className="text-2xl font-bold text-primary">
-                  {products?.length || 0}
+                  {formatDigits(products?.length || 0)}
                 </p>
                 <p className="text-xs font-bold text-muted-foreground/85 uppercase tracking-wider">
-                  Items
+                  {t('ITEMS')}
                 </p>
               </div>
             </motion.div>
@@ -104,7 +106,7 @@ export function CategoryDetail() {
             />
             <Input
               type="text"
-              placeholder={`Search in ${category?.name || 'this category'}...`}
+              placeholder={`${t('Search in')} ${t(category?.name || 'category')}...`}
               className="w-full h-14 pl-12 pr-6 bg-card border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -116,7 +118,7 @@ export function CategoryDetail() {
             className="gap-3 text-foreground/80"
           >
             <SlidersHorizontal size={20} className="text-muted-foreground/70" />
-            Filter
+            {t('Filter')}
           </Button>
         </div>
         {/* Product Grid */}
@@ -126,10 +128,10 @@ export function CategoryDetail() {
               <Search className="text-muted-dark" size={32} />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">
-              No items found
+              {t('No items found')}
             </h3>
             <p className="text-muted-foreground/85">
-              We couldn't find any items matching your search criteria.
+              {t("We couldn't find any items matching your search criteria.")}
             </p>
           </div>
         ) : (

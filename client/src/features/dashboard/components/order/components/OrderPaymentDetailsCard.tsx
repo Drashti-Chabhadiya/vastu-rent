@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 import { cn } from '#/lib/utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface OrderPaymentDetailsCardProps {
   order: any
@@ -8,42 +9,43 @@ interface OrderPaymentDetailsCardProps {
 export const OrderPaymentDetailsCard = ({
   order,
 }: OrderPaymentDetailsCardProps) => {
+  const { t } = useTranslation()
   if (!order) return null
 
   const paymentItems = [
     {
-      label: 'Payment Method',
+      label: t('Payment Method'),
       value:
         order.paymentMethod === 'cash'
-          ? 'Cash / CoD Payment'
-          : 'Online Payment',
+          ? t('Cash / CoD Payment')
+          : t('Online Payment'),
     },
     {
-      label: 'Payment Status',
-      value: (order.paymentStatus || 'Pending').toUpperCase(),
+      label: t('Payment Status'),
+      value: (order.paymentStatus || t('Pending')).toUpperCase(),
       isBadge: true,
     },
     {
-      label: 'Transaction ID',
+      label: t('Transaction ID'),
       value:
         order.transactionId ||
         (order.paymentMethod === 'cash'
-          ? 'N/A (Cash on Delivery)'
-          : 'Pending Check'),
+          ? t('N/A (Cash on Delivery)')
+          : t('Pending Check')),
     },
     {
-      label: 'Payment Date',
+      label: t('Payment Date'),
       value: format(
         new Date(order.updatedAt || order.createdAt),
         'dd MMM yyyy, hh:mm a',
       ),
     },
     {
-      label: 'Rental Subtotal',
+      label: t('Rental Subtotal'),
       value: `₹${(order.rentalFee || order.totalPrice).toLocaleString()}`,
     },
     {
-      label: 'Security Deposit',
+      label: t('Security Deposit'),
       value: `₹${(order.depositAmount || 0).toLocaleString()}`,
     },
   ]
@@ -52,7 +54,7 @@ export const OrderPaymentDetailsCard = ({
     <div className="bg-card rounded-[2rem] border border-border/30 shadow-sm overflow-hidden">
       <div className="p-10 pb-2">
         <h3 className="text-[14px] font-black text-foreground mb-8 uppercase tracking-widest">
-          Payment Details
+          {t('Payment Details')}
         </h3>
       </div>
       <div className="px-10 space-y-0">
@@ -85,7 +87,7 @@ export const OrderPaymentDetailsCard = ({
       </div>
       <div className="bg-muted-light px-10 py-8 flex items-center justify-between mt-4">
         <span className="text-[14px] font-black text-foreground">
-          Total Paid (Gross Income)
+          {t('Total Paid (Gross Income)')}
         </span>
         <span className="text-xl font-black text-primary">
           ₹{order.totalPrice.toLocaleString()}

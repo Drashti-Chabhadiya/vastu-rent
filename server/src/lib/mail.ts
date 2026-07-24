@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer'
 import {
   getVerificationTemplate,
   getResetPasswordTemplate,
@@ -6,15 +6,15 @@ import {
   getNotificationsConfirmationTemplate,
   getMarketingWelcomeTemplate,
   getContactSupportTemplate,
-} from "../templates/index.js";
-import { notificationQueue } from "../queues/queues.js";
-import { JOB_NAMES } from "../constants/queue-keys.js";
+} from '../templates/index.js'
+import { notificationQueue } from '../queues/queues.js'
+import { JOB_NAMES } from '../constants/queue-keys.js'
 
 interface SendVerificationEmailOptions {
-  email: string;
-  name: string;
-  url: string;
-  token: string;
+  email: string
+  name: string
+  url: string
+  token: string
 }
 
 /**
@@ -28,41 +28,50 @@ export async function sendVerificationEmailDirect({
   url: _url,
   token,
 }: SendVerificationEmailOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>';
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
-  const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+  const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
   // Propose a cleaner client-side URL for email verification
-  const clientVerificationUrl = `${clientUrl}/verify-email?token=${token}`;
+  const clientVerificationUrl = `${clientUrl}/verify-email?token=${token}`
 
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass;
+  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
 
-  const subject = "Verify your email address - VastuRent";
+  const subject = 'Verify your email address - VastuRent'
 
   // Load cleanly from template file
   const htmlContent = getVerificationTemplate({
     name,
     clientVerificationUrl,
-  });
+  })
 
   if (!hasSmtpConfig) {
     // Elegant and high-visibility debug output in console
-    console.log("\n" + "=".repeat(75));
-    console.log("📧  [VastuRent Email Simulator] - VERIFICATION LINK GENERATED");
-    console.log("=".repeat(75));
-    console.log(`👤  To Name:    ${name}`);
-    console.log(`✉️  To Email:   ${email}`);
-    console.log(`📋  Subject:    ${subject}`);
-    console.log(`🔗  Verify URL: \x1b[36m\x1b[4m${clientVerificationUrl}\x1b[0m`);
-    console.log(`🎫  Token:      ${token}`);
-    console.log("-".repeat(75));
-    console.log("💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS");
-    console.log("    in your server/.env file. Proceeding with simulated success.");
-    console.log("=".repeat(75) + "\n");
-    return;
+    console.log('\n' + '='.repeat(75))
+    console.log('📧  [VastuRent Email Simulator] - VERIFICATION LINK GENERATED')
+    console.log('='.repeat(75))
+    console.log(`👤  To Name:    ${name}`)
+    console.log(`✉️  To Email:   ${email}`)
+    console.log(`📋  Subject:    ${subject}`)
+    console.log(
+      `🔗  Verify URL: \x1b[36m\x1b[4m${clientVerificationUrl}\x1b[0m`,
+    )
+    console.log(`🎫  Token:      ${token}`)
+    console.log('-'.repeat(75))
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
+    console.log('='.repeat(75) + '\n')
+    return
   }
 
   // Real email sending
@@ -75,7 +84,7 @@ export async function sendVerificationEmailDirect({
         user: smtpUser,
         pass: smtpPass,
       },
-    });
+    })
 
     await transporter.sendMail({
       from: smtpFrom,
@@ -83,21 +92,21 @@ export async function sendVerificationEmailDirect({
       subject,
       html: htmlContent,
       text: `Confirm Your Email Address - Welcome to VastuRent!\n\nPlease visit the following link to verify your email: ${clientVerificationUrl}`,
-    });
+    })
 
-    console.log(`📧  Email verification sent successfully to ${email}`);
+    console.log(`📧  Email verification sent successfully to ${email}`)
   } catch (error) {
-    console.error("❌  Error sending email verification email:", error);
+    console.error('❌  Error sending email verification email:', error)
     // Throw error so Better Auth knows verification mail failed to send
-    throw error;
+    throw error
   }
 }
 
 interface SendResetPasswordEmailOptions {
-  email: string;
-  name: string;
-  url: string;
-  token: string;
+  email: string
+  name: string
+  url: string
+  token: string
 }
 
 /**
@@ -111,40 +120,51 @@ export async function sendResetPasswordEmailDirect({
   url: _url,
   token,
 }: SendResetPasswordEmailOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>';
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
-  const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
-  const clientResetPasswordUrl = `${clientUrl}/reset-password?token=${token}`;
+  const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
+  const clientResetPasswordUrl = `${clientUrl}/reset-password?token=${token}`
 
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass;
+  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
 
-  const subject = "Reset your password - VastuRent";
+  const subject = 'Reset your password - VastuRent'
 
   // Load cleanly from template file
   const htmlContent = getResetPasswordTemplate({
     name,
     clientResetPasswordUrl,
-  });
+  })
 
   if (!hasSmtpConfig) {
     // Elegant and high-visibility debug output in console
-    console.log("\n" + "=".repeat(75));
-    console.log("📧  [VastuRent Email Simulator] - PASSWORD RESET LINK GENERATED");
-    console.log("=".repeat(75));
-    console.log(`👤  To Name:    ${name}`);
-    console.log(`✉️  To Email:   ${email}`);
-    console.log(`📋  Subject:    ${subject}`);
-    console.log(`🔗  Reset URL:  \\x1b[36m\\x1b[4m${clientResetPasswordUrl}\\x1b[0m`);
-    console.log(`🎫  Token:      ${token}`);
-    console.log("-".repeat(75));
-    console.log("💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS");
-    console.log("    in your server/.env file. Proceeding with simulated success.");
-    console.log("=".repeat(75) + "\\n");
-    return;
+    console.log('\n' + '='.repeat(75))
+    console.log(
+      '📧  [VastuRent Email Simulator] - PASSWORD RESET LINK GENERATED',
+    )
+    console.log('='.repeat(75))
+    console.log(`👤  To Name:    ${name}`)
+    console.log(`✉️  To Email:   ${email}`)
+    console.log(`📋  Subject:    ${subject}`)
+    console.log(
+      `🔗  Reset URL:  \\x1b[36m\\x1b[4m${clientResetPasswordUrl}\\x1b[0m`,
+    )
+    console.log(`🎫  Token:      ${token}`)
+    console.log('-'.repeat(75))
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
+    console.log('='.repeat(75) + '\\n')
+    return
   }
 
   // Real email sending
@@ -157,7 +177,7 @@ export async function sendResetPasswordEmailDirect({
         user: smtpUser,
         pass: smtpPass,
       },
-    });
+    })
 
     await transporter.sendMail({
       from: smtpFrom,
@@ -165,21 +185,21 @@ export async function sendResetPasswordEmailDirect({
       subject,
       html: htmlContent,
       text: `Reset Your Password - VastuRent\\n\\nPlease visit the following link to reset your password: ${clientResetPasswordUrl}`,
-    });
+    })
 
-    console.log(`📧  Password reset email sent successfully to ${email}`);
+    console.log(`📧  Password reset email sent successfully to ${email}`)
   } catch (error) {
-    console.error("❌  Error sending password reset email:", error);
-    throw error;
+    console.error('❌  Error sending password reset email:', error)
+    throw error
   }
 }
 
 interface SendBookingAlertOptions {
-  email: string;
-  name: string;
-  title: string;
-  message: string;
-  type: string; // 'booking_request' | 'booking_status' | 'booking_completed'
+  email: string
+  name: string
+  title: string
+  message: string
+  type: string // 'booking_request' | 'booking_status' | 'booking_completed'
 }
 
 export async function sendBookingAlertEmailDirect({
@@ -189,35 +209,42 @@ export async function sendBookingAlertEmailDirect({
   message,
   type: _type,
 }: SendBookingAlertOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>';
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass;
-  const subject = `${title} - VastuRent`;
+  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
+  const subject = `${title} - VastuRent`
 
   // Load cleanly from template file
   const htmlContent = getBookingAlertTemplate({
     title,
     name,
     message,
-  });
+  })
 
   if (!hasSmtpConfig) {
-    console.log("\n" + "=".repeat(75));
-    console.log(`📧  [VastuRent Email Simulator] - ${title.toUpperCase()}`);
-    console.log("=".repeat(75));
-    console.log(`👤  To Name:    ${name}`);
-    console.log(`✉️  To Email:   ${email}`);
-    console.log(`📋  Subject:    ${subject}`);
-    console.log(`💬  Message:    ${message}`);
-    console.log("-".repeat(75));
-    console.log("💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS");
-    console.log("    in your server/.env file. Proceeding with simulated success.");
-    console.log("=".repeat(75) + "\n");
-    return;
+    console.log('\n' + '='.repeat(75))
+    console.log(`📧  [VastuRent Email Simulator] - ${title.toUpperCase()}`)
+    console.log('='.repeat(75))
+    console.log(`👤  To Name:    ${name}`)
+    console.log(`✉️  To Email:   ${email}`)
+    console.log(`📋  Subject:    ${subject}`)
+    console.log(`💬  Message:    ${message}`)
+    console.log('-'.repeat(75))
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
+    console.log('='.repeat(75) + '\n')
+    return
   }
 
   try {
@@ -226,7 +253,7 @@ export async function sendBookingAlertEmailDirect({
       port: smtpPort,
       secure: smtpPort === 465,
       auth: { user: smtpUser, pass: smtpPass },
-    });
+    })
 
     await transporter.sendMail({
       from: smtpFrom,
@@ -234,49 +261,58 @@ export async function sendBookingAlertEmailDirect({
       subject,
       html: htmlContent,
       text: `${title}\n\nHi ${name},\n\n${message}`,
-    });
-    console.log(`📧  Alert email sent successfully to ${email}`);
+    })
+    console.log(`📧  Alert email sent successfully to ${email}`)
   } catch (error) {
-    console.error("❌  Error sending alert email:", error);
+    console.error('❌  Error sending alert email:', error)
   }
 }
 
 interface SendPreferenceConfirmationOptions {
-  email: string;
-  name: string;
+  email: string
+  name: string
 }
 
 export async function sendEmailNotificationsConfirmationEmailDirect({
   email,
   name,
 }: SendPreferenceConfirmationOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>';
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass;
-  const subject = "🔔 Email Notifications Activated! - VastuRent";
+  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
+  const subject = '🔔 Email Notifications Activated! - VastuRent'
 
   // Load cleanly from template file
   const htmlContent = getNotificationsConfirmationTemplate({
     name,
-  });
+  })
 
   if (!hasSmtpConfig) {
-    console.log("\n" + "=".repeat(75));
-    console.log("📧  [VastuRent Email Simulator] - EMAIL NOTIFICATIONS PREFERENCE ON");
-    console.log("=".repeat(75));
-    console.log(`👤  To Name:    ${name}`);
-    console.log(`✉️  To Email:   ${email}`);
-    console.log(`📋  Subject:    ${subject}`);
-    console.log("💬  Status:     Preference confirmed active!");
-    console.log("-".repeat(75));
-    console.log("💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS");
-    console.log("    in your server/.env file. Proceeding with simulated success.");
-    console.log("=".repeat(75) + "\n");
-    return;
+    console.log('\n' + '='.repeat(75))
+    console.log(
+      '📧  [VastuRent Email Simulator] - EMAIL NOTIFICATIONS PREFERENCE ON',
+    )
+    console.log('='.repeat(75))
+    console.log(`👤  To Name:    ${name}`)
+    console.log(`✉️  To Email:   ${email}`)
+    console.log(`📋  Subject:    ${subject}`)
+    console.log('💬  Status:     Preference confirmed active!')
+    console.log('-'.repeat(75))
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
+    console.log('='.repeat(75) + '\n')
+    return
   }
 
   try {
@@ -285,7 +321,7 @@ export async function sendEmailNotificationsConfirmationEmailDirect({
       port: smtpPort,
       secure: smtpPort === 465,
       auth: { user: smtpUser, pass: smtpPass },
-    });
+    })
 
     await transporter.sendMail({
       from: smtpFrom,
@@ -293,10 +329,12 @@ export async function sendEmailNotificationsConfirmationEmailDirect({
       subject,
       html: htmlContent,
       text: `Email Notifications Activated!\n\nHi ${name},\n\nYour email notifications preference has been successfully turned ON. You will now receive important updates about bookings and account settings.`,
-    });
-    console.log(`📧  Notification activation email sent successfully to ${email}`);
+    })
+    console.log(
+      `📧  Notification activation email sent successfully to ${email}`,
+    )
   } catch (error) {
-    console.error("❌  Error sending preference confirmation email:", error);
+    console.error('❌  Error sending preference confirmation email:', error)
   }
 }
 
@@ -304,33 +342,42 @@ export async function sendMarketingWelcomeEmailDirect({
   email,
   name,
 }: SendPreferenceConfirmationOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>';
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass;
-  const subject = "🎉 Welcome to VastuRent Deals! Exclusive Offers Inside";
+  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
+  const subject = '🎉 Welcome to VastuRent Deals! Exclusive Offers Inside'
 
   // Load cleanly from template file
   const htmlContent = getMarketingWelcomeTemplate({
     name,
-  });
+  })
 
   if (!hasSmtpConfig) {
-    console.log("\n" + "=".repeat(75));
-    console.log("📧  [VastuRent Email Simulator] - MARKETING PROMOTIONS SUBSCRIBED");
-    console.log("=".repeat(75));
-    console.log(`👤  To Name:    ${name}`);
-    console.log(`✉️  To Email:   ${email}`);
-    console.log(`📋  Subject:    ${subject}`);
-    console.log("💬  Gift Code:  WELCOME15 (15% Off Welcome Promotion)");
-    console.log("-".repeat(75));
-    console.log("💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS");
-    console.log("    in your server/.env file. Proceeding with simulated success.");
-    console.log("=".repeat(75) + "\n");
-    return;
+    console.log('\n' + '='.repeat(75))
+    console.log(
+      '📧  [VastuRent Email Simulator] - MARKETING PROMOTIONS SUBSCRIBED',
+    )
+    console.log('='.repeat(75))
+    console.log(`👤  To Name:    ${name}`)
+    console.log(`✉️  To Email:   ${email}`)
+    console.log(`📋  Subject:    ${subject}`)
+    console.log('💬  Gift Code:  WELCOME15 (15% Off Welcome Promotion)')
+    console.log('-'.repeat(75))
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
+    console.log('='.repeat(75) + '\n')
+    return
   }
 
   try {
@@ -339,7 +386,7 @@ export async function sendMarketingWelcomeEmailDirect({
       port: smtpPort,
       secure: smtpPort === 465,
       auth: { user: smtpUser, pass: smtpPass },
-    });
+    })
 
     await transporter.sendMail({
       from: smtpFrom,
@@ -347,18 +394,18 @@ export async function sendMarketingWelcomeEmailDirect({
       subject,
       html: htmlContent,
       text: `Welcome to VastuRent Exclusive Offers!\n\nHi ${name},\n\nThank you for subscribing to VastuRent Marketing Emails! Here is your exclusive 15% discount code: WELCOME15`,
-    });
-    console.log(`📧  Marketing welcome email sent successfully to ${email}`);
+    })
+    console.log(`📧  Marketing welcome email sent successfully to ${email}`)
   } catch (error) {
-    console.error("❌  Error sending marketing welcome email:", error);
+    console.error('❌  Error sending marketing welcome email:', error)
   }
 }
 
 interface SendContactSupportOptions {
-  email: string;
-  name: string;
-  subject: string;
-  message: string;
+  email: string
+  name: string
+  subject: string
+  message: string
 }
 
 export async function sendContactSupportEmailDirect({
@@ -367,14 +414,17 @@ export async function sendContactSupportEmailDirect({
   subject,
   message,
 }: SendContactSupportOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>';
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass;
-  const emailSubject = `📥 New Support Inquiry: ${subject} - VastuRent`;
+  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
+  const emailSubject = `📥 New Support Inquiry: ${subject} - VastuRent`
 
   // Load cleanly from template file
   const htmlContent = getContactSupportTemplate({
@@ -382,21 +432,25 @@ export async function sendContactSupportEmailDirect({
     email,
     subject,
     message,
-  });
+  })
 
   if (!hasSmtpConfig) {
-    console.log("\n" + "=".repeat(75));
-    console.log(`📧  [VastuRent Email Simulator] - SUPPORT INQUIRY RECEIVED`);
-    console.log("=".repeat(75));
-    console.log(`👤  From Name:  ${name}`);
-    console.log(`✉️  From Email: ${email}`);
-    console.log(`📋  Subject:    ${subject}`);
-    console.log(`💬  Message:    ${message}`);
-    console.log("-".repeat(75));
-    console.log("💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS");
-    console.log("    in your server/.env file. Proceeding with simulated success.");
-    console.log("=".repeat(75) + "\n");
-    return;
+    console.log('\n' + '='.repeat(75))
+    console.log(`📧  [VastuRent Email Simulator] - SUPPORT INQUIRY RECEIVED`)
+    console.log('='.repeat(75))
+    console.log(`👤  From Name:  ${name}`)
+    console.log(`✉️  From Email: ${email}`)
+    console.log(`📋  Subject:    ${subject}`)
+    console.log(`💬  Message:    ${message}`)
+    console.log('-'.repeat(75))
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
+    console.log('='.repeat(75) + '\n')
+    return
   }
 
   try {
@@ -405,74 +459,107 @@ export async function sendContactSupportEmailDirect({
       port: smtpPort,
       secure: smtpPort === 465,
       auth: { user: smtpUser, pass: smtpPass },
-    });
+    })
 
     await transporter.sendMail({
       from: smtpFrom,
-      to: process.env.CONTACT_EMAIL || process.env.SMTP_USER || "support@vasturent.com",
+      to:
+        process.env.CONTACT_EMAIL ||
+        process.env.SMTP_USER ||
+        'support@vasturent.com',
       replyTo: email,
       subject: emailSubject,
       html: htmlContent,
       text: `New Support Inquiry!\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\nMessage: ${message}`,
-    });
-    console.log(`📧  Support inquiry alert sent successfully.`);
+    })
+    console.log(`📧  Support inquiry alert sent successfully.`)
   } catch (error) {
-    console.error("❌  Error sending support inquiry email:", error);
+    console.error('❌  Error sending support inquiry email:', error)
   }
 }
 
 // ─── Queue-based Non-blocking Wrappers ───────────────────────────────────────
 
-export async function sendVerificationEmail(options: SendVerificationEmailOptions): Promise<void> {
+export async function sendVerificationEmail(
+  options: SendVerificationEmailOptions,
+): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "verification", emailData: options });
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
+      type: 'verification',
+      emailData: options,
+    })
   } catch (err) {
-    console.error("Failed to queue verification email:", err);
-    await sendVerificationEmailDirect(options);
+    console.error('Failed to queue verification email:', err)
+    await sendVerificationEmailDirect(options)
   }
 }
 
-export async function sendResetPasswordEmail(options: SendResetPasswordEmailOptions): Promise<void> {
+export async function sendResetPasswordEmail(
+  options: SendResetPasswordEmailOptions,
+): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "reset-password", emailData: options });
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
+      type: 'reset-password',
+      emailData: options,
+    })
   } catch (err) {
-    console.error("Failed to queue reset password email:", err);
-    await sendResetPasswordEmailDirect(options);
+    console.error('Failed to queue reset password email:', err)
+    await sendResetPasswordEmailDirect(options)
   }
 }
 
-export async function sendBookingAlertEmail(options: SendBookingAlertOptions): Promise<void> {
+export async function sendBookingAlertEmail(
+  options: SendBookingAlertOptions,
+): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "booking-alert", emailData: options });
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
+      type: 'booking-alert',
+      emailData: options,
+    })
   } catch (err) {
-    console.error("Failed to queue booking alert email:", err);
-    await sendBookingAlertEmailDirect(options);
+    console.error('Failed to queue booking alert email:', err)
+    await sendBookingAlertEmailDirect(options)
   }
 }
 
-export async function sendEmailNotificationsConfirmationEmail(options: SendPreferenceConfirmationOptions): Promise<void> {
+export async function sendEmailNotificationsConfirmationEmail(
+  options: SendPreferenceConfirmationOptions,
+): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "preference-confirmation", emailData: options });
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
+      type: 'preference-confirmation',
+      emailData: options,
+    })
   } catch (err) {
-    console.error("Failed to queue preference confirmation email:", err);
-    await sendEmailNotificationsConfirmationEmailDirect(options);
+    console.error('Failed to queue preference confirmation email:', err)
+    await sendEmailNotificationsConfirmationEmailDirect(options)
   }
 }
 
-export async function sendMarketingWelcomeEmail(options: SendPreferenceConfirmationOptions): Promise<void> {
+export async function sendMarketingWelcomeEmail(
+  options: SendPreferenceConfirmationOptions,
+): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "welcome", emailData: options });
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
+      type: 'welcome',
+      emailData: options,
+    })
   } catch (err) {
-    console.error("Failed to queue welcome email:", err);
-    await sendMarketingWelcomeEmailDirect(options);
+    console.error('Failed to queue welcome email:', err)
+    await sendMarketingWelcomeEmailDirect(options)
   }
 }
 
-export async function sendContactSupportEmail(options: SendContactSupportOptions): Promise<void> {
+export async function sendContactSupportEmail(
+  options: SendContactSupportOptions,
+): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, { type: "support", emailData: options });
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
+      type: 'support',
+      emailData: options,
+    })
   } catch (err) {
-    console.error("Failed to queue support email:", err);
-    await sendContactSupportEmailDirect(options);
+    console.error('Failed to queue support email:', err)
+    await sendContactSupportEmailDirect(options)
   }
 }

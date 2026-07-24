@@ -1,7 +1,9 @@
 import { useCategories } from '#/hook'
 import { useMemo } from 'react'
+import { useTranslation } from '#/context/TranslationContext'
 
 export const CategoryDonut = () => {
+  const { t, formatNumber } = useTranslation()
   const { data: categories = [], isLoading } = useCategories()
   const chartData = useMemo(() => {
     if (!categories?.length) return []
@@ -58,14 +60,16 @@ export const CategoryDonut = () => {
   if (isLoading) {
     return (
       <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm">
-        Loading...
+        {t('Loading...')}
       </div>
     )
   }
 
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
-      <h3 className="font-bold text-dash-text mb-8">Listings by Category</h3>
+      <h3 className="font-bold text-dash-text mb-8">
+        {t('Listings by Category')}
+      </h3>
 
       <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-8">
         {/* Donut Chart */}
@@ -106,11 +110,11 @@ export const CategoryDonut = () => {
           {/* Center Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-xl font-bold text-dash-text">
-              {totalCount.toLocaleString()}
+              {formatNumber(totalCount)}
             </span>
 
             <span className="text-[10px] font-bold text-dash-text-muted">
-              Total
+              {t('Total')}
             </span>
           </div>
         </div>
@@ -136,7 +140,7 @@ export const CategoryDonut = () => {
                 </span>
 
                 <span className="text-[10px] text-dash-text-muted ml-1">
-                  ({cat.count.toLocaleString()})
+                  ({formatNumber(cat.count)})
                 </span>
               </div>
             </div>

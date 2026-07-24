@@ -1,6 +1,5 @@
 import { prisma } from '../config/prisma.js'
 import { io } from './socket.js'
-import { sendPushToUser } from './fcm.js'
 import { notificationQueue } from '../queues/queues.js'
 import { JOB_NAMES } from '../constants/queue-keys.js'
 
@@ -36,7 +35,11 @@ export async function createAndDeliverNotification({
 
     // Emit via socket.io to user's room (foreground real-time update)
     try {
-      console.log(`[Socket] Emitting notification to user_${userId}:`, { ...notif, url, image })
+      console.log(`[Socket] Emitting notification to user_${userId}:`, {
+        ...notif,
+        url,
+        image,
+      })
       io?.to(`user_${userId}`).emit('notification', { ...notif, url, image })
     } catch (err) {
       console.error('Socket emit failed for notification:', err)
@@ -89,9 +92,12 @@ export async function notifyAllAdmins({
           type,
           url,
         }).catch((err) =>
-          console.error(`Failed to deliver notification to admin ${admin.id}:`, err)
-        )
-      )
+          console.error(
+            `Failed to deliver notification to admin ${admin.id}:`,
+            err,
+          ),
+        ),
+      ),
     )
   } catch (err) {
     console.error('Failed to notify admins:', err)
@@ -105,7 +111,10 @@ export async function notifyAllUsers({
   url = '/notifications',
   image,
   excludeUserId,
-}: Omit<NotificationOptions, 'userId'> & { image?: string; excludeUserId?: string }) {
+}: Omit<NotificationOptions, 'userId'> & {
+  image?: string
+  excludeUserId?: string
+}) {
   try {
     const users = await prisma.user.findMany({
       where: excludeUserId ? { id: { not: excludeUserId } } : {},
@@ -122,9 +131,9 @@ export async function notifyAllUsers({
           url,
           image,
         }).catch((err) =>
-          console.error(`Failed to deliver notification to user ${u.id}:`, err)
-        )
-      )
+          console.error(`Failed to deliver notification to user ${u.id}:`, err),
+        ),
+      ),
     )
   } catch (err) {
     console.error('Failed to notify all users:', err)

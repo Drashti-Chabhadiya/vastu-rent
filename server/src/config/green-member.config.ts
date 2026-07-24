@@ -23,4 +23,4 @@ export const greenMemberConfig = {
    * Whether location details must be filled in.
    */
   requireLocation: true,
-};
+}

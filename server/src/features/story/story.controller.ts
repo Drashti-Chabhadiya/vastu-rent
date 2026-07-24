@@ -13,12 +13,17 @@ export const StoryController = {
     }
   },
 
-  async getStoryById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  async getStoryById(
+    request: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply,
+  ) {
     try {
       const { id } = request.params
       const story = await StoryService.getStoryById(id)
       if (!story) {
-        return reply.code(404).send({ success: false, message: 'Story not found' })
+        return reply
+          .code(404)
+          .send({ success: false, message: 'Story not found' })
       }
       return { success: true, story }
     } catch (error: any) {
@@ -29,12 +34,17 @@ export const StoryController = {
   async createStory(request: any, reply: FastifyReply) {
     try {
       // Require admin
-      const session = await auth.api.getSession({ headers: request.headers as any })
+      const session = await auth.api.getSession({
+        headers: request.headers as any,
+      })
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
       if (!isAdminRole(session.user.role)) {
-        return reply.code(403).send({ success: false, message: 'Forbidden: Only Admins can manage stories' })
+        return reply.code(403).send({
+          success: false,
+          message: 'Forbidden: Only Admins can manage stories',
+        })
       }
 
       const { title, excerpt, content, tag, readTime, imageUrl } = request.body
@@ -45,7 +55,7 @@ export const StoryController = {
         tag,
         readTime,
         imageUrl,
-        authorId: session.user.id
+        authorId: session.user.id,
       })
       return { success: true, story }
     } catch (error: any) {
@@ -56,12 +66,17 @@ export const StoryController = {
   async updateStory(request: any, reply: FastifyReply) {
     try {
       // Require admin
-      const session = await auth.api.getSession({ headers: request.headers as any })
+      const session = await auth.api.getSession({
+        headers: request.headers as any,
+      })
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
       if (!isAdminRole(session.user.role)) {
-        return reply.code(403).send({ success: false, message: 'Forbidden: Only Admins can manage stories' })
+        return reply.code(403).send({
+          success: false,
+          message: 'Forbidden: Only Admins can manage stories',
+        })
       }
 
       const { id } = request.params
@@ -72,7 +87,7 @@ export const StoryController = {
         content,
         tag,
         readTime,
-        imageUrl
+        imageUrl,
       })
       return { success: true, story }
     } catch (error: any) {
@@ -83,12 +98,17 @@ export const StoryController = {
   async deleteStory(request: any, reply: FastifyReply) {
     try {
       // Require admin
-      const session = await auth.api.getSession({ headers: request.headers as any })
+      const session = await auth.api.getSession({
+        headers: request.headers as any,
+      })
       if (!session || !session.user) {
         return reply.code(401).send({ success: false, message: 'Unauthorized' })
       }
       if (!isAdminRole(session.user.role)) {
-        return reply.code(403).send({ success: false, message: 'Forbidden: Only Admins can manage stories' })
+        return reply.code(403).send({
+          success: false,
+          message: 'Forbidden: Only Admins can manage stories',
+        })
       }
 
       const { id } = request.params
@@ -97,5 +117,5 @@ export const StoryController = {
     } catch (error: any) {
       return reply.code(500).send({ success: false, message: error.message })
     }
-  }
+  },
 }

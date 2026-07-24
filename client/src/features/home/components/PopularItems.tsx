@@ -3,8 +3,10 @@ import { useProducts } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductCardSkeleton } from '#/components/skeletons'
 import { Link } from '@tanstack/react-router'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function PopularItems() {
+  const { t } = useTranslation()
   const { data: products, isLoading } = useProducts({ status: 'active' })
 
   return (
@@ -12,13 +14,13 @@ export function PopularItems() {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-foreground">
-            Popular Items Near You
+            {t('Popular Items Near You')}
           </h2>
           <Link
             to="/products"
             className="text-sm font-bold text-primary hover:text-primary-hover flex items-center gap-1 group transition-colors"
           >
-            View all items
+            {t('View all items')}
             <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
@@ -38,7 +40,7 @@ export function PopularItems() {
             ) : (
               <div className="col-span-full py-12 text-center">
                 <p className="text-muted-foreground/85 font-medium">
-                  No popular items found in your area.
+                  {t('No popular items found in your area.')}
                 </p>
               </div>
             )}

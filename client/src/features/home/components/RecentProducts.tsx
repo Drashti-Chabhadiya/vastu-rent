@@ -3,8 +3,10 @@ import { useProducts } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductCardSkeleton } from '#/components/skeletons'
 import { ExploreLink } from '#/components/common/ExploreLink'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function RecentProducts() {
+  const { t } = useTranslation()
   const { data: products, isLoading } = useProducts({ status: 'active' })
 
   // Sort by date/id descending to get the latest 4 added items
@@ -28,17 +30,19 @@ export function RecentProducts() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 relative z-10 border-b border-border/10 pb-6">
           <div>
             <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-2.5">
-              <Sparkles className="h-3.5 w-3.5 animate-spin-slow" /> Fresh
-              Inventory
+              <Sparkles className="h-3.5 w-3.5 animate-spin-slow" />{' '}
+              {t('Fresh Inventory')}
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-ink tracking-tight leading-none">
-              Recent Additions
+              {t('Recent Additions')}
             </h2>
             <p className="text-muted-foreground/85 font-medium mt-1">
-              Be the first to rent these brand new listings.
+              {t('Be the first to rent these brand new listings.')}
             </p>
           </div>
-          <ExploreLink to="/products">Explore all new arrivals</ExploreLink>
+          <ExploreLink to="/products">
+            {t('Explore all new arrivals')}
+          </ExploreLink>
         </div>
 
         <div className="relative z-10">
@@ -54,7 +58,7 @@ export function RecentProducts() {
             ) : (
               <div className="col-span-full py-16 bg-muted-light rounded-3xl text-center border border-dashed border-border">
                 <p className="text-muted-foreground/85 font-bold">
-                  No newly added items found.
+                  {t('No newly added items found.')}
                 </p>
                 <p className="text-muted-foreground/70 text-sm mt-1">
                   Check back later for fresh listings!

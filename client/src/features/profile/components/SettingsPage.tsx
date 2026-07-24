@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { authClient } from '#/lib/auth/auth-client'
+import { useTranslation } from '#/context/TranslationContext'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { SettingsPageSkeleton } from '#/components/skeletons'
@@ -38,6 +39,7 @@ const subNavItems = [
 ]
 
 export function SettingsPage() {
+  const { t } = useTranslation()
   const [section, setSection] = useState('profile')
   const deleteAccountRequest = useDeleteAccountRequest()
 
@@ -104,27 +106,31 @@ export function SettingsPage() {
       await saveSettings({ phone, location, bio })
       await refetch()
       setImgPreview(null)
-      toast.success('Profile saved!')
+      toast.success(t('Profile saved!'))
     } catch {
-      toast.error('Failed to save profile.')
+      toast.error(t('Failed to save profile.'))
     }
   }
 
   const handleDeleteAccount = async () => {
     if (delInput !== 'DELETE') {
-      toast.error('Type DELETE to confirm.')
+      toast.error(t('Type DELETE to confirm.'))
       return
     }
     setDelLoading(true)
     try {
       await deleteAccountRequest.mutateAsync()
       toast.success(
-        'Account deletion request submitted. Our team will process it within 48 hours.',
+        t(
+          'Account deletion request submitted. Our team will process it within 48 hours.',
+        ),
       )
       setDelInput('')
     } catch {
       toast.error(
-        'Failed to submit deletion request. Please contact support@vastu.com.',
+        t(
+          'Failed to submit deletion request. Please contact support@vastu.com.',
+        ),
       )
     } finally {
       setDelLoading(false)
@@ -154,7 +160,7 @@ export function SettingsPage() {
             'font-medium',
           )}
         >
-          Manage your account preferences and security.
+          {t('Manage your account preferences and security.')}
         </p>
       </div>
 
@@ -218,7 +224,7 @@ export function SettingsPage() {
                 )}
               >
                 <Icon size={15} className="shrink-0" />
-                {label}
+                {t(label)}
               </Button>
             )
           })}

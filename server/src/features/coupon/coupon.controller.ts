@@ -1,89 +1,110 @@
-import { FastifyRequest, FastifyReply } from "fastify";
-import { prisma } from "../../config/prisma.js";
-import { auth } from "../../config/auth.js";
-import { isAdminRole } from "../../config/roles.js";
+import { FastifyRequest, FastifyReply } from 'fastify'
+import { prisma } from '../../config/prisma.js'
+import { auth } from '../../config/auth.js'
+import { isAdminRole } from '../../config/roles.js'
 
 export class CouponController {
   async getAllCoupons(request: FastifyRequest, _reply: FastifyReply) {
-    const session = await auth.api.getSession({ headers: request.headers as any });
-    
-    let whereClause: any = { isActive: true, endDate: { gte: new Date() } };
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
+
+    let whereClause: any = { isActive: true, endDate: { gte: new Date() } }
 
     if (session) {
-      const role = session.user.role;
+      const role = session.user.role
       if (isAdminRole(role)) {
-        whereClause = {}; // Admins see everything
+        whereClause = {} // Admins see everything
       } else {
         // Regular users can see their own coupons and active global coupons.
         whereClause = {
           OR: [
             { userId: session.user.id },
-            { userId: null, isActive: true, endDate: { gte: new Date() } }
-          ]
-        };
+            { userId: null, isActive: true, endDate: { gte: new Date() } },
+          ],
+        }
       }
     }
 
     const coupons = await prisma.coupon.findMany({
       where: whereClause,
       include: {
-        product: { select: { title: true } }
+        product: { select: { title: true } },
       },
-      orderBy: { createdAt: "desc" }
-    });
+      orderBy: { createdAt: 'desc' },
+    })
 
-    return { coupons };
+    return { coupons }
   }
 
   async createCoupon(request: FastifyRequest, reply: FastifyReply) {
-    const session = await auth.api.getSession({ headers: request.headers as any });
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (!session) {
-      return reply.status(401).send({ message: "Unauthorized" });
+      return reply.status(401).send({ message: 'Unauthorized' })
     }
 
-    const role = session.user.role;
-    const { code, discount, type, maxDiscount, minBooking, startDate, endDate, usageLimit, perUserLimit, productId } = request.body as any;
+    const role = session.user.role
+    const {
+      code,
+      discount,
+      type,
+      maxDiscount,
+      minBooking,
+      startDate,
+      endDate,
+      usageLimit,
+      perUserLimit,
+      productId,
+    } = request.body as any
 
     if (!code || !discount) {
-      return reply.status(400).send({ message: "Code and discount value are required" });
+      return reply
+        .status(400)
+        .send({ message: 'Code and discount value are required' })
     }
 
-    let couponUserId: string | null = null;
-    let couponProductId: string | null = null;
+    let couponUserId: string | null = null
+    let couponProductId: string | null = null
 
-    if (role === "user") {
-      couponUserId = session.user.id;
+    if (role === 'user') {
+      couponUserId = session.user.id
       // If a product restriction is requested, verify listing creator
       if (productId) {
         const product = await prisma.product.findUnique({
-          where: { id: productId }
-        });
+          where: { id: productId },
+        })
         if (!product || product.userId !== session.user.id) {
-          return reply.status(403).send({ message: "You can only create coupons for your own listings" });
+          return reply.status(403).send({
+            message: 'You can only create coupons for your own listings',
+          })
         }
-        couponProductId = productId;
+        couponProductId = productId
       }
     } else if (isAdminRole(role)) {
       // Admins can set userId or productId arbitrarily
-      couponUserId = (request.body as any).userId || null;
-      couponProductId = productId || null;
+      couponUserId = (request.body as any).userId || null
+      couponProductId = productId || null
     } else {
-      return reply.status(403).send({ message: "Forbidden" });
+      return reply.status(403).send({ message: 'Forbidden' })
     }
 
     // Check if code is already taken
     const existingCoupon = await prisma.coupon.findUnique({
-      where: { code: code.toUpperCase() }
-    });
+      where: { code: code.toUpperCase() },
+    })
     if (existingCoupon) {
-      return reply.status(400).send({ message: "A coupon with this code already exists" });
+      return reply
+        .status(400)
+        .send({ message: 'A coupon with this code already exists' })
     }
 
     const coupon = await prisma.coupon.create({
       data: {
         code: code.toUpperCase(),
         discount: parseFloat(discount),
-        type: type || "percentage",
+        type: type || 'percentage',
         maxDiscount: maxDiscount ? parseFloat(maxDiscount) : null,
         minBooking: minBooking ? parseFloat(minBooking) : null,
         startDate: new Date(startDate || new Date()),
@@ -92,118 +113,137 @@ export class CouponController {
         usageLimit: usageLimit ? parseInt(usageLimit) : null,
         perUserLimit: perUserLimit ? parseInt(perUserLimit) : null,
         userId: couponUserId,
-        productId: couponProductId
-      }
-    });
+        productId: couponProductId,
+      },
+    })
 
-    return { coupon };
+    return { coupon }
   }
 
   async deleteCoupon(request: FastifyRequest, reply: FastifyReply) {
-    const session = await auth.api.getSession({ headers: request.headers as any });
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (!session) {
-      return reply.status(401).send({ message: "Unauthorized" });
+      return reply.status(401).send({ message: 'Unauthorized' })
     }
 
-    const { id } = request.params as any;
-    const coupon = await prisma.coupon.findUnique({ where: { id } });
+    const { id } = request.params as any
+    const coupon = await prisma.coupon.findUnique({ where: { id } })
 
     if (!coupon) {
-      return reply.status(404).send({ message: "Coupon not found" });
+      return reply.status(404).send({ message: 'Coupon not found' })
     }
 
-    const role = session.user.role;
-    if (role !== "admin") {
+    const role = session.user.role
+    if (role !== 'admin') {
       if (coupon.userId !== session.user.id) {
-        return reply.status(403).send({ message: "You can only delete your own coupons" });
+        return reply
+          .status(403)
+          .send({ message: 'You can only delete your own coupons' })
       }
     }
 
-    await prisma.coupon.delete({ where: { id } });
-    return { success: true };
+    await prisma.coupon.delete({ where: { id } })
+    return { success: true }
   }
 
   async applyCoupon(request: FastifyRequest, reply: FastifyReply) {
-    const { code, totalPrice, productId } = request.body as any;
+    const { code, totalPrice, productId } = request.body as any
 
     if (!code) {
-      return reply.status(400).send({ message: "Coupon code is required" });
+      return reply.status(400).send({ message: 'Coupon code is required' })
     }
 
     const coupon = await prisma.coupon.findUnique({
-      where: { code: code.toUpperCase() }
-    });
+      where: { code: code.toUpperCase() },
+    })
 
     if (!coupon || !coupon.isActive) {
-      return reply.status(404).send({ message: "Invalid coupon code" });
+      return reply.status(404).send({ message: 'Invalid coupon code' })
     }
 
-    const now = new Date();
+    const now = new Date()
     if (now < new Date(coupon.startDate) || now > new Date(coupon.endDate)) {
-      return reply.status(400).send({ message: "Coupon is expired or not active yet" });
+      return reply
+        .status(400)
+        .send({ message: 'Coupon is expired or not active yet' })
     }
 
     if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
-      return reply.status(400).send({ message: "Coupon limit reached" });
+      return reply.status(400).send({ message: 'Coupon limit reached' })
     }
 
     // Per-user redemption limit validation
-    const session = await auth.api.getSession({ headers: request.headers as any });
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (coupon.perUserLimit) {
       if (!session) {
-        return reply.status(401).send({ message: "Authentication required to apply this coupon" });
+        return reply
+          .status(401)
+          .send({ message: 'Authentication required to apply this coupon' })
       }
       const userUsageCount = await prisma.rental.count({
         where: {
           renterId: session.user.id,
           couponId: coupon.id,
-          status: { notIn: ["cancelled", "rejected"] }
-        }
-      });
+          status: { notIn: ['cancelled', 'rejected'] },
+        },
+      })
       if (userUsageCount >= coupon.perUserLimit) {
-        const limitMsg = coupon.perUserLimit === 1
-          ? "You have already used this coupon code"
-          : `This coupon can only be used ${coupon.perUserLimit} time(s) per user`;
-        return reply.status(400).send({ message: limitMsg });
+        const limitMsg =
+          coupon.perUserLimit === 1
+            ? 'You have already used this coupon code'
+            : `This coupon can only be used ${coupon.perUserLimit} time(s) per user`
+        return reply.status(400).send({ message: limitMsg })
       }
     }
 
     if (coupon.minBooking && totalPrice < coupon.minBooking) {
-      return reply.status(400).send({ message: `Minimum booking value of ₹${coupon.minBooking} required` });
+      return reply.status(400).send({
+        message: `Minimum booking value of ₹${coupon.minBooking} required`,
+      })
     }
 
     // User or Product specific validation
     if (coupon.userId || coupon.productId) {
       if (!productId) {
-        return reply.status(400).send({ message: "Product context is required to apply this coupon" });
+        return reply
+          .status(400)
+          .send({ message: 'Product context is required to apply this coupon' })
       }
-      
+
       const product = await prisma.product.findUnique({
         where: { id: productId },
-        include: { user: { select: { name: true } } }
-      });
+        include: { user: { select: { name: true } } },
+      })
 
       if (!product) {
-        return reply.status(404).send({ message: "Product not found" });
+        return reply.status(404).send({ message: 'Product not found' })
       }
 
       if (coupon.productId && coupon.productId !== productId) {
-        return reply.status(400).send({ message: "This coupon is only valid for a specific listing" });
+        return reply
+          .status(400)
+          .send({ message: 'This coupon is only valid for a specific listing' })
       }
 
       if (coupon.userId && product.userId !== coupon.userId) {
-        return reply.status(400).send({ message: `This coupon is only valid for listings from ${product.user?.name || 'this user'}` });
+        return reply.status(400).send({
+          message: `This coupon is only valid for listings from ${product.user?.name || 'this user'}`,
+        })
       }
     }
 
-    let discountAmount = 0;
-    if (coupon.type === "percentage") {
-      discountAmount = (totalPrice * coupon.discount) / 100;
+    let discountAmount = 0
+    if (coupon.type === 'percentage') {
+      discountAmount = (totalPrice * coupon.discount) / 100
       if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
-        discountAmount = coupon.maxDiscount;
+        discountAmount = coupon.maxDiscount
       }
     } else {
-      discountAmount = coupon.discount;
+      discountAmount = coupon.discount
     }
 
     return {
@@ -211,34 +251,36 @@ export class CouponController {
       coupon: {
         id: coupon.id,
         code: coupon.code,
-        discountAmount
-      }
-    };
+        discountAmount,
+      },
+    }
   }
 
   async approveCoupon(request: FastifyRequest, reply: FastifyReply) {
-    const session = await auth.api.getSession({ headers: request.headers as any });
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (!session || !isAdminRole(session.user.role)) {
-      return reply.status(403).send({ message: "Forbidden" });
+      return reply.status(403).send({ message: 'Forbidden' })
     }
 
-    const { id } = request.params as any;
-    const coupon = await prisma.coupon.findUnique({ where: { id } });
+    const { id } = request.params as any
+    const coupon = await prisma.coupon.findUnique({ where: { id } })
     if (!coupon) {
-      return reply.status(404).send({ message: "Coupon not found" });
+      return reply.status(404).send({ message: 'Coupon not found' })
     }
 
     if (coupon.isActive) {
-      return reply.status(400).send({ message: "Coupon is already active" });
+      return reply.status(400).send({ message: 'Coupon is already active' })
     }
 
     const updatedCoupon = await prisma.coupon.update({
       where: { id },
-      data: { isActive: true }
-    });
+      data: { isActive: true },
+    })
 
-    return { coupon: updatedCoupon };
+    return { coupon: updatedCoupon }
   }
 }
 
-export const couponController = new CouponController();
+export const couponController = new CouponController()

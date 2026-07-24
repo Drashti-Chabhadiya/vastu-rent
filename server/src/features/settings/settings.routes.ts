@@ -8,9 +8,13 @@ export async function settingsRoutes(fastify: FastifyInstance) {
 
   // Admin protected route to update settings
   fastify.post('/update', async (request, reply) => {
-    const session = await auth.api.getSession({ headers: request.headers as any })
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
     if (!session || session.user.role !== 'admin') {
-      return reply.status(403).send({ message: 'Forbidden: Admin access required' })
+      return reply
+        .status(403)
+        .send({ message: 'Forbidden: Admin access required' })
     }
     return settingsController.updateSettings(request as any, reply)
   })

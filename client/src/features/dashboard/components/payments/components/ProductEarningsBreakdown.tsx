@@ -1,3 +1,5 @@
+import { useTranslation } from '#/context/TranslationContext'
+
 interface ProductEarningsBreakdownProps {
   productBreakdown: any[]
 }
@@ -5,21 +7,22 @@ interface ProductEarningsBreakdownProps {
 export const ProductEarningsBreakdown = ({
   productBreakdown = [],
 }: ProductEarningsBreakdownProps) => {
+  const { t } = useTranslation()
   return (
     <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-6">
       <div>
         <h3 className="text-[15px] font-black text-foreground/90">
-          Earnings Breakdown by Product
+          {t('Earnings Breakdown by Product')}
         </h3>
         <p className="text-[11px] font-bold text-muted-dark mt-0.5">
-          Total revenue generated per listing.
+          {t('Total revenue generated per listing.')}
         </p>
       </div>
       <div className="space-y-4">
         {productBreakdown.length === 0 ? (
           <div className="text-center py-10 bg-muted-light rounded-2xl border border-border/30">
             <span className="text-xs font-black text-muted-dark uppercase tracking-widest">
-              No listings product earnings found
+              {t('No listings product earnings found')}
             </span>
           </div>
         ) : (
@@ -50,7 +53,7 @@ export const ProductEarningsBreakdown = ({
                     {item.title}
                   </h4>
                   <p className="text-[9px] font-bold text-muted-dark">
-                    {item.bookingCount} successful rentals
+                    {item.bookingCount} {t('successful rentals')}
                   </p>
                 </div>
               </div>
@@ -59,7 +62,7 @@ export const ProductEarningsBreakdown = ({
                   ₹{item.totalEarned.toLocaleString()}
                 </span>
                 <span className="text-[8px] font-bold text-muted-dark block">
-                  Total Earnings
+                  {t('Total Earnings')}
                 </span>
               </div>
             </div>

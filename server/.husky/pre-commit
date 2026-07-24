@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+echo "🔍 Running Server (Backend) pre-commit checks..."
+
+CD_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$CD_DIR" || exit 1
+
+echo "▶ Step 1: Server ESLint..."
+pnpm run lint || { echo "❌ Server ESLint failed!"; exit 1; }
+
+echo "▶ Step 2: Server Prettier Check..."
+pnpm run format:check || { echo "❌ Server Prettier check failed!"; exit 1; }
+
+echo "▶ Step 3: Server TypeScript Type Checking..."
+pnpm run typecheck || { echo "❌ Server TypeScript typecheck failed!"; exit 1; }
+
+echo "✅ Server pre-commit checks passed!"

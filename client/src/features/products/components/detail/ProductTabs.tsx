@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select'
+import { useTranslation } from '#/context/TranslationContext'
 
 const parseCommentAndImages = (comment: string) => {
   if (!comment) return { text: '', images: [] }
@@ -61,6 +62,7 @@ export const ProductTabs = ({
   handleSubmitReview,
   createReviewIsPending,
 }: ProductTabsProps) => {
+  const { t, formatCurrency, formatDate, formatDigits } = useTranslation()
   const [sortBy, setSortBy] = useState<'latest' | 'highest'>('latest')
 
   const sortedReviews = [...reviews].sort((a, b) => {
@@ -71,10 +73,10 @@ export const ProductTabs = ({
   })
 
   const tabs = [
-    { id: 'description', label: 'Description' },
-    { id: 'details', label: 'Details' },
-    { id: 'reviews', label: `Reviews (${reviews.length})` },
-    { id: 'faqs', label: 'FAQs' },
+    { id: 'description', label: t('Description') },
+    { id: 'details', label: t('Details') },
+    { id: 'reviews', label: `${t('Reviews')} (${reviews.length})` },
+    { id: 'faqs', label: t('FAQs') },
   ]
 
   return (
@@ -104,12 +106,12 @@ export const ProductTabs = ({
         {activeTab === 'description' && (
           <div className="space-y-6">
             <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-              {product.description || 'No description provided.'}
+              {product.description || t('No description provided.')}
             </p>
             {product.features && product.features.length > 0 && (
               <div className="space-y-3">
                 <h4 className="font-bold text-foreground text-sm uppercase tracking-wider">
-                  Features & Specs
+                  {t('Features & Specs')}
                 </h4>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {product.features.map((item: string, i: number) => (
@@ -135,35 +137,36 @@ export const ProductTabs = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <h4 className="font-bold text-foreground text-sm uppercase tracking-wider flex items-center gap-2">
-                  <Calendar size={16} className="text-primary" /> Rental Terms
+                  <Calendar size={16} className="text-primary" />{' '}
+                  {t('Rental Terms')}
                 </h4>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground/85 flex justify-between">
-                    <span>Min duration:</span>
+                    <span>{t('Min duration:')}</span>
                     <span className="font-bold text-foreground/80">
-                      {product.minDuration || 1} day(s)
+                      {formatDigits(product.minDuration || 1)} {t('day(s)')}
                     </span>
                   </p>
                   <p className="text-sm text-muted-foreground/85 flex justify-between">
-                    <span>Max duration:</span>
+                    <span>{t('Max duration:')}</span>
                     <span className="font-bold text-foreground/80">
                       {product.maxDuration
-                        ? `${product.maxDuration} days`
-                        : 'Flexible'}
+                        ? `${formatDigits(product.maxDuration)} ${t('days')}`
+                        : t('Flexible')}
                     </span>
                   </p>
                   <p className="text-sm text-muted-foreground/85 flex justify-between">
-                    <span>Security Deposit:</span>
+                    <span>{t('Security Deposit:')}</span>
                     <span className="font-bold text-brand">
-                      ₹{(product.securityDeposit || 0).toLocaleString()}
+                      {formatCurrency(product.securityDeposit || 0)}
                     </span>
                   </p>
                 </div>
               </div>
               <div className="space-y-3">
                 <h4 className="font-bold text-foreground text-sm uppercase tracking-wider flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-primary" /> Delivery &
-                  Pickup
+                  <ShieldCheck size={16} className="text-primary" />{' '}
+                  {t('Delivery & Pickup')}
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {product.deliveryOptions?.map((opt: string) => (
@@ -172,11 +175,11 @@ export const ProductTabs = ({
                       variant="secondary"
                       className="bg-muted/50 text-foreground/80 rounded-md"
                     >
-                      {opt}
+                      {t(opt)}
                     </Badge>
                   )) || (
                     <span className="text-sm text-muted-foreground/85 italic">
-                      Self-pickup only
+                      {t('Self-pickup only')}
                     </span>
                   )}
                 </div>
@@ -186,7 +189,7 @@ export const ProductTabs = ({
             {product.pickupReturnDetails && (
               <div className="p-4 rounded-xl bg-muted-light border border-border/30 space-y-2">
                 <h4 className="font-bold text-foreground text-xs uppercase tracking-widest">
-                  Handover Instructions
+                  {t('Handover Instructions')}
                 </h4>
                 <p className="text-sm text-muted-foreground italic">
                   "{product.pickupReturnDetails}"
@@ -215,10 +218,10 @@ export const ProductTabs = ({
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <Star size={32} className="text-muted-foreground/30 mb-3" />
                 <h4 className="text-lg font-bold text-foreground">
-                  No reviews yet
+                  {t('No reviews yet')}
                 </h4>
                 <p className="text-sm text-muted-foreground/85 mt-1">
-                  Be the first to review after renting!
+                  {t('Be the first to review after renting!')}
                 </p>
               </div>
             ) : (
@@ -226,12 +229,12 @@ export const ProductTabs = ({
                 {/* Sorting Options Bar */}
                 <div className="flex items-center justify-between pb-3 border-b border-border/30">
                   <span className="text-xs text-muted-foreground/70 font-bold">
-                    {reviews.length}{' '}
-                    {reviews.length === 1 ? 'Review' : 'Reviews'}
+                    {formatDigits(reviews.length)}{' '}
+                    {reviews.length === 1 ? t('Reviews') : t('Reviews')}
                   </span>
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] text-muted-foreground/70 font-bold uppercase tracking-wider">
-                      Sort by:
+                      {t('Sort by:')}
                     </span>
                     <Select
                       value={sortBy}
@@ -245,13 +248,13 @@ export const ProductTabs = ({
                           value="latest"
                           className="text-xs font-semibold text-foreground/80 focus:bg-primary/5 focus:text-primary cursor-pointer rounded-lg"
                         >
-                          Latest
+                          {t('Latest')}
                         </SelectItem>
                         <SelectItem
                           value="highest"
                           className="text-xs font-semibold text-foreground/80 focus:bg-primary/5 focus:text-primary cursor-pointer rounded-lg"
                         >
-                          Highest Rating
+                          {t('Highest Rating')}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -277,7 +280,7 @@ export const ProductTabs = ({
                               size={10}
                               className="fill-primary text-primary-soft"
                             />
-                            Verified Rental
+                            {t('Verified Rental')}
                           </Badge>
                         </div>
                         <div className="flex">
@@ -331,7 +334,7 @@ export const ProductTabs = ({
                         )
                       })()}
                       <p className="text-[10px] text-muted-foreground/70 mt-1">
-                        {new Date(r.createdAt).toLocaleDateString('en-IN', {
+                        {formatDate(r.createdAt, {
                           day: 'numeric',
                           month: 'long',
                           year: 'numeric',
@@ -345,7 +348,7 @@ export const ProductTabs = ({
 
             <div className="border-t border-border/30 pt-5 space-y-3">
               <p className="text-sm font-bold text-foreground">
-                Write a Review
+                {t('Write a Review')}
               </p>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((s) => (
@@ -368,7 +371,7 @@ export const ProductTabs = ({
                 ))}
               </div>
               <Textarea
-                placeholder="Share your experience..."
+                placeholder={t('Share your experience...')}
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
                 className="text-sm rounded-xl border-border resize-none"
@@ -387,7 +390,7 @@ export const ProductTabs = ({
                 ) : (
                   <Send size={16} />
                 )}
-                Submit Review
+                {t('Submit Review')}
               </Button>
             </div>
           </div>
@@ -397,12 +400,16 @@ export const ProductTabs = ({
           <div className="space-y-5">
             {[
               {
-                q: 'How do I return the item?',
-                a: 'We will arrange a pickup on the last day of your rental.',
+                q: t('How do I return the item?'),
+                a: t(
+                  'We will arrange a pickup on the last day of your rental.',
+                ),
               },
               {
-                q: 'Is there a security deposit?',
-                a: 'Yes, a refundable deposit of ₹2000 is required.',
+                q: t('Is there a security deposit?'),
+                a: t(
+                  "Depending on the item and the lister's preference, some rentals may require a security deposit which is fully refunded once the item is returned in good condition.",
+                ),
               },
             ].map((faq, i) => (
               <div key={i} className="space-y-1.5">

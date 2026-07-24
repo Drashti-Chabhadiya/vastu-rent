@@ -32,7 +32,10 @@ import {
   Image as ImageIcon,
   Type,
   ShieldCheck,
+  Store,
+  Home,
 } from 'lucide-react'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface Category {
   id: string
@@ -61,6 +64,7 @@ export const ProductForm = ({
   currentUser,
   onUploadStatusChange,
 }: ProductFormProps) => {
+  const { t } = useTranslation()
   const isLister = currentUser?.role !== 'admin'
   const [requestCategoryOpen, setRequestCategoryOpen] = useState(false)
   const createRequestMutation = useCreateCategoryRequest()
@@ -78,7 +82,7 @@ export const ProductForm = ({
           <div className="text-center p-8">
             <PackagePlus size={32} className="text-muted-dark mx-auto mb-3" />
             <p className="text-sm font-bold text-muted-foreground/70 uppercase tracking-widest">
-              No photos uploaded
+              {t('No photos uploaded')}
             </p>
           </div>
         )}
@@ -92,11 +96,11 @@ export const ProductForm = ({
             <FormItem className="col-span-full">
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Type size={14} className="text-dash-brand" />
-                Product Title
+                {t('Product Title')}
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="e.g. Canon EOS R5 Camera"
+                  placeholder={t('e.g. Canon EOS R5 Camera')}
                   {...field}
                   className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
@@ -113,7 +117,7 @@ export const ProductForm = ({
             <FormItem className="col-span-full">
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <ImageIcon size={14} className="text-dash-brand" />
-                Product Photos
+                {t('Product Photos')}
               </FormLabel>
               <FormControl>
                 <ImageGalleryManager
@@ -134,11 +138,13 @@ export const ProductForm = ({
             <FormItem className="col-span-full">
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <AlignLeft size={14} className="text-dash-brand" />
-                Description
+                {t('Description')}
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe the item, features, and condition..."
+                  placeholder={t(
+                    'Describe the item, features, and condition...',
+                  )}
                   {...field}
                   className="min-h-[120px] w-full px-4 py-3 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
                 />
@@ -155,7 +161,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <IndianRupee size={14} className="text-dash-brand" />
-                Price / Day
+                {t('Price / Day')}
               </FormLabel>
               <FormControl>
                 <Input
@@ -176,7 +182,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <ShieldCheck size={14} className="text-dash-brand" />
-                Security Deposit (Refundable)
+                {t('Security Deposit (Refundable)')}
               </FormLabel>
               <FormControl>
                 <Input
@@ -191,47 +197,96 @@ export const ProductForm = ({
           )}
         />
 
-        <FormField<ListingSchema>
-          control={form.control}
-          name="city"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
-                <MapPin size={14} className="text-dash-brand" />
-                City
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Mumbai, MH"
-                  {...field}
-                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Listing Address Card */}
+        <div className="col-span-full bg-card border border-border/60 rounded-2xl overflow-hidden shadow-sm mt-2">
+          <div className="bg-muted-light/50 px-5 py-3 border-b border-border/40 flex items-center gap-2">
+            <MapPin size={16} className="text-dash-brand" />
+            <h3 className="text-sm font-bold text-foreground">
+              {t('Listing Address')}
+            </h3>
+          </div>
+          <div className="p-5 flex flex-col md:flex-row gap-6">
+            <div className="flex-1 bg-muted/30 rounded-xl p-4 border border-border/50">
+              <div className="flex items-center gap-2 mb-2">
+                {form.watch('listingType') === 'shop' ? (
+                  <Store size={16} className="text-amber-500" />
+                ) : (
+                  <Home size={16} className="text-emerald-500" />
+                )}
+                <span className="font-bold text-sm text-foreground">
+                  {form.watch('listingType') === 'shop'
+                    ? form.watch('shopName') || t('Shop Address')
+                    : t('Home Address')}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground/80 font-medium leading-relaxed">
+                {(() => {
+                  const userAddress = currentUser?.address || currentUser?.addresses?.[0]
+                  if (!userAddress) return t('No address provided in profile. Please update your profile.')
+                  return [
+                    userAddress.addressLine1,
+                    userAddress.addressLine2,
+                    userAddress.street,
+                    userAddress.city,
+                    userAddress.state,
+                    userAddress.pincode,
+                  ]
+                    .filter(Boolean)
+                    .join(', ')
+                })()}
+              </p>
+              <div className="mt-3">
+                <a
+                  href="/account#address"
+                  className="text-xs font-bold text-dash-brand hover:underline"
+                >
+                  {t('Change address in profile')}
+                </a>
+              </div>
+            </div>
 
-        <FormField<ListingSchema>
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
-                <MapPin size={14} className="text-dash-brand" />
-                Location
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Mumbai, MH"
-                  {...field}
-                  className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all font-medium shadow-sm"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <div className="flex-1 space-y-4">
+              <FormField<ListingSchema>
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[12px] font-bold text-foreground ml-1">
+                      {t('City (Visible to renters)')}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Mumbai"
+                        {...field}
+                        className="w-full h-11 px-4 rounded-xl border-border bg-card text-sm text-foreground focus-visible:ring-1 focus-visible:ring-dash-brand/30"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField<ListingSchema>
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[12px] font-bold text-foreground ml-1">
+                      {t('Area / Neighborhood')}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Andheri West"
+                        {...field}
+                        className="w-full h-11 px-4 rounded-xl border-border bg-card text-sm text-foreground focus-visible:ring-1 focus-visible:ring-dash-brand/30"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
 
         <FormField<ListingSchema>
           control={form.control}
@@ -240,7 +295,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <Tag size={14} className="text-dash-brand" />
-                Category
+                {t('Category')}
               </FormLabel>
               <Select
                 onValueChange={field.onChange}
@@ -248,7 +303,7 @@ export const ProductForm = ({
               >
                 <FormControl>
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all">
-                    <SelectValue placeholder="Select Category" />
+                    <SelectValue placeholder={t('Select Category')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-card rounded-2xl shadow-2xl border-none p-2 animate-in fade-in zoom-in-95 duration-200">
@@ -270,7 +325,7 @@ export const ProductForm = ({
                   onClick={() => setRequestCategoryOpen(true)}
                   className="text-[11px] font-bold text-dash-brand hover:underline cursor-pointer p-0 h-auto"
                 >
-                  Can't find your category? Request it here.
+                  {t("Can't find your category? Request it here.")}
                 </Button>
               </div>
               <FormMessage />
@@ -288,16 +343,17 @@ export const ProductForm = ({
             const payload = {
               ...data,
               requestReason:
-                data.requestReason?.trim() || 'Requested from Add Listing form',
+                data.requestReason?.trim() ||
+                t('Requested from Add Listing form'),
             }
             createRequestMutation.mutate(payload, {
               onSuccess: () => {
-                toast.success('Category request proposed successfully!')
+                toast.success(t('Category request proposed successfully!'))
                 setRequestCategoryOpen(false)
               },
               onError: (err: any) => {
                 toast.error(
-                  err.response?.data?.message || 'Failed to send request',
+                  err.response?.data?.message || t('Failed to send request'),
                 )
               },
             })
@@ -311,7 +367,7 @@ export const ProductForm = ({
             <FormItem>
               <FormLabel className="text-[13px] font-bold text-foreground ml-1 flex items-center gap-2">
                 <User size={14} className="text-dash-brand" />
-                Provider
+                {t('Provider')}
               </FormLabel>
               <Select
                 onValueChange={field.onChange}
@@ -322,7 +378,7 @@ export const ProductForm = ({
                   <SelectTrigger className="w-full h-12 px-4 rounded-xl border border-border bg-card text-[15px] text-foreground focus:ring-1 focus:ring-dash-brand/30 font-medium shadow-sm hover:bg-muted-light/50 transition-all disabled:opacity-100 disabled:bg-muted-light">
                     <SelectValue
                       placeholder={
-                        isLister ? currentUser.name : 'Select Provider'
+                        isLister ? currentUser.name : t('Select Provider')
                       }
                     />
                   </SelectTrigger>
@@ -367,6 +423,8 @@ export const ProductForm = ({
             </FormItem>
           )}
         />
+
+
       </div>
     </div>
   )

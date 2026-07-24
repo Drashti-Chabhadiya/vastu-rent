@@ -19,7 +19,7 @@ import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
-
+import { useTranslation } from '#/context/TranslationContext'
 // Import extracted sub-components
 import { UserProfileSettingsCard } from '#/features/profile'
 import { PayoutSettingsForm } from './components/PayoutSettingsForm'
@@ -28,6 +28,7 @@ import { SiteSettingsForm } from './components/SiteSettingsForm'
 import { usePayoutSettingsStore } from '../../../../store/usePayoutSettingsStore'
 
 export const SettingsManagement = () => {
+  const { t, formatDate } = useTranslation()
   const { data: session, isPending: isSessionLoading } = authClient.useSession()
   const activeUser = session?.user
 
@@ -75,8 +76,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-              err.message ||
-              'Failed to save bank details',
+            err.message ||
+            'Failed to save bank details',
           )
         },
       },
@@ -107,8 +108,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-              err.message ||
-              'Failed to update notification settings',
+            err.message ||
+            'Failed to update notification settings',
           )
         },
       },
@@ -132,42 +133,42 @@ export const SettingsManagement = () => {
   const sidebarItems = [
     {
       id: 'profile',
-      label: 'Profile Settings',
-      desc: 'Update your profile information',
+      label: t('Profile Settings'),
+      desc: t('Update your profile information'),
       icon: User,
     },
     {
       id: 'payment',
-      label: 'Payout Settings',
-      desc: 'Configure bank and settlement methods',
+      label: t('Payout Settings'),
+      desc: t('Configure bank and settlement methods'),
       icon: CreditCard,
     },
     {
       id: 'notifications',
-      label: 'Notification Preferences',
-      desc: 'Control your alert preferences',
+      label: t('Notification Preferences'),
+      desc: t('Control your alert preferences'),
       icon: Bell,
     },
     ...(isAdmin
       ? [
-          {
-            id: 'site-content',
-            label: 'Site Content Settings',
-            desc: 'Customize contact, pricing, trust, and terms',
-            icon: Settings,
-          },
-        ]
+        {
+          id: 'site-content',
+          label: t('Site Content Settings'),
+          desc: t('Customize contact, pricing, trust, and terms'),
+          icon: Settings,
+        },
+      ]
       : []),
     {
       id: 'security',
-      label: 'Security & Access',
-      desc: 'Manage password and access',
+      label: t('Security & Access'),
+      desc: t('Manage password and access'),
       icon: Lock,
     },
     {
       id: 'api-integrations',
-      label: 'API & Integrations',
-      desc: 'Manage third-party integrations',
+      label: t('API & Integrations'),
+      desc: t('Manage third-party integrations'),
       icon: Cpu,
     },
   ]
@@ -182,13 +183,15 @@ export const SettingsManagement = () => {
       {/* Breadcrumbs */}
       <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-          <span>Dashboard</span>
+          <span>{t('Dashboard')}</span>
           <ChevronRight size={10} className="text-muted-foreground/60" />
-          <span className="text-dash-brand font-bold">Settings</span>
+          <span className="text-dash-brand font-bold">
+            {t('Platform Settings')}
+          </span>
         </div>
         <div className="flex items-center justify-between">
           <h1 className="font-display text-2xl font-semibold text-foreground/90 tracking-tight">
-            Settings
+            {t('Platform Settings')}
           </h1>
           <div className="flex items-center gap-2 bg-card px-3.5 py-1.5 rounded-full border border-border/30 shadow-sm">
             <Calendar size={14} className="text-dash-brand" />
@@ -206,25 +209,23 @@ export const SettingsManagement = () => {
         {/* Left Sidebar: Settings Navigation */}
         <div className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm space-y-1.5 xl:sticky xl:top-24">
           <h2 className="text-[10px] font-extrabold tracking-widest text-muted-foreground/50 mb-3 px-3 uppercase">
-            Settings Menu
+            {t('Settings Menu')}
           </h2>
           {sidebarItems.map((item) => (
             <Button
               key={item.id}
               variant="ghost"
               onClick={() => setActiveSubTab(item.id)}
-              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
-                activeSubTab === item.id
+              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${activeSubTab === item.id
                   ? 'bg-brand-green-bubble text-brand-primary-deep hover:bg-brand-green-bubble hover:text-brand-primary-deep'
                   : 'text-slate-600 hover:bg-slate-50'
-              }`}
+                }`}
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${
-                  activeSubTab === item.id
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${activeSubTab === item.id
                     ? 'bg-white text-brand-primary-deep border-brand-green-border shadow-sm'
                     : 'bg-slate-100 border-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm'
-                }`}
+                  }`}
               >
                 <item.icon
                   size={18}
@@ -233,20 +234,18 @@ export const SettingsManagement = () => {
               </div>
               <div className="min-w-0 text-left">
                 <p
-                  className={`font-sans text-[13px] leading-snug font-bold ${
-                    activeSubTab === item.id
+                  className={`font-sans text-[13px] leading-snug font-bold ${activeSubTab === item.id
                       ? 'text-brand-primary-deep'
                       : 'text-slate-800'
-                  }`}
+                    }`}
                 >
                   {item.label}
                 </p>
                 <p
-                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
-                    activeSubTab === item.id
+                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${activeSubTab === item.id
                       ? 'text-brand-primary-deep/80'
                       : 'text-slate-400'
-                  }`}
+                    }`}
                 >
                   {item.desc}
                 </p>
@@ -294,16 +293,16 @@ export const SettingsManagement = () => {
           {activeSubTab === 'security' && (
             <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
               <h3 className="text-[16px] font-black text-foreground/90">
-                Security & Access
+                {t('Security & Access')}
               </h3>
               <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-                Security controls, password changes, two-factor authentication,
-                active login sessions, and trusted devices are managed securely
-                under your main Account Settings page.
+                {t(
+                  'Security controls, password changes, two-factor authentication, active login sessions, and trusted devices are managed securely under your main Account Settings page.',
+                )}
               </p>
               <Link to="/account">
                 <Button className="mt-2 bg-brand-primary-deep hover:bg-brand-primary-darker text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm">
-                  Go to Profile Security
+                  {t('Go to Profile Security')}
                 </Button>
               </Link>
             </div>
@@ -312,17 +311,18 @@ export const SettingsManagement = () => {
           {activeSubTab === 'api-integrations' && (
             <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
               <h3 className="text-[16px] font-black text-foreground/90">
-                API & Integrations
+                {t('API & Integrations')}
               </h3>
               <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-                Configure third-party API webhooks, web services, rental
-                syndication channels, and application credentials.
+                {t(
+                  'Configure third-party API webhooks, web services, rental syndication channels, and application credentials.',
+                )}
               </p>
               <Button
                 disabled
                 className="mt-2 bg-muted-light text-muted-dark font-black text-[11px] px-6 h-10 rounded-full cursor-not-allowed"
               >
-                Coming Soon
+                {t('Coming Soon')}
               </Button>
             </div>
           )}
@@ -333,12 +333,12 @@ export const SettingsManagement = () => {
           {/* Account Details summary */}
           <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
             <h3 className="text-[13px] font-black text-foreground/90 mb-6 uppercase tracking-widest">
-              Account Information
+              {t('Account Information')}
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-muted-dark">
-                  Account Type
+                  {t('Account Type')}
                 </span>
                 <Badge className="bg-dash-brand-light text-dash-brand border-none font-black text-[9px] px-2.5 capitalize">
                   {activeUser?.role || 'Lister'}
@@ -346,17 +346,17 @@ export const SettingsManagement = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-muted-dark">
-                  Member Since
+                  {t('Member Since')}
                 </span>
                 <span className="text-[11px] font-black text-foreground/80">
                   {activeUser?.createdAt
-                    ? format(new Date(activeUser.createdAt), 'dd MMM yyyy')
+                    ? formatDate(activeUser.createdAt)
                     : '01 Jan 2026'}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-muted-dark">
-                  Database ID
+                  {t('Database ID')}
                 </span>
                 <span
                   className="text-[10px] font-black text-foreground/80 max-w-[120px] truncate"
@@ -367,10 +367,10 @@ export const SettingsManagement = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-muted-dark">
-                  Email Status
+                  {t('Email Status')}
                 </span>
                 <span className="text-[11px] font-black text-dash-brand uppercase tracking-widest">
-                  {activeUser?.emailVerified ? 'Verified' : 'Pending'}
+                  {activeUser?.emailVerified ? t('Verified') : t('Pending')}
                 </span>
               </div>
             </div>
@@ -380,11 +380,12 @@ export const SettingsManagement = () => {
           <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4">
             <h3 className="text-[13px] font-black text-foreground/90 flex items-center gap-2">
               <ShieldCheck size={18} className="text-dash-brand" />
-              Safety Guarantee
+              {t('Safety Guarantee')}
             </h3>
             <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
-              Your details are protected using industry-grade SSL encryption and
-              are kept confidential.
+              {t(
+                'Your details are protected using industry-grade SSL encryption and are kept confidential.',
+              )}
             </p>
           </div>
         </div>

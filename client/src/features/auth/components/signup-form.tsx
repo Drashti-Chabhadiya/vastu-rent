@@ -2,7 +2,6 @@ import { signupSchema } from '#/schema'
 import type { SignupSchema } from '#/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Field, FieldLabel } from '@/components/ui/field'
 import { Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,18 +9,36 @@ import { useState, useEffect } from 'react'
 import { Mail, Lock, EyeOff, User, Eye } from 'lucide-react'
 import { authClient } from '#/lib/auth/auth-client'
 import { SocialAuth } from './social-auth'
+import { toast } from 'sonner'
+import { useTranslation } from '#/context/TranslationContext'
+import { LanguageSelector } from '@/components/ui/language-selector'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 
 export function SignupForm() {
+  const { t } = useTranslation()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<SignupSchema>({
+  const form = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   })
+  const {
+    formState: { isSubmitting },
+  } = form
 
   // Verification-related states
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
@@ -50,7 +67,9 @@ export function SignupForm() {
     })
 
     if (error) {
-      setServerError(error.message ?? 'Registration failed. Please try again.')
+      const errMsg = error.message ?? 'Registration failed. Please try again.'
+      setServerError(errMsg)
+      toast.error(errMsg)
       return
     }
 
@@ -163,23 +182,28 @@ export function SignupForm() {
 
   return (
     <div className="w-full relative">
-      {/* Top Right "Already have account? Sign in" */}
-      <div className="absolute -top-6 right-0 sm:-top-16 flex items-center gap-1.5 text-sm font-medium">
-        <span className="text-muted-foreground/85">Already have account?</span>
-        <Link
-          to="/login"
-          className="text-primary font-bold hover:bg-primary-light transition-colors"
-        >
-          Sign in
-        </Link>
+      {/* Top Bar with Language Selector & Switch Link */}
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-1.5 text-sm font-medium">
+          <span className="text-muted-foreground/85">
+            {t('Already have account?')}
+          </span>
+          <Link
+            to="/login"
+            className="text-primary font-bold hover:underline transition-colors"
+          >
+            {t('Sign in')}
+          </Link>
+        </div>
+        <LanguageSelector />
       </div>
 
       <div className="mb-8">
         <h1 className="text-[32px] font-bold text-text-dark tracking-tight">
-          Create Account
+          {t('Create Account')}
         </h1>
         <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
-          Join thousands of users renting smarter everyday.
+          {t('Join thousands of users renting smarter everyday.')}
         </p>
       </div>
 
@@ -190,7 +214,7 @@ export function SignupForm() {
             to="/login"
             className="py-3 text-[15px] font-semibold text-muted-foreground/70 text-center w-full hover:text-muted-foreground"
           >
-            Login
+            {t('Login')}
           </Link>
           <div className="h-[1px] w-full bg-muted"></div>
         </div>
@@ -199,153 +223,184 @@ export function SignupForm() {
             variant="ghost"
             className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100"
           >
-            Sign Up
+            {t('Sign Up')}
           </Button>
           <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="space-y-5">
-          {/* Full Name */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Full Name
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <User
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                placeholder="Enter your name"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('name')}
-              />
-            </div>
-            {errors.name && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.name.message}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, (formErrors) => {
+            const firstError = Object.values(formErrors)[0]?.message
+            toast.error(
+              typeof firstError === 'string'
+                ? firstError
+                : 'Please fill in all required fields.',
+            )
+          })}
+        >
+          <div className="space-y-5">
+            {/* Full Name */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    {t('Full Name')}
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <User
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        placeholder={t('Enter your name')}
+                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    {t('Email Address')}
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Mail
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type="email"
+                        placeholder={t('Enter your email')}
+                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Password */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    {t('Password')}
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Lock
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder={t('Create password')}
+                        className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent z-10"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <Eye
+                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            strokeWidth={2}
+                          />
+                        ) : (
+                          <EyeOff
+                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            strokeWidth={2}
+                          />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Confirm Password */}
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                    {t('Confirm Password')}
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <Lock
+                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          strokeWidth={2}
+                        />
+                      </div>
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder={t('Confirm Password')}
+                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {serverError && (
+              <p className="text-center text-sm text-destructive font-medium">
+                {serverError}
               </p>
             )}
-          </Field>
 
-          {/* Email */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Email Address
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('email')}
-              />
-            </div>
-            {errors.email && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.email.message}
-              </p>
-            )}
-          </Field>
-
-          {/* Password */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Password
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Create password"
-                className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('password')}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute inset-y-0 right-0 h-full w-12 px-3 flex items-center justify-center hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <Eye
-                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-                    strokeWidth={2}
-                  />
-                ) : (
-                  <EyeOff
-                    className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-                    strokeWidth={2}
-                  />
-                )}
-              </Button>
-            </div>
-            {errors.password && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.password.message}
-              </p>
-            )}
-          </Field>
-
-          {/* Confirm Password */}
-          <Field>
-            <FieldLabel className="text-[13px] font-bold text-foreground mb-1.5">
-              Confirm Password
-            </FieldLabel>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock
-                  className="h-[18px] w-[18px] text-muted-foreground/70"
-                  strokeWidth={2}
-                />
-              </div>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Confirm password"
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
-                {...register('confirmPassword')}
-              />
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-xs text-destructive mt-1 font-medium">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </Field>
-
-          {serverError && (
-            <p className="text-center text-sm text-destructive font-medium">
-              {serverError}
-            </p>
-          )}
-
-          <Button type="submit" disabled={isSubmitting} className="w-full mt-2">
-            {isSubmitting ? 'Creating Account...' : 'Create Account'}
-          </Button>
-        </div>
-      </form>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full mt-2"
+            >
+              {isSubmitting ? `${t('Create Account')}...` : t('Create Account')}
+            </Button>
+          </div>
+        </form>
+      </Form>
 
       {/* Or continue with */}
       <div className="mt-8 mb-6 flex items-center">
         <div className="h-[1px] flex-1 bg-muted"></div>
         <span className="px-4 text-[13px] font-medium text-muted-foreground/70">
-          or continue with
+          {t('or continue with')}
         </span>
         <div className="h-[1px] flex-1 bg-muted"></div>
       </div>

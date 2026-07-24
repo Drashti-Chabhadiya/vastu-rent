@@ -5,8 +5,8 @@ export const StoryService = {
     return prisma.story.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
-        author: { select: { id: true, name: true, image: true } }
-      }
+        author: { select: { id: true, name: true, image: true } },
+      },
     })
   },
 
@@ -14,42 +14,45 @@ export const StoryService = {
     return prisma.story.findUnique({
       where: { id },
       include: {
-        author: { select: { id: true, name: true, image: true } }
-      }
+        author: { select: { id: true, name: true, image: true } },
+      },
     })
   },
 
   async createStory(data: {
-    title: string;
-    excerpt: string;
-    content?: string;
-    tag: string;
-    readTime: string;
-    imageUrl: string;
-    authorId: string;
+    title: string
+    excerpt: string
+    content?: string
+    tag: string
+    readTime: string
+    imageUrl: string
+    authorId: string
   }) {
     return prisma.story.create({
-      data
+      data,
     })
   },
 
-  async updateStory(id: string, data: {
-    title?: string;
-    excerpt?: string;
-    content?: string;
-    tag?: string;
-    readTime?: string;
-    imageUrl?: string;
-  }) {
+  async updateStory(
+    id: string,
+    data: {
+      title?: string
+      excerpt?: string
+      content?: string
+      tag?: string
+      readTime?: string
+      imageUrl?: string
+    },
+  ) {
     return prisma.story.update({
       where: { id },
-      data
+      data,
     })
   },
 
   async deleteStory(id: string) {
     return prisma.story.delete({
-      where: { id }
+      where: { id },
     })
-  }
+  },
 }

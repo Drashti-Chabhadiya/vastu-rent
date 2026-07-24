@@ -15,7 +15,8 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
-import { useNotifications } from '#/hook'
+import { useSessionContext } from '#/context/SessionContext'
+import { useNotifications, useMyListings } from '#/hook'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
@@ -24,6 +25,7 @@ import { UserAvatar } from '#/components/common/UserAvatar'
 import { Button } from '#/components/ui/button'
 import { motion } from 'motion/react'
 import { EASE } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 // ─── Logout Confirmation Dialog ───────────────────────────────────────────────
 function LogoutDialog({
@@ -37,6 +39,7 @@ function LogoutDialog({
   onConfirm: () => void
   loading: boolean
 }) {
+  const { t } = useTranslation()
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -52,9 +55,11 @@ function LogoutDialog({
           <LogOut size={28} className="text-primary" strokeWidth={2} />
         </div>
 
-        <h2 className="text-xl font-extrabold text-foreground mb-2">Log out</h2>
+        <h2 className="text-xl font-extrabold text-foreground mb-2">
+          {t('Log out')}
+        </h2>
         <p className="text-[13px] text-muted-foreground/85 font-medium leading-relaxed mb-7">
-          Are you sure you want to log out of your Vastu account?
+          {t('Are you sure you want to log out of your Vastu account?')}
         </p>
 
         <Button
@@ -65,10 +70,10 @@ function LogoutDialog({
           {loading ? (
             <>
               <span className="w-4 h-4 border-2 border-card/40 border-t-white rounded-full animate-spin" />
-              Logging out...
+              {t('Logging out...')}
             </>
           ) : (
-            'Yes, log out'
+            t('Yes, log out')
           )}
         </Button>
 
@@ -78,7 +83,7 @@ function LogoutDialog({
           disabled={loading}
           className="w-full h-11 rounded-xl border border-border bg-card hover:bg-muted-light text-sm font-semibold text-foreground/80 transition-colors cursor-pointer disabled:opacity-60"
         >
-          Cancel
+          {t('Cancel')}
         </Button>
       </div>
     </div>
@@ -87,7 +92,8 @@ function LogoutDialog({
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 export function AccountLayout() {
-  const { data: sessionData, isPending: isLoading } = authClient.useSession()
+  const { t } = useTranslation()
+  const { data: sessionData, isPending: isLoading } = useSessionContext()
   const session = sessionData || null
   const [logoutOpen, setLogoutOpen] = useState(false)
   const [logoutLoading, setLogoutLoading] = useState(false)
@@ -131,6 +137,9 @@ export function AccountLayout() {
       )
     : 0
 
+  const { data: myListings } = useMyListings()
+  const hasListings = myListings && myListings.length > 0
+
   const menuItems = [
     {
       id: 'personal',
@@ -151,7 +160,16 @@ export function AccountLayout() {
       icon: Building2,
       href: '/account/listings',
     },
-    { id: 'reviews', label: 'Reviews', icon: Star, href: '/account/reviews' },
+    ...(hasListings
+      ? [
+          {
+            id: 'reviews',
+            label: 'Reviews',
+            icon: Star,
+            href: '/account/reviews',
+          },
+        ]
+      : []),
     {
       id: 'messages',
       label: 'Messages',
@@ -278,7 +296,7 @@ export function AccountLayout() {
                               : 'text-muted-dark group-hover:text-foreground/80',
                           )}
                         />
-                        <span className="flex-1">{item.label}</span>
+                        <span className="flex-1">{t(item.label)}</span>
                         {item.badge !== undefined && item.badge > 0 && (
                           <span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black flex items-center justify-center shrink-0 ml-auto border border-emerald-100">
                             {item.badge}
@@ -298,7 +316,7 @@ export function AccountLayout() {
                       size={16}
                       className="shrink-0 text-destructive/80"
                     />
-                    <span>Log out</span>
+                    <span>{t('Log out')}</span>
                   </Button>
                 </nav>
               </div>
@@ -337,17 +355,17 @@ export function AccountLayout() {
                   />
                   <div>
                     <h4 className="font-display font-black text-foreground text-[13px] tracking-tight leading-tight">
-                      Grow your bookings
+                      {t('Grow your bookings')}
                     </h4>
                     <p className="text-[10px] text-muted-foreground font-semibold leading-normal mt-0.5">
-                      List more. Earn more.
+                      {t('List more. Earn more.')}
                     </p>
                   </div>
                   <Link
                     to="/help"
                     className="text-primary text-[10px] font-black flex items-center gap-0.5 mt-1.5 hover:opacity-80 transition-opacity"
                   >
-                    View impact{' '}
+                    {t('View impact')}{' '}
                     <ChevronRight size={9} strokeWidth={3} className="mt-0.5" />
                   </Link>
                 </div>
@@ -377,7 +395,7 @@ export function AccountLayout() {
                         strokeWidth={2.5}
                         className="mt-0.5"
                       />
-                      <span>Back to Account Menu</span>
+                      <span>{t('Back to Account Menu')}</span>
                     </Link>
                   </div>
                 )}

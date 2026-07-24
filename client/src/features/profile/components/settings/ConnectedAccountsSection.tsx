@@ -2,30 +2,32 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
 import { SettingsSectionShell, Row } from './SettingsSectionShell'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function ConnectedAccountsSection() {
+  const { t } = useTranslation()
   const accounts = [
     {
       name: 'Google',
       icon: '🔵',
-      hint: 'Sign in with your Google account',
+      hint: t('Sign in with your Google account'),
     },
     {
       name: 'Facebook',
       icon: '🔷',
-      hint: 'Sign in with your Facebook account',
+      hint: t('Sign in with your Facebook account'),
     },
     {
       name: 'Apple',
       icon: '⚫',
-      hint: 'Sign in with your Apple ID',
+      hint: t('Sign in with your Apple ID'),
     },
   ]
 
   return (
     <SettingsSectionShell
-      title="Connected Accounts"
-      description="Link your social accounts for faster sign-in."
+      title={t('Connected Accounts')}
+      description={t('Link your social accounts for faster sign-in.')}
     >
       <div className={cn('divide-y', 'divide-border/30')}>
         {accounts.map(({ name, icon, hint }, i, arr) => {
@@ -34,7 +36,7 @@ export function ConnectedAccountsSection() {
             <Row
               key={name}
               label={`${icon} ${name}`}
-              desc={linked ? 'Connected' : hint}
+              desc={linked ? t('Connected') : hint}
               last={i === arr.length - 1}
             >
               <Button
@@ -42,7 +44,7 @@ export function ConnectedAccountsSection() {
                 size="sm"
                 onClick={() =>
                   toast.info(
-                    `${linked ? 'Disconnect' : 'Connect'} ${name} coming soon.`,
+                    `${linked ? t('Disconnect') : t('Connect')} ${name} ${t('coming soon.')}`,
                   )
                 }
                 className={cn(
@@ -52,7 +54,7 @@ export function ConnectedAccountsSection() {
                     : 'border-border text-muted-foreground hover:bg-muted-light',
                 )}
               >
-                {linked ? 'Disconnect' : 'Connect'}
+                {linked ? t('Disconnect') : t('Connect')}
               </Button>
             </Row>
           )

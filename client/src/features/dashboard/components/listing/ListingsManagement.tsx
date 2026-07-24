@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Plus, PackagePlus } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { isAdminRole } from '#/lib/auth/roles'
+import { useTranslation } from '#/context/TranslationContext'
+import { useListingDraftStore } from '#/store/useListingDraftStore'
 // Sub-components
 import { ListingsTable } from './ListingsTable'
 import { ListingDialog } from './ListingDialog'
@@ -31,6 +33,7 @@ interface ListingsManagementProps {
 export const ListingsManagement = ({
   initialCategoryFilter,
 }: ListingsManagementProps) => {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState(
     initialCategoryFilter || 'all',
@@ -114,7 +117,7 @@ export const ListingsManagement = ({
       setDeleteReason('')
       setIsDeleteRequestOpen(true)
     } else {
-      toast.error("You don't have permission to delete this listing")
+      toast.error(t("You don't have permission to delete this listing"))
     }
   }
 
@@ -123,11 +126,13 @@ export const ListingsManagement = ({
 
     deleteMutation.mutate(productToDelete.id, {
       onSuccess: () => {
-        toast.success('Listing deleted successfully')
+        toast.success(t('Listing deleted successfully'))
         setProductToDelete(null)
       },
       onError: (err: any) => {
-        toast.error(err.response?.data?.message || 'Failed to delete listing')
+        toast.error(
+          err.response?.data?.message || t('Failed to delete listing'),
+        )
       },
     })
   }
@@ -136,7 +141,7 @@ export const ListingsManagement = ({
     if (!currentUser || !productToDelete) return
 
     if (!deleteReason.trim()) {
-      toast.error('Please provide a reason for deletion')
+      toast.error(t('Please provide a reason for deletion'))
       return
     }
 
@@ -147,37 +152,43 @@ export const ListingsManagement = ({
       },
       {
         onSuccess: () => {
-          toast.success('Deletion request submitted successfully')
+          toast.success(t('Deletion request submitted successfully'))
           setIsDeleteRequestOpen(false)
           setProductToDelete(null)
         },
         onError: (err: any) => {
           toast.error(
-            err.response?.data?.message || 'Failed to submit deletion request',
+            err.response?.data?.message ||
+              t('Failed to submit deletion request'),
           )
         },
       },
     )
   }
 
-  const deleteTitle = 'Delete Listing permanently?'
+  const deleteTitle = t('Delete Listing permanently?')
 
   const deleteDescription = productToDelete
-    ? `Are you sure you want to permanently delete "${productToDelete.title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.`
+    ? t(
+        'Are you sure you want to permanently delete "{title}"? This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.',
+      ).replace('{title}', productToDelete.title)
     : ''
 
   const deleteRequestDialogDescription = (
     <div className="space-y-4 text-left">
       <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
-        Since you do not own "{productToDelete?.title}", you must submit a
-        deletion request with a valid reason.
+        {t(
+          'Since you do not own "{title}", you must submit a deletion request with a valid reason.',
+        ).replace('{title}', productToDelete?.title)}
       </p>
       <div className="space-y-2">
         <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
-          Reason for Deletion
+          {t('Reason for Deletion')}
         </label>
         <Textarea
-          placeholder="Please explain why this listing should be deleted (e.g., violation of policies, outdated, duplicate)..."
+          placeholder={t(
+            'Please explain why this listing should be deleted (e.g., violation of policies, outdated, duplicate)...',
+          )}
           value={deleteReason}
           onChange={(e) => setDeleteReason(e.target.value)}
           className="min-h-[100px] rounded-xl border-border/30 bg-muted-light/50 focus-visible:ring-dash-brand text-foreground w-full p-3 text-sm"
@@ -185,6 +196,49 @@ export const ListingsManagement = ({
       </div>
     </div>
   )
+
+  // Profile Completeness Check
+  const u = currentUser as any
+  const mainAddr = u?.address || u?.addresses?.[0]
+  const fields = [
+    { key: 'name', value: u?.name },
+    { key: 'email', value: u?.email },
+    { key: 'image', value: u?.image },
+    { key: 'phone', value: u?.phone },
+    { key: 'gender', value: u?.gender },
+    { key: 'language', value: u?.language },
+    { key: 'dob', value: u?.dob },
+    { key: 'addressLine1', value: mainAddr?.addressLine1 },
+    { key: 'street', value: mainAddr?.street },
+    { key: 'city', value: mainAddr?.city },
+    { key: 'state', value: mainAddr?.state },
+    { key: 'pincode', value: mainAddr?.pincode },
+  ]
+  const filledFields = fields.filter(
+    (f) => f.value && String(f.value).trim() !== '',
+  )
+  const completenessPercent = Math.round(
+    (filledFields.length / fields.length) * 100,
+  )
+
+  const handleCreateListingClick = () => {
+    if (u?.role === 'admin') {
+      setIsAddOpen(true)
+      return
+    }
+
+    if (!mainAddr?.addressLine1 || !mainAddr?.city || completenessPercent < 80) {
+      toast.error(
+        t('Please complete your profile first before creating a listing.'),
+        { duration: 4000 },
+      )
+      setTimeout(() => {
+        window.location.href = '/account?completeProfile=true#address'
+      }, 400)
+      return
+    }
+    setIsAddOpen(true)
+  }
 
   return (
     <motion.div
@@ -201,10 +255,12 @@ export const ListingsManagement = ({
         <div className="space-y-1">
           <h1 className="text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
             <PackagePlus className="text-dash-brand" size={32} />
-            Marketplace Management
+            {t('Marketplace Management')}
           </h1>
           <p className="text-dash-text-soft font-medium text-sm ml-1">
-            Manage your rental inventory, pricing, and provider assignments.
+            {t(
+              'Manage your rental inventory, pricing, and provider assignments.',
+            )}
           </p>
         </div>
         {isAdmin ? (
@@ -218,7 +274,7 @@ export const ListingsManagement = ({
                   : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
               }`}
             >
-              My Listings
+              {t('My Listings')}
             </Button>
             <Button
               variant="ghost"
@@ -229,16 +285,16 @@ export const ListingsManagement = ({
                   : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
               }`}
             >
-              All Listings
+              {t('All Listings')}
             </Button>
           </div>
         ) : null}
         <Button
-          onClick={() => setIsAddOpen(true)}
+          onClick={handleCreateListingClick}
           className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-2xl px-6 h-14 font-extrabold shadow-lg shadow-dash-brand/20 transition-all active:scale-95 flex items-center gap-2"
         >
           <Plus size={20} strokeWidth={3} />
-          Create Listing
+          {t('Create Listing')}
         </Button>
       </motion.div>
 
@@ -266,13 +322,16 @@ export const ListingsManagement = ({
               {
                 onSuccess: () => {
                   toast.success(
-                    `Listing is now ${isAvailable ? 'public' : 'hidden'}`,
+                    t('Listing is now {status}').replace(
+                      '{status}',
+                      isAvailable ? t('public') : t('hidden'),
+                    ),
                   )
                 },
                 onError: (err: any) => {
                   toast.error(
                     err.response?.data?.message ||
-                      'Failed to update visibility',
+                      t('Failed to update visibility'),
                   )
                 },
               },
@@ -295,11 +354,12 @@ export const ListingsManagement = ({
           createMutation.mutate(data, {
             onSuccess: () => {
               setIsAddOpen(false)
-              toast.success('Listing created successfully')
+              toast.success(t('Listing created successfully'))
+              useListingDraftStore.getState().clearDraft()
             },
             onError: (err: any) => {
               toast.error(
-                err.response?.data?.message || 'Failed to create listing',
+                err.response?.data?.message || t('Failed to create listing'),
               )
             },
           })
@@ -323,11 +383,11 @@ export const ListingsManagement = ({
               onSuccess: () => {
                 setIsEditOpen(false)
                 setProductToEdit(null)
-                toast.success('Listing updated successfully')
+                toast.success(t('Listing updated successfully'))
               },
               onError: (err: any) => {
                 toast.error(
-                  err.response?.data?.message || 'Failed to update listing',
+                  err.response?.data?.message || t('Failed to update listing'),
                 )
               },
             },
@@ -347,7 +407,7 @@ export const ListingsManagement = ({
         onCancel={() => setProductToDelete(null)}
         title={deleteTitle}
         description={deleteDescription}
-        confirmText="Delete"
+        confirmText={t('Delete')}
         variant="danger"
         isPending={deleteMutation.isPending}
       />
@@ -361,13 +421,13 @@ export const ListingsManagement = ({
           setIsDeleteRequestOpen(false)
           setProductToDelete(null)
         }}
-        title="Request Listing Deletion"
+        title={t('Request Listing Deletion')}
         description={deleteRequestDialogDescription}
-        confirmText="Submit Request"
-        cancelText="Cancel"
+        confirmText={t('Submit Request')}
+        cancelText={t('Cancel')}
         variant="danger"
         isPending={createDeleteRequestMutation.isPending}
-        pendingText="Submitting..."
+        pendingText={t('Submitting...')}
       />
     </motion.div>
   )

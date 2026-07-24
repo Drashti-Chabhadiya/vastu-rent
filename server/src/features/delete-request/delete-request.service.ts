@@ -1,29 +1,32 @@
-import { prisma } from "../../config/prisma.js";
-import { productService } from "../product/product.service.js";
+import { prisma } from '../../config/prisma.js'
+import { productService } from '../product/product.service.js'
 
 export class DeleteRequestService {
   async createRequest(productId: string, adminId: string, reason?: string) {
-    const product = await prisma.product.findUnique({ where: { id: productId } });
-    if (!product) throw new Error("Product not found");
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    })
+    if (!product) throw new Error('Product not found')
 
     // Check if a pending request already exists
     const existingRequest = await prisma.deleteProductRequest.findFirst({
-      where: { productId, status: "pending" },
-    });
-    if (existingRequest) throw new Error("A deletion request is already pending for this product");
+      where: { productId, status: 'pending' },
+    })
+    if (existingRequest)
+      throw new Error('A deletion request is already pending for this product')
 
     return prisma.deleteProductRequest.create({
       data: {
         productId,
         adminId,
         reason,
-        status: "pending",
+        status: 'pending',
       },
       include: {
         product: true,
         admin: { select: { name: true, email: true } },
       },
-    });
+    })
   }
 
   async getAllRequests() {
@@ -31,38 +34,43 @@ export class DeleteRequestService {
       include: {
         product: {
           include: {
-            user: { select: { name: true, email: true } }
-          }
+            user: { select: { name: true, email: true } },
+          },
         },
         admin: { select: { name: true, email: true } },
       },
-      orderBy: { createdAt: "desc" },
-    });
+      orderBy: { createdAt: 'desc' },
+    })
   }
 
-  async updateRequestStatus(requestId: string, status: "approved" | "rejected", adminId: string) {
+  async updateRequestStatus(
+    requestId: string,
+    status: 'approved' | 'rejected',
+    adminId: string,
+  ) {
     const request = await prisma.deleteProductRequest.findUnique({
       where: { id: requestId },
       include: { product: true },
-    });
+    })
 
-    if (!request) throw new Error("Request not found");
-    if (request.status !== "pending") throw new Error("Request is already processed");
+    if (!request) throw new Error('Request not found')
+    if (request.status !== 'pending')
+      throw new Error('Request is already processed')
 
-    if (status === "approved") {
+    if (status === 'approved') {
       // Delete the product
-      await productService.deleteProduct(request.productId, adminId, "admin");
-      
+      await productService.deleteProduct(request.productId, adminId, 'admin')
+
       // Update request status
       return prisma.deleteProductRequest.update({
         where: { id: requestId },
-        data: { status: "approved" },
-      });
+        data: { status: 'approved' },
+      })
     } else {
       return prisma.deleteProductRequest.update({
         where: { id: requestId },
-        data: { status: "rejected" },
-      });
+        data: { status: 'rejected' },
+      })
     }
   }
 
@@ -72,9 +80,9 @@ export class DeleteRequestService {
       include: {
         product: true,
       },
-      orderBy: { createdAt: "desc" },
-    });
+      orderBy: { createdAt: 'desc' },
+    })
   }
 }
 
-export const deleteRequestService = new DeleteRequestService();
+export const deleteRequestService = new DeleteRequestService()

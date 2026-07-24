@@ -11,6 +11,7 @@ import {
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { usePayoutSettingsStore } from '../../../../../store/usePayoutSettingsStore'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface PayoutSettingsFormProps {
   handleSaveBankDetails: (e: React.FormEvent) => void
@@ -23,6 +24,7 @@ export const PayoutSettingsForm = ({
   isSaving,
   activeUser,
 }: PayoutSettingsFormProps) => {
+  const { t } = useTranslation()
   const {
     upiId,
     setUpiId,
@@ -48,10 +50,12 @@ export const PayoutSettingsForm = ({
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
         <div>
           <h3 className="text-xl font-extrabold text-dash-brand font-display tracking-tight leading-none">
-            Payout Settlements
+            {t('Payout Settlements')}
           </h3>
           <p className="text-[12px] font-semibold text-muted-dark mt-2">
-            Configure bank accounts or UPI IDs to receive earnings settlements.
+            {t(
+              'Configure bank accounts or UPI IDs to receive earnings settlements.',
+            )}
           </p>
         </div>
         <Button
@@ -60,7 +64,7 @@ export const PayoutSettingsForm = ({
           className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand"
         >
           <Save size={13} />
-          {isSaving ? 'Saving...' : 'Save Changes'}
+          {isSaving ? t('Saving...') : t('Save Changes')}
         </Button>
       </div>
 
@@ -71,12 +75,12 @@ export const PayoutSettingsForm = ({
         </div>
         <div>
           <span className="text-sm font-bold text-warning-foreground block">
-            Verify Payout Details
+            {t('Verify Payout Details')}
           </span>
           <span className="text-xs text-slate-600 block mt-1 font-semibold leading-relaxed">
-            Settlements are processed via bank accounts or UPI within 24-48
-            hours of approved payout withdrawal requests. Ensure details are
-            fully accurate.
+            {t(
+              'Settlements are processed via bank accounts or UPI within 24-48 hours of approved payout withdrawal requests. Ensure details are fully accurate.',
+            )}
           </span>
         </div>
       </div>
@@ -85,7 +89,7 @@ export const PayoutSettingsForm = ({
       <div className="space-y-6">
         <div className="space-y-1.5">
           <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-            UPI ID / Address (Recommended)
+            {t('UPI ID / Address (Recommended)')}
           </label>
           <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
             <div className="flex items-center gap-3.5 flex-1 min-w-0">
@@ -108,14 +112,14 @@ export const PayoutSettingsForm = ({
 
         <div className="border-t border-border/30 pt-6">
           <h4 className="text-xs font-black text-foreground/90 mb-6 uppercase tracking-wider">
-            Or Bank Account Transfer
+            {t('Or Bank Account Transfer')}
           </h4>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Account Holder Name */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-                Account Holder Name
+                {t('Account Holder Name')}
               </label>
               <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
@@ -139,7 +143,7 @@ export const PayoutSettingsForm = ({
             {/* Bank Name */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-                Bank Name
+                {t('Bank Name')}
               </label>
               <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
@@ -163,7 +167,7 @@ export const PayoutSettingsForm = ({
             {/* Account Number */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-                Account Number
+                {t('Account Number')}
               </label>
               <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">
@@ -187,7 +191,7 @@ export const PayoutSettingsForm = ({
             {/* IFSC Code */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-                IFSC Code
+                {t('IFSC Code')}
               </label>
               <div className="bg-muted-light border border-border rounded-2xl p-4 flex items-center justify-between focus-within:ring-2 focus-within:ring-dash-brand/10 focus-within:border-dash-brand transition-all">
                 <div className="flex items-center gap-3.5 flex-1 min-w-0">

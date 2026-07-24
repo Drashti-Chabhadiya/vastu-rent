@@ -3,8 +3,10 @@ import { useCategories } from '#/hook'
 import { CategoryIcon } from '#/components/common/CategoryIcon'
 import { Link } from '@tanstack/react-router'
 import { CategoryIconSkeleton } from '#/components/skeletons'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function BrowseByCategory() {
+  const { t } = useTranslation()
   const { data: categories, isLoading } = useCategories()
 
   // Display top 8 categories + "More"
@@ -15,13 +17,13 @@ export function BrowseByCategory() {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
           <h2 className="text-2xl font-bold text-foreground">
-            Browse by Categories
+            {t('Browse by Categories')}
           </h2>
           <Link
             to={'/categories'}
             className="text-sm font-semibold bg-primary-accent hover:bg-primary flex items-center gap-1 group w-fit"
           >
-            View all categories
+            {t('View all categories')}
             <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
@@ -61,7 +63,7 @@ export function BrowseByCategory() {
                   <Grid3x3 className="w-6 h-6 sm:w-8 sm:h-8 text-foreground/90" />
                 </div>
                 <span className="text-[11px] sm:text-xs font-semibold text-foreground/90 text-center">
-                  More
+                  {t('More')}
                 </span>
               </Link>
             </>

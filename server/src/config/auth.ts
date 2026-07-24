@@ -1,18 +1,21 @@
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "./prisma.js";
-import { admin, bearer } from "better-auth/plugins";
-import { sendVerificationEmail, sendResetPasswordEmail } from "../lib/mail.js";
+import { betterAuth } from 'better-auth'
+import { prismaAdapter } from 'better-auth/adapters/prisma'
+import { prisma } from './prisma.js'
+import { admin, bearer } from 'better-auth/plugins'
+import { sendVerificationEmail, sendResetPasswordEmail } from '../lib/mail.js'
 
 const getHostName = (urlStr?: string) => {
-  if (!urlStr) return "";
+  if (!urlStr) return ''
   try {
-    const formatted = urlStr.startsWith("http://") || urlStr.startsWith("https://") ? urlStr : `https://${urlStr}`;
-    return new URL(formatted).host;
-  } catch (e) {
-    return "";
+    const formatted =
+      urlStr.startsWith('http://') || urlStr.startsWith('https://')
+        ? urlStr
+        : `https://${urlStr}`
+    return new URL(formatted).host
+  } catch {
+    return ''
   }
-};
+}
 
 export const auth = betterAuth({
   /**
@@ -21,18 +24,18 @@ export const auth = betterAuth({
    */
   baseURL: {
     allowedHosts: [
-      "new-vastu-rent.onrender.com",
-      "new-vastu-rent-client.vercel.app",
-      "localhost:4000",
-      "localhost:3000",
-      "127.0.0.1:4000",
-      "127.0.0.1:3000",
-      "127.0.0.1",
-      "10.0.2.2:4000",
-      "10.0.2.2:3000",
-      "10.0.2.2",
-      "*.vercel.app",
-      "*.onrender.com",
+      'new-vastu-rent.onrender.com',
+      'new-vastu-rent-client.vercel.app',
+      'localhost:4000',
+      'localhost:3000',
+      '127.0.0.1:4000',
+      '127.0.0.1:3000',
+      '127.0.0.1',
+      '10.0.2.2:4000',
+      '10.0.2.2:3000',
+      '10.0.2.2',
+      '*.vercel.app',
+      '*.onrender.com',
       getHostName(process.env.BETTER_AUTH_URL),
       getHostName(process.env.CLIENT_URL),
     ].filter(Boolean) as string[],
@@ -48,31 +51,32 @@ export const auth = betterAuth({
    * Prisma adapter connects Better Auth to your PostgreSQL database.
    */
   database: prismaAdapter(prisma, {
-    provider: "postgresql",
+    provider: 'postgresql',
   }),
 
   user: {
     additionalFields: {
-      gender: { type: "string", required: false },
-      location: { type: "string", required: false },
-      phone: { type: "string", required: false },
-      language: { type: "string", required: false },
-      dob: { type: "string", required: false },
-      currency: { type: "string", required: false },
-      twoFactorEnabled: { type: "boolean", required: false },
-      bookingAlerts: { type: "boolean", required: false },
-      settlementAlerts: { type: "boolean", required: false },
-      marketingAlerts: { type: "boolean", required: false },
-      subscriptionTier: { type: "string", required: false },
-      subscriptionExpiresAt: { type: "date", required: false },
-      stripeCustomerId: { type: "string", required: false },
-      stripeSubscriptionId: { type: "string", required: false },
-      showProfile: { type: "boolean", required: false },
-      showOnline: { type: "boolean", required: false },
-      allowData: { type: "boolean", required: false },
-      lastActive: { type: "date", required: false },
-      isGreenMember: { type: "boolean", required: false },
-    }
+      gender: { type: 'string', required: false },
+      phone: { type: 'string', required: false },
+      language: { type: 'string', required: false },
+      dob: { type: 'string', required: false },
+      currency: { type: 'string', required: false },
+      twoFactorEnabled: { type: 'boolean', required: false },
+      bookingAlerts: { type: 'boolean', required: false },
+      settlementAlerts: { type: 'boolean', required: false },
+      marketingAlerts: { type: 'boolean', required: false },
+      subscriptionTier: { type: 'string', required: false },
+      subscriptionExpiresAt: { type: 'date', required: false },
+      stripeCustomerId: { type: 'string', required: false },
+      stripeSubscriptionId: { type: 'string', required: false },
+      showProfile: { type: 'boolean', required: false },
+      showOnline: { type: 'boolean', required: false },
+      allowData: { type: 'boolean', required: false },
+      lastActive: { type: 'date', required: false },
+      isGreenMember: { type: 'boolean', required: false },
+      instagramUrl: { type: 'string', required: false },
+      facebookUrl: { type: 'string', required: false },
+    },
   },
 
   /**
@@ -84,10 +88,10 @@ export const auth = betterAuth({
     sendResetPassword: async ({ user, url, token }) => {
       await sendResetPasswordEmail({
         email: user.email,
-        name: user.name || "",
+        name: user.name || '',
         url,
         token,
-      });
+      })
     },
   },
 
@@ -99,10 +103,10 @@ export const auth = betterAuth({
     sendVerificationEmail: async ({ user, url, token }) => {
       await sendVerificationEmail({
         email: user.email,
-        name: user.name || "",
+        name: user.name || '',
         url,
         token,
-      });
+      })
     },
   },
 
@@ -129,32 +133,27 @@ export const auth = betterAuth({
     process.env.BETTER_AUTH_URL,
   ].filter(Boolean) as string[],
 
-
-
   /**
    * Enable social authentication providers.
    */
   socialProviders: {
     google: {
       clientId: [
-        process.env.GOOGLE_CLIENT_ID || "",
-        process.env.GOOGLE_ANDROID_CLIENT_ID || "",
-        process.env.GOOGLE_IOS_CLIENT_ID || "",
+        process.env.GOOGLE_CLIENT_ID || '',
+        process.env.GOOGLE_ANDROID_CLIENT_ID || '',
+        process.env.GOOGLE_IOS_CLIENT_ID || '',
       ].filter(Boolean) as string[],
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     },
   },
 
   /**
    * Enable the admin plugin for role management.
    */
-  plugins: [
-    admin(),
-    bearer(),
-  ],
-});
+  plugins: [admin(), bearer()],
+})
 
 /**
  * Inferred type of the auth instance — useful for server-side type checking.
  */
-export type Auth = typeof auth;
+export type Auth = typeof auth

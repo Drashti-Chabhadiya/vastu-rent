@@ -5,8 +5,10 @@ import { ProductCardSkeleton } from '#/components/skeletons'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function ProductsExplorePage() {
+  const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
   const { data: products, isLoading } = useProducts({
     search: searchTerm,
@@ -19,11 +21,12 @@ export function ProductsExplorePage() {
         {/* Header Section */}
         <div className="mb-10">
           <h1 className="text-4xl font-extrabold text-foreground mb-4 tracking-tight">
-            Explore Marketplace
+            {t('Explore Marketplace')}
           </h1>
           <p className="text-lg text-muted-foreground/85 max-w-2xl">
-            Find everything you need, from high-end cameras to designer outfits,
-            available for rent near you.
+            {t(
+              'Find everything you need, from high-end cameras to designer outfits, available for rent near you.',
+            )}
           </p>
         </div>
 
@@ -32,7 +35,7 @@ export function ProductsExplorePage() {
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/70 w-5 h-5" />
             <Input
-              placeholder="Search for items, brands, or categories..."
+              placeholder={t('Search for items, brands, or categories...')}
               className="pl-12 h-14 bg-card border-border/30 rounded-2xl shadow-sm focus:ring-brand focus:border-brand"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -44,10 +47,10 @@ export function ProductsExplorePage() {
               className="h-14 px-6 rounded-2xl border-border/30 bg-card font-bold text-foreground/80 flex items-center gap-2 hover:bg-muted-light"
             >
               <SlidersHorizontal className="w-5 h-5" />
-              Filters
+              {t('Filters')}
             </Button>
             <Button className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-lg shadow-brand/20">
-              Search
+              {t('Search')}
             </Button>
           </div>
         </div>
@@ -68,18 +71,19 @@ export function ProductsExplorePage() {
                 <Search size={48} />
               </div>
               <h3 className="text-2xl font-bold text-foreground mb-2">
-                No items found
+                {t('No items found')}
               </h3>
               <p className="text-muted-foreground/85 max-w-md mx-auto">
-                We couldn't find any items matching your search. Try adjusting
-                your keywords or filters.
+                {t(
+                  "We couldn't find any items matching your search. Try adjusting your keywords or filters.",
+                )}
               </p>
               <Button
                 variant="outline"
                 className="mt-8 rounded-xl font-bold text-primary border-brand hover:bg-primary/5"
                 onClick={() => setSearchTerm('')}
               >
-                Clear Search
+                {t('Clear Search')}
               </Button>
             </div>
           )}

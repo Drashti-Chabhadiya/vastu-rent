@@ -27,6 +27,7 @@ import { Button } from '#/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
 import { UserAvatar } from '#/components/common/UserAvatar'
 import { Logo } from '#/components/layout'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface NavItemProps {
   icon: React.ElementType
@@ -34,6 +35,7 @@ interface NavItemProps {
   active?: boolean
   hasSubmenu?: boolean
   onClick?: () => void
+  t: (key: string) => string
 }
 
 const NavItem = ({
@@ -42,6 +44,7 @@ const NavItem = ({
   active,
   hasSubmenu,
   onClick,
+  t,
 }: NavItemProps) => (
   <div
     onClick={onClick}
@@ -62,7 +65,7 @@ const NavItem = ({
             : 'text-dash-text-muted group-hover:text-dash-text-soft',
         )}
       />
-      <span className="text-[14px] font-bold tracking-tight">{label}</span>
+      <span className="text-[14px] font-bold tracking-tight">{t(label)}</span>
     </div>
     {hasSubmenu && (
       <ChevronRight
@@ -173,6 +176,7 @@ export const Sidebar = ({
   isOpen,
   onClose,
 }: SidebarProps) => {
+  const { t } = useTranslation()
   const { data: session, isPending: isSessionLoading } = authClient.useSession()
   const user = session?.user
   const role = user?.role || 'user'
@@ -236,6 +240,7 @@ export const Sidebar = ({
               key={item.id}
               icon={item.icon}
               label={item.label}
+              t={t}
               active={currentTab === item.id}
               onClick={() => {
                 onTabChange(item.id)
@@ -257,15 +262,16 @@ export const Sidebar = ({
                   <TrendingUp size={14} className="text-yellow-600 font-bold" />
                 </div>
                 <span className="text-xs font-black tracking-wide text-primary">
-                  Go Premium
+                  {t('Go Premium')}
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground font-medium mb-3 leading-relaxed">
-                Unlock advance charts, calendar sync, and featured listing
-                spots.
+                {t(
+                  'Unlock advance charts, calendar sync, and featured listing spots.',
+                )}
               </p>
               <Button className="w-full h-9 bg-primary text-primary-foreground text-xs font-bold rounded-xl hover:bg-primary/95 transition-all shadow-sm active:scale-[0.98]">
-                Upgrade Account
+                {t('Upgrade Account')}
               </Button>
             </div>
             {/* Soft background accents */}
@@ -313,7 +319,7 @@ export const Sidebar = ({
                 className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-muted-foreground hover:bg-muted-light hover:text-dash-text transition-colors active:scale-[0.98]"
               >
                 <Settings size={15} className="text-muted-foreground/70" />
-                Settings
+                {t('Settings')}
               </Button>
               <Button
                 variant="ghost"
@@ -324,7 +330,7 @@ export const Sidebar = ({
                 className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-muted-foreground hover:bg-muted-light hover:text-dash-text transition-colors active:scale-[0.98]"
               >
                 <User size={15} className="text-muted-foreground/70" />
-                My Account
+                {t('My Account')}
               </Button>
               <Button
                 variant="ghost"
@@ -335,7 +341,7 @@ export const Sidebar = ({
                 className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-muted-foreground hover:bg-muted-light hover:text-dash-text transition-colors active:scale-[0.98]"
               >
                 <ExternalLink size={15} className="text-muted-foreground/70" />
-                View Public Site
+                {t('View Public Site')}
               </Button>
             </div>
 
@@ -346,7 +352,7 @@ export const Sidebar = ({
                 className="w-full justify-start rounded-none h-auto gap-3 px-4 py-2.5 text-[13px] font-semibold text-destructive hover:bg-danger hover:text-destructive transition-colors active:scale-[0.98]"
               >
                 <LogOut size={15} />
-                Sign out
+                {t('Sign Out')}
               </Button>
             </div>
           </div>
@@ -378,7 +384,7 @@ export const Sidebar = ({
                 {user?.name || 'Loading...'}
               </p>
               <p className="text-[10px] text-dash-text-muted truncate uppercase font-extrabold tracking-wider">
-                {role}
+                {t(role)}
               </p>
             </div>
           </div>

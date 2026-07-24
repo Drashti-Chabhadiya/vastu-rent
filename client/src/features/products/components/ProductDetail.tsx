@@ -15,23 +15,36 @@ import { useProductReviews, useCreateReview } from '#/hook/use-reviews'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductDetailSkeleton } from '#/components/skeletons'
 import { Button } from '#/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '#/components/ui/alert-dialog'
 import { AlertCircle } from 'lucide-react'
+import { useSessionContext } from '#/context/SessionContext'
 import { useState, useCallback, useEffect } from 'react'
-import { authClient } from '#/lib/auth/auth-client'
-
+import { useTranslation } from '#/context/TranslationContext'
 // Subcomponents import
 import { ProductBreadcrumbs } from './detail/ProductBreadcrumbs'
 import { ProductImageGallery } from './detail/ProductImageGallery'
 import { ProductTabs } from './detail/ProductTabs'
-import { ProductInfoSection } from './detail/ProductInfoSection'
+import {
+  ProductHeaderSection,
+  ProductBookingSection,
+} from './detail/ProductInfoSection'
 import { ProductUserCard } from './detail/ProductUserCard'
 import { AvailabilityCalendar } from './detail/AvailabilityCalendar'
 import { BookingConfirmationModal } from './detail/BookingConfirmationModal'
 import { useProductBookingStore } from '../../../store/useProductBookingStore'
 
 export function ProductDetail({ id }: { id: string }) {
+  const { t, formatDate } = useTranslation()
   const navigate = useNavigate()
-  const { data: session } = authClient.useSession()
+  const { data: session } = useSessionContext()
   const { data: product, isLoading, error } = useProduct(id)
   const { data: similarProducts } = useProducts({
     categoryId: product?.categoryId,
@@ -74,6 +87,17 @@ export function ProductDetail({ id }: { id: string }) {
   const [reviewRating, setReviewRating] = useState(5)
   const [reviewComment, setReviewComment] = useState('')
   const [reviewError, setReviewError] = useState('')
+
+  // Custom Alert State
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
+  const [alertTitle, setAlertTitle] = useState('')
+
+  const showAlert = useCallback((message: string, title = 'Notice') => {
+    setAlertTitle(title)
+    setAlertMessage(message)
+    setAlertOpen(true)
+  }, [])
 
   const applyCoupon = useApplyCoupon()
   const today = new Date()
@@ -176,7 +200,10 @@ export function ProductDetail({ id }: { id: string }) {
       }
 
       if (hasBookedInRange) {
-        alert('This range includes dates that are already booked.')
+        showAlert(
+          'This range includes dates that are already booked.',
+          'Unavailable Dates',
+        )
         setStartDate(clicked)
         setEndDate(null)
         return
@@ -221,7 +248,10 @@ export function ProductDetail({ id }: { id: string }) {
     }
 
     if (!startDate || !endDate) {
-      alert('Please select start and end dates on the calendar.')
+      showAlert(
+        'Please select start and end dates on the calendar.',
+        'Missing Dates',
+      )
       return
     }
     const days =
@@ -261,9 +291,10 @@ export function ProductDetail({ id }: { id: string }) {
       // Show success modal for both cash and online
       setShowBookingConfirm(true)
     } catch (err: any) {
-      alert(
+      showAlert(
         err.response?.data?.message ||
         'Booking failed. Please make sure you are logged in.',
+        'Booking Failed',
       )
     } finally {
       setIsPaying(false)
@@ -307,17 +338,32 @@ export function ProductDetail({ id }: { id: string }) {
   const liked = isLiked(product.id)
 
   const productInfo = [
-    { label: 'Category', value: product.category?.name || 'Uncategorized' },
-    { label: 'Condition', value: product.condition || 'Good' },
-    { label: 'Min. Rental', value: `${product.minDuration || 1} day(s)` },
+    { label: 'Category', value: product.category?.name || t('Uncategorized') },
+    {
+      label: 'Listing Source',
+      value:
+        product.listingType === 'shop' ||
+        product.user?.address?.addressType?.toLowerCase() === 'shop' ||
+        product.user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
+          ? product.shopName || product.user?.address?.shopName || product.user?.addresses?.[0]?.shopName
+            ? `🏪 ${t('Shop:')} ${product.shopName || product.user?.address?.shopName || product.user?.addresses?.[0]?.shopName}`
+            : `🏪 ${t('From Shop / Store')}`
+          : `🏠 ${t('From Home')}`,
+    },
+    {
+      label: 'Min. Rental',
+      value: `${product.minDuration || 1} ${t('day(s)')}`,
+    },
     {
       label: 'Max. Rental',
-      value: product.maxDuration ? `${product.maxDuration} days` : 'Unlimited',
+      value: product.maxDuration
+        ? `${product.maxDuration} ${t('days')}`
+        : t('Unlimited'),
     },
     { label: 'Location', value: product.location || 'Surat, Gujarat' },
     {
       label: 'Listed On',
-      value: new Date(product.createdAt).toLocaleDateString('en-IN', {
+      value: formatDate(product.createdAt, {
         day: '2-digit',
         month: 'long',
         year: 'numeric',
@@ -336,9 +382,10 @@ export function ProductDetail({ id }: { id: string }) {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <ProductBreadcrumbs title={product.title || product.name} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Image Gallery */}
-          <div className="col-span-1 lg:col-span-5 order-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          {/* Left Column: Media & Product Main Info */}
+          <div className="col-span-1 lg:col-span-7 xl:col-span-7 space-y-8">
+            {/* Image Gallery */}
             <ProductImageGallery
               images={images}
               title={product.title || product.name}
@@ -349,45 +396,11 @@ export function ProductDetail({ id }: { id: string }) {
               copied={copied}
               handleShare={handleShare}
             />
-          </div>
 
-          {/* Product Info Section */}
-          <div className="col-span-1 lg:col-span-7 xl:col-span-4 order-2 lg:order-2 lg:row-span-2 xl:row-span-1">
-            <ProductInfoSection
-              product={product}
-              productInfo={productInfo}
-              handleRentNow={handleRentNow}
-              createRentalIsPending={
-                createRental.isPending || confirmPayment.isPending
-              }
-              handleApplyCoupon={handleApplyCoupon}
-              handleRemoveCoupon={handleRemoveCoupon}
-              applyCouponIsPending={applyCoupon.isPending}
-              availabilityCalendar={
-                <AvailabilityCalendar
-                  today={today}
-                  productRentals={productRentals}
-                  handleDayClick={handleDayClick}
-                />
-              }
-            />
-          </div>
+            {/* Product Title, Rating, Specs Table & Trust Badges */}
+            <ProductHeaderSection product={product} productInfo={productInfo} />
 
-          {/* Sidebar: Lister & Calendar (Desktop Only) */}
-          <div className="col-span-1 lg:col-span-7 xl:col-span-3 order-3 lg:order-4 xl:order-3 space-y-6">
-            <ProductUserCard user={product.user} />
-
-            <div className="hidden xl:block">
-              <AvailabilityCalendar
-                today={today}
-                productRentals={productRentals}
-                handleDayClick={handleDayClick}
-              />
-            </div>
-          </div>
-
-          {/* Product Tabs (Reviews / Description) */}
-          <div className="col-span-1 lg:col-span-5 order-4 lg:order-3 xl:order-4 mt-4 lg:mt-0">
+            {/* Product Tabs (Description, Details, Reviews, FAQs) */}
             <ProductTabs
               product={product}
               reviews={reviews}
@@ -403,18 +416,46 @@ export function ProductDetail({ id }: { id: string }) {
             />
           </div>
 
+          {/* Right Column: Sticky Booking Widget & Lister Card */}
+          <div className="col-span-1 lg:col-span-5 xl:col-span-5 space-y-6 lg:sticky lg:top-24">
+            {/* Booking & Checkout Widget */}
+            <ProductBookingSection
+              product={product}
+              handleRentNow={handleRentNow}
+              createRentalIsPending={
+                createRental.isPending || confirmPayment.isPending
+              }
+              handleApplyCoupon={handleApplyCoupon}
+              handleRemoveCoupon={handleRemoveCoupon}
+              applyCouponIsPending={applyCoupon.isPending}
+              availabilityCalendar={
+                <AvailabilityCalendar
+                  today={today}
+                  productRentals={productRentals}
+                  handleDayClick={handleDayClick}
+                />
+              }
+            />
+
+            {/* Lister User Card */}
+            <ProductUserCard
+              user={product.user}
+              session={session}
+            />
+          </div>
+
           {/* Similar Items Section */}
           {similarProducts && similarProducts.length > 0 && (
-            <div className="col-span-1 lg:col-span-12 order-5 mt-10">
+            <div className="col-span-1 lg:col-span-12 mt-6 pt-8 border-t border-border/30">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-lg font-bold text-foreground">
-                  Similar Items
+                  {t('Similar Items')}
                 </h3>
                 <Link
                   to="/products"
                   className="text-sm font-bold text-primary hover:underline"
                 >
-                  View all
+                  {t('View all')}
                 </Link>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
@@ -442,6 +483,26 @@ export function ProductDetail({ id }: { id: string }) {
           (product.securityDeposit || 0)
         }
       />
+
+      {/* Shadcn Alert Dialog */}
+      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <AlertDialogContent className="rounded-2xl max-w-sm border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{alertTitle}</AlertDialogTitle>
+            <AlertDialogDescription className="text-sm font-medium">
+              {alertMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+              onClick={() => setAlertOpen(false)}
+              className="rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary-hover"
+            >
+              OK
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

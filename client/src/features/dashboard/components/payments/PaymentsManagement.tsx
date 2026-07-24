@@ -25,6 +25,7 @@ import {
 import { authClient } from '#/lib/auth/auth-client'
 import { PaymentsManagementSkeleton } from '#/components/skeletons'
 import { toast } from 'sonner'
+import { useTranslation } from '#/context/TranslationContext'
 
 // Import extracted sub-components
 import { EarningStatsCards } from './components/EarningStatsCards'
@@ -36,6 +37,7 @@ import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 
 export const PaymentsManagement = () => {
+  const { t, formatDate, formatNumber, formatCurrency } = useTranslation()
   const { data: session } = authClient.useSession()
   const role = session?.user.role || 'user'
   const isAdmin = role === 'admin'
@@ -130,25 +132,25 @@ export const PaymentsManagement = () => {
       case 'paid':
         return (
           <Badge className="bg-emerald-50 text-emerald-600 border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <CheckCircle2 size={10} /> Paid
+            <CheckCircle2 size={10} /> {t('Paid')}
           </Badge>
         )
       case 'approved':
         return (
           <Badge className="bg-indigo-50 text-indigo-600 border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <Zap size={10} /> Approved
+            <Zap size={10} /> {t('Approved')}
           </Badge>
         )
       case 'rejected':
         return (
           <Badge className="bg-danger text-destructive border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <XCircle size={10} /> Rejected
+            <XCircle size={10} /> {t('Rejected')}
           </Badge>
         )
       default:
         return (
           <Badge className="bg-warning text-warning-foreground border-none px-2.5 py-0.5 rounded-md font-black flex items-center gap-1.5">
-            <Clock size={10} /> Pending
+            <Clock size={10} /> {t('Pending')}
           </Badge>
         )
     }
@@ -168,15 +170,15 @@ export const PaymentsManagement = () => {
       >
         <div className="space-y-1">
           <div className="flex items-center gap-1.5 text-[10px] font-black text-muted-dark uppercase tracking-widest">
-            <span>Dashboard</span>
+            <span>{t('Dashboard')}</span>
             <ChevronRight size={10} className="text-muted-dark" />
             <span className="text-emerald-600 font-extrabold">
-              Earnings & Payouts
+              {t('Earnings & Financial Payouts')}
             </span>
           </div>
           <h2 className="text-2xl font-extrabold text-foreground/90 flex items-center gap-2">
             <IndianRupee className="text-emerald-600" size={26} />
-            Earnings & Payouts
+            {t('Earnings & Financial Payouts')}
           </h2>
         </div>
 
@@ -192,7 +194,7 @@ export const PaymentsManagement = () => {
                     : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
                 }`}
               >
-                My Payouts
+                {t('My Payouts')}
               </Button>
               <Button
                 variant="ghost"
@@ -203,7 +205,7 @@ export const PaymentsManagement = () => {
                     : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
                 }`}
               >
-                All Platform Payouts
+                {t('All Platform Payouts')}
               </Button>
             </div>
           ) : null}
@@ -212,7 +214,7 @@ export const PaymentsManagement = () => {
           <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
             <Calendar size={14} className="text-emerald-600" />
             <span className="text-xs font-black text-muted-foreground tracking-wider">
-              {format(new Date(), 'MMMM yyyy')}
+              {formatDate(new Date(), { month: 'long', year: 'numeric' })}
             </span>
           </div>
         </div>
@@ -235,13 +237,13 @@ export const PaymentsManagement = () => {
             </div>
             <div className="space-y-0.5">
               <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
-                Platform GMV
+                {t('Platform GMV')}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                ₹{platformStats.totalGmv.toLocaleString()}
+                {formatCurrency(platformStats.totalGmv)}
               </h3>
               <span className="text-[9px] font-bold text-muted-dark block">
-                Total booking volume
+                {t('Total booking volume')}
               </span>
             </div>
           </div>
@@ -252,13 +254,13 @@ export const PaymentsManagement = () => {
             </div>
             <div className="space-y-0.5">
               <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
-                Platform Bookings
+                {t('Platform Bookings')}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                {platformStats.totalBookings.toLocaleString()}
+                {formatNumber(platformStats.totalBookings)}
               </h3>
               <span className="text-[9px] font-bold text-muted-dark block">
-                Total bookings processed
+                {t('Total bookings processed')}
               </span>
             </div>
           </div>
@@ -269,13 +271,13 @@ export const PaymentsManagement = () => {
             </div>
             <div className="space-y-0.5">
               <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
-                Paid Out Volume
+                {t('Paid Out Volume')}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                ₹{platformStats.totalPayoutsPaid.toLocaleString()}
+                {formatCurrency(platformStats.totalPayoutsPaid)}
               </h3>
               <span className="text-[9px] font-bold text-muted-dark block text-indigo-500">
-                Successfully settled
+                {t('Successfully settled')}
               </span>
             </div>
           </div>
@@ -286,13 +288,13 @@ export const PaymentsManagement = () => {
             </div>
             <div className="space-y-0.5">
               <span className="text-[9px] font-black text-muted-dark uppercase tracking-widest block">
-                Pending Queue
+                {t('Pending Queue')}
               </span>
               <h3 className="text-xl font-black text-foreground/90">
-                ₹{platformStats.totalPayoutsPending.toLocaleString()}
+                {formatCurrency(platformStats.totalPayoutsPending)}
               </h3>
               <span className="text-[9px] font-bold text-muted-dark block text-orange-500">
-                Awaiting approvals
+                {t('Awaiting approvals')}
               </span>
             </div>
           </div>
@@ -312,17 +314,17 @@ export const PaymentsManagement = () => {
             </div>
             <div className="space-y-2 relative z-10">
               <span className="text-[9px] font-black uppercase tracking-widest text-primary bg-emerald-500/20 px-2 py-0.5 rounded">
-                Settlement Wallet
+                {t('Settlement Wallet')}
               </span>
               <h3 className="text-sm font-semibold text-muted-dark">
-                Available Withdrawable Balance
+                {t('Available Withdrawable Balance')}
               </h3>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl font-black">
-                  ₹{stats.withdrawableBalance.toLocaleString()}
+                  {formatCurrency(stats.withdrawableBalance)}
                 </span>
                 <span className="text-[10px] text-muted-dark font-bold">
-                  Net Earnings - Pending payouts
+                  {t('Net Earnings - Pending payouts')}
                 </span>
               </div>
             </div>
@@ -331,7 +333,7 @@ export const PaymentsManagement = () => {
               onClick={() => {
                 if (stats.withdrawableBalance <= 0) {
                   toast.error(
-                    'You do not have any withdrawable balance currently',
+                    t('You do not have any withdrawable balance currently'),
                   )
                   return
                 }
@@ -339,7 +341,7 @@ export const PaymentsManagement = () => {
               }}
               className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground h-14 px-8 rounded-full font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-dash-brand/20 transition-all active:scale-95 z-10 self-start md:self-auto cursor-pointer"
             >
-              <Plus size={16} /> Request Withdrawal
+              <Plus size={16} /> {t('Request Withdrawal')}
             </Button>
           </motion.div>
 
@@ -369,10 +371,10 @@ export const PaymentsManagement = () => {
               >
                 <div>
                   <h3 className="text-[15px] font-black text-foreground/90">
-                    Payout Settlement History
+                    {t('Payout Settlement History')}
                   </h3>
                   <p className="text-[11px] font-bold text-muted-dark mt-0.5">
-                    Track your payout withdrawal request updates.
+                    {t('Track your payout withdrawal request updates.')}
                   </p>
                 </div>
 
@@ -383,7 +385,7 @@ export const PaymentsManagement = () => {
                         <Clock size={16} />
                       </div>
                       <span className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
-                        No payout requests placed
+                        {t('No payout requests placed')}
                       </span>
                     </div>
                   ) : (
@@ -427,16 +429,16 @@ export const PaymentsManagement = () => {
               >
                 <h3 className="text-[15px] font-black text-foreground/90 flex items-center gap-2">
                   <ShieldCheck size={18} className="text-emerald-600" />
-                  Safety Settlement Guarantee
+                  {t('Safety Settlement Guarantee')}
                 </h3>
                 <p className="text-[11px] font-semibold text-muted-foreground/85 leading-relaxed">
-                  Platform settlements are fully paid out with 0% commission
-                  fees. Payout requests are verified by auditing dispute
-                  histories and cleared within 24-48 hours.
+                  {t(
+                    'Platform settlements are fully paid out with 0% commission fees. Payout requests are verified by auditing dispute histories and cleared within 24-48 hours.',
+                  )}
                 </p>
                 <div className="border-t border-border/30 pt-4 flex items-center gap-2 text-[10px] font-black text-muted-dark uppercase tracking-widest">
-                  <Lock size={12} className="text-emerald-600" /> BANK-LEVEL SSL
-                  ENCRYPTED
+                  <Lock size={12} className="text-emerald-600" />{' '}
+                  {t('BANK-LEVEL SSL ENCRYPTED')}
                 </div>
               </motion.div>
             </div>
@@ -463,10 +465,10 @@ export const PaymentsManagement = () => {
             >
               <div>
                 <h3 className="text-[15px] font-black text-foreground/90">
-                  All Platform Payout History
+                  {t('All Platform Payout History')}
                 </h3>
                 <p className="text-[11px] font-bold text-muted-dark mt-0.5">
-                  Track payout requests from all users on the platform.
+                  {t('Track payout requests from all users on the platform.')}
                 </p>
               </div>
 
@@ -477,7 +479,7 @@ export const PaymentsManagement = () => {
                       <Clock size={16} />
                     </div>
                     <span className="text-[10px] font-black text-muted-dark uppercase tracking-widest">
-                      No payout requests placed
+                      {t('No payout requests placed')}
                     </span>
                   </div>
                 ) : (
@@ -492,7 +494,7 @@ export const PaymentsManagement = () => {
                             ₹{req.amount.toLocaleString()}
                           </span>
                           <span className="text-[10px] text-muted-foreground font-medium block mt-0.5">
-                            By {req.user?.name || 'User'}
+                            {t('By')} {req.user?.name || t('User')}
                           </span>
                         </div>
                         <div>{getPayoutStatusBadge(req.status)}</div>

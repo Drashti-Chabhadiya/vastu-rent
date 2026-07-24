@@ -25,44 +25,48 @@ import {
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 
+import { useTranslation } from '#/context/TranslationContext'
+
 export const ReportsManagement = () => {
+  const { t, formatCurrency, formatNumber } = useTranslation()
+
   const stats = [
     {
-      label: 'Total Orders',
-      value: '1,245',
-      sub: '+18.6% from last week',
+      label: t('Total Bookings'),
+      value: formatNumber(1245),
+      sub: `+18.6% ${t('vs last week')}`,
       icon: ShoppingCart,
       color: 'text-emerald-500',
       bg: 'bg-emerald-50',
     },
     {
-      label: 'Total Revenue',
-      value: '₹12,45,000',
-      sub: '+22.4% from last week',
+      label: t('Total Revenue'),
+      value: formatCurrency(1245000),
+      sub: `+22.4% ${t('vs last week')}`,
       icon: IndianRupee,
       color: 'text-info-foreground',
       bg: 'bg-info',
     },
     {
-      label: 'Total Users',
-      value: '2,580',
-      sub: '+12.8% from last week',
+      label: t('Total Users'),
+      value: formatNumber(2580),
+      sub: `+12.8% ${t('vs last week')}`,
       icon: Users,
       color: 'text-purple-500',
       bg: 'bg-purple-50',
     },
     {
-      label: 'Total Listings',
-      value: '1,850',
-      sub: '+15.3% from last week',
+      label: t('Total Listings'),
+      value: formatNumber(1850),
+      sub: `+15.3% ${t('vs last week')}`,
       icon: Package,
       color: 'text-orange-500',
       bg: 'bg-orange-50',
     },
     {
-      label: 'Total Reviews',
-      value: '890',
-      sub: '+9.5% from last week',
+      label: t('Total Reviews'),
+      value: formatNumber(890),
+      sub: `+9.5% ${t('vs last week')}`,
       icon: Star,
       color: 'text-danger-foreground',
       bg: 'bg-danger',
@@ -71,37 +75,37 @@ export const ReportsManagement = () => {
 
   const categories = [
     {
-      name: 'Home Decor',
+      name: t('Home Decor'),
       orders: 320,
-      revenue: '₹3,20,000',
+      revenue: 320000,
       growth: '+24.5%',
       color: 'emerald',
     },
     {
-      name: 'Electronics',
+      name: t('Electronics'),
       orders: 280,
-      revenue: '₹2,80,000',
+      revenue: 280000,
       growth: '+18.2%',
       color: 'blue',
     },
     {
-      name: 'Vehicles',
+      name: t('Vehicles'),
       orders: 210,
-      revenue: '₹2,10,000',
+      revenue: 210000,
       growth: '+15.7%',
       color: 'amber',
     },
     {
-      name: 'Fashion',
+      name: t('Fashion'),
       orders: 180,
-      revenue: '₹1,80,000',
+      revenue: 180000,
       growth: '+10.3%',
       color: 'emerald',
     },
     {
-      name: 'Event Essentials',
+      name: t('Event Essentials'),
       orders: 150,
-      revenue: '₹1,55,000',
+      revenue: 155000,
       growth: '- 5.6%',
       color: 'rose',
     },
@@ -117,14 +121,16 @@ export const ReportsManagement = () => {
       {/* Breadcrumbs */}
       <motion.div variants={fadeUp} className="flex flex-col gap-1">
         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
-          <span>Dashboard</span>
+          <span>{t('Dashboard')}</span>
           <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold uppercase tracking-widest">
-            Reports
+            {t('Platform Analytics')}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-black text-foreground">Reports</h1>
+          <h1 className="text-xl font-black text-foreground">
+            {t('Platform Analytics')}
+          </h1>
           <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border/30 shadow-sm">
             <div className="flex items-center gap-2 px-4 py-1.5 border-r border-border/30">
               <Calendar size={14} className="text-dash-brand" />
@@ -148,7 +154,9 @@ export const ReportsManagement = () => {
         className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm overflow-x-auto scrollbar-hide"
       >
         <div className="mb-8">
-          <h3 className="text-[15px] font-black text-foreground">Overview</h3>
+          <h3 className="text-[15px] font-black text-foreground">
+            {t('Overview')}
+          </h3>
         </div>
         <div className="flex gap-6 min-w-max pb-2">
           {stats.map((stat, i) => (
@@ -340,10 +348,10 @@ export const ReportsManagement = () => {
                         </div>
                       </TableCell>
                       <TableCell className="px-4 py-5 font-bold text-foreground/80 text-[12px]">
-                        {cat.orders}
+                        {formatNumber(cat.orders)}
                       </TableCell>
                       <TableCell className="px-4 py-5 font-black text-foreground text-[12px]">
-                        {cat.revenue}
+                        {formatCurrency(cat.revenue)}
                       </TableCell>
                       <TableCell className="px-4 py-5">
                         <Badge

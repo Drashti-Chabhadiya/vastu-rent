@@ -1,49 +1,52 @@
 import { Home, Users, ShieldCheck, Star } from 'lucide-react'
-
-const stats = [
-  {
-    icon: (
-      <Home
-        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
-        strokeWidth={1.5}
-      />
-    ),
-    value: '25,000+',
-    label: 'Items Available',
-  },
-  {
-    icon: (
-      <Users
-        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
-        strokeWidth={1.5}
-      />
-    ),
-    value: '15,000+',
-    label: 'Happy Customers',
-  },
-  {
-    icon: (
-      <ShieldCheck
-        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
-        strokeWidth={1.5}
-      />
-    ),
-    value: '98%',
-    label: 'Verified & Trusted',
-  },
-  {
-    icon: (
-      <Star
-        className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
-        strokeWidth={1.5}
-      />
-    ),
-    value: '4.8/5',
-    label: 'Customer Rating',
-  },
-]
+import { useTranslation } from '#/context/TranslationContext'
 
 export function StatsSection() {
+  const { t, formatDigits } = useTranslation()
+
+  const stats = [
+    {
+      icon: (
+        <Home
+          className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+          strokeWidth={1.5}
+        />
+      ),
+      value: formatDigits('25,000+'),
+      label: t('Items Available'),
+    },
+    {
+      icon: (
+        <Users
+          className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+          strokeWidth={1.5}
+        />
+      ),
+      value: formatDigits('15,000+'),
+      label: t('Happy Customers'),
+    },
+    {
+      icon: (
+        <ShieldCheck
+          className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+          strokeWidth={1.5}
+        />
+      ),
+      value: formatDigits('98%'),
+      label: t('Verified & Trusted'),
+    },
+    {
+      icon: (
+        <Star
+          className="h-5 w-5 sm:h-6 sm:w-6 text-primary-accent"
+          strokeWidth={1.5}
+        />
+      ),
+      value: formatDigits('4.8/5'),
+      label: t('Customer Rating'),
+    },
+  ]
+
   return (
     <section className="bg-background py-8 sm:py-12">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">

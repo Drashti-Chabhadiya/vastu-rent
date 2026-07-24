@@ -12,12 +12,147 @@ import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { cn } from '#/lib/utils'
-
+import { useTranslation } from '#/context/TranslationContext'
 import { useProductBookingStore } from '../../../../store/useProductBookingStore'
 
-interface ProductInfoSectionProps {
+interface ProductHeaderSectionProps {
   product: any
   productInfo: { label: string; value: string }[]
+}
+
+export const ProductHeaderSection = ({
+  product,
+  productInfo,
+}: ProductHeaderSectionProps) => {
+  const { formatCurrency, formatDigits, t } = useTranslation()
+
+  return (
+    <div className="bg-card rounded-2xl p-6 border border-border/30 shadow-sm space-y-6">
+      {/* Header Info */}
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight">
+            {product.title || product.name}
+          </h1>
+          <Badge className="bg-primary-soft text-primary-hover border border-primary-border px-2.5 py-1 rounded-md flex items-center gap-1 font-bold text-[10px] uppercase shrink-0">
+            <CheckCircle2 size={12} /> {t('Verified')}
+          </Badge>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-foreground text-sm">
+              {formatDigits(product.rating || '4.6')}
+            </span>
+            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+          </div>
+          <span className="text-muted-foreground/85 text-sm font-medium">
+            ({formatDigits(product.reviewsCount || '0')} {t('Reviews')})
+          </span>
+        </div>
+
+        <div className="flex items-baseline gap-1.5 pt-1">
+          <span className="text-3xl font-black text-primary">
+            {formatCurrency(product.price)}
+          </span>
+          <span className="text-sm font-bold text-muted-foreground/85">
+            {t('/day')}
+          </span>
+          {product.securityDeposit > 0 && (
+            <span className="ml-3 text-xs font-medium text-muted-foreground/70">
+              + {formatCurrency(product.securityDeposit)} {t('deposit')}
+            </span>
+          )}
+        </div>
+
+        {product.description && (
+          <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">
+            {product.description}
+          </p>
+        )}
+      </div>
+
+      <hr className="border-border/30" />
+
+      {/* Product Information Table */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
+          {t('Product Information')}
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+          {productInfo.map((info) => (
+            <div
+              key={info.label}
+              className="flex justify-between sm:grid sm:grid-cols-3 border-b border-border/10 pb-2 sm:border-0 sm:pb-0"
+            >
+              <span className="col-span-1 text-sm text-muted-foreground/85">
+                {t(info.label)}
+              </span>
+              <span className="col-span-2 text-sm font-medium text-foreground text-right sm:text-left">
+                {formatDigits(info.value)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <hr className="border-border/30" />
+
+      {/* Trust Features */}
+      <div className="flex flex-wrap items-center gap-y-4 gap-x-6">
+        {[
+          {
+            icon: <CheckCircle2 size={16} />,
+            title: t('Free Delivery'),
+            desc: t('Within 10 km'),
+          },
+          {
+            icon: <MessageCircle size={16} />,
+            title: t('Quick Support'),
+            desc: t('24/7 Assistance'),
+          },
+          {
+            icon: <ShieldCheck size={16} />,
+            title: t('Secure Payment'),
+            desc: t('100% Safe'),
+          },
+        ].map((feature, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary-soft flex items-center justify-center text-primary shrink-0">
+              {feature.icon}
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-foreground leading-tight">
+                {feature.title}
+              </p>
+              <p className="text-[10px] text-muted-foreground/85">
+                {formatDigits(feature.desc)}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Save More Banner */}
+      <div className="p-4 rounded-xl bg-primary-soft border border-primary-border flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-primary shrink-0 shadow-sm">
+          <AlertCircle size={16} />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-foreground leading-tight">
+            {t('Save more with longer rentals!')}
+          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {formatDigits(t('Rent for a week or more and get up to 20% off.'))}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+interface ProductBookingSectionProps {
+  product: any
   handleRentNow: () => void
   createRentalIsPending: boolean
   handleApplyCoupon: () => void
@@ -26,16 +161,17 @@ interface ProductInfoSectionProps {
   availabilityCalendar: React.ReactNode
 }
 
-export const ProductInfoSection = ({
+export const ProductBookingSection = ({
   product,
-  productInfo,
-  handleRentNow,
+  // handleRentNow,
   createRentalIsPending,
   handleApplyCoupon,
   handleRemoveCoupon,
   applyCouponIsPending,
   availabilityCalendar,
-}: ProductInfoSectionProps) => {
+}: ProductBookingSectionProps) => {
+  const { formatCurrency, formatDate, formatNumber, t } =
+    useTranslation()
   const {
     paymentMethod,
     setPaymentMethod,
@@ -61,131 +197,32 @@ export const ProductInfoSection = ({
   )
 
   return (
-    <div className="space-y-6">
-      {/* Header Info */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight">
-            {product.title || product.name}
-          </h1>
-          <Badge className="bg-primary-soft text-primary-hover border border-primary-border px-2 py-0.5 rounded-md flex items-center gap-1 font-bold text-[10px] uppercase shrink-0">
-            <CheckCircle2 size={10} /> Verified
-          </Badge>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1">
-            <span className="font-bold text-foreground text-sm">
-              {product.rating || '4.6'}
-            </span>
-            <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-          </div>
-          <span className="text-muted-foreground/85 text-sm font-medium cursor-pointer">
-            ({product.reviewsCount || '0'} Reviews)
-          </span>
-        </div>
-
-        <div className="flex items-baseline gap-1.5 pt-1">
-          <span className="text-3xl font-black text-primary">
-            ₹{product.price.toLocaleString()}
-          </span>
-          <span className="text-sm font-bold text-muted-foreground/85">
-            /day
-          </span>
-          {product.securityDeposit > 0 && (
-            <span className="ml-3 text-xs font-medium text-muted-foreground/70">
-              + ₹{product.securityDeposit.toLocaleString()} deposit
-            </span>
-          )}
-        </div>
-
-        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
-          {product.description}
-        </p>
-      </div>
-
-      <hr className="border-border/30" />
-
-      {/* Product Information Table */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-bold text-foreground">
-          Product Information
-        </h3>
-        <div className="grid grid-cols-1 gap-y-3">
-          {productInfo.map((info) => (
-            <div key={info.label} className="grid grid-cols-3">
-              <span className="col-span-1 text-sm text-muted-foreground/85">
-                {info.label}
-              </span>
-              <span className="col-span-2 text-sm font-medium text-foreground">
-                {info.value}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <hr className="border-border/30" />
-
-      {/* Trust Features */}
-      <div className="flex flex-wrap items-center gap-y-4 gap-x-6">
-        {[
-          {
-            icon: <CheckCircle2 size={16} />,
-            title: 'Free Delivery',
-            desc: 'Within 10 km',
-          },
-          {
-            icon: <MessageCircle size={16} />,
-            title: 'Quick Support',
-            desc: '24/7 Assistance',
-          },
-          {
-            icon: <ShieldCheck size={16} />,
-            title: 'Secure Payment',
-            desc: '100% Safe',
-          },
-        ].map((feature, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary-soft flex items-center justify-center text-primary shrink-0">
-              {feature.icon}
-            </div>
-            <div>
-              <p className="text-[11px] font-bold text-foreground leading-tight">
-                {feature.title}
-              </p>
-              <p className="text-[10px] text-muted-foreground/85">
-                {feature.desc}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Save More Banner */}
-      <div className="p-4 rounded-xl bg-primary-soft border border-primary-border flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-card flex items-center justify-center text-primary shrink-0 shadow-sm">
-          <AlertCircle size={16} />
-        </div>
+    <div className="bg-card rounded-2xl p-6 border border-border/30 shadow-sm space-y-6">
+      {/* Mini Pricing Header */}
+      <div className="flex items-baseline justify-between pb-2 border-b border-border/30">
         <div>
-          <p className="text-sm font-bold text-foreground leading-tight">
-            Save more with longer rentals!
-          </p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Rent for a week or more and get up to 20% off.
-          </p>
+          <span className="text-2xl font-black text-primary">
+            {formatCurrency(product.price)}
+          </span>
+          <span className="text-xs font-bold text-muted-foreground/85">
+            {t('/day')}
+          </span>
         </div>
+        {product.securityDeposit > 0 && (
+          <span className="text-xs font-medium text-muted-foreground/70">
+            {t('Deposit:')} {formatCurrency(product.securityDeposit)}
+          </span>
+        )}
       </div>
 
-      {/* Availability Calendar (Mobile/Tablet/Laptop Only) */}
-      <div className="xl:hidden">{availabilityCalendar}</div>
+      {/* Availability Calendar */}
+      <div>{availabilityCalendar}</div>
 
-      {/* Action Buttons */}
       {/* Payment Method Selection */}
       <div className="space-y-3">
         <div className="text-[13px] font-bold text-foreground flex items-center gap-2">
           <IndianRupee size={14} className="text-primary" />
-          Payment Method
+          {t('Payment Method')}
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Button
@@ -201,7 +238,7 @@ export const ProductInfoSection = ({
           >
             <ShieldCheck size={18} />
             <span className="text-[11px] font-black uppercase tracking-wider">
-              Online Pay
+              {t('Online Pay')}
             </span>
           </Button>
           <Button
@@ -217,17 +254,18 @@ export const ProductInfoSection = ({
           >
             <MessageCircle size={18} />
             <span className="text-[11px] font-black uppercase tracking-wider">
-              Cash on Pickup
+              {t('Cash on Pickup')}
             </span>
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row xl:flex-col min-[1400px]:flex-row gap-3 pt-2">
+      {/* Action Buttons */}
+      <div className="flex flex-col gap-3 pt-2">
         <Button
           // onClick={handleRentNow}
           disabled={createRentalIsPending || isPaying}
-          className="w-full sm:flex-1 h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
+          className="w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
         >
           {createRentalIsPending || isPaying ? (
             <Loader2 size={16} className="animate-spin mr-2" />
@@ -237,45 +275,46 @@ export const ProductInfoSection = ({
               className="mr-2 transition-transform group-hover:translate-x-1"
             />
           )}
-          {isPaying ? 'Processing...' : 'Rent Now'}
+          {isPaying ? t('Processing...') : t('Rent Now')}
         </Button>
         <Button
           variant="outline"
-          className="w-full sm:flex-1 h-12 rounded-xl border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all gap-2"
+          className="w-full h-12 rounded-xl border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all gap-2"
           onClick={() =>
             window.open(
               `mailto:${product.user?.email || ''}?subject=Inquiry about ${product.title || product.name}`,
             )
           }
         >
-          <MessageCircle size={18} /> Chat with User
+          <MessageCircle size={18} /> {t('Chat with User')}
         </Button>
       </div>
 
       {startDate && (
         <div className="p-4 rounded-xl bg-primary/5 border border-brand/10 space-y-3 shadow-sm">
           <div className="flex items-center justify-between text-xs text-foreground/80">
-            <span className="font-bold">Dates:</span>
+            <span className="font-bold">{t('Dates:')}</span>
             <span>
-              {startDate.toLocaleDateString('en-IN')}{' '}
-              {endDate
-                ? `→ ${endDate.toLocaleDateString('en-IN')}`
-                : '→ Pick end date'}
+              {formatDate(startDate)}{' '}
+              {endDate ? `→ ${formatDate(endDate)}` : `→ ${t('Pick end date')}`}
             </span>
           </div>
           {endDate && (
             <>
               <div className="flex items-center justify-between text-xs text-foreground/80">
                 <span className="font-bold">
-                  Rental Fee ({rentalDays} days):
+                  {t('Rental Fee ({count} days):').replace(
+                    '{count}',
+                    formatNumber(rentalDays),
+                  )}
                 </span>
-                <span>₹{totalPrice.toLocaleString()}</span>
+                <span>{formatCurrency(totalPrice)}</span>
               </div>
 
               {/* Coupon Row */}
               <div className="pt-2 border-t border-brand/5 space-y-1.5">
                 <div className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-wider block">
-                  Marketplace Promo Code
+                  {t('Marketplace Promo Code')}
                 </div>
                 {appliedCoupon ? (
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl p-2.5 px-3">
@@ -284,7 +323,7 @@ export const ProductInfoSection = ({
                         {appliedCoupon.code}
                       </span>
                       <span className="text-[10px] font-black text-emerald-700 truncate">
-                        Discount Applied
+                        {t('Discount Applied')}
                       </span>
                     </div>
                     <Button
@@ -293,14 +332,14 @@ export const ProductInfoSection = ({
                       onClick={handleRemoveCoupon}
                       className="text-[9px] font-black text-destructive hover:text-destructive uppercase tracking-wider shrink-0 transition-colors p-0 h-auto active:scale-[0.98]"
                     >
-                      Remove
+                      {t('Remove')}
                     </Button>
                   </div>
                 ) : (
                   <div className="space-y-1">
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Enter code (e.g. MONSOON30)"
+                        placeholder={t('Enter code (e.g. MONSOON30)')}
                         value={couponCode}
                         onChange={(e) =>
                           setCouponCode(e.target.value.toUpperCase())
@@ -313,7 +352,7 @@ export const ProductInfoSection = ({
                         disabled={applyCouponIsPending || !couponCode.trim()}
                         className="h-9 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-black shrink-0 active:scale-[0.98]"
                       >
-                        {applyCouponIsPending ? 'Applying...' : 'Apply'}
+                        {applyCouponIsPending ? t('Applying...') : t('Apply')}
                       </Button>
                     </div>
                     {couponError && (
@@ -327,27 +366,42 @@ export const ProductInfoSection = ({
 
               {appliedCoupon && (
                 <div className="flex items-center justify-between text-xs text-emerald-600 font-bold bg-emerald-50/50 p-2 rounded-lg">
-                  <span>Coupon Discount ({appliedCoupon.code}):</span>
-                  <span>- ₹{discountAmount.toLocaleString()}</span>
+                  <span>
+                    {t('Coupon Discount ({code}):').replace(
+                      '{code}',
+                      appliedCoupon.code,
+                    )}
+                  </span>
+                  <span>- {formatCurrency(discountAmount)}</span>
                 </div>
               )}
 
               <div className="flex items-center justify-between text-xs text-foreground/80">
                 <span className="font-bold">
-                  Security Deposit (Refundable):
+                  {t('Security Deposit (Refundable):')}
                 </span>
-                <span>₹{(product.securityDeposit || 0).toLocaleString()}</span>
+                <span>{formatCurrency(product.securityDeposit || 0)}</span>
               </div>
               <div className="pt-2 border-t border-brand/10 flex items-center justify-between text-sm text-foreground font-black">
-                <span>Total Payable:</span>
+                <span>{t('Total Payable:')}</span>
                 <span className="text-primary">
-                  ₹{finalPayable.toLocaleString()}
+                  {formatCurrency(finalPayable)}
                 </span>
               </div>
             </>
           )}
         </div>
       )}
+    </div>
+  )
+}
+
+// Default export alias for compatibility
+export const ProductInfoSection = (props: any) => {
+  return (
+    <div className="space-y-6">
+      <ProductHeaderSection {...props} />
+      <ProductBookingSection {...props} />
     </div>
   )
 }

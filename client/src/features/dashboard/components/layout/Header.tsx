@@ -22,6 +22,7 @@ import {
   getNotificationIcon,
   getHeaderNotificationColorClasses,
 } from '#/lib/notification-utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -30,6 +31,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ onMenuClick }: HeaderProps) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { data: session } = authClient.useSession()
   const userRole = session?.user?.role || 'user'
@@ -109,10 +111,10 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         </Button>
         <div className="hidden sm:block">
           <h2 className="text-lg md:text-xl font-bold text-dash-text">
-            Dashboard
+            {t('Dashboard')}
           </h2>
           <p className="hidden md:block text-sm text-dash-text-muted">
-            Welcome back! Here's what's happening with your platform.
+            {t("Welcome back! Here's what's happening with your platform.")}
           </p>
         </div>
       </div>
@@ -127,7 +129,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             <Calendar size={18} className="text-dash-brand" />
             <div className="flex flex-col items-start leading-none gap-0.5">
               <span className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-wider">
-                {getRangeLabel(rangeType)}
+                {t(getRangeLabel(rangeType))}
               </span>
               <span className="text-xs font-bold text-foreground">
                 {getFormattedRange()}
@@ -155,7 +157,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                       : 'text-muted-foreground hover:text-foreground/80'
                   }`}
                 >
-                  Last 7 Days
+                  {t('Last 7 Days')}
                   {rangeType === '7days' && (
                     <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                   )}
@@ -172,7 +174,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                       : 'text-muted-foreground hover:text-foreground/80'
                   }`}
                 >
-                  Last 30 Days
+                  {t('Last 30 Days')}
                   {rangeType === '30days' && (
                     <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                   )}
@@ -189,7 +191,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                       : 'text-muted-foreground hover:text-foreground/80'
                   }`}
                 >
-                  This Month
+                  {t('This Month')}
                   {rangeType === 'thisMonth' && (
                     <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                   )}
@@ -219,7 +221,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
             {/* Popover Header */}
             <div className="px-5 py-4 border-b border-border/30 flex items-center justify-between bg-muted-light/20">
               <span className="text-xs font-black text-foreground/90 uppercase tracking-wider flex items-center gap-1.5">
-                <Bell size={13} className="text-primary" /> Platform Alerts
+                <Bell size={13} className="text-primary" />{' '}
+                {t('Platform Alerts')}
               </span>
               {unreadCount > 0 && (
                 <Button
@@ -229,8 +232,8 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                   disabled={markAllReadMutation.isPending}
                 >
                   {markAllReadMutation.isPending
-                    ? 'Marking...'
-                    : 'Mark all read'}
+                    ? t('Marking...')
+                    : t('Mark all read')}
                 </Button>
               )}
             </div>
@@ -254,7 +257,7 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                 <div className="flex flex-col items-center justify-center py-8 gap-1.5 text-center px-4">
                   <Bell size={22} className="text-muted-foreground/30" />
                   <p className="text-[10px] font-bold text-muted-dark">
-                    All caught up! No alerts.
+                    {t('All caught up! No alerts.')}
                   </p>
                 </div>
               ) : (
@@ -305,7 +308,10 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                 onClick={() => navigate({ to: '/account/notifications' })}
                 className="text-[10px] font-black text-primary hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
               >
-                View all notifications ({notifications.length})
+                {t('View all notifications ({count})').replace(
+                  '{count}',
+                  String(notifications.length),
+                )}
               </Button>
             </div>
           </PopoverContent>

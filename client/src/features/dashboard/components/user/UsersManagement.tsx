@@ -29,8 +29,10 @@ import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { UserAvatar } from '#/components/common/UserAvatar'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 export const UsersManagement = () => {
+  const { t, formatDate } = useTranslation()
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -65,7 +67,7 @@ export const UsersManagement = () => {
           />
           <Input
             type="text"
-            placeholder="Search users by name or email..."
+            placeholder={t('Search users by name or email...')}
             className="pl-10 h-11 bg-dash-bg-soft border-none rounded-xl text-sm text-dash-text placeholder:text-dash-text-muted focus-visible:ring-2 focus-visible:ring-dash-brand/20 transition-all"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -75,52 +77,52 @@ export const UsersManagement = () => {
         <div className="flex items-center gap-3">
           <Select value={roleFilter} onValueChange={setRoleFilter}>
             <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
-              <SelectValue placeholder="All Roles" />
+              <SelectValue placeholder={t('All Roles')} />
             </SelectTrigger>
             <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
               <SelectItem
                 value="all"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                All Roles
+                {t('All Roles')}
               </SelectItem>
               <SelectItem
                 value="user"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                User
+                {t('User')}
               </SelectItem>
               <SelectItem
                 value="admin"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                Admin
+                {t('Admin')}
               </SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-[150px] h-11 bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none rounded-xl text-sm font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 transition-all">
-              <SelectValue placeholder="All Status" />
+              <SelectValue placeholder={t('All Status')} />
             </SelectTrigger>
             <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
               <SelectItem
                 value="all"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                All Status
+                {t('All Status')}
               </SelectItem>
               <SelectItem
                 value="active"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                Active
+                {t('Active')}
               </SelectItem>
               <SelectItem
                 value="banned"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                Banned
+                {t('Banned')}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -137,19 +139,19 @@ export const UsersManagement = () => {
             <TableHeader>
               <TableRow className="text-left bg-muted-light/50 border-b border-border/30">
                 <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider">
-                  User
+                  {t('User')}
                 </TableHead>
                 <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider">
-                  Role
+                  {t('Role')}
                 </TableHead>
                 <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-center">
-                  Status
+                  {t('Status')}
                 </TableHead>
                 <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-center">
-                  Joined Date
+                  {t('Joined Date')}
                 </TableHead>
                 <TableHead className="px-6 py-4 text-[11px] font-bold text-dash-text-muted uppercase tracking-wider text-right">
-                  Actions
+                  {t('Actions')}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -169,7 +171,7 @@ export const UsersManagement = () => {
                     colSpan={5}
                     className="px-6 py-12 text-center text-dash-text-muted text-sm"
                   >
-                    No users found matching your criteria.
+                    {t('No users found matching your criteria.')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -223,13 +225,13 @@ export const UsersManagement = () => {
                             value="user"
                             className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
                           >
-                            User
+                            {t('User')}
                           </SelectItem>
                           <SelectItem
                             value="admin"
                             className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
                           >
-                            Admin
+                            {t('Admin')}
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -244,18 +246,18 @@ export const UsersManagement = () => {
                             : '',
                         )}
                       >
-                        {user.banned ? 'Banned' : 'Active'}
+                        {user.banned ? t('Banned') : t('Active')}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-6 py-4 text-center text-xs text-dash-text-muted">
-                      {new Date(user.createdAt).toLocaleDateString()}
+                      {formatDate(user.createdAt)}
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Button
                           variant="ghost"
                           size="icon"
-                          title={user.banned ? 'Unban User' : 'Ban User'}
+                          title={user.banned ? t('Unban User') : t('Ban User')}
                           onClick={() =>
                             banMutation.mutate({
                               id: user.id,
@@ -278,7 +280,7 @@ export const UsersManagement = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          title="Delete User"
+                          title={t('Delete User')}
                           onClick={() => {
                             setUserToDelete(user.id)
                           }}
@@ -307,9 +309,11 @@ export const UsersManagement = () => {
             setUserToDelete(null)
           }
         }}
-        title="Delete User Account"
-        description="Are you sure you want to permanently delete this user account? This action is irreversible and will remove all profile records."
-        confirmText="Delete"
+        title={t('Delete User Account')}
+        description={t(
+          'Are you sure you want to permanently delete this user account? This action is irreversible and will remove all profile records.',
+        )}
+        confirmText={t('Delete')}
         variant="danger"
       />
     </motion.div>

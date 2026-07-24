@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Plus, Search, FolderPlus } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 import {
   useAdminCategories,
   useCreateCategory,
@@ -39,6 +40,7 @@ interface CategoryManagementProps {
 export const CategoryManagement = ({
   onManageCategory,
 }: CategoryManagementProps) => {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const searchParams = useSearch({ strict: false }) as any
   const [activeTab, setActiveTab] = useState<'categories' | 'requests'>(
@@ -181,7 +183,7 @@ export const CategoryManagement = ({
   const handleCreateDeleteRequest = () => {
     if (!categoryToDelete) return
     if (!deleteRequestReason.trim()) {
-      toast.error('Please specify a reason for deletion')
+      toast.error(t('Please specify a reason for deletion'))
       return
     }
 
@@ -194,11 +196,12 @@ export const CategoryManagement = ({
         onSuccess: () => {
           setIsDeleteRequestDialogOpen(false)
           setCategoryToDelete(null)
-          toast.success('Category deletion request submitted successfully')
+          toast.success(t('Category deletion request submitted successfully'))
         },
         onError: (err: any) => {
           toast.error(
-            err.response?.data?.message || 'Failed to submit deletion request',
+            err.response?.data?.message ||
+              t('Failed to submit deletion request'),
           )
         },
       },
@@ -212,11 +215,11 @@ export const CategoryManagement = ({
       {
         onSuccess: () => {
           setApprovingDeleteRequest(null)
-          toast.success('Category deletion request approved')
+          toast.success(t('Category deletion request approved'))
         },
         onError: (err: any) => {
           toast.error(
-            err.response?.data?.message || 'Failed to approve deletion',
+            err.response?.data?.message || t('Failed to approve deletion'),
           )
         },
       },
@@ -230,10 +233,12 @@ export const CategoryManagement = ({
       {
         onSuccess: () => {
           setRejectingDeleteRequest(null)
-          toast.success('Category deletion request rejected')
+          toast.success(t('Category deletion request rejected'))
         },
         onError: (err: any) => {
-          toast.error(err.response?.data?.message || 'Failed to reject request')
+          toast.error(
+            err.response?.data?.message || t('Failed to reject request'),
+          )
         },
       },
     )
@@ -254,15 +259,18 @@ export const CategoryManagement = ({
   const deleteRequestDialogDescription = (
     <div className="space-y-4 text-left">
       <p className="text-xs text-muted-foreground/80 font-semibold mt-1">
-        You cannot delete "{categoryToDelete?.name}" directly because it is
-        approved. Please submit a request to the platform admins.
+        {t(
+          'You cannot delete "{category}" directly because it is approved. Please submit a request to the platform admins.',
+        ).replace('{category}', categoryToDelete?.name)}
       </p>
       <div className="space-y-2">
         <label className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider block">
-          Reason for Deletion
+          {t('Reason for Deletion')}
         </label>
         <Textarea
-          placeholder="Explain why this category is no longer needed or should be removed..."
+          placeholder={t(
+            'Explain why this category is no longer needed or should be removed...',
+          )}
           value={deleteRequestReason}
           onChange={(e) => setDeleteRequestReason(e.target.value)}
           className="min-h-[90px] rounded-xl border-border/30 bg-muted-light/50 focus-visible:ring-dash-brand text-foreground w-full p-3 text-sm"
@@ -292,7 +300,7 @@ export const CategoryManagement = ({
               : 'text-muted-foreground/70 hover:text-muted-foreground'
           }`}
         >
-          Active Categories
+          {t('Active Categories')}
           {activeTab === 'categories' && (
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary rounded-t-full" />
           )}
@@ -306,7 +314,7 @@ export const CategoryManagement = ({
               : 'text-muted-foreground/70 hover:text-muted-foreground'
           }`}
         >
-          Category Requests
+          {t('Category Requests')}
           {userRequests &&
             userRequests.filter((r: any) => r.status === 'pending').length >
               0 && (
@@ -335,7 +343,7 @@ export const CategoryManagement = ({
               />
               <Input
                 type="text"
-                placeholder="Search categories..."
+                placeholder={t('Search categories...')}
                 className="pl-11 h-12 bg-muted-light/50 border-transparent rounded-xl text-[15px] text-foreground placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-dash-brand/30 transition-all"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -348,7 +356,7 @@ export const CategoryManagement = ({
                 className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <Plus size={20} strokeWidth={2.5} />
-                Add Category
+                {t('Add Category')}
               </Button>
             )}
 
@@ -358,7 +366,7 @@ export const CategoryManagement = ({
                 className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <FolderPlus size={20} />
-                Request Category
+                {t('Propose Categories')}
               </Button>
             )}
           </div>
@@ -378,7 +386,7 @@ export const CategoryManagement = ({
                   <FolderPlus className="text-muted-dark" size={32} />
                 </div>
                 <p className="text-muted-foreground/85 font-bold">
-                  No categories found.
+                  {t('No categories found.')}
                 </p>
               </div>
             ) : (
@@ -416,7 +424,7 @@ export const CategoryManagement = ({
                   : 'text-muted-foreground/70'
               }`}
             >
-              Proposals
+              {t('Proposals')}
             </Button>
             <Button
               variant="ghost"
@@ -427,7 +435,7 @@ export const CategoryManagement = ({
                   : 'text-muted-foreground/70'
               }`}
             >
-              Deletion Requests
+              {t('Deletion Requests')}
               {userDeleteRequests &&
                 userDeleteRequests.filter((r: any) => r.status === 'pending')
                   .length > 0 && (
@@ -497,13 +505,13 @@ export const CategoryManagement = ({
         onOpenChange={setIsDeleteRequestDialogOpen}
         onConfirm={handleCreateDeleteRequest}
         onCancel={() => setCategoryToDelete(null)}
-        title="Request Category Deletion"
+        title={t('Request Category Deletion')}
         description={deleteRequestDialogDescription}
-        confirmText="Submit Request"
-        cancelText="Cancel"
+        confirmText={t('Submit Request')}
+        cancelText={t('Cancel')}
         variant="danger"
         isPending={createDeleteRequestMutation.isPending}
-        pendingText="Submitting..."
+        pendingText={t('Submitting...')}
       />
 
       {/* Category Request Dialog for Users */}

@@ -23,8 +23,10 @@ import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { authClient } from '#/lib/auth/auth-client'
 import { useSettings, useSubmitContactMessage } from '#/hook'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function ContactPage() {
+  const { t } = useTranslation()
   const { data: session } = authClient.useSession()
   const { data: settings } = useSettings()
   const submitContactMessage = useSubmitContactMessage()
@@ -36,7 +38,9 @@ export function ContactPage() {
     'Vastu HQ, 123 Harmony Lane, Bengaluru, Karnataka 560001, India'
   const contactDescription =
     settings?.contact?.description ||
-    'Have a question, suggestion, or need help? Our team is here to support you.'
+    t(
+      'Have a question, suggestion, or need help? Our team is here to support you.',
+    )
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -61,54 +65,50 @@ export function ContactPage() {
     const trimmedMessage = message.trim()
 
     if (!trimmedName) {
-      toast.error('Please enter your full name.')
+      toast.error(t('Please enter your full name.'))
       return
     }
 
     if (!trimmedEmail) {
-      toast.error('Please enter your email address.')
+      toast.error(t('Please enter your email address.'))
       return
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(trimmedEmail)) {
-      toast.error('Please enter a valid email address.')
+      toast.error(t('Please enter a valid email address.'))
       return
     }
 
     if (!trimmedMessage) {
-      toast.error('Please write a message before sending.')
+      toast.error(t('Please write a message before sending.'))
       return
     }
 
     if (trimmedMessage.length > 1000) {
-      toast.error('Message is too long. Limit is 1000 characters.')
+      toast.error(t('Message is too long. Limit is 1000 characters.'))
       return
     }
 
     setIsSubmitting(true)
     try {
-      // Attempt actual API call, fallback gracefully if endpoint is not built yet
       await submitContactMessage.mutateAsync({
         name: trimmedName,
         email: trimmedEmail,
         subject,
         message: trimmedMessage,
       })
-      toast.success('Your message has been sent successfully!')
+      toast.success(t('Your message has been sent successfully!'))
       setMessage('')
     } catch (error: any) {
-      // If the backend doesn't have the endpoint yet but the request went through otherwise,
-      // or if we want a highly polished mock transition:
       if (error.response?.status === 404) {
-        // Fallback simulation for offline/preview environments
         await new Promise((resolve) => setTimeout(resolve, 1000))
-        toast.success('Your message has been sent successfully!')
+        toast.success(t('Your message has been sent successfully!'))
         setMessage('')
       } else {
         toast.error(
           error.response?.data?.message ||
-            'Failed to send message. Please try again.',
+            t('Failed to send message. Please try again.'),
         )
       }
     } finally {
@@ -131,15 +131,14 @@ export function ContactPage() {
             <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Get in touch
+                {t('Get in touch')}
               </div>
             </motion.div>
             <motion.h1
               variants={fadeUp}
               className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
-              We’d love to <br />
-              <span className="italic text-primary">hear from you.</span>
+              {t('Contact Hero Title')}
             </motion.h1>
             <motion.p
               variants={fadeUp}
@@ -156,7 +155,7 @@ export function ContactPage() {
                 }
                 className="group rounded-full bg-primary px-7 py-6 text-[14px] font-bold text-primary-foreground transition-all hover:bg-primary/95 active:scale-95 cursor-pointer inline-flex items-center gap-3 [&_svg]:size-4"
               >
-                Send us a message
+                {t('Send us a message')}
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
                   <ArrowRight className="h-3 w-3" />
                 </span>
@@ -195,7 +194,7 @@ export function ContactPage() {
             {/* Left side details */}
             <div className="lg:col-span-4">
               <h2 className="text-2xl font-bold text-brand-ink tracking-tight">
-                Other ways to reach us
+                {t('Other ways to reach us')}
               </h2>
               <div className="mt-10 space-y-8">
                 {/* Email us */}
@@ -205,10 +204,10 @@ export function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-brand-ink text-base">
-                      Email us
+                      {t('Email us')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      We typically reply within 24 hours.
+                      {t('We typically reply within 24 hours.')}
                     </p>
                     <a
                       href={`mailto:${contactEmail}`}
@@ -226,10 +225,10 @@ export function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-brand-ink text-base">
-                      Call us
+                      {t('Call us')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Mon - Fri, 9:00 AM - 6:00 PM (IST)
+                      {t('Mon - Fri, 9:00 AM - 6:00 PM (IST)')}
                     </p>
                     <a
                       href={`tel:${contactPhone}`}
@@ -247,13 +246,13 @@ export function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-brand-ink text-base">
-                      Live chat
+                      {t('Live chat')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Chat with our support team
+                      {t('Chat with our support team')}
                     </p>
                     <span className="inline-block text-sm font-bold text-primary mt-2">
-                      Available 24/7
+                      {t('Available 24/7')}
                     </span>
                   </div>
                 </div>
@@ -265,7 +264,7 @@ export function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-brand-ink text-base">
-                      Office
+                      {t('Office')}
                     </h3>
                     <p className="text-sm text-muted-foreground leading-relaxed mt-1">
                       {contactAddress}
@@ -278,11 +277,12 @@ export function ContactPage() {
             {/* Right side form */}
             <div className="lg:col-span-8 lg:border-l lg:border-border/40 lg:pl-16">
               <h2 className="text-2xl font-bold text-brand-ink tracking-tight">
-                Send us a message
+                {t('Send us a message')}
               </h2>
               <p className="text-sm text-muted-foreground mt-1.5">
-                Fill out the form and our team will get back to you as soon as
-                possible.
+                {t(
+                  'Fill out the form and our team will get back to you as soon as possible.',
+                )}
               </p>
 
               <form onSubmit={handleSendMessage} className="mt-10 space-y-6">
@@ -290,11 +290,11 @@ export function ContactPage() {
                   {/* Full Name */}
                   <div className="space-y-2">
                     <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
-                      Full name
+                      {t('Full name')}
                     </Label>
                     <Input
                       type="text"
-                      placeholder="Enter your full name"
+                      placeholder={t('Enter your full name')}
                       value={name}
                       disabled={isSubmitting}
                       onChange={(e) => setName(e.target.value)}
@@ -305,11 +305,11 @@ export function ContactPage() {
                   {/* Email address */}
                   <div className="space-y-2">
                     <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
-                      Email address
+                      {t('Email address')}
                     </Label>
                     <Input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t('Enter your email')}
                       value={email}
                       disabled={isSubmitting || !!session?.user}
                       onChange={(e) => setEmail(e.target.value)}
@@ -321,7 +321,7 @@ export function ContactPage() {
                 {/* Subject Dropdown */}
                 <div className="space-y-2">
                   <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
-                    Subject
+                    {t('Subject')}
                   </Label>
                   <Select
                     value={subject}
@@ -329,32 +329,32 @@ export function ContactPage() {
                     disabled={isSubmitting}
                   >
                     <SelectTrigger className="h-13 w-full rounded-2xl border border-border bg-brand-surface-warm/30 px-5 text-sm transition-all focus:border-primary focus:bg-background focus:ring-4 focus:ring-primary/5 cursor-pointer text-brand-ink focus-visible:ring-4 focus-visible:ring-primary/5 focus-visible:outline-none disabled:opacity-60">
-                      <SelectValue placeholder="What is this regarding?" />
+                      <SelectValue placeholder={t('What is this regarding?')} />
                     </SelectTrigger>
                     <SelectContent className="bg-popover rounded-2xl border border-border/50 shadow-md">
                       <SelectItem
                         value="General Inquiry"
                         className="rounded-xl cursor-pointer"
                       >
-                        General Inquiry
+                        {t('General Inquiry')}
                       </SelectItem>
                       <SelectItem
                         value="Rental Support"
                         className="rounded-xl cursor-pointer"
                       >
-                        Rental Support
+                        {t('Rental Support')}
                       </SelectItem>
                       <SelectItem
                         value="Listing Assistance"
                         className="rounded-xl cursor-pointer"
                       >
-                        Listing Assistance
+                        {t('Listing Assistance')}
                       </SelectItem>
                       <SelectItem
                         value="Partnerships"
                         className="rounded-xl cursor-pointer"
                       >
-                        Partnerships
+                        {t('Partnerships')}
                       </SelectItem>
                       <SelectItem
                         value="Other"
@@ -370,14 +370,14 @@ export function ContactPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label className="text-[13px] font-bold text-brand-ink tracking-tight">
-                      Message
+                      {t('Message')}
                     </Label>
                     <span className="text-[11px] text-muted-foreground">
                       {message.length}/1000
                     </span>
                   </div>
                   <Textarea
-                    placeholder="Write your message..."
+                    placeholder={t('Write your message...')}
                     value={message}
                     disabled={isSubmitting}
                     onChange={(e) => {
@@ -399,12 +399,12 @@ export function ContactPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        Sending
+                        {t('Sending')}
                         <Loader2 className="h-4 w-4 animate-spin" />
                       </>
                     ) : (
                       <>
-                        Send message
+                        {t('Send message')}
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
                           <ArrowRight className="h-3 w-3" />
                         </span>

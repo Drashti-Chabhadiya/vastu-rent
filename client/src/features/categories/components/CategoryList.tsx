@@ -4,8 +4,10 @@ import { Link } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function CategoryList() {
+  const { t } = useTranslation()
   const { data: categories, isLoading } = useCategories()
 
   return (
@@ -21,14 +23,15 @@ export function CategoryList() {
             variants={fadeUp}
             className="text-4xl font-extrabold text-foreground tracking-tight mb-4"
           >
-            Browse by Categories
+            {t('Browse by Categories')}
           </motion.h1>
           <motion.p
             variants={fadeUp}
             className="text-lg text-muted-foreground max-w-2xl mx-auto"
           >
-            Discover a wide range of rental items organized by categories to
-            help you find exactly what you need.
+            {t(
+              'Discover a wide range of rental items organized by categories to help you find exactly what you need.',
+            )}
           </motion.p>
         </motion.div>
 
@@ -75,11 +78,11 @@ export function CategoryList() {
                     </h3>
 
                     <p className="text-sm font-medium text-muted-foreground/85 mb-6 uppercase tracking-wider">
-                      {category._count?.products || 0} active listings
+                      {category._count?.products || 0} {t('active listings')}
                     </p>
 
                     <div className="flex items-center gap-2 text-sm font-bold text-primary group-hover:gap-3 transition-all duration-300">
-                      Explore Now
+                      {t('Explore Now')}
                       <ChevronRight
                         size={18}
                         className="transition-transform group-hover:translate-x-0.5"

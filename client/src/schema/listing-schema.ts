@@ -18,7 +18,6 @@ export const listingSchema = z.object({
   images: z.array(z.string()).min(1, 'At least one image is required'),
 
   // New Enhanced Fields
-  condition: z.string().min(1, 'Condition is required').optional(),
   features: z.array(z.string()).default([]),
   deliveryOptions: z
     .array(z.string())
@@ -28,6 +27,8 @@ export const listingSchema = z.object({
   tags: z.array(z.string()).default([]),
   minDuration: z.coerce.number().min(1).default(1),
   maxDuration: z.coerce.number().positive().optional(),
+  listingType: z.enum(['home', 'shop']).default('home'),
+  shopName: z.string().optional(),
 })
 
 export type ListingSchema = z.infer<typeof listingSchema>

@@ -1,5 +1,5 @@
 export interface NotificationsConfirmationTemplateOptions {
-  name: string;
+  name: string
 }
 
 export function getNotificationsConfirmationTemplate({
@@ -27,7 +27,7 @@ export function getNotificationsConfirmationTemplate({
       <div class="container">
         <div class="header">VastuRent Preferences</div>
         <h1>Notification Preferences Updated</h1>
-        <p>Hi ${name || "User"},</p>
+        <p>Hi ${name || 'User'},</p>
         <p>This is a confirmation that your <strong>Email Notifications</strong> preference has been successfully turned <strong>ON</strong>.</p>
         
         <div class="feature-box">
@@ -43,5 +43,5 @@ export function getNotificationsConfirmationTemplate({
       </div>
     </body>
     </html>
-  `;
+  `
 }

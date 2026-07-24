@@ -14,7 +14,7 @@ import {
  *   - WebView origin is `capacitor://localhost`
  *   - Capacitor.isNativePlatform() = true
  *   - Must use the Render production URL directly (cookies don't work cross-domain)
- *   - Bearer token auth (localStorage) is the session mechanism
+ *   - Bearer token auth is the session mechanism
  *
  * Web browser (Vercel production):
  *   - window.location.hostname = new-vastu-rent-client.vercel.app
@@ -118,7 +118,6 @@ export const authClient = createAuthClient({
   user: {
     additionalFields: {
       gender: { type: 'string', required: false },
-      location: { type: 'string', required: false },
       phone: { type: 'string', required: false },
       language: { type: 'string', required: false },
       dob: { type: 'string', required: false },
@@ -127,6 +126,8 @@ export const authClient = createAuthClient({
       bookingAlerts: { type: 'boolean', required: false },
       settlementAlerts: { type: 'boolean', required: false },
       marketingAlerts: { type: 'boolean', required: false },
+      instagramUrl: { type: 'string', required: false },
+      facebookUrl: { type: 'string', required: false },
     },
   },
 })

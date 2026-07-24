@@ -22,8 +22,10 @@ import { toast } from 'sonner'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 export const DeleteRequestsManagement = () => {
+  const { t } = useTranslation()
   const { data: requests, isLoading } = useDeleteRequests()
   const processMutation = useProcessDeleteRequest()
   const [pendingAction, setPendingAction] = useState<{
@@ -45,10 +47,10 @@ export const DeleteRequestsManagement = () => {
       <motion.div variants={fadeUp} className="space-y-1">
         <h1 className="text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
           <Trash2 className="text-destructive" size={32} />
-          Deletion Requests
+          {t('Deletion Requests')}
         </h1>
         <p className="text-dash-text-soft font-medium text-sm ml-1">
-          Review and process product deletion requests from admins.
+          {t('Review and process product deletion requests from admins.')}
         </p>
       </motion.div>
 
@@ -61,19 +63,19 @@ export const DeleteRequestsManagement = () => {
             <TableHeader>
               <TableRow className="border-b border-border/30 bg-muted-light/50">
                 <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                  Product
+                  {t('Product')}
                 </TableHead>
                 <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                  Requested By
+                  {t('Requested By')}
                 </TableHead>
                 <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                  Reason
+                  {t('Reason')}
                 </TableHead>
                 <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] h-auto">
-                  Status
+                  {t('Status')}
                 </TableHead>
                 <TableHead className="px-6 py-5 text-[11px] font-extrabold text-dash-text-soft uppercase tracking-[0.2em] text-right h-auto">
-                  Actions
+                  {t('Actions')}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -84,7 +86,7 @@ export const DeleteRequestsManagement = () => {
                     colSpan={5}
                     className="px-6 py-20 text-center text-dash-text-soft animate-pulse font-bold"
                   >
-                    Loading requests...
+                    {t('Loading requests...')}
                   </TableCell>
                 </TableRow>
               ) : requests?.length === 0 ? (
@@ -93,7 +95,7 @@ export const DeleteRequestsManagement = () => {
                     colSpan={5}
                     className="px-6 py-20 text-center text-dash-text-soft font-bold"
                   >
-                    No pending requests
+                    {t('No pending requests')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -109,10 +111,10 @@ export const DeleteRequestsManagement = () => {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-dash-text">
-                            {req.product?.title || 'Unknown Product'}
+                            {req.product?.title || t('Unknown Product')}
                           </span>
                           <span className="text-[10px] text-dash-text-soft font-bold uppercase tracking-wider">
-                            ID: {req.productId}
+                            {t('ID:')} {req.productId}
                           </span>
                         </div>
                       </div>
@@ -139,7 +141,7 @@ export const DeleteRequestsManagement = () => {
                           className="text-dash-text-soft mt-0.5 flex-shrink-0"
                         />
                         <span className="text-xs text-dash-text font-medium leading-relaxed italic">
-                          "{req.reason || 'No reason provided'}"
+                          "{req.reason || t('No reason provided')}"
                         </span>
                       </div>
                     </TableCell>
@@ -157,7 +159,7 @@ export const DeleteRequestsManagement = () => {
                         }
                       `}
                       >
-                        {req.status}
+                        {t(req.status)}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-6 py-4 text-right">
@@ -170,7 +172,7 @@ export const DeleteRequestsManagement = () => {
                             className="h-8 rounded-lg border-primary-border/80 text-primary hover:bg-primary-soft hover:text-primary-hover font-bold text-[10px] uppercase tracking-widest gap-1.5"
                           >
                             <CheckCircle2 size={12} strokeWidth={3} />
-                            Approve
+                            {t('Approve')}
                           </Button>
                           <Button
                             size="sm"
@@ -179,7 +181,7 @@ export const DeleteRequestsManagement = () => {
                             className="h-8 rounded-lg border-danger/50 text-destructive hover:bg-danger hover:text-destructive font-bold text-[10px] uppercase tracking-widest gap-1.5"
                           >
                             <XCircle size={12} strokeWidth={3} />
-                            Reject
+                            {t('Reject')}
                           </Button>
                         </div>
                       )}
@@ -204,11 +206,11 @@ export const DeleteRequestsManagement = () => {
               { id, status },
               {
                 onSuccess: () => {
-                  toast.success(`Request processed successfully`)
+                  toast.success(t('Request processed successfully'))
                   setPendingAction(null)
                 },
                 onError: () => {
-                  toast.error(`Failed to process request`)
+                  toast.error(t('Failed to process request'))
                   setPendingAction(null)
                 },
               },
@@ -217,16 +219,20 @@ export const DeleteRequestsManagement = () => {
         }}
         title={
           pendingAction?.status === 'approved'
-            ? 'Approve Deletion Request'
-            : 'Reject Deletion Request'
+            ? t('Approve Deletion Request')
+            : t('Reject Deletion Request')
         }
         description={
           pendingAction?.status === 'approved'
-            ? 'Are you sure you want to approve this listing deletion request? The listing will be permanently removed from the application.'
-            : 'Are you sure you want to reject this listing deletion request? The request will be cancelled and the listing will remain active.'
+            ? t(
+                'Are you sure you want to approve this listing deletion request? The listing will be permanently removed from the application.',
+              )
+            : t(
+                'Are you sure you want to reject this listing deletion request? The request will be cancelled and the listing will remain active.',
+              )
         }
         confirmText={
-          pendingAction?.status === 'approved' ? 'Approve' : 'Reject'
+          pendingAction?.status === 'approved' ? t('Approve') : t('Reject')
         }
         variant={pendingAction?.status === 'approved' ? 'danger' : 'warning'}
         isPending={processMutation.isPending}

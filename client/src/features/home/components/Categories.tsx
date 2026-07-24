@@ -5,6 +5,7 @@ import { useCategories } from '#/hook'
 import { Link } from '@tanstack/react-router'
 import { CategoryCardSkeleton } from '#/components/skeletons'
 import { ExploreLink } from '#/components/common/ExploreLink'
+import { useTranslation } from '#/context/TranslationContext'
 
 const getIcon = (iconName: string): Icons.LucideIcon => {
   if (!iconName) return Icons.Sparkles
@@ -73,6 +74,7 @@ const stagger: Variants = {
 }
 
 export function Categories() {
+  const { t } = useTranslation()
   const { data: categories, isLoading } = useCategories()
 
   const latestCategories = categories
@@ -89,18 +91,19 @@ export function Categories() {
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-xl">
           <div className="text-[11px] uppercase tracking-[0.2em] text-primary">
-            — The Catalogue
+            {t('— The Catalogue')}
           </div>
           <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] tracking-tight text-foreground text-balance">
-            Quietly considered, beautifully kept.
+            {t('Quietly considered, beautifully kept.')}
           </h2>
         </div>
         <div className="flex flex-col gap-4 max-w-sm">
           <p className="text-[15px] leading-relaxed text-muted-foreground">
-            Browse a slow-edited selection across home, work and play — every
-            item kept in condition by neighbors who care.
+            {t('Catalogue Description')}
           </p>
-          <ExploreLink to="/categories">Explore all categories</ExploreLink>
+          <ExploreLink to="/categories">
+            {t('Explore all categories')}
+          </ExploreLink>
         </div>
       </div>
 
@@ -150,7 +153,7 @@ export function Categories() {
                       {c.name}
                     </div>
                     <div className="mt-0.5 text-[12px] text-muted-foreground">
-                      {c._count?.products || 0} items
+                      {c._count?.products || 0} {t('items')}
                     </div>
                   </div>
                   <span className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">

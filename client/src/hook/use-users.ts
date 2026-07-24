@@ -105,13 +105,34 @@ export const useUpdateUserSettings = () => {
       showProfile?: boolean
       showOnline?: boolean
       allowData?: boolean
+      instagramUrl?: string
+      facebookUrl?: string
     }) => {
       const res = await apiClient.patch('/users/settings', data)
       return res.data.user
     },
-    onSuccess: () => {
-      // Invalidate the session query to reload user data globally!
+    onSuccess: (updatedUser) => {
+      if (updatedUser) {
+        queryClient.setQueryData(['session'], (oldSession: any) => {
+          if (!oldSession) return oldSession
+          return {
+            ...oldSession,
+            user: {
+              ...oldSession.user,
+              ...updatedUser,
+            },
+          }
+        })
+        queryClient.setQueryData(['auth-session'], (old: any) => {
+          if (!old) return old
+          return {
+            ...old,
+            user: { ...old.user, ...updatedUser },
+          }
+        })
+      }
       queryClient.invalidateQueries({ queryKey: ['session'] })
+      queryClient.invalidateQueries({ queryKey: ['auth-session'] })
     },
   })
 }

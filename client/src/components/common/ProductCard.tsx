@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Heart, MapPin, Star, Package } from 'lucide-react'
+import { Heart, MapPin, Star, Package, Home, Store } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { useWishlist } from '#/hook'
 import { cn } from '#/lib/utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ProductCardProps {
   product: {
@@ -15,12 +16,15 @@ interface ProductCardProps {
     location?: string
     rating?: number
     reviewsCount?: number
+    listingType?: 'home' | 'shop' | string
+    shopName?: string
   }
 }
 
 export function ProductCard({ product }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
   const { toggleLike, isLiked } = useWishlist()
+  const { formatCurrency, formatDigits, t } = useTranslation()
   const liked = isLiked(product.id)
   const mainImage =
     product.images?.[0] ||
@@ -73,6 +77,44 @@ export function ProductCard({ product }: ProductCardProps) {
               />
             </Button>
           </div>
+          {/* Listing Source Badge */}
+          {(() => {
+            const isShop =
+              product.listingType === 'shop' ||
+              (product as any).owner?.address?.addressType?.toLowerCase() === 'shop' ||
+              (product as any).owner?.addresses?.[0]?.addressType?.toLowerCase() === 'shop' ||
+              (product as any).user?.address?.addressType?.toLowerCase() === 'shop' ||
+              (product as any).user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
+            const displayShopName =
+              product.shopName ||
+              (product as any).owner?.address?.shopName ||
+              (product as any).owner?.addresses?.[0]?.shopName ||
+              (product as any).user?.address?.shopName ||
+              (product as any).user?.addresses?.[0]?.shopName ||
+              t('From Shop / Store')
+
+            return (
+              <div className="absolute bottom-3 left-3 z-10">
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-md border',
+                    isShop
+                      ? 'bg-amber-50/90 text-amber-700 border-amber-200/60'
+                      : 'bg-emerald-50/90 text-emerald-700 border-emerald-200/60',
+                  )}
+                >
+                  {isShop ? (
+                    <Store className="w-3 h-3" strokeWidth={2.5} />
+                  ) : (
+                    <Home className="w-3 h-3" strokeWidth={2.5} />
+                  )}
+                  <span className="max-w-[90px] truncate">
+                    {isShop ? displayShopName : t('From Home')}
+                  </span>
+                </span>
+              </div>
+            )
+          })()}
         </div>
 
         <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 min-h-[3rem] group-hover:text-primary transition-colors">
@@ -82,19 +124,19 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-end justify-between mb-3 mt-auto">
           <div className="flex items-baseline gap-1">
             <span className="text-lg font-bold text-primary-light">
-              ₹{product.price.toLocaleString()}
+              {formatCurrency(product.price)}
             </span>
             <span className="text-xs font-medium text-muted-foreground/85">
-              /day
+              {t('/day')}
             </span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
             <span className="text-xs font-bold text-foreground/80">
-              {product.rating || '5.0'}
+              {formatDigits(product.rating || '5.0')}
             </span>
             <span className="text-xs font-medium text-muted-foreground/70">
-              ({product.reviewsCount || '0'})
+              ({formatDigits(product.reviewsCount || 0)})
             </span>
           </div>
         </div>
@@ -102,11 +144,11 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-1.5 text-muted-foreground/85 mb-4">
           <MapPin className="w-3.5 h-3.5 shrink-0" />
           <span className="text-xs font-medium truncate">
-            {product.location || 'Surat'}
+            {formatDigits(product.location || 'Surat')}
           </span>
         </div>
 
-        <Button className="w-full shrink-0">Rent Now</Button>
+        <Button className="w-full shrink-0">{t('Rent Now')}</Button>
       </div>
     </Link>
   )

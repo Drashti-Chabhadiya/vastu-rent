@@ -3,12 +3,14 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
 import { SettingsSectionShell } from './SettingsSectionShell'
+import { useTranslation } from '#/context/TranslationContext'
 
 export function PaymentMethodsSection() {
+  const { t } = useTranslation()
   return (
     <SettingsSectionShell
-      title="Payment Methods"
-      description="Manage your saved payment methods and billing details."
+      title={t('Payment Methods')}
+      description={t('Manage your saved payment methods and billing details.')}
     >
       <div
         className={cn(
@@ -61,7 +63,7 @@ export function PaymentMethodsSection() {
             'cursor-pointer',
           )}
         >
-          Add Payment Method
+          {t('Add Payment Method')}
         </Button>
       </div>
     </SettingsSectionShell>

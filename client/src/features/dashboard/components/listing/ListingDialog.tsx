@@ -17,6 +17,8 @@ import { listingSchema } from '#/schema'
 import type { ListingSchema } from '#/schema'
 import { ProductForm } from './ProductForm'
 import { LoadingOverlay } from '#/components/ui/loader'
+import { useTranslation } from '#/context/TranslationContext'
+import { useListingDraftStore } from '#/store/useListingDraftStore'
 
 interface Category {
   id: string
@@ -51,9 +53,10 @@ export const ListingDialog = ({
   currentUser,
   product,
 }: ListingDialogProps) => {
+  const { t } = useTranslation()
   const isEditMode = !!product
   const [isUploadingImages, setIsUploadingImages] = useState(false)
-
+  const setDraft = useListingDraftStore((state) => state.setDraft)
   const form = useForm<ListingSchema>({
     resolver: zodResolver(listingSchema) as any,
     defaultValues: {
@@ -66,6 +69,8 @@ export const ListingDialog = ({
       userId: '',
       images: [],
       securityDeposit: 0,
+      listingType: 'home',
+      shopName: '',
     },
   })
 
@@ -84,36 +89,70 @@ export const ListingDialog = ({
           categoryId: product.categoryId || '',
           userId: product.userId || '',
           images: product.images || [],
-          condition: product.condition || 'Good',
           features: product.features || [],
           deliveryOptions: product.deliveryOptions || ['Pickup'],
           pickupReturnDetails: product.pickupReturnDetails || '',
           tags: product.tags || [],
           minDuration: product.minDuration || 1,
           maxDuration: product.maxDuration || undefined,
+          listingType: product.listingType || 'home',
+          shopName: product.shopName || '',
         })
       } else {
-        form.reset({
-          title: '',
-          description: '',
-          price: 0,
-          securityDeposit: 0,
-          city: '',
-          location: '',
-          categoryId: '',
-          userId: currentUser?.id || '',
-          images: [],
-          condition: 'Good',
-          features: [],
-          deliveryOptions: ['Pickup'],
-          pickupReturnDetails: '',
-          tags: [],
-          minDuration: 1,
-          maxDuration: undefined,
-        })
+        const currentDraft = useListingDraftStore.getState().draft
+        if (currentDraft) {
+          form.reset({
+            title: currentDraft.title || '',
+            description: currentDraft.description || '',
+            price: currentDraft.price || 0,
+            securityDeposit: currentDraft.securityDeposit || 0,
+            city: currentDraft.city || '',
+            location: currentDraft.location || '',
+            categoryId: currentDraft.categoryId || '',
+            userId: currentDraft.userId || currentUser?.id || '',
+            images: currentDraft.images || [],
+            features: currentDraft.features || [],
+            deliveryOptions: currentDraft.deliveryOptions || ['Pickup'],
+            pickupReturnDetails: currentDraft.pickupReturnDetails || '',
+            tags: currentDraft.tags || [],
+            minDuration: currentDraft.minDuration || 1,
+            maxDuration: currentDraft.maxDuration || undefined,
+            listingType: currentDraft.listingType || ((currentUser?.address?.addressType || currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') || 'home',
+            shopName: currentDraft.shopName || currentUser?.address?.shopName || currentUser?.addresses?.[0]?.shopName || '',
+          })
+        } else {
+          form.reset({
+            title: '',
+            description: '',
+            price: 0,
+            securityDeposit: 0,
+            city: currentUser?.address?.city || currentUser?.addresses?.[0]?.city || '',
+            location: currentUser?.address?.street || currentUser?.addresses?.[0]?.street || '',
+            categoryId: '',
+            userId: currentUser?.id || '',
+            images: [],
+            features: [],
+            deliveryOptions: ['Pickup'],
+            pickupReturnDetails: '',
+            tags: [],
+            minDuration: 1,
+            maxDuration: undefined,
+            listingType: ((currentUser?.address?.addressType || currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') || 'home',
+            shopName: currentUser?.address?.shopName || currentUser?.addresses?.[0]?.shopName || '',
+          })
+        }
       }
     }
   }, [open, product, currentUser, form])
+
+  const watchedValues = form.watch()
+
+  // Save to draft store when form values change, only if NOT in edit mode and dialog is open
+  useEffect(() => {
+    if (!product && open) {
+      setDraft(watchedValues)
+    }
+  }, [watchedValues, product, open, setDraft])
 
   const handleFormSubmit: SubmitHandler<ListingSchema> = (values) => {
     onSubmit(values)
@@ -135,11 +174,13 @@ export const ListingDialog = ({
                 />
               </div>
               <Badge className="bg-card/20 text-primary-foreground border-none font-bold text-[10px] uppercase tracking-widest">
-                {isEditMode ? 'Marketplace Management' : 'Marketplace Admin'}
+                {isEditMode
+                  ? t('Marketplace Management')
+                  : t('Marketplace Admin')}
               </Badge>
             </div>
             <DialogTitle className="text-2xl font-extrabold tracking-tight text-primary-foreground">
-              {isEditMode ? 'Edit Listing Details' : 'Create New Listing'}
+              {isEditMode ? t('Edit Listing Details') : t('Create New Listing')}
             </DialogTitle>
           </DialogHeader>
         </div>
@@ -150,12 +191,14 @@ export const ListingDialog = ({
             className="p-8 space-y-8 relative min-h-[300px]"
           >
             {isUploadingImages && (
-              <LoadingOverlay message="Uploading listing photos..." />
+              <LoadingOverlay message={t('Uploading listing photos...')} />
             )}
             {isLoading && (
               <LoadingOverlay
                 message={
-                  isEditMode ? 'Saving changes...' : 'Publishing listing...'
+                  isEditMode
+                    ? t('Saving changes...')
+                    : t('Publishing listing...')
                 }
               />
             )}
@@ -172,10 +215,15 @@ export const ListingDialog = ({
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => onOpenChange(false)}
+                onClick={() => {
+                  if (!isEditMode) {
+                    useListingDraftStore.getState().clearDraft()
+                  }
+                  onOpenChange(false)
+                }}
                 className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
               >
-                {isEditMode ? 'Cancel' : 'Discard'}
+                {isEditMode ? t('Cancel') : t('Discard')}
               </Button>
               <Button
                 type="submit"
@@ -185,11 +233,11 @@ export const ListingDialog = ({
                 <SubmitIcon size={18} strokeWidth={isEditMode ? 2 : 3} />
                 {isEditMode
                   ? isLoading
-                    ? 'Saving...'
-                    : 'Save Changes'
+                    ? t('Saving...')
+                    : t('Save Changes')
                   : isLoading
-                    ? 'Publishing...'
-                    : 'Publish to Marketplace'}
+                    ? t('Publishing...')
+                    : t('Publish to Marketplace')}
               </Button>
             </DialogFooter>
           </form>

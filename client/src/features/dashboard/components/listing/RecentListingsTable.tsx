@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface RecentListingsTableProps {
   products?: any[]
@@ -20,11 +21,12 @@ export const RecentListingsTable = ({
   isLoading,
   onViewAll,
 }: RecentListingsTableProps) => {
+  const { t, formatCurrency, formatDate } = useTranslation()
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-bold text-dash-text">Recent Listings</h3>
-        <ExploreLink onClick={onViewAll}>View All</ExploreLink>
+        <h3 className="font-bold text-dash-text">{t('Recent Listings')}</h3>
+        <ExploreLink onClick={onViewAll}>{t('View All')}</ExploreLink>
       </div>
 
       <div className="overflow-x-auto scrollbar-hide">
@@ -32,22 +34,22 @@ export const RecentListingsTable = ({
           <TableHeader>
             <TableRow className="border-b border-border/30 hover:bg-transparent">
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
-                Listing
+                {t('Listing')}
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
-                Category
+                {t('Category')}
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase whitespace-nowrap pr-4 h-auto">
-                Provider
+                {t('Provider')}
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center whitespace-nowrap px-4 h-auto">
-                Price / Day
+                {t('Price / Day')}
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-center whitespace-nowrap px-4 h-auto">
-                Status
+                {t('Status')}
               </TableHead>
               <TableHead className="pb-4 text-[11px] font-bold text-dash-text-muted uppercase text-right whitespace-nowrap pl-4 h-auto">
-                Date
+                {t('Date')}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -58,7 +60,7 @@ export const RecentListingsTable = ({
                   colSpan={6}
                   className="py-4 text-center text-xs text-dash-text-muted"
                 >
-                  Loading...
+                  {t('Loading...')}
                 </TableCell>
               </TableRow>
             ) : products.length === 0 ? (
@@ -67,7 +69,7 @@ export const RecentListingsTable = ({
                   colSpan={6}
                   className="py-4 text-center text-xs text-dash-text-muted"
                 >
-                  No listings found
+                  {t('No listings found')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -92,13 +94,13 @@ export const RecentListingsTable = ({
                     </div>
                   </TableCell>
                   <TableCell className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
-                    {item.category?.name || 'Uncategorized'}
+                    {item.category?.name || t('Uncategorized')}
                   </TableCell>
                   <TableCell className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
-                    {item.user?.name || 'Unknown'}
+                    {item.user?.name || t('Unknown')}
                   </TableCell>
                   <TableCell className="py-3 text-xs font-bold text-dash-text text-center whitespace-nowrap px-4">
-                    ₹{item.price}
+                    {formatCurrency(item.price)}
                   </TableCell>
                   <TableCell className="py-3 text-center whitespace-nowrap px-4">
                     <span
@@ -109,11 +111,11 @@ export const RecentListingsTable = ({
                           : 'bg-orange-50 text-orange-600',
                       )}
                     >
-                      {item.isAvailable ? 'Active' : 'Unavailable'}
+                      {item.isAvailable ? t('Active') : t('Unavailable')}
                     </span>
                   </TableCell>
                   <TableCell className="py-3 text-xs text-dash-text-muted text-right whitespace-nowrap pl-4">
-                    {new Date(item.createdAt).toLocaleDateString()}
+                    {formatDate(item.createdAt)}
                   </TableCell>
                 </TableRow>
               ))

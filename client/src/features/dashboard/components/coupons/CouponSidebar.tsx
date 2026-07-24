@@ -9,6 +9,7 @@ import {
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { scenarioColorMap } from '#/lib/coupon-utils'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface CouponSidebarProps {
   isAdmin: boolean
@@ -17,51 +18,54 @@ interface CouponSidebarProps {
   onCreateClick: () => void
 }
 
-const SCENARIOS = [
-  {
-    icon: Users,
-    color: 'rose',
-    title: 'Once Per User',
-    desc: 'perUserLimit = 1',
-    sub: 'Each renter can redeem once only.',
-  },
-  {
-    icon: Globe,
-    color: 'amber',
-    title: 'First Come First Serve',
-    desc: 'usageLimit = 100',
-    sub: 'Available to first 100 successful bookings.',
-  },
-  {
-    icon: ShieldCheck,
-    color: 'violet',
-    title: 'FCFS + Once Per User',
-    desc: 'usageLimit = 100 + perUserLimit = 1',
-    sub: 'First 100 users, one redemption each.',
-  },
-  {
-    icon: Ticket,
-    color: 'emerald',
-    title: 'Unlimited (Global)',
-    desc: 'Both fields empty',
-    sub: 'Anyone can use anytime without limits.',
-  },
-]
-
-const RULES = [
-  'User coupons apply only to listings created by that user.',
-  'Listing-restricted coupons apply solely to that specific item.',
-  'usedCount auto-increments on booking and decrements on cancellation/rejection.',
-  'Per-user redemption count is verified at checkout atomically.',
-]
-
 export function CouponSidebar({
   isAdmin,
   isUser,
   activeTab,
   onCreateClick,
 }: CouponSidebarProps) {
+  const { t } = useTranslation()
   const canCreate = isAdmin || (isUser && activeTab === 'my')
+
+  const SCENARIOS = [
+    {
+      icon: Users,
+      color: 'rose',
+      title: t('Once Per User'),
+      desc: 'perUserLimit = 1',
+      sub: t('Each renter can redeem once only.'),
+    },
+    {
+      icon: Globe,
+      color: 'amber',
+      title: t('First Come First Serve'),
+      desc: 'usageLimit = 100',
+      sub: t('Available to first 100 successful bookings.'),
+    },
+    {
+      icon: ShieldCheck,
+      color: 'violet',
+      title: t('FCFS + Once Per User'),
+      desc: 'usageLimit = 100 + perUserLimit = 1',
+      sub: t('First 100 users, one redemption each.'),
+    },
+    {
+      icon: Ticket,
+      color: 'emerald',
+      title: t('Unlimited (Global)'),
+      desc: t('Both fields empty'),
+      sub: t('Anyone can use anytime without limits.'),
+    },
+  ]
+
+  const RULES = [
+    t('User coupons apply only to listings created by that user.'),
+    t('Listing-restricted coupons apply solely to that specific item.'),
+    t(
+      'usedCount auto-increments on booking and decrements on cancellation/rejection.',
+    ),
+    t('Per-user redemption count is verified at checkout atomically.'),
+  ]
 
   return (
     <div className="space-y-6">
@@ -70,18 +74,20 @@ export function CouponSidebar({
         <div className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12 bg-emerald-500/5 transition-transform group-hover:scale-150" />
         <Zap className="text-emerald-600 mb-4" size={32} />
         <h3 className="text-[15px] font-black text-foreground mb-2 uppercase tracking-widest">
-          Voucher Campaigns
+          {t('Voucher Campaigns')}
         </h3>
         <p className="text-[11px] font-bold text-muted-dark mb-6 leading-relaxed">
-          Launch targeted discount campaigns with flexible limits — per user,
-          global FCFS, or combined.
+          {t(
+            'Launch targeted discount campaigns with flexible limits — per user, global FCFS, or combined.',
+          )}
         </p>
         {canCreate && (
           <Button
             onClick={onCreateClick}
             className="w-full h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-dash-brand/20 active:scale-95 transition-all"
           >
-            <Ticket size={16} className="rotate-[-10deg]" /> Add New Coupon
+            <Ticket size={16} className="rotate-[-10deg]" />{' '}
+            {t('Add New Coupon')}
           </Button>
         )}
       </div>
@@ -89,10 +95,10 @@ export function CouponSidebar({
       {/* Scenario Reference */}
       <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
         <h3 className="text-[15px] font-black text-foreground mb-1 uppercase tracking-widest">
-          Limit Scenarios
+          {t('Limit Scenarios')}
         </h3>
         <p className="text-[10px] font-bold text-muted-dark mb-5">
-          Mix Global Limit + Per-User Limit for any combination.
+          {t('Mix Global Limit + Per-User Limit for any combination.')}
         </p>
         <div className="space-y-3">
           {SCENARIOS.map((s) => {
@@ -126,7 +132,7 @@ export function CouponSidebar({
       {/* Campaign Rules */}
       <div className="bg-card p-8 rounded-[2.5rem] border border-border/30 shadow-sm">
         <h3 className="text-[15px] font-black text-foreground mb-5 uppercase tracking-widest">
-          Campaign Rules
+          {t('Campaign Rules')}
         </h3>
         <div className="space-y-4">
           {RULES.map((rule) => (

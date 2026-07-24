@@ -1,5 +1,5 @@
 export interface MarketingWelcomeTemplateOptions {
-  name: string;
+  name: string
 }
 
 export function getMarketingWelcomeTemplate({
@@ -28,7 +28,7 @@ export function getMarketingWelcomeTemplate({
       <div class="container">
         <div class="header">VastuRent Offers</div>
         <h1>Welcome to VastuRent Premium Circle!</h1>
-        <p>Hi ${name || "User"},</p>
+        <p>Hi ${name || 'User'},</p>
         <p>Thank you for opting in to receive **Marketing Emails & Promotions**. We are thrilled to have you in our insider club!</p>
         <p>Get ready for hand-picked discounts, premium community updates, and flash deals on your favorite items.</p>
         
@@ -46,5 +46,5 @@ export function getMarketingWelcomeTemplate({
       </div>
     </body>
     </html>
-  `;
+  `
 }

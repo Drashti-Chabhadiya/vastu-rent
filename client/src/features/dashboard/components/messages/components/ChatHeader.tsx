@@ -34,11 +34,12 @@ export function ChatHeader() {
 
   if (!activeConversation) return null
 
-  const otherPersonOnline = checkOnline(activeConversation.otherParticipant.id)
+  const otherParticipant = activeConversation.otherParticipant
+  const otherPersonOnline = otherParticipant.isOnline || checkOnline(otherParticipant.id)
   const canSeeStatus =
     myShowOnline &&
-    activeConversation.otherParticipant.lastActive !== null &&
-    activeConversation.otherParticipant.lastActive !== undefined
+    otherParticipant.lastActive !== null &&
+    otherParticipant.lastActive !== undefined
   const showOnlineStatus = canSeeStatus && otherPersonOnline
 
   return (
@@ -94,8 +95,8 @@ export function ChatHeader() {
         </Button>
 
         <UserAvatar
-          image={activeConversation.otherParticipant.image}
-          name={activeConversation.otherParticipant.name}
+          image={otherParticipant.image}
+          name={otherParticipant.name}
           isOnline={otherPersonOnline}
           showPing={false}
         />
@@ -110,9 +111,9 @@ export function ChatHeader() {
                 'font-display',
               )}
             >
-              {activeConversation.otherParticipant.name}
+              {otherParticipant.name}
             </h3>
-            {activeConversation.otherParticipant.isGreenMember && (
+            {otherParticipant.isGreenMember && (
               <svg
                 className="w-[15px] h-[15px] text-emerald-600 fill-emerald-600 shrink-0 select-none"
                 viewBox="0 0 24 24"
@@ -145,7 +146,7 @@ export function ChatHeader() {
                   ? 'Online • Typically replies in a few minutes'
                   : (() => {
                       const formatted = formatLastActive(
-                        activeConversation.otherParticipant.lastActive,
+                        otherParticipant.lastActive,
                       )
                       return formatted === 'Offline'
                         ? 'Offline'

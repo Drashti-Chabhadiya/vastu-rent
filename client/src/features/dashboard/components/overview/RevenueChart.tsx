@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ChevronDown, TrendingUp } from 'lucide-react'
 import { useRevenueOverTime } from '#/hook'
 import { Button } from '#/components/ui/button'
+import { useTranslation } from '#/context/TranslationContext'
 
 type Period = 'week' | 'month' | 'year'
 
@@ -12,6 +13,7 @@ const PERIOD_LABELS: Record<Period, string> = {
 }
 
 export const RevenueChart = () => {
+  const { t, formatCurrency } = useTranslation()
   const [period, setPeriod] = useState<Period>('month')
   const [open, setOpen] = useState(false)
   const { data: result, isLoading } = useRevenueOverTime(period)
@@ -24,7 +26,7 @@ export const RevenueChart = () => {
   return (
     <div className="bg-card p-6 rounded-2xl border border-border/30 shadow-sm h-full">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-bold text-dash-text">Revenue Overview</h3>
+        <h3 className="font-bold text-dash-text">{t('Revenue Overview')}</h3>
 
         <div className="relative">
           <Button
@@ -32,7 +34,7 @@ export const RevenueChart = () => {
             onClick={() => setOpen((v) => !v)}
             className="h-auto flex items-center gap-2 px-3 py-1.5 border border-border rounded-lg text-xs font-bold text-dash-text cursor-pointer hover:border-border/120 active:scale-[0.98]"
           >
-            {PERIOD_LABELS[period]}
+            {t(PERIOD_LABELS[period])}
             <ChevronDown size={14} className="text-muted-foreground/70" />
           </Button>
           {open && (
@@ -47,7 +49,7 @@ export const RevenueChart = () => {
                   }}
                   className="w-full justify-start rounded-none h-auto px-4 py-2 text-xs font-bold text-dash-text hover:bg-muted-light active:scale-[0.98]"
                 >
-                  {PERIOD_LABELS[p]}
+                  {t(PERIOD_LABELS[p])}
                 </Button>
               ))}
             </div>
@@ -58,7 +60,7 @@ export const RevenueChart = () => {
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="text-[10px] font-bold text-dash-text-muted uppercase">
-            Total Revenue
+            {t('Total Revenue')}
           </p>
           <div className="flex items-center gap-2">
             {isLoading ? (
@@ -66,12 +68,12 @@ export const RevenueChart = () => {
             ) : (
               <>
                 <h4 className="text-2xl font-bold text-dash-text">
-                  ₹ {totalRevenue.toLocaleString('en-IN')}
+                  {formatCurrency(totalRevenue)}
                 </h4>
                 <div className="flex items-center gap-1 text-primary">
                   <TrendingUp size={14} />
                   <span className="text-xs font-bold text-dash-text-muted">
-                    {PERIOD_LABELS[period]}
+                    {t(PERIOD_LABELS[period])}
                   </span>
                 </div>
               </>
@@ -84,7 +86,7 @@ export const RevenueChart = () => {
         <div className="h-48 w-full bg-muted-light rounded-2xl animate-pulse" />
       ) : bars.length === 0 ? (
         <div className="h-48 flex items-center justify-center text-sm text-muted-foreground/70 font-medium">
-          No revenue data for this period
+          {t('No revenue data for this period')}
         </div>
       ) : (
         <>

@@ -1,23 +1,39 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Star, Calendar, MessageCircle, CheckCircle2 } from 'lucide-react'
+import {
+  Star,
+  Calendar,
+  MessageCircle,
+  CheckCircle2,
+  Instagram,
+  Facebook,
+  MapPin,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
 import { useCreateConversation } from '#/hook'
-import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
 import { useState } from 'react'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ProductUserCardProps {
   user: any
+  session?: any
 }
 
-export const ProductUserCard = ({ user }: ProductUserCardProps) => {
-  const { data: session } = authClient.useSession()
+export const ProductUserCard = ({
+  user,
+  session,
+}: ProductUserCardProps) => {
+  const { t, formatDate } = useTranslation()
   const navigate = useNavigate()
   const [isStartingChat, setIsStartingChat] = useState(false)
   const createConversation = useCreateConversation()
 
   if (!user) return null
+
+  const googleMapLink = session?.user?.address?.googleMapLink
+
+  const { instagramUrl, facebookUrl } = user
 
   const handleContactHost = async () => {
     if (!session?.user) {
@@ -26,7 +42,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
       return
     }
 
-    if (session.user.id === user.id) {
+    if (session?.user?.id === user.id) {
       toast.info('This is your own listing.')
       return
     }
@@ -39,7 +55,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message ||
-          'Could not start conversation. Try again.',
+        'Could not start conversation. Try again.',
       )
     } finally {
       setIsStartingChat(false)
@@ -48,7 +64,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
 
   return (
     <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-5">
-      <h3 className="text-base font-bold text-foreground">Listed by</h3>
+      <h3 className="text-base font-bold text-foreground">{t('Listed by')}</h3>
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-muted/50 overflow-hidden shrink-0">
           {user.image ? (
@@ -65,7 +81,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
         </div>
         <div>
           <p className="font-bold text-foreground text-sm">
-            {user.name || 'Verified Lister'}
+            {user.name || t('Verified Lister')}
           </p>
           <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
             <Star size={12} className="text-primary fill-brand" />
@@ -73,10 +89,10 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
               {user.rating || '0.0'}
             </span>
             <span className="text-xs text-muted-foreground/85">
-              ({user.listingsCount || 0} Listings)
+              ({user.listingsCount || 0} {t('Listings')})
             </span>
             <Badge className="bg-primary-soft text-primary-hover border-none px-1 py-0 rounded flex items-center gap-0.5 font-bold text-[8px] uppercase ml-1">
-              <CheckCircle2 size={8} /> Verified
+              <CheckCircle2 size={8} /> {t('Verified')}
             </Badge>
           </div>
         </div>
@@ -84,19 +100,71 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
       <div className="space-y-2.5">
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">
           <Calendar size={14} className="shrink-0" />
-          Member since{' '}
+          {t('Member since')}{' '}
           {user.createdAt
-            ? new Date(user.createdAt).toLocaleDateString('en-IN', {
-                month: 'long',
-                year: 'numeric',
-              })
+            ? formatDate(user.createdAt, {
+              month: 'long',
+              year: 'numeric',
+            })
             : 'May 2022'}
         </div>
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">
           <MessageCircle size={14} className="shrink-0" />
-          Usually responds in a few hours
+          {t('Usually responds in a few hours')}
         </div>
       </div>
+
+      {(instagramUrl || facebookUrl || googleMapLink) && (
+        <div className="pt-3 border-t border-border/30 space-y-2">
+          <p className="text-[11px] font-black text-muted-foreground uppercase tracking-wider">
+            {t('Social Links')}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {instagramUrl && (
+              <a
+                href={
+                  instagramUrl.startsWith('http')
+                    ? instagramUrl
+                    : `https://instagram.com/${instagramUrl}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-pink-200/50 bg-pink-50/40 text-pink-700 text-xs font-bold hover:bg-pink-50 transition-colors"
+              >
+                <Instagram size={13} className="text-pink-600" /> Instagram
+              </a>
+            )}
+            {facebookUrl && (
+              <a
+                href={
+                  facebookUrl.startsWith('http')
+                    ? facebookUrl
+                    : `https://facebook.com/${facebookUrl}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-blue-200/50 bg-blue-50/40 text-blue-700 text-xs font-bold hover:bg-blue-50 transition-colors"
+              >
+                <Facebook size={13} className="text-blue-600" /> Facebook
+              </a>
+            )}
+            {googleMapLink && (
+              <a
+                href={
+                  googleMapLink.startsWith('http')
+                    ? googleMapLink
+                    : `https://${googleMapLink}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-green-200/50 bg-green-50/40 text-green-700 text-xs font-bold hover:bg-green-50 transition-colors"
+              >
+                <MapPin size={13} className="text-green-600" /> Map
+              </a>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <Link to="/users/$id" params={{ id: user.id || '' }}>
@@ -104,7 +172,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
             variant="outline"
             className="w-full h-10 rounded-xl border-border font-bold text-primary hover:bg-primary/5 hover:border-brand transition-colors"
           >
-            View Profile
+            {t('View Profile')}
           </Button>
         </Link>
 
@@ -114,7 +182,7 @@ export const ProductUserCard = ({ user }: ProductUserCardProps) => {
           className="w-full h-10 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold flex items-center justify-center gap-2 transition-colors"
         >
           <MessageCircle size={15} />
-          {isStartingChat ? 'Opening Chat...' : 'Contact Lister'}
+          {isStartingChat ? t('Opening Chat...') : t('Contact Lister')}
         </Button>
       </div>
     </div>

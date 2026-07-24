@@ -11,6 +11,7 @@ import { Users, Tag, ShoppingBag, IndianRupee } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface AdminOverviewProps {
   statsData: any
@@ -33,6 +34,7 @@ export const AdminOverview = ({
   onViewAllUsers,
   onViewAllListings,
 }: AdminOverviewProps) => {
+  const { t, formatNumber } = useTranslation()
   const usersChange = statsData?.usersChange ?? 0
   const listingsChange = statsData?.listingsChange ?? 0
   const bookingsChange = statsData?.bookingsChange ?? 0
@@ -62,11 +64,9 @@ export const AdminOverview = ({
         )}
       >
         <StatCard
-          title="Total Users"
+          title={t('Total Users')}
           value={
-            statsLoading
-              ? '...'
-              : statsData?.totalUsers?.toLocaleString() || '0'
+            statsLoading ? '...' : formatNumber(statsData?.totalUsers || 0)
           }
           change={statsLoading ? '...' : formatChange(usersChange)}
           isPositive={usersChange >= 0}
@@ -76,11 +76,9 @@ export const AdminOverview = ({
           sparklineData={[30, 40, 35, 50, 45, 60, 55]}
         />
         <StatCard
-          title="Total Listings"
+          title={t('Total Listings')}
           value={
-            statsLoading
-              ? '...'
-              : statsData?.totalListings?.toLocaleString() || '0'
+            statsLoading ? '...' : formatNumber(statsData?.totalListings || 0)
           }
           change={statsLoading ? '...' : formatChange(listingsChange)}
           isPositive={listingsChange >= 0}
@@ -90,11 +88,9 @@ export const AdminOverview = ({
           sparklineData={[40, 30, 45, 35, 55, 40, 50]}
         />
         <StatCard
-          title="Total Bookings"
+          title={t('Total Bookings')}
           value={
-            statsLoading
-              ? '...'
-              : statsData?.totalBookings?.toLocaleString() || '0'
+            statsLoading ? '...' : formatNumber(statsData?.totalBookings || 0)
           }
           change={statsLoading ? '...' : formatChange(bookingsChange)}
           isPositive={bookingsChange >= 0}
@@ -104,11 +100,11 @@ export const AdminOverview = ({
           sparklineData={[20, 35, 30, 45, 40, 50, 45]}
         />
         <StatCard
-          title="Total Revenue"
+          title={t('Total Revenue')}
           value={
             statsLoading
               ? '...'
-              : `₹ ${statsData?.totalRevenue?.toLocaleString() || '0'}`
+              : `₹ ${formatNumber(statsData?.totalRevenue || 0)}`
           }
           change={statsLoading ? '...' : formatChange(revenueChange)}
           isPositive={revenueChange >= 0}

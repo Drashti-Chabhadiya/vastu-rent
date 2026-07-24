@@ -13,7 +13,8 @@ import {
 import type { Coupon } from '#/hook/use-coupons'
 import { cn } from '#/lib/utils'
 import { getScenarioLabel, scenarioColorMap } from '#/lib/coupon-utils'
-import { Skeleton } from '#/components/ui/skeleton'
+import { useTranslation } from '#/context/TranslationContext'
+import { CouponTableSkeleton } from '#/components/skeletons'
 
 interface CouponsTableProps {
   coupons: Coupon[]
@@ -36,6 +37,7 @@ export function CouponsTable({
   onApprove,
   onCreateClick,
 }: CouponsTableProps) {
+  const { t, formatNumber, formatCurrency, formatDate } = useTranslation()
   const [search, setSearch] = useState('')
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
@@ -58,13 +60,13 @@ export function CouponsTable({
         <div>
           <h3 className="text-[15px] font-black text-foreground">
             {isUser && activeTab === 'global'
-              ? 'Global Platform Promo Codes'
-              : 'All Coupons'}
+              ? t('Global Platform Promo Codes')
+              : t('All Coupons')}
           </h3>
           <p className="text-[11px] font-bold text-muted-dark">
             {isUser && activeTab === 'global'
-              ? 'Active voucher offers created by Vastu Rent Admins.'
-              : 'View, query, and audit active/inactive discount policies.'}
+              ? t('Active voucher offers created by Vastu Rent Admins.')
+              : t('View, query, and audit active/inactive discount policies.')}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -74,7 +76,7 @@ export function CouponsTable({
               className="absolute left-3 top-3 text-muted-dark"
             />
             <Input
-              placeholder="Search code..."
+              placeholder={t('Search code...')}
               className="h-10 pl-9 pr-4 w-44 bg-muted-light border-none rounded-xl text-[11px] font-bold focus:ring-0"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -85,7 +87,7 @@ export function CouponsTable({
               onClick={onCreateClick}
               className="h-10 px-4 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center gap-2 active:scale-[0.98] transition-all shadow-md shadow-dash-brand/10"
             >
-              <Plus size={14} /> Create Coupon
+              <Plus size={14} /> {t('Create Coupon')}
             </Button>
           )}
         </div>
@@ -96,68 +98,44 @@ export function CouponsTable({
         <Table>
           <TableHeader>
             <TableRow className="text-[9px] font-black text-muted-dark uppercase tracking-widest border-b border-border/30">
-              <TableHead className="text-left px-4 py-3">Code</TableHead>
-              <TableHead className="text-left px-4 py-3">Discount</TableHead>
+              <TableHead className="text-left px-4 py-3">{t('Code')}</TableHead>
               <TableHead className="text-left px-4 py-3">
-                Configuration
+                {t('Discount')}
               </TableHead>
               <TableHead className="text-left px-4 py-3">
-                Min. Booking
+                {t('Configuration')}
               </TableHead>
-              <TableHead className="text-left px-4 py-3">Expiry</TableHead>
-              <TableHead className="text-left px-4 py-3">Redeemed</TableHead>
+              <TableHead className="text-left px-4 py-3">
+                {t('Min. Booking')}
+              </TableHead>
+              <TableHead className="text-left px-4 py-3">
+                {t('Expiry')}
+              </TableHead>
+              <TableHead className="text-left px-4 py-3">
+                {t('Redeemed')}
+              </TableHead>
               {canManage && (
-                <TableHead className="text-left px-4 py-3">Status</TableHead>
+                <TableHead className="text-left px-4 py-3">
+                  {t('Status')}
+                </TableHead>
               )}
               {canManage && (
-                <TableHead className="px-4 py-3 text-right">Actions</TableHead>
+                <TableHead className="px-4 py-3 text-right">
+                  {t('Actions')}
+                </TableHead>
               )}
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-border/30">
             {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i} className="animate-pulse">
-                  <TableCell className="px-4 py-5">
-                    <Skeleton className="h-10 w-24 rounded-xl" />
-                  </TableCell>
-                  <TableCell className="px-4 py-5">
-                    <Skeleton className="h-4 w-16 rounded" />
-                    <Skeleton className="h-3 w-12 rounded mt-1.5" />
-                  </TableCell>
-                  <TableCell className="px-4 py-5">
-                    <Skeleton className="h-4 w-20 rounded" />
-                    <Skeleton className="h-3 w-16 rounded mt-1.5" />
-                  </TableCell>
-                  <TableCell className="px-4 py-5">
-                    <Skeleton className="h-4 w-12 rounded" />
-                  </TableCell>
-                  <TableCell className="px-4 py-5">
-                    <Skeleton className="h-4 w-20 rounded" />
-                  </TableCell>
-                  <TableCell className="px-4 py-5">
-                    <Skeleton className="h-4 w-16 rounded" />
-                    <Skeleton className="h-2 w-12 rounded mt-1.5" />
-                  </TableCell>
-                  {canManage && (
-                    <TableCell className="px-4 py-5">
-                      <Skeleton className="h-6 w-24 rounded-full" />
-                    </TableCell>
-                  )}
-                  {canManage && (
-                    <TableCell className="px-4 py-5 text-right">
-                      <Skeleton className="h-8 w-8 rounded-xl ml-auto" />
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))
+              <CouponTableSkeleton canManage={canManage} />
             ) : filtered.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={7}
                   className="text-center py-10 text-xs text-muted-dark"
                 >
-                  No vouchers available in this view.
+                  {t('No vouchers available in this view.')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -186,7 +164,9 @@ export function CouponsTable({
                           onClick={() => handleCopy(coupon.code)}
                           className="flex items-center gap-1 text-[8px] font-bold mt-1 opacity-70 hover:opacity-100 p-0 h-auto font-sans active:scale-[0.98] transition-all hover:bg-transparent"
                         >
-                          {copiedCode === coupon.code ? 'Copied!' : 'Copy'}{' '}
+                          {copiedCode === coupon.code
+                            ? t('Copied!')
+                            : t('Copy')}{' '}
                           <Copy size={8} />
                         </Button>
                       </div>
@@ -196,12 +176,12 @@ export function CouponsTable({
                     <TableCell className="px-4 py-5">
                       <p className="text-[12px] font-black text-foreground">
                         {coupon.type === 'percentage'
-                          ? `${coupon.discount}% OFF`
-                          : `₹${coupon.discount} OFF`}
+                          ? `${formatNumber(coupon.discount)}% ${t('OFF')}`
+                          : `${formatCurrency(coupon.discount)} ${t('OFF')}`}
                       </p>
                       {coupon.maxDiscount && (
                         <p className="text-[9px] font-bold text-muted-dark">
-                          Upto ₹{coupon.maxDiscount}
+                          {t('Upto')} {formatCurrency(coupon.maxDiscount)}
                         </p>
                       )}
                     </TableCell>
@@ -212,15 +192,15 @@ export function CouponsTable({
                         {/* Scope */}
                         {coupon.product?.title ? (
                           <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
-                            Listing: {coupon.product.title}
+                            {t('Listing:')} {coupon.product.title}
                           </span>
                         ) : coupon.userId ? (
                           <span className="text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
-                            User Specific
+                            {t('User Specific')}
                           </span>
                         ) : (
                           <span className="text-muted-foreground/85 bg-muted-light px-2 py-0.5 rounded border border-border/30">
-                            Platform Wide
+                            {t('Platform Wide')}
                           </span>
                         )}
                         {/* Scenario */}
@@ -230,28 +210,24 @@ export function CouponsTable({
                             scenarioColorMap[scenario.color],
                           )}
                         >
-                          {scenario.label}
+                          {t(scenario.label)}
                         </span>
                       </div>
                     </TableCell>
 
                     {/* Min Booking */}
                     <TableCell className="px-4 py-5 font-black text-foreground text-[11px]">
-                      ₹{coupon.minBooking || '0'}
+                      {formatCurrency(coupon.minBooking || 0)}
                     </TableCell>
 
                     {/* Expiry */}
                     <TableCell className="px-4 py-5">
                       <p className="text-[10px] font-black text-foreground leading-tight">
-                        {new Date(coupon.endDate).toLocaleDateString('en-IN', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        {formatDate(coupon.endDate)}
                       </p>
                       {new Date(coupon.endDate) < new Date() && (
                         <span className="text-[9px] font-bold text-destructive/80">
-                          Expired
+                          {t('Expired')}
                         </span>
                       )}
                     </TableCell>
@@ -259,10 +235,10 @@ export function CouponsTable({
                     {/* Redeemed */}
                     <TableCell className="px-4 py-5 min-w-[90px]">
                       <p className="text-[10px] font-black text-foreground mb-1">
-                        {coupon.usedCount}
+                        {formatNumber(coupon.usedCount)}
                         {coupon.usageLimit
-                          ? ` / ${coupon.usageLimit}`
-                          : ' used'}
+                          ? ` / ${formatNumber(coupon.usageLimit)}`
+                          : ` ${t('used')}`}
                       </p>
                       <div className="w-16 h-1.5 bg-muted/50 rounded-full overflow-hidden">
                         <div
@@ -279,7 +255,8 @@ export function CouponsTable({
                       </div>
                       {coupon.perUserLimit && (
                         <p className="text-[8px] font-bold text-muted-dark mt-1">
-                          Max {coupon.perUserLimit}× per user
+                          {t('Max')} {formatNumber(coupon.perUserLimit)}×{' '}
+                          {t('per user')}
                         </p>
                       )}
                     </TableCell>
@@ -295,7 +272,9 @@ export function CouponsTable({
                               : 'bg-amber-50 text-amber-700 border border-amber-100',
                           )}
                         >
-                          {coupon.isActive ? 'Active' : 'Pending Approval'}
+                          {coupon.isActive
+                            ? t('Active')
+                            : t('Pending Approval')}
                         </span>
                       </TableCell>
                     )}
@@ -310,7 +289,7 @@ export function CouponsTable({
                             onClick={() => onApprove(coupon.id)}
                             className="rounded-full font-bold h-9 px-3 text-[11px]"
                           >
-                            Approve
+                            {t('Approve')}
                           </Button>
                         )}
                         <Button

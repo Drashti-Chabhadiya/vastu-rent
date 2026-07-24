@@ -1,5 +1,6 @@
 import React from 'react'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean
@@ -15,22 +16,23 @@ export const DeleteConfirmDialog = ({
   isOpen,
   onOpenChange,
   onConfirm,
-  title = 'Delete Category?',
+  title,
   description,
   isPending = false,
   itemName,
 }: DeleteConfirmDialogProps) => {
+  const { t } = useTranslation()
+  const displayTitle = title || t('Delete Category?')
   const defaultDescription = (
     <div className="text-center w-full">
       <span className="inline-block">
-        Are you sure you want to delete{' '}
-        <span className="text-foreground/90 font-black">
-          "{itemName || 'this item'}"
-        </span>
-        ?
+        {t('Are you sure you want to delete "{item}"?').replace(
+          '{item}',
+          itemName || t('this item'),
+        )}
       </span>
       <span className="text-muted-dark text-xs font-bold mt-4 block bg-muted-light py-2.5 px-4 rounded-xl border border-border/30">
-        This action is permanent and cannot be reversed.
+        {t('This action is permanent and cannot be reversed.')}
       </span>
     </div>
   )
@@ -40,11 +42,11 @@ export const DeleteConfirmDialog = ({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       onConfirm={onConfirm}
-      title={title}
+      title={displayTitle}
       description={description || defaultDescription}
       isPending={isPending}
-      confirmText="Yes, Delete"
-      pendingText="Deleting..."
+      confirmText={t('Yes, Delete')}
+      pendingText={t('Deleting...')}
       variant="danger"
     />
   )

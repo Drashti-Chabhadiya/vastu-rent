@@ -10,11 +10,13 @@ import { PricingSettingsTab } from './site-settings/PricingSettingsTab'
 import { TrustSettingsTab } from './site-settings/TrustSettingsTab'
 import { TermsSettingsTab } from './site-settings/TermsSettingsTab'
 import { useSiteSettingsStore } from '../../../../../store/useSiteSettingsStore'
+import { useTranslation } from '#/context/TranslationContext'
 
 export const SiteSettingsForm = () => {
   const { data: settings, isLoading } = useSettings()
   const updateSettings = useUpdateSettings()
 
+  const { t } = useTranslation()
   const initialize = useSiteSettingsStore((state) => state.initialize)
   const activeTab = useSiteSettingsStore((state) => state.activeTab)
   const setActiveTab = useSiteSettingsStore((state) => state.setActiveTab)
@@ -100,10 +102,10 @@ export const SiteSettingsForm = () => {
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/10">
         <div>
           <h3 className="text-xl font-extrabold text-dash-brand font-display tracking-tight leading-none">
-            Site Content Settings
+            {t('Site Content Settings')}
           </h3>
           <p className="text-[12px] font-semibold text-muted-dark mt-2">
-            Manage public-facing marketing copy dynamically.
+            {t('Manage public-facing marketing copy dynamically.')}
           </p>
         </div>
         <Button
@@ -112,7 +114,7 @@ export const SiteSettingsForm = () => {
           className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand"
         >
           <Save size={13} />
-          {updateSettings.isPending ? 'Saving...' : 'Save Changes'}
+          {updateSettings.isPending ? t('Saving...') : t('Save Changes')}
         </Button>
       </div>
 
@@ -127,25 +129,25 @@ export const SiteSettingsForm = () => {
             value="contact"
             className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
-            Contact
+            {t('Contact')}
           </TabsTrigger>
           <TabsTrigger
             value="pricing"
             className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
-            Pricing
+            {t('Pricing')}
           </TabsTrigger>
           <TabsTrigger
             value="trust"
             className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
-            Trust
+            {t('Trust')}
           </TabsTrigger>
           <TabsTrigger
             value="terms"
             className="flex-1 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all data-[state=active]:bg-dash-brand data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm border border-transparent text-muted-foreground hover:text-dash-brand cursor-pointer"
           >
-            Terms
+            {t('Terms')}
           </TabsTrigger>
         </TabsList>
 

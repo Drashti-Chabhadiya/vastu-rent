@@ -1,9 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { authClient } from '#/lib/auth/auth-client'
-
-// Simple local module cache for session to avoid blocking route transitions
-// on client-side routing with redundant session network fetches.
-let cachedSession: any = null
+import { getCachedSession, setCachedSession } from '#/context/SessionContext'
 
 function AuthenticatedLayout() {
   return <Outlet />
@@ -11,9 +8,10 @@ function AuthenticatedLayout() {
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ location }) => {
-    if (cachedSession) {
+    const cached = getCachedSession()
+    if (cached) {
       return {
-        session: cachedSession,
+        session: cached,
       }
     }
 
@@ -21,7 +19,7 @@ export const Route = createFileRoute('/_authenticated')({
     const session = sessionRes.data
 
     if (!session) {
-      cachedSession = null
+      setCachedSession(null)
       throw redirect({
         to: '/login',
         search: {
@@ -30,7 +28,8 @@ export const Route = createFileRoute('/_authenticated')({
       })
     }
 
-    cachedSession = session
+    setCachedSession(session)
+
     return {
       session,
     }
