@@ -15,16 +15,6 @@ export function useProfileData() {
   const [language, setLanguage] = useState('')
   const [dob, setDob] = useState('')
   const [currency, setCurrency] = useState('INR')
-  const [addressLine1, setAddressLine1] = useState('')
-  const [addressLine2, setAddressLine2] = useState('')
-  const [street, setStreet] = useState('')
-  const [city, setCity] = useState('')
-  const [state, setState] = useState('')
-  const [pincode, setPincode] = useState('')
-  const [country, setCountry] = useState('India')
-  const [shopName, setShopName] = useState('')
-  const [addressType, setAddressType] = useState<'home' | 'shop'>('home')
-  const [googleMapLink, setGoogleMapLink] = useState('')
   const [instagramUrl, setInstagramUrl] = useState('')
   const [facebookUrl, setFacebookUrl] = useState('')
 
@@ -89,7 +79,7 @@ export function useProfileData() {
       setGender(
         rawGender.trim()
           ? rawGender.trim().charAt(0).toUpperCase() +
-              rawGender.trim().slice(1).toLowerCase()
+          rawGender.trim().slice(1).toLowerCase()
           : '',
       )
       setLanguage(u.language || '')
@@ -109,16 +99,6 @@ export function useProfileData() {
         setShowOnline(u.showOnline)
       if (u.allowData !== undefined && u.allowData !== null)
         setAllowData(u.allowData)
-      setAddressLine1(u.addressLine1 || '')
-      setAddressLine2(u.addressLine2 || '')
-      setStreet(u.street || '')
-      setCity(u.city || '')
-      setState(u.state || '')
-      setPincode(u.pincode || '')
-      setCountry(u.country || 'India')
-      setShopName(u.shopName || '')
-      setAddressType((u.addressType as 'home' | 'shop') || 'home')
-      setGoogleMapLink(u.googleMapLink || '')
       setInstagramUrl(u.instagramUrl || '')
       setFacebookUrl(u.facebookUrl || '')
     }
@@ -235,26 +215,6 @@ export function useProfileData() {
     setDob,
     currency,
     setCurrency,
-    addressLine1,
-    setAddressLine1,
-    addressLine2,
-    setAddressLine2,
-    street,
-    setStreet,
-    city,
-    setCity,
-    state,
-    setState,
-    pincode,
-    setPincode,
-    country,
-    setCountry,
-    shopName,
-    setShopName,
-    addressType,
-    setAddressType,
-    googleMapLink,
-    setGoogleMapLink,
     instagramUrl,
     setInstagramUrl,
     facebookUrl,

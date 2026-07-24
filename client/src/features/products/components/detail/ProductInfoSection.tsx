@@ -163,7 +163,7 @@ interface ProductBookingSectionProps {
 
 export const ProductBookingSection = ({
   product,
-  handleRentNow,
+  // handleRentNow,
   createRentalIsPending,
   handleApplyCoupon,
   handleRemoveCoupon,
@@ -263,7 +263,7 @@ export const ProductBookingSection = ({
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 pt-2">
         <Button
-          onClick={handleRentNow}
+          // onClick={handleRentNow}
           disabled={createRentalIsPending || isPaying}
           className="w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
         >

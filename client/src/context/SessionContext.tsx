@@ -29,7 +29,7 @@ export function SessionProvider({
     queryKey: SESSION_QUERY_KEY,
     queryFn: async () => {
       const res = await authClient.getSession()
-      return res.data || null
+      return (res.data as any) || null
     },
     staleTime: 30_000,
   })

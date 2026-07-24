@@ -124,8 +124,10 @@ export function ProfileListings() {
   const avgRatingValue = ratedListings.length ? (ratedListings.reduce((sum: number, item: any) => sum + parseFloat(item.rating), 0) / ratedListings.length).toFixed(1) : '0.0'
 
   const handleAddListing = () => {
-    const u = session?.user
-    if (u && (!u.name || !u.phone || !u.addressLine1 || !u.street || !u.city || !u.state || !u.pincode)) {
+    const u = session?.user as any
+    const mainAddr = u?.address || u?.addresses?.[0]
+    const hasAddress = Boolean(mainAddr?.addressLine1 && mainAddr?.city)
+    if (u && (!u.name || !u.phone || !hasAddress)) {
       toast.error(t('Please complete your profile and rental address first before creating a listing.'), { duration: 4000 })
       window.location.href = '/account?completeProfile=true#address'
       return

@@ -57,7 +57,6 @@ export const ListingDialog = ({
   const isEditMode = !!product
   const [isUploadingImages, setIsUploadingImages] = useState(false)
   const setDraft = useListingDraftStore((state) => state.setDraft)
-
   const form = useForm<ListingSchema>({
     resolver: zodResolver(listingSchema) as any,
     defaultValues: {
@@ -118,8 +117,8 @@ export const ListingDialog = ({
             tags: currentDraft.tags || [],
             minDuration: currentDraft.minDuration || 1,
             maxDuration: currentDraft.maxDuration || undefined,
-            listingType: currentDraft.listingType || (currentUser?.addressType as 'home' | 'shop') || 'home',
-            shopName: currentDraft.shopName || currentUser?.shopName || '',
+            listingType: currentDraft.listingType || ((currentUser?.address?.addressType || currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') || 'home',
+            shopName: currentDraft.shopName || currentUser?.address?.shopName || currentUser?.addresses?.[0]?.shopName || '',
           })
         } else {
           form.reset({
@@ -127,8 +126,8 @@ export const ListingDialog = ({
             description: '',
             price: 0,
             securityDeposit: 0,
-            city: '',
-            location: '',
+            city: currentUser?.address?.city || currentUser?.addresses?.[0]?.city || '',
+            location: currentUser?.address?.street || currentUser?.addresses?.[0]?.street || '',
             categoryId: '',
             userId: currentUser?.id || '',
             images: [],
@@ -138,8 +137,8 @@ export const ListingDialog = ({
             tags: [],
             minDuration: 1,
             maxDuration: undefined,
-            listingType: (currentUser?.addressType as 'home' | 'shop') || 'home',
-            shopName: currentUser?.shopName || '',
+            listingType: ((currentUser?.address?.addressType || currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') || 'home',
+            shopName: currentUser?.address?.shopName || currentUser?.addresses?.[0]?.shopName || '',
           })
         }
       }

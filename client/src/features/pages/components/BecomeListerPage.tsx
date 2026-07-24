@@ -15,13 +15,13 @@ import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { authClient } from '#/lib/auth/auth-client'
 import { useTranslation } from '#/context/TranslationContext'
-
 export function BecomeListerPage() {
   const { t } = useTranslation()
   const { data: session } = authClient.useSession()
   const user = session?.user as any
   const isLoggedIn = !!user
-  const isProfileComplete = Boolean(user?.addressLine1 && user?.city)
+  const mainAddress = user?.address || user?.addresses?.[0]
+  const isProfileComplete = Boolean(mainAddress?.addressLine1 && mainAddress?.city)
 
   let targetTo: any = '/signup'
   let targetSearch: any = undefined

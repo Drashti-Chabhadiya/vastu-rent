@@ -49,6 +49,7 @@ export class UserService {
         banReason: true,
         showOnline: true,
         lastActive: true,
+        addresses: true,
       },
     })
   }
@@ -82,7 +83,10 @@ export class UserService {
   }
 
   async getUserById(id: string) {
-    return prisma.user.findUnique({ where: { id } })
+    return prisma.user.findUnique({
+      where: { id },
+      include: { addresses: true },
+    })
   }
 
   async getPublicProfile(id: string) {
@@ -98,6 +102,10 @@ export class UserService {
         },
         _count: {
           select: { products: true },
+        },
+        addresses: {
+          take: 1,
+          orderBy: { createdAt: 'desc' },
         },
       },
     })
@@ -117,6 +125,8 @@ export class UserService {
     const averageRating =
       reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : '5.0'
 
+    const mainAddress = user.addresses?.[0]
+
     return {
       id: user.id,
       name: user.name,
@@ -134,9 +144,9 @@ export class UserService {
       lastActive: user.lastActive,
       isGreenMember: user.isGreenMember,
       bio: user.bio,
-      googleMapLink: user.googleMapLink,
       instagramUrl: user.instagramUrl,
       facebookUrl: user.facebookUrl,
+      address: mainAddress || null,
     }
   }
 
@@ -162,16 +172,6 @@ export class UserService {
       showOnline?: boolean
       allowData?: boolean
       bio?: string
-      addressLine1?: string
-      addressLine2?: string
-      street?: string
-      city?: string
-      state?: string
-      pincode?: string
-      country?: string
-      shopName?: string
-      addressType?: string
-      googleMapLink?: string
       instagramUrl?: string
       facebookUrl?: string
     },
@@ -218,24 +218,10 @@ export class UserService {
         showOnline: data.showOnline !== undefined ? data.showOnline : undefined,
         allowData: data.allowData !== undefined ? data.allowData : undefined,
         bio: data.bio !== undefined ? data.bio : undefined,
-        addressLine1:
-          data.addressLine1 !== undefined ? data.addressLine1 : undefined,
-        addressLine2:
-          data.addressLine2 !== undefined ? data.addressLine2 : undefined,
-        street: data.street !== undefined ? data.street : undefined,
         instagramUrl:
           data.instagramUrl !== undefined ? data.instagramUrl : undefined,
         facebookUrl:
           data.facebookUrl !== undefined ? data.facebookUrl : undefined,
-        city: data.city !== undefined ? data.city : undefined,
-        state: data.state !== undefined ? data.state : undefined,
-        pincode: data.pincode !== undefined ? data.pincode : undefined,
-        country: data.country !== undefined ? data.country : undefined,
-        shopName: data.shopName !== undefined ? data.shopName : undefined,
-        addressType:
-          data.addressType !== undefined ? data.addressType : undefined,
-        googleMapLink:
-          data.googleMapLink !== undefined ? data.googleMapLink : undefined,
       },
     })
 
@@ -275,7 +261,7 @@ export class UserService {
       )
     }
 
-    return updatedUser
+    return this.getUserById(id)
   }
 
   async getCloudinaryConfig(_userId: string) {

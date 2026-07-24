@@ -161,6 +161,10 @@ export class ProductService {
             _count: {
               select: { products: true },
             },
+            addresses: {
+              take: 1,
+              orderBy: { isDefault: 'desc' },
+            },
           },
         },
         reviews: {
@@ -173,7 +177,6 @@ export class ProductService {
                 showProfile: true,
                 instagramUrl: true,
                 facebookUrl: true,
-                googleMapLink: true,
               },
             },
           },
@@ -204,6 +207,8 @@ export class ProductService {
         ? (userTotalRating / userReviewCount).toFixed(1)
         : '5.0'
 
+    const sellerAddress = (product.user as any).addresses?.[0]
+
     const result = {
       ...product,
       reviewsCount: product._count.reviews,
@@ -226,7 +231,7 @@ export class ProductService {
         showProfile: product.user.showProfile,
         instagramUrl: product.user.instagramUrl,
         facebookUrl: product.user.facebookUrl,
-        googleMapLink: product.user.googleMapLink,
+        googleMapLink: sellerAddress?.googleMapLink || null,
       },
     }
 

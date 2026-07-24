@@ -51,8 +51,12 @@ export function PersonalInfo() {
   const { data: myListings, isLoading: isListingsLoading } = useMyListings()
   const verifyCheckoutSession = useVerifyCheckoutSession()
 
+  const mainAddr = (session?.user as any)?.address || (session?.user as any)?.addresses?.[0]
+  const isProfileComplete = Boolean(mainAddr?.addressLine1 && mainAddr?.city)
+
   const [completeProfileModalOpen, setCompleteProfileModalOpen] = useState(
     () => {
+      if (isProfileComplete) return false
       return (
         typeof window !== 'undefined' &&
         (window.location.search.includes('completeProfile=true') ||
@@ -60,6 +64,16 @@ export function PersonalInfo() {
       )
     },
   )
+
+  useEffect(() => {
+    if (isProfileComplete) {
+      setCompleteProfileModalOpen(false)
+      if (typeof window !== 'undefined' && window.location.search.includes('completeProfile=true')) {
+        const newUrl = window.location.pathname + window.location.hash
+        window.history.replaceState(null, '', newUrl)
+      }
+    }
+  }, [isProfileComplete])
 
   // Tab management state synced with URL hash
   const [activeTab, setActiveTab] = useState<ProfileTab>(() => {

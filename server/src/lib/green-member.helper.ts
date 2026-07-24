@@ -10,6 +10,7 @@ export async function syncGreenMemberStatus(userId: string): Promise<boolean> {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
+        addresses: { take: 1 },
         _count: {
           select: {
             products: true,
@@ -29,10 +30,11 @@ export async function syncGreenMemberStatus(userId: string): Promise<boolean> {
     if (greenMemberConfig.requirePhone && !user.phone) {
       eligible = false
     }
-    if (
-      greenMemberConfig.requireLocation &&
-      !(user.city || user.addressLine1)
-    ) {
+    const hasAddress =
+      user.addresses &&
+      user.addresses.length > 0 &&
+      (user.addresses[0].city || user.addresses[0].addressLine1)
+    if (greenMemberConfig.requireLocation && !hasAddress) {
       eligible = false
     }
     if (user._count.products < greenMemberConfig.minListings) {

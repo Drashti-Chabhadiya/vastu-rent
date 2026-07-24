@@ -1,5 +1,6 @@
 import { auth } from '../../config/auth.js'
 import { FastifyInstance } from 'fastify'
+import { prisma } from '../../config/prisma.js'
 
 export async function authRoutes(app: FastifyInstance) {
   app.get('/session-token', async (request, reply) => {
@@ -46,6 +47,26 @@ export async function authRoutes(app: FastifyInstance) {
       reply.header(key, value)
     })
 
-    return reply.send(await response.text())
+    const responseText = await response.text()
+    if (response.status === 200 && request.url.includes('/get-session')) {
+      try {
+        const json = JSON.parse(responseText)
+        if (json?.user?.id) {
+          const addresses = await prisma.address.findMany({
+            where: { userId: json.user.id },
+            orderBy: { createdAt: 'desc' },
+          })
+          json.user.address = addresses[0] || null
+          return reply.send(JSON.stringify(json))
+        }
+      } catch (err) {
+        console.error(
+          'Failed to attach addresses to get-session response:',
+          err,
+        )
+      }
+    }
+
+    return reply.send(responseText)
   })
 }

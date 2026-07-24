@@ -6,7 +6,7 @@ import { UserProfileSummaryCard } from './UserProfileSummaryCard'
 import { LoadingOverlay } from '#/components/ui/loader'
 import { toast } from 'sonner'
 import { useTranslation, normalizeLanguage } from '#/context/TranslationContext'
-import { useProfileData } from '#/hook'
+import { useProfileData, useCreateAddress, useUpdateAddress } from '#/hook'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { profileSchema, personalSchema, addressSchema } from '#/schema'
@@ -39,17 +39,6 @@ export function UserProfileSettingsCard({
     busy,
     uploadImage,
     updateSettings,
-    setAddressType,
-    setGoogleMapLink,
-    setInstagramUrl,
-    setFacebookUrl,
-    setAddressLine1,
-    setAddressLine2,
-    setStreet,
-    setCity,
-    setState,
-    setPincode,
-    setShopName,
   } = useProfileData()
 
   const { t, changeLanguage } = useTranslation()
@@ -66,22 +55,23 @@ export function UserProfileSettingsCard({
 
   const getFormValues = (): ProfileSchema => {
     const u = (session?.user as any) || {}
+    const mainAddr = u.address || u.addresses?.[0] || {}
     return {
       name: session?.user?.name || '',
       gender: formatGender(u.gender),
       phone: u.phone || '',
       language: u.language || 'en',
       dob: u.dob || '',
-      addressType: (u.addressType || 'home') as 'home' | 'shop',
-      shopName: u.shopName || '',
-      addressLine1: u.addressLine1 || '',
-      addressLine2: u.addressLine2 || '',
-      street: u.street || '',
-      city: u.city || '',
-      state: u.state || '',
-      pincode: u.pincode || '',
-      country: u.country || 'India',
-      googleMapLink: u.googleMapLink || '',
+      addressType: (mainAddr.addressType?.toLowerCase() === 'shop' ? 'shop' : 'home') as 'home' | 'shop',
+      shopName: mainAddr.shopName || '',
+      addressLine1: mainAddr.addressLine1 || '',
+      addressLine2: mainAddr.addressLine2 || '',
+      street: mainAddr.street || '',
+      city: mainAddr.city || '',
+      state: mainAddr.state || '',
+      pincode: mainAddr.pincode || '',
+      country: mainAddr.country || 'India',
+      googleMapLink: mainAddr.googleMapLink || '',
       instagramUrl: u.instagramUrl || '',
       facebookUrl: u.facebookUrl || '',
     }
@@ -99,7 +89,7 @@ export function UserProfileSettingsCard({
     defaultValues: getFormValues(),
   })
 
-  // Sync form with profile data when session/data loads
+  // Sync form with profile data when session loads
   useEffect(() => {
     if (!isEditing) {
       form.reset(getFormValues())
@@ -143,6 +133,9 @@ export function UserProfileSettingsCard({
     setCroppedFile(file)
   }
 
+  const createAddressMutation = useCreateAddress()
+  const updateAddressMutation = useUpdateAddress()
+
   const onSubmit = async (values: ProfileSchema) => {
     try {
       // 1. Update name via better-auth if edited
@@ -157,72 +150,51 @@ export function UserProfileSettingsCard({
         await uploadImage(croppedFile)
       }
 
-      // 3. Construct payload dynamically based on viewSection
-      const payload: Record<string, any> = {
-        bookingAlerts: emailNotifications,
-        settlementAlerts: smsNotifications,
-        marketingAlerts: marketingEmails,
-      }
-
+      // 3. Update personal settings (if viewing personal or all)
       if (viewSection === 'personal' || viewSection === 'all') {
+        const payload: Record<string, any> = {
+          bookingAlerts: emailNotifications,
+          settlementAlerts: smsNotifications,
+          marketingAlerts: marketingEmails,
+        }
         if (values.gender) payload.gender = values.gender
         if (values.phone) payload.phone = values.phone
         if (values.language) payload.language = values.language
         if (values.dob) payload.dob = values.dob
         if (values.instagramUrl !== undefined) payload.instagramUrl = values.instagramUrl
         if (values.facebookUrl !== undefined) payload.facebookUrl = values.facebookUrl
+        await updateSettings(payload)
       }
+
+      // 4. Update or Create Address via dedicated /api/addresses API
       if (viewSection === 'address' || viewSection === 'all') {
-        if (values.addressType) payload.addressType = values.addressType
-        if (values.shopName !== undefined) payload.shopName = values.shopName
-        if (values.addressLine1) payload.addressLine1 = values.addressLine1
-        if (values.addressLine2 !== undefined)
-          payload.addressLine2 = values.addressLine2
-        if (values.street) payload.street = values.street
-        if (values.city) payload.city = values.city
-        if (values.state) payload.state = values.state
-        if (values.pincode) payload.pincode = values.pincode
-        if (values.country) payload.country = values.country
-        if (values.googleMapLink !== undefined) payload.googleMapLink = values.googleMapLink
-      }
+        const addressData = {
+          addressType: values.addressType,
+          shopName: values.shopName,
+          addressLine1: values.addressLine1,
+          addressLine2: values.addressLine2,
+          street: values.street,
+          city: values.city,
+          state: values.state,
+          pincode: values.pincode,
+          country: values.country,
+          googleMapLink: values.googleMapLink,
+        }
 
-      const updatedUser = await updateSettings(payload)
-
-      if (updatedUser) {
-        setGoogleMapLink(updatedUser.googleMapLink ?? '')
-        setInstagramUrl(updatedUser.instagramUrl ?? '')
-        setFacebookUrl(updatedUser.facebookUrl ?? '')
-        setAddressLine1(updatedUser.addressLine1 ?? '')
-        setAddressLine2(updatedUser.addressLine2 ?? '')
-        setStreet(updatedUser.street ?? '')
-        setCity(updatedUser.city ?? '')
-        setState(updatedUser.state ?? '')
-        setPincode(updatedUser.pincode ?? '')
-        setShopName(updatedUser.shopName ?? '')
-        if (updatedUser.addressType) setAddressType(updatedUser.addressType as 'home' | 'shop')
-
-        form.reset({
-          name: updatedUser.name || values.name || '',
-          gender: formatGender(updatedUser.gender || values.gender),
-          phone: updatedUser.phone || values.phone || '',
-          language: updatedUser.language || values.language || 'en',
-          dob: updatedUser.dob || values.dob || '',
-          addressType: (updatedUser.addressType || values.addressType || 'home') as 'home' | 'shop',
-          shopName: updatedUser.shopName ?? values.shopName ?? '',
-          addressLine1: updatedUser.addressLine1 || values.addressLine1 || '',
-          addressLine2: updatedUser.addressLine2 ?? values.addressLine2 ?? '',
-          street: updatedUser.street || values.street || '',
-          city: updatedUser.city || values.city || '',
-          state: updatedUser.state || values.state || '',
-          pincode: updatedUser.pincode || values.pincode || '',
-          country: updatedUser.country || values.country || 'India',
-          googleMapLink: updatedUser.googleMapLink ?? values.googleMapLink ?? '',
-          instagramUrl: updatedUser.instagramUrl ?? values.instagramUrl ?? '',
-          facebookUrl: updatedUser.facebookUrl ?? values.facebookUrl ?? '',
-        })
+        const existingAddressId = (session?.user as any)?.address?.id || (session?.user as any)?.addresses?.[0]?.id
+        if (existingAddressId) {
+          await updateAddressMutation.mutateAsync({
+            id: existingAddressId,
+            data: addressData,
+          })
+        } else if (values.addressLine1 || values.city) {
+          await createAddressMutation.mutateAsync(addressData)
+        }
       }
 
       await refetch()
+      form.reset(values)
+
       setIsEditing(false)
       setImagePreview(null)
       setCroppedFile(null)

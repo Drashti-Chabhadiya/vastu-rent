@@ -55,29 +55,18 @@ model User {
   gender String?
   phone  String?
 
-  // Structured Address Fields
-  addressType      String?  @default("home")
-  shopName         String?
-  addressLine1     String?
-  addressLine2     String?
-  street           String?
-  city             String?
-  state            String?
-  pincode          String?
-  googleMapLink    String?
-  country          String?  @default("India")
-  language         String?
-  dob              String?
-  currency         String?  @default("INR")
-  twoFactorEnabled Boolean  @default(false)
-  showProfile      Boolean  @default(true)
-  showOnline       Boolean  @default(true)
-  allowData        Boolean  @default(true)
-  lastActive       DateTime @default(now())
-  isGreenMember    Boolean  @default(false)
-  bio              String?  @default("Hey there! I am using VastuRent.")
-
+  language               String?
+  dob                    String?
+  currency               String?                 @default("INR")
+  twoFactorEnabled       Boolean                 @default(false)
+  showProfile            Boolean                 @default(true)
+  showOnline             Boolean                 @default(true)
+  allowData              Boolean                 @default(true)
+  lastActive             DateTime                @default(now())
+  isGreenMember          Boolean                 @default(false)
+  bio                    String?                 @default("Hey there! I am using VastuRent.")
   // Relations
+  addresses              Address[]
   sessions               Session[]
   accounts               Account[]
   products               Product[] // User એ લિસ્ટ કરેલી વસ્તુઓ (Lister)
@@ -549,4 +538,28 @@ model Pincode {
 
   @@index([pincode])
   @@map("pincodes")
+}
+
+model Address {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String?
+  addressType   String?  @default("Home")
+  shopName      String?
+  addressLine1  String?
+  addressLine2  String?
+  street        String?
+  city          String?
+  state         String?
+  pincode       String?
+  googleMapLink String?
+  country       String?  @default("India")
+  isDefault     Boolean  @default(false)
+  isRental      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@map("addresses")
 }

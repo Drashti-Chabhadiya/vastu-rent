@@ -31,7 +31,9 @@ export const ProductUserCard = ({
 
   if (!user) return null
 
-  const { instagramUrl, facebookUrl, googleMapLink } = user
+  const googleMapLink = session?.user?.address?.googleMapLink
+
+  const { instagramUrl, facebookUrl } = user
 
   const handleContactHost = async () => {
     if (!session?.user) {
@@ -40,7 +42,7 @@ export const ProductUserCard = ({
       return
     }
 
-    if (session.user.id === user.id) {
+    if (session?.user?.id === user.id) {
       toast.info('This is your own listing.')
       return
     }

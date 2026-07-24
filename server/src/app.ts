@@ -28,6 +28,7 @@ import { settingsRoutes } from './features/settings/settings.routes.js'
 import { deleteRequestRoutes } from './features/delete-request/delete-request.routes.js'
 import { categoryDeleteRequestRoutes } from './features/category-delete-request/category-delete-request.routes.js'
 import locationRoutes from './features/location/location.routes.js'
+import { addressRoutes } from './features/address/address.routes.js'
 
 export const app = Fastify({ logger: true, trustProxy: true })
 
@@ -111,6 +112,7 @@ app.register(categoryDeleteRequestRoutes, {
   prefix: '/api/category-delete-requests',
 })
 app.register(locationRoutes, { prefix: '/api/locations' })
+app.register(addressRoutes, { prefix: '/api/addresses' })
 
 // Aliases for backward compatibility with the frontend
 app.register(productRoutes, { prefix: '/api/admin/products' })
