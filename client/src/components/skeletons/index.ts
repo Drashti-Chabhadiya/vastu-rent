@@ -14,4 +14,5 @@ export { NotificationsManagementSkeleton } from './NotificationsManagementSkelet
 export { ReviewsManagementSkeleton } from './ReviewsManagementSkeleton'
 export { CouponRenterSkeleton } from './CouponRenterSkeleton'
 export { CouponTableSkeleton } from './CouponTableSkeleton'
-export {ProfileListingsSkeleton} from './ProfileListingsSkeleton'
+export { ProfileListingsSkeleton } from './ProfileListingsSkeleton'
+export { HeroSkeleton } from './HeroSkeleton'

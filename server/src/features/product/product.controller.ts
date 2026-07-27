@@ -41,6 +41,25 @@ export class ProductController {
     if (!product)
       return reply.status(404).send({ message: 'Product not found' })
 
+    // Hide product if not available, unless user is owner or admin
+    if (!product.isAvailable) {
+      if (!currentUserId) {
+        return reply
+          .status(404)
+          .send({ message: 'Product not found or unavailable' })
+      }
+
+      const isOwner =
+        product.userId === currentUserId || product.user?.id === currentUserId
+      const isAdmin = session?.user?.role === 'admin'
+
+      if (!isOwner && !isAdmin) {
+        return reply
+          .status(404)
+          .send({ message: 'Product not found or unavailable' })
+      }
+    }
+
     // Sanitize listing owner's image
     if (
       product.user &&

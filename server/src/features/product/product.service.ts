@@ -59,8 +59,9 @@ export class ProductService {
       ]
     }
     if (categoryId) where.categoryId = categoryId
-    if (status === 'available') where.isAvailable = true
-    if (status === 'unavailable') where.isAvailable = false
+    if (status === 'available' || status === 'active') where.isAvailable = true
+    if (status === 'unavailable' || status === 'inactive')
+      where.isAvailable = false
 
     if (city) {
       where.city = { equals: city, mode: 'insensitive' }
@@ -118,6 +119,7 @@ export class ProductService {
     if (cached) return cached
 
     const products = await prisma.product.findMany({
+      where: { isAvailable: true },
       take: 10,
       orderBy: { createdAt: 'desc' },
       include: {
