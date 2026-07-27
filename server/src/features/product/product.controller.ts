@@ -160,6 +160,19 @@ export class ProductController {
     const products = await productService.getUserListings(userId)
     return { products }
   }
+
+  async setFeaturedProduct(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const { id } = request.params as any
+      await productService.setFeaturedProduct(id)
+      return { success: true }
+    } catch (error: any) {
+      console.error('setFeaturedProduct error:', error)
+      if (error.message?.includes('not found'))
+        return reply.status(404).send({ message: error.message })
+      return reply.status(500).send({ message: 'Internal server error' })
+    }
+  }
 }
 
 export const productController = new ProductController()

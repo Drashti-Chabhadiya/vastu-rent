@@ -14,6 +14,7 @@ import heroImg from '../../../../public/assets/hero-living.jpg'
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/context/TranslationContext'
 import { useNavigate, Link } from '@tanstack/react-router'
+import { useProducts } from '#/hook'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -28,9 +29,19 @@ const stagger: Variants = {
 }
 
 export function HeroSection() {
-  const { t, formatDigits } = useTranslation()
+  const { t, formatDigits, formatCurrency } = useTranslation()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
+  const { data: products } = useProducts({ status: 'active', isFeatured: true })
+
+  const featuredProduct = products?.find((p: any) => p.images && p.images.length > 0)
+  const displayImg = featuredProduct ? featuredProduct.images[0] : heroImg
+  const displayTitle = featuredProduct ? featuredProduct.title : 'Mira Lounge Chair'
+  const displayPrice = featuredProduct ? featuredProduct.price : 1250
+  const displayRating = featuredProduct?.rating || '4.96'
+  const displayHost = featuredProduct?.user?.name || 'Drashti'
+  const displayCategory = featuredProduct?.category?.name || 'Living'
+  const displayLocation = featuredProduct?.city || 'Surat'
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -169,43 +180,53 @@ export function HeroSection() {
         >
           <div className="relative w-full max-w-[540px] overflow-hidden rounded-[2.5rem] bg-card border border-border/30 shadow-2xl">
             <img
-              src={heroImg}
-              alt="Scandinavian aesthetic armchair"
+              src={displayImg}
+              alt={displayTitle}
               className="aspect-[4/5] h-full w-full object-cover"
             />
             {/* Top featured tag */}
             <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-background/90 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground backdrop-blur-md border border-border/40 shadow-sm">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              {t('Featured · The Linen Armchair')}
+              {t(`Featured · ${displayTitle}`)}
             </div>
 
             {/* Bottom floating product details */}
             <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-card/95 p-4 backdrop-blur-md border border-border/40 shadow-lg">
-              <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                  Living · Stockholm
+              <div className="flex-1 overflow-hidden pr-2">
+                <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground truncate">
+                  {displayCategory} · {displayLocation}
                 </div>
-                <div className="mt-0.5 font-bold text-base text-foreground">
-                  Mira Lounge Chair
+                <div className="mt-0.5 font-bold text-base text-foreground truncate">
+                  {displayTitle}
                 </div>
-                <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-medium">
-                  <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />{' '}
-                  {formatDigits('4.96')} · Hosted by Anneli
+                <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-medium truncate">
+                  <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 shrink-0" />{' '}
+                  {formatDigits(displayRating)} · {t('Hosted by')} {displayHost}
                 </div>
               </div>
               <div className="text-right shrink-0">
                 <div className="font-extrabold text-lg text-primary">
-                  {formatDigits('₹1,250')}
+                  {formatCurrency(displayPrice)}
                   <span className="text-xs font-normal text-muted-foreground">
                     /day
                   </span>
                 </div>
-                <Link
-                  to="/products"
-                  className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
-                >
-                  {t('Reserve') || 'Reserve'}
-                </Link>
+                {featuredProduct ? (
+                  <Link
+                    to="/products/$id"
+                    params={{ id: featuredProduct.id }}
+                    className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
+                  >
+                    {t('Reserve') || 'Reserve'}
+                  </Link>
+                ) : (
+                  <Link
+                    to="/products"
+                    className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
+                  >
+                    {t('Reserve') || 'Reserve'}
+                  </Link>
+                )}
               </div>
             </div>
           </div>

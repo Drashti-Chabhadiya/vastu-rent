@@ -74,7 +74,6 @@ export const ProductTabs = ({
 
   const tabs = [
     { id: 'description', label: t('Description') },
-    { id: 'details', label: t('Details') },
     { id: 'reviews', label: `${t('Reviews')} (${reviews.length})` },
     { id: 'faqs', label: t('FAQs') },
   ]
@@ -132,85 +131,7 @@ export const ProductTabs = ({
           </div>
         )}
 
-        {activeTab === 'details' && (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <h4 className="font-bold text-foreground text-sm uppercase tracking-wider flex items-center gap-2">
-                  <Calendar size={16} className="text-primary" />{' '}
-                  {t('Rental Terms')}
-                </h4>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground/85 flex justify-between">
-                    <span>{t('Min duration:')}</span>
-                    <span className="font-bold text-foreground/80">
-                      {formatDigits(product.minDuration || 1)} {t('day(s)')}
-                    </span>
-                  </p>
-                  <p className="text-sm text-muted-foreground/85 flex justify-between">
-                    <span>{t('Max duration:')}</span>
-                    <span className="font-bold text-foreground/80">
-                      {product.maxDuration
-                        ? `${formatDigits(product.maxDuration)} ${t('days')}`
-                        : t('Flexible')}
-                    </span>
-                  </p>
-                  <p className="text-sm text-muted-foreground/85 flex justify-between">
-                    <span>{t('Security Deposit:')}</span>
-                    <span className="font-bold text-brand">
-                      {formatCurrency(product.securityDeposit || 0)}
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <h4 className="font-bold text-foreground text-sm uppercase tracking-wider flex items-center gap-2">
-                  <ShieldCheck size={16} className="text-primary" />{' '}
-                  {t('Delivery & Pickup')}
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {product.deliveryOptions?.map((opt: string) => (
-                    <Badge
-                      key={opt}
-                      variant="secondary"
-                      className="bg-muted/50 text-foreground/80 rounded-md"
-                    >
-                      {t(opt)}
-                    </Badge>
-                  )) || (
-                    <span className="text-sm text-muted-foreground/85 italic">
-                      {t('Self-pickup only')}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
 
-            {product.pickupReturnDetails && (
-              <div className="p-4 rounded-xl bg-muted-light border border-border/30 space-y-2">
-                <h4 className="font-bold text-foreground text-xs uppercase tracking-widest">
-                  {t('Handover Instructions')}
-                </h4>
-                <p className="text-sm text-muted-foreground italic">
-                  "{product.pickupReturnDetails}"
-                </p>
-              </div>
-            )}
-
-            {product.tags && product.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-2">
-                {product.tags.map((tag: string) => (
-                  <span
-                    key={tag}
-                    className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 bg-muted-light px-2 py-1 rounded"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
 
         {activeTab === 'reviews' && (
           <div className="space-y-6">

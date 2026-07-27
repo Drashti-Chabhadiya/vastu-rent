@@ -20,6 +20,7 @@ import {
   useDeleteProduct,
   useMyListings,
   useCreateDeleteRequest,
+  useSetFeaturedProduct,
 } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { toast } from 'sonner'
@@ -104,6 +105,7 @@ export const ListingsManagement = ({
   const toggleStatusMutation = useToggleProductStatus()
   const deleteMutation = useDeleteProduct()
   const createDeleteRequestMutation = useCreateDeleteRequest()
+  const setFeaturedMutation = useSetFeaturedProduct()
 
   const handleDelete = (product: any) => {
     if (!currentUser) return
@@ -336,6 +338,18 @@ export const ListingsManagement = ({
                 },
               },
             )
+          }}
+          onSetFeatured={(id) => {
+            setFeaturedMutation.mutate(id, {
+              onSuccess: () => {
+                toast.success(t('Featured product updated successfully'))
+              },
+              onError: (err: any) => {
+                toast.error(
+                  err.response?.data?.message || t('Failed to update featured product'),
+                )
+              },
+            })
           }}
           onDelete={handleDelete}
           onEdit={(item) => {

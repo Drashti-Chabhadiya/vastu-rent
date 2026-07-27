@@ -337,6 +337,21 @@ export function ProductDetail({ id }: { id: string }) {
       ]
   const liked = isLiked(product.id)
 
+  const address = product.user?.address
+  let locationValue = product.location || product.city || 'Surat, Gujarat'
+  if (address) {
+    const parts = [
+      address.addressLine1,
+      address.addressLine2,
+      address.city || product.city,
+      address.state,
+      address.postalCode,
+    ].filter(Boolean)
+    if (parts.length > 0) {
+      locationValue = parts.join(', ')
+    }
+  }
+
   const productInfo = [
     { label: 'Category', value: product.category?.name || t('Uncategorized') },
     {
@@ -360,7 +375,7 @@ export function ProductDetail({ id }: { id: string }) {
         ? `${product.maxDuration} ${t('days')}`
         : t('Unlimited'),
     },
-    { label: 'Location', value: product.location || 'Surat, Gujarat' },
+    { label: 'Location', value: locationValue },
     {
       label: 'Listed On',
       value: formatDate(product.createdAt, {

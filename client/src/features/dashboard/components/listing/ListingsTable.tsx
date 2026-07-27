@@ -1,5 +1,5 @@
 import { cn } from '#/lib/utils'
-import { Eye, EyeOff, Trash2, ExternalLink, Pencil } from 'lucide-react'
+import { Eye, EyeOff, Trash2, ExternalLink, Pencil, Star } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
 import {
@@ -16,6 +16,7 @@ interface ListingsTableProps {
   products: any[]
   isLoading: boolean
   onToggleStatus: (id: string, isAvailable: boolean) => void
+  onSetFeatured?: (id: string) => void
   onDelete: (product: any) => void
   onEdit: (product: any) => void
   currentUser: any
@@ -25,6 +26,7 @@ export const ListingsTable = ({
   products,
   isLoading,
   onToggleStatus,
+  onSetFeatured,
   onDelete,
   onEdit,
   currentUser,
@@ -123,8 +125,13 @@ export const ListingsTable = ({
                         />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-extrabold text-dash-text group-hover:text-dash-brand transition-colors line-clamp-1">
+                        <span className="text-sm font-extrabold text-dash-text group-hover:text-dash-brand transition-colors line-clamp-1 flex items-center gap-1.5">
                           {item.title}
+                          {item.isFeatured && (
+                            <span title="Featured on Hero Section" className="flex items-center">
+                              <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400 shrink-0" />
+                            </span>
+                          )}
                         </span>
                         <span className="text-[10px] text-dash-text-soft font-bold uppercase tracking-wider">
                           {item.location}
@@ -196,6 +203,20 @@ export const ListingsTable = ({
                           <ExternalLink size={14} />
                         </Button>
                       </a>
+                      {currentUser?.role === 'admin' && onSetFeatured && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onSetFeatured(item.id)}
+                          className={cn(
+                            'w-8 h-8 rounded-lg transition-all active:scale-[0.98] shadow-none',
+                            item.isFeatured ? 'text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20' : 'text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand'
+                          )}
+                          title={item.isFeatured ? "Currently Featured" : "Set as Featured"}
+                        >
+                          <Star size={14} className={item.isFeatured ? 'fill-current' : ''} />
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"

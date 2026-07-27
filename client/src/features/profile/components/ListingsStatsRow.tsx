@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { stagger, fadeUp } from '#/lib/animations'
 import { Eye, Calendar, Coins, Star, IndianRupee, TrendingUp } from 'lucide-react'
+import { useTranslation } from '#/context/TranslationContext'
 
 interface ListingsStatsRowProps {
   totalViews: number
@@ -10,11 +11,12 @@ interface ListingsStatsRowProps {
 }
 
 export function ListingsStatsRow({ totalViews, totalBookings, totalEarnings, avgRatingValue }: ListingsStatsRowProps) {
+  const { t } = useTranslation()
   const stats = [
-    { icon: Eye, label: 'Total Views', value: totalViews, trend: '+12%', trendColor: 'text-primary' },
-    { icon: Calendar, label: 'Total Bookings', value: totalBookings, trend: '+8%', trendColor: 'text-primary' },
-    { icon: Coins, label: 'Total Earnings', value: `₹${totalEarnings.toLocaleString()}`, isEarning: true, trend: '+18%', trendColor: 'text-primary' },
-    { icon: Star, label: 'Average Rating', value: avgRatingValue, trend: 'Excellent performance', trendColor: 'text-muted-dark' },
+    { icon: Eye, label: t('TOTAL VIEWS'), value: totalViews, trend: '+12%', trendColor: 'text-primary' },
+    { icon: Calendar, label: t('TOTAL BOOKINGS'), value: totalBookings, trend: '+8%', trendColor: 'text-primary' },
+    { icon: Coins, label: t('TOTAL EARNINGS'), value: `${totalEarnings.toLocaleString()}`, isEarning: true, trend: '+18%', trendColor: 'text-primary' },
+    { icon: Star, label: t('AVERAGE RATING'), value: avgRatingValue, trend: t('Excellent performance'), trendColor: 'text-muted-dark' },
   ]
 
   return (

@@ -127,7 +127,12 @@ export const ListingDialog = ({
             price: 0,
             securityDeposit: 0,
             city: currentUser?.address?.city || currentUser?.addresses?.[0]?.city || '',
-            location: currentUser?.address?.street || currentUser?.addresses?.[0]?.street || '',
+            location: [
+              currentUser?.address?.addressLine1 || currentUser?.addresses?.[0]?.addressLine1,
+              currentUser?.address?.addressLine2 || currentUser?.addresses?.[0]?.addressLine2,
+              currentUser?.address?.state || currentUser?.addresses?.[0]?.state,
+              currentUser?.address?.postalCode || currentUser?.addresses?.[0]?.postalCode
+            ].filter(Boolean).join(', ') || '',
             categoryId: '',
             userId: currentUser?.id || '',
             images: [],
