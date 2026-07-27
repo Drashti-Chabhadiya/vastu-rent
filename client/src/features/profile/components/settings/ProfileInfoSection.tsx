@@ -314,7 +314,7 @@ export function ProfileInfoSection({
             )}
           >
             <Upload size={13} />
-            {t(' Change Photo')}
+            {t('Change Photo')}
           </Button>
           <input
             ref={fileRef}

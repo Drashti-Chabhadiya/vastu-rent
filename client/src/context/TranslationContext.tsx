@@ -128,13 +128,13 @@ export function TranslationProvider({
       const userLang = (session.user as any).language
       if (userLang) {
         const normalized = normalizeLanguage(userLang)
-        if (normalized !== language) {
+        if (normalized !== useTranslationStore.getState().language) {
           setLanguageState(normalized)
           localStorage.setItem('app_language', normalized)
         }
       }
     }
-  }, [session, language, setLanguageState])
+  }, [session?.user?.id])
 
   // Automatically process & observe all text nodes in document for digit language conversion
   useEffect(() => {

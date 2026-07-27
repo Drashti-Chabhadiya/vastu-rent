@@ -7,6 +7,7 @@ export const useProducts = (params?: {
   search?: string
   categoryId?: string
   status?: string
+  isFeatured?: boolean
 }) => {
   return useQuery({
     queryKey: ['products', params],
@@ -135,6 +136,21 @@ export const useDeleteProduct = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       queryClient.invalidateQueries({ queryKey: ['recent-products'] })
       queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+    },
+  })
+}
+
+// Set featured listing mutation (Admin)
+export const useSetFeaturedProduct = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.put(`/admin/products/${id}/featured`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({ queryKey: ['product'] })
     },
   })
 }

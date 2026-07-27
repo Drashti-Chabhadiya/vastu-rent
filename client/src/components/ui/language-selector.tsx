@@ -1,5 +1,7 @@
 import { Globe, Check, ChevronDown } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
+import { useSessionContext } from '#/context/SessionContext'
+import { apiClient } from '#/lib/api'
 import type { LanguageCode } from '#/context/TranslationContext'
 import {
   DropdownMenu,
@@ -31,6 +33,7 @@ export function LanguageSelector({
   className,
 }: LanguageSelectorProps) {
   const { language, changeLanguage } = useTranslation()
+  const { data: session } = useSessionContext()
 
   const currentLang = LANGUAGES.find((l) => l.code === language) || LANGUAGES[0]
 
@@ -65,9 +68,16 @@ export function LanguageSelector({
         {LANGUAGES.map((item) => (
           <DropdownMenuItem
             key={item.code}
-            onClick={(e) => {
+            onClick={async (e) => {
               e.preventDefault()
               changeLanguage(item.code)
+              if (session?.user) {
+                try {
+                  await apiClient.patch('/users/settings', { language: item.code })
+                } catch (err) {
+                  // Ignore failures
+                }
+              }
             }}
             className={cn(
               'flex items-center justify-between px-3 py-2 text-xs rounded-xl font-semibold cursor-pointer transition-all duration-150 my-0.5',

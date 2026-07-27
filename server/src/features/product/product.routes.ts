@@ -72,4 +72,22 @@ export async function productRoutes(fastify: FastifyInstance) {
     },
     productController.toggleAvailability,
   )
+
+  // Set product as featured (Admin only)
+  fastify.put(
+    '/:id/featured',
+    {
+      preHandler: async (request: any, reply: any) => {
+        const session = await auth.api.getSession({
+          headers: request.headers as any,
+        })
+        if (!session || session.user.role !== 'admin') {
+          return reply
+            .status(403)
+            .send({ message: 'Forbidden: Admin access required' })
+        }
+      },
+    },
+    productController.setFeaturedProduct,
+  )
 }

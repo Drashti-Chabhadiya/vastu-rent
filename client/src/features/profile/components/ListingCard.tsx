@@ -39,7 +39,7 @@ export function ListingCard({ item, openDropdownId, setOpenDropdownId, onEdit, o
                   ? 'bg-primary-soft/50 text-primary'
                   : 'bg-muted/50 text-muted-foreground/85',
               )}>
-                {item.isAvailable ? 'Active' : 'Inactive'}
+                {item.isAvailable ? t('Active') : t('Inactive')}
               </span>
               <h3 className="text-[17px] font-black text-foreground leading-tight group-hover:text-primary transition-colors line-clamp-1">
                 {item.title}

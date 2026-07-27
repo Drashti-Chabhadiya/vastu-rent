@@ -21,6 +21,7 @@ export class ProductService {
     isAvailable?: boolean
     ids?: string | string[]
     city?: string
+    isFeatured?: boolean | string
   }) {
     const cacheKey = CACHE_KEYS.PRODUCTS_LIST(filters)
     const cachedProducts = await cacheGet<any[]>(cacheKey)
@@ -37,6 +38,7 @@ export class ProductService {
       isAvailable,
       ids,
       city,
+      isFeatured,
     } = filters
     const where: any = {}
 
@@ -46,6 +48,9 @@ export class ProductService {
     }
 
     if (isAvailable !== undefined) where.isAvailable = isAvailable
+    if (isFeatured !== undefined) {
+      where.isFeatured = isFeatured === true || isFeatured === 'true'
+    }
 
     if (search) {
       where.OR = [
@@ -232,6 +237,7 @@ export class ProductService {
         instagramUrl: product.user.instagramUrl,
         facebookUrl: product.user.facebookUrl,
         googleMapLink: sellerAddress?.googleMapLink || null,
+        address: sellerAddress || null,
       },
     }
 
@@ -482,6 +488,37 @@ export class ProductService {
         earnings,
       }
     })
+  }
+  async setFeaturedProduct(id: string) {
+    // Check if product exists
+    const product = await prisma.product.findUnique({ where: { id } })
+    if (!product) throw new Error('Product not found')
+
+    // If it's already featured, just unfeature it (toggle off)
+    if (product.isFeatured) {
+      await prisma.product.update({
+        where: { id },
+        data: { isFeatured: false },
+      })
+    } else {
+      // Otherwise, unfeature all, then feature the requested one
+      await prisma.$transaction([
+        prisma.product.updateMany({
+          where: { isFeatured: true },
+          data: { isFeatured: false },
+        }),
+        prisma.product.update({
+          where: { id },
+          data: { isFeatured: true },
+        }),
+      ])
+    }
+
+    // Invalidate product list cache so hero section re-fetches
+    await cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)
+    await cacheDel([CACHE_KEYS.PRODUCT_DETAIL(id)])
+
+    return { success: true }
   }
 }
 

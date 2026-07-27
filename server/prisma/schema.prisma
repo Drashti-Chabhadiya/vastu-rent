@@ -173,6 +173,7 @@ model Product {
   securityDeposit Float    @default(0) // Refundable deposit
   images          String[] // Image URLs
   isAvailable     Boolean  @default(true)
+  isFeatured      Boolean  @default(false)
   city            String
   listingType     String   @default("home") // "home" = Rented from Home, "shop" = Rented from Shop/Store
   views           Int      @default(0)
