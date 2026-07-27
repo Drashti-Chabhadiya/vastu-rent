@@ -165,12 +165,6 @@ export const SettingsManagement = () => {
       desc: t('Manage password and access'),
       icon: Lock,
     },
-    {
-      id: 'api-integrations',
-      label: t('API & Integrations'),
-      desc: t('Manage third-party integrations'),
-      icon: Cpu,
-    },
   ]
 
   return (
@@ -308,24 +302,6 @@ export const SettingsManagement = () => {
             </div>
           )}
 
-          {activeSubTab === 'api-integrations' && (
-            <div className="bg-card p-10 rounded-[2.5rem] border border-border/30 shadow-sm space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto scrollbar-thin">
-              <h3 className="text-[16px] font-black text-foreground/90">
-                {t('API & Integrations')}
-              </h3>
-              <p className="text-[11px] font-bold text-muted-dark leading-relaxed">
-                {t(
-                  'Configure third-party API webhooks, web services, rental syndication channels, and application credentials.',
-                )}
-              </p>
-              <Button
-                disabled
-                className="mt-2 bg-muted-light text-muted-dark font-black text-[11px] px-6 h-10 rounded-full cursor-not-allowed"
-              >
-                {t('Coming Soon')}
-              </Button>
-            </div>
-          )}
         </div>
 
         {/* Right Column: Account Summary Info */}

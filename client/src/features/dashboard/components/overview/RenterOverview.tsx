@@ -5,7 +5,7 @@ import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
 import { useTranslation } from '#/context/TranslationContext'
 import { ActiveRentalsTable } from './ActiveRentalsTable'
-import { SavedFavoritesPanel } from './SavedFavoritesPanel'
+import { TopCities } from './TopCities'
 
 interface RenterOverviewProps {
   myRentals: any[] | undefined
@@ -61,7 +61,7 @@ export const RenterOverview = ({
 
       <div className={cn('grid', 'grid-cols-1', 'xl:grid-cols-3', 'gap-6')}>
         <ActiveRentalsTable myRentals={myRentals} rentalsLoading={rentalsLoading} />
-        <SavedFavoritesPanel likedProducts={likedProducts} likedLoading={likedLoading} />
+        <TopCities />
       </div>
     </div>
   )
