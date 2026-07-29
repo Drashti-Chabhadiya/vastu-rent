@@ -55,13 +55,7 @@ export const NotificationsPagination = ({
         'gap-2',
       )}
     >
-      <p
-        className={cn(
-          'text-[10px]',
-          'font-semibold',
-          'text-muted-dark',
-        )}
-      >
+      <p className={cn('text-[10px]', 'font-semibold', 'text-muted-dark')}>
         Showing{' '}
         <span className={cn('font-black', 'text-foreground/80')}>
           {formatNumber(startIndex + 1)}

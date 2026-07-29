@@ -79,10 +79,7 @@ export function WishlistToolbar({
           }`}
         >
           <div className="flex items-center gap-2">
-            <SlidersHorizontal
-              size={14}
-              className="text-primary/60 shrink-0"
-            />
+            <SlidersHorizontal size={14} className="text-primary/60 shrink-0" />
             <span>
               {sortBy === 'default'
                 ? t('Default Order')
@@ -126,10 +123,7 @@ export function WishlistToolbar({
               >
                 <span>{opt.label}</span>
                 {sortBy === opt.value && (
-                  <Check
-                    size={13}
-                    className="text-primary shrink-0 ml-auto"
-                  />
+                  <Check size={13} className="text-primary shrink-0 ml-auto" />
                 )}
               </Button>
             ))}

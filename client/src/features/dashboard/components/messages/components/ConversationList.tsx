@@ -38,7 +38,7 @@ import { toast } from 'sonner'
 export function ConversationList() {
   const { t } = useTranslation()
   const { data: session } = useSessionContext()
-  const myShowOnline = (session?.user as any)?.showOnline !== false
+  const myShowOnline = (session?.user)?.showOnline !== false
   const [clearChatConvId, setClearChatConvId] = useState<string | null>(null)
 
   const {

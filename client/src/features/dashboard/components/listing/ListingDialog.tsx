@@ -117,8 +117,16 @@ export const ListingDialog = ({
             tags: currentDraft.tags || [],
             minDuration: currentDraft.minDuration || 1,
             maxDuration: currentDraft.maxDuration || undefined,
-            listingType: currentDraft.listingType || ((currentUser?.address?.addressType || currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') || 'home',
-            shopName: currentDraft.shopName || currentUser?.address?.shopName || currentUser?.addresses?.[0]?.shopName || '',
+            listingType:
+              currentDraft.listingType ||
+              ((currentUser?.address?.addressType ||
+                currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') ||
+              'home',
+            shopName:
+              currentDraft.shopName ||
+              currentUser?.address?.shopName ||
+              currentUser?.addresses?.[0]?.shopName ||
+              '',
           })
         } else {
           form.reset({
@@ -126,13 +134,23 @@ export const ListingDialog = ({
             description: '',
             price: 0,
             securityDeposit: 0,
-            city: currentUser?.address?.city || currentUser?.addresses?.[0]?.city || '',
-            location: [
-              currentUser?.address?.addressLine1 || currentUser?.addresses?.[0]?.addressLine1,
-              currentUser?.address?.addressLine2 || currentUser?.addresses?.[0]?.addressLine2,
-              currentUser?.address?.state || currentUser?.addresses?.[0]?.state,
-              currentUser?.address?.postalCode || currentUser?.addresses?.[0]?.postalCode
-            ].filter(Boolean).join(', ') || '',
+            city:
+              currentUser?.address?.city ||
+              currentUser?.addresses?.[0]?.city ||
+              '',
+            location:
+              [
+                currentUser?.address?.addressLine1 ||
+                  currentUser?.addresses?.[0]?.addressLine1,
+                currentUser?.address?.addressLine2 ||
+                  currentUser?.addresses?.[0]?.addressLine2,
+                currentUser?.address?.state ||
+                  currentUser?.addresses?.[0]?.state,
+                currentUser?.address?.postalCode ||
+                  currentUser?.addresses?.[0]?.postalCode,
+              ]
+                .filter(Boolean)
+                .join(', ') || '',
             categoryId: '',
             userId: currentUser?.id || '',
             images: [],
@@ -142,8 +160,14 @@ export const ListingDialog = ({
             tags: [],
             minDuration: 1,
             maxDuration: undefined,
-            listingType: ((currentUser?.address?.addressType || currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') || 'home',
-            shopName: currentUser?.address?.shopName || currentUser?.addresses?.[0]?.shopName || '',
+            listingType:
+              ((currentUser?.address?.addressType ||
+                currentUser?.addresses?.[0]?.addressType) as 'home' | 'shop') ||
+              'home',
+            shopName:
+              currentUser?.address?.shopName ||
+              currentUser?.addresses?.[0]?.shopName ||
+              '',
           })
         }
       }

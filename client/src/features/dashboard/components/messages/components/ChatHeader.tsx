@@ -35,7 +35,8 @@ export function ChatHeader() {
   if (!activeConversation) return null
 
   const otherParticipant = activeConversation.otherParticipant
-  const otherPersonOnline = otherParticipant.isOnline || checkOnline(otherParticipant.id)
+  const otherPersonOnline =
+    otherParticipant.isOnline || checkOnline(otherParticipant.id)
   const canSeeStatus =
     myShowOnline &&
     otherParticipant.lastActive !== null &&

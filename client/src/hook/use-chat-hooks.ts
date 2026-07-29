@@ -8,7 +8,8 @@ export function useCreateConversation() {
       const res = await apiClient.post('/chat/conversations', { targetUserId })
       return res.data
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['conversations'] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['conversations'] }),
   })
 }
 
@@ -18,11 +19,15 @@ export function useDeleteConversation() {
     mutationFn: async (conversationId: string) => {
       await apiClient.delete(`/chat/conversations/${conversationId}`)
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['conversations'] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['conversations'] }),
   })
 }
 
-export function useSearchChatUsers(query: string, options?: { enabled?: boolean }) {
+export function useSearchChatUsers(
+  query: string,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ['chat-users-search', query],
     queryFn: async () => {

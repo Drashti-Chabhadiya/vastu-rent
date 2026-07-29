@@ -51,7 +51,8 @@ export function PersonalInfo() {
   const { data: myListings, isLoading: isListingsLoading } = useMyListings()
   const verifyCheckoutSession = useVerifyCheckoutSession()
 
-  const mainAddr = (session?.user as any)?.address || (session?.user as any)?.addresses?.[0]
+  const mainAddr =
+    (session?.user as any)?.address || (session?.user as any)?.addresses?.[0]
   const isProfileComplete = Boolean(mainAddr?.addressLine1 && mainAddr?.city)
 
   const [completeProfileModalOpen, setCompleteProfileModalOpen] = useState(
@@ -68,7 +69,10 @@ export function PersonalInfo() {
   useEffect(() => {
     if (isProfileComplete) {
       setCompleteProfileModalOpen(false)
-      if (typeof window !== 'undefined' && window.location.search.includes('completeProfile=true')) {
+      if (
+        typeof window !== 'undefined' &&
+        window.location.search.includes('completeProfile=true')
+      ) {
         const newUrl = window.location.pathname + window.location.hash
         window.history.replaceState(null, '', newUrl)
       }

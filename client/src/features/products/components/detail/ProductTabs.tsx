@@ -100,7 +100,6 @@ export const ProductTabs = ({
       </div>
 
       <div className="p-6 bg-card min-h-[250px]">
-
         {activeTab === 'reviews' && (
           <div className="space-y-6">
             {reviews.length === 0 ? (

@@ -17,10 +17,7 @@ export function MessageStatus({ msg, isMe, isStarred }: MessageStatusProps) {
     >
       {formatMsgTime(msg.createdAt)}
       {isStarred && (
-        <Star
-          size={9}
-          className="text-amber-500 fill-amber-500 shrink-0"
-        />
+        <Star size={9} className="text-amber-500 fill-amber-500 shrink-0" />
       )}
       {msg.pinnedBy && msg.pinnedBy.length > 0 && (
         <Pin size={9} className="text-primary rotate-45 shrink-0" />
@@ -45,11 +42,7 @@ export function MessageStatus({ msg, isMe, isStarred }: MessageStatusProps) {
             strokeWidth={2.5}
           />
         ) : (
-          <Check
-            size={11}
-            className="text-muted-dark"
-            strokeWidth={2.5}
-          />
+          <Check size={11} className="text-muted-dark" strokeWidth={2.5} />
         ))}
     </span>
   )

@@ -23,10 +23,7 @@ export function WishlistGridItem({
   const { t } = useTranslation()
 
   return (
-    <motion.div
-      variants={fadeUp}
-      className="relative group"
-    >
+    <motion.div variants={fadeUp} className="relative group">
       <ProductCard product={product} />
       {clearConfirmId === product.id ? (
         <div className="absolute inset-0 bg-card/95 rounded-3xl flex flex-col items-center justify-center gap-3 z-10 animate-in fade-in duration-150">

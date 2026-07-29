@@ -14,7 +14,10 @@ interface Props {
   onFilterChange: (val: 'all' | 'paid' | 'pending') => void
 }
 
-export const MyBookingsFilterDropdown = ({ paymentFilter, onFilterChange }: Props) => {
+export const MyBookingsFilterDropdown = ({
+  paymentFilter,
+  onFilterChange,
+}: Props) => {
   const { t } = useTranslation()
   return (
     <DropdownMenu>
@@ -22,9 +25,19 @@ export const MyBookingsFilterDropdown = ({ paymentFilter, onFilterChange }: Prop
         <Button
           variant="outline"
           className={cn(
-            'rounded-full', 'border-border', 'text-foreground/80',
-            'font-bold', 'h-10', 'px-5', 'flex', 'items-center', 'gap-2',
-            'hover:bg-muted-light/50', 'shadow-sm', 'shrink-0', 'cursor-pointer',
+            'rounded-full',
+            'border-border',
+            'text-foreground/80',
+            'font-bold',
+            'h-10',
+            'px-5',
+            'flex',
+            'items-center',
+            'gap-2',
+            'hover:bg-muted-light/50',
+            'shadow-sm',
+            'shrink-0',
+            'cursor-pointer',
           )}
         >
           <SlidersHorizontal size={14} className="text-muted-dark" />
@@ -37,7 +50,12 @@ export const MyBookingsFilterDropdown = ({ paymentFilter, onFilterChange }: Prop
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={cn(
-          'bg-card', 'border-border/30/80', 'rounded-xl', 'shadow-lg', 'p-1', 'min-w-[160px]',
+          'bg-card',
+          'border-border/30/80',
+          'rounded-xl',
+          'shadow-lg',
+          'p-1',
+          'min-w-[160px]',
         )}
       >
         <DropdownMenuItem

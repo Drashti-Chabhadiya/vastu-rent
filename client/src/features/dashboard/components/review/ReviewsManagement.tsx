@@ -29,7 +29,9 @@ export const ReviewsManagement = () => {
   const { data: sessionData } = authClient.useSession()
   const currentUserId = sessionData?.user?.id
   const [search] = useState('')
-  const [activeTab, setActiveTab] = useState<'all' | 'listings' | 'hosts'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'listings' | 'hosts'>(
+    'all',
+  )
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
   const [role, setRole] = useState<string | null>(null)
 
@@ -77,30 +79,30 @@ export const ReviewsManagement = () => {
 
   const reviews = serverReviews
     ? serverReviews.map((r: any) => ({
-      id: r.id,
-      productId: r.product?.id,
-      title: r.product?.title || 'Rental Item',
-      location: r.product?.location || 'India',
-      rating: r.rating || 5,
-      dates: formatStayDates(r.createdAt),
-      comment: r.comment || 'Perfect rental experience!',
-      host: {
-        name: r.product?.user?.name || 'Vastu Lister',
-        avatar:
-          r.product?.user?.image ||
-          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-      },
-      reviewer: {
-        id: r.user?.id,
-        name: r.user?.name || 'Vastu Renter',
-        avatar: r.user?.image,
-      },
-      postedDate: formatPostedDate(r.createdAt),
-      type: r.product ? 'listings' : 'hosts',
-      image:
-        r.product?.images?.[0] ||
-        'https://images.unsplash.com/photo-1545241047-6083a3684587',
-    }))
+        id: r.id,
+        productId: r.product?.id,
+        title: r.product?.title || 'Rental Item',
+        location: r.product?.location || 'India',
+        rating: r.rating || 5,
+        dates: formatStayDates(r.createdAt),
+        comment: r.comment || 'Perfect rental experience!',
+        host: {
+          name: r.product?.user?.name || 'Vastu Lister',
+          avatar:
+            r.product?.user?.image ||
+            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+        },
+        reviewer: {
+          id: r.user?.id,
+          name: r.user?.name || 'Vastu Renter',
+          avatar: r.user?.image,
+        },
+        postedDate: formatPostedDate(r.createdAt),
+        type: r.product ? 'listings' : 'hosts',
+        image:
+          r.product?.images?.[0] ||
+          'https://images.unsplash.com/photo-1545241047-6083a3684587',
+      }))
     : []
 
   const searchedReviews = reviews.filter((r: any) => {

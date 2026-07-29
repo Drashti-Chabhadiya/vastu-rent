@@ -229,7 +229,11 @@ export const ListingsManagement = ({
       return
     }
 
-    if (!mainAddr?.addressLine1 || !mainAddr?.city || completenessPercent < 80) {
+    if (
+      !mainAddr?.addressLine1 ||
+      !mainAddr?.city ||
+      completenessPercent < 80
+    ) {
       toast.error(
         t('Please complete your profile first before creating a listing.'),
         { duration: 4000 },
@@ -346,7 +350,8 @@ export const ListingsManagement = ({
               },
               onError: (err: any) => {
                 toast.error(
-                  err.response?.data?.message || t('Failed to update featured product'),
+                  err.response?.data?.message ||
+                    t('Failed to update featured product'),
                 )
               },
             })

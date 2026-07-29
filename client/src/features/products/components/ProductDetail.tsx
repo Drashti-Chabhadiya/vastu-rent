@@ -58,7 +58,7 @@ export function ProductDetail({ id }: { id: string }) {
   const createBookingSession = useCreateBookingSession()
   const cancelBookingSession = useCancelBookingSession()
   const [selectedImage, setSelectedImage] = useState(0)
-  const [activeTab, setActiveTab] = useState('description')
+  const [activeTab, setActiveTab] = useState('reviews')
 
   // Calendar/Booking State from store
   const {
@@ -293,7 +293,7 @@ export function ProductDetail({ id }: { id: string }) {
     } catch (err: any) {
       showAlert(
         err.response?.data?.message ||
-        'Booking failed. Please make sure you are logged in.',
+          'Booking failed. Please make sure you are logged in.',
         'Booking Failed',
       )
     } finally {
@@ -333,8 +333,8 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-      ]
+          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+        ]
   const liked = isLiked(product.id)
 
   const address = product.user?.address
@@ -358,9 +358,11 @@ export function ProductDetail({ id }: { id: string }) {
       label: 'Listing Source',
       value:
         product.listingType === 'shop' ||
-          product.user?.address?.addressType?.toLowerCase() === 'shop' ||
-          product.user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
-          ? product.shopName || product.user?.address?.shopName || product.user?.addresses?.[0]?.shopName
+        product.user?.address?.addressType?.toLowerCase() === 'shop' ||
+        product.user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
+          ? product.shopName ||
+            product.user?.address?.shopName ||
+            product.user?.addresses?.[0]?.shopName
             ? `🏪 ${t('Shop:')} ${product.shopName || product.user?.address?.shopName || product.user?.addresses?.[0]?.shopName}`
             : `🏪 ${t('From Shop / Store')}`
           : `🏠 ${t('From Home')}`,
@@ -453,10 +455,7 @@ export function ProductDetail({ id }: { id: string }) {
             />
 
             {/* Lister User Card */}
-            <ProductUserCard
-              user={product.user}
-              session={session}
-            />
+            <ProductUserCard user={product.user} session={session} />
           </div>
 
           {/* Similar Items Section */}

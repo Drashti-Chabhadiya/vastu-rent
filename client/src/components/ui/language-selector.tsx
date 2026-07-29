@@ -73,7 +73,9 @@ export function LanguageSelector({
               changeLanguage(item.code)
               if (session?.user) {
                 try {
-                  await apiClient.patch('/users/settings', { language: item.code })
+                  await apiClient.patch('/users/settings', {
+                    language: item.code,
+                  })
                 } catch (err) {
                   // Ignore failures
                 }

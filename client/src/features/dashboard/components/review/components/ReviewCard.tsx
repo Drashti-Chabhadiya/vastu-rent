@@ -138,9 +138,7 @@ const ReviewCard = ({
               const displayAvatar = isOwnReview
                 ? review.host.avatar
                 : review.reviewer.avatar
-              const displayLabel = isOwnReview
-                ? 'Reviewed Host'
-                : 'Reviewed By'
+              const displayLabel = isOwnReview ? 'Reviewed Host' : 'Reviewed By'
               return (
                 <>
                   <UserAvatar
@@ -209,10 +207,7 @@ const ReviewCard = ({
               className="rounded-xl border-border text-primary font-bold text-xs px-4 h-9 flex items-center justify-center gap-1 hover:bg-muted-light/50 shadow-sm active:scale-95 cursor-pointer w-full"
             >
               {t('View Listing')}
-              <ChevronRight
-                size={14}
-                className="text-primary stroke-[2.5]"
-              />
+              <ChevronRight size={14} className="text-primary stroke-[2.5]" />
             </Button>
           </a>
         ) : (
@@ -260,12 +255,8 @@ const ReviewCard = ({
                 className="rounded-xl border-border text-primary font-semibold text-xs px-4 h-9 flex items-center justify-center gap-1.5 hover:bg-muted-light/50 shadow-sm w-full"
               >
                 {(() => {
-                  const parsed = parseCommentImagesAndReply(
-                    review.comment,
-                  )
-                  return parsed.reply
-                    ? t('Edit Reply')
-                    : t('Reply to Review')
+                  const parsed = parseCommentImagesAndReply(review.comment)
+                  return parsed.reply ? t('Edit Reply') : t('Reply to Review')
                 })()}
               </Button>
             )}

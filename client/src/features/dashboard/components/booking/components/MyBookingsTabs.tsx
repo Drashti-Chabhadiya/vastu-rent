@@ -18,8 +18,13 @@ export const MyBookingsTabs = ({ activeTab, counts, onTabChange }: Props) => {
     <motion.div
       variants={fadeUp}
       className={cn(
-        'flex', 'gap-6', 'border-b', 'border-border/30', 'pb-px',
-        'overflow-x-auto', 'custom-scrollbar',
+        'flex',
+        'gap-6',
+        'border-b',
+        'border-border/30',
+        'pb-px',
+        'overflow-x-auto',
+        'custom-scrollbar',
       )}
     >
       {TABS.map((tab) => {
@@ -31,14 +36,26 @@ export const MyBookingsTabs = ({ activeTab, counts, onTabChange }: Props) => {
             onClick={() => onTabChange(tab)}
             className={cn(
               'pb-3 font-extrabold text-[13px] capitalize transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
-              isActive ? 'text-primary' : 'text-muted-dark hover:text-muted-foreground',
+              isActive
+                ? 'text-primary'
+                : 'text-muted-dark hover:text-muted-foreground',
             )}
           >
             <span>
               {t(tab)} ({counts[tab]})
             </span>
             {isActive && (
-              <div className={cn('absolute', 'bottom-0', 'left-0', 'right-0', 'h-0.5', 'bg-primary', 'rounded-full')} />
+              <div
+                className={cn(
+                  'absolute',
+                  'bottom-0',
+                  'left-0',
+                  'right-0',
+                  'h-0.5',
+                  'bg-primary',
+                  'rounded-full',
+                )}
+              />
             )}
           </Button>
         )

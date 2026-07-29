@@ -6,12 +6,9 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import {
-  QueryClientProvider,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
-import { Footer, Navbar } from '#/components/layout'
+import { Footer, Navbar, Tabbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
 import { useEffect, useRef } from 'react'
 import { SessionProvider, useSessionContext } from '#/context/SessionContext'
@@ -298,29 +295,38 @@ function RootDocument() {
         'antialiased',
         'min-h-screen',
         'w-full',
+        !isAuthPage &&
+          !isAdminPage &&
+          !isDashboardPage &&
+          !isChatPage &&
+          'pb-20 md:pb-0',
       )}
     >
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-        <TranslationProvider>
-          <NotificationListener />
-          {!isAuthPage && !isAdminPage && !isDashboardPage && (
-            <div
-              className={cn(
-                'sticky top-0 z-40',
-                isChatPage && 'hidden lg:block',
-              )}
-            >
-              <Navbar />
-            </div>
-          )}
-          <Outlet />
-          {!isAuthPage && !isAdminPage && !isDashboardPage && (
-            <div className={cn(isChatPage && 'hidden')}>
-              <Footer />
-            </div>
-          )}
-        </TranslationProvider>
+          <TranslationProvider>
+            <NotificationListener />
+            {!isAuthPage && !isAdminPage && !isDashboardPage && (
+              <div
+                className={cn(
+                  'sticky top-0 z-40',
+                  'hidden md:block',
+                  isChatPage && 'hidden lg:block',
+                )}
+              >
+                <Navbar />
+              </div>
+            )}
+            <Outlet />
+            {!isAuthPage && !isAdminPage && !isDashboardPage && (
+              <div className={cn('hidden md:block', isChatPage && 'hidden')}>
+                <Footer />
+              </div>
+            )}
+            {!isAuthPage && !isAdminPage && !isDashboardPage && !isChatPage && (
+              <Tabbar />
+            )}
+          </TranslationProvider>
         </SessionProvider>
       </QueryClientProvider>
       <Toaster position="top-right" />

@@ -5,8 +5,16 @@ import type { Message } from './chat-types'
 export function useEditMessage() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ messageId, content }: { messageId: string; content: string }) => {
-      const res = await apiClient.put(`/chat/messages/${messageId}`, { content })
+    mutationFn: async ({
+      messageId,
+      content,
+    }: {
+      messageId: string
+      content: string
+    }) => {
+      const res = await apiClient.put(`/chat/messages/${messageId}`, {
+        content,
+      })
       return res.data as Message
     },
     onSuccess: () => {
@@ -17,8 +25,16 @@ export function useEditMessage() {
 
 export function useDeleteMessage() {
   return useMutation({
-    mutationFn: async ({ messageId, mode }: { messageId: string; mode: 'me' | 'everyone' }) => {
-      await apiClient.delete(`/chat/messages/${messageId}`, { params: { mode } })
+    mutationFn: async ({
+      messageId,
+      mode,
+    }: {
+      messageId: string
+      mode: 'me' | 'everyone'
+    }) => {
+      await apiClient.delete(`/chat/messages/${messageId}`, {
+        params: { mode },
+      })
     },
   })
 }
@@ -26,8 +42,16 @@ export function useDeleteMessage() {
 export function useForwardMessage() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ messageId, targetConversationIds }: { messageId: string; targetConversationIds: string[] }) => {
-      const res = await apiClient.post(`/chat/messages/${messageId}/forward`, { targetConversationIds })
+    mutationFn: async ({
+      messageId,
+      targetConversationIds,
+    }: {
+      messageId: string
+      targetConversationIds: string[]
+    }) => {
+      const res = await apiClient.post(`/chat/messages/${messageId}/forward`, {
+        targetConversationIds,
+      })
       return res.data
     },
     onSuccess: () => {
@@ -56,8 +80,16 @@ export function useTogglePinMessage() {
 
 export function useReactToMessage() {
   return useMutation({
-    mutationFn: async ({ messageId, emoji }: { messageId: string; emoji: string }) => {
-      const res = await apiClient.post(`/chat/messages/${messageId}/react`, { emoji })
+    mutationFn: async ({
+      messageId,
+      emoji,
+    }: {
+      messageId: string
+      emoji: string
+    }) => {
+      const res = await apiClient.post(`/chat/messages/${messageId}/react`, {
+        emoji,
+      })
       return res.data as Message
     },
   })
@@ -76,7 +108,9 @@ export function useTogglePinConversation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/pin`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/pin`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -89,7 +123,9 @@ export function useToggleMuteConversation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/mute`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/mute`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -102,7 +138,9 @@ export function useClearChat() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/clear`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/clear`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -114,8 +152,17 @@ export function useClearChat() {
 export function useSetDisappearingMessages() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ conversationId, duration }: { conversationId: string; duration: number }) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/disappearing`, { duration })
+    mutationFn: async ({
+      conversationId,
+      duration,
+    }: {
+      conversationId: string
+      duration: number
+    }) => {
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/disappearing`,
+        { duration },
+      )
       return res.data
     },
     onSuccess: () => {
@@ -128,7 +175,9 @@ export function useArchiveConversation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/archive`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/archive`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -141,7 +190,9 @@ export function useUnarchiveConversation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/unarchive`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/unarchive`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -153,8 +204,17 @@ export function useUnarchiveConversation() {
 export function useUpdateConversationSettings() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ conversationId, settings }: { conversationId: string; settings: { wallpaper?: string; theme?: string } }) => {
-      const res = await apiClient.patch(`/chat/conversations/${conversationId}/settings`, settings)
+    mutationFn: async ({
+      conversationId,
+      settings,
+    }: {
+      conversationId: string
+      settings: { wallpaper?: string; theme?: string }
+    }) => {
+      const res = await apiClient.patch(
+        `/chat/conversations/${conversationId}/settings`,
+        settings,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -167,7 +227,9 @@ export function useBlockConversation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/block`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/block`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -180,7 +242,9 @@ export function useUnblockConversation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (conversationId: string) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/unblock`)
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/unblock`,
+      )
       return res.data
     },
     onSuccess: () => {
@@ -192,8 +256,17 @@ export function useUnblockConversation() {
 export function useReportConversation() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async ({ conversationId, reason }: { conversationId: string; reason: string }) => {
-      const res = await apiClient.post(`/chat/conversations/${conversationId}/report`, { reason })
+    mutationFn: async ({
+      conversationId,
+      reason,
+    }: {
+      conversationId: string
+      reason: string
+    }) => {
+      const res = await apiClient.post(
+        `/chat/conversations/${conversationId}/report`,
+        { reason },
+      )
       return res.data
     },
     onSuccess: () => {

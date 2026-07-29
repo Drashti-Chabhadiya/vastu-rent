@@ -29,13 +29,7 @@ export const EmptyNotificationsState = () => {
       >
         <Bell size={18} className="text-muted-dark" />
       </div>
-      <p
-        className={cn(
-          'text-[11px]',
-          'font-semibold',
-          'text-muted-dark',
-        )}
-      >
+      <p className={cn('text-[11px]', 'font-semibold', 'text-muted-dark')}>
         {t('All caught up! No alerts.')}
       </p>
     </div>

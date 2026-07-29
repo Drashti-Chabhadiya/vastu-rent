@@ -81,10 +81,16 @@ export function ProductCard({ product }: ProductCardProps) {
           {(() => {
             const isShop =
               product.listingType === 'shop' ||
-              (product as any).owner?.address?.addressType?.toLowerCase() === 'shop' ||
-              (product as any).owner?.addresses?.[0]?.addressType?.toLowerCase() === 'shop' ||
-              (product as any).user?.address?.addressType?.toLowerCase() === 'shop' ||
-              (product as any).user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
+              (product as any).owner?.address?.addressType?.toLowerCase() ===
+                'shop' ||
+              (
+                product as any
+              ).owner?.addresses?.[0]?.addressType?.toLowerCase() === 'shop' ||
+              (product as any).user?.address?.addressType?.toLowerCase() ===
+                'shop' ||
+              (
+                product as any
+              ).user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
             const displayShopName =
               product.shopName ||
               (product as any).owner?.address?.shopName ||

@@ -125,7 +125,7 @@ export function TranslationProvider({
   // Sync state with authenticated user preference on session change
   useEffect(() => {
     if (session?.user) {
-      const userLang = (session.user as any).language
+      const userLang = (session.user).language
       if (userLang) {
         const normalized = normalizeLanguage(userLang)
         if (normalized !== useTranslationStore.getState().language) {

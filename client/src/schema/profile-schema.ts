@@ -40,11 +40,15 @@ export const personalSchema = z
       .trim()
       .optional()
       .refine((val) => !val || /^\+91[6-9]\d{9}$/.test(val), {
-        message: 'Phone number must start with +91 followed by 10 digits (e.g. +91XXXXXXXXXX)',
+        message:
+          'Phone number must start with +91 followed by 10 digits (e.g. +91XXXXXXXXXX)',
       }),
     language: z.string().min(1, 'Language is required').default('en'),
     dob: z.string().min(1, 'Date of Birth is required'),
-    instagramUrl: flexibleUrl(/instagram\.com/i, 'Must be a valid Instagram link'),
+    instagramUrl: flexibleUrl(
+      /instagram\.com/i,
+      'Must be a valid Instagram link',
+    ),
     facebookUrl: flexibleUrl(/facebook\.com/i, 'Must be a valid Facebook link'),
   })
   .superRefine((data, ctx) => {

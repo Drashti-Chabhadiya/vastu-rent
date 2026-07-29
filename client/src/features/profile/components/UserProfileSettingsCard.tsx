@@ -62,7 +62,9 @@ export function UserProfileSettingsCard({
       phone: u.phone || '',
       language: u.language || 'en',
       dob: u.dob || '',
-      addressType: (mainAddr.addressType?.toLowerCase() === 'shop' ? 'shop' : 'home') as 'home' | 'shop',
+      addressType: (mainAddr.addressType?.toLowerCase() === 'shop'
+        ? 'shop'
+        : 'home'),
       shopName: mainAddr.shopName || '',
       addressLine1: mainAddr.addressLine1 || '',
       addressLine2: mainAddr.addressLine2 || '',
@@ -161,8 +163,10 @@ export function UserProfileSettingsCard({
         if (values.phone) payload.phone = values.phone
         if (values.language) payload.language = values.language
         if (values.dob) payload.dob = values.dob
-        if (values.instagramUrl !== undefined) payload.instagramUrl = values.instagramUrl
-        if (values.facebookUrl !== undefined) payload.facebookUrl = values.facebookUrl
+        if (values.instagramUrl !== undefined)
+          payload.instagramUrl = values.instagramUrl
+        if (values.facebookUrl !== undefined)
+          payload.facebookUrl = values.facebookUrl
         await updateSettings(payload)
       }
 
@@ -181,7 +185,9 @@ export function UserProfileSettingsCard({
           googleMapLink: values.googleMapLink,
         }
 
-        const existingAddressId = (session?.user as any)?.address?.id || (session?.user as any)?.addresses?.[0]?.id
+        const existingAddressId =
+          (session?.user as any)?.address?.id ||
+          (session?.user as any)?.addresses?.[0]?.id
         if (existingAddressId) {
           await updateAddressMutation.mutateAsync({
             id: existingAddressId,
@@ -214,9 +220,9 @@ export function UserProfileSettingsCard({
 
   const joinDate = session.user.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      year: 'numeric',
-    })
+        month: 'short',
+        year: 'numeric',
+      })
     : 'Jan 2024'
 
   const formValues = form.watch()

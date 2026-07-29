@@ -154,7 +154,7 @@ export function MessageItem({ msg }: MessageItemProps) {
         'flex gap-2.5 group/msg relative p-1.5 rounded-2xl transition-all',
         isMultiSelectMode && 'cursor-pointer hover:bg-muted-light/45',
         selectedMsgIds.includes(msg.id) &&
-        'bg-primary-soft/50 border border-primary-border/20 shadow-sm',
+          'bg-primary-soft/50 border border-primary-border/20 shadow-sm',
         isMe ? 'flex-row-reverse ml-auto max-w-[82%]' : 'mr-auto max-w-[82%]',
       )}
       onMouseEnter={() => setHoveredMsgId(msg.id)}
@@ -178,7 +178,6 @@ export function MessageItem({ msg }: MessageItemProps) {
         </button>
       )}
 
-
       {/* Avatar for other person */}
       {!isMe && (
         <div className={cn('self-end', 'shrink-0')}>
@@ -191,7 +190,6 @@ export function MessageItem({ msg }: MessageItemProps) {
       )}
 
       <div className={cn('flex flex-col gap-1 min-w-0')}>
-
         {/* Attachments rendering */}
         {!msg.isDeleted &&
           msg.attachments &&

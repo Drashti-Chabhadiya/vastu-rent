@@ -20,11 +20,7 @@ const SessionContext = createContext<SessionContextType>({
   isPending: true,
 })
 
-export function SessionProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export function SessionProvider({ children }: { children: React.ReactNode }) {
   const { data, isPending } = useQuery<SessionData | null>({
     queryKey: SESSION_QUERY_KEY,
     queryFn: async () => {

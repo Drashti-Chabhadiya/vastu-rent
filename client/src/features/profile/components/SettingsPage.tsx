@@ -210,17 +210,17 @@ export function SettingsPage() {
                 className={cn(
                   'flex items-center gap-3 px-4 py-2.5 lg:px-5 lg:py-3 text-[13px] font-semibold text-left w-auto lg:w-full shrink-0 cursor-pointer transition-colors border-b-2 border-l-0 lg:border-b-0 lg:border-l-2 rounded-none justify-start h-auto',
                   active &&
-                  !isDel &&
-                  'text-primary bg-primary-soft/70 border-primary hover:bg-primary-soft/70 hover:text-primary',
+                    !isDel &&
+                    'text-primary bg-primary-soft/70 border-primary hover:bg-primary-soft/70 hover:text-primary',
                   active &&
-                  isDel &&
-                  'text-destructive bg-danger/60 border-destructive/40 hover:bg-danger/60 hover:text-destructive',
+                    isDel &&
+                    'text-destructive bg-danger/60 border-destructive/40 hover:bg-danger/60 hover:text-destructive',
                   !active &&
-                  !isDel &&
-                  'text-muted-foreground/85 hover:text-foreground/90 hover:bg-muted-light border-transparent',
+                    !isDel &&
+                    'text-muted-foreground/85 hover:text-foreground/90 hover:bg-muted-light border-transparent',
                   !active &&
-                  isDel &&
-                  'text-destructive/80 hover:text-destructive hover:bg-danger border-transparent',
+                    isDel &&
+                    'text-destructive/80 hover:text-destructive hover:bg-danger border-transparent',
                 )}
               >
                 <Icon size={15} className="shrink-0" />

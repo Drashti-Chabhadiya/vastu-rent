@@ -7,11 +7,23 @@ import { authClient } from '#/lib/auth/auth-client'
 import { getSocketUrl } from '#/lib/socket-url'
 import type { Message, Conversation } from './chat-types'
 import {
-  useEditMessage, useDeleteMessage, useForwardMessage,
-  useToggleStarMessage, useTogglePinMessage, useReactToMessage, useRemoveReaction,
-  useTogglePinConversation, useToggleMuteConversation, useClearChat, useSetDisappearingMessages,
-  useArchiveConversation, useUnarchiveConversation, useUpdateConversationSettings,
-  useBlockConversation, useUnblockConversation, useReportConversation,
+  useEditMessage,
+  useDeleteMessage,
+  useForwardMessage,
+  useToggleStarMessage,
+  useTogglePinMessage,
+  useReactToMessage,
+  useRemoveReaction,
+  useTogglePinConversation,
+  useToggleMuteConversation,
+  useClearChat,
+  useSetDisappearingMessages,
+  useArchiveConversation,
+  useUnarchiveConversation,
+  useUpdateConversationSettings,
+  useBlockConversation,
+  useUnblockConversation,
+  useReportConversation,
 } from './use-chat-mutations'
 
 const SOCKET_URL = getSocketUrl()
@@ -25,9 +37,13 @@ export function useChat() {
   const socketRef = useRef<Socket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
   const activeConversationIdRef = useRef<string | null>(null)
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
+  const [activeConversationId, setActiveConversationId] = useState<
+    string | null
+  >(null)
   const [messages, setMessages] = useState<Message[]>([])
-  const [typingUsers, setTypingUsers] = useState<Map<string, boolean>>(new Map())
+  const [typingUsers, setTypingUsers] = useState<Map<string, boolean>>(
+    new Map(),
+  )
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set())
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
 
@@ -90,19 +106,42 @@ export function useChat() {
     socket.on('disconnect', () => setIsConnected(false))
     socket.on('connect_error', () => setIsConnected(false))
 
-    socket.on('user_status', ({ userId: uid, status, lastActive }: { userId: string; status: 'online' | 'offline'; lastActive?: string | null }) => {
-      setOnlineUsers((prev) => {
-        const updated = new Set(prev)
-        if (status === 'online') updated.add(uid)
-        else updated.delete(uid)
-        return updated
-      })
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) => conv.otherParticipant.id === uid
-          ? { ...conv, otherParticipant: { ...conv.otherParticipant, isOnline: status === 'online', lastActive: lastActive ?? conv.otherParticipant.lastActive } }
-          : conv) ?? [],
-      )
-    })
+    socket.on(
+      'user_status',
+      ({
+        userId: uid,
+        status,
+        lastActive,
+      }: {
+        userId: string
+        status: 'online' | 'offline'
+        lastActive?: string | null
+      }) => {
+        setOnlineUsers((prev) => {
+          const updated = new Set(prev)
+          if (status === 'online') updated.add(uid)
+          else updated.delete(uid)
+          return updated
+        })
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.otherParticipant.id === uid
+                ? {
+                    ...conv,
+                    otherParticipant: {
+                      ...conv.otherParticipant,
+                      isOnline: status === 'online',
+                      lastActive:
+                        lastActive ?? conv.otherParticipant.lastActive,
+                    },
+                  }
+                : conv,
+            ) ?? [],
+        )
+      },
+    )
 
     socket.on('new_message', (msg: Message) => {
       const currentConvId = activeConversationIdRef.current
@@ -112,59 +151,159 @@ export function useChat() {
         return [...prev, msg]
       })
       queryClient.setQueryData<Conversation[]>(['conversations'], (old) => {
-        const updated = old?.map((conv) => {
-          if (conv.id !== msg.conversationId) return conv
-          const isActiveConv = msg.conversationId === currentConvId
-          return {
-            ...conv,
-            updatedAt: msg.createdAt,
-            lastMessage: { id: msg.id, content: msg.content, senderId: msg.senderId, isRead: msg.isRead, deliveredAt: msg.deliveredAt, readAt: msg.readAt, createdAt: msg.createdAt },
-            unreadCount: isActiveConv ? 0 : conv.unreadCount + (msg.senderId !== userId ? 1 : 0),
-          }
-        }) ?? []
-        return [...updated].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+        const updated =
+          old?.map((conv) => {
+            if (conv.id !== msg.conversationId) return conv
+            const isActiveConv = msg.conversationId === currentConvId
+            return {
+              ...conv,
+              updatedAt: msg.createdAt,
+              lastMessage: {
+                id: msg.id,
+                content: msg.content,
+                senderId: msg.senderId,
+                isRead: msg.isRead,
+                deliveredAt: msg.deliveredAt,
+                readAt: msg.readAt,
+                createdAt: msg.createdAt,
+              },
+              unreadCount: isActiveConv
+                ? 0
+                : conv.unreadCount + (msg.senderId !== userId ? 1 : 0),
+            }
+          }) ?? []
+        return [...updated].sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        )
       })
     })
 
     socket.on('message_edited', (msg: Message) => {
-      setMessages((prev) => prev.map((m) => m.id === msg.id ? { ...m, content: msg.content, isEdited: true, updatedAt: msg.updatedAt } : m))
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) => conv.id === msg.conversationId && conv.lastMessage?.id === msg.id ? { ...conv, lastMessage: { ...conv.lastMessage, content: msg.content } } : conv) ?? [],
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === msg.id
+            ? {
+                ...m,
+                content: msg.content,
+                isEdited: true,
+                updatedAt: msg.updatedAt,
+              }
+            : m,
+        ),
+      )
+      queryClient.setQueryData<Conversation[]>(
+        ['conversations'],
+        (old) =>
+          old?.map((conv) =>
+            conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
+              ? {
+                  ...conv,
+                  lastMessage: { ...conv.lastMessage, content: msg.content },
+                }
+              : conv,
+          ) ?? [],
       )
     })
 
-    socket.on('message_deleted', (msg: { id: string; conversationId: string; isDeleted: boolean; content: string; attachments: string[]; updatedAt: string }) => {
-      setMessages((prev) => prev.map((m) => m.id === msg.id ? { ...m, content: msg.content, attachments: msg.attachments, isDeleted: msg.isDeleted, updatedAt: msg.updatedAt } : m))
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) => conv.id === msg.conversationId && conv.lastMessage?.id === msg.id ? { ...conv, lastMessage: { ...conv.lastMessage, content: msg.content } } : conv) ?? [],
-      )
-    })
+    socket.on(
+      'message_deleted',
+      (msg: {
+        id: string
+        conversationId: string
+        isDeleted: boolean
+        content: string
+        attachments: string[]
+        updatedAt: string
+      }) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === msg.id
+              ? {
+                  ...m,
+                  content: msg.content,
+                  attachments: msg.attachments,
+                  isDeleted: msg.isDeleted,
+                  updatedAt: msg.updatedAt,
+                }
+              : m,
+          ),
+        )
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.id === msg.conversationId && conv.lastMessage?.id === msg.id
+                ? {
+                    ...conv,
+                    lastMessage: { ...conv.lastMessage, content: msg.content },
+                  }
+                : conv,
+            ) ?? [],
+        )
+      },
+    )
 
-    socket.on('messages_delivered', ({ messageIds, deliveredAt }: { messageIds: string[]; deliveredAt: string }) => {
-      setMessages((prev) => prev.map((m) => messageIds.includes(m.id) ? { ...m, deliveredAt } : m))
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) => conv.lastMessage && messageIds.includes(conv.lastMessage.id) ? { ...conv, lastMessage: { ...conv.lastMessage, deliveredAt } } : conv) ?? [],
-      )
-    })
+    socket.on(
+      'messages_delivered',
+      ({
+        messageIds,
+        deliveredAt,
+      }: {
+        messageIds: string[]
+        deliveredAt: string
+      }) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            messageIds.includes(m.id) ? { ...m, deliveredAt } : m,
+          ),
+        )
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.lastMessage && messageIds.includes(conv.lastMessage.id)
+                ? { ...conv, lastMessage: { ...conv.lastMessage, deliveredAt } }
+                : conv,
+            ) ?? [],
+        )
+      },
+    )
 
-    socket.on('conversation_updated', () => queryClient.invalidateQueries({ queryKey: ['conversations'] }))
+    socket.on('conversation_updated', () =>
+      queryClient.invalidateQueries({ queryKey: ['conversations'] }),
+    )
 
     socket.on('message_starred_updated', ({ id, starredBy }: any) => {
-      setMessages((prev) => prev.map((m) => m.id === id ? { ...m, starredBy } : m))
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, starredBy } : m)),
+      )
     })
 
     socket.on('message_pinned_updated', ({ id, pinnedBy }: any) => {
-      setMessages((prev) => prev.map((m) => m.id === id ? { ...m, pinnedBy } : m))
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, pinnedBy } : m)),
+      )
     })
 
     socket.on('message_reactions_updated', ({ id, reactions }: any) => {
-      setMessages((prev) => prev.map((m) => m.id === id ? { ...m, reactions } : m))
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, reactions } : m)),
+      )
     })
 
-    socket.on('conversation_settings_updated', () => queryClient.invalidateQueries({ queryKey: ['conversations'] }))
+    socket.on('conversation_settings_updated', () =>
+      queryClient.invalidateQueries({ queryKey: ['conversations'] }),
+    )
 
     socket.on('conversation_blocked_updated', ({ id, blockedBy }: any) => {
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) => old?.map((conv) => conv.id === id ? { ...conv, blockedBy } : conv) ?? [])
+      queryClient.setQueryData<Conversation[]>(
+        ['conversations'],
+        (old) =>
+          old?.map((conv) =>
+            conv.id === id ? { ...conv, blockedBy } : conv,
+          ) ?? [],
+      )
       queryClient.invalidateQueries({ queryKey: ['conversations'] })
     })
 
@@ -173,22 +312,59 @@ export function useChat() {
       queryClient.invalidateQueries({ queryKey: ['conversations'] })
     })
 
-    socket.on('typing', ({ conversationId, userId: typingUid, isTyping }: any) => {
-      if (typingUid === userId) return
-      setTypingUsers((prev) => {
-        const updated = new Map(prev)
-        if (isTyping) updated.set(conversationId, true)
-        else updated.delete(conversationId)
-        return updated
-      })
-    })
+    socket.on(
+      'typing',
+      ({ conversationId, userId: typingUid, isTyping }: any) => {
+        if (typingUid === userId) return
+        setTypingUsers((prev) => {
+          const updated = new Map(prev)
+          if (isTyping) updated.set(conversationId, true)
+          else updated.delete(conversationId)
+          return updated
+        })
+      },
+    )
 
-    socket.on('messages_read', ({ conversationId, readAt }: { conversationId: string; readAt: string }) => {
-      setMessages((prev) => prev.map((m) => m.conversationId === conversationId && m.senderId === userId ? { ...m, isRead: true, readAt, deliveredAt: m.deliveredAt || readAt } : m))
-      queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-        old?.map((conv) => conv.id === conversationId && conv.lastMessage ? { ...conv, lastMessage: { ...conv.lastMessage, isRead: true, readAt, deliveredAt: conv.lastMessage.deliveredAt || readAt } } : conv) ?? [],
-      )
-    })
+    socket.on(
+      'messages_read',
+      ({
+        conversationId,
+        readAt,
+      }: {
+        conversationId: string
+        readAt: string
+      }) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.conversationId === conversationId && m.senderId === userId
+              ? {
+                  ...m,
+                  isRead: true,
+                  readAt,
+                  deliveredAt: m.deliveredAt || readAt,
+                }
+              : m,
+          ),
+        )
+        queryClient.setQueryData<Conversation[]>(
+          ['conversations'],
+          (old) =>
+            old?.map((conv) =>
+              conv.id === conversationId && conv.lastMessage
+                ? {
+                    ...conv,
+                    lastMessage: {
+                      ...conv.lastMessage,
+                      isRead: true,
+                      readAt,
+                      deliveredAt: conv.lastMessage.deliveredAt || readAt,
+                    },
+                  }
+                : conv,
+            ) ?? [],
+        )
+      },
+    )
 
     return () => {
       socket.disconnect()
@@ -200,51 +376,67 @@ export function useChat() {
     const handleVisibilityChange = () => {
       if (document.visibilityState !== 'visible') return
       queryClient.invalidateQueries({ queryKey: ['conversations'] })
-      if (socketRef.current && !socketRef.current.connected && token) socketRef.current.connect()
+      if (socketRef.current && !socketRef.current.connected && token)
+        socketRef.current.connect()
     }
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+    return () =>
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [token, queryClient])
 
   useEffect(() => {
     if (!userId) return
     const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') queryClient.invalidateQueries({ queryKey: ['conversations'] })
+      if (document.visibilityState === 'visible')
+        queryClient.invalidateQueries({ queryKey: ['conversations'] })
     }, 30_000)
     return () => clearInterval(interval)
   }, [userId, queryClient])
 
-  const switchConversation = useCallback(async (conversationId: string) => {
-    if (activeConversationIdRef.current === conversationId) return
+  const switchConversation = useCallback(
+    async (conversationId: string) => {
+      if (activeConversationIdRef.current === conversationId) return
 
-    setActiveConversationId(conversationId)
-    activeConversationIdRef.current = conversationId
-    setMessages([])
-    setIsLoadingMessages(true)
+      setActiveConversationId(conversationId)
+      activeConversationIdRef.current = conversationId
+      setMessages([])
+      setIsLoadingMessages(true)
 
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('join_conversation', { conversationId })
-    }
+      if (socketRef.current?.connected) {
+        socketRef.current.emit('join_conversation', { conversationId })
+      }
 
-    try {
-      const res = await apiClient.get(`/chat/conversations/${conversationId}/messages`)
-      setMessages(res.data)
-    } catch (err) {
-      console.error('Failed to load messages:', err)
-    } finally {
-      setIsLoadingMessages(false)
-    }
+      try {
+        const res = await apiClient.get(
+          `/chat/conversations/${conversationId}/messages`,
+        )
+        setMessages(res.data)
+      } catch (err) {
+        console.error('Failed to load messages:', err)
+      } finally {
+        setIsLoadingMessages(false)
+      }
 
-    queryClient.setQueryData<Conversation[]>(['conversations'], (old) =>
-      old?.map((conv) => conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv) ?? [],
-    )
-  }, [queryClient])
+      queryClient.setQueryData<Conversation[]>(
+        ['conversations'],
+        (old) =>
+          old?.map((conv) =>
+            conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv,
+          ) ?? [],
+      )
+    },
+    [queryClient],
+  )
 
   const sendMessage = useCallback((content: string, attachments?: string[]) => {
     const convId = activeConversationIdRef.current
     if (!convId || !socketRef.current?.connected) return
     if (!content.trim() && (!attachments || attachments.length === 0)) return
-    socketRef.current.emit('send_message', { conversationId: convId, content: content.trim(), attachments: attachments ?? [] })
+    socketRef.current.emit('send_message', {
+      conversationId: convId,
+      content: content.trim(),
+      attachments: attachments ?? [],
+    })
   }, [])
 
   const emitTyping = useCallback((isTyping: boolean) => {
@@ -253,13 +445,21 @@ export function useChat() {
     socketRef.current.emit('typing', { conversationId: convId, isTyping })
   }, [])
 
-  const isOtherPersonTyping = activeConversationId ? typingUsers.get(activeConversationId) === true : false
+  const isOtherPersonTyping = activeConversationId
+    ? typingUsers.get(activeConversationId) === true
+    : false
 
-  const openConversationWith = useCallback((targetUserId: string) => {
-    openConversationMutation.mutate(targetUserId)
-  }, [openConversationMutation])
+  const openConversationWith = useCallback(
+    (targetUserId: string) => {
+      openConversationMutation.mutate(targetUserId)
+    },
+    [openConversationMutation],
+  )
 
-  const checkOnline = useCallback((uid: string) => onlineUsers.has(uid), [onlineUsers])
+  const checkOnline = useCallback(
+    (uid: string) => onlineUsers.has(uid),
+    [onlineUsers],
+  )
 
   const editMessageMutation = useEditMessage()
   const deleteMessageMutation = useDeleteMessage()
@@ -280,17 +480,35 @@ export function useChat() {
   const reportConversationMutation = useReportConversation()
 
   return {
-    isConnected, conversations, isLoadingConversations, refetchConversations,
-    activeConversationId, switchConversation, openConversationWith,
-    messages, isLoadingMessages, sendMessage, emitTyping, isOtherPersonTyping,
-    onlineUsers, checkOnline, currentUserId: userId, session,
+    isConnected,
+    conversations,
+    isLoadingConversations,
+    refetchConversations,
+    activeConversationId,
+    switchConversation,
+    openConversationWith,
+    messages,
+    isLoadingMessages,
+    sendMessage,
+    emitTyping,
+    isOtherPersonTyping,
+    onlineUsers,
+    checkOnline,
+    currentUserId: userId,
+    session,
     editMessage: editMessageMutation.mutateAsync,
     deleteMessage: deleteMessageMutation.mutateAsync,
     forwardMessage: forwardMessageMutation.mutateAsync,
     togglePinConversation: togglePinConversationMutation.mutateAsync,
     toggleMuteConversation: toggleMuteConversationMutation.mutateAsync,
     clearChat: clearChatMutation.mutateAsync,
-    setDisappearingMessages: ({ conversationId, duration }: { conversationId: string; duration: number }) =>
+    setDisappearingMessages: ({
+      conversationId,
+      duration,
+    }: {
+      conversationId: string
+      duration: number
+    }) =>
       setDisappearingMessagesMutation.mutateAsync({ conversationId, duration }),
     toggleStarMessage: toggleStarMessageMutation.mutateAsync,
     togglePinMessage: togglePinMessageMutation.mutateAsync,
@@ -306,9 +524,35 @@ export function useChat() {
 }
 
 export type { Message, Conversation, ChatUser } from './chat-types'
-export { useCreateConversation, useDeleteConversation, useSearchChatUsers } from './use-chat-hooks'
-export { useToggleStarMessage, useTogglePinMessage, useReactToMessage, useRemoveReaction } from './use-chat-mutations'
-export { useEditMessage, useDeleteMessage, useForwardMessage } from './use-chat-mutations'
-export { useTogglePinConversation, useToggleMuteConversation, useClearChat, useSetDisappearingMessages } from './use-chat-mutations'
-export { useArchiveConversation, useUnarchiveConversation, useUpdateConversationSettings } from './use-chat-mutations'
-export { useBlockConversation, useUnblockConversation, useReportConversation } from './use-chat-mutations'
+export {
+  useCreateConversation,
+  useDeleteConversation,
+  useSearchChatUsers,
+} from './use-chat-hooks'
+export {
+  useToggleStarMessage,
+  useTogglePinMessage,
+  useReactToMessage,
+  useRemoveReaction,
+} from './use-chat-mutations'
+export {
+  useEditMessage,
+  useDeleteMessage,
+  useForwardMessage,
+} from './use-chat-mutations'
+export {
+  useTogglePinConversation,
+  useToggleMuteConversation,
+  useClearChat,
+  useSetDisappearingMessages,
+} from './use-chat-mutations'
+export {
+  useArchiveConversation,
+  useUnarchiveConversation,
+  useUpdateConversationSettings,
+} from './use-chat-mutations'
+export {
+  useBlockConversation,
+  useUnblockConversation,
+  useReportConversation,
+} from './use-chat-mutations'

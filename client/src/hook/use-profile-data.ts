@@ -79,7 +79,7 @@ export function useProfileData() {
       setGender(
         rawGender.trim()
           ? rawGender.trim().charAt(0).toUpperCase() +
-          rawGender.trim().slice(1).toLowerCase()
+              rawGender.trim().slice(1).toLowerCase()
           : '',
       )
       setLanguage(u.language || '')

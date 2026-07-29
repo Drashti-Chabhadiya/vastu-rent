@@ -9,6 +9,7 @@ import {
   Star,
   Search,
   Sparkles,
+  Bell,
 } from 'lucide-react'
 import heroImg from '../../../../public/assets/hero-living.jpg'
 import { Button } from '#/components/ui/button'
@@ -16,6 +17,8 @@ import { useTranslation } from '#/context/TranslationContext'
 import { useNavigate, Link } from '@tanstack/react-router'
 import { useProducts } from '#/hook'
 import { HeroSkeleton } from '#/components/skeletons'
+import { useSessionContext } from '#/context/SessionContext'
+import { UserAvatar } from '#/components/common/UserAvatar'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -31,13 +34,21 @@ const stagger: Variants = {
 
 export function HeroSection() {
   const { t, formatDigits, formatCurrency } = useTranslation()
+  const { data: session } = useSessionContext()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
-  const { data: products, isPending } = useProducts({ status: 'active', isFeatured: true })
+  const { data: products, isPending } = useProducts({
+    status: 'active',
+    isFeatured: true,
+  })
 
-  const featuredProduct = products?.find((p: any) => p.images && p.images.length > 0)
+  const featuredProduct = products?.find(
+    (p: any) => p.images && p.images.length > 0,
+  )
   const displayImg = featuredProduct ? featuredProduct.images[0] : heroImg
-  const displayTitle = featuredProduct ? featuredProduct.title : 'Mira Lounge Chair'
+  const displayTitle = featuredProduct
+    ? featuredProduct.title
+    : 'Mira Lounge Chair'
   const displayPrice = featuredProduct ? featuredProduct.price : 1250
   const displayRating = featuredProduct?.rating || '4.96'
   const displayHost = featuredProduct?.user?.name || 'Drashti'
@@ -60,12 +71,42 @@ export function HeroSection() {
     'A quietly curated marketplace for the things you need, only when you need them. Quality lent between neighbors — gentler on your home, kinder to the planet.'
 
   return (
-    <section className="relative overflow-hidden bg-background pt-6 lg:pt-10">
+    <section className="relative overflow-hidden bg-background pt-3 md:pt-6 lg:pt-10">
+      {/* Mobile Welcome Header */}
+      <div className="flex md:hidden items-center justify-between px-6 pt-3 pb-4 bg-background">
+        <div>
+          <span className="text-[10px] text-muted-foreground font-bold tracking-wide uppercase">
+            {t('Good morning')}
+          </span>
+          <h2 className="font-display text-base font-black text-foreground mt-0.5 leading-tight">
+            {session?.user?.name || t('Guest')}
+          </h2>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/account/notifications"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
+          >
+            <Bell size={16} strokeWidth={2} />
+            <span className="absolute top-1.5 right-1.5 h-2 w-2.5 rounded-full bg-[#c97a45] border border-[#faf9f5] dark:border-[#152019]" />
+          </Link>
+          <Link to="/account">
+            <UserAvatar
+              image={session?.user?.image}
+              name={session?.user?.name || 'Guest'}
+              size="trigger"
+              avatarClassName="border border-border/40 shadow-xs h-9 w-9"
+            />
+          </Link>
+        </div>
+      </div>
+
       {/* Background ambient lighting */}
       <div className="absolute top-0 right-1/4 -z-10 h-[450px] w-[450px] rounded-full bg-primary/5 blur-3xl" />
       <div className="absolute top-1/3 left-10 -z-10 h-[350px] w-[350px] rounded-full bg-emerald-500/5 blur-3xl" />
 
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 pb-16 pt-4 md:px-10 lg:grid-cols-12 lg:gap-14 lg:pb-20">
+      {/* Desktop Layout */}
+      <div className="hidden md:grid mx-auto max-w-[1400px] grid-cols-1 gap-10 px-6 pb-16 pt-4 md:px-10 lg:grid-cols-12 lg:gap-14 lg:pb-20">
         {/* Left column */}
         <motion.div
           variants={stagger}
@@ -205,7 +246,8 @@ export function HeroSection() {
                   </div>
                   <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-medium truncate">
                     <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 shrink-0" />{' '}
-                    {formatDigits(displayRating)} · {t('Hosted by')} {displayHost}
+                    {formatDigits(displayRating)} · {t('Hosted by')}{' '}
+                    {displayHost}
                   </div>
                 </div>
                 <div className="text-right shrink-0">
@@ -236,6 +278,81 @@ export function HeroSection() {
             </div>
           )}
         </motion.div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="flex md:hidden flex-col gap-4 px-6 pb-6 pt-2">
+        {/* Compact Mobile Search Bar */}
+        <form
+          onSubmit={handleSearch}
+          className="flex w-full items-center rounded-2xl border border-border/40 bg-card p-1 shadow-sm transition-all focus-within:border-primary"
+        >
+          <div className="relative flex-1 flex items-center pl-2">
+            <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('Search listings…')}
+              className="w-full bg-transparent px-2 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
+            />
+          </div>
+          <Button
+            type="submit"
+            className="rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold px-3 py-1.5 text-xs shrink-0 shadow-xs h-8 border-none cursor-pointer"
+          >
+            {t('Search')}
+          </Button>
+        </form>
+
+        {/* Mobile Featured Card */}
+        {isPending ? (
+          <div className="h-[180px] rounded-[1.5rem] bg-muted animate-pulse" />
+        ) : (
+          <div className="relative overflow-hidden rounded-[1.5rem] bg-card border border-border/30 shadow-lg">
+            {featuredProduct ? (
+              <Link
+                to="/products/$id"
+                params={{ id: featuredProduct.id }}
+                className="absolute inset-0 z-20"
+              />
+            ) : (
+              <Link to="/products" className="absolute inset-0 z-20" />
+            )}
+            <img
+              src={displayImg}
+              alt={displayTitle}
+              className="h-[180px] w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+
+            {/* Top featured tag */}
+            <div className="absolute left-3.5 top-3.5 z-30 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[8.5px] font-extrabold uppercase tracking-wide text-primary shadow-xs">
+              <span className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
+              {t('Featured this week')}
+            </div>
+
+            {/* Bottom floating details */}
+            <div className="absolute bottom-3.5 left-3.5 right-3.5 z-30 flex items-end justify-between text-white">
+              <div className="overflow-hidden pr-2">
+                <span className="text-[8.5px] font-bold uppercase tracking-wider opacity-85">
+                  {displayCategory} · {displayLocation}
+                </span>
+                <h3 className="font-display font-black text-sm truncate mt-0.5">
+                  {displayTitle}
+                </h3>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="font-black text-sm">
+                  {formatCurrency(displayPrice)}
+                  <small className="text-[8.5px] font-normal opacity-85">
+                    /day
+                  </small>
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Trust strip */}

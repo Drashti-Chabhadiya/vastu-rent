@@ -49,18 +49,26 @@ export const ProductImageViewer = ({
   const handlePrev = useCallback(() => {
     zoom.resetZoom()
     swipe.resetSwipeState()
-    setSelectedImage(
-      selectedImage > 0 ? selectedImage - 1 : images.length - 1,
-    )
-  }, [selectedImage, images.length, setSelectedImage, zoom.resetZoom, swipe.resetSwipeState])
+    setSelectedImage(selectedImage > 0 ? selectedImage - 1 : images.length - 1)
+  }, [
+    selectedImage,
+    images.length,
+    setSelectedImage,
+    zoom.resetZoom,
+    swipe.resetSwipeState,
+  ])
 
   const handleNext = useCallback(() => {
     zoom.resetZoom()
     swipe.resetSwipeState()
-    setSelectedImage(
-      selectedImage < images.length - 1 ? selectedImage + 1 : 0,
-    )
-  }, [selectedImage, images.length, setSelectedImage, zoom.resetZoom, swipe.resetSwipeState])
+    setSelectedImage(selectedImage < images.length - 1 ? selectedImage + 1 : 0)
+  }, [
+    selectedImage,
+    images.length,
+    setSelectedImage,
+    zoom.resetZoom,
+    swipe.resetSwipeState,
+  ])
 
   const handleDragMove = useCallback(
     (clientX: number, clientY: number) => {
@@ -71,7 +79,12 @@ export const ProductImageViewer = ({
         swipe.handleDragMoveSwipe(clientX, clientY)
       }
     },
-    [zoom.isDragging, zoom.scale, zoom.handleDragMovePan, swipe.handleDragMoveSwipe],
+    [
+      zoom.isDragging,
+      zoom.scale,
+      zoom.handleDragMovePan,
+      swipe.handleDragMoveSwipe,
+    ],
   )
 
   const handleDragEnd = useCallback(
