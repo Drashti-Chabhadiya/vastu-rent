@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
 import {
@@ -19,6 +19,8 @@ import { useProducts } from '#/hook'
 import { HeroSkeleton } from '#/components/skeletons'
 import { useSessionContext } from '#/context/SessionContext'
 import { UserAvatar } from '#/components/common/UserAvatar'
+import useEmblaCarousel from 'embla-carousel-react'
+import { cn } from '#/lib/utils'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -54,6 +56,52 @@ export function HeroSection() {
   const displayHost = featuredProduct?.user?.name || 'Drashti'
   const displayCategory = featuredProduct?.category?.name || 'Living'
   const displayLocation = featuredProduct?.city || 'Surat'
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
+  useEffect(() => {
+    if (!emblaApi) return
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap())
+    }
+    emblaApi.on('select', onSelect)
+    const interval = setInterval(() => {
+      emblaApi.scrollNext()
+    }, 4500)
+    return () => {
+      clearInterval(interval)
+      emblaApi.off('select', onSelect)
+    }
+  }, [emblaApi])
+
+  const banners =
+    products && products.length > 0
+      ? products
+        .filter((p: any) => p.images && p.images.length > 0)
+        .slice(0, 6)
+        .map((p: any) => ({
+          id: p.id,
+          tag: t('Featured product'),
+          title: p.title || p.name,
+          subtitle: `${p.category?.name || t('Rent')} · ${p.city || p.location || 'Surat'}`,
+          image: p.images[0],
+          link: `/products/${p.id}`,
+          price: p.price,
+        }))
+      : [
+        {
+          id: 'featured-default',
+          tag: t('Featured this week'),
+          title: displayTitle,
+          subtitle: `${displayCategory} · ${displayLocation}`,
+          image: displayImg,
+          link: featuredProduct
+            ? `/products/${featuredProduct.id}`
+            : '/products',
+          price: displayPrice,
+        },
+      ]
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -230,10 +278,10 @@ export function HeroSection() {
                 className="aspect-[4/5] h-full w-full object-cover"
               />
               {/* Top featured tag */}
-              <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-background/90 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground backdrop-blur-md border border-border/40 shadow-sm">
+              {/* <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-background/90 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground backdrop-blur-md border border-border/40 shadow-sm">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                 {t(`Featured · ${displayTitle}`)}
-              </div>
+              </div> */}
 
               {/* Bottom floating product details */}
               <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-card/95 p-4 backdrop-blur-md border border-border/40 shadow-lg">
@@ -305,51 +353,79 @@ export function HeroSection() {
           </Button>
         </form>
 
-        {/* Mobile Featured Card */}
+        {/* Mobile Promo Slider */}
         {isPending ? (
           <div className="h-[180px] rounded-[1.5rem] bg-muted animate-pulse" />
         ) : (
-          <div className="relative overflow-hidden rounded-[1.5rem] bg-card border border-border/30 shadow-lg">
-            {featuredProduct ? (
-              <Link
-                to="/products/$id"
-                params={{ id: featuredProduct.id }}
-                className="absolute inset-0 z-20"
-              />
-            ) : (
-              <Link to="/products" className="absolute inset-0 z-20" />
-            )}
-            <img
-              src={displayImg}
-              alt={displayTitle}
-              className="h-[180px] w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+          <div className="relative">
+            <div
+              className="overflow-hidden rounded-[1.5rem] border border-border/30 shadow-lg"
+              ref={emblaRef}
+            >
+              <div className="flex">
+                {banners.map((b: any) => (
+                  <div
+                    key={b.id}
+                    className="relative flex-[0_0_100%] min-w-0 h-[180px]"
+                  >
+                    <Link
+                      to={b.link as any}
+                      className="absolute inset-0 z-20"
+                    />
+                    <img
+                      src={b.image}
+                      alt={b.title}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-            {/* Top featured tag */}
-            <div className="absolute left-3.5 top-3.5 z-30 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[8.5px] font-extrabold uppercase tracking-wide text-primary shadow-xs">
-              <span className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
-              {t('Featured this week')}
+                    {/* Tag badge */}
+                    {/* <div className="absolute left-3.5 top-3.5 z-30 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-[8.5px] font-extrabold uppercase tracking-wide text-primary shadow-xs">
+                      <span className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
+                      {b.tag}
+                    </div> */}
+
+                    {/* Bottom floating details */}
+                    <div className="absolute bottom-3.5 left-3.5 right-3.5 z-30 flex items-end justify-between text-white">
+                      <div className="overflow-hidden pr-2">
+                        <span className="text-[8.5px] font-bold uppercase tracking-wider opacity-85">
+                          {b.subtitle}
+                        </span>
+                        <h3 className="font-display font-black text-sm truncate mt-0.5">
+                          {b.title}
+                        </h3>
+                      </div>
+                      {b.price && (
+                        <div className="text-right shrink-0">
+                          <span className="font-black text-sm">
+                            {formatCurrency(b.price)}
+                            <small className="text-[8.5px] font-normal opacity-85">
+                              /day
+                            </small>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Bottom floating details */}
-            <div className="absolute bottom-3.5 left-3.5 right-3.5 z-30 flex items-end justify-between text-white">
-              <div className="overflow-hidden pr-2">
-                <span className="text-[8.5px] font-bold uppercase tracking-wider opacity-85">
-                  {displayCategory} · {displayLocation}
-                </span>
-                <h3 className="font-display font-black text-sm truncate mt-0.5">
-                  {displayTitle}
-                </h3>
-              </div>
-              <div className="text-right shrink-0">
-                <span className="font-black text-sm">
-                  {formatCurrency(displayPrice)}
-                  <small className="text-[8.5px] font-normal opacity-85">
-                    /day
-                  </small>
-                </span>
-              </div>
+            {/* Sliding Dots Indicators */}
+            <div className="absolute bottom-3 right-3 z-30 flex gap-1 bg-black/45 backdrop-blur-xs py-1 px-2 rounded-full">
+              {banners.map((_: any, index: number) => (
+                <button
+                  key={index}
+                  onClick={() => emblaApi?.scrollTo(index)}
+                  className={cn(
+                    'h-1.5 rounded-full transition-all duration-300 border-none cursor-pointer',
+                    index === selectedIndex
+                      ? 'w-3.5 bg-white'
+                      : 'w-1.5 bg-white/40',
+                  )}
+                  aria-label={`Slide ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         )}
