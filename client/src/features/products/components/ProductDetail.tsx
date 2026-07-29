@@ -358,8 +358,8 @@ export function ProductDetail({ id }: { id: string }) {
       label: 'Listing Source',
       value:
         product.listingType === 'shop' ||
-        product.user?.address?.addressType?.toLowerCase() === 'shop' ||
-        product.user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
+          product.user?.address?.addressType?.toLowerCase() === 'shop' ||
+          product.user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
           ? product.shopName || product.user?.address?.shopName || product.user?.addresses?.[0]?.shopName
             ? `🏪 ${t('Shop:')} ${product.shopName || product.user?.address?.shopName || product.user?.addresses?.[0]?.shopName}`
             : `🏪 ${t('From Shop / Store')}`

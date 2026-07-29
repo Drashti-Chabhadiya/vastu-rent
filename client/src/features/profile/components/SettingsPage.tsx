@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { authClient } from '#/lib/auth/auth-client'
+import { useState } from 'react'
+// import { authClient } from '#/lib/auth/auth-client'
 import { useTranslation } from '#/context/TranslationContext'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
@@ -40,20 +40,20 @@ const subNavItems = [
 
 export function SettingsPage() {
   const { t } = useTranslation()
-  const [section, setSection] = useState('profile')
+  const [section, setSection] = useState('theme')
   const deleteAccountRequest = useDeleteAccountRequest()
 
   const {
-    name,
-    setName,
-    phone,
-    setPhone,
-    location,
-    setLocation,
-    bio,
-    setBio,
-    imagePreview: imgPreview,
-    setImagePreview: setImgPreview,
+    // name,
+    // setName,
+    // phone,
+    // setPhone,
+    // location,
+    // setLocation,
+    // bio,
+    // setBio,
+    // imagePreview: imgPreview,
+    // setImagePreview: setImgPreview,
     pwOpen,
     setPwOpen,
     tfaOpen,
@@ -68,10 +68,10 @@ export function SettingsPage() {
     marketingEmails: mktN,
     pushNotifications: pushN,
     session,
-    refetch,
-    busy,
-    uploadImage: uploadImg,
-    updateSettings: saveSettings,
+    // refetch,
+    // busy,
+    // uploadImage: uploadImg,
+    // updateSettings: saveSettings,
     handleTogglePreference,
     handleToggleTwoFactor,
     showProfile,
@@ -81,7 +81,7 @@ export function SettingsPage() {
     isPending: isProfileLoading,
   } = useProfileData()
 
-  const fileRef = useRef<HTMLInputElement>(null)
+  // const fileRef = useRef<HTMLInputElement>(null)
 
   // delete
   const [delInput, setDelInput] = useState('')
@@ -91,26 +91,26 @@ export function SettingsPage() {
     return <SettingsPageSkeleton />
   }
   const user = session.user as any
-  const avatar = imgPreview || user.image || null
-  const initials = (user.name || 'U').charAt(0).toUpperCase()
+  // const avatar = imgPreview || user.image || null
+  // const initials = (user.name || 'U').charAt(0).toUpperCase()
 
   // ── handlers ────────────────────────────────────────────────────────────────
-  const handleSaveProfile = async () => {
-    try {
-      if (name.trim() && name.trim() !== user.name) {
-        await authClient.updateUser({ name: name.trim() })
-      }
-      if (fileRef.current?.files?.[0]) {
-        await uploadImg(fileRef.current.files[0])
-      }
-      await saveSettings({ phone, location, bio })
-      await refetch()
-      setImgPreview(null)
-      toast.success(t('Profile saved!'))
-    } catch {
-      toast.error(t('Failed to save profile.'))
-    }
-  }
+  // const handleSaveProfile = async () => {
+  //   try {
+  //     if (name.trim() && name.trim() !== user.name) {
+  //       await authClient.updateUser({ name: name.trim() })
+  //     }
+  //     if (fileRef.current?.files?.[0]) {
+  //       await uploadImg(fileRef.current.files[0])
+  //     }
+  //     await saveSettings({ phone, location, bio })
+  //     await refetch()
+  //     setImgPreview(null)
+  //     toast.success(t('Profile saved!'))
+  //   } catch {
+  //     toast.error(t('Failed to save profile.'))
+  //   }
+  // }
 
   const handleDeleteAccount = async () => {
     if (delInput !== 'DELETE') {

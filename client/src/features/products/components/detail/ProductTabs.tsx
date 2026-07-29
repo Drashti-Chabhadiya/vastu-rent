@@ -2,8 +2,7 @@ import { useState } from 'react'
 import {
   Star,
   ShieldCheck,
-  Calendar,
-  CheckCircle2,
+  // CheckCircle2,
   Send,
   Loader2,
 } from 'lucide-react'
@@ -62,7 +61,7 @@ export const ProductTabs = ({
   handleSubmitReview,
   createReviewIsPending,
 }: ProductTabsProps) => {
-  const { t, formatCurrency, formatDate, formatDigits } = useTranslation()
+  const { t, formatDate, formatDigits } = useTranslation()
   const [sortBy, setSortBy] = useState<'latest' | 'highest'>('latest')
 
   const sortedReviews = [...reviews].sort((a, b) => {
@@ -73,7 +72,6 @@ export const ProductTabs = ({
   })
 
   const tabs = [
-    { id: 'description', label: t('Description') },
     { id: 'reviews', label: `${t('Reviews')} (${reviews.length})` },
     { id: 'faqs', label: t('FAQs') },
   ]
@@ -102,36 +100,6 @@ export const ProductTabs = ({
       </div>
 
       <div className="p-6 bg-card min-h-[250px]">
-        {activeTab === 'description' && (
-          <div className="space-y-6">
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-              {product.description || t('No description provided.')}
-            </p>
-            {product.features && product.features.length > 0 && (
-              <div className="space-y-3">
-                <h4 className="font-bold text-foreground text-sm uppercase tracking-wider">
-                  {t('Features & Specs')}
-                </h4>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {product.features.map((item: string, i: number) => (
-                    <li
-                      key={i}
-                      className="flex items-center gap-2.5 text-sm text-foreground/80 font-medium"
-                    >
-                      <CheckCircle2
-                        size={16}
-                        className="text-primary shrink-0"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-
-
 
         {activeTab === 'reviews' && (
           <div className="space-y-6">
