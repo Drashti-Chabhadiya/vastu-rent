@@ -259,9 +259,9 @@ export const OrdersManagement = () => {
               key={order.id}
               className="group bg-card p-6 rounded-[2rem] border border-border/30 shadow-sm hover:shadow-xl hover:border-dash-brand/20 transition-all duration-300"
             >
-              <div className="flex flex-col lg:flex-row gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
                 {/* Product Info */}
-                <div className="flex gap-4 flex-1">
+                <div className="flex gap-4 lg:col-span-4 xl:col-span-4 min-w-0">
                   <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-inner flex-shrink-0 bg-muted/50">
                     <img
                       src={
@@ -276,22 +276,22 @@ export const OrdersManagement = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-col justify-center gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-dash-brand bg-dash-brand/10 px-2 py-0.5 rounded-md">
+                  <div className="flex flex-col justify-center gap-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-dash-brand bg-dash-brand/10 px-2 py-0.5 rounded-md shrink-0">
                         {order.product?.category?.name || t('Uncategorized')}
                       </span>
                       {getStatusBadge(order.status)}
                     </div>
-                    <h4 className="text-lg font-extrabold text-dash-text truncate max-w-[250px]">
+                    <h4 className="text-lg font-extrabold text-dash-text truncate w-full">
                       {order.product?.title || t('Untitled Product')}
                     </h4>
                   </div>
                 </div>
 
                 {/* Renter Info */}
-                <div className="flex items-center gap-4 bg-muted-light/50 p-4 rounded-2xl border border-border/30 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-dash-brand/10 flex items-center justify-center text-dash-brand overflow-hidden">
+                <div className="flex items-center gap-4 bg-muted-light/50 p-4 rounded-2xl border border-border/30 lg:col-span-4 xl:col-span-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-dash-brand/10 flex items-center justify-center text-dash-brand overflow-hidden shrink-0">
                     {order.renter.image ? (
                       <img
                         src={order.renter.image}
@@ -301,42 +301,40 @@ export const OrdersManagement = () => {
                       <UserIcon size={20} />
                     )}
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider">
                       {t('Customer')}
                     </span>
-                    <span className="text-sm font-extrabold text-dash-text">
+                    <span className="text-sm font-extrabold text-dash-text truncate">
                       {order.renter.name || t('Customer')}
                     </span>
-                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-soft">
-                      <Mail size={10} />
-                      {order.renter.email}
+                    <div className="flex items-center gap-1.5 text-[11px] text-dash-text-soft truncate">
+                      <Mail size={10} className="shrink-0" />
+                      <span className="truncate">{order.renter.email}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Date & Price */}
-                <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 sm:gap-8 lg:gap-12 min-w-fit">
-                  <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider mb-1">
-                          {t('Rental Period')}
+                <div className="flex flex-wrap sm:flex-nowrap items-center justify-between lg:justify-end gap-4 sm:gap-6 lg:gap-8 lg:col-span-4 xl:col-span-5">
+                  <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 sm:gap-8">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider mb-1">
+                        {t('Rental Period')}
+                      </span>
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-dash-text whitespace-nowrap">
+                        <Calendar
+                          size={14}
+                          className="text-dash-brand shrink-0"
+                        />
+                        <span>
+                          {format(new Date(order.startDate), 'dd MMM')} -{' '}
+                          {format(new Date(order.endDate), 'dd MMM, yy')}
                         </span>
-                        <div className="flex items-center gap-2 text-sm font-extrabold text-dash-text whitespace-nowrap">
-                          <Calendar
-                            size={14}
-                            className="text-dash-brand shrink-0"
-                          />
-                          <span className="truncate max-w-[120px] sm:max-w-none">
-                            {format(new Date(order.startDate), 'dd MMM')} -{' '}
-                            {format(new Date(order.endDate), 'dd MMM, yy')}
-                          </span>
-                        </div>
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end min-w-fit">
+                    <div className="flex flex-col items-end shrink-0">
                       <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider mb-1">
                         {t('Income')}
                       </span>
@@ -351,9 +349,9 @@ export const OrdersManagement = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 justify-end w-full sm:w-auto mt-2 sm:mt-0">
+                  <div className="flex items-center gap-2 justify-end shrink-0">
                     {order.status === 'pending' && (
-                      <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
+                      <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
                           onClick={() =>
@@ -363,7 +361,7 @@ export const OrdersManagement = () => {
                               title: order.product?.title || t('this product'),
                             })
                           }
-                          className="h-10 sm:h-12 px-3 sm:px-5 rounded-2xl bg-primary-soft text-primary hover:bg-primary hover:text-primary-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-primary hover:text-primary-foreground cursor-pointer flex-1 sm:flex-none"
+                          className="h-10 sm:h-12 px-3 sm:px-5 rounded-2xl bg-primary-soft text-primary hover:bg-primary hover:text-primary-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm cursor-pointer"
                         >
                           <CheckCircle2 size={13} />
                           {t('Confirm')}
@@ -377,7 +375,7 @@ export const OrdersManagement = () => {
                               title: order.product?.title || t('this product'),
                             })
                           }
-                          className="h-10 sm:h-12 px-3 sm:px-5 rounded-2xl bg-danger text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-destructive hover:text-destructive-foreground cursor-pointer flex-1 sm:flex-none"
+                          className="h-10 sm:h-12 px-3 sm:px-5 rounded-2xl bg-danger text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm cursor-pointer"
                         >
                           <XCircle size={13} />
                           {t('Reject')}

@@ -1,19 +1,11 @@
 import { useState } from 'react'
-import { useProducts, useCategories, useWishlist } from '#/hook'
+import { useProducts, useCategories } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductCardSkeleton } from '#/components/skeletons'
-import {
-  Search,
-  SlidersHorizontal,
-  ArrowLeft,
-  Star,
-  Heart,
-  LayoutGrid,
-} from 'lucide-react'
+import { Search, SlidersHorizontal, ArrowLeft, LayoutGrid } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/context/TranslationContext'
-import { Link } from '@tanstack/react-router'
 import { cn } from '#/lib/utils'
 import { Slider } from '#/components/ui/slider'
 import {
@@ -76,7 +68,6 @@ export function ProductsExplorePage() {
 
   // Fetch categories & wishlist
   const { data: categories } = useCategories()
-  const { toggleLike, isLiked } = useWishlist()
 
   // Fetch active products with price range filters sent to server
   const { data: rawProducts, isLoading } = useProducts({
@@ -128,7 +119,7 @@ export function ProductsExplorePage() {
   const searchLocation = sortedProducts?.[0]?.city || 'Surat'
 
   return (
-    <div className="min-h-full bg-bg-base pt-6 lg:pt-24 pb-16">
+    <div className="min-h-full bg-bg-base pt-6 lg:pt-24">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* DESKTOP HEADER SECTION */}
         <div className="mb-10 hidden lg:block">
@@ -568,80 +559,15 @@ export function ProductsExplorePage() {
             </div>
           ) : sortedProducts.length > 0 ? (
             <>
-              {/* MOBILE RESULTS VIEW: 2-COLUMN GRID OF VERTICAL CARDS (Mockup Screen 02 style) */}
+              {/* MOBILE RESULTS VIEW: 2-COLUMN GRID (Common Mobile Card) */}
               <div className="grid lg:hidden grid-cols-2 gap-3">
-                {sortedProducts.map((product: any) => {
-                  const liked = isLiked(product.id)
-                  return (
-                    <div
-                      key={product.id}
-                      className="bg-card border border-border/20 rounded-[20px] overflow-hidden shadow-xs flex flex-col justify-between active:scale-[0.99] transition-all relative"
-                    >
-                      {/* Heart Button Overlay */}
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          toggleLike(product.id)
-                        }}
-                        className={cn(
-                          'absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full backdrop-blur-xs border-none flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90',
-                          liked
-                            ? 'bg-danger text-destructive'
-                            : 'bg-white/95 text-muted-foreground hover:text-destructive',
-                        )}
-                      >
-                        <Heart
-                          size={13}
-                          className={cn(
-                            'transition-transform active:scale-90',
-                            liked && 'fill-current',
-                          )}
-                        />
-                      </button>
-
-                      <Link
-                        to="/products/$id"
-                        params={{ id: product.id }}
-                        className="block flex-1"
-                      >
-                        <div className="relative aspect-[4/3] bg-muted overflow-hidden">
-                          <img
-                            src={
-                              product.images?.[0] ||
-                              'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=80'
-                            }
-                            alt={product.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="p-3">
-                          <h4 className="font-extrabold text-[11px] line-clamp-1 leading-tight text-foreground">
-                            {product.title}
-                          </h4>
-                          <span className="text-[9px] font-semibold text-muted-dark block mt-1">
-                            📍 {product.city || 'Surat'}
-                          </span>
-                          <div className="flex items-center justify-between mt-2.5">
-                            <span className="font-black text-[12px] text-primary dark:text-[#10b981]">
-                              {formatCurrency(product.price)}
-                              <small className="font-normal text-[8px] text-muted-foreground">
-                                /day
-                              </small>
-                            </span>
-                            <div className="flex items-center gap-0.5 text-[9.5px] font-bold text-foreground">
-                              <Star
-                                size={9}
-                                className="fill-warning text-warning shrink-0"
-                              />
-                              <span>{product.rating || '5.0'}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  )
-                })}
+                {sortedProducts.map((product: any) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    variant="mini"
+                  />
+                ))}
               </div>
 
               {/* DESKTOP RESULTS VIEW: VERTICAL GRID CARDS */}

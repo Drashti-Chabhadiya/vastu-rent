@@ -41,7 +41,7 @@ export function RecentProducts() {
         </div>
 
         <div className="relative z-10">
-          {/* MOBILE CARDS VERTICAL GRID (Flipkart/Amazon style) */}
+          {/* MOBILE CARDS VERTICAL GRID (Common Mobile Card) */}
           <div className="grid md:hidden grid-cols-2 gap-3 pb-4">
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (

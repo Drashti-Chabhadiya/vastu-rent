@@ -41,7 +41,6 @@ export function ProductCard({
     (product as any).user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
 
   if (variant === 'mini') {
-    const badgeText = isShop ? t('VASTU SHOP') : t('FROM HOME')
     return (
       <Link
         to="/products/$id"
@@ -61,9 +60,37 @@ export function ProductCard({
               <Package size={24} className="opacity-20" />
             </div>
           )}
-          <span className="absolute top-2 left-2 z-10 bg-white/95 text-primary text-[8px] font-black px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wide">
-            {badgeText}
-          </span>
+          {(() => {
+            const displayShopName =
+              product.shopName ||
+              (product as any).owner?.address?.shopName ||
+              (product as any).owner?.addresses?.[0]?.shopName ||
+              (product as any).user?.address?.shopName ||
+              (product as any).user?.addresses?.[0]?.shopName ||
+              t('From Shop / Store')
+
+            return (
+              <div className="absolute bottom-2 left-2 z-10">
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-bold backdrop-blur-md border shadow-xs',
+                    isShop
+                      ? 'bg-amber-50/90 text-amber-700 border-amber-200/60'
+                      : 'bg-emerald-50/90 text-emerald-700 border-emerald-200/60',
+                  )}
+                >
+                  {isShop ? (
+                    <Store className="w-2.5 h-2.5" strokeWidth={2.5} />
+                  ) : (
+                    <Home className="w-2.5 h-2.5" strokeWidth={2.5} />
+                  )}
+                  <span className="max-w-[70px] truncate">
+                    {isShop ? displayShopName : t('From Home')}
+                  </span>
+                </span>
+              </div>
+            )
+          })()}
           <div className="absolute top-2 right-2 z-10">
             <Button
               variant="ghost"
