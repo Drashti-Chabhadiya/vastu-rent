@@ -22,6 +22,7 @@ import {
 import { cn } from '#/lib/utils'
 import { UserAvatar } from '#/features/dashboard/components/messages/components/UserAvatar'
 import { formatLastActive } from '#/lib/chat-utils'
+import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 
 export function UserProfilePage() {
   const { id } = useParams({ from: '/users/$id' })
@@ -93,6 +94,8 @@ export function UserProfilePage() {
   return (
     <div className="min-h-screen bg-bg-base pt-24 pb-16">
       <div className="mx-auto max-w-[1200px] px-4">
+        <MobileBackHeader />
+
         {/* Profile Header */}
         <div className="bg-card rounded-[40px] p-8 md:p-12 shadow-sm border border-border/30 mb-12 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />

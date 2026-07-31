@@ -18,8 +18,8 @@ export const OrderProductDetailsCard = ({
       <h3 className="text-[14px] font-black text-foreground mb-8">
         {t('Product Details')}
       </h3>
-      <div className="flex gap-8">
-        <div className="w-28 h-28 rounded-2xl overflow-hidden shadow-sm border border-border/30">
+      <div className="flex flex-col sm:flex-row gap-6 sm:gap-8">
+        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-sm border border-border/30 shrink-0 mx-auto sm:mx-0">
           <img
             src={order.product?.images?.[0]}
             className="w-full h-full object-cover"
@@ -43,7 +43,7 @@ export const OrderProductDetailsCard = ({
             </span>
           </div>
         </div>
-        <div className="flex flex-col justify-center items-end gap-1.5">
+        <div className="flex flex-col justify-center items-start sm:items-end gap-1.5 pt-4 sm:pt-0 border-t sm:border-t-0 border-border/30 w-full sm:w-auto">
           <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
             {t('Rental Period')}
           </span>

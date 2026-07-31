@@ -78,7 +78,7 @@ export const RecentListingsTable = ({
                   key={item.id}
                   className="group hover:bg-muted-light/30 transition-colors border-b-0"
                 >
-                  <TableCell className="py-3 whitespace-nowrap pr-4">
+                  <TableCell className="py-3 pr-4 max-w-[180px] sm:max-w-[250px]">
                     <div className="flex items-center gap-3">
                       <img
                         src={
@@ -88,12 +88,12 @@ export const RecentListingsTable = ({
                         alt={item.title}
                         className="w-8 h-8 rounded-lg object-cover shrink-0"
                       />
-                      <span className="text-xs font-bold text-dash-text">
+                      <span className="text-xs font-bold text-dash-text truncate">
                         {item.title}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">
+                  <TableCell className="py-3 text-xs text-dash-text-soft pr-4 max-w-[120px] sm:max-w-[180px] truncate">
                     {item.category?.name || t('Uncategorized')}
                   </TableCell>
                   <TableCell className="py-3 text-xs text-dash-text-soft whitespace-nowrap pr-4">

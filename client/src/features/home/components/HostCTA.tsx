@@ -15,7 +15,7 @@ export function HostCTA() {
   const listItemHref = session?.user ? '/account/listings' : '/become-lister'
 
   return (
-    <section className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32">
+    <section className="mx-auto max-w-[1400px] px-6 py-6 md:px-10 md:py-32">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}

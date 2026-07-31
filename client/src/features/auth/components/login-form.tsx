@@ -245,13 +245,29 @@ export function LoginForm() {
 
   return (
     <div className="w-full relative">
+      {/* Mobile Mockup Hero Card */}
+      <div className="relative h-[160px] rounded-[24px] overflow-hidden mb-6 block lg:hidden border border-border/20 shadow-sm">
+        <img
+          src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&q=80&auto=format&fit=crop"
+          alt="Hero"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+        <div className="absolute left-5 bottom-4 text-white">
+          <div className="font-display text-xl font-bold">{t('Rent anything.')}</div>
+          <div className="font-display text-xl font-bold italic opacity-95">
+            {t('Live in harmony.')}
+          </div>
+        </div>
+      </div>
+
       {/* Top Bar with Language Selector & Switch Link */}
       <div className="flex items-center justify-between gap-3 mb-6">
-        <div className="flex items-center gap-1.5 text-sm font-medium">
-          <span className="text-muted-foreground/85">{t('New here?')}</span>
+        <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
+          <span className="opacity-80">{t('New here?')}</span>
           <Link
             to="/signup"
-            className="text-primary font-bold hover:underline transition-colors"
+            className="text-primary font-black hover:underline transition-colors"
           >
             {t('Sign Up')}
           </Link>
@@ -259,7 +275,7 @@ export function LoginForm() {
         <LanguageSelector />
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6 hidden lg:block">
         <h1 className="text-[32px] font-bold text-text-dark tracking-tight">
           {t('Welcome Back!')}
         </h1>
@@ -268,26 +284,20 @@ export function LoginForm() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex w-full mb-8">
-        <div className="flex-1 flex flex-col">
-          <Button
-            variant="ghost"
-            className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100"
-          >
-            {t('Login')}
-          </Button>
-          <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
-        </div>
-        <div className="flex-1 flex flex-col">
-          <Link
-            to="/signup"
-            className="py-3 text-[15px] font-semibold text-muted-foreground/70 text-center w-full hover:text-muted-foreground"
-          >
-            {t('Sign Up')}
-          </Link>
-          <div className="h-[1px] w-full bg-muted"></div>
-        </div>
+      {/* Mockup Pill Tab Switcher */}
+      <div className="flex bg-brand-beige dark:bg-muted/40 rounded-full p-1 mb-6">
+        <Button
+          variant="ghost"
+          className="flex-1 py-2.5 h-auto text-xs font-black bg-primary text-primary-foreground rounded-full hover:bg-primary hover:text-primary-foreground transition-all active:scale-100 shadow-sm border-none"
+        >
+          {t('Sign in')}
+        </Button>
+        <Link
+          to="/signup"
+          className="flex-1 py-2.5 text-xs font-black text-muted-foreground text-center rounded-full hover:text-foreground transition-all flex items-center justify-center"
+        >
+          {t('Create account')}
+        </Link>
       </div>
 
       <Form {...form}>
@@ -301,28 +311,28 @@ export function LoginForm() {
             )
           })}
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             {/* Email Field */}
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                  <FormLabel className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-1">
                     {t('Email Address')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                         <Mail
-                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          className="h-[16px] w-[16px] text-muted-foreground/60"
                           strokeWidth={2}
                         />
                       </div>
                       <Input
                         type="email"
                         placeholder={t('Enter your email')}
-                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        className="w-full h-11 pl-11 pr-4 rounded-[14px] border border-border/80 bg-card text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
                     </div>
@@ -338,15 +348,15 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <FormLabel className="text-[13px] font-bold text-foreground">
+                  <div className="flex items-center justify-between mb-1">
+                    <FormLabel className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block">
                       {t('Password')}
                     </FormLabel>
                     <Button
                       type="button"
                       variant="link"
                       onClick={() => setIsForgotPassword(true)}
-                      className="text-[13px] font-bold text-primary p-0 h-auto hover:underline"
+                      className="text-[10px] font-bold text-primary p-0 h-auto hover:underline"
                     >
                       {t('Forgot Password?')}
                     </Button>
@@ -355,14 +365,14 @@ export function LoginForm() {
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                         <Lock
-                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          className="h-[16px] w-[16px] text-muted-foreground/60"
                           strokeWidth={2}
                         />
                       </div>
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder={t('Enter your password')}
-                        className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        className="w-full h-11 pl-11 pr-12 rounded-[14px] border border-border/80 bg-card text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
                       <Button
@@ -374,12 +384,12 @@ export function LoginForm() {
                       >
                         {showPassword ? (
                           <Eye
-                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            className="h-[16px] w-[16px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                             strokeWidth={2}
                           />
                         ) : (
                           <EyeOff
-                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            className="h-[16px] w-[16px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                             strokeWidth={2}
                           />
                         )}
@@ -396,27 +406,27 @@ export function LoginForm() {
               <Button
                 type="button"
                 variant="ghost"
-                className="flex items-center gap-2.5 p-0 h-auto hover:bg-transparent active:scale-100"
+                className="flex items-center gap-2 p-0 h-auto hover:bg-transparent active:scale-100"
                 onClick={() => setRememberMe(!rememberMe)}
               >
                 <div
-                  className={`w-4 h-4 rounded-[4px] flex items-center justify-center border transition-colors ${rememberMe ? 'bg-primary border-primary' : 'bg-card border-border/120'}`}
+                  className={`w-3.5 h-3.5 rounded-[4px] flex items-center justify-center border transition-colors ${rememberMe ? 'bg-primary border-primary' : 'bg-card border-border/120'}`}
                 >
                   {rememberMe && (
                     <Check
-                      className="h-3 w-3 text-primary-foreground"
+                      className="h-2.5 w-2.5 text-primary-foreground"
                       strokeWidth={3}
                     />
                   )}
                 </div>
-                <span className="text-[13px] font-bold text-foreground">
+                <span className="text-[11px] font-bold text-foreground">
                   {t('Remember me')}
                 </span>
               </Button>
             </div>
 
             {serverError && (
-              <p className="text-center text-sm text-destructive font-medium">
+              <p className="text-center text-xs text-destructive font-medium">
                 {serverError}
               </p>
             )}
@@ -487,8 +497,28 @@ export function LoginForm() {
             )}
 
             {/* Login Button */}
-            <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? `${t('Login')}...` : t('Login')}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-white font-black text-xs shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-3 active:scale-[0.98] transition-all"
+            >
+              {isSubmitting ? (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <span>{t('Sign in')}</span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth={3}
+                  >
+                    <path d="M9 6l6 6-6 6" />
+                  </svg>
+                </>
+              )}
             </Button>
           </div>
         </form>

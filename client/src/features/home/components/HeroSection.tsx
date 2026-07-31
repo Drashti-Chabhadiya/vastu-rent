@@ -10,13 +10,15 @@ import {
   Search,
   Sparkles,
   Bell,
+  Heart,
 } from 'lucide-react'
 import heroImg from '../../../../public/assets/hero-living.jpg'
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/context/TranslationContext'
 import { useNavigate, Link } from '@tanstack/react-router'
-import { useProducts } from '#/hook'
+import { useProducts, useWishlist } from '#/hook'
 import { HeroSkeleton } from '#/components/skeletons'
+import { LanguageSelector } from '@/components/ui/language-selector'
 import { useSessionContext } from '#/context/SessionContext'
 import { UserAvatar } from '#/components/common/UserAvatar'
 import useEmblaCarousel from 'embla-carousel-react'
@@ -43,6 +45,7 @@ export function HeroSection() {
     status: 'active',
     isFeatured: true,
   })
+  const { count: wishlistCount } = useWishlist()
 
   const featuredProduct = products?.find(
     (p: any) => p.images && p.images.length > 0,
@@ -118,19 +121,38 @@ export function HeroSection() {
     ) ||
     'A quietly curated marketplace for the things you need, only when you need them. Quality lent between neighbors — gentler on your home, kinder to the planet.'
 
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return 'Good morning'
+    if (hour < 17) return 'Good afternoon'
+    return 'Good evening'
+  }
+
   return (
     <section className="relative overflow-hidden bg-background pt-3 md:pt-6 lg:pt-10">
       {/* Mobile Welcome Header */}
       <div className="flex md:hidden items-center justify-between px-6 pt-3 pb-4 bg-background">
         <div>
           <span className="text-[10px] text-muted-foreground font-bold tracking-wide uppercase">
-            {t('Good morning')}
+            {t(getGreeting())}
           </span>
           <h2 className="font-display text-base font-black text-foreground mt-0.5 leading-tight">
             {session?.user?.name || t('Guest')}
           </h2>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSelector className="bg-[#faf9f5] dark:bg-[#152019] border-border/40" />
+          <Link
+            to="/wishlist"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
+          >
+            <Heart size={16} strokeWidth={2} />
+            {wishlistCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#c97a45] text-[7.5px] font-black text-white border-2 border-[#faf9f5] dark:border-[#152019]">
+                {wishlistCount > 9 ? '9+' : wishlistCount}
+              </span>
+            )}
+          </Link>
           <Link
             to="/account/notifications"
             className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
@@ -369,7 +391,7 @@ export function HeroSection() {
                     className="relative flex-[0_0_100%] min-w-0 h-[180px]"
                   >
                     <Link
-                      to={b.link as any}
+                      to={b.link}
                       className="absolute inset-0 z-20"
                     />
                     <img

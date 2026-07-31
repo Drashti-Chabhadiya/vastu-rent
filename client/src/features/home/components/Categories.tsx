@@ -79,14 +79,14 @@ export function Categories() {
 
   const latestCategories = categories
     ? [...categories]
-        .sort((a: any, b: any) => b.id.localeCompare(a.id))
-        .slice(0, 4)
+      .sort((a: any, b: any) => b.id.localeCompare(a.id))
+      .slice(0, 4)
     : []
 
   return (
     <section
       id="categories"
-      className="mx-auto max-w-[1400px] px-6 py-10 md:py-32 md:px-10 bg-background"
+      className="mx-auto max-w-[1400px] px-6 py-6 md:py-32 md:px-10 bg-background"
     >
       {/* Desktop view */}
       <div className="hidden md:block">
@@ -100,9 +100,6 @@ export function Categories() {
             </h2>
           </div>
           <div className="flex flex-col gap-4 max-w-sm">
-            <p className="text-[15px] leading-relaxed text-muted-foreground">
-              {t('Catalogue Description')}
-            </p>
             <ExploreLink to="/categories">
               {t('Explore all categories')}
             </ExploreLink>
@@ -171,16 +168,19 @@ export function Categories() {
 
       {/* Mobile view */}
       <div className="md:hidden">
-        <div className="flex justify-between items-baseline mb-4">
-          <h2 className="font-display text-base font-bold text-foreground">
-            {t('Categories')}
-          </h2>
-          <Link
-            to="/categories"
-            className="text-xs font-bold text-primary hover:underline"
-          >
-            {t('See all')} →
-          </Link>
+
+        <div className="flex items-end justify-between gap-6 mb-8 relative z-10 border-b border-border/10 pb-4">
+          <div>
+            {/* <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-1">
+              {t('— The Catalogue')}
+            </div> */}
+            <h2 className="text-xl sm:text-3xl font-extrabold text-brand-ink tracking-tight leading-none">
+              {t('Categories')}
+            </h2>
+          </div>
+          <ExploreLink to="/categories">
+            {t('See all')}
+          </ExploreLink>
         </div>
 
         {isLoading ? (

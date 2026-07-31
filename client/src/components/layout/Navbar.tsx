@@ -151,7 +151,7 @@ export function Navbar() {
             </Link>
 
             {/* Wishlist Button */}
-            <Link to="/wishlist" className={cn('hidden', 'sm:block')}>
+            <Link to="/wishlist" className="relative group">
               <Button
                 variant="ghost"
                 size="icon"

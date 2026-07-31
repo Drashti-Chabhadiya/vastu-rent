@@ -39,3 +39,15 @@ export function useSearchChatUsers(
     ...options,
   })
 }
+
+export function useConversations(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryKey: ['conversations'],
+    queryFn: async () => {
+      const res = await apiClient.get('/chat/conversations')
+      return res.data
+    },
+    staleTime: 10_000,
+    ...options,
+  })
+}

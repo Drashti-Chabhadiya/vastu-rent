@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { cn } from '#/lib/utils'
 import {
   Mail,
@@ -37,6 +37,7 @@ export function UserProfileSummaryCard({
   joinDate,
 }: UserProfileSummaryCardProps) {
   const { t } = useTranslation()
+  const [imageError, setImageError] = useState(false)
 
   return (
     <div className="w-full lg:border-r lg:border-border/30 lg:pr-8 border-b lg:border-b-0 border-border/30 pb-6 lg:pb-0 flex flex-col items-center text-center">
@@ -49,11 +50,12 @@ export function UserProfileSummaryCard({
               alt="Preview"
               className="w-full h-full object-cover animate-fade-in"
             />
-          ) : session?.user?.image ? (
+          ) : (session?.user?.image && !imageError) ? (
             <img
               src={session.user.image}
               alt="Profile"
               className="w-full h-full object-cover"
+              onError={() => setImageError(true)}
             />
           ) : (
             session?.user?.name?.charAt(0).toUpperCase() || 'U'
@@ -72,12 +74,14 @@ export function UserProfileSummaryCard({
         </div>
 
         {/* Edit Pencil Icon Button */}
-        <div
-          onClick={handleImageClick}
-          className="absolute bottom-0 right-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-card border border-border shadow-sm flex items-center justify-center cursor-pointer text-primary hover:scale-105 active:scale-95 transition-all"
-        >
-          <Pencil size={12} className="text-primary" />
-        </div>
+        {isEditing && (
+          <div
+            onClick={handleImageClick}
+            className="absolute bottom-0 right-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-card border border-border shadow-sm flex items-center justify-center cursor-pointer text-primary hover:scale-105 active:scale-95 transition-all animate-scale-in"
+          >
+            <Pencil size={12} className="text-primary" />
+          </div>
+        )}
         <input
           type="file"
           ref={fileInputRef}

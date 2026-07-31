@@ -18,13 +18,13 @@ import { Textarea } from '#/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogFooter,
 } from '#/components/ui/dialog'
+import { Drawer, DrawerContent, DrawerTitle } from '#/components/ui/drawer'
 import { IconSelector } from './IconSelector'
 import { cn } from '#/lib/utils'
-import { useUploadProductImage } from '#/hook'
+import { useUploadProductImage, useIsMobile } from '#/hook'
 import { LoadingOverlay } from '#/components/ui/loader'
 import { useTranslation } from '#/context/TranslationContext'
 
@@ -46,6 +46,7 @@ export const CategoryFormDialog = ({
   isRequest = false,
 }: CategoryFormDialogProps) => {
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
   const [categoryName, setCategoryName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState<string>('Folder')
   const [selectedColor, setSelectedColor] = useState<string>(
@@ -139,33 +140,32 @@ export const CategoryFormDialog = ({
     onSubmit(payload)
   }
 
-  return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl rounded-2xl border-none shadow-2xl p-0 overflow-hidden bg-card">
-        <div className="bg-gradient-to-br from-primary to-primary-hover p-8 text-primary-foreground relative">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-extrabold tracking-tight">
-              {isRequest
-                ? t('Propose Category')
-                : editingCategory
-                  ? t('Update Category')
-                  : t('New Category')}
-            </DialogTitle>
-            <p className="text-primary-foreground/70 text-sm font-medium mt-1">
-              {isRequest
-                ? t(
-                    'Propose a new collection. Admins will review and approve your suggestion.',
-                  )
-                : editingCategory
-                  ? t('Modify the category name and properties.')
-                  : t('Create a new collection for your rentals.')}
-            </p>
-          </DialogHeader>
+  const TitleComponent = isMobile ? DrawerTitle : DialogTitle
+
+  const innerContent = (
+    <>
+        <div className="bg-gradient-to-br from-primary to-primary-hover p-6 md:p-8 text-primary-foreground relative">
+          <TitleComponent className="text-xl md:text-2xl font-extrabold tracking-tight">
+            {isRequest
+              ? t('Propose Category')
+              : editingCategory
+                ? t('Update Category')
+                : t('New Category')}
+          </TitleComponent>
+          <p className="text-primary-foreground/70 text-sm font-medium mt-1">
+            {isRequest
+              ? t(
+                  'Propose a new collection. Admins will review and approve your suggestion.',
+                )
+              : editingCategory
+                ? t('Modify the category name and properties.')
+                : t('Create a new collection for your rentals.')}
+          </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar text-foreground relative min-h-[300px]"
+          className="p-6 md:p-8 space-y-6 relative min-h-[300px]"
         >
           {isUploading && (
             <LoadingOverlay message={t('Uploading category image...')} />
@@ -509,6 +509,25 @@ export const CategoryFormDialog = ({
             </Button>
           </DialogFooter>
         </form>
+    </>
+  )
+
+  if (isMobile) {
+    return (
+      <Drawer open={isOpen} onOpenChange={onOpenChange}>
+        <DrawerContent className="max-h-[96vh] overflow-hidden rounded-t-[2rem] border-none shadow-2xl bg-card p-0 text-dash-text outline-none flex flex-col">
+          <div className="overflow-y-auto custom-scrollbar flex-1 min-h-0 w-full">
+            {innerContent}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    )
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border-none shadow-2xl bg-card p-0 custom-scrollbar text-dash-text outline-none">
+        {innerContent}
       </DialogContent>
     </Dialog>
   )

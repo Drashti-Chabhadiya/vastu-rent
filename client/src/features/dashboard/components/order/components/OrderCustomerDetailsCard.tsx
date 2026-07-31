@@ -14,7 +14,7 @@ export const OrderCustomerDetailsCard = ({
       <h3 className="text-[14px] font-black text-foreground mb-8">
         {t('Customer Details')}
       </h3>
-      <div className="grid grid-cols-2 gap-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20">
         <div className="flex items-center gap-5">
           <div className="w-14 h-14 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
             <UserIcon size={24} />
@@ -32,7 +32,7 @@ export const OrderCustomerDetailsCard = ({
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 pt-6 md:pt-0 border-t md:border-t-0 border-border/30">
           <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest block">
             {t('Pickup & Location Details')}
           </span>

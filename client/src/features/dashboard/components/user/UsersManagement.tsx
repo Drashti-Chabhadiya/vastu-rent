@@ -134,7 +134,8 @@ export const UsersManagement = () => {
         variants={fadeUp}
         className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden"
       >
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="text-left bg-muted-light/50 border-b border-border/30">
@@ -295,6 +296,110 @@ export const UsersManagement = () => {
               )}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden flex flex-col divide-y divide-border/30">
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="animate-pulse p-4 h-32 bg-muted-light/20" />
+            ))
+          ) : usersData?.length === 0 ? (
+            <div className="p-12 text-center text-dash-text-muted text-sm">
+              {t('No users found matching your criteria.')}
+            </div>
+          ) : (
+            usersData?.map((user: any) => (
+              <div key={user.id} className="p-4 space-y-4 hover:bg-muted-light/50 transition-colors">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="relative shrink-0">
+                      <UserAvatar
+                        image={user.image}
+                        name={user.name || user.email}
+                        isOnline={user.isOnline}
+                        size="sidebar"
+                        avatarClassName="bg-dash-brand-light text-dash-brand"
+                        showPing={true}
+                      />
+                      {user.banned && (
+                        <div className="absolute -top-1 -right-1 p-0.5 bg-card rounded-full">
+                          <AlertCircle className="text-dash-error" size={14} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-sm font-bold text-dash-text truncate">
+                        {user.name || 'Anonymous'}
+                      </span>
+                      <span className="text-xs text-dash-text-muted truncate">
+                        {user.email}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title={user.banned ? t('Unban User') : t('Ban User')}
+                      onClick={() => banMutation.mutate({ id: user.id, banned: !user.banned })}
+                      className={cn(
+                        'h-8 w-8 rounded-lg transition-colors',
+                        user.banned
+                          ? 'text-primary hover:text-primary-hover hover:bg-primary-soft'
+                          : 'text-orange-600 hover:text-orange-700 hover:bg-orange-50'
+                      )}
+                    >
+                      {user.banned ? <UserCheck size={16} /> : <UserX size={16} />}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title={t('Delete User')}
+                      onClick={() => setUserToDelete(user.id)}
+                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-danger rounded-lg transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-border/30 gap-4">
+                  <div className="flex items-center gap-3">
+                    <Select
+                      value={user.role}
+                      onValueChange={(role) => roleMutation.mutate({ id: user.id, role })}
+                    >
+                      <SelectTrigger className="h-8 w-28 bg-muted-light hover:bg-muted/50 border-none text-xs font-bold text-dash-text-soft transition-all rounded-lg">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+                        <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                          {t('User')}
+                        </SelectItem>
+                        <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                          {t('Admin')}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <Badge
+                      variant={user.banned ? 'destructive' : 'outline'}
+                      className={cn(
+                        'text-[10px] font-bold uppercase',
+                        !user.banned ? 'bg-primary-soft text-primary border-primary-border' : ''
+                      )}
+                    >
+                      {user.banned ? t('Banned') : t('Active')}
+                    </Badge>
+                  </div>
+                  <span className="text-[11px] text-dash-text-muted font-medium whitespace-nowrap">
+                    {formatDate(user.createdAt)}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </motion.div>
 

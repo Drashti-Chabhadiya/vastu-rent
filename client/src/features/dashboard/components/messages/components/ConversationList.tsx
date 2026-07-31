@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from '#/context/TranslationContext'
 import type { CSSProperties } from 'react'
@@ -131,7 +130,7 @@ export function ConversationList() {
   return (
     <div
       className={cn(
-        'shrink-0 bg-card lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out lg:border lg:border-border/30 safe-area-top',
+        'shrink-0 flex-1 h-full bg-card lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out lg:border lg:border-border/30 safe-area-top',
         showDetailsPanel
           ? 'w-0 lg:w-[84px] p-2 hidden lg:flex'
           : showMobileChat
@@ -153,18 +152,18 @@ export function ConversationList() {
           )}
         >
           <div className="flex items-center gap-3">
-            <Link
-              to="/account"
+            <button
+              onClick={() => window.history.back()}
               className={cn(
-                'lg:hidden flex items-center justify-center w-8 h-8 rounded-lg bg-muted-light hover:bg-muted text-muted-foreground hover:text-foreground transition-colors',
+                'w-9 h-9 rounded-full bg-muted/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-muted/75 shrink-0 transition-colors lg:hidden',
                 showDetailsPanel && 'hidden',
               )}
             >
-              <ArrowLeft size={15} />
-            </Link>
+              <ArrowLeft size={16} />
+            </button>
             <h1
               className={cn(
-                'text-xl font-bold text-foreground font-sans tracking-tight',
+                'text-2xl font-display font-medium text-foreground tracking-tight',
                 showDetailsPanel && 'hidden',
               )}
             >
@@ -207,8 +206,8 @@ export function ConversationList() {
               className={cn(
                 'w-8 h-8 rounded-lg hover:bg-muted-light text-muted-foreground hover:text-foreground cursor-pointer transition-colors',
                 activePanel === 'settings' &&
-                  showDetailsPanel &&
-                  'text-emerald-700 bg-emerald-50',
+                showDetailsPanel &&
+                'text-emerald-700 bg-emerald-50',
               )}
               title="Settings"
             >
@@ -334,8 +333,8 @@ export function ConversationList() {
                 style={
                   isSelected
                     ? ({
-                        '--card': 'var(--brand-green-bubble)',
-                      } as CSSProperties)
+                      '--card': 'var(--brand-green-bubble)',
+                    } as CSSProperties)
                     : undefined
                 }
                 className={cn(
@@ -359,8 +358,8 @@ export function ConversationList() {
                   name={conv.otherParticipant.name}
                   isOnline={
                     myShowOnline &&
-                    conv.otherParticipant.lastActive !== null &&
-                    conv.otherParticipant.lastActive !== undefined
+                      conv.otherParticipant.lastActive !== null &&
+                      conv.otherParticipant.lastActive !== undefined
                       ? conv.otherParticipant.isOnline
                       : undefined
                   }
@@ -441,9 +440,7 @@ export function ConversationList() {
                       )}
 
                       {conv.unreadCount > 0 && (
-                        <span className="w-5 h-5 bg-brand-primary-deep text-white text-[10px] font-bold rounded-full flex items-center justify-center shrink-0">
-                          {conv.unreadCount}
-                        </span>
+                        <span className="w-2.5 h-2.5 bg-warning rounded-full shrink-0 ml-2 animate-pulse" />
                       )}
 
                       <DropdownMenu>

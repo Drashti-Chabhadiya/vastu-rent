@@ -18,6 +18,7 @@ import { PinnedMessageBanner } from './PinnedMessageBanner'
 import { MessageItem } from './MessageItem'
 import { ChatInputDock } from './ChatInputDock'
 import { DeleteMessageDialog } from './DeleteMessageDialog'
+import { useMyRentals, useOrders } from '#/hook'
 import { EmojiReactDialog } from './EmojiReactDialog'
 import { MessageEmptyState } from './MessageEmptyState'
 
@@ -58,8 +59,27 @@ export function ChatWindow() {
     forest: 'bg-emerald-100/80',
     minimal: 'bg-slate-50/80',
   }
+  const { data: myRentals = [] } = useMyRentals()
+  const { data: orders = [] } = useOrders()
+
   const activeConversation =
     conversations.find((c) => c.id === activeConversationId) || null
+
+  const activeRental = activeConversation
+    ? [...myRentals, ...orders].find((rental: any) => {
+        const isProductOwnerOther =
+          rental.product?.userId === activeConversation.otherParticipant.id
+        const isProductOwnerMe = rental.product?.userId === currentUserId
+        const isRenterOther = rental.renterId === activeConversation.otherParticipant.id
+        const isRenterMe = rental.renterId === currentUserId
+
+        return (
+          (isProductOwnerOther && isRenterMe) ||
+          (isProductOwnerMe && isRenterOther)
+        )
+      })
+    : null
+
   const activeConversationSettings =
     activeConversation?.settings?.[currentUserId || '']
   const appliedWallpaper =
@@ -194,6 +214,30 @@ export function ChatWindow() {
       {isMultiSelectMode && <MultiSelectBar />}
 
       <PinnedMessageBanner />
+
+      {/* Active Rental Product Info Banner (Screen 13 mockup style) */}
+      {activeRental && (
+        <div className="mx-6 mt-3.5 mb-1 bg-brand-beige/30 border border-border/10 rounded-[18px] p-3 flex items-center gap-3.5 shadow-none select-none shrink-0">
+          <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-border/10 bg-muted-light">
+            <img
+              src={
+                activeRental.product?.images?.[0] ||
+                'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&q=80'
+              }
+              alt={activeRental.product?.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-extrabold text-[12px] text-foreground truncate">
+              {activeRental.product?.title}
+            </h4>
+            <p className="text-[10px] font-bold text-muted-foreground mt-0.5">
+              ₹{activeRental.product?.price?.toLocaleString()}/day · {format(new Date(activeRental.startDate), 'dd')} - {format(new Date(activeRental.endDate), 'dd MMM')}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Disappearing Messages Info Banner */}
       {activeConversation.disappearingDuration

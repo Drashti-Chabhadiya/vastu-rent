@@ -4,10 +4,9 @@ import {
   useRouterState,
   useNavigate,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
+// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+// import { TanStackDevtools } from '@tanstack/react-devtools'
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
-import { cn } from '@/lib/utils'
 import { Footer, Navbar, Tabbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
 import { useEffect, useRef } from 'react'
@@ -22,8 +21,8 @@ import { toast } from 'sonner'
 import { getSocketUrl } from '#/lib/socket-url'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
-
 import { TranslationProvider } from '#/context/TranslationContext'
+import { cn } from '#/lib/utils'
 
 export const Route = createRootRoute({
   component: RootDocument,
@@ -101,11 +100,11 @@ function NotificationListener() {
         } else if (Notification.permission === 'default') {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
-              registerDeviceForPush().catch(() => {})
+              registerDeviceForPush().catch(() => { })
             }
           })
         } else if (Notification.permission === 'granted') {
-          registerDeviceForPush().catch(() => {})
+          registerDeviceForPush().catch(() => { })
         }
       }
     }
@@ -287,55 +286,62 @@ function RootDocument() {
   const isChatPage =
     routerState.location.pathname.startsWith('/account/messages')
 
+  const isProductDetailPage =
+    routerState.location.pathname.startsWith('/products/')
+
   return (
     <div
       className={cn(
         'bg-card',
         'font-sans',
         'antialiased',
-        'min-h-screen',
+        'fixed inset-0 overflow-hidden',
+        'flex flex-col',
         'w-full',
-        !isAuthPage &&
-          !isAdminPage &&
-          !isDashboardPage &&
-          !isChatPage &&
-          'pb-20 md:pb-0',
       )}
     >
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
           <TranslationProvider>
             <NotificationListener />
-            {!isAuthPage && !isAdminPage && !isDashboardPage && (
-              <div
-                className={cn(
-                  'sticky top-0 z-40',
-                  'hidden md:block',
-                  isChatPage && 'hidden lg:block',
-                )}
-              >
-                <Navbar />
-              </div>
-            )}
-            <Outlet />
-            {!isAuthPage && !isAdminPage && !isDashboardPage && (
-              <div className={cn('hidden md:block', isChatPage && 'hidden')}>
-                <Footer />
-              </div>
-            )}
-            {!isAuthPage && !isAdminPage && !isDashboardPage && !isChatPage && (
+            
+            {/* Scrollable Content Area */}
+            <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden relative">
+              {!isAuthPage && !isAdminPage && !isDashboardPage && (
+                <div
+                  className={cn(
+                    'sticky top-0 z-40',
+                    'hidden md:block',
+                    isChatPage && 'hidden lg:block',
+                  )}
+                >
+                  <Navbar />
+                </div>
+              )}
+              <main className="flex-1 flex flex-col min-w-0 min-h-0 relative">
+                <Outlet />
+              </main>
+              {!isAuthPage && !isAdminPage && !isDashboardPage && (
+                <div className={cn('hidden md:block', isChatPage && 'hidden')}>
+                  <Footer />
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Tabbar - Native Flex Item (No Overlap) */}
+            {!isAuthPage && !isChatPage && !isProductDetailPage && (
               <Tabbar />
             )}
           </TranslationProvider>
         </SessionProvider>
       </QueryClientProvider>
       <Toaster position="top-right" />
-      <TanStackDevtools
+      {/* <TanStackDevtools
         config={{ position: 'bottom-right' }}
         plugins={[
           { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
         ]}
-      />
+      /> */}
     </div>
   )
 }

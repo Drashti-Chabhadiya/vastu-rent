@@ -182,15 +182,29 @@ export function SignupForm() {
 
   return (
     <div className="w-full relative">
+      {/* Mobile Mockup Hero Card */}
+      <div className="relative h-[160px] rounded-[24px] overflow-hidden mb-6 block lg:hidden border border-border/20 shadow-sm">
+        <img
+          src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&q=80&auto=format&fit=crop"
+          alt="Hero"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+        <div className="absolute left-5 bottom-4 text-white">
+          <div className="font-display text-xl font-bold">{t('Rent anything.')}</div>
+          <div className="font-display text-xl font-bold italic opacity-95">
+            {t('Live in harmony.')}
+          </div>
+        </div>
+      </div>
+
       {/* Top Bar with Language Selector & Switch Link */}
       <div className="flex items-center justify-between gap-3 mb-6">
-        <div className="flex items-center gap-1.5 text-sm font-medium">
-          <span className="text-muted-foreground/85">
-            {t('Already have account?')}
-          </span>
+        <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground">
+          <span className="opacity-80">{t('Already have account?')}</span>
           <Link
             to="/login"
-            className="text-primary font-bold hover:underline transition-colors"
+            className="text-primary font-black hover:underline transition-colors"
           >
             {t('Sign in')}
           </Link>
@@ -198,7 +212,7 @@ export function SignupForm() {
         <LanguageSelector />
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6 hidden lg:block">
         <h1 className="text-[32px] font-bold text-text-dark tracking-tight">
           {t('Create Account')}
         </h1>
@@ -207,26 +221,20 @@ export function SignupForm() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex w-full mb-8">
-        <div className="flex-1 flex flex-col">
-          <Link
-            to="/login"
-            className="py-3 text-[15px] font-semibold text-muted-foreground/70 text-center w-full hover:text-muted-foreground"
-          >
-            {t('Login')}
-          </Link>
-          <div className="h-[1px] w-full bg-muted"></div>
-        </div>
-        <div className="flex-1 flex flex-col">
-          <Button
-            variant="ghost"
-            className="py-3 h-auto text-[15px] font-bold bg-primary-light text-center w-full rounded-none hover:bg-primary-light hover:text-primary active:scale-100"
-          >
-            {t('Sign Up')}
-          </Button>
-          <div className="h-0.5 w-full bg-primary-light rounded-t-full"></div>
-        </div>
+      {/* Mockup Pill Tab Switcher */}
+      <div className="flex bg-brand-beige dark:bg-muted/40 rounded-full p-1 mb-6">
+        <Link
+          to="/login"
+          className="flex-1 py-2.5 text-xs font-black text-muted-foreground text-center rounded-full hover:text-foreground transition-all flex items-center justify-center"
+        >
+          {t('Sign in')}
+        </Link>
+        <Button
+          variant="ghost"
+          className="flex-1 py-2.5 h-auto text-xs font-black bg-primary text-primary-foreground rounded-full hover:bg-primary hover:text-primary-foreground transition-all active:scale-100 shadow-sm border-none"
+        >
+          {t('Create account')}
+        </Button>
       </div>
 
       <Form {...form}>
@@ -240,27 +248,27 @@ export function SignupForm() {
             )
           })}
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             {/* Full Name */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                  <FormLabel className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-1">
                     {t('Full Name')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                         <User
-                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          className="h-[16px] w-[16px] text-muted-foreground/60"
                           strokeWidth={2}
                         />
                       </div>
                       <Input
                         placeholder={t('Enter your name')}
-                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        className="w-full h-11 pl-11 pr-4 rounded-[14px] border border-border/80 bg-card text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
                     </div>
@@ -276,21 +284,21 @@ export function SignupForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                  <FormLabel className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-1">
                     {t('Email Address')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                         <Mail
-                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          className="h-[16px] w-[16px] text-muted-foreground/60"
                           strokeWidth={2}
                         />
                       </div>
                       <Input
                         type="email"
                         placeholder={t('Enter your email')}
-                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        className="w-full h-11 pl-11 pr-4 rounded-[14px] border border-border/80 bg-card text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
                     </div>
@@ -306,21 +314,21 @@ export function SignupForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                  <FormLabel className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-1">
                     {t('Password')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                         <Lock
-                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          className="h-[16px] w-[16px] text-muted-foreground/60"
                           strokeWidth={2}
                         />
                       </div>
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder={t('Create password')}
-                        className="w-full h-12 pl-11 pr-12 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        className="w-full h-11 pl-11 pr-12 rounded-[14px] border border-border/80 bg-card text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
                       <Button
@@ -332,12 +340,12 @@ export function SignupForm() {
                       >
                         {showPassword ? (
                           <Eye
-                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            className="h-[16px] w-[16px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                             strokeWidth={2}
                           />
                         ) : (
                           <EyeOff
-                            className="h-[18px] w-[18px] text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+                            className="h-[16px] w-[16px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                             strokeWidth={2}
                           />
                         )}
@@ -355,21 +363,21 @@ export function SignupForm() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[13px] font-bold text-foreground mb-1.5">
+                  <FormLabel className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block mb-1">
                     {t('Confirm Password')}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                         <Lock
-                          className="h-[18px] w-[18px] text-muted-foreground/70"
+                          className="h-[16px] w-[16px] text-muted-foreground/60"
                           strokeWidth={2}
                         />
                       </div>
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder={t('Confirm Password')}
-                        className="w-full h-12 pl-11 pr-4 rounded-xl border border-border bg-card text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
+                        className="w-full h-11 pl-11 pr-4 rounded-[14px] border border-border/80 bg-card text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-brand-light focus:ring-1 focus:ring-brand-light transition-shadow"
                         {...field}
                       />
                     </div>
@@ -380,7 +388,7 @@ export function SignupForm() {
             />
 
             {serverError && (
-              <p className="text-center text-sm text-destructive font-medium">
+              <p className="text-center text-xs text-destructive font-medium">
                 {serverError}
               </p>
             )}
@@ -388,9 +396,25 @@ export function SignupForm() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-2"
+              className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-white font-black text-xs shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-3 active:scale-[0.98] transition-all"
             >
-              {isSubmitting ? `${t('Create Account')}...` : t('Create Account')}
+              {isSubmitting ? (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <span>{t('Create Account')}</span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth={3}
+                  >
+                    <path d="M9 6l6 6-6 6" />
+                  </svg>
+                </>
+              )}
             </Button>
           </div>
         </form>

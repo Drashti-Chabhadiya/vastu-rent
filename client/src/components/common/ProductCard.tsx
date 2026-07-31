@@ -19,16 +19,99 @@ interface ProductCardProps {
     listingType?: 'home' | 'shop' | string
     shopName?: string
   }
+  variant?: 'default' | 'mini'
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, variant = 'default' }: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
   const { toggleLike, isLiked } = useWishlist()
   const { formatCurrency, formatDigits, t } = useTranslation()
   const liked = isLiked(product.id)
-  const mainImage =
-    product.images?.[0] ||
-    'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80'
+  const mainImage = product.images?.[0]
+
+  const isShop =
+    product.listingType === 'shop' ||
+    (product as any).owner?.address?.addressType?.toLowerCase() === 'shop' ||
+    (product as any).owner?.addresses?.[0]?.addressType?.toLowerCase() === 'shop' ||
+    (product as any).user?.address?.addressType?.toLowerCase() === 'shop' ||
+    (product as any).user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
+
+  if (variant === 'mini') {
+    const badgeText = isShop ? t('VASTU SHOP') : t('FROM HOME')
+    return (
+      <Link
+        to="/products/$id"
+        params={{ id: product.id }}
+        className="w-full shrink-0 bg-card border border-border/15 rounded-[20px] overflow-hidden flex flex-col justify-between shadow-3xs active:scale-[0.98] transition-all snap-start"
+      >
+        <div className="relative h-[100px] w-full bg-muted">
+          {(mainImage && !imageError) ? (
+            <img
+              src={mainImage}
+              alt={product.title || product.name}
+              className="w-full h-full object-cover pointer-events-none"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-muted-dark h-full">
+              <Package size={24} className="opacity-20" />
+            </div>
+          )}
+          <span className="absolute top-2 left-2 z-10 bg-white/95 text-primary text-[8px] font-black px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wide">
+            {badgeText}
+          </span>
+          <div className="absolute top-2 right-2 z-10">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                toggleLike(product.id)
+              }}
+              className={cn(
+                'w-6 h-6 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm border-none',
+                liked
+                  ? 'bg-danger text-destructive hover:bg-danger hover:text-destructive scale-110'
+                  : 'bg-card/90 text-muted-foreground hover:text-destructive hover:bg-card',
+              )}
+            >
+              <Heart
+                className={cn(
+                  'w-3.5 h-3.5 transition-transform active:scale-90',
+                  liked && 'fill-current',
+                )}
+              />
+            </Button>
+          </div>
+        </div>
+
+        <div className="p-3 flex-1 flex flex-col justify-between">
+          <div className="space-y-1">
+            <h4 className="font-extrabold text-[11px] line-clamp-1 leading-tight text-foreground">
+              {product.title || product.name}
+            </h4>
+            <div className="flex items-center gap-1 text-muted-foreground/80">
+              <MapPin size={10} className="shrink-0 text-muted-dark" />
+              <span className="text-[9px] font-medium truncate">
+                {formatDigits(product.location || (product as any).city || 'Surat')}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <span className="font-black text-[12px] text-primary dark:text-[#10b981]">
+              {formatCurrency(product.price)}
+              <small className="font-normal text-[8px] text-muted-foreground">/day</small>
+            </span>
+            <div className="flex items-center gap-0.5 text-[9.5px] font-bold text-foreground">
+              <Star size={9.5} className="fill-[#C97A45] text-[#C97A45] shrink-0" />
+              <span>{formatDigits(product.rating || 0)}</span>
+            </div>
+          </div>
+        </div>
+      </Link>
+    )
+  }
 
   return (
     <Link
@@ -38,7 +121,7 @@ export function ProductCard({ product }: ProductCardProps) {
     >
       <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 group-hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
         <div className="relative w-full h-[220px] rounded-xl bg-muted/50 mb-4 overflow-hidden shrink-0 flex items-center justify-center">
-          {!imageError ? (
+          {(mainImage && !imageError) ? (
             <img
               src={mainImage}
               alt={product.title || product.name}
@@ -79,18 +162,6 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
           {/* Listing Source Badge */}
           {(() => {
-            const isShop =
-              product.listingType === 'shop' ||
-              (product as any).owner?.address?.addressType?.toLowerCase() ===
-                'shop' ||
-              (
-                product as any
-              ).owner?.addresses?.[0]?.addressType?.toLowerCase() === 'shop' ||
-              (product as any).user?.address?.addressType?.toLowerCase() ===
-                'shop' ||
-              (
-                product as any
-              ).user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
             const displayShopName =
               product.shopName ||
               (product as any).owner?.address?.shopName ||
@@ -139,7 +210,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
             <span className="text-xs font-bold text-foreground/80">
-              {formatDigits(product.rating || '5.0')}
+              {formatDigits(product.rating || 0)}
             </span>
             <span className="text-xs font-medium text-muted-foreground/70">
               ({formatDigits(product.reviewsCount || 0)})
@@ -150,7 +221,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-1.5 text-muted-foreground/85 mb-4">
           <MapPin className="w-3.5 h-3.5 shrink-0" />
           <span className="text-xs font-medium truncate">
-            {formatDigits(product.location || 'Surat')}
+            {formatDigits(product.location || (product as any).city || 'Surat')}
           </span>
         </div>
 

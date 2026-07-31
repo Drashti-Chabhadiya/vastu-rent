@@ -259,8 +259,8 @@ export const ListingsManagement = ({
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="space-y-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
-            <PackagePlus className="text-dash-brand" size={32} />
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
+            <PackagePlus className="text-dash-brand shrink-0" size={32} />
             {t('Marketplace Management')}
           </h1>
           <p className="text-dash-text-soft font-medium text-sm ml-1">

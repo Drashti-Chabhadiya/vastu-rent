@@ -8,12 +8,14 @@ interface AvailabilityCalendarProps {
   today: Date
   productRentals: any[]
   handleDayClick: (day: number) => void
+  variant?: 'default' | 'sheet'
 }
 
 export const AvailabilityCalendar = ({
   today,
   productRentals,
   handleDayClick,
+  variant = 'default',
 }: AvailabilityCalendarProps) => {
   const { t, formatDate, formatDigits } = useTranslation()
   const { calMonth, calYear, setCalMonth, setCalYear, startDate, endDate } =
@@ -25,11 +27,21 @@ export const AvailabilityCalendar = ({
     month: 'long',
   })
 
+  const isSheet = variant === 'sheet'
+
   return (
-    <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-4">
-      <h3 className="text-base font-bold text-foreground">
-        {t('Check Availability')}
-      </h3>
+    <div
+      className={cn(
+        isSheet
+          ? 'bg-transparent p-0 border-none shadow-none space-y-4'
+          : 'bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-4',
+      )}
+    >
+      {!isSheet && (
+        <h3 className="text-base font-bold text-foreground">
+          {t('Check Availability')}
+        </h3>
+      )}
       <div className="flex items-center justify-between">
         <Button
           type="button"
@@ -41,11 +53,11 @@ export const AvailabilityCalendar = ({
               setCalYear((y) => y - 1)
             } else setCalMonth((m) => m - 1)
           }}
-          className="h-8 w-8 rounded-lg"
+          className="h-8 w-8 rounded-full bg-muted text-muted-foreground hover:bg-muted/80 flex items-center justify-center shrink-0 border-none cursor-pointer"
         >
           <ChevronLeft size={16} />
         </Button>
-        <p className="text-sm font-bold text-foreground">
+        <p className="text-sm font-extrabold text-foreground capitalize">
           {monthName} {formatDigits(calYear)}
         </p>
         <Button
@@ -58,16 +70,19 @@ export const AvailabilityCalendar = ({
               setCalYear((y) => y + 1)
             } else setCalMonth((m) => m + 1)
           }}
-          className="h-8 w-8 rounded-lg"
+          className="h-8 w-8 rounded-full bg-muted text-muted-foreground hover:bg-muted/80 flex items-center justify-center shrink-0 border-none cursor-pointer"
         >
           <ChevronRight size={16} />
         </Button>
       </div>
-      <div className="grid grid-cols-7 gap-y-1 gap-x-0.5 text-center">
-        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
+      <div className="grid grid-cols-7 gap-y-2 gap-x-0.5 text-center">
+        {(isSheet
+          ? ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+          : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+        ).map((d, i) => (
           <div
-            key={d}
-            className="text-[10px] font-bold text-muted-foreground/70 py-1"
+            key={i}
+            className="text-[10px] font-extrabold text-muted-foreground/75 py-1"
           >
             {t(d)}
           </div>
@@ -113,38 +128,40 @@ export const AvailabilityCalendar = ({
               onClick={() => !isDisabled && handleDayClick(day)}
               disabled={isDisabled}
               className={cn(
-                'h-7 w-full flex items-center justify-center text-xs rounded-md transition-all relative font-medium active:scale-[0.98]',
+                'h-8 w-full flex items-center justify-center text-xs rounded-full transition-all relative font-extrabold active:scale-[0.98]',
                 isDisabled
-                  ? 'text-muted-dark cursor-not-allowed bg-muted-light/50 hover:bg-muted-light/50 hover:text-muted-dark'
+                  ? 'text-muted-dark/50 cursor-not-allowed bg-transparent'
                   : isStart || isEnd
-                    ? 'bg-primary text-primary-foreground font-bold hover:bg-primary hover:text-primary-foreground'
+                    ? 'bg-primary text-white hover:bg-primary hover:text-white'
                     : inRange
-                      ? 'bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
-                      : 'text-foreground/80 hover:bg-muted/50 cursor-pointer',
+                      ? 'bg-muted text-primary rounded-none first-of-type:rounded-l-full last-of-type:rounded-r-full'
+                      : 'text-foreground hover:bg-muted/50 cursor-pointer',
               )}
             >
               {formatDigits(day)}
-              {isBooked && (
-                <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-destructive/80" />
+              {isBooked && !isStart && !isEnd && (
+                <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-destructive/40" />
               )}
             </Button>
           )
         })}
       </div>
-      <div className="flex items-center justify-between text-[10px] text-muted-foreground/85 pt-1">
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-sm bg-primary" />
-          {t('Selected')}
+      {!isSheet && (
+        <div className="flex items-center justify-between text-[10px] text-muted-foreground/85 pt-1">
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-full bg-primary" />
+            {t('Selected')}
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-none bg-muted" />
+            {t('Range')}
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded-full bg-muted-light/50" />
+            {t('Unavailable')}
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-sm bg-primary/10" />
-          {t('Range')}
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-sm bg-muted/50" />
-          {t('Unavailable')}
-        </div>
-      </div>
+      )}
     </div>
   )
 }

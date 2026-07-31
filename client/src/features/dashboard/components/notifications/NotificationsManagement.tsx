@@ -15,6 +15,8 @@ import { NotificationsPagination } from './NotificationsPagination'
 import { NotificationsSummaryCard } from './NotificationsSummaryCard'
 import { EmptyNotificationsState } from './EmptyNotificationsState'
 import { NotificationsManagementSkeleton } from '#/components/skeletons'
+import { getNotificationIcon } from '#/lib/notification-utils'
+import { ArrowLeft } from 'lucide-react'
 
 export const NotificationsManagement = () => {
   const { t, formatNumber } = useTranslation()
@@ -78,6 +80,34 @@ export const NotificationsManagement = () => {
   const paginatedNotifs = filteredNotifs?.slice(startIndex, endIndex) || []
   const unreadCount = notifications?.filter((n) => !n.isRead).length || 0
 
+  const isToday = (date: Date) => {
+    const today = new Date()
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    )
+  }
+
+  const todayNotifs = filteredNotifs?.filter((n) => isToday(new Date(n.createdAt))) || []
+  const earlierNotifs = filteredNotifs?.filter((n) => !isToday(new Date(n.createdAt))) || []
+
+  const getCircleColor = (type: string) => {
+    switch (type) {
+      case 'booking':
+        return 'bg-emerald-50 dark:bg-emerald-950/40 text-primary'
+      case 'saved':
+      case 'favorite':
+        return 'bg-rose-50 dark:bg-rose-950/40 text-rose-500 dark:text-rose-400'
+      case 'message':
+      case 'chat':
+      case 'info':
+        return 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400'
+      default:
+        return 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400'
+    }
+  }
+
   return (
     <div
       className={cn(
@@ -88,63 +118,182 @@ export const NotificationsManagement = () => {
         'duration-500',
       )}
     >
-      <h2 className={cn('text-lg', 'font-black', 'text-foreground')}>
-        {t('Platform Alerts')}
-      </h2>
+      {/* MOBILE LAYOUT (Screen 14 mockup style) */}
+      <div className="block md:hidden space-y-4">
+        {/* Header Title & Mark All Read */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* Mobile inline back button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-9 h-9 rounded-full bg-muted/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-muted/75 shrink-0 transition-colors"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <h1 className="text-2xl font-display font-medium text-foreground tracking-tight">
+              {t('Notifications')}
+            </h1>
+          </div>
+          <button
+            onClick={() => markAllReadMutation.mutate()}
+            disabled={markAllReadMutation.isPending || unreadCount === 0}
+            className="text-[11px] font-black text-muted-dark hover:text-foreground cursor-pointer transition-colors border-none bg-transparent shadow-none"
+          >
+            {t('Mark all read')}
+          </button>
+        </div>
 
-      <div className={cn('grid', 'grid-cols-1', 'lg:grid-cols-3', 'gap-5')}>
-        <div
-          className={cn(
-            'lg:col-span-2',
-            'bg-card',
-            'rounded-2xl',
-            'border',
-            'border-border/30',
-            'shadow-sm',
-            'overflow-hidden',
-          )}
-        >
-          <NotificationsFilterBar
-            search={search}
-            onSearchChange={setSearch}
-            filterType={filterType}
-            onFilterTypeChange={setFilterType}
-          />
+        {isLoading ? (
+          <NotificationsManagementSkeleton />
+        ) : filteredNotifs?.length === 0 ? (
+          <EmptyNotificationsState />
+        ) : (
+          <div className="space-y-6">
+            {/* TODAY SECTION */}
+            {todayNotifs.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-[9.5px] font-black uppercase tracking-widest text-muted-foreground pl-1">
+                  {t('Today')}
+                </h3>
+                <div className="bg-white dark:bg-card border border-border/15 rounded-[22px] p-2 divide-y divide-border/10 overflow-hidden shadow-xs">
+                  {todayNotifs.map((notif) => {
+                    const Icon = getNotificationIcon(notif.type)
+                    return (
+                      <div
+                        key={notif.id}
+                        onClick={() => handleNotificationClick(notif)}
+                        className="flex items-center justify-between p-3.5 cursor-pointer hover:bg-muted-light/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          {/* Circular color icon */}
+                          <div className={cn("w-8.5 h-8.5 rounded-full flex items-center justify-center shrink-0 shadow-2xs", getCircleColor(notif.type))}>
+                            <Icon size={14} strokeWidth={2.5} />
+                          </div>
 
-          <div className={cn('divide-y', 'divide-border/30')}>
-            {isLoading ? (
-              <NotificationsManagementSkeleton />
-            ) : paginatedNotifs.length === 0 ? (
-              <EmptyNotificationsState />
-            ) : (
-              paginatedNotifs.map((notif) => (
-                <NotificationItem
-                  key={notif.id}
-                  notification={notif}
-                  onClick={handleNotificationClick}
-                />
-              ))
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-black text-foreground leading-tight truncate">
+                              {notif.title}
+                            </h4>
+                            <p className="text-[10px] font-bold text-muted-foreground mt-0.5 leading-snug">
+                              {notif.message}
+                            </p>
+                          </div>
+                        </div>
+
+                        {!notif.isRead && (
+                          <span className="w-2 h-2 rounded-full bg-warning shrink-0 ml-2 animate-pulse" />
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* EARLIER SECTION */}
+            {earlierNotifs.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-[9.5px] font-black uppercase tracking-widest text-muted-foreground pl-1">
+                  {t('Earlier')}
+                </h3>
+                <div className="bg-white dark:bg-card border border-border/15 rounded-[22px] p-2 divide-y divide-border/10 overflow-hidden shadow-xs">
+                  {earlierNotifs.map((notif) => {
+                    const Icon = getNotificationIcon(notif.type)
+                    return (
+                      <div
+                        key={notif.id}
+                        onClick={() => handleNotificationClick(notif)}
+                        className="flex items-center justify-between p-3.5 cursor-pointer hover:bg-muted-light/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          {/* Circular color icon */}
+                          <div className={cn("w-8.5 h-8.5 rounded-full flex items-center justify-center shrink-0 shadow-2xs", getCircleColor(notif.type))}>
+                            <Icon size={14} strokeWidth={2.5} />
+                          </div>
+
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-black text-foreground leading-tight truncate">
+                              {notif.title}
+                            </h4>
+                            <p className="text-[10px] font-bold text-muted-foreground mt-0.5 leading-snug">
+                              {notif.message}
+                            </p>
+                          </div>
+                        </div>
+
+                        {!notif.isRead && (
+                          <span className="w-2 h-2 rounded-full bg-warning shrink-0 ml-2 animate-pulse" />
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* DESKTOP LAYOUT (Original) */}
+      <div className="hidden md:block space-y-5">
+        <h2 className={cn('text-lg', 'font-black', 'text-foreground')}>
+          {t('Platform Alerts')}
+        </h2>
+
+        <div className={cn('grid', 'grid-cols-1', 'lg:grid-cols-3', 'gap-5')}>
+          <div
+            className={cn(
+              'lg:col-span-2',
+              'bg-card',
+              'rounded-2xl',
+              'border',
+              'border-border/30',
+              'shadow-sm',
+              'overflow-hidden',
+            )}
+          >
+            <NotificationsFilterBar
+              search={search}
+              onSearchChange={setSearch}
+              filterType={filterType}
+              onFilterTypeChange={setFilterType}
+            />
+
+            <div className={cn('divide-y', 'divide-border/30')}>
+              {isLoading ? (
+                <NotificationsManagementSkeleton />
+              ) : paginatedNotifs.length === 0 ? (
+                <EmptyNotificationsState />
+              ) : (
+                paginatedNotifs.map((notif) => (
+                  <NotificationItem
+                    key={notif.id}
+                    notification={notif}
+                    onClick={handleNotificationClick}
+                  />
+                ))
+              )}
+            </div>
+
+            {totalItems > itemsPerPage && (
+              <NotificationsPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                startIndex={startIndex}
+                endIndex={endIndex}
+                onPageChange={setCurrentPage}
+                formatNumber={formatNumber}
+              />
             )}
           </div>
 
-          {totalItems > itemsPerPage && (
-            <NotificationsPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              startIndex={startIndex}
-              endIndex={endIndex}
-              onPageChange={setCurrentPage}
-              formatNumber={formatNumber}
-            />
-          )}
+          <NotificationsSummaryCard
+            unreadCount={unreadCount}
+            onMarkAllRead={() => markAllReadMutation.mutate()}
+            isPending={markAllReadMutation.isPending}
+          />
         </div>
-
-        <NotificationsSummaryCard
-          unreadCount={unreadCount}
-          onMarkAllRead={() => markAllReadMutation.mutate()}
-          isPending={markAllReadMutation.isPending}
-        />
       </div>
     </div>
   )

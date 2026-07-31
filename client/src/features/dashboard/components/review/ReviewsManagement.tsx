@@ -23,6 +23,7 @@ import {
 import EmptyReviewsState from './components/EmptyReviewsState'
 import ReviewCard from './components/ReviewCard'
 import { ReviewsManagementSkeleton } from '#/components/skeletons'
+import { ArrowLeft } from 'lucide-react'
 
 export const ReviewsManagement = () => {
   const { t } = useTranslation()
@@ -148,9 +149,18 @@ export const ReviewsManagement = () => {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
-            {t('Reviews')}
-          </h1>
+          <div className="flex items-center gap-3">
+            {/* Mobile inline back button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-9 h-9 rounded-full bg-brand-beige/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-brand-beige/75 shrink-0 transition-colors lg:hidden"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <h1 className="text-3xl font-black text-foreground tracking-tight">
+              {t('Reviews')}
+            </h1>
+          </div>
           <p className="text-sm text-muted-foreground/70 font-bold">
             {t("Reviews you've written for your stays and hosts.")}
           </p>

@@ -24,10 +24,10 @@ export function WishlistHeroHeader({
 
   return (
     <>
-      <motion.div variants={fadeUp} className="mb-6">
+      <motion.div variants={fadeUp} className="mb-2 md:mb-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground/85 hover:text-foreground transition-colors group"
+          className="hidden lg:inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground/85 hover:text-foreground transition-colors group"
         >
           <ArrowLeft
             size={16}
@@ -37,7 +37,7 @@ export function WishlistHeroHeader({
         </Link>
       </motion.div>
 
-      <motion.div variants={fadeUp} className="mb-10">
+      <motion.div variants={fadeUp} className="mb-5 md:mb-10">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">

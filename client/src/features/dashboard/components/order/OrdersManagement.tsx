@@ -316,70 +316,76 @@ export const OrdersManagement = () => {
                 </div>
 
                 {/* Date & Price */}
-                <div className="flex items-center gap-8 lg:gap-12 min-w-fit">
-                  <div className="flex items-center gap-4">
-                    <div className="flex flex-col">
+                <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4 sm:gap-8 lg:gap-12 min-w-fit">
+                  <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider mb-1">
+                          {t('Rental Period')}
+                        </span>
+                        <div className="flex items-center gap-2 text-sm font-extrabold text-dash-text whitespace-nowrap">
+                          <Calendar size={14} className="text-dash-brand shrink-0" />
+                          <span className="truncate max-w-[120px] sm:max-w-none">
+                            {format(new Date(order.startDate), 'dd MMM')} -{' '}
+                            {format(new Date(order.endDate), 'dd MMM, yy')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end min-w-fit">
                       <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider mb-1">
-                        {t('Rental Period')}
+                        {t('Income')}
                       </span>
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-dash-text">
-                        <Calendar size={14} className="text-dash-brand" />
-                        {format(new Date(order.startDate), 'dd MMM')} -{' '}
-                        {format(new Date(order.endDate), 'dd MMM, yyyy')}
+                      <div className="text-lg sm:text-xl font-black text-dash-brand flex items-center">
+                        <IndianRupee size={16} strokeWidth={3} className="sm:w-[18px] sm:h-[18px]" />
+                        {formatNumber(order.totalPrice)}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end min-w-[100px]">
-                    <span className="text-[10px] font-black text-dash-text-soft uppercase tracking-wider mb-1">
-                      {t('Income')}
-                    </span>
-                    <div className="text-xl font-black text-dash-brand flex items-center">
-                      <IndianRupee size={18} strokeWidth={3} />
-                      {formatNumber(order.totalPrice)}
-                    </div>
+                  <div className="flex items-center gap-2 justify-end w-full sm:w-auto mt-2 sm:mt-0">
+                    {order.status === 'pending' && (
+                      <div className="flex items-center gap-2 flex-1 sm:flex-none justify-end">
+                        <Button
+                          variant="ghost"
+                          onClick={() =>
+                            setPendingAction({
+                              id: order.id,
+                              action: 'confirm',
+                              title: order.product?.title || t('this product'),
+                            })
+                          }
+                          className="h-10 sm:h-12 px-3 sm:px-5 rounded-2xl bg-primary-soft text-primary hover:bg-primary hover:text-primary-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-primary hover:text-primary-foreground cursor-pointer flex-1 sm:flex-none"
+                        >
+                          <CheckCircle2 size={13} />
+                          {t('Confirm')}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() =>
+                            setPendingAction({
+                              id: order.id,
+                              action: 'reject',
+                              title: order.product?.title || t('this product'),
+                            })
+                          }
+                          className="h-10 sm:h-12 px-3 sm:px-5 rounded-2xl bg-danger text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-destructive hover:text-destructive-foreground cursor-pointer flex-1 sm:flex-none"
+                        >
+                          <XCircle size={13} />
+                          {t('Reject')}
+                        </Button>
+                      </div>
+                    )}
+
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleOpenDetails(order)}
+                      className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-muted-light p-0 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-primary-foreground transition-all active:scale-[0.98] duration-300 cursor-pointer shrink-0"
+                    >
+                      <ChevronRight size={20} strokeWidth={3} />
+                    </Button>
                   </div>
-
-                  {order.status === 'pending' && (
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          setPendingAction({
-                            id: order.id,
-                            action: 'confirm',
-                            title: order.product?.title || t('this product'),
-                          })
-                        }
-                        className="h-12 px-5 rounded-2xl bg-primary-soft text-primary hover:bg-primary hover:text-primary-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-primary hover:text-primary-foreground cursor-pointer"
-                      >
-                        <CheckCircle2 size={13} />
-                        {t('Confirm')}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() =>
-                          setPendingAction({
-                            id: order.id,
-                            action: 'reject',
-                            title: order.product?.title || t('this product'),
-                          })
-                        }
-                        className="h-12 px-5 rounded-2xl bg-danger text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all text-xs font-black flex items-center gap-1.5 active:scale-[0.98] shadow-sm hover:bg-destructive hover:text-destructive-foreground cursor-pointer"
-                      >
-                        <XCircle size={13} />
-                        {t('Reject')}
-                      </Button>
-                    </div>
-                  )}
-
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleOpenDetails(order)}
-                    className="h-12 w-12 rounded-2xl bg-muted-light p-0 flex items-center justify-center text-dash-text-soft hover:bg-dash-brand hover:text-primary-foreground transition-all active:scale-[0.98] duration-300 cursor-pointer"
-                  >
-                    <ChevronRight size={20} strokeWidth={3} />
-                  </Button>
                 </div>
               </div>
             </motion.div>

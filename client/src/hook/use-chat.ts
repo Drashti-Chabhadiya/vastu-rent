@@ -528,6 +528,7 @@ export {
   useCreateConversation,
   useDeleteConversation,
   useSearchChatUsers,
+  useConversations,
 } from './use-chat-hooks'
 export {
   useToggleStarMessage,

@@ -337,8 +337,8 @@ export function MessageItem({ msg }: MessageItemProps) {
               className={cn(
                 'px-4 py-2.5 text-[12px] font-semibold leading-relaxed relative rounded-2xl shadow-none border max-w-md flex flex-wrap items-baseline justify-between gap-3',
                 isMe
-                  ? 'bg-brand-green-bubble border border-brand-green-border text-foreground rounded-tr-sm'
-                  : 'bg-card text-foreground/80 border border-border/30 rounded-tl-sm',
+                  ? 'bg-primary border-transparent text-white rounded-tr-xs'
+                  : 'bg-white dark:bg-card text-foreground/90 border-border/15 rounded-tl-xs',
               )}
             >
               <div className="flex-1 break-words min-w-[60px]">

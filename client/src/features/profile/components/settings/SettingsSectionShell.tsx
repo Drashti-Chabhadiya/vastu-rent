@@ -1,4 +1,5 @@
 import { cn } from '#/lib/utils'
+import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 
 interface SettingsSectionShellProps {
   title: string
@@ -14,7 +15,8 @@ export function SettingsSectionShell({
   return (
     <div className={cn('space-y-7', 'max-w-2xl')}>
       <div>
-        <h2 className={cn('text-base', 'font-extrabold', 'text-foreground')}>
+        <MobileBackHeader title={title} />
+        <h2 className={cn('text-base', 'font-extrabold', 'text-foreground', 'hidden lg:block')}>
           {title}
         </h2>
         <p
