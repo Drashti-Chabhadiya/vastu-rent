@@ -165,32 +165,12 @@ export function SettingsPage() {
     }
   }
 
-  const renderSwitch = (prefName: 'email' | 'sms' | 'marketing' | 'push', value: boolean) => (
-    <button
-      type="button"
-      onClick={() => handleTogglePreference(prefName, !value)}
-      className={cn(
-        "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-0",
-        value ? "bg-primary" : "bg-muted-light/80"
-      )}
-    >
-      <span
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out",
-          value ? "translate-x-5" : "translate-x-0"
-        )}
-      />
-    </button>
-  )
-
   return (
     <div className="font-sans">
       {/* ── MOBILE SETTINGS VIEW (Screen 17 mockup style) ── */}
       <div className="block lg:hidden select-none pb-8">
         {section === 'home' ? (
           <div className="space-y-6">
-
             <div className="md:hidden px-1 pt-2">
               <MobileBackHeader title={t('Settings')} />
             </div>
@@ -207,7 +187,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <User size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Edit profile')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Edit profile')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </Link>
@@ -215,9 +197,13 @@ export function SettingsPage() {
                 <div className="flex items-center justify-between p-3.5">
                   <div className="flex items-center gap-3">
                     <Globe size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Language')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Language')}
+                    </span>
                   </div>
-                  <span className="text-xs font-bold text-muted-dark pr-1">{t('English')}</span>
+                  <span className="text-xs font-bold text-muted-dark pr-1">
+                    {t('English')}
+                  </span>
                 </div>
               </div>
             </div>
@@ -236,7 +222,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <Palette size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Theme & Appearance')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Theme & Appearance')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </button>
@@ -249,7 +237,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <Bell size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Notifications')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Notifications')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </button>
@@ -262,7 +252,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <CreditCard size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Payment Methods')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Payment Methods')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </button>
@@ -275,7 +267,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <Lock size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Privacy')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Privacy')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </button>
@@ -288,7 +282,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <Link2 size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Connected Accounts')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Connected Accounts')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </button>
@@ -301,7 +297,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <Trash2 size={16} className="text-destructive/80" />
-                    <span className="text-[12.5px] font-semibold text-destructive">{t('Delete Account')}</span>
+                    <span className="text-[12.5px] font-semibold text-destructive">
+                      {t('Delete Account')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </button>
@@ -320,7 +318,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <HelpCircle size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Help center')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Help center')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </Link>
@@ -331,7 +331,9 @@ export function SettingsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <FileText size={16} className="text-muted-foreground" />
-                    <span className="text-[12.5px] font-semibold text-foreground">{t('Terms of service')}</span>
+                    <span className="text-[12.5px] font-semibold text-foreground">
+                      {t('Terms of service')}
+                    </span>
                   </div>
                   <ChevronRight size={14} className="text-muted-foreground" />
                 </Link>
@@ -351,7 +353,6 @@ export function SettingsPage() {
           </div>
         ) : (
           <div className="space-y-4">
-
             <div className="bg-white dark:bg-card border border-border/15 rounded-[22px] shadow-3xs">
               {section === 'theme' && <ThemeSection />}
               {section === 'notifs' && (
@@ -412,10 +413,18 @@ export function SettingsPage() {
                   onClick={() => setSection(id)}
                   className={cn(
                     'flex items-center gap-3 px-4 py-2.5 lg:px-5 lg:py-3 text-[13px] font-semibold text-left w-auto lg:w-full shrink-0 cursor-pointer transition-colors border-b-2 border-l-0 lg:border-b-0 lg:border-l-2 rounded-none justify-start h-auto',
-                    active && !isDel && 'text-primary bg-primary-soft/70 border-primary hover:bg-primary-soft/70 hover:text-primary',
-                    active && isDel && 'text-destructive bg-danger/60 border-destructive/40 hover:bg-danger/60 hover:text-destructive',
-                    !active && !isDel && 'text-muted-foreground/85 hover:text-foreground/90 hover:bg-muted-light border-transparent',
-                    !active && isDel && 'text-destructive/80 hover:text-destructive hover:bg-danger border-transparent',
+                    active &&
+                      !isDel &&
+                      'text-primary bg-primary-soft/70 border-primary hover:bg-primary-soft/70 hover:text-primary',
+                    active &&
+                      isDel &&
+                      'text-destructive bg-danger/60 border-destructive/40 hover:bg-danger/60 hover:text-destructive',
+                    !active &&
+                      !isDel &&
+                      'text-muted-foreground/85 hover:text-foreground/90 hover:bg-muted-light border-transparent',
+                    !active &&
+                      isDel &&
+                      'text-destructive/80 hover:text-destructive hover:bg-danger border-transparent',
                   )}
                 >
                   <Icon size={15} className="shrink-0" />
@@ -477,7 +486,10 @@ export function SettingsPage() {
       {/* Local Logout Confirmation Dialog */}
       {localLogoutOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/35 backdrop-blur-sm" onClick={() => setLocalLogoutOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/35 backdrop-blur-sm"
+            onClick={() => setLocalLogoutOpen(false)}
+          />
           <div className="relative bg-card rounded-3xl shadow-2xl w-full max-w-xs p-6 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-200">
             <div className="w-12 h-12 rounded-full bg-primary-soft flex items-center justify-center mb-4 text-destructive">
               <LogOut size={22} />

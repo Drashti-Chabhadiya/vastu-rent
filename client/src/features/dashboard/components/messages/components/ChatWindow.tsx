@@ -70,7 +70,8 @@ export function ChatWindow() {
         const isProductOwnerOther =
           rental.product?.userId === activeConversation.otherParticipant.id
         const isProductOwnerMe = rental.product?.userId === currentUserId
-        const isRenterOther = rental.renterId === activeConversation.otherParticipant.id
+        const isRenterOther =
+          rental.renterId === activeConversation.otherParticipant.id
         const isRenterMe = rental.renterId === currentUserId
 
         return (
@@ -233,7 +234,9 @@ export function ChatWindow() {
               {activeRental.product?.title}
             </h4>
             <p className="text-[10px] font-bold text-muted-foreground mt-0.5">
-              ₹{activeRental.product?.price?.toLocaleString()}/day · {format(new Date(activeRental.startDate), 'dd')} - {format(new Date(activeRental.endDate), 'dd MMM')}
+              ₹{activeRental.product?.price?.toLocaleString()}/day ·{' '}
+              {format(new Date(activeRental.startDate), 'dd')} -{' '}
+              {format(new Date(activeRental.endDate), 'dd MMM')}
             </p>
           </div>
         </div>

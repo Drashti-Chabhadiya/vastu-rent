@@ -32,8 +32,8 @@ export function ListingCard({
   const { t } = useTranslation()
   const isOpen = openDropdownId === item.id
 
-  const views = (item.title?.charCodeAt(0) || 65) % 150 + 35
-  const bookings = (item.title?.charCodeAt(1) || 66) % 3 + 1
+  const views = ((item.title?.charCodeAt(0) || 65) % 150) + 35
+  const bookings = ((item.title?.charCodeAt(1) || 66) % 3) + 1
 
   return (
     <>
@@ -61,7 +61,7 @@ export function ListingCard({
                     'text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md shrink-0 select-none',
                     item.isAvailable
                       ? 'bg-muted text-primary dark:bg-emerald-950/40 dark:text-emerald-400'
-                      : 'bg-muted-light/60 text-muted-foreground'
+                      : 'bg-muted-light/60 text-muted-foreground',
                   )}
                 >
                   {item.isAvailable ? t('Active') : t('Paused')}
@@ -196,7 +196,8 @@ export function ListingCard({
                         }}
                         className="w-full text-left px-3.5 py-2 text-xs font-bold text-foreground hover:bg-muted rounded-xl flex items-center gap-2.5 cursor-pointer transition-colors justify-start h-auto"
                       >
-                        <Pencil size={13} className="text-primary" /> {t('Edit')}
+                        <Pencil size={13} className="text-primary" />{' '}
+                        {t('Edit')}
                       </Button>
                       <Button
                         variant="ghost"

@@ -81,30 +81,30 @@ export function HeroSection() {
   const banners =
     products && products.length > 0
       ? products
-        .filter((p: any) => p.images && p.images.length > 0)
-        .slice(0, 6)
-        .map((p: any) => ({
-          id: p.id,
-          tag: t('Featured product'),
-          title: p.title || p.name,
-          subtitle: `${p.category?.name || t('Rent')} · ${p.city || p.location || 'Surat'}`,
-          image: p.images[0],
-          link: `/products/${p.id}`,
-          price: p.price,
-        }))
+          .filter((p: any) => p.images && p.images.length > 0)
+          .slice(0, 6)
+          .map((p: any) => ({
+            id: p.id,
+            tag: t('Featured product'),
+            title: p.title || p.name,
+            subtitle: `${p.category?.name || t('Rent')} · ${p.city || p.location || 'Surat'}`,
+            image: p.images[0],
+            link: `/products/${p.id}`,
+            price: p.price,
+          }))
       : [
-        {
-          id: 'featured-default',
-          tag: t('Featured this week'),
-          title: displayTitle,
-          subtitle: `${displayCategory} · ${displayLocation}`,
-          image: displayImg,
-          link: featuredProduct
-            ? `/products/${featuredProduct.id}`
-            : '/products',
-          price: displayPrice,
-        },
-      ]
+          {
+            id: 'featured-default',
+            tag: t('Featured this week'),
+            title: displayTitle,
+            subtitle: `${displayCategory} · ${displayLocation}`,
+            image: displayImg,
+            link: featuredProduct
+              ? `/products/${featuredProduct.id}`
+              : '/products',
+            price: displayPrice,
+          },
+        ]
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -390,10 +390,7 @@ export function HeroSection() {
                     key={b.id}
                     className="relative flex-[0_0_100%] min-w-0 h-[180px]"
                   >
-                    <Link
-                      to={b.link}
-                      className="absolute inset-0 z-20"
-                    />
+                    <Link to={b.link} className="absolute inset-0 z-20" />
                     <img
                       src={b.image}
                       alt={b.title}

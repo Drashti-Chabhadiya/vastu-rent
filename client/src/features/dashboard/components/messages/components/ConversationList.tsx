@@ -37,7 +37,7 @@ import { toast } from 'sonner'
 export function ConversationList() {
   const { t } = useTranslation()
   const { data: session } = useSessionContext()
-  const myShowOnline = (session?.user)?.showOnline !== false
+  const myShowOnline = session?.user?.showOnline !== false
   const [clearChatConvId, setClearChatConvId] = useState<string | null>(null)
 
   const {
@@ -206,8 +206,8 @@ export function ConversationList() {
               className={cn(
                 'w-8 h-8 rounded-lg hover:bg-muted-light text-muted-foreground hover:text-foreground cursor-pointer transition-colors',
                 activePanel === 'settings' &&
-                showDetailsPanel &&
-                'text-emerald-700 bg-emerald-50',
+                  showDetailsPanel &&
+                  'text-emerald-700 bg-emerald-50',
               )}
               title="Settings"
             >
@@ -333,8 +333,8 @@ export function ConversationList() {
                 style={
                   isSelected
                     ? ({
-                      '--card': 'var(--brand-green-bubble)',
-                    } as CSSProperties)
+                        '--card': 'var(--brand-green-bubble)',
+                      } as CSSProperties)
                     : undefined
                 }
                 className={cn(
@@ -358,8 +358,8 @@ export function ConversationList() {
                   name={conv.otherParticipant.name}
                   isOnline={
                     myShowOnline &&
-                      conv.otherParticipant.lastActive !== null &&
-                      conv.otherParticipant.lastActive !== undefined
+                    conv.otherParticipant.lastActive !== null &&
+                    conv.otherParticipant.lastActive !== undefined
                       ? conv.otherParticipant.isOnline
                       : undefined
                   }

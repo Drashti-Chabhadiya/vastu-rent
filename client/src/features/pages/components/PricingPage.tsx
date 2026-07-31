@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Sprout, Home, Building2, CheckCircle2, ChevronRight } from 'lucide-react'
+import {
+  Sprout,
+  Home,
+  Building2,
+  CheckCircle2,
+  ChevronRight,
+} from 'lucide-react'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
 import { Button } from '#/components/ui/button'
@@ -163,7 +169,9 @@ export function PricingPage() {
               variants={fadeUp}
               className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground"
             >
-              {t('Choose the perfect plan to rent your items and start earning with Vastu.')}
+              {t(
+                'Choose the perfect plan to rent your items and start earning with Vastu.',
+              )}
             </motion.p>
           </motion.div>
           <motion.div
@@ -250,7 +258,8 @@ export function PricingPage() {
                   plan.dark
                     ? 'bg-primary text-white border-primary'
                     : 'bg-card border-border/25 shadow-xs lg:shadow-sm',
-                  !plan.dark && 'hover:shadow-md transition-shadow duration-300',
+                  !plan.dark &&
+                    'hover:shadow-md transition-shadow duration-300',
                 )}
               >
                 {/* Most Popular badge */}
@@ -261,27 +270,52 @@ export function PricingPage() {
                 )}
 
                 {/* Header */}
-                <div className={cn('flex items-center gap-2.5', plan.badge && 'mt-1')}>
+                <div
+                  className={cn(
+                    'flex items-center gap-2.5',
+                    plan.badge && 'mt-1',
+                  )}
+                >
                   <Icon
                     size={16}
                     strokeWidth={1.8}
                     className={plan.dark ? 'text-white/80' : 'text-primary'}
                   />
-                  <h3 className={cn('font-bold text-[13px]', plan.dark ? 'text-white' : 'text-foreground')}>
+                  <h3
+                    className={cn(
+                      'font-bold text-[13px]',
+                      plan.dark ? 'text-white' : 'text-foreground',
+                    )}
+                  >
                     {t(plan.name)}
                   </h3>
                 </div>
 
                 {/* Price */}
                 <div className="mt-3 flex items-baseline gap-0.5">
-                  <span className={cn('font-display text-[26px] lg:text-[36px] font-semibold', plan.dark ? 'text-white' : 'text-foreground')}>
+                  <span
+                    className={cn(
+                      'font-display text-[26px] lg:text-[36px] font-semibold',
+                      plan.dark ? 'text-white' : 'text-foreground',
+                    )}
+                  >
                     ₹{formatNumber(plan.price)}
                   </span>
-                  <span className={cn('text-[11px] font-medium ml-0.5', plan.dark ? 'text-white/60' : 'text-muted-foreground')}>
+                  <span
+                    className={cn(
+                      'text-[11px] font-medium ml-0.5',
+                      plan.dark ? 'text-white/60' : 'text-muted-foreground',
+                    )}
+                  >
                     {t('/month')}
                   </span>
                 </div>
-                <p className={cn('text-[10.5px] mt-0.5', plan.dark ? 'text-white/60' : 'text-muted-foreground')}>
+                <p
+                  className={cn(
+                    'text-[10.5px] mt-0.5',
+                    plan.dark ? 'text-white/60' : 'text-muted-foreground',
+                  )}
+                >
                   {plan.perMonthNote}
                 </p>
 
@@ -310,9 +344,20 @@ export function PricingPage() {
                       <li key={i} className="flex items-center gap-2.5">
                         <CheckCircle2
                           size={15}
-                          className={plan.dark ? 'text-white/60 shrink-0' : 'text-primary shrink-0'}
+                          className={
+                            plan.dark
+                              ? 'text-white/60 shrink-0'
+                              : 'text-primary shrink-0'
+                          }
                         />
-                        <span className={cn('text-[13px] leading-relaxed', plan.dark ? 'text-white/80' : 'text-muted-foreground')}>
+                        <span
+                          className={cn(
+                            'text-[13px] leading-relaxed',
+                            plan.dark
+                              ? 'text-white/80'
+                              : 'text-muted-foreground',
+                          )}
+                        >
                           {t(f)}
                         </span>
                       </li>
@@ -361,7 +406,9 @@ export function PricingPage() {
               {t('Trusted. Secure. Hassle-free.')}
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
-              {t('Your data is protected and payments are 100% secure with Vastu.')}
+              {t(
+                'Your data is protected and payments are 100% secure with Vastu.',
+              )}
             </p>
           </div>
           <Button
@@ -369,9 +416,7 @@ export function PricingPage() {
             className="rounded-full bg-primary px-8 h-11 font-bold text-sm text-primary-foreground hover:bg-primary/95 shrink-0 cursor-pointer"
           >
             {session ? (
-              <Link to="/account/listings">
-                {t('Get Started Free')}
-              </Link>
+              <Link to="/account/listings">{t('Get Started Free')}</Link>
             ) : (
               <Link to="/login" search={{ redirect: '/pricing' }}>
                 {t('Get Started Free')}

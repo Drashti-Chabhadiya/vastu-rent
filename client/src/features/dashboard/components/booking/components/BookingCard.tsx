@@ -38,9 +38,8 @@ export function BookingCard({
     ),
   )
   const [imgError, setImgError] = useState(false)
-  const imageUrl = !imgError && rental.product?.images?.[0]
-    ? rental.product.images[0]
-    : null
+  const imageUrl =
+    !imgError && rental.product?.images?.[0] ? rental.product.images[0] : null
 
   const bookingGroup = getBookingGroup(rental.status)
   const hasReview = rental.product?.reviews && rental.product.reviews.length > 0
@@ -62,10 +61,17 @@ export function BookingCard({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-[#E8F0EA]">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4a7c5a" strokeWidth="1.5">
-                  <rect x="3" y="3" width="18" height="18" rx="3"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/>
-                  <path d="M21 15l-5-5L5 21"/>
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#4a7c5a"
+                  strokeWidth="1.5"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="M21 15l-5-5L5 21" />
                 </svg>
               </div>
             )}
@@ -83,11 +89,14 @@ export function BookingCard({
             </div>
             <p className="text-[10.5px] font-semibold text-muted-foreground mt-1">
               {format(new Date(rental.startDate), 'd MMM')} –{' '}
-              {format(new Date(rental.endDate), 'd MMM')} · {nights} {nights === 1 ? 'day' : 'days'}
+              {format(new Date(rental.endDate), 'd MMM')} · {nights}{' '}
+              {nights === 1 ? 'day' : 'days'}
             </p>
             <p className="text-[13px] font-black text-foreground mt-1.5">
               ₹{rental.totalPrice?.toLocaleString()}
-              <span className="text-[10px] font-normal text-muted-foreground ml-1">total</span>
+              <span className="text-[10px] font-normal text-muted-foreground ml-1">
+                total
+              </span>
             </p>
           </div>
         </div>
@@ -178,10 +187,17 @@ export function BookingCard({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-[#E8F0EA]">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#4a7c5a" strokeWidth="1.5">
-                  <rect x="3" y="3" width="18" height="18" rx="3"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/>
-                  <path d="M21 15l-5-5L5 21"/>
+                <svg
+                  width="36"
+                  height="36"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#4a7c5a"
+                  strokeWidth="1.5"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="M21 15l-5-5L5 21" />
                 </svg>
               </div>
             )}

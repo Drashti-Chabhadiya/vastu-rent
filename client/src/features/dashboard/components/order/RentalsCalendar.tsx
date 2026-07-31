@@ -51,11 +51,14 @@ export const RentalsCalendar = () => {
   useEffect(() => {
     // Scroll active date into view on mount and when month changes
     if (scrollContainerRef.current) {
-      const activeEl = scrollContainerRef.current.querySelector('[data-active="true"]') as HTMLElement
+      const activeEl = scrollContainerRef.current.querySelector(
+        '[data-active="true"]',
+      ) as HTMLElement
       if (activeEl) {
         scrollContainerRef.current.scrollTo({
-          left: activeEl.offsetLeft - scrollContainerRef.current.offsetLeft - 16,
-          behavior: 'smooth'
+          left:
+            activeEl.offsetLeft - scrollContainerRef.current.offsetLeft - 16,
+          behavior: 'smooth',
         })
       }
     }
@@ -216,10 +219,11 @@ export const RentalsCalendar = () => {
                   setCurrentView('my')
                   setSelectedProduct('all')
                 }}
-                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${currentView === 'my'
-                  ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
-                  : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
-                  }`}
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${
+                  currentView === 'my'
+                    ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                    : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
+                }`}
               >
                 {t('My Rentals')}
               </Button>
@@ -229,10 +233,11 @@ export const RentalsCalendar = () => {
                   setCurrentView('all')
                   setSelectedProduct('all')
                 }}
-                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${currentView === 'all'
-                  ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
-                  : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
-                  }`}
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all h-auto cursor-pointer ${
+                  currentView === 'all'
+                    ? 'bg-dash-brand text-primary-foreground hover:bg-dash-brand hover:text-primary-foreground'
+                    : 'text-dash-text-soft hover:text-dash-text hover:bg-transparent'
+                }`}
               >
                 {t('All Platform Rentals')}
               </Button>
@@ -305,7 +310,7 @@ export const RentalsCalendar = () => {
                   'border-b border-r border-border/30 p-2 min-h-[90px] flex flex-col justify-between group transition-colors hover:bg-muted-light/50',
                   !isSelectedMonth && 'bg-muted-light/20 opacity-40',
                   isToday &&
-                  'bg-background/40 border-l-2 border-l-primary lg:border-l-0',
+                    'bg-background/40 border-l-2 border-l-primary lg:border-l-0',
                 )}
               >
                 {/* Date Number indicator */}
@@ -362,19 +367,40 @@ export const RentalsCalendar = () => {
       <motion.div variants={fadeUp} className="md:hidden space-y-4">
         {/* Mobile Month Selector */}
         <div className="flex items-center justify-between px-2 mb-2">
-          <Button variant="ghost" size="icon" onClick={prevMonth} className="h-8 w-8 hover:bg-transparent">
-            <ChevronLeft size={18} className="text-dash-text" strokeWidth={2.5} />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={prevMonth}
+            className="h-8 w-8 hover:bg-transparent"
+          >
+            <ChevronLeft
+              size={18}
+              className="text-dash-text"
+              strokeWidth={2.5}
+            />
           </Button>
           <span className="text-[17px] font-black text-dash-text font-display tracking-wide">
             {formatDate(currentMonth, { month: 'long', year: 'numeric' })}
           </span>
-          <Button variant="ghost" size="icon" onClick={nextMonth} className="h-8 w-8 hover:bg-transparent">
-            <ChevronRight size={18} className="text-dash-text" strokeWidth={2.5} />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={nextMonth}
+            className="h-8 w-8 hover:bg-transparent"
+          >
+            <ChevronRight
+              size={18}
+              className="text-dash-text"
+              strokeWidth={2.5}
+            />
           </Button>
         </div>
 
         {/* Horizontal scroll dates */}
-        <div ref={scrollContainerRef} className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-2 px-1 -mx-2">
+        <div
+          ref={scrollContainerRef}
+          className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-2 px-1 -mx-2"
+        >
           {calendarDays.map((day, idx) => {
             const isSelected = isSameDay(day, activeDate)
             return (
@@ -383,18 +409,32 @@ export const RentalsCalendar = () => {
                 data-active={isSelected}
                 onClick={() => setActiveDate(day)}
                 className={cn(
-                  "flex flex-col items-center justify-center min-w-[62px] h-[72px] rounded-[18px] transition-all shrink-0",
-                  isSelected ? "bg-primary text-primary-foreground shadow-sm" : "bg-brand-beige text-dash-text hover:bg-brand-beige/80 dark:bg-muted/50 dark:hover:bg-muted"
+                  'flex flex-col items-center justify-center min-w-[62px] h-[72px] rounded-[18px] transition-all shrink-0',
+                  isSelected
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'bg-brand-beige text-dash-text hover:bg-brand-beige/80 dark:bg-muted/50 dark:hover:bg-muted',
                 )}
               >
-                <span className={cn("text-[9px] font-black uppercase mb-0.5 tracking-widest", isSelected ? "text-primary-foreground/90" : "text-dash-text/80")}>
+                <span
+                  className={cn(
+                    'text-[9px] font-black uppercase mb-0.5 tracking-widest',
+                    isSelected
+                      ? 'text-primary-foreground/90'
+                      : 'text-dash-text/80',
+                  )}
+                >
                   {format(day, 'EEE')}
                 </span>
                 <span className="text-[20px] font-black leading-none">
                   {formatNumber(parseInt(format(day, 'd')))}
                 </span>
                 {getBookingsForDay(day).length > 0 && (
-                  <div className={cn("w-1 h-1 rounded-full mt-1.5", isSelected ? "bg-primary-foreground" : "bg-primary")} />
+                  <div
+                    className={cn(
+                      'w-1 h-1 rounded-full mt-1.5',
+                      isSelected ? 'bg-primary-foreground' : 'bg-primary',
+                    )}
+                  />
                 )}
               </button>
             )
@@ -413,7 +453,7 @@ export const RentalsCalendar = () => {
         {/* Selected Date Bookings */}
         <div className="bg-card border border-border/40 border-dashed rounded-[2rem] p-6 min-h-[250px] flex flex-col justify-center">
           {(() => {
-            const activeBookings = getBookingsForDay(activeDate);
+            const activeBookings = getBookingsForDay(activeDate)
             if (activeBookings.length === 0) {
               return (
                 <div className="flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-card border border-border/15 rounded-3xl mt-4 shadow-3xs max-w-sm mx-auto">
@@ -421,7 +461,10 @@ export const RentalsCalendar = () => {
                     <CalendarX className="w-6 h-6 text-foreground/50" />
                   </div>
                   <h4 className="text-[15px] font-black text-dash-text mb-1">
-                    {t('Nothing scheduled for {date}').replace('{date}', format(activeDate, 'd MMM'))}
+                    {t('Nothing scheduled for {date}').replace(
+                      '{date}',
+                      format(activeDate, 'd MMM'),
+                    )}
                   </h4>
                   <p className="text-xs text-dash-text-muted">
                     {t('Tap a date above to check its rentals.')}
@@ -432,7 +475,10 @@ export const RentalsCalendar = () => {
             return (
               <div className="space-y-3 w-full h-full flex flex-col justify-start">
                 <h4 className="text-xs font-black uppercase tracking-widest text-dash-text-muted mb-2">
-                  {t('Rentals on {date}').replace('{date}', format(activeDate, 'MMM d, yyyy'))}
+                  {t('Rentals on {date}').replace(
+                    '{date}',
+                    format(activeDate, 'MMM d, yyyy'),
+                  )}
                 </h4>
                 {activeBookings.map((booking: any) => (
                   <div
@@ -441,13 +487,29 @@ export const RentalsCalendar = () => {
                     className="p-3 bg-muted-light/30 rounded-xl border border-border/30 flex items-center justify-between cursor-pointer active:scale-95 transition-transform"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <img src={booking.product?.images?.[0] || 'https://placehold.co/100x100/png'} className="w-10 h-10 rounded-lg object-cover shrink-0" alt="" />
+                      <img
+                        src={
+                          booking.product?.images?.[0] ||
+                          'https://placehold.co/100x100/png'
+                        }
+                        className="w-10 h-10 rounded-lg object-cover shrink-0"
+                        alt=""
+                      />
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-bold text-dash-text truncate">{booking.product?.title}</p>
-                        <p className="text-[10px] text-dash-text-muted truncate">{booking.renter?.name}</p>
+                        <p className="text-sm font-bold text-dash-text truncate">
+                          {booking.product?.title}
+                        </p>
+                        <p className="text-[10px] text-dash-text-muted truncate">
+                          {booking.renter?.name}
+                        </p>
                       </div>
                     </div>
-                    <div className={cn("text-[9px] font-black px-2 py-1 rounded-lg border uppercase shrink-0 ml-2", getStatusColor(booking.status))}>
+                    <div
+                      className={cn(
+                        'text-[9px] font-black px-2 py-1 rounded-lg border uppercase shrink-0 ml-2',
+                        getStatusColor(booking.status),
+                      )}
+                    >
                       {booking.status}
                     </div>
                   </div>

@@ -14,7 +14,9 @@ export function MobileBackHeader({ title }: MobileBackHeaderProps) {
         <ArrowLeft size={16} strokeWidth={2} />
       </button>
       {title && (
-        <h1 className="text-[17px] font-black text-foreground tracking-tight">{title}</h1>
+        <h1 className="text-[17px] font-black text-foreground tracking-tight">
+          {title}
+        </h1>
       )}
     </div>
   )

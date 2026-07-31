@@ -43,7 +43,11 @@ export const ProductImageGallery = ({
     const width = container.clientWidth
     if (width > 0) {
       const activeIdx = Math.round(scrollLeft / width)
-      if (activeIdx !== selectedImage && activeIdx >= 0 && activeIdx < images.length) {
+      if (
+        activeIdx !== selectedImage &&
+        activeIdx >= 0 &&
+        activeIdx < images.length
+      ) {
         setSelectedImage(activeIdx)
       }
     }
@@ -71,9 +75,7 @@ export const ProductImageGallery = ({
 
   return (
     <div className="space-y-4">
-      <div
-        className="relative aspect-[4/3] rounded-none rounded-b-[30px] md:rounded-2xl overflow-hidden bg-card border-x-0 border-t-0 md:border border-border/30 md:shadow-sm group"
-      >
+      <div className="relative aspect-[4/3] rounded-none rounded-b-[30px] md:rounded-2xl overflow-hidden bg-card border-x-0 border-t-0 md:border border-border/30 md:shadow-sm group">
         {/* Back button on mobile */}
         <button
           type="button"
@@ -105,13 +107,16 @@ export const ProductImageGallery = ({
                 src={img}
                 alt={`${title} ${idx + 1}`}
                 style={{
-                  transformOrigin: isHovered && idx === selectedImage
-                    ? `${hoverPos.x}% ${hoverPos.y}%`
-                    : 'center',
+                  transformOrigin:
+                    isHovered && idx === selectedImage
+                      ? `${hoverPos.x}% ${hoverPos.y}%`
+                      : 'center',
                 }}
                 className={cn(
                   'w-full h-full object-cover transition-transform duration-300 ease-out pointer-events-none',
-                  isHovered && idx === selectedImage ? 'scale-175' : 'scale-100',
+                  isHovered && idx === selectedImage
+                    ? 'scale-175'
+                    : 'scale-100',
                 )}
               />
             </div>

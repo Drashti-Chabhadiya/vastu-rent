@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from '#/context/TranslationContext'
-import { Plus, Search, SlidersHorizontal, Package } from 'lucide-react'
+import {
+  Plus,
+  Search,
+  SlidersHorizontal,
+  Package,
+  ArrowLeft,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import {
@@ -25,7 +31,6 @@ import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
-import { ArrowLeft } from 'lucide-react'
 import { useListingDraftStore } from '#/store/useListingDraftStore'
 import { ListingCard } from './ListingCard'
 import { ListingsStatsRow } from './ListingsStatsRow'
@@ -221,11 +226,11 @@ export function ProfileListings() {
     listings?.filter((item: any) => parseFloat(item.rating || '0') > 0) || []
   const avgRatingValue = ratedListings.length
     ? (
-      ratedListings.reduce(
-        (sum: number, item: any) => sum + parseFloat(item.rating),
-        0,
-      ) / ratedListings.length
-    ).toFixed(1)
+        ratedListings.reduce(
+          (sum: number, item: any) => sum + parseFloat(item.rating),
+          0,
+        ) / ratedListings.length
+      ).toFixed(1)
     : '0.0'
 
   const handleAddListing = () => {
@@ -278,7 +283,9 @@ export function ProfileListings() {
             {
               num: '01',
               title: t('List your item'),
-              desc: t('Add photos, set your price and availability in minutes.'),
+              desc: t(
+                'Add photos, set your price and availability in minutes.',
+              ),
             },
             {
               num: '02',
@@ -406,7 +413,10 @@ export function ProfileListings() {
 
       {/* MOBILE METRICS STATS CARDS (Screen 16 mockup style) */}
       {listings && listings.length > 0 && (
-        <motion.div variants={fadeUp} className="grid grid-cols-3 gap-3 md:hidden select-none">
+        <motion.div
+          variants={fadeUp}
+          className="grid grid-cols-3 gap-3 md:hidden select-none"
+        >
           <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
             <span className="text-[12px] font-black text-foreground block leading-tight">
               {listings.filter((p: any) => p.isAvailable).length}
@@ -417,7 +427,11 @@ export function ProfileListings() {
           </div>
           <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
             <span className="text-[12px] font-black text-foreground block leading-tight">
-              ₹{(listings.filter((p: any) => p.isAvailable).length * 8.5).toFixed(0)}k
+              ₹
+              {(
+                listings.filter((p: any) => p.isAvailable).length * 8.5
+              ).toFixed(0)}
+              k
             </span>
             <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1.5 block">
               {t('Earned')}
@@ -504,13 +518,14 @@ export function ProfileListings() {
                 )}
               >
                 <span>
-                  {t(tab.charAt(0).toUpperCase() + tab.slice(1))} ({counts[tab]})
+                  {t(tab.charAt(0).toUpperCase() + tab.slice(1))} ({counts[tab]}
+                  )
                 </span>
                 {isActive && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
                 )}
               </Button>
-            );
+            )
           })}
         </motion.div>
       </div>

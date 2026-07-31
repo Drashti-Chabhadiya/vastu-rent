@@ -1,5 +1,14 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { Home, Search, Heart, User, Calendar, MessageSquare, Building2, LayoutDashboard } from 'lucide-react'
+import {
+  Home,
+  Search,
+  Heart,
+  User,
+  Calendar,
+  MessageSquare,
+  Building2,
+  LayoutDashboard,
+} from 'lucide-react'
 import { useWishlist, useConversations } from '#/hook'
 import { useTranslation } from '#/context/TranslationContext'
 import { cn } from '#/lib/utils'
@@ -22,95 +31,102 @@ export function Tabbar() {
 
   const unreadMessagesCount = conversations
     ? conversations.reduce(
-      (sum: number, conv: any) => sum + (conv.unreadCount || 0),
-      0,
-    )
+        (sum: number, conv: any) => sum + (conv.unreadCount || 0),
+        0,
+      )
     : 0
 
   const isHostingPath =
     pathname.startsWith('/account/listings') ||
     pathname.startsWith('/account/orders')
 
-  const adminItems = isAdmin ? [{
-    label: 'Dashboard',
-    icon: LayoutDashboard,
-    to: '/admin/dashboard',
-    isActive: pathname.startsWith('/dashboard') || pathname.startsWith('/admin/dashboard'),
-    badge: 0,
-  }] : []
+  const adminItems = isAdmin
+    ? [
+        {
+          label: 'Dashboard',
+          icon: LayoutDashboard,
+          to: '/admin/dashboard',
+          isActive:
+            pathname.startsWith('/dashboard') ||
+            pathname.startsWith('/admin/dashboard'),
+          badge: 0,
+        },
+      ]
+    : []
 
   const navItems = isLoggedIn
     ? [
-      ...adminItems,
-      {
-        label: 'Home',
-        icon: Home,
-        to: '/',
-        isActive: pathname === '/' || pathname === '',
-      },
-      isHostingPath
-        ? {
-          label: 'Listings',
-          icon: Building2,
-          to: '/account/listings',
-          isActive: pathname.startsWith('/account/listings'),
-        }
-        : {
-          label: 'Bookings',
-          icon: Calendar,
-          to: '/account/bookings',
-          isActive: pathname.startsWith('/account/bookings'),
+        ...adminItems,
+        {
+          label: 'Home',
+          icon: Home,
+          to: '/',
+          isActive: pathname === '/' || pathname === '',
         },
-      {
-        label: 'Messages',
-        icon: MessageSquare,
-        to: '/account/messages',
-        isActive: pathname.startsWith('/account/messages'),
-        badge: unreadMessagesCount,
-      },
-      {
-        label: 'Profile',
-        icon: User,
-        to: '/account',
-        isActive:
-          pathname === '/account' ||
-          pathname === '/account/' ||
-          pathname.startsWith('/account/profile') ||
-          pathname.startsWith('/account/notifications') ||
-          pathname.startsWith('/account/settings'),
-      },
-    ]
+        isHostingPath
+          ? {
+              label: 'Listings',
+              icon: Building2,
+              to: '/account/listings',
+              isActive: pathname.startsWith('/account/listings'),
+            }
+          : {
+              label: 'Bookings',
+              icon: Calendar,
+              to: '/account/bookings',
+              isActive: pathname.startsWith('/account/bookings'),
+            },
+        {
+          label: 'Messages',
+          icon: MessageSquare,
+          to: '/account/messages',
+          isActive: pathname.startsWith('/account/messages'),
+          badge: unreadMessagesCount,
+        },
+        {
+          label: 'Profile',
+          icon: User,
+          to: '/account',
+          isActive:
+            pathname === '/account' ||
+            pathname === '/account/' ||
+            pathname.startsWith('/account/profile') ||
+            pathname.startsWith('/account/notifications') ||
+            pathname.startsWith('/account/settings'),
+        },
+      ]
     : [
-      {
-        label: 'Home',
-        icon: Home,
-        to: '/',
-        isActive: pathname === '/' || pathname === '',
-      },
-      {
-        label: 'Explore',
-        icon: Search,
-        to: '/products',
-        isActive:
-          pathname.startsWith('/products') || pathname.startsWith('/categories'),
-      },
-      {
-        label: 'Wishlist',
-        icon: Heart,
-        to: '/wishlist',
-        isActive: pathname.startsWith('/wishlist'),
-        badge: wishlistCount,
-      },
-      {
-        label: 'Profile',
-        icon: User,
-        to: '/account',
-        isActive:
-          pathname.startsWith('/account') ||
-          pathname.startsWith('/login') ||
-          pathname.startsWith('/signup'),
-      },
-    ]
+        {
+          label: 'Home',
+          icon: Home,
+          to: '/',
+          isActive: pathname === '/' || pathname === '',
+        },
+        {
+          label: 'Explore',
+          icon: Search,
+          to: '/products',
+          isActive:
+            pathname.startsWith('/products') ||
+            pathname.startsWith('/categories'),
+        },
+        {
+          label: 'Wishlist',
+          icon: Heart,
+          to: '/wishlist',
+          isActive: pathname.startsWith('/wishlist'),
+          badge: wishlistCount,
+        },
+        {
+          label: 'Profile',
+          icon: User,
+          to: '/account',
+          isActive:
+            pathname.startsWith('/account') ||
+            pathname.startsWith('/login') ||
+            pathname.startsWith('/signup'),
+        },
+      ]
 
   return (
     <div className="z-50 border-t border-border/30 bg-background/95 backdrop-blur-md shadow-2xl md:hidden shrink-0">

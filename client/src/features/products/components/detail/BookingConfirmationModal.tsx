@@ -1,7 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import {
-  CheckCircle2,
-} from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { motion, AnimatePresence } from 'motion/react'
 import { cn } from '#/lib/utils'
@@ -36,16 +34,17 @@ export const BookingConfirmationModal = ({
   const isCash = paymentMethod === 'cash'
   const bookingId = `VR-${Math.floor(10000 + Math.random() * 90000)}`
 
-  const formattedDates = startDate && endDate
-    ? `${startDate.toLocaleDateString('en-IN', {
-      day: '2-digit',
-      month: 'short',
-    })} - ${endDate.toLocaleDateString('en-IN', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })}`
-    : ''
+  const formattedDates =
+    startDate && endDate
+      ? `${startDate.toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+        })} - ${endDate.toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })}`
+      : ''
 
   return (
     <AnimatePresence>
@@ -58,7 +57,10 @@ export const BookingConfirmationModal = ({
           className="fixed inset-0 z-50 flex items-center justify-center"
         >
           {/* Backdrop on Desktop, Full screen on Mobile */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs hidden sm:block" onClick={onClose} />
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs hidden sm:block"
+            onClick={onClose}
+          />
 
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -66,8 +68,8 @@ export const BookingConfirmationModal = ({
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
-              "w-full h-full sm:h-auto sm:max-w-md bg-background sm:rounded-[32px] overflow-hidden flex flex-col justify-between p-6 sm:p-8 z-10 shadow-2xl border border-border/10",
-              "fixed inset-0 sm:relative sm:inset-auto"
+              'w-full h-full sm:h-auto sm:max-w-md bg-background sm:rounded-[32px] overflow-hidden flex flex-col justify-between p-6 sm:p-8 z-10 shadow-2xl border border-border/10',
+              'fixed inset-0 sm:relative sm:inset-auto',
             )}
           >
             {/* Header Content */}
@@ -97,7 +99,10 @@ export const BookingConfirmationModal = ({
                 <div className="flex gap-4 items-center">
                   <div className="w-12 h-12 rounded-xl bg-muted-light overflow-hidden shrink-0 border border-border/10">
                     <img
-                      src={productImage || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&q=80"}
+                      src={
+                        productImage ||
+                        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&q=80'
+                      }
                       alt={productTitle}
                       className="w-full h-full object-cover"
                     />

@@ -50,7 +50,7 @@ export function UserProfileSummaryCard({
               alt="Preview"
               className="w-full h-full object-cover animate-fade-in"
             />
-          ) : (session?.user?.image && !imageError) ? (
+          ) : session?.user?.image && !imageError ? (
             <img
               src={session.user.image}
               alt="Profile"

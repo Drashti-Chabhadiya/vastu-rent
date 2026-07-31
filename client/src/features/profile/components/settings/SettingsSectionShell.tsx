@@ -16,7 +16,14 @@ export function SettingsSectionShell({
     <div className={cn('space-y-7', 'max-w-2xl')}>
       <div>
         <MobileBackHeader title={title} />
-        <h2 className={cn('text-base', 'font-extrabold', 'text-foreground', 'hidden lg:block')}>
+        <h2
+          className={cn(
+            'text-base',
+            'font-extrabold',
+            'text-foreground',
+            'hidden lg:block',
+          )}
+        >
           {title}
         </h2>
         <p

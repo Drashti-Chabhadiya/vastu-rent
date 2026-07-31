@@ -302,7 +302,10 @@ export const UsersManagement = () => {
         <div className="md:hidden flex flex-col divide-y divide-border/30">
           {isLoading ? (
             Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="animate-pulse p-4 h-32 bg-muted-light/20" />
+              <div
+                key={i}
+                className="animate-pulse p-4 h-32 bg-muted-light/20"
+              />
             ))
           ) : usersData?.length === 0 ? (
             <div className="p-12 text-center text-dash-text-muted text-sm">
@@ -310,7 +313,10 @@ export const UsersManagement = () => {
             </div>
           ) : (
             usersData?.map((user: any) => (
-              <div key={user.id} className="p-4 space-y-4 hover:bg-muted-light/50 transition-colors">
+              <div
+                key={user.id}
+                className="p-4 space-y-4 hover:bg-muted-light/50 transition-colors"
+              >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
                     <div className="relative shrink-0">
@@ -342,15 +348,24 @@ export const UsersManagement = () => {
                       variant="ghost"
                       size="icon"
                       title={user.banned ? t('Unban User') : t('Ban User')}
-                      onClick={() => banMutation.mutate({ id: user.id, banned: !user.banned })}
+                      onClick={() =>
+                        banMutation.mutate({
+                          id: user.id,
+                          banned: !user.banned,
+                        })
+                      }
                       className={cn(
                         'h-8 w-8 rounded-lg transition-colors',
                         user.banned
                           ? 'text-primary hover:text-primary-hover hover:bg-primary-soft'
-                          : 'text-orange-600 hover:text-orange-700 hover:bg-orange-50'
+                          : 'text-orange-600 hover:text-orange-700 hover:bg-orange-50',
                       )}
                     >
-                      {user.banned ? <UserCheck size={16} /> : <UserX size={16} />}
+                      {user.banned ? (
+                        <UserCheck size={16} />
+                      ) : (
+                        <UserX size={16} />
+                      )}
                     </Button>
                     <Button
                       variant="ghost"
@@ -368,16 +383,24 @@ export const UsersManagement = () => {
                   <div className="flex items-center gap-3">
                     <Select
                       value={user.role}
-                      onValueChange={(role) => roleMutation.mutate({ id: user.id, role })}
+                      onValueChange={(role) =>
+                        roleMutation.mutate({ id: user.id, role })
+                      }
                     >
                       <SelectTrigger className="h-8 w-28 bg-muted-light hover:bg-muted/50 border-none text-xs font-bold text-dash-text-soft transition-all rounded-lg">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-                        <SelectItem value="user" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                        <SelectItem
+                          value="user"
+                          className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                        >
                           {t('User')}
                         </SelectItem>
-                        <SelectItem value="admin" className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer">
+                        <SelectItem
+                          value="admin"
+                          className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                        >
                           {t('Admin')}
                         </SelectItem>
                       </SelectContent>
@@ -387,7 +410,9 @@ export const UsersManagement = () => {
                       variant={user.banned ? 'destructive' : 'outline'}
                       className={cn(
                         'text-[10px] font-bold uppercase',
-                        !user.banned ? 'bg-primary-soft text-primary border-primary-border' : ''
+                        !user.banned
+                          ? 'bg-primary-soft text-primary border-primary-border'
+                          : '',
                       )}
                     >
                       {user.banned ? t('Banned') : t('Active')}

@@ -180,7 +180,10 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
                 {format(new Date(order.startDate), 'dd MMM')} -{' '}
                 {format(new Date(order.endDate), 'dd MMM yyyy')}
               </span>
-              <ChevronRight size={12} className="rotate-90 text-muted-dark shrink-0" />
+              <ChevronRight
+                size={12}
+                className="rotate-90 text-muted-dark shrink-0"
+              />
             </div>
             <div className="p-1.5 px-2">
               <div className="w-6 h-6 rounded-lg bg-dash-brand/5 flex items-center justify-center text-dash-brand shrink-0">

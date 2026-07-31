@@ -86,7 +86,10 @@ export function CategoryDetail() {
               </motion.p>
             </div>
 
-            <motion.div variants={fadeUp} className="flex items-center justify-center md:justify-start gap-4">
+            <motion.div
+              variants={fadeUp}
+              className="flex items-center justify-center md:justify-start gap-4"
+            >
               <div className="text-center px-4 md:px-6 py-2 md:py-3 bg-primary/5 rounded-2xl border border-brand/10">
                 <p className="text-xl md:text-2xl font-bold text-primary">
                   {formatDigits(products?.length || 0)}
@@ -145,8 +148,15 @@ export function CategoryDetail() {
             className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6"
           >
             {filteredProducts?.map((product: any) => (
-              <motion.div key={product.id} variants={fadeUp} className="flex h-full">
-                <ProductCard product={product} variant={isMobile ? 'mini' : 'default'} />
+              <motion.div
+                key={product.id}
+                variants={fadeUp}
+                className="flex h-full"
+              >
+                <ProductCard
+                  product={product}
+                  variant={isMobile ? 'mini' : 'default'}
+                />
               </motion.div>
             ))}
           </motion.div>

@@ -263,7 +263,9 @@ export function HelpPage() {
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   {t('Call us')}
                 </p>
-                <p className="font-bold text-foreground text-sm sm:text-base">+91 79 4000 0000</p>
+                <p className="font-bold text-foreground text-sm sm:text-base">
+                  +91 79 4000 0000
+                </p>
               </div>
             </div>
           </div>

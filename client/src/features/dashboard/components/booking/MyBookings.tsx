@@ -69,7 +69,7 @@ export const MyBookings = () => {
           console.error('Booking session verification failed:', error)
           toast.error(
             error.response?.data?.message ||
-            t('Booking payment verification failed.'),
+              t('Booking payment verification failed.'),
             { id: toastId },
           )
         } finally {
@@ -117,7 +117,7 @@ export const MyBookings = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            t('Failed to submit dispute. Try again.'),
+              t('Failed to submit dispute. Try again.'),
           )
         },
       },
@@ -220,46 +220,51 @@ export const MyBookings = () => {
             animate="show"
             className="flex flex-col gap-0 md:hidden"
           >
-            {(Object.entries(groupedByMonth) as [string, any[]][]).map(([month, monthRentals]) => (
-              <motion.div key={month} variants={fadeUp} className="mb-4">
-                {/* Month header */}
-                <p className="text-[10px] font-black text-muted-foreground/70 uppercase tracking-widest mb-3 px-0.5">
-                  {month.toUpperCase()}
-                </p>
-                <div className="flex flex-col gap-3">
-                  {monthRentals.map((rental: any) => (
-                    <BookingCard
-                      key={rental.id}
-                      rental={rental}
-                      onOpenReview={(r) => {
-                        setSelectedRental(r)
-                        const existingReview = r.product?.reviews?.[0]
-                        if (existingReview) {
-                          setRating(existingReview.rating)
-                          setComment(
-                            existingReview.comment
-                              ? existingReview.comment.split('\n\n[Images:')[0]
-                              : '',
-                          )
-                        } else {
-                          setRating(5)
-                          setComment('')
-                        }
-                        setIsReviewDialogOpen(true)
-                      }}
-                      onOpenDispute={(r) => {
-                        setSelectedRental(r)
-                        setIsDisputeDialogOpen(true)
-                      }}
-                      onOpenDetails={(r) => {
-                        setSelectedDetailsRental(r)
-                        setIsDetailsDialogOpen(true)
-                      }}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            ))}
+            {Object.entries(groupedByMonth).map(([month, monthItems]) => {
+              const monthRentals = monthItems as any[]
+              return (
+                <motion.div key={month} variants={fadeUp} className="mb-4">
+                  {/* Month header */}
+                  <p className="text-[10px] font-black text-muted-foreground/70 uppercase tracking-widest mb-3 px-0.5">
+                    {month.toUpperCase()}
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    {monthRentals.map((rental: any) => (
+                      <BookingCard
+                        key={rental.id}
+                        rental={rental}
+                        onOpenReview={(r) => {
+                          setSelectedRental(r)
+                          const existingReview = r.product?.reviews?.[0]
+                          if (existingReview) {
+                            setRating(existingReview.rating)
+                            setComment(
+                              existingReview.comment
+                                ? existingReview.comment.split(
+                                    '\n\n[Images:',
+                                  )[0]
+                                : '',
+                            )
+                          } else {
+                            setRating(5)
+                            setComment('')
+                          }
+                          setIsReviewDialogOpen(true)
+                        }}
+                        onOpenDispute={(r) => {
+                          setSelectedRental(r)
+                          setIsDisputeDialogOpen(true)
+                        }}
+                        onOpenDetails={(r) => {
+                          setSelectedDetailsRental(r)
+                          setIsDetailsDialogOpen(true)
+                        }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )
+            })}
 
             {/* Footer label */}
             <div className="text-center py-4 text-[10px] text-muted-foreground/50 font-black">

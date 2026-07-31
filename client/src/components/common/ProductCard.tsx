@@ -22,7 +22,10 @@ interface ProductCardProps {
   variant?: 'default' | 'mini'
 }
 
-export function ProductCard({ product, variant = 'default' }: ProductCardProps) {
+export function ProductCard({
+  product,
+  variant = 'default',
+}: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
   const { toggleLike, isLiked } = useWishlist()
   const { formatCurrency, formatDigits, t } = useTranslation()
@@ -32,7 +35,8 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
   const isShop =
     product.listingType === 'shop' ||
     (product as any).owner?.address?.addressType?.toLowerCase() === 'shop' ||
-    (product as any).owner?.addresses?.[0]?.addressType?.toLowerCase() === 'shop' ||
+    (product as any).owner?.addresses?.[0]?.addressType?.toLowerCase() ===
+      'shop' ||
     (product as any).user?.address?.addressType?.toLowerCase() === 'shop' ||
     (product as any).user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
 
@@ -45,7 +49,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
         className="w-full shrink-0 bg-card border border-border/15 rounded-[20px] overflow-hidden flex flex-col justify-between shadow-3xs active:scale-[0.98] transition-all snap-start"
       >
         <div className="relative h-[100px] w-full bg-muted">
-          {(mainImage && !imageError) ? (
+          {mainImage && !imageError ? (
             <img
               src={mainImage}
               alt={product.title || product.name}
@@ -94,17 +98,24 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
             <div className="flex items-center gap-1 text-muted-foreground/80">
               <MapPin size={10} className="shrink-0 text-muted-dark" />
               <span className="text-[9px] font-medium truncate">
-                {formatDigits(product.location || (product as any).city || 'Surat')}
+                {formatDigits(
+                  product.location || (product as any).city || 'Surat',
+                )}
               </span>
             </div>
           </div>
           <div className="flex items-center justify-between mt-2">
             <span className="font-black text-[12px] text-primary dark:text-[#10b981]">
               {formatCurrency(product.price)}
-              <small className="font-normal text-[8px] text-muted-foreground">/day</small>
+              <small className="font-normal text-[8px] text-muted-foreground">
+                /day
+              </small>
             </span>
             <div className="flex items-center gap-0.5 text-[9.5px] font-bold text-foreground">
-              <Star size={9.5} className="fill-[#C97A45] text-[#C97A45] shrink-0" />
+              <Star
+                size={9.5}
+                className="fill-[#C97A45] text-[#C97A45] shrink-0"
+              />
               <span>{formatDigits(product.rating || 0)}</span>
             </div>
           </div>
@@ -121,7 +132,7 @@ export function ProductCard({ product, variant = 'default' }: ProductCardProps) 
     >
       <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 group-hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
         <div className="relative w-full h-[220px] rounded-xl bg-muted/50 mb-4 overflow-hidden shrink-0 flex items-center justify-center">
-          {(mainImage && !imageError) ? (
+          {mainImage && !imageError ? (
             <img
               src={mainImage}
               alt={product.title || product.name}

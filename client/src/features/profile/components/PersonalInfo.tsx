@@ -227,7 +227,9 @@ export function PersonalInfo() {
             {activeTab === 'personal'
               ? t('Manage your account identity and contact information.')
               : activeTab === 'address'
-                ? t('Manage your primary rental address for bookings and items.')
+                ? t(
+                    'Manage your primary rental address for bookings and items.',
+                  )
                 : activeTab === 'security'
                   ? t('Manage your passwords and application preferences.')
                   : t('Manage your subscription tier and system quotas.')}
@@ -267,7 +269,10 @@ export function PersonalInfo() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <UserProfileSettingsCard viewSection="personal" hideLeftSummary={isMobile} />
+              <UserProfileSettingsCard
+                viewSection="personal"
+                hideLeftSummary={isMobile}
+              />
             </motion.div>
           )}
 
@@ -280,7 +285,10 @@ export function PersonalInfo() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <UserProfileSettingsCard viewSection="address" hideLeftSummary={isMobile} />
+              <UserProfileSettingsCard
+                viewSection="address"
+                hideLeftSummary={isMobile}
+              />
             </motion.div>
           )}
 

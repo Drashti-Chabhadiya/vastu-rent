@@ -62,9 +62,8 @@ export function UserProfileSettingsCard({
       phone: u.phone || '',
       language: u.language || 'en',
       dob: u.dob || '',
-      addressType: (mainAddr.addressType?.toLowerCase() === 'shop'
-        ? 'shop'
-        : 'home'),
+      addressType:
+        mainAddr.addressType?.toLowerCase() === 'shop' ? 'shop' : 'home',
       shopName: mainAddr.shopName || '',
       addressLine1: mainAddr.addressLine1 || '',
       addressLine2: mainAddr.addressLine2 || '',

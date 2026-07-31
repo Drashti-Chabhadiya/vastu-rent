@@ -81,14 +81,16 @@ export function CategoryList() {
                     </h3>
 
                     <p className="text-[9px] sm:text-sm font-medium text-muted-foreground/85 mb-3 sm:mb-6 uppercase tracking-wider">
-                      {category._count?.products || 0} <span className="hidden sm:inline">{t('active listings')}</span><span className="sm:hidden">{t('listings')}</span>
+                      {category._count?.products || 0}{' '}
+                      <span className="hidden sm:inline">
+                        {t('active listings')}
+                      </span>
+                      <span className="sm:hidden">{t('listings')}</span>
                     </p>
 
                     <div className="flex items-center gap-1 sm:gap-2 text-[10px] sm:text-sm font-bold text-primary group-hover:gap-2 sm:group-hover:gap-3 transition-all duration-300">
                       {t('Explore')}
-                      <ChevronRight
-                        className="transition-transform group-hover:translate-x-0.5 w-[14px] h-[14px] sm:w-[18px] sm:h-[18px]"
-                      />
+                      <ChevronRight className="transition-transform group-hover:translate-x-0.5 w-[14px] h-[14px] sm:w-[18px] sm:h-[18px]" />
                     </div>
                   </div>
                 </Link>

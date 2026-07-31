@@ -100,11 +100,11 @@ function NotificationListener() {
         } else if (Notification.permission === 'default') {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
-              registerDeviceForPush().catch(() => { })
+              registerDeviceForPush().catch(() => {})
             }
           })
         } else if (Notification.permission === 'granted') {
-          registerDeviceForPush().catch(() => { })
+          registerDeviceForPush().catch(() => {})
         }
       }
     }
@@ -304,7 +304,7 @@ function RootDocument() {
         <SessionProvider>
           <TranslationProvider>
             <NotificationListener />
-            
+
             {/* Scrollable Content Area */}
             <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden relative">
               {!isAuthPage && !isAdminPage && !isDashboardPage && (
@@ -329,9 +329,7 @@ function RootDocument() {
             </div>
 
             {/* Bottom Tabbar - Native Flex Item (No Overlap) */}
-            {!isAuthPage && !isChatPage && !isProductDetailPage && (
-              <Tabbar />
-            )}
+            {!isAuthPage && !isChatPage && !isProductDetailPage && <Tabbar />}
           </TranslationProvider>
         </SessionProvider>
       </QueryClientProvider>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from '#/context/TranslationContext'
-import { Star, Leaf, Filter as FilterIcon } from 'lucide-react'
+import { Star, Leaf, Filter as FilterIcon, ArrowLeft } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import { useAdminReviews, useDeleteReview, useReplyToReview } from '#/hook'
@@ -23,7 +23,6 @@ import {
 import EmptyReviewsState from './components/EmptyReviewsState'
 import ReviewCard from './components/ReviewCard'
 import { ReviewsManagementSkeleton } from '#/components/skeletons'
-import { ArrowLeft } from 'lucide-react'
 
 export const ReviewsManagement = () => {
   const { t } = useTranslation()

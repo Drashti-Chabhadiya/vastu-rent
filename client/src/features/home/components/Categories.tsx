@@ -79,8 +79,8 @@ export function Categories() {
 
   const latestCategories = categories
     ? [...categories]
-      .sort((a: any, b: any) => b.id.localeCompare(a.id))
-      .slice(0, 4)
+        .sort((a: any, b: any) => b.id.localeCompare(a.id))
+        .slice(0, 4)
     : []
 
   return (
@@ -168,7 +168,6 @@ export function Categories() {
 
       {/* Mobile view */}
       <div className="md:hidden">
-
         <div className="flex items-end justify-between gap-6 mb-8 relative z-10 border-b border-border/10 pb-4">
           <div>
             {/* <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-1">
@@ -178,9 +177,7 @@ export function Categories() {
               {t('Categories')}
             </h2>
           </div>
-          <ExploreLink to="/categories">
-            {t('See all')}
-          </ExploreLink>
+          <ExploreLink to="/categories">{t('See all')}</ExploreLink>
         </div>
 
         {isLoading ? (

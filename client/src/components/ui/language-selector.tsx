@@ -23,10 +23,10 @@ const LANGUAGES: {
   nativeName: string
   flag: string
 }[] = [
-    { code: 'en', label: 'English', nativeName: 'English', flag: '🌐' },
-    { code: 'hi', label: 'Hindi', nativeName: 'हिंदी', flag: '🇮🇳' },
-    { code: 'gu', label: 'Gujarati', nativeName: 'ગુજરાતી', flag: '🇮🇳' },
-  ]
+  { code: 'en', label: 'English', nativeName: 'English', flag: '🌐' },
+  { code: 'hi', label: 'Hindi', nativeName: 'हिंदी', flag: '🇮🇳' },
+  { code: 'gu', label: 'Gujarati', nativeName: 'ગુજરાતી', flag: '🇮🇳' },
+]
 
 export function LanguageSelector({
   variant = 'outline',

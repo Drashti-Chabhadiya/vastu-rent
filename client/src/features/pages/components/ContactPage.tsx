@@ -119,7 +119,6 @@ export function ContactPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      
       {/* Mobile Top Header */}
       <div className="md:hidden px-4 pt-2">
         <MobileBackHeader title={t('Contact Us')} />

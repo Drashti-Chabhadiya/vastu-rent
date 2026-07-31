@@ -113,12 +113,13 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   })()
 
   const getPageTitle = () => {
-    if (currentTab === 'overview') return t(isAdmin ? 'Admin Dashboard' : 'Dashboard')
+    if (currentTab === 'overview')
+      return t(isAdmin ? 'Admin Dashboard' : 'Dashboard')
     return t(
       currentTab
         .split('-')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
+        .join(' '),
     )
   }
 
@@ -137,7 +138,13 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
   }
 
   const renderDatePicker = (isMobileView: boolean) => {
-    const DateRangeOption = ({ value, label }: { value: typeof rangeType, label: string }) => (
+    const DateRangeOption = ({
+      value,
+      label,
+    }: {
+      value: typeof rangeType
+      label: string
+    }) => (
       <Button
         variant="ghost"
         onClick={() => {
@@ -145,10 +152,10 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
           setIsDropdownOpen(false)
         }}
         className={cn(
-          "w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-muted-light",
+          'w-full text-left px-4 py-2.5 text-xs font-bold transition-all flex items-center justify-between rounded-none hover:bg-muted-light',
           rangeType === value
-            ? "text-primary bg-primary/5 hover:text-primary hover:bg-primary/5"
-            : "text-muted-foreground hover:text-foreground/80"
+            ? 'text-primary bg-primary/5 hover:text-primary hover:bg-primary/5'
+            : 'text-muted-foreground hover:text-foreground/80',
         )}
       >
         {label}
@@ -159,30 +166,51 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
     )
 
     return (
-      <div className={cn("relative z-50", isMobileView ? "lg:hidden flex justify-center mt-3" : "hidden lg:block")}>
+      <div
+        className={cn(
+          'relative z-50',
+          isMobileView
+            ? 'lg:hidden flex justify-center mt-3'
+            : 'hidden lg:block',
+        )}
+      >
         <div
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className={cn(
-            "flex items-center cursor-pointer transition-all active:scale-[0.98]",
+            'flex items-center cursor-pointer transition-all active:scale-[0.98]',
             isMobileView
-              ? "justify-center gap-1.5 px-4 py-1.5 bg-primary rounded-full mx-auto shadow-sm"
-              : "gap-3 px-4 py-2 bg-card border border-border rounded-xl hover:border-border/120"
+              ? 'justify-center gap-1.5 px-4 py-1.5 bg-primary rounded-full mx-auto shadow-sm'
+              : 'gap-3 px-4 py-2 bg-card border border-border rounded-xl hover:border-border/120',
           )}
         >
-          <Calendar size={isMobileView ? 14 : 18} className={isMobileView ? "text-primary-foreground" : "text-dash-brand"} />
-          <div className={cn(
-            "flex leading-none",
-            isMobileView ? "items-center gap-1" : "flex-col items-start gap-0.5"
-          )}>
-            <span className={cn(
-              "font-black tracking-wider",
-              isMobileView ? "text-[11px] text-primary-foreground" : "text-[10px] font-bold text-muted-foreground/70 uppercase"
-            )}>
+          <Calendar
+            size={isMobileView ? 14 : 18}
+            className={
+              isMobileView ? 'text-primary-foreground' : 'text-dash-brand'
+            }
+          />
+          <div
+            className={cn(
+              'flex leading-none',
+              isMobileView
+                ? 'items-center gap-1'
+                : 'flex-col items-start gap-0.5',
+            )}
+          >
+            <span
+              className={cn(
+                'font-black tracking-wider',
+                isMobileView
+                  ? 'text-[11px] text-primary-foreground'
+                  : 'text-[10px] font-bold text-muted-foreground/70 uppercase',
+              )}
+            >
               {t(getRangeLabel(rangeType))}
             </span>
             {isMobileView ? (
               <span className="text-[11px] font-black text-primary-foreground/80 flex items-center gap-1.5">
-                <span className="opacity-50">•</span> {getFormattedRange().split(',')[0]}
+                <span className="opacity-50">•</span>{' '}
+                {getFormattedRange().split(',')[0]}
               </span>
             ) : (
               <span className="text-xs font-bold text-foreground">
@@ -190,7 +218,9 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
               </span>
             )}
           </div>
-          {!isMobileView && <ChevronDown size={14} className="text-muted-foreground/70 ml-1" />}
+          {!isMobileView && (
+            <ChevronDown size={14} className="text-muted-foreground/70 ml-1" />
+          )}
         </div>
 
         {isDropdownOpen && (
@@ -199,10 +229,12 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
               className="fixed inset-0 z-10"
               onClick={() => setIsDropdownOpen(false)}
             />
-            <div className={cn(
-              "absolute mt-2 w-48 bg-card border border-border/30 rounded-2xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden",
-              isMobileView ? "left-1/2 -translate-x-1/2" : "right-0"
-            )}>
+            <div
+              className={cn(
+                'absolute mt-2 w-48 bg-card border border-border/30 rounded-2xl shadow-xl z-20 py-2 animate-in fade-in slide-in-from-top-2 duration-150 overflow-hidden',
+                isMobileView ? 'left-1/2 -translate-x-1/2' : 'right-0',
+              )}
+            >
               <DateRangeOption value="7days" label={t('Last 7 Days')} />
               <DateRangeOption value="30days" label={t('Last 30 Days')} />
               <DateRangeOption value="thisMonth" label={t('This Month')} />

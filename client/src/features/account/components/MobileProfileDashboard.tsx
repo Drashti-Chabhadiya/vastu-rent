@@ -49,7 +49,6 @@ export function MobileProfileDashboard({
   const [imageError, setImageError] = useState(false)
   const user = session?.user
 
-
   return (
     <div className="flex flex-col w-full bg-background min-h-screen">
       {/* Dark Green Header Card */}

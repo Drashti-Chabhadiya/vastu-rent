@@ -13,7 +13,7 @@ export function MessageStatus({ msg, isMe, isStarred }: MessageStatusProps) {
     <span
       className={cn(
         'inline-flex items-center gap-1 text-[9px] select-none whitespace-nowrap shrink-0 self-end mt-1',
-        isMe ? 'text-white/60' : 'text-muted-dark/60'
+        isMe ? 'text-white/60' : 'text-muted-dark/60',
       )}
     >
       {formatMsgTime(msg.createdAt)}
@@ -21,10 +21,21 @@ export function MessageStatus({ msg, isMe, isStarred }: MessageStatusProps) {
         <Star size={9} className="text-amber-500 fill-amber-500 shrink-0" />
       )}
       {msg.pinnedBy && msg.pinnedBy.length > 0 && (
-        <Pin size={9} className={cn("rotate-45 shrink-0", isMe ? "text-white/70" : "text-primary")} />
+        <Pin
+          size={9}
+          className={cn(
+            'rotate-45 shrink-0',
+            isMe ? 'text-white/70' : 'text-primary',
+          )}
+        />
       )}
       {msg.isEdited && !msg.isDeleted && (
-        <span className={cn("text-[9px] font-bold italic", isMe ? "text-white/60" : "text-muted-dark/65")}>
+        <span
+          className={cn(
+            'text-[9px] font-bold italic',
+            isMe ? 'text-white/60' : 'text-muted-dark/65',
+          )}
+        >
           edited
         </span>
       )}

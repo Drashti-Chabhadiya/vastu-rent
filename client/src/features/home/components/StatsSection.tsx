@@ -48,7 +48,7 @@ export function StatsSection() {
         label: t('Customer Rating'),
       },
     ],
-    [t, formatDigits]
+    [t, formatDigits],
   )
 
   return (

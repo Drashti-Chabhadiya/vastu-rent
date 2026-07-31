@@ -26,7 +26,6 @@ interface TermsNavSection {
   collapsedOnly: boolean
 }
 
-
 export function TermsPage() {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
@@ -239,10 +238,11 @@ export function TermsPage() {
                           onClick={() =>
                             handleScrollTo(sec.id, sec.collapsedOnly)
                           }
-                          className={`text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-start relative h-auto w-full ${isActive
-                            ? 'text-primary bg-primary/5 pl-4 font-bold hover:bg-primary/5 hover:text-primary'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/10'
-                            }`}
+                          className={`text-left text-xs font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-start relative h-auto w-full ${
+                            isActive
+                              ? 'text-primary bg-primary/5 pl-4 font-bold hover:bg-primary/5 hover:text-primary'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-muted/10'
+                          }`}
                         >
                           {isActive && (
                             <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full" />

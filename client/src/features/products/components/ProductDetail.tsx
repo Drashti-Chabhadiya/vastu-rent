@@ -24,7 +24,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '#/components/ui/alert-dialog'
-import { AlertCircle, CreditCard, MessageSquare, Loader2, MapPin } from 'lucide-react'
+import {
+  AlertCircle,
+  CreditCard,
+  MessageSquare,
+  Loader2,
+  MapPin,
+} from 'lucide-react'
 import { Drawer, DrawerContent } from '#/components/ui/drawer'
 import { useSessionContext } from '#/context/SessionContext'
 import { useState, useCallback, useEffect } from 'react'
@@ -297,7 +303,7 @@ export function ProductDetail({ id }: { id: string }) {
     } catch (err: any) {
       showAlert(
         err.response?.data?.message ||
-        'Booking failed. Please make sure you are logged in.',
+          'Booking failed. Please make sure you are logged in.',
         'Booking Failed',
       )
     } finally {
@@ -337,8 +343,8 @@ export function ProductDetail({ id }: { id: string }) {
     product.images?.length > 0
       ? product.images
       : [
-        'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-      ]
+          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
+        ]
   const liked = isLiked(product.id)
 
   const address = product.user?.address
@@ -368,8 +374,8 @@ export function ProductDetail({ id }: { id: string }) {
       label: 'Listing Source',
       value:
         product.listingType === 'shop' ||
-          product.user?.address?.addressType?.toLowerCase() === 'shop' ||
-          product.user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
+        product.user?.address?.addressType?.toLowerCase() === 'shop' ||
+        product.user?.addresses?.[0]?.addressType?.toLowerCase() === 'shop'
           ? product.shopName ||
             product.user?.address?.shopName ||
             product.user?.addresses?.[0]?.shopName
@@ -447,7 +453,9 @@ export function ProductDetail({ id }: { id: string }) {
                 ★ {formatDigits(product.rating || '5.0')}
               </span>
               <span>·</span>
-              <span>({formatDigits(product.reviewsCount || '0')} {t('reviews')})</span>
+              <span>
+                ({formatDigits(product.reviewsCount || '0')} {t('reviews')})
+              </span>
               <span>·</span>
               <span>{formatDigits(conciseLocation)}</span>
             </div>
@@ -462,7 +470,9 @@ export function ProductDetail({ id }: { id: string }) {
               </span>
               {product.securityDeposit > 0 && (
                 <>
-                  <span className="text-muted-foreground/85 px-1 font-bold">·</span>
+                  <span className="text-muted-foreground/85 px-1 font-bold">
+                    ·
+                  </span>
                   <span className="text-xs font-semibold text-muted-foreground/80">
                     + {formatCurrency(product.securityDeposit)} {t('deposit')}
                   </span>
@@ -473,11 +483,17 @@ export function ProductDetail({ id }: { id: string }) {
             {/* Spec Pills (Horizontal Scroll) */}
             <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
               <span className="shrink-0 px-4 py-1.5 rounded-full bg-muted border border-border text-muted-foreground text-xs font-black">
-                {t('Min. {days} day(s)').replace('{days}', String(product.minDuration || 1))}
+                {t('Min. {days} day(s)').replace(
+                  '{days}',
+                  String(product.minDuration || 1),
+                )}
               </span>
               <span className="shrink-0 px-4 py-1.5 rounded-full bg-muted border border-border text-muted-foreground text-xs font-black">
                 {product.maxDuration
-                  ? t('Max. {days} days').replace('{days}', String(product.maxDuration))
+                  ? t('Max. {days} days').replace(
+                      '{days}',
+                      String(product.maxDuration),
+                    )
                   : t('Unlimited')}
               </span>
             </div>
@@ -546,8 +562,6 @@ export function ProductDetail({ id }: { id: string }) {
                 </Link>
               </div>
             )}
-
-
           </div>
         </div>
 
@@ -587,7 +601,10 @@ export function ProductDetail({ id }: { id: string }) {
           </div>
 
           {/* Right Column: Sticky Booking Widget & Lister Card */}
-          <div id="booking-section" className="col-span-1 lg:col-span-5 xl:col-span-5 space-y-6 lg:sticky lg:top-24">
+          <div
+            id="booking-section"
+            className="col-span-1 lg:col-span-5 xl:col-span-5 space-y-6 lg:sticky lg:top-24"
+          >
             {/* Booking & Checkout Widget */}
             <ProductBookingSection
               product={product}
@@ -680,7 +697,9 @@ export function ProductDetail({ id }: { id: string }) {
         <div>
           <div className="font-extrabold text-[15px] text-foreground">
             {formatCurrency(product.price)}
-            <span className="text-[10px] font-semibold text-muted-foreground">/day</span>
+            <span className="text-[10px] font-semibold text-muted-foreground">
+              /day
+            </span>
           </div>
           <div className="text-[9.5px] font-black text-primary-soft flex items-center gap-1 mt-0.5">
             <span className="h-1.5 w-1.5 rounded-full bg-primary-soft animate-pulse" />
@@ -771,7 +790,8 @@ export function ProductDetail({ id }: { id: string }) {
               <div className="space-y-2 text-xs font-semibold text-foreground">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground/85">
-                    {formatCurrency(product.price)} x {formatDigits(rentalDays)} {t('days')}
+                    {formatCurrency(product.price)} x {formatDigits(rentalDays)}{' '}
+                    {t('days')}
                   </span>
                   <span>{formatCurrency(totalPrice)}</span>
                 </div>
@@ -785,7 +805,9 @@ export function ProductDetail({ id }: { id: string }) {
                 )}
                 {appliedCoupon && (
                   <div className="flex justify-between text-emerald-700">
-                    <span>{t('Coupon Discount')} ({appliedCoupon.code})</span>
+                    <span>
+                      {t('Coupon Discount')} ({appliedCoupon.code})
+                    </span>
                     <span>-{formatCurrency(appliedCoupon.discountAmount)}</span>
                   </div>
                 )}
@@ -794,8 +816,10 @@ export function ProductDetail({ id }: { id: string }) {
                   <span>{t('Total Amount')}</span>
                   <span>
                     {formatCurrency(
-                      Math.max(0, totalPrice - (appliedCoupon?.discountAmount || 0)) +
-                      (product.securityDeposit || 0)
+                      Math.max(
+                        0,
+                        totalPrice - (appliedCoupon?.discountAmount || 0),
+                      ) + (product.securityDeposit || 0),
                     )}
                   </span>
                 </div>
@@ -816,10 +840,11 @@ export function ProductDetail({ id }: { id: string }) {
               <Loader2 size={16} className="animate-spin mr-2" />
             ) : null}
             {t('Reserve')}
-            {endDate && ` · ${formatCurrency(
-              Math.max(0, totalPrice - (appliedCoupon?.discountAmount || 0)) +
-              (product.securityDeposit || 0)
-            )}`}
+            {endDate &&
+              ` · ${formatCurrency(
+                Math.max(0, totalPrice - (appliedCoupon?.discountAmount || 0)) +
+                  (product.securityDeposit || 0),
+              )}`}
             &nbsp;&rsaquo;
           </Button>
         </DrawerContent>

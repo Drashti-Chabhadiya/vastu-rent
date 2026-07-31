@@ -254,7 +254,9 @@ export function LoginForm() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
         <div className="absolute left-5 bottom-4 text-white">
-          <div className="font-display text-xl font-bold">{t('Rent anything.')}</div>
+          <div className="font-display text-xl font-bold">
+            {t('Rent anything.')}
+          </div>
           <div className="font-display text-xl font-bold italic opacity-95">
             {t('Live in harmony.')}
           </div>

@@ -89,8 +89,10 @@ export const NotificationsManagement = () => {
     )
   }
 
-  const todayNotifs = filteredNotifs?.filter((n) => isToday(new Date(n.createdAt))) || []
-  const earlierNotifs = filteredNotifs?.filter((n) => !isToday(new Date(n.createdAt))) || []
+  const todayNotifs =
+    filteredNotifs?.filter((n) => isToday(new Date(n.createdAt))) || []
+  const earlierNotifs =
+    filteredNotifs?.filter((n) => !isToday(new Date(n.createdAt))) || []
 
   const getCircleColor = (type: string) => {
     switch (type) {
@@ -166,7 +168,12 @@ export const NotificationsManagement = () => {
                       >
                         <div className="flex items-center gap-3.5 min-w-0">
                           {/* Circular color icon */}
-                          <div className={cn("w-8.5 h-8.5 rounded-full flex items-center justify-center shrink-0 shadow-2xs", getCircleColor(notif.type))}>
+                          <div
+                            className={cn(
+                              'w-8.5 h-8.5 rounded-full flex items-center justify-center shrink-0 shadow-2xs',
+                              getCircleColor(notif.type),
+                            )}
+                          >
                             <Icon size={14} strokeWidth={2.5} />
                           </div>
 
@@ -207,7 +214,12 @@ export const NotificationsManagement = () => {
                       >
                         <div className="flex items-center gap-3.5 min-w-0">
                           {/* Circular color icon */}
-                          <div className={cn("w-8.5 h-8.5 rounded-full flex items-center justify-center shrink-0 shadow-2xs", getCircleColor(notif.type))}>
+                          <div
+                            className={cn(
+                              'w-8.5 h-8.5 rounded-full flex items-center justify-center shrink-0 shadow-2xs',
+                              getCircleColor(notif.type),
+                            )}
+                          >
                             <Icon size={14} strokeWidth={2.5} />
                           </div>
 

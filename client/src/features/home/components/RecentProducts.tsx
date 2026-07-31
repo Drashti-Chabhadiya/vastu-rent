@@ -12,11 +12,11 @@ export function RecentProducts() {
   // Sort by date/id descending to get the latest 4 added items
   const recentProducts = products
     ? [...products]
-      .sort(
-        (a: any, b: any) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-      .slice(0, 4)
+        .sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+        .slice(0, 4)
     : []
 
   return (
@@ -37,9 +37,7 @@ export function RecentProducts() {
               {t('Recent Additions')}
             </h2>
           </div>
-          <ExploreLink to="/products">
-            {t('Explore')}
-          </ExploreLink>
+          <ExploreLink to="/products">{t('Explore')}</ExploreLink>
         </div>
 
         <div className="relative z-10">
@@ -47,11 +45,18 @@ export function RecentProducts() {
           <div className="grid md:hidden grid-cols-2 gap-3 pb-4">
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="w-full h-[180px] bg-muted animate-pulse rounded-[20px]" />
+                <div
+                  key={i}
+                  className="w-full h-[180px] bg-muted animate-pulse rounded-[20px]"
+                />
               ))
             ) : recentProducts.length > 0 ? (
               recentProducts.map((product: any) => (
-                <ProductCard key={product.id} product={product} variant="mini" />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  variant="mini"
+                />
               ))
             ) : (
               <div className="col-span-2 py-10 text-center font-bold text-sm text-muted-foreground bg-muted-light rounded-[20px]">

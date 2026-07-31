@@ -65,9 +65,9 @@ export function AccountLayout() {
     : 0
   const unreadMessagesCount = conversations
     ? conversations.reduce(
-      (sum: number, conv: any) => sum + (conv.unreadCount || 0),
-      0,
-    )
+        (sum: number, conv: any) => sum + (conv.unreadCount || 0),
+        0,
+      )
     : 0
 
   const { data: myListings } = useMyListings()
@@ -77,7 +77,7 @@ export function AccountLayout() {
   const bookingsCount = rentals?.length || 0
   const listingsCount = myListings?.length || 0
 
-  const user = session?.user as any
+  const user = session?.user
   const address = user?.address || user?.addresses?.[0] || {}
   const fields = [
     user?.name || '',
@@ -100,9 +100,9 @@ export function AccountLayout() {
 
   const joinDate = session?.user?.createdAt
     ? new Date(session.user.createdAt).toLocaleDateString('en-US', {
-      month: 'short',
-      year: 'numeric',
-    })
+        month: 'short',
+        year: 'numeric',
+      })
     : 'Jul 2026'
 
   const menuItems = [
@@ -127,13 +127,13 @@ export function AccountLayout() {
     },
     ...(hasListings
       ? [
-        {
-          id: 'reviews',
-          label: 'Reviews',
-          icon: Star,
-          href: '/account/reviews',
-        },
-      ]
+          {
+            id: 'reviews',
+            label: 'Reviews',
+            icon: Star,
+            href: '/account/reviews',
+          },
+        ]
       : []),
     {
       id: 'messages',
@@ -198,8 +198,8 @@ export function AccountLayout() {
           isChatPage
             ? 'pt-0 lg:pt-16 pb-0 lg:pb-12'
             : isMobile &&
-              pathname === '/account' &&
-              (hash === '' || hash === '#')
+                pathname === '/account' &&
+                (hash === '' || hash === '#')
               ? 'pt-0 pb-24 lg:pt-16 lg:pb-12'
               : 'pt-6 pb-24 lg:pt-16 lg:pb-12',
         )}
@@ -210,8 +210,8 @@ export function AccountLayout() {
             isChatPage
               ? 'px-0 lg:px-8'
               : isMobile &&
-                pathname === '/account' &&
-                (hash === '' || hash === '#')
+                  pathname === '/account' &&
+                  (hash === '' || hash === '#')
                 ? 'px-0'
                 : 'px-4 sm:px-6 lg:px-8',
           )}
@@ -237,13 +237,13 @@ export function AccountLayout() {
                 ) : (
                   <main className="flex-1 min-w-0 w-full">
                     {activeTab === 'personal' ||
-                      activeTab === 'bookings' ||
-                      activeTab === 'listings' ||
-                      activeTab === 'reviews' ||
-                      activeTab === 'messages' ||
-                      activeTab === 'notifications' ||
-                      activeTab === 'settings' ||
-                      pathname === '/account' ? (
+                    activeTab === 'bookings' ||
+                    activeTab === 'listings' ||
+                    activeTab === 'reviews' ||
+                    activeTab === 'messages' ||
+                    activeTab === 'notifications' ||
+                    activeTab === 'settings' ||
+                    pathname === '/account' ? (
                       <Outlet />
                     ) : (
                       <div className="bg-transparent rounded-2xl border-none shadow-none overflow-hidden min-h-[600px] p-0">
@@ -385,13 +385,13 @@ export function AccountLayout() {
                 {/* Desktop Main Content */}
                 <main className="flex-1 min-w-0 w-full">
                   {activeTab === 'personal' ||
-                    activeTab === 'bookings' ||
-                    activeTab === 'listings' ||
-                    activeTab === 'reviews' ||
-                    activeTab === 'messages' ||
-                    activeTab === 'notifications' ||
-                    activeTab === 'settings' ||
-                    pathname === '/account' ? (
+                  activeTab === 'bookings' ||
+                  activeTab === 'listings' ||
+                  activeTab === 'reviews' ||
+                  activeTab === 'messages' ||
+                  activeTab === 'notifications' ||
+                  activeTab === 'settings' ||
+                  pathname === '/account' ? (
                     <Outlet />
                   ) : (
                     <div className="bg-card rounded-2xl border border-border/30 shadow-sm overflow-hidden min-h-[600px] p-8">

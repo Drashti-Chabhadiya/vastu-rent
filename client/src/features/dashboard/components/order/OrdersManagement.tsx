@@ -324,7 +324,10 @@ export const OrdersManagement = () => {
                           {t('Rental Period')}
                         </span>
                         <div className="flex items-center gap-2 text-sm font-extrabold text-dash-text whitespace-nowrap">
-                          <Calendar size={14} className="text-dash-brand shrink-0" />
+                          <Calendar
+                            size={14}
+                            className="text-dash-brand shrink-0"
+                          />
                           <span className="truncate max-w-[120px] sm:max-w-none">
                             {format(new Date(order.startDate), 'dd MMM')} -{' '}
                             {format(new Date(order.endDate), 'dd MMM, yy')}
@@ -338,7 +341,11 @@ export const OrdersManagement = () => {
                         {t('Income')}
                       </span>
                       <div className="text-lg sm:text-xl font-black text-dash-brand flex items-center">
-                        <IndianRupee size={16} strokeWidth={3} className="sm:w-[18px] sm:h-[18px]" />
+                        <IndianRupee
+                          size={16}
+                          strokeWidth={3}
+                          className="sm:w-[18px] sm:h-[18px]"
+                        />
                         {formatNumber(order.totalPrice)}
                       </div>
                     </div>

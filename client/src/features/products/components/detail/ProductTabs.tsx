@@ -49,7 +49,6 @@ interface ProductTabsProps {
 }
 
 export const ProductTabs = ({
-  product,
   reviews,
   activeTab,
   setActiveTab,

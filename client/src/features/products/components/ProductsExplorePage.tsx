@@ -2,7 +2,17 @@ import { useState } from 'react'
 import { useProducts, useCategories, useWishlist } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductCardSkeleton } from '#/components/skeletons'
-import { Search, SlidersHorizontal, ArrowLeft, Star, Heart, Watch, Camera, Asterisk, LayoutGrid } from 'lucide-react'
+import {
+  Search,
+  SlidersHorizontal,
+  ArrowLeft,
+  Star,
+  Heart,
+  Watch,
+  Camera,
+  Asterisk,
+  LayoutGrid,
+} from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/context/TranslationContext'
@@ -20,7 +30,9 @@ import {
 export function ProductsExplorePage() {
   const { t, formatCurrency } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
+  )
 
   // Filter States
   const [minPrice, setMinPrice] = useState<number>(1000)
@@ -44,7 +56,8 @@ export function ProductsExplorePage() {
   const filteredProducts = rawProducts
     ? rawProducts.filter((product: any) => {
         // 0. Category filter
-        if (selectedCategoryId && product.categoryId !== selectedCategoryId) return false
+        if (selectedCategoryId && product.categoryId !== selectedCategoryId)
+          return false
 
         // 1. Price Range filter
         const price = product.price || 0
@@ -85,7 +98,6 @@ export function ProductsExplorePage() {
   return (
     <div className="min-h-screen bg-bg-base pt-6 lg:pt-24 pb-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-        
         {/* DESKTOP HEADER SECTION */}
         <div className="mb-10 hidden lg:block">
           <h1 className="text-4xl font-extrabold text-foreground mb-4 tracking-tight">
@@ -106,7 +118,7 @@ export function ProductsExplorePage() {
           >
             <ArrowLeft size={16} />
           </button>
-          
+
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/70 w-4 h-4" />
             <Input
@@ -117,7 +129,10 @@ export function ProductsExplorePage() {
             />
           </div>
 
-          <Drawer open={isFilterDrawerOpen} onOpenChange={setIsFilterDrawerOpen}>
+          <Drawer
+            open={isFilterDrawerOpen}
+            onOpenChange={setIsFilterDrawerOpen}
+          >
             <DrawerTrigger asChild>
               <Button
                 variant="outline"
@@ -145,63 +160,68 @@ export function ProductsExplorePage() {
                 </button>
               </DrawerHeader>
 
-                <div className="space-y-6 py-2">
-                  <div>
-                    <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">
-                      {t('PRICE PER DAY')}
-                    </div>
-                    <Slider
-                      min={500}
-                      max={10000}
-                      step={100}
-                      value={[minPrice, maxPrice]}
-                      onValueChange={(val) => {
-                        setMinPrice(val[0])
-                        setMaxPrice(val[1])
-                      }}
-                      className="py-2"
-                    />
-                    <div className="flex justify-between text-[11px] font-bold text-muted-foreground mt-2">
-                      <span>{formatCurrency(minPrice)}</span>
-                      <span>{formatCurrency(maxPrice)}</span>
-                    </div>
+              <div className="space-y-6 py-2">
+                <div>
+                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">
+                    {t('PRICE PER DAY')}
                   </div>
-
-                  <div className="space-y-3">
-                    <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                      {t('Rating & Verification')}
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => setMinRating(minRating === 4.5 ? null : 4.5)}
-                        className={cn(
-                          'flex-1 py-2.5 px-4 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs',
-                          minRating === 4.5
-                            ? 'bg-primary text-primary-foreground border-transparent'
-                            : 'bg-card text-muted-foreground hover:bg-muted-light/25',
-                        )}
-                      >
-                        ★ 4.5+
-                      </button>
-                      <button
-                        onClick={() => setVerifiedOnly(!verifiedOnly)}
-                        className={cn(
-                          'flex-1 py-2.5 px-4 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs',
-                          verifiedOnly
-                            ? 'bg-primary text-primary-foreground border-transparent'
-                            : 'bg-card text-muted-foreground hover:bg-muted-light/25',
-                        )}
-                      >
-                        {t('Verified only')}
-                      </button>
-                    </div>
+                  <Slider
+                    min={500}
+                    max={10000}
+                    step={100}
+                    value={[minPrice, maxPrice]}
+                    onValueChange={(val) => {
+                      setMinPrice(val[0])
+                      setMaxPrice(val[1])
+                    }}
+                    className="py-2"
+                  />
+                  <div className="flex justify-between text-[11px] font-bold text-muted-foreground mt-2">
+                    <span>{formatCurrency(minPrice)}</span>
+                    <span>{formatCurrency(maxPrice)}</span>
                   </div>
+                </div>
 
-                  <Button
-                    onClick={() => setIsFilterDrawerOpen(false)}
-                    className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
-                  >
-                  {t('Show {count} results').replace('{count}', sortedProducts.length.toString())}
+                <div className="space-y-3">
+                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    {t('Rating & Verification')}
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() =>
+                        setMinRating(minRating === 4.5 ? null : 4.5)
+                      }
+                      className={cn(
+                        'flex-1 py-2.5 px-4 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs',
+                        minRating === 4.5
+                          ? 'bg-primary text-primary-foreground border-transparent'
+                          : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                      )}
+                    >
+                      ★ 4.5+
+                    </button>
+                    <button
+                      onClick={() => setVerifiedOnly(!verifiedOnly)}
+                      className={cn(
+                        'flex-1 py-2.5 px-4 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs',
+                        verifiedOnly
+                          ? 'bg-primary text-primary-foreground border-transparent'
+                          : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                      )}
+                    >
+                      {t('Verified only')}
+                    </button>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setIsFilterDrawerOpen(false)}
+                  className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
+                >
+                  {t('Show {count} results').replace(
+                    '{count}',
+                    sortedProducts.length.toString(),
+                  )}
                 </Button>
               </div>
             </DrawerContent>
@@ -234,13 +254,19 @@ export function ProductsExplorePage() {
             >
               <LayoutGrid
                 size={24}
-                className={selectedCategoryId === null ? 'text-background' : 'text-muted-foreground'}
+                className={
+                  selectedCategoryId === null
+                    ? 'text-background'
+                    : 'text-muted-foreground'
+                }
               />
             </div>
             <span
               className={cn(
                 'text-[10px] font-black text-center leading-tight truncate w-full px-1',
-                selectedCategoryId === null ? 'text-foreground' : 'text-muted-foreground/80',
+                selectedCategoryId === null
+                  ? 'text-foreground'
+                  : 'text-muted-foreground/80',
               )}
             >
               {t('All items')}
@@ -257,29 +283,32 @@ export function ProductsExplorePage() {
             const lowered = cat.name.toLowerCase()
             let style = styles[index % styles.length]
             if (lowered.includes('watch')) style = styles[0]
-            if (lowered.includes('camera') || lowered.includes('lens')) style = styles[1]
-            if (lowered.includes('kitchen') || lowered.includes('appliance')) style = styles[2]
-            
+            if (lowered.includes('camera') || lowered.includes('lens'))
+              style = styles[1]
+            if (lowered.includes('kitchen') || lowered.includes('appliance'))
+              style = styles[2]
+
             const Icon = style.icon
             const isSelected = cat.id === selectedCategoryId
 
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategoryId(isSelected ? null : cat.id)}
+                onClick={() =>
+                  setSelectedCategoryId(isSelected ? null : cat.id)
+                }
                 className="flex flex-col items-center gap-2 shrink-0 w-[72px] cursor-pointer group"
               >
                 <div
                   className={cn(
                     'w-[64px] h-[64px] rounded-[24px] flex items-center justify-center transition-all',
-                    isSelected ? 'shadow-md scale-105 ring-2 ring-primary ring-offset-2 ring-offset-bg-base' : '',
-                    style.bg
+                    isSelected
+                      ? 'shadow-md scale-105 ring-2 ring-primary ring-offset-2 ring-offset-bg-base'
+                      : '',
+                    style.bg,
                   )}
                 >
-                  <Icon
-                    size={24}
-                    className={style.text}
-                  />
+                  <Icon size={24} className={style.text} />
                 </div>
                 <span
                   className={cn(
@@ -343,7 +372,10 @@ export function ProductsExplorePage() {
             />
           </div>
           <div className="flex gap-3">
-            <Drawer open={isFilterDrawerOpen} onOpenChange={setIsFilterDrawerOpen}>
+            <Drawer
+              open={isFilterDrawerOpen}
+              onOpenChange={setIsFilterDrawerOpen}
+            >
               <DrawerTrigger asChild>
                 <Button
                   variant="outline"
@@ -399,7 +431,9 @@ export function ProductsExplorePage() {
                     </div>
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setMinRating(minRating === 4.5 ? null : 4.5)}
+                        onClick={() =>
+                          setMinRating(minRating === 4.5 ? null : 4.5)
+                        }
                         className={cn(
                           'flex-1 py-2.5 px-4 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs',
                           minRating === 4.5
@@ -427,7 +461,10 @@ export function ProductsExplorePage() {
                     onClick={() => setIsFilterDrawerOpen(false)}
                     className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
                   >
-                    {t('Show {count} results').replace('{count}', sortedProducts.length.toString())}
+                    {t('Show {count} results').replace(
+                      '{count}',
+                      sortedProducts.length.toString(),
+                    )}
                   </Button>
                 </div>
               </DrawerContent>
@@ -468,11 +505,14 @@ export function ProductsExplorePage() {
                           toggleLike(product.id)
                         }}
                         className={cn(
-                          "absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full bg-white/95 backdrop-blur-xs border-none flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90",
-                          liked ? "text-destructive" : "text-muted-foreground"
+                          'absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full bg-white/95 backdrop-blur-xs border-none flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90',
+                          liked ? 'text-destructive' : 'text-muted-foreground',
                         )}
                       >
-                        <Heart size={13} className={liked ? "fill-destructive" : ""} />
+                        <Heart
+                          size={13}
+                          className={liked ? 'fill-destructive' : ''}
+                        />
                       </button>
 
                       <Link
@@ -500,10 +540,15 @@ export function ProductsExplorePage() {
                           <div className="flex items-center justify-between mt-2.5">
                             <span className="font-black text-[12px] text-primary dark:text-[#10b981]">
                               {formatCurrency(product.price)}
-                              <small className="font-normal text-[8px] text-muted-foreground">/day</small>
+                              <small className="font-normal text-[8px] text-muted-foreground">
+                                /day
+                              </small>
                             </span>
                             <div className="flex items-center gap-0.5 text-[9.5px] font-bold text-foreground">
-                              <Star size={9} className="fill-warning text-warning shrink-0" />
+                              <Star
+                                size={9}
+                                className="fill-warning text-warning shrink-0"
+                              />
                               <span>{product.rating || '5.0'}</span>
                             </div>
                           </div>
