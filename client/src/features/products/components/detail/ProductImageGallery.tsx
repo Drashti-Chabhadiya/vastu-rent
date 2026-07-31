@@ -36,8 +36,13 @@ export const ProductImageGallery = ({
   const [hoverPos, setHoverPos] = useState({ x: 50, y: 50 })
   const [isHovered, setIsHovered] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const isProgrammaticScroll = useRef(false)
+  const programmaticScrollTimeout = useRef<any>(null)
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (isProgrammaticScroll.current) {
+      return
+    }
     const container = e.currentTarget
     const scrollLeft = container.scrollLeft
     const width = container.clientWidth
@@ -58,13 +63,28 @@ export const ProductImageGallery = ({
       const container = scrollRef.current
       const targetScrollLeft = selectedImage * container.clientWidth
       if (Math.abs(container.scrollLeft - targetScrollLeft) > 5) {
+        isProgrammaticScroll.current = true
+        if (programmaticScrollTimeout.current) {
+          clearTimeout(programmaticScrollTimeout.current)
+        }
         container.scrollTo({
           left: targetScrollLeft,
           behavior: 'smooth',
         })
+        programmaticScrollTimeout.current = setTimeout(() => {
+          isProgrammaticScroll.current = false
+        }, 500)
       }
     }
   }, [selectedImage])
+
+  useEffect(() => {
+    return () => {
+      if (programmaticScrollTimeout.current) {
+        clearTimeout(programmaticScrollTimeout.current)
+      }
+    }
+  }, [])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -93,7 +113,7 @@ export const ProductImageGallery = ({
           ref={scrollRef}
           onScroll={handleScroll}
           onClick={() => setIsViewerOpen(true)}
-          className="flex w-full h-full overflow-x-auto scrollbar-none snap-x snap-mandatory cursor-zoom-in"
+          className="flex w-full h-full overflow-x-auto overflow-y-hidden scrollbar-none snap-x snap-mandatory cursor-zoom-in"
         >
           {images.map((img, idx) => (
             <div

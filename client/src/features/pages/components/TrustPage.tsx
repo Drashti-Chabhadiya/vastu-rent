@@ -165,7 +165,7 @@ export function TrustPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-full bg-background pb-20">
       {/* Hero Section Container */}
       <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">

@@ -70,7 +70,7 @@ export function BecomeListerPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-card pb-20">
+    <div className="min-h-full bg-card pb-20">
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center overflow-hidden bg-foreground text-primary-foreground">
         <motion.div

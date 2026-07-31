@@ -65,7 +65,7 @@ export function WishlistPage() {
   const isPageLoading = isLoading || wishlistLoading
 
   return (
-    <div className="min-h-screen bg-background pt-6 md:pt-24 pb-16 font-sans">
+    <div className="min-h-full bg-background pt-6 md:pt-24 pb-16 font-sans">
       <motion.div
         variants={stagger}
         initial="hidden"

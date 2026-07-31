@@ -194,14 +194,14 @@ export function AccountLayout() {
     <>
       <div
         className={cn(
-          'min-h-screen bg-background font-sans',
+          'min-h-full bg-background font-sans',
           isChatPage
             ? 'pt-0 lg:pt-16 pb-0 lg:pb-12'
             : isMobile &&
                 pathname === '/account' &&
                 (hash === '' || hash === '#')
-              ? 'pt-0 pb-24 lg:pt-16 lg:pb-12'
-              : 'pt-6 pb-24 lg:pt-16 lg:pb-12',
+              ? 'pt-0 pb-0 lg:pt-16 lg:pb-12'
+              : 'pt-6 pb-0 lg:pt-16 lg:pb-12',
         )}
       >
         <div

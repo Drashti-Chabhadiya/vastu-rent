@@ -148,7 +148,7 @@ export function TermsPage() {
   }, [isOpen, sections])
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-full bg-background pb-20">
       {/* Mobile Back Header */}
       <div className="md:hidden px-4 pt-2">
         <MobileBackHeader title={t('Terms of Service')} />

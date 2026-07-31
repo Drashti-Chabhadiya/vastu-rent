@@ -8,7 +8,6 @@ import {
   Bell,
   HardDrive,
   HelpCircle,
-  UserPlus,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Skeleton } from '#/components/ui/skeleton'
@@ -25,6 +24,7 @@ import { NotificationsSettings } from './settings/NotificationsSettings'
 import { StorageSettings } from './settings/StorageSettings'
 import { HelpSettings } from './settings/HelpSettings'
 import { InviteSettings } from './settings/InviteSettings'
+import { useTranslation } from '#/context/TranslationContext'
 
 type SubScreen =
   | 'main'
@@ -44,6 +44,7 @@ export function MySettingsPanel({
   isEmbedded?: boolean
   onBackToInfo?: () => void
 } = {}) {
+  const { t } = useTranslation()
   // Sub-screen state
   const [subScreen, setSubScreen] = useState<SubScreen>('main')
 
@@ -136,14 +137,13 @@ export function MySettingsPanel({
   return (
     <div
       className={cn(
-        'flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-brand-surface-warm',
-        !isEmbedded &&
-          'w-full lg:w-[360px] shrink-0 lg:border-l lg:border-border/80',
+        'flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-[#FBF9F4] dark:bg-background lg:rounded-[2.5rem] lg:border lg:border-border/30 lg:shadow-sm',
+        !isEmbedded && 'w-full lg:w-[360px] shrink-0',
       )}
     >
       {/* ── HEADER ── */}
       {(!isEmbedded || subScreen !== 'main') && (
-        <div className="bg-brand-primary-deep px-4 py-5 flex items-center gap-4 text-white shrink-0 shadow-sm">
+        <div className="bg-[#0d4d38] px-4 py-5 flex items-center gap-4 text-white shrink-0 shadow-sm">
           <Button
             variant="ghost"
             size="icon"
@@ -154,25 +154,25 @@ export function MySettingsPanel({
           </Button>
           <h3 className="text-[15px] font-bold text-white capitalize leading-none font-display">
             {subScreen === 'main'
-              ? 'Settings'
+              ? t('My Settings')
               : subScreen === 'invite'
-                ? 'Invite a friend'
+                ? t('Invite a friend')
                 : subScreen === 'storage'
-                  ? 'Storage and data'
-                  : subScreen}
+                  ? t('Storage and data')
+                  : t(subScreen)}
           </h3>
         </div>
       )}
 
       {/* ── SCROLLABLE VIEWS ── */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4">
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4 bg-[#FBF9F4] dark:bg-background">
         {/* ── 1. MAIN SCREEN VIEW ── */}
         {subScreen === 'main' && (
           <div className="flex flex-col gap-4 animate-fade-in">
             {/* User Profile Card */}
             <div
               onClick={() => setSubScreen('profile')}
-              className="flex items-center gap-4 bg-card/70 border border-border/30 rounded-2xl p-4 shadow-sm hover:bg-muted-light/50 transition-all cursor-pointer group"
+              className="flex items-center gap-4 bg-white dark:bg-card border border-border/10 rounded-[20px] p-4 shadow-3xs hover:bg-muted-light/25 transition-all cursor-pointer group"
             >
               <UserAvatar
                 image={user.image}
@@ -183,7 +183,7 @@ export function MySettingsPanel({
                 <h4 className="text-[13px] font-black text-foreground group-hover:text-primary transition-colors truncate">
                   {user.name}
                 </h4>
-                <p className="text-[11px] font-medium text-muted-dark truncate mt-0.5">
+                <p className="text-[11px] font-medium text-muted-dark truncate mt-1">
                   {bioValue}
                 </p>
               </div>
@@ -191,22 +191,22 @@ export function MySettingsPanel({
             </div>
 
             {/* Settings Options List */}
-            <div className="bg-card/70 border border-border/30 rounded-2xl overflow-hidden shadow-xs flex flex-col">
+            <div className="bg-white dark:bg-card border border-border/10 rounded-[20px] overflow-hidden shadow-3xs flex flex-col">
               {/* Account settings */}
               <button
                 onClick={() => setSubScreen('account')}
-                className="flex items-center justify-between p-4 hover:bg-muted-light transition-colors border-b border-border/30 cursor-pointer text-left w-full"
+                className="flex items-center justify-between p-4 hover:bg-muted-light/50 transition-colors border-b border-border/10 cursor-pointer text-left w-full border-none bg-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
                     <KeyRound size={15} />
                   </span>
                   <div className="min-w-0">
                     <span className="text-[12px] font-bold text-foreground block">
-                      Account
+                      {t('Account')}
                     </span>
-                    <span className="text-[10px] font-semibold text-muted-dark block truncate">
-                      Security notifications, login details
+                    <span className="text-[10px] font-semibold text-muted-dark block truncate mt-0.5">
+                      {t('Security notifications, login details')}
                     </span>
                   </div>
                 </div>
@@ -216,18 +216,18 @@ export function MySettingsPanel({
               {/* Privacy settings */}
               <button
                 onClick={() => setSubScreen('privacy')}
-                className="flex items-center justify-between p-4 hover:bg-muted-light transition-colors border-b border-border/30 cursor-pointer text-left w-full"
+                className="flex items-center justify-between p-4 hover:bg-muted-light/50 transition-colors border-b border-border/10 cursor-pointer text-left w-full border-none bg-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-full bg-teal-500/10 text-teal-600 flex items-center justify-center shrink-0">
                     <Shield size={15} />
                   </span>
                   <div className="min-w-0">
                     <span className="text-[12px] font-bold text-foreground block">
-                      Privacy
+                      {t('Privacy')}
                     </span>
-                    <span className="text-[10px] font-semibold text-muted-dark block truncate">
-                      Blocked contacts, profile visibility
+                    <span className="text-[10px] font-semibold text-muted-dark block truncate mt-0.5">
+                      {t('Blocked contacts, profile visibility')}
                     </span>
                   </div>
                 </div>
@@ -237,18 +237,18 @@ export function MySettingsPanel({
               {/* Chats settings */}
               <button
                 onClick={() => setSubScreen('chats')}
-                className="flex items-center justify-between p-4 hover:bg-muted-light transition-colors border-b border-border/30 cursor-pointer text-left w-full"
+                className="flex items-center justify-between p-4 hover:bg-muted-light/50 transition-colors border-b border-border/10 cursor-pointer text-left w-full border-none bg-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
                     <MessageSquare size={15} />
                   </span>
                   <div className="min-w-0">
                     <span className="text-[12px] font-bold text-foreground block">
-                      Chats
+                      {t('Chats')}
                     </span>
-                    <span className="text-[10px] font-semibold text-muted-dark block truncate">
-                      Wallpaper themes, media visibility
+                    <span className="text-[10px] font-semibold text-muted-dark block truncate mt-0.5">
+                      {t('Wallpaper themes, media visibility')}
                     </span>
                   </div>
                 </div>
@@ -258,18 +258,18 @@ export function MySettingsPanel({
               {/* Notifications */}
               <button
                 onClick={() => setSubScreen('notifications')}
-                className="flex items-center justify-between p-4 hover:bg-muted-light transition-colors border-b border-border/30 cursor-pointer text-left w-full"
+                className="flex items-center justify-between p-4 hover:bg-muted-light/50 transition-colors border-b border-border/10 cursor-pointer text-left w-full border-none bg-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-full bg-red-500/10 text-red-600 flex items-center justify-center shrink-0">
                     <Bell size={15} />
                   </span>
                   <div className="min-w-0">
                     <span className="text-[12px] font-bold text-foreground block">
-                      Notifications
+                      {t('Notifications')}
                     </span>
-                    <span className="text-[10px] font-semibold text-muted-dark block truncate">
-                      Message alerts, audio tones
+                    <span className="text-[10px] font-semibold text-muted-dark block truncate mt-0.5">
+                      {t('Message alerts, audio tones')}
                     </span>
                   </div>
                 </div>
@@ -279,18 +279,18 @@ export function MySettingsPanel({
               {/* Storage and data */}
               <button
                 onClick={() => setSubScreen('storage')}
-                className="flex items-center justify-between p-4 hover:bg-muted-light transition-colors border-b border-border/30 cursor-pointer text-left w-full"
+                className="flex items-center justify-between p-4 hover:bg-muted-light/50 transition-colors border-b border-border/10 cursor-pointer text-left w-full border-none bg-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-full bg-orange-500/10 text-orange-600 flex items-center justify-center shrink-0">
                     <HardDrive size={15} />
                   </span>
                   <div className="min-w-0">
                     <span className="text-[12px] font-bold text-foreground block">
-                      Storage and data
+                      {t('Storage and data')}
                     </span>
-                    <span className="text-[10px] font-semibold text-muted-dark block truncate">
-                      Network usage, auto-download sizes
+                    <span className="text-[10px] font-semibold text-muted-dark block truncate mt-0.5">
+                      {t('Network usage, auto-download sizes')}
                     </span>
                   </div>
                 </div>
@@ -300,39 +300,18 @@ export function MySettingsPanel({
               {/* Help Support */}
               <button
                 onClick={() => setSubScreen('help')}
-                className="flex items-center justify-between p-4 hover:bg-muted-light transition-colors border-b border-border/30 cursor-pointer text-left w-full"
+                className="flex items-center justify-between p-4 hover:bg-muted-light/50 transition-colors cursor-pointer text-left w-full border-none bg-transparent"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-slate-500/10 text-slate-600 flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-full bg-slate-500/10 text-slate-600 flex items-center justify-center shrink-0">
                     <HelpCircle size={15} />
                   </span>
                   <div className="min-w-0">
                     <span className="text-[12px] font-bold text-foreground block">
-                      Help
+                      {t('Help')}
                     </span>
-                    <span className="text-[10px] font-semibold text-muted-dark block truncate">
-                      Help centre, contact support chats
-                    </span>
-                  </div>
-                </div>
-                <ChevronRight size={14} className="text-muted-dark shrink-0" />
-              </button>
-
-              {/* Invite a friend */}
-              <button
-                onClick={() => setSubScreen('invite')}
-                className="flex items-center justify-between p-4 hover:bg-muted-light transition-colors cursor-pointer text-left w-full"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-pink-500/10 text-pink-600 flex items-center justify-center shrink-0">
-                    <UserPlus size={15} />
-                  </span>
-                  <div className="min-w-0">
-                    <span className="text-[12px] font-bold text-foreground block">
-                      Invite a friend
-                    </span>
-                    <span className="text-[10px] font-semibold text-muted-dark block truncate">
-                      Share referral link or codes
+                    <span className="text-[10px] font-semibold text-muted-dark block truncate mt-0.5">
+                      {t('Help centre, contact support chats')}
                     </span>
                   </div>
                 </div>

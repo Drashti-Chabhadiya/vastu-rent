@@ -50,7 +50,7 @@ export function MobileProfileDashboard({
   const user = session?.user
 
   return (
-    <div className="flex flex-col w-full bg-background min-h-screen">
+    <div className="flex flex-col w-full bg-background min-h-full">
       {/* Dark Green Header Card */}
       <div className="bg-primary text-primary-foreground rounded-b-[30px] px-5 pt-7 pb-6 relative shadow-sm">
         {/* Top Header Row */}

@@ -8,9 +8,6 @@ import {
   ArrowLeft,
   Star,
   Heart,
-  Watch,
-  Camera,
-  Asterisk,
   LayoutGrid,
 } from 'lucide-react'
 import { Input } from '#/components/ui/input'
@@ -26,6 +23,40 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '#/components/ui/drawer'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '#/components/ui/sheet'
+
+import * as Icons from 'lucide-react'
+
+const getIcon = (iconName: string): Icons.LucideIcon => {
+  if (!iconName) return Icons.Sparkles
+
+  // Try exact lookup (e.g. "HomeIcon" or "Home")
+  if ((Icons as any)[iconName]) {
+    return (Icons as any)[iconName]
+  }
+
+  // Try stripping "Icon" suffix (e.g. "HomeIcon" -> "Home")
+  if (iconName.endsWith('Icon')) {
+    const stripped = iconName.slice(0, -4)
+    if ((Icons as any)[stripped]) {
+      return (Icons as any)[stripped]
+    }
+  }
+
+  // Try adding "Icon" suffix (e.g. "Home" -> "HomeIcon")
+  const withIconSuffix = `${iconName}Icon`
+  if ((Icons as any)[withIconSuffix]) {
+    return (Icons as any)[withIconSuffix]
+  }
+
+  return Icons.Sparkles
+}
 
 export function ProductsExplorePage() {
   const { t, formatCurrency } = useTranslation()
@@ -40,7 +71,8 @@ export function ProductsExplorePage() {
   const [minRating, setMinRating] = useState<number | null>(null)
   const [verifiedOnly, setVerifiedOnly] = useState<boolean>(false)
   const [selectedSort, setSelectedSort] = useState<string>('relevance')
-  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false)
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [isDesktopFilterOpen, setIsDesktopFilterOpen] = useState(false)
 
   // Fetch categories & wishlist
   const { data: categories } = useCategories()
@@ -96,7 +128,7 @@ export function ProductsExplorePage() {
   const searchLocation = sortedProducts?.[0]?.city || 'Surat'
 
   return (
-    <div className="min-h-screen bg-bg-base pt-6 lg:pt-24 pb-16">
+    <div className="min-h-full bg-bg-base pt-6 lg:pt-24 pb-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* DESKTOP HEADER SECTION */}
         <div className="mb-10 hidden lg:block">
@@ -130,8 +162,8 @@ export function ProductsExplorePage() {
           </div>
 
           <Drawer
-            open={isFilterDrawerOpen}
-            onOpenChange={setIsFilterDrawerOpen}
+            open={isMobileFilterOpen}
+            onOpenChange={setIsMobileFilterOpen}
           >
             <DrawerTrigger asChild>
               <Button
@@ -184,6 +216,47 @@ export function ProductsExplorePage() {
 
                 <div className="space-y-3">
                   <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    {t('Sort By')}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => setSelectedSort('relevance')}
+                      className={cn(
+                        'py-2 px-1 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs text-center truncate',
+                        selectedSort === 'relevance'
+                          ? 'bg-primary text-primary-foreground border-transparent'
+                          : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                      )}
+                    >
+                      {t('Relevance')}
+                    </button>
+                    <button
+                      onClick={() => setSelectedSort('price-asc')}
+                      className={cn(
+                        'py-2 px-1 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs text-center truncate',
+                        selectedSort === 'price-asc'
+                          ? 'bg-primary text-primary-foreground border-transparent'
+                          : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                      )}
+                    >
+                      {t('Price')}
+                    </button>
+                    <button
+                      onClick={() => setSelectedSort('rating')}
+                      className={cn(
+                        'py-2 px-1 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs text-center truncate',
+                        selectedSort === 'rating'
+                          ? 'bg-primary text-primary-foreground border-transparent'
+                          : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                      )}
+                    >
+                      {t('Rating')}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                     {t('Rating & Verification')}
                   </div>
                   <div className="flex gap-3">
@@ -215,7 +288,7 @@ export function ProductsExplorePage() {
                 </div>
 
                 <Button
-                  onClick={() => setIsFilterDrawerOpen(false)}
+                  onClick={() => setIsMobileFilterOpen(false)}
                   className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
                 >
                   {t('Show {count} results').replace(
@@ -238,7 +311,7 @@ export function ProductsExplorePage() {
         </div>
 
         {/* CATEGORY TABS (New Visual Style) */}
-        <div className="flex gap-4 overflow-x-auto mb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-1 py-1">
+        <div className="flex gap-4 overflow-x-auto mb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-2 py-3">
           {/* All Items */}
           <button
             onClick={() => setSelectedCategoryId(null)}
@@ -274,21 +347,8 @@ export function ProductsExplorePage() {
           </button>
 
           {/* Dynamic Categories */}
-          {categories?.map((cat: any, index: number) => {
-            const styles = [
-              { bg: 'bg-primary/10', text: 'text-primary', icon: Watch },
-              { bg: 'bg-primary/10', text: 'text-primary', icon: Camera },
-              { bg: 'bg-primary/10', text: 'text-primary', icon: Asterisk },
-            ]
-            const lowered = cat.name.toLowerCase()
-            let style = styles[index % styles.length]
-            if (lowered.includes('watch')) style = styles[0]
-            if (lowered.includes('camera') || lowered.includes('lens'))
-              style = styles[1]
-            if (lowered.includes('kitchen') || lowered.includes('appliance'))
-              style = styles[2]
-
-            const Icon = style.icon
+          {categories?.map((cat: any) => {
+            const Icon = getIcon(cat.icon)
             const isSelected = cat.id === selectedCategoryId
 
             return (
@@ -301,19 +361,38 @@ export function ProductsExplorePage() {
               >
                 <div
                   className={cn(
-                    'w-[64px] h-[64px] rounded-[24px] flex items-center justify-center transition-all',
+                    'w-[64px] h-[64px] rounded-[24px] flex items-center justify-center transition-all border border-border/10',
                     isSelected
-                      ? 'shadow-md scale-105 ring-2 ring-primary ring-offset-2 ring-offset-bg-base'
-                      : '',
-                    style.bg,
+                      ? 'shadow-md scale-105'
+                      : 'hover:bg-muted-light/35',
                   )}
+                  style={{
+                    backgroundColor: isSelected
+                      ? cat.color || 'var(--color-primary)'
+                      : cat.color
+                        ? `color-mix(in srgb, ${cat.color} 12%, var(--color-card))`
+                        : 'var(--color-muted-light)',
+                    boxShadow: isSelected
+                      ? `0 0 0 2px var(--color-background), 0 0 0 4px ${cat.color || 'var(--color-primary)'}, 0 4px 6px -1px rgba(0, 0, 0, 0.1)`
+                      : undefined,
+                  }}
                 >
-                  <Icon size={24} className={style.text} />
+                  <Icon
+                    size={24}
+                    style={{
+                      color: isSelected
+                        ? 'var(--color-background)'
+                        : cat.color || 'var(--color-primary)',
+                    }}
+                    strokeWidth={isSelected ? 2.5 : 2}
+                  />
                 </div>
                 <span
                   className={cn(
                     'text-[10px] font-black text-center leading-tight truncate w-full px-1',
-                    isSelected ? 'text-foreground' : 'text-muted-foreground/80',
+                    isSelected
+                      ? 'text-foreground font-black'
+                      : 'text-muted-foreground/80',
                   )}
                 >
                   {cat.name}
@@ -321,43 +400,6 @@ export function ProductsExplorePage() {
               </button>
             )
           })}
-        </div>
-
-        {/* SORT CHIPS */}
-        <div className="flex gap-2.5 overflow-x-auto mb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-0.5 py-1">
-          <button
-            onClick={() => setSelectedSort('relevance')}
-            className={cn(
-              'px-4.5 py-2.5 rounded-full text-[11px] font-black border transition-all cursor-pointer whitespace-nowrap',
-              selectedSort === 'relevance'
-                ? 'bg-primary text-primary-foreground border-transparent shadow-md'
-                : 'bg-card border-border/40 text-muted-foreground shadow-sm hover:bg-muted-light/20',
-            )}
-          >
-            {t('Relevance')}
-          </button>
-          <button
-            onClick={() => setSelectedSort('price-asc')}
-            className={cn(
-              'px-4.5 py-2.5 rounded-full text-[11px] font-black border transition-all cursor-pointer whitespace-nowrap',
-              selectedSort === 'price-asc'
-                ? 'bg-primary text-primary-foreground border-transparent shadow-md'
-                : 'bg-card border-border/40 text-muted-foreground shadow-sm hover:bg-muted-light/20',
-            )}
-          >
-            {t('Price: low–high')}
-          </button>
-          <button
-            onClick={() => setSelectedSort('rating')}
-            className={cn(
-              'px-4.5 py-2.5 rounded-full text-[11px] font-black border transition-all cursor-pointer whitespace-nowrap',
-              selectedSort === 'rating'
-                ? 'bg-primary text-primary-foreground border-transparent shadow-md'
-                : 'bg-card border-border/40 text-muted-foreground shadow-sm hover:bg-muted-light/20',
-            )}
-          >
-            {t('Top rated')}
-          </button>
         </div>
 
         {/* DESKTOP SEARCH BAR */}
@@ -372,11 +414,11 @@ export function ProductsExplorePage() {
             />
           </div>
           <div className="flex gap-3">
-            <Drawer
-              open={isFilterDrawerOpen}
-              onOpenChange={setIsFilterDrawerOpen}
+            <Sheet
+              open={isDesktopFilterOpen}
+              onOpenChange={setIsDesktopFilterOpen}
             >
-              <DrawerTrigger asChild>
+              <SheetTrigger asChild>
                 <Button
                   variant="outline"
                   className="h-14 px-6 rounded-2xl border-border/30 bg-card font-bold text-foreground/80 flex items-center gap-2 hover:bg-muted-light cursor-pointer"
@@ -384,12 +426,15 @@ export function ProductsExplorePage() {
                   <SlidersHorizontal className="w-5 h-5" />
                   {t('Filters')}
                 </Button>
-              </DrawerTrigger>
-              <DrawerContent className="px-6 pb-8 bg-background border-t border-border/20 rounded-t-[28px] focus:outline-none max-w-md mx-auto">
-                <DrawerHeader className="px-0 pb-4 text-left flex justify-between items-center">
-                  <DrawerTitle className="font-display font-semibold text-lg text-foreground">
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="px-6 py-8 bg-background border-l border-border/20 focus:outline-none w-[400px] sm:max-w-md"
+              >
+                <SheetHeader className="px-0 pb-4 text-left flex justify-between items-center border-b border-border/10">
+                  <SheetTitle className="font-display font-semibold text-lg text-foreground">
                     {t('Filters')}
-                  </DrawerTitle>
+                  </SheetTitle>
                   <button
                     onClick={() => {
                       setMinPrice(1000)
@@ -397,13 +442,13 @@ export function ProductsExplorePage() {
                       setMinRating(null)
                       setVerifiedOnly(false)
                     }}
-                    className="text-xs font-bold text-primary hover:underline border-none bg-transparent cursor-pointer"
+                    className="text-xs font-bold text-primary hover:underline border-none bg-transparent cursor-pointer pr-4"
                   >
                     {t('Reset')}
                   </button>
-                </DrawerHeader>
+                </SheetHeader>
 
-                <div className="space-y-6 py-2">
+                <div className="space-y-6 py-6">
                   <div>
                     <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-4">
                       {t('PRICE PER DAY')}
@@ -422,6 +467,47 @@ export function ProductsExplorePage() {
                     <div className="flex justify-between text-[11px] font-bold text-muted-foreground mt-2">
                       <span>{formatCurrency(minPrice)}</span>
                       <span>{formatCurrency(maxPrice)}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      {t('Sort By')}
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        onClick={() => setSelectedSort('relevance')}
+                        className={cn(
+                          'py-2 px-1 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs text-center truncate',
+                          selectedSort === 'relevance'
+                            ? 'bg-primary text-primary-foreground border-transparent'
+                            : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                        )}
+                      >
+                        {t('Relevance')}
+                      </button>
+                      <button
+                        onClick={() => setSelectedSort('price-asc')}
+                        className={cn(
+                          'py-2 px-1 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs text-center truncate',
+                          selectedSort === 'price-asc'
+                            ? 'bg-primary text-primary-foreground border-transparent'
+                            : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                        )}
+                      >
+                        {t('Price')}
+                      </button>
+                      <button
+                        onClick={() => setSelectedSort('rating')}
+                        className={cn(
+                          'py-2 px-1 rounded-full text-xs font-black transition-all border border-border/40 cursor-pointer shadow-xs text-center truncate',
+                          selectedSort === 'rating'
+                            ? 'bg-primary text-primary-foreground border-transparent'
+                            : 'bg-card text-muted-foreground hover:bg-muted-light/25',
+                        )}
+                      >
+                        {t('Rating')}
+                      </button>
                     </div>
                   </div>
 
@@ -458,7 +544,7 @@ export function ProductsExplorePage() {
                   </div>
 
                   <Button
-                    onClick={() => setIsFilterDrawerOpen(false)}
+                    onClick={() => setIsDesktopFilterOpen(false)}
                     className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
                   >
                     {t('Show {count} results').replace(
@@ -467,14 +553,8 @@ export function ProductsExplorePage() {
                     )}
                   </Button>
                 </div>
-              </DrawerContent>
-            </Drawer>
-            <Button
-              className="h-14 px-8 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-lg shadow-brand/20 cursor-pointer"
-              onClick={() => {}}
-            >
-              {t('Search')}
-            </Button>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
 
@@ -505,13 +585,18 @@ export function ProductsExplorePage() {
                           toggleLike(product.id)
                         }}
                         className={cn(
-                          'absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full bg-white/95 backdrop-blur-xs border-none flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90',
-                          liked ? 'text-destructive' : 'text-muted-foreground',
+                          'absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full backdrop-blur-xs border-none flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-90',
+                          liked
+                            ? 'bg-danger text-destructive'
+                            : 'bg-white/95 text-muted-foreground hover:text-destructive',
                         )}
                       >
                         <Heart
                           size={13}
-                          className={liked ? 'fill-destructive' : ''}
+                          className={cn(
+                            'transition-transform active:scale-90',
+                            liked && 'fill-current',
+                          )}
                         />
                       </button>
 

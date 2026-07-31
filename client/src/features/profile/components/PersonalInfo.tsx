@@ -199,7 +199,7 @@ export function PersonalInfo() {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className="font-sans pb-24 md:pb-0"
+      className="font-sans pb-0 md:pb-0"
     >
       {/* Page Title Header */}
       {isMobile ? (

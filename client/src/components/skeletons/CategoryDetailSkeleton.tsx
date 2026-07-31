@@ -3,7 +3,7 @@ import { ProductCardSkeleton } from './ProductCardSkeleton'
 
 export function CategoryDetailSkeleton() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-full bg-background">
       {/* Category Header Skeleton */}
       <div className="bg-card border-b border-border/30 pb-12 pt-8 animate-pulse">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">

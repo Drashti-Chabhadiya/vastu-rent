@@ -132,10 +132,10 @@ export function ConversationList() {
       className={cn(
         'shrink-0 flex-1 h-full bg-card lg:rounded-[2.5rem] shadow-none lg:shadow-sm flex flex-col overflow-hidden relative transition-all duration-300 ease-in-out lg:border lg:border-border/30 safe-area-top',
         showDetailsPanel
-          ? 'w-0 lg:w-[84px] p-2 hidden lg:flex'
+          ? 'w-0 lg:w-[84px] lg:flex-none p-2 hidden lg:flex'
           : showMobileChat
-            ? 'hidden lg:flex w-full lg:w-[380px] opacity-100'
-            : 'flex w-full lg:w-[380px] opacity-100',
+            ? 'hidden lg:flex w-full lg:w-[380px] lg:flex-none opacity-100'
+            : 'flex w-full lg:w-[380px] lg:flex-none opacity-100',
       )}
     >
       {/* ── Messages Header Section ── */}
@@ -537,7 +537,12 @@ export function ConversationList() {
 
       <Button
         onClick={() => setShowNewChat(true)}
-        className="absolute bottom-6 right-6 w-12 h-12 rounded-full bg-brand-primary-deep hover:bg-brand-primary-darker text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0"
+        className={cn(
+          'absolute w-12 h-12 rounded-full bg-brand-primary-deep hover:bg-brand-primary-darker text-white flex items-center justify-center shadow-lg active:scale-95 transition-all cursor-pointer z-20 p-0',
+          showDetailsPanel
+            ? 'bottom-5 left-1/2 -translate-x-1/2'
+            : 'bottom-6 right-6',
+        )}
       >
         <Pencil size={16} />
       </Button>

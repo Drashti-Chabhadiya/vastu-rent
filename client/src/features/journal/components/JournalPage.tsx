@@ -95,7 +95,7 @@ export function JournalPage() {
   const hasMore = filteredStories.length > visibleCount
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-full bg-background">
       {/* Hero Section */}
       <section className="relative border-b border-border/50 bg-surface/30 px-6 py-24 md:px-10 md:py-32">
         <div className="mx-auto max-w-[1400px]">

@@ -129,8 +129,35 @@ export function Tabbar() {
       ]
 
   return (
-    <div className="z-50 border-t border-border/30 bg-background/95 backdrop-blur-md shadow-2xl md:hidden shrink-0">
-      <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4 pb-safe">
+    <div
+      className="
+      fixed
+      bottom-0
+      left-0
+      right-0
+      z-50
+      md:hidden
+      border-t
+      border-border/30
+      bg-background/95
+      backdrop-blur-md
+      shadow-2xl
+      supports-[backdrop-filter]:bg-background/80
+    "
+    >
+      {/* <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4 pb-safe"> */}
+      <div
+        className="
+    mx-auto
+    flex
+    max-w-md
+    items-center
+    justify-around
+    px-4
+    h-[72px]
+    pb-[max(env(safe-area-inset-bottom),8px)]
+  "
+      >
         {navItems.map((item) => {
           const Icon = item.icon
           return (

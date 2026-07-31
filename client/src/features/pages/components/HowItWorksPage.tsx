@@ -56,7 +56,7 @@ const benefits = [
 
 export function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-full bg-background pb-20">
       {/* Hero Section */}
       <section className="bg-card py-20 border-b border-border/30 overflow-hidden">
         <motion.div

@@ -35,6 +35,7 @@ import { useListingDraftStore } from '#/store/useListingDraftStore'
 import { ListingCard } from './ListingCard'
 import { ListingsStatsRow } from './ListingsStatsRow'
 import { ProfileListingsSkeleton } from '#/components/skeletons'
+import { Link } from '@tanstack/react-router'
 
 function EmptyListingsState({
   label,
@@ -252,133 +253,6 @@ export function ProfileListings() {
 
   const showMobileOnboarding = !isListingsLoading && listings?.length === 0
 
-  if (showMobileOnboarding) {
-    return (
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        animate="show"
-        className="block md:hidden space-y-6 pb-8"
-      >
-        {/* Onboarding Hero Image Container */}
-        <div className="relative h-64 w-full rounded-[24px] overflow-hidden shadow-xs border border-border/10 bg-muted-light">
-          <img
-            src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=80"
-            alt="Become a Host"
-            className="w-full h-full object-cover brightness-[0.82]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-6 select-none">
-            <h1 className="font-display font-medium text-xl leading-tight text-white max-w-[280px]">
-              Lend the things you love.
-            </h1>
-            <p className="font-display italic text-lg leading-tight text-white/90 mt-1">
-              Earn while they rest.
-            </p>
-          </div>
-        </div>
-
-        {/* Steps List */}
-        <div className="space-y-5 px-1 select-none">
-          {[
-            {
-              num: '01',
-              title: t('List your item'),
-              desc: t(
-                'Add photos, set your price and availability in minutes.',
-              ),
-            },
-            {
-              num: '02',
-              title: t('Get booked'),
-              desc: t('Verified renters near you send requests, you approve.'),
-            },
-            {
-              num: '03',
-              title: t('Earn safely'),
-              desc: t('Payouts land in your account after every return.'),
-            },
-          ].map((step) => (
-            <div key={step.num} className="flex gap-4">
-              <span className="font-display text-2xl font-black text-primary leading-none shrink-0 mt-0.5">
-                {step.num}
-              </span>
-              <div className="min-w-0">
-                <h3 className="text-xs font-black text-foreground uppercase tracking-wider leading-none">
-                  {step.title}
-                </h3>
-                <p className="text-[10px] font-bold text-muted-foreground mt-1.5 leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Stats Summary */}
-        <div className="grid grid-cols-3 divide-x divide-border/20 border border-border/15 bg-white dark:bg-card rounded-[20px] p-4 text-center select-none shadow-3xs">
-          <div>
-            <span className="text-[13px] font-black text-primary block leading-tight">
-              5,000+
-            </span>
-            <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1 block">
-              Hosts
-            </span>
-          </div>
-          <div>
-            <span className="text-[13px] font-black text-primary block leading-tight">
-              4.9★
-            </span>
-            <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1 block">
-              Avg Rating
-            </span>
-          </div>
-          <div>
-            <span className="text-[13px] font-black text-primary block leading-tight">
-              ₹18k
-            </span>
-            <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1 block">
-              Avg / Mo
-            </span>
-          </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="pt-2 px-1">
-          <Button
-            onClick={handleAddListing}
-            className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center cursor-pointer transition-all active:scale-[0.98]"
-          >
-            List your first item &nbsp;&rsaquo;
-          </Button>
-        </div>
-
-        {/* Add Listing Dialog Component */}
-        <ListingDialog
-          open={isAddOpen}
-          onOpenChange={setIsAddOpen}
-          onSubmit={(data) => {
-            createMutation.mutate(data, {
-              onSuccess: () => {
-                setIsAddOpen(false)
-                toast.success(t('Listing created successfully!'))
-                useListingDraftStore.getState().clearDraft()
-              },
-              onError: (err: any) => {
-                toast.error(
-                  err.response?.data?.message || t('Failed to create listing'),
-                )
-              },
-            })
-          }}
-          isLoading={createMutation.isPending}
-          categories={categories || []}
-          users={users || []}
-          currentUser={session?.user}
-        />
-      </motion.div>
-    )
-  }
-
   return (
     <motion.div
       variants={stagger}
@@ -386,264 +260,372 @@ export function ProfileListings() {
       animate="show"
       className="space-y-6"
     >
-      {/* MOBILE PAGE HEADER (Screen 16 mockup style) */}
-      <motion.div
-        variants={fadeUp}
-        className="flex md:hidden items-center justify-between gap-4 select-none pb-1"
-      >
-        <div className="flex items-center gap-3 flex-1">
-          <button
-            onClick={() => window.history.back()}
-            className="w-9 h-9 rounded-full bg-muted/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-muted/75 shrink-0 transition-colors"
-          >
-            <ArrowLeft size={16} />
-          </button>
-          <h1 className="text-2xl font-display font-medium text-foreground tracking-tight">
-            {t('My Listings')}
-          </h1>
-        </div>
-        <Button
-          onClick={handleAddListing}
-          size="icon"
-          className="w-9 h-9 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground flex items-center justify-center cursor-pointer shadow-xs shrink-0"
-        >
-          <Plus size={16} strokeWidth={3} />
-        </Button>
-      </motion.div>
+      {/* MOBILE ONBOARDING VIEW (Shown only if listings is empty and on mobile) */}
+      {showMobileOnboarding && (
+        <div className="block md:hidden space-y-6 select-none">
+          {/* Onboarding Hero Image Container */}
+          <div className="relative h-64 w-full rounded-[24px] overflow-hidden shadow-xs border border-border/10 bg-muted-light">
+            <img
+              src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=80"
+              alt="Become a Host"
+              className="w-full h-full object-cover brightness-[0.82]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-6 select-none">
+              <h1 className="font-display font-medium text-xl leading-tight text-white max-w-[280px]">
+                Lend the things you love.
+              </h1>
+              <p className="font-display italic text-lg leading-tight text-white/90 mt-1">
+                Earn while they rest.
+              </p>
+            </div>
+          </div>
 
-      {/* MOBILE METRICS STATS CARDS (Screen 16 mockup style) */}
-      {listings && listings.length > 0 && (
-        <motion.div
-          variants={fadeUp}
-          className="grid grid-cols-3 gap-3 md:hidden select-none"
-        >
-          <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
-            <span className="text-[12px] font-black text-foreground block leading-tight">
-              {listings.filter((p: any) => p.isAvailable).length}
-            </span>
-            <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1.5 block">
-              {t('Active')}
-            </span>
+          {/* Steps List */}
+          <div className="space-y-5 px-1">
+            {[
+              {
+                num: '01',
+                title: t('List your item'),
+                desc: t(
+                  'Add photos, set your price and availability in minutes.',
+                ),
+              },
+              {
+                num: '02',
+                title: t('Get booked'),
+                desc: t(
+                  'Verified renters near you send requests, you approve.',
+                ),
+              },
+              {
+                num: '03',
+                title: t('Earn safely'),
+                desc: t('Payouts land in your account after every return.'),
+              },
+            ].map((step) => (
+              <div key={step.num} className="flex gap-4">
+                <span className="font-display text-2xl font-black text-primary leading-none shrink-0 mt-0.5">
+                  {step.num}
+                </span>
+                <div className="min-w-0">
+                  <h3 className="text-xs font-black text-foreground uppercase tracking-wider leading-none">
+                    {step.title}
+                  </h3>
+                  <p className="text-[10px] font-bold text-muted-foreground mt-1.5 leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
-            <span className="text-[12px] font-black text-foreground block leading-tight">
-              ₹
-              {(
-                listings.filter((p: any) => p.isAvailable).length * 8.5
-              ).toFixed(0)}
-              k
-            </span>
-            <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1.5 block">
-              {t('Earned')}
-            </span>
+
+          {/* Stats Summary */}
+          <div className="grid grid-cols-3 divide-x divide-border/20 border border-border/15 bg-white dark:bg-card rounded-[20px] p-4 text-center shadow-3xs">
+            <div>
+              <span className="text-[13px] font-black text-primary block leading-tight">
+                5,000+
+              </span>
+              <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1 block">
+                Hosts
+              </span>
+            </div>
+            <div>
+              <span className="text-[13px] font-black text-primary block leading-tight">
+                4.9★
+              </span>
+              <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1 block">
+                Avg Rating
+              </span>
+            </div>
+            <div>
+              <span className="text-[13px] font-black text-primary block leading-tight">
+                ₹18k
+              </span>
+              <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1 block">
+                Avg / Mo
+              </span>
+            </div>
           </div>
-          <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
-            <span className="text-[12px] font-black text-foreground block leading-tight">
-              4.9
-            </span>
-            <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1.5 block">
-              {t('Rating')}
-            </span>
+
+          {/* Action Button */}
+          <div className="pt-2 px-1">
+            <Button
+              onClick={handleAddListing}
+              className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center cursor-pointer transition-all active:scale-[0.98]"
+            >
+              List your first item &nbsp;&rsaquo;
+            </Button>
           </div>
-        </motion.div>
+        </div>
       )}
 
-      {/* DESKTOP PAGE HEADER */}
-      <motion.div
-        variants={fadeUp}
-        className="hidden md:flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      {/* STANDARD LISTINGS MANAGER (Desktop, or if user has listings on mobile) */}
+      <div
+        className={cn(
+          'space-y-6',
+          showMobileOnboarding ? 'hidden md:block' : 'block',
+        )}
       >
-        <div className="space-y-1">
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
-            {t('My Listings')}
-          </h1>
-          <p className="text-sm text-muted-foreground/70 font-bold">
-            {t('Manage your listed items and track their performance.')}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
+        {/* MOBILE PAGE HEADER (Screen 16 mockup style) */}
+        <motion.div
+          variants={fadeUp}
+          className="flex md:hidden items-center justify-between gap-4 select-none pb-1"
+        >
+          <div className="flex items-center gap-3 flex-1">
+            <Link
+              to="/account"
+              className="w-9 h-9 rounded-full bg-muted/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-muted/75 shrink-0 transition-colors"
+            >
+              <ArrowLeft size={16} />
+            </Link>
+            <h1 className="text-2xl font-display font-medium text-foreground tracking-tight">
+              {t('My Listings')}
+            </h1>
+          </div>
           <Button
             onClick={handleAddListing}
-            className="bg-primary hover:bg-primary-hover text-primary-foreground font-black text-xs px-5 h-10 rounded-full flex items-center gap-1.5 active:scale-95 shadow-sm cursor-pointer border-none shadow-primary/15"
+            size="icon"
+            className="w-9 h-9 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground flex items-center justify-center cursor-pointer shadow-xs shrink-0"
           >
-            <Plus size={15} strokeWidth={3} />
-            {t('Add New Listing')}
+            <Plus size={16} strokeWidth={3} />
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => setShowFilters(!showFilters)}
-            className={cn(
-              'rounded-full border-border font-black h-10 px-5 flex items-center gap-2 shadow-sm shrink-0 transition-colors',
-              showFilters
-                ? 'bg-muted/50 text-primary border-border/120'
-                : 'text-foreground/80 hover:bg-muted-light',
-            )}
-          >
-            <SlidersHorizontal size={14} className="text-muted-dark" />
-            {t('Filter')}
-          </Button>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* DESKTOP FILTERS & TABS (Hidden on Mobile) */}
-      <div className="hidden md:block space-y-6">
-        {showFilters && (
-          <ListingsFilterBar
-            search={search}
-            setSearch={setSearch}
-            categoryFilter={categoryFilter}
-            setCategoryFilter={setCategoryFilter}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            categories={categories || []}
-          />
+        {/* MOBILE METRICS STATS CARDS (Screen 16 mockup style) */}
+        {listings && listings.length > 0 && (
+          <motion.div
+            variants={fadeUp}
+            className="grid grid-cols-3 gap-3 md:hidden select-none"
+          >
+            <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
+              <span className="text-[12px] font-black text-foreground block leading-tight">
+                {listings.filter((p: any) => p.isAvailable).length}
+              </span>
+              <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1.5 block">
+                {t('Active')}
+              </span>
+            </div>
+            <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
+              <span className="text-[12px] font-black text-foreground block leading-tight">
+                ₹
+                {(
+                  listings.filter((p: any) => p.isAvailable).length * 8.5
+                ).toFixed(0)}
+                k
+              </span>
+              <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1.5 block">
+                {t('Earned')}
+              </span>
+            </div>
+            <div className="bg-white dark:bg-card border border-border/15 rounded-[18px] p-3 text-center shadow-3xs">
+              <span className="text-[12px] font-black text-foreground block leading-tight">
+                4.9
+              </span>
+              <span className="text-[8.5px] font-black text-muted-foreground uppercase tracking-widest mt-1.5 block">
+                {t('Rating')}
+              </span>
+            </div>
+          </motion.div>
         )}
 
+        {/* DESKTOP PAGE HEADER */}
         <motion.div
           variants={fadeUp}
-          className="flex gap-6 border-b border-border/30 pb-px overflow-x-auto custom-scrollbar"
+          className="hidden md:flex flex-col sm:flex-row sm:items-center justify-between gap-4"
         >
-          {(['all', 'active', 'inactive', 'draft'] as const).map((tab) => {
-            const isActive = activeTab === tab
-            return (
-              <Button
-                key={tab}
-                variant="ghost"
-                onClick={() => setActiveTab(tab)}
-                className={cn(
-                  'pb-3 font-extrabold text-[13px] transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
-                  isActive
-                    ? 'text-primary'
-                    : 'text-muted-dark hover:text-muted-foreground',
-                )}
-              >
-                <span>
-                  {t(tab.charAt(0).toUpperCase() + tab.slice(1))} ({counts[tab]}
-                  )
-                </span>
-                {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
-                )}
-              </Button>
-            )
-          })}
+          <div className="space-y-1">
+            <h1 className="text-3xl font-black text-foreground tracking-tight">
+              {t('My Listings')}
+            </h1>
+            <p className="text-sm text-muted-foreground/70 font-bold">
+              {t('Manage your listed items and track their performance.')}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={handleAddListing}
+              className="bg-primary hover:bg-primary-hover text-primary-foreground font-black text-xs px-5 h-10 rounded-full flex items-center gap-1.5 active:scale-95 shadow-sm cursor-pointer border-none shadow-primary/15"
+            >
+              <Plus size={15} strokeWidth={3} />
+              {t('Add New Listing')}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowFilters(!showFilters)}
+              className={cn(
+                'rounded-full border-border font-black h-10 px-5 flex items-center gap-2 shadow-sm shrink-0 transition-colors',
+                showFilters
+                  ? 'bg-muted/50 text-primary border-border/120'
+                  : 'text-foreground/80 hover:bg-muted-light',
+              )}
+            >
+              <SlidersHorizontal size={14} className="text-muted-dark" />
+              {t('Filter')}
+            </Button>
+          </div>
         </motion.div>
-      </div>
 
-      {filteredListings.length === 0 ? (
-        <EmptyListingsState label={activeTab} onAdd={handleAddListing} />
-      ) : (
-        <motion.div
-          key={activeTab}
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="grid gap-5"
-        >
-          {filteredListings.map((item: any) => (
-            <ListingCard
-              key={item.id}
-              item={item}
-              openDropdownId={openDropdownId}
-              setOpenDropdownId={setOpenDropdownId}
-              onEdit={(listingItem) => {
-                setProductToEdit(listingItem)
-                setIsEditOpen(true)
-              }}
-              onDelete={(listingItem) => setProductToDelete(listingItem)}
+        {/* DESKTOP FILTERS & TABS (Hidden on Mobile) */}
+        <div className="hidden md:block space-y-6">
+          {showFilters && (
+            <ListingsFilterBar
+              search={search}
+              setSearch={setSearch}
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              categories={categories || []}
             />
-          ))}
-        </motion.div>
-      )}
+          )}
 
-      <div className="hidden md:block">
-        <ListingsStatsRow
-          totalViews={totalViews}
-          totalBookings={totalBookings}
-          totalEarnings={totalEarnings}
-          avgRatingValue={avgRatingValue}
-        />
-      </div>
+          <motion.div
+            variants={fadeUp}
+            className="flex gap-6 border-b border-border/30 pb-px overflow-x-auto custom-scrollbar"
+          >
+            {(['all', 'active', 'inactive', 'draft'] as const).map((tab) => {
+              const isActive = activeTab === tab
+              return (
+                <Button
+                  key={tab}
+                  variant="ghost"
+                  onClick={() => setActiveTab(tab)}
+                  className={cn(
+                    'pb-3 font-extrabold text-[13px] transition-all relative shrink-0 rounded-none h-auto px-0 hover:bg-transparent',
+                    isActive
+                      ? 'text-primary'
+                      : 'text-muted-dark hover:text-muted-foreground',
+                  )}
+                >
+                  <span>
+                    {t(tab.charAt(0).toUpperCase() + tab.slice(1))} (
+                    {counts[tab]})
+                  </span>
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                  )}
+                </Button>
+              )
+            })}
+          </motion.div>
+        </div>
 
-      <ListingDialog
-        open={isAddOpen}
-        onOpenChange={setIsAddOpen}
-        onSubmit={(data) =>
-          createMutation.mutate(data, {
-            onSuccess: () => {
-              setIsAddOpen(false)
-              toast.success(t('Listing created successfully!'))
-              useListingDraftStore.getState().clearDraft()
-            },
-            onError: (err: any) =>
-              toast.error(
-                err.response?.data?.message || t('Failed to create listing'),
-              ),
-          })
-        }
-        isLoading={createMutation.isPending}
-        categories={categories || []}
-        users={users || []}
-        currentUser={session?.user}
-      />
+        {filteredListings.length === 0 ? (
+          <EmptyListingsState label={activeTab} onAdd={handleAddListing} />
+        ) : (
+          <motion.div
+            key={activeTab}
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="grid gap-5"
+          >
+            {filteredListings.map((item: any) => (
+              <ListingCard
+                key={item.id}
+                item={item}
+                openDropdownId={openDropdownId}
+                setOpenDropdownId={setOpenDropdownId}
+                onEdit={(listingItem) => {
+                  setProductToEdit(listingItem)
+                  setIsEditOpen(true)
+                }}
+                onDelete={(listingItem) => setProductToDelete(listingItem)}
+              />
+            ))}
+          </motion.div>
+        )}
 
-      <ListingDialog
-        open={isEditOpen}
-        onOpenChange={(open) => {
-          setIsEditOpen(open)
-          if (!open) setProductToEdit(null)
-        }}
-        product={productToEdit}
-        onSubmit={(data) => {
-          if (!productToEdit) return
-          updateMutation.mutate(
-            { id: productToEdit.id, data },
-            {
+        <div className="hidden md:block">
+          <ListingsStatsRow
+            totalViews={totalViews}
+            totalBookings={totalBookings}
+            totalEarnings={totalEarnings}
+            avgRatingValue={avgRatingValue}
+          />
+        </div>
+
+        <ListingDialog
+          open={isAddOpen}
+          onOpenChange={setIsAddOpen}
+          onSubmit={(data) =>
+            createMutation.mutate(data, {
               onSuccess: () => {
-                setIsEditOpen(false)
-                setProductToEdit(null)
-                toast.success(t('Listing updated successfully!'))
+                setIsAddOpen(false)
+                toast.success(t('Listing created successfully!'))
+                useListingDraftStore.getState().clearDraft()
               },
               onError: (err: any) =>
                 toast.error(
-                  err.response?.data?.message || t('Failed to update listing'),
+                  err.response?.data?.message || t('Failed to create listing'),
                 ),
-            },
-          )
-        }}
-        isLoading={updateMutation.isPending}
-        categories={categories || []}
-        users={users || []}
-        currentUser={session?.user}
-      />
+            })
+          }
+          isLoading={createMutation.isPending}
+          categories={categories || []}
+          users={users || []}
+          currentUser={session?.user}
+        />
 
-      <ReusableAlertDialog
-        isOpen={!!productToDelete}
-        onOpenChange={(open) => !open && setProductToDelete(null)}
-        onConfirm={() => {
-          if (!productToDelete) return
-          deleteProduct.mutate(productToDelete.id, {
-            onSuccess: () => {
-              toast.success(t('Listing deleted successfully'))
-              setProductToDelete(null)
-            },
-            onError: (err: any) =>
-              toast.error(
-                err.response?.data?.message || t('Failed to delete listing'),
-              ),
-          })
-        }}
-        onCancel={() => setProductToDelete(null)}
-        title={t('Delete Listing permanently?')}
-        description={
-          productToDelete
-            ? `${t('Are you sure you want to permanently delete')} "${productToDelete.title}"? ${t('This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.')}`
-            : ''
-        }
-        confirmText={t('Delete')}
-        variant="danger"
-        isPending={deleteProduct.isPending}
-      />
+        <ListingDialog
+          open={isEditOpen}
+          onOpenChange={(open) => {
+            setIsEditOpen(open)
+            if (!open) setProductToEdit(null)
+          }}
+          product={productToEdit}
+          onSubmit={(data) => {
+            if (!productToEdit) return
+            updateMutation.mutate(
+              { id: productToEdit.id, data },
+              {
+                onSuccess: () => {
+                  setIsEditOpen(false)
+                  setProductToEdit(null)
+                  toast.success(t('Listing updated successfully!'))
+                },
+                onError: (err: any) =>
+                  toast.error(
+                    err.response?.data?.message ||
+                      t('Failed to update listing'),
+                  ),
+              },
+            )
+          }}
+          isLoading={updateMutation.isPending}
+          categories={categories || []}
+          users={users || []}
+          currentUser={session?.user}
+        />
+
+        <ReusableAlertDialog
+          isOpen={!!productToDelete}
+          onOpenChange={(open) => !open && setProductToDelete(null)}
+          onConfirm={() => {
+            if (!productToDelete) return
+            deleteProduct.mutate(productToDelete.id, {
+              onSuccess: () => {
+                toast.success(t('Listing deleted successfully'))
+                setProductToDelete(null)
+              },
+              onError: (err: any) =>
+                toast.error(
+                  err.response?.data?.message || t('Failed to delete listing'),
+                ),
+            })
+          }}
+          onCancel={() => setProductToDelete(null)}
+          title={t('Delete Listing permanently?')}
+          description={
+            productToDelete
+              ? `${t('Are you sure you want to permanently delete')} "${productToDelete.title}"? ${t('This listing will be removed from the marketplace, and all associated rental history will be archived. This action cannot be undone.')}`
+              : ''
+          }
+          confirmText={t('Delete')}
+          variant="danger"
+          isPending={deleteProduct.isPending}
+        />
+      </div>
     </motion.div>
   )
 }

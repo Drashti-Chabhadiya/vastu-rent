@@ -60,23 +60,40 @@ export function HeroSection() {
   const displayCategory = featuredProduct?.category?.name || 'Living'
   const displayLocation = featuredProduct?.city || 'Surat'
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [emblaMobileRef, emblaMobileApi] = useEmblaCarousel({ loop: true })
+  const [emblaDesktopRef, emblaDesktopApi] = useEmblaCarousel({ loop: true })
+  const [selectedMobileIndex, setSelectedMobileIndex] = useState(0)
+  const [selectedDesktopIndex, setSelectedDesktopIndex] = useState(0)
 
   useEffect(() => {
-    if (!emblaApi) return
+    if (!emblaMobileApi) return
     const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap())
+      setSelectedMobileIndex(emblaMobileApi.selectedScrollSnap())
     }
-    emblaApi.on('select', onSelect)
+    emblaMobileApi.on('select', onSelect)
     const interval = setInterval(() => {
-      emblaApi.scrollNext()
+      emblaMobileApi.scrollNext()
     }, 4500)
     return () => {
       clearInterval(interval)
-      emblaApi.off('select', onSelect)
+      emblaMobileApi.off('select', onSelect)
     }
-  }, [emblaApi])
+  }, [emblaMobileApi])
+
+  useEffect(() => {
+    if (!emblaDesktopApi) return
+    const onSelect = () => {
+      setSelectedDesktopIndex(emblaDesktopApi.selectedScrollSnap())
+    }
+    emblaDesktopApi.on('select', onSelect)
+    const interval = setInterval(() => {
+      emblaDesktopApi.scrollNext()
+    }, 4500)
+    return () => {
+      clearInterval(interval)
+      emblaDesktopApi.off('select', onSelect)
+    }
+  }, [emblaDesktopApi])
 
   const banners =
     products && products.length > 0
@@ -91,6 +108,10 @@ export function HeroSection() {
             image: p.images[0],
             link: `/products/${p.id}`,
             price: p.price,
+            rating: p.rating || '4.96',
+            host: p.user?.name || 'Drashti',
+            category: p.category?.name || 'Living',
+            location: p.city || 'Surat',
           }))
       : [
           {
@@ -103,6 +124,10 @@ export function HeroSection() {
               ? `/products/${featuredProduct.id}`
               : '/products',
             price: displayPrice,
+            rating: displayRating,
+            host: displayHost,
+            category: displayCategory,
+            location: displayLocation,
           },
         ]
 
@@ -283,7 +308,7 @@ export function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right column — editorial image showcase */}
+        {/* Right column — editorial image showcase slider */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -294,56 +319,70 @@ export function HeroSection() {
             <HeroSkeleton />
           ) : (
             <div className="relative w-full max-w-[540px] overflow-hidden rounded-[2.5rem] bg-card border border-border/30 shadow-2xl">
-              <img
-                src={displayImg}
-                alt={displayTitle}
-                className="aspect-[4/5] h-full w-full object-cover"
-              />
-              {/* Top featured tag */}
-              {/* <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-background/90 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground backdrop-blur-md border border-border/40 shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                {t(`Featured · ${displayTitle}`)}
-              </div> */}
+              <div
+                className="overflow-hidden rounded-[2.5rem]"
+                ref={emblaDesktopRef}
+              >
+                <div className="flex">
+                  {banners.map((b: any) => (
+                    <div
+                      key={b.id}
+                      className="relative flex-[0_0_100%] min-w-0"
+                    >
+                      <img
+                        src={b.image}
+                        alt={b.title}
+                        className="aspect-[4/5] h-full w-full object-cover"
+                      />
+                      {/* Bottom floating product details */}
+                      <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-card/95 p-4 backdrop-blur-md border border-border/40 shadow-lg">
+                        <div className="flex-1 overflow-hidden pr-2 text-left">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground truncate">
+                            {b.category} · {b.location}
+                          </div>
+                          <div className="mt-0.5 font-bold text-base text-foreground truncate">
+                            {b.title}
+                          </div>
+                          <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-medium truncate">
+                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 shrink-0" />{' '}
+                            {formatDigits(b.rating)} · {t('Hosted by')} {b.host}
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <div className="font-extrabold text-lg text-primary">
+                            {formatCurrency(b.price)}
+                            <span className="text-xs font-normal text-muted-foreground">
+                              /day
+                            </span>
+                          </div>
+                          <Link
+                            to={b.link}
+                            className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
+                          >
+                            {t('Reserve') || 'Reserve'}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              {/* Bottom floating product details */}
-              <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-card/95 p-4 backdrop-blur-md border border-border/40 shadow-lg">
-                <div className="flex-1 overflow-hidden pr-2">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground truncate">
-                    {displayCategory} · {displayLocation}
-                  </div>
-                  <div className="mt-0.5 font-bold text-base text-foreground truncate">
-                    {displayTitle}
-                  </div>
-                  <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-medium truncate">
-                    <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 shrink-0" />{' '}
-                    {formatDigits(displayRating)} · {t('Hosted by')}{' '}
-                    {displayHost}
-                  </div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="font-extrabold text-lg text-primary">
-                    {formatCurrency(displayPrice)}
-                    <span className="text-xs font-normal text-muted-foreground">
-                      /day
-                    </span>
-                  </div>
-                  {featuredProduct ? (
-                    <Link
-                      to="/products/$id"
-                      params={{ id: featuredProduct.id }}
-                      className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
-                    >
-                      {t('Reserve') || 'Reserve'}
-                    </Link>
-                  ) : (
-                    <Link
-                      to="/products"
-                      className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
-                    >
-                      {t('Reserve') || 'Reserve'}
-                    </Link>
-                  )}
-                </div>
+              {/* Sliding Dots Indicators for Desktop */}
+              <div className="absolute top-5 right-5 z-30 flex gap-1 bg-black/45 backdrop-blur-xs py-1.5 px-3 rounded-full">
+                {banners.map((_: any, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => emblaDesktopApi?.scrollTo(index)}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all duration-300 border-none cursor-pointer',
+                      index === selectedDesktopIndex
+                        ? 'w-3.5 bg-white'
+                        : 'w-1.5 bg-white/40',
+                    )}
+                    aria-label={`Slide ${index + 1}`}
+                  />
+                ))}
               </div>
             </div>
           )}
@@ -382,7 +421,7 @@ export function HeroSection() {
           <div className="relative">
             <div
               className="overflow-hidden rounded-[1.5rem] border border-border/30 shadow-lg"
-              ref={emblaRef}
+              ref={emblaMobileRef}
             >
               <div className="flex">
                 {banners.map((b: any) => (
@@ -397,12 +436,6 @@ export function HeroSection() {
                       className="h-full w-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-
-                    {/* Tag badge */}
-                    {/* <div className="absolute left-3.5 top-3.5 z-30 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 text-[8.5px] font-extrabold uppercase tracking-wide text-primary shadow-xs">
-                      <span className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
-                      {b.tag}
-                    </div> */}
 
                     {/* Bottom floating details */}
                     <div className="absolute bottom-3.5 left-3.5 right-3.5 z-30 flex items-end justify-between text-white">
@@ -435,10 +468,10 @@ export function HeroSection() {
               {banners.map((_: any, index: number) => (
                 <button
                   key={index}
-                  onClick={() => emblaApi?.scrollTo(index)}
+                  onClick={() => emblaMobileApi?.scrollTo(index)}
                   className={cn(
                     'h-1.5 rounded-full transition-all duration-300 border-none cursor-pointer',
-                    index === selectedIndex
+                    index === selectedMobileIndex
                       ? 'w-3.5 bg-white'
                       : 'w-1.5 bg-white/40',
                   )}

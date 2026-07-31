@@ -120,7 +120,7 @@ export const MessagesManagement = () => {
 
         {/* ── RIGHT COLUMN: Details Sidebar (About Panel or Settings) ── */}
         {showDetailsPanel &&
-          (activePanel === 'settings' && !activeConversationId ? (
+          (activePanel === 'settings' ? (
             <MySettingsPanel />
           ) : (
             activeConversationId && <AboutPanel />

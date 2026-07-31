@@ -12,7 +12,7 @@ export function CategoryList() {
   const { data: categories, isLoading } = useCategories()
 
   return (
-    <div className="min-h-screen bg-background pt-6 lg:pt-24 pb-16">
+    <div className="min-h-full bg-background pt-6 lg:pt-24 pb-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <MobileBackHeader title={t('Categories')} />
 

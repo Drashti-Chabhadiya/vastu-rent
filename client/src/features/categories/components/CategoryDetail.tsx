@@ -34,7 +34,7 @@ export function CategoryDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-full bg-background">
       {/* Category Header */}
       <div className="bg-card border-b border-border/30 pb-6 md:pb-12 pt-4 md:pt-8">
         <motion.div

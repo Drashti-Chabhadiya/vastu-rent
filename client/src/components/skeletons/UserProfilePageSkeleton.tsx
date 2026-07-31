@@ -2,7 +2,7 @@ import { Skeleton } from '#/components/ui/skeleton'
 
 export function UserProfilePageSkeleton() {
   return (
-    <div className="min-h-screen bg-bg-base pt-24 pb-16">
+    <div className="min-h-full bg-bg-base pt-24 pb-16">
       <div className="mx-auto max-w-[1200px] px-4 animate-pulse">
         {/* Profile Card Header Skeleton */}
         <div className="bg-card rounded-[40px] p-8 md:p-12 border border-border/30 mb-12 flex flex-col md:flex-row items-center md:items-start gap-8">

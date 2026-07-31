@@ -295,7 +295,8 @@ function RootDocument() {
         'bg-card',
         'font-sans',
         'antialiased',
-        'fixed inset-0 overflow-hidden',
+        'h-dvh',
+        'overflow-hidden',
         'flex flex-col',
         'w-full',
       )}
@@ -305,30 +306,50 @@ function RootDocument() {
           <TranslationProvider>
             <NotificationListener />
 
-            {/* Scrollable Content Area */}
-            <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden relative">
-              {!isAuthPage && !isAdminPage && !isDashboardPage && (
-                <div
-                  className={cn(
-                    'sticky top-0 z-40',
-                    'hidden md:block',
-                    isChatPage && 'hidden lg:block',
-                  )}
-                >
-                  <Navbar />
-                </div>
-              )}
-              <main className="flex-1 flex flex-col min-w-0 min-h-0 relative">
-                <Outlet />
-              </main>
-              {!isAuthPage && !isAdminPage && !isDashboardPage && (
-                <div className={cn('hidden md:block', isChatPage && 'hidden')}>
-                  <Footer />
-                </div>
-              )}
-            </div>
+            {/* Desktop Navigation Header */}
+            {!isAuthPage && !isAdminPage && !isDashboardPage && (
+              <div
+                className={cn(
+                  'sticky top-0 z-40 shrink-0',
+                  'hidden md:block',
+                  isChatPage && 'hidden lg:block',
+                )}
+              >
+                <Navbar />
+              </div>
+            )}
 
-            {/* Bottom Tabbar - Native Flex Item (No Overlap) */}
+            {/* Main Scrollable Viewport Container */}
+            <main className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 relative">
+              <div
+                className={cn(
+                  'min-h-full flex flex-col justify-between',
+                  !isAuthPage &&
+                    !isChatPage &&
+                    !isProductDetailPage &&
+                    'pb-[80px] md:pb-0',
+                )}
+              >
+                {/* Content Area */}
+                <div className="flex-1 flex flex-col">
+                  <Outlet />
+                </div>
+
+                {/* Footer - Desktop Only */}
+                {!isAuthPage && !isAdminPage && !isDashboardPage && (
+                  <div
+                    className={cn(
+                      'hidden md:block shrink-0',
+                      isChatPage && 'hidden',
+                    )}
+                  >
+                    <Footer />
+                  </div>
+                )}
+              </div>
+            </main>
+
+            {/* Mobile Navigation Tabbar */}
             {!isAuthPage && !isChatPage && !isProductDetailPage && <Tabbar />}
           </TranslationProvider>
         </SessionProvider>

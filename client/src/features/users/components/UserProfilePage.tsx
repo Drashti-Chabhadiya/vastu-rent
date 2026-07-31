@@ -83,7 +83,7 @@ export function UserProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-bg-base flex items-center justify-center">
+      <div className="min-h-full bg-bg-base flex items-center justify-center">
         <p className="text-muted-foreground/85 font-bold">
           User profile not found
         </p>
@@ -92,7 +92,7 @@ export function UserProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-bg-base pt-24 pb-16">
+    <div className="min-h-full bg-bg-base pt-24 pb-16">
       <div className="mx-auto max-w-[1200px] px-4">
         <MobileBackHeader />
 
