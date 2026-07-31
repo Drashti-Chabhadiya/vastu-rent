@@ -60,7 +60,6 @@ export const ListingDialog = ({
       description: '',
       price: 0,
       city: '',
-      location: '',
       categoryId: '',
       userId: '',
       images: [],
@@ -81,7 +80,6 @@ export const ListingDialog = ({
           price: product.price || 0,
           securityDeposit: product.securityDeposit || 0,
           city: product.city || '',
-          location: product.location || '',
           categoryId: product.categoryId || '',
           userId: product.userId || '',
           images: product.images || [],
@@ -103,7 +101,6 @@ export const ListingDialog = ({
             price: currentDraft.price || 0,
             securityDeposit: currentDraft.securityDeposit || 0,
             city: currentDraft.city || '',
-            location: currentDraft.location || '',
             categoryId: currentDraft.categoryId || '',
             userId: currentDraft.userId || currentUser?.id || '',
             images: currentDraft.images || [],
@@ -134,19 +131,6 @@ export const ListingDialog = ({
               currentUser?.address?.city ||
               currentUser?.addresses?.[0]?.city ||
               '',
-            location:
-              [
-                currentUser?.address?.addressLine1 ||
-                  currentUser?.addresses?.[0]?.addressLine1,
-                currentUser?.address?.addressLine2 ||
-                  currentUser?.addresses?.[0]?.addressLine2,
-                currentUser?.address?.state ||
-                  currentUser?.addresses?.[0]?.state,
-                currentUser?.address?.postalCode ||
-                  currentUser?.addresses?.[0]?.postalCode,
-              ]
-                .filter(Boolean)
-                .join(', ') || '',
             categoryId: '',
             userId: currentUser?.id || '',
             images: [],

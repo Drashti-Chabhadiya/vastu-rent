@@ -446,10 +446,11 @@ export function MobileProfileDashboard({
         {/* LOG OUT BUTTON */}
         <div className="pt-2">
           <Button
+            variant="outline"
             onClick={onLogoutClick}
-            className="w-full h-12 bg-card border border-danger/20 text-danger hover:bg-danger/10 font-bold text-xs rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-3xs"
+            className="w-full h-12 bg-white dark:bg-card border-red-500/30 text-red-500 hover:bg-red-50 hover:text-red-600 font-bold text-[13px] rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-3xs transition-all"
           >
-            <LogOut size={16} />
+            <LogOut size={16} className="stroke-[2.5]" />
             {t('Log out')}
           </Button>
         </div>
