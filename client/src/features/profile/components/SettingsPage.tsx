@@ -352,8 +352,8 @@ export function SettingsPage() {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="bg-white dark:bg-card border border-border/15 rounded-[22px] shadow-3xs">
+          <div className="space-y-4 px-1">
+            <div className="w-full">
               {section === 'theme' && <ThemeSection />}
               {section === 'notifs' && (
                 <NotificationsSection

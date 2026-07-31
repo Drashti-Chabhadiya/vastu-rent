@@ -58,8 +58,8 @@ export function ProductsExplorePage() {
   )
 
   // Filter States
-  const [minPrice, setMinPrice] = useState<number>(1000)
-  const [maxPrice, setMaxPrice] = useState<number>(6000)
+  const [minPrice, setMinPrice] = useState<number>(0)
+  const [maxPrice, setMaxPrice] = useState<number>(10000)
   const [minRating, setMinRating] = useState<number | null>(null)
   const [verifiedOnly, setVerifiedOnly] = useState<boolean>(false)
   const [selectedSort, setSelectedSort] = useState<string>('relevance')
@@ -84,7 +84,8 @@ export function ProductsExplorePage() {
 
         // 1. Price Range filter
         const price = product.price || 0
-        if (price < minPrice || price > maxPrice) return false
+        if (price < minPrice) return false
+        if (maxPrice < 10000 && price > maxPrice) return false
 
         // 2. Rating filter (e.g. ★ 4.5+)
         if (minRating !== null) {
@@ -172,8 +173,8 @@ export function ProductsExplorePage() {
                 </DrawerTitle>
                 <button
                   onClick={() => {
-                    setMinPrice(1000)
-                    setMaxPrice(6000)
+                    setMinPrice(0)
+                    setMaxPrice(10000)
                     setMinRating(null)
                     setVerifiedOnly(false)
                   }}
@@ -189,7 +190,7 @@ export function ProductsExplorePage() {
                     {t('PRICE PER DAY')}
                   </div>
                   <Slider
-                    min={500}
+                    min={0}
                     max={10000}
                     step={100}
                     value={[minPrice, maxPrice]}
@@ -428,8 +429,8 @@ export function ProductsExplorePage() {
                   </SheetTitle>
                   <button
                     onClick={() => {
-                      setMinPrice(1000)
-                      setMaxPrice(6000)
+                      setMinPrice(0)
+                      setMaxPrice(10000)
                       setMinRating(null)
                       setVerifiedOnly(false)
                     }}
@@ -445,7 +446,7 @@ export function ProductsExplorePage() {
                       {t('PRICE PER DAY')}
                     </div>
                     <Slider
-                      min={500}
+                      min={0}
                       max={10000}
                       step={100}
                       value={[minPrice, maxPrice]}

@@ -12,7 +12,6 @@ export const listingSchema = z.object({
     .min(0, 'Security deposit must be 0 or more')
     .optional(),
   city: z.string().min(2, 'City is required'),
-  location: z.string().min(2, 'Location is required'),
   categoryId: z.string().min(1, 'Please select a category'),
   userId: z.string().min(1, 'Please assign a provider'),
   images: z.array(z.string()).min(1, 'At least one image is required'),

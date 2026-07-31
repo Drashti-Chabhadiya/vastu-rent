@@ -269,25 +269,6 @@ export const ProductForm = ({
                   </FormItem>
                 )}
               />
-              <FormField<ListingSchema>
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[12px] font-bold text-foreground ml-1">
-                      {t('Area / Neighborhood')}
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. Andheri West"
-                        {...field}
-                        className="w-full h-11 px-4 rounded-xl border-border bg-card text-sm text-foreground focus-visible:ring-1 focus-visible:ring-dash-brand/30"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
           </div>
         </div>

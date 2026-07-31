@@ -292,7 +292,7 @@ function RootDocument() {
   return (
     <div
       className={cn(
-        'bg-card',
+        'bg-background',
         'font-sans',
         'antialiased',
         'h-dvh',
