@@ -34,7 +34,8 @@ export const ListingsTable = ({
   const { t, formatCurrency } = useTranslation()
   return (
     <div className="bg-card rounded-3xl border border-border/30 shadow-sm overflow-hidden">
-      <div className="overflow-x-auto custom-scrollbar">
+      {/* Desktop Table View */}
+      <div className="hidden md:block overflow-x-auto custom-scrollbar">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-border/30 bg-muted-light/50 hover:bg-transparent">
@@ -128,7 +129,10 @@ export const ListingsTable = ({
                         <span className="text-sm font-extrabold text-dash-text group-hover:text-dash-brand transition-colors line-clamp-1 flex items-center gap-1.5">
                           {item.title}
                           {item.isFeatured && (
-                            <span title="Featured on Hero Section" className="flex items-center">
+                            <span
+                              title="Featured on Hero Section"
+                              className="flex items-center"
+                            >
                               <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400 shrink-0" />
                             </span>
                           )}
@@ -210,11 +214,20 @@ export const ListingsTable = ({
                           onClick={() => onSetFeatured(item.id)}
                           className={cn(
                             'w-8 h-8 rounded-lg transition-all active:scale-[0.98] shadow-none',
-                            item.isFeatured ? 'text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20' : 'text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand'
+                            item.isFeatured
+                              ? 'text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20'
+                              : 'text-dash-text-soft hover:bg-dash-brand/10 hover:text-dash-brand',
                           )}
-                          title={item.isFeatured ? "Currently Featured" : "Set as Featured"}
+                          title={
+                            item.isFeatured
+                              ? 'Currently Featured'
+                              : 'Set as Featured'
+                          }
                         >
-                          <Star size={14} className={item.isFeatured ? 'fill-current' : ''} />
+                          <Star
+                            size={14}
+                            className={item.isFeatured ? 'fill-current' : ''}
+                          />
                         </Button>
                       )}
                       <Button
@@ -252,6 +265,166 @@ export const ListingsTable = ({
             )}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden flex flex-col divide-y divide-border/30">
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="p-4 space-y-4 animate-pulse">
+              <div className="flex gap-4">
+                <div className="w-16 h-16 rounded-xl bg-muted/50 shrink-0" />
+                <div className="flex-1 space-y-2 py-1">
+                  <div className="h-4 bg-muted rounded-md w-3/4" />
+                  <div className="h-3 bg-muted/50 rounded-md w-1/2" />
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="h-6 bg-muted/50 rounded-lg w-20" />
+                <div className="flex gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-muted/40" />
+                  <div className="w-8 h-8 rounded-lg bg-muted/40" />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : products.length === 0 ? (
+          <div className="px-6 py-20 text-center text-dash-text-soft font-bold uppercase tracking-widest text-sm">
+            {t('No listings available')}
+          </div>
+        ) : (
+          products.map((item) => (
+            <div key={item.id} className="p-4 flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <div className="relative w-16 h-16 rounded-xl overflow-hidden shadow-sm border border-border/30 shrink-0">
+                  <img
+                    src={
+                      item.images?.[0] ||
+                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
+                    }
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                  {item.isFeatured && (
+                    <div className="absolute top-1 left-1 bg-white/90 backdrop-blur-sm p-1 rounded-md shadow-sm">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-sm font-extrabold text-dash-text line-clamp-2 leading-tight">
+                      {item.title}
+                    </span>
+                    <span className="text-sm font-black text-dash-text shrink-0">
+                      {formatCurrency(item.price)}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-dash-text-soft font-bold uppercase tracking-wider mt-1 line-clamp-1">
+                    {item.location}
+                  </span>
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    <Badge
+                      variant="outline"
+                      className="rounded-md bg-card border-border/30 text-dash-text-soft font-bold text-[9px] uppercase tracking-wider h-5 px-1.5"
+                    >
+                      {item.category?.name || t('Uncategorized')}
+                    </Badge>
+                    <span className="text-[10px] text-dash-text font-bold truncate">
+                      {item.user?.name || t('Vastu System')}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <Button
+                  variant="ghost"
+                  onClick={() => onToggleStatus(item.id, !item.isAvailable)}
+                  className={cn(
+                    'inline-flex h-auto items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest transition-all active:scale-[0.98] shadow-none',
+                    item.isAvailable
+                      ? 'bg-dash-brand/10 text-primary hover:bg-dash-brand/20'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80',
+                  )}
+                >
+                  {item.isAvailable ? (
+                    <>
+                      <Eye size={12} strokeWidth={2.5} />
+                      <span>{t('Public')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff size={12} strokeWidth={2.5} />
+                      <span>{t('Hidden')}</span>
+                    </>
+                  )}
+                </Button>
+
+                <div className="flex items-center gap-1.5">
+                  <a
+                    href={`/products/${item.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block"
+                  >
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="w-8 h-8 rounded-lg border-border/30 text-dash-text-soft shadow-none"
+                    >
+                      <ExternalLink size={14} />
+                    </Button>
+                  </a>
+                  {currentUser?.role === 'admin' && onSetFeatured && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => onSetFeatured(item.id)}
+                      className={cn(
+                        'w-8 h-8 rounded-lg border-border/30 shadow-none',
+                        item.isFeatured
+                          ? 'text-yellow-500 bg-yellow-500/5'
+                          : 'text-dash-text-soft',
+                      )}
+                    >
+                      <Star
+                        size={14}
+                        className={item.isFeatured ? 'fill-current' : ''}
+                      />
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => onEdit(item)}
+                    className="w-8 h-8 rounded-lg border-border/30 text-dash-text-soft shadow-none"
+                  >
+                    <Pencil size={14} />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => onDelete(item)}
+                    className={cn(
+                      'w-8 h-8 rounded-lg border-border/30 shadow-none',
+                      currentUser?.role === 'admin' ||
+                        item.userId === currentUser?.id
+                        ? 'text-danger hover:bg-danger hover:text-destructive'
+                        : 'text-dash-text-soft opacity-30',
+                    )}
+                    disabled={
+                      currentUser?.role !== 'admin' &&
+                      item.userId !== currentUser?.id
+                    }
+                  >
+                    <Trash2 size={14} />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )

@@ -18,6 +18,7 @@ export interface UserAvatarProps {
   showPing?: boolean
   className?: string
   avatarClassName?: string
+  fallbackClassName?: string
 }
 
 export function UserAvatar({
@@ -29,6 +30,7 @@ export function UserAvatar({
   showPing = true,
   className,
   avatarClassName,
+  fallbackClassName,
 }: UserAvatarProps) {
   const dim =
     size === 'sm'
@@ -67,6 +69,7 @@ export function UserAvatar({
           className={cn(
             'bg-primary-soft text-primary font-bold',
             size === 'xl' ? 'font-black text-4xl' : '',
+            fallbackClassName,
           )}
         >
           {getInitials(name)}

@@ -18,6 +18,13 @@ import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { useSettings } from '#/hook'
 import { useTranslation } from '#/context/TranslationContext'
+import { MobileBackHeader } from '#/components/common/MobileBackHeader'
+
+interface TermsNavSection {
+  id: string
+  label: string
+  collapsedOnly: boolean
+}
 
 export function TermsPage() {
   const { t } = useTranslation()
@@ -95,12 +102,6 @@ export function TermsPage() {
     },
   ]
 
-  interface TermsNavSection {
-    id: string
-    label: string
-    collapsedOnly: boolean
-  }
-
   const sections: TermsNavSection[] = dynamicSections.map(
     (sec: any, idx: number) => ({
       id: sec.id,
@@ -147,16 +148,21 @@ export function TermsPage() {
   }, [isOpen, sections])
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-full bg-background pb-20">
+      {/* Mobile Back Header */}
+      <div className="md:hidden px-4 pt-2">
+        <MobileBackHeader title={t('Terms of Service')} />
+      </div>
+
       {/* Hero Section Container */}
-      <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
+      <section className="mx-auto max-w-[1400px] px-0 sm:px-6 pt-0 md:pt-12 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
           {/* Left Hero Details */}
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="show"
-            className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16"
+            className="md:col-span-7 flex flex-col justify-center px-6 pt-6 pb-10 sm:p-12 lg:p-16 relative"
           >
             <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">

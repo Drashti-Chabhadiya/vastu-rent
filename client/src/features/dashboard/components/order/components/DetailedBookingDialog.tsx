@@ -243,11 +243,11 @@ export const DetailedBookingDialog = ({
         description={
           pendingAction === 'confirm'
             ? t(
-              'Are you sure you want to accept this rental booking request for "{title}"? The dates will be reserved in your calendar, and the renter will receive a notification.',
-            ).replace('{title}', order.product?.title || t('this item'))
+                'Are you sure you want to accept this rental booking request for "{title}"? The dates will be reserved in your calendar, and the renter will receive a notification.',
+              ).replace('{title}', order.product?.title || t('this item'))
             : t(
-              'Are you sure you want to reject this rental booking request for "{title}"? The dates will remain available, and the renter will be notified.',
-            ).replace('{title}', order.product?.title || t('this item'))
+                'Are you sure you want to reject this rental booking request for "{title}"? The dates will remain available, and the renter will be notified.',
+              ).replace('{title}', order.product?.title || t('this item'))
         }
         confirmText={
           pendingAction === 'confirm'

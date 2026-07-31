@@ -1,5 +1,5 @@
 export const ProfileListingsSkeleton = () => {
-    return (
+  return (
     <div className="space-y-8 animate-pulse">
       <div className="flex justify-between items-center">
         <div className="space-y-2">
@@ -12,11 +12,16 @@ export const ProfileListingsSkeleton = () => {
         </div>
       </div>
       <div className="flex gap-6 border-b border-border/30 pb-2">
-        {[1, 2, 3, 4].map((i) => <div key={i} className="h-5 bg-muted rounded-full w-20" />)}
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-5 bg-muted rounded-full w-20" />
+        ))}
       </div>
       <div className="grid gap-4">
         {[1, 2].map((i) => (
-          <div key={i} className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm flex flex-col md:flex-row gap-6">
+          <div
+            key={i}
+            className="bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm flex flex-col md:flex-row gap-6"
+          >
             <div className="w-28 h-28 rounded-2xl bg-muted/50 shrink-0" />
             <div className="flex-1 space-y-3">
               <div className="h-5 bg-muted rounded-full w-48" />

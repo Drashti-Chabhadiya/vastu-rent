@@ -86,85 +86,146 @@ export function Categories() {
   return (
     <section
       id="categories"
-      className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32 bg-background"
+      className="mx-auto max-w-[1400px] px-6 py-6 md:py-32 md:px-10 bg-background"
     >
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-xl">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-primary">
-            {t('— The Catalogue')}
+      {/* Desktop view */}
+      <div className="hidden md:block">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-xl">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-primary">
+              {t('— The Catalogue')}
+            </div>
+            <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] tracking-tight text-foreground text-balance">
+              {t('Quietly considered, beautifully kept.')}
+            </h2>
           </div>
-          <h2 className="mt-4 font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] tracking-tight text-foreground text-balance">
-            {t('Quietly considered, beautifully kept.')}
-          </h2>
+          <div className="flex flex-col gap-4 max-w-sm">
+            <ExploreLink to="/categories">
+              {t('Explore all categories')}
+            </ExploreLink>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 max-w-sm">
-          <p className="text-[15px] leading-relaxed text-muted-foreground">
-            {t('Catalogue Description')}
-          </p>
-          <ExploreLink to="/categories">
-            {t('Explore all categories')}
-          </ExploreLink>
-        </div>
+
+        {isLoading ? (
+          <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <CategoryCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-80px' }}
+            className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {latestCategories.map((c: any) => (
+              <motion.div key={c.id} variants={fadeUp}>
+                <Link
+                  to="/categories/$id"
+                  params={{ id: c.id }}
+                  className="group relative overflow-hidden rounded-[1.75rem] bg-card block"
+                >
+                  <div className="relative overflow-hidden bg-accent/30 aspect-[4/5]">
+                    {c.image ? (
+                      <img
+                        src={c.image}
+                        alt={c.name}
+                        width={800}
+                        height={1024}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                      />
+                    ) : (
+                      <IconComponent iconName={c.icon} color={c.color} />
+                    )}
+                    {c.tag && (
+                      <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-foreground backdrop-blur">
+                        {c.tag}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between px-1 py-5">
+                    <div>
+                      <div className="font-display text-lg text-foreground">
+                        {c.name}
+                      </div>
+                      <div className="mt-0.5 text-[12px] text-muted-foreground">
+                        {c._count?.products || 0} {t('items')}
+                      </div>
+                    </div>
+                    <span className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
+                      <Icons.ArrowUpRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
 
-      {isLoading ? (
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <CategoryCardSkeleton key={i} />
-          ))}
+      {/* Mobile view */}
+      <div className="md:hidden">
+        <div className="flex items-end justify-between gap-6 mb-8 relative z-10 border-b border-border/10 pb-4">
+          <div>
+            {/* <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-1">
+              {t('— The Catalogue')}
+            </div> */}
+            <h2 className="text-xl sm:text-3xl font-extrabold text-brand-ink tracking-tight leading-none">
+              {t('Categories')}
+            </h2>
+          </div>
+          <ExploreLink to="/categories">{t('See all')}</ExploreLink>
         </div>
-      ) : (
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-80px' }}
-          className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {latestCategories.map((c: any) => (
-            <motion.div key={c.id} variants={fadeUp}>
-              <Link
-                to="/categories/$id"
-                params={{ id: c.id }}
-                className="group relative overflow-hidden rounded-[1.75rem] bg-card block"
+
+        {isLoading ? (
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center gap-2 shrink-0 w-[72px]"
               >
-                <div className="relative overflow-hidden bg-accent/30 aspect-[4/5]">
-                  {c.image ? (
-                    <img
-                      src={c.image}
-                      alt={c.name}
-                      width={800}
-                      height={1024}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                <div className="w-14 h-14 rounded-2xl bg-muted animate-pulse" />
+                <div className="h-3 w-10 bg-muted rounded animate-pulse" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory">
+            {latestCategories.map((c: any) => {
+              const Icon = getIcon(c.icon)
+              return (
+                <Link
+                  key={c.id}
+                  to="/categories/$id"
+                  params={{ id: c.id }}
+                  className="flex flex-col items-center gap-1.5 shrink-0 snap-start text-center w-[72px]"
+                >
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center border border-border/40 shadow-xs"
+                    style={{
+                      backgroundColor: c.color
+                        ? `color-mix(in srgb, ${c.color} 15%, #faf9f5)`
+                        : 'var(--primary-soft)',
+                    }}
+                  >
+                    <Icon
+                      className="w-6 h-6"
+                      style={{ color: c.color || 'var(--primary)' }}
+                      strokeWidth={2}
                     />
-                  ) : (
-                    <IconComponent iconName={c.icon} color={c.color} />
-                  )}
-                  {c.tag && (
-                    <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] uppercase tracking-[0.16em] text-foreground backdrop-blur">
-                      {c.tag}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between px-1 py-5">
-                  <div>
-                    <div className="font-display text-lg text-foreground">
-                      {c.name}
-                    </div>
-                    <div className="mt-0.5 text-[12px] text-muted-foreground">
-                      {c._count?.products || 0} {t('items')}
-                    </div>
                   </div>
-                  <span className="grid h-10 w-10 place-items-center rounded-full border border-border text-foreground/70 transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                    <Icons.ArrowUpRight className="h-4 w-4" />
+                  <span className="text-[10px] font-bold text-muted-foreground truncate w-full">
+                    {t(c.name)}
                   </span>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
+                </Link>
+              )
+            })}
+          </div>
+        )}
+      </div>
     </section>
   )
 }

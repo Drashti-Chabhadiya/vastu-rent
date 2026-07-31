@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useOrders, useUpdateRentalStatus } from '#/hook'
 import { authClient } from '#/lib/auth/auth-client'
 import { useTranslation } from '#/context/TranslationContext'
 import {
   Calendar as CalendarIcon,
+  CalendarX,
   ChevronLeft,
   ChevronRight,
   Info,
@@ -41,8 +42,27 @@ export const RentalsCalendar = () => {
 
   // Calendar Navigation States
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date())
+  const [activeDate, setActiveDate] = useState<Date>(new Date())
   const [selectedProduct, setSelectedProduct] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    // Scroll active date into view on mount and when month changes
+    if (scrollContainerRef.current) {
+      const activeEl = scrollContainerRef.current.querySelector(
+        '[data-active="true"]',
+      ) as HTMLElement
+      if (activeEl) {
+        scrollContainerRef.current.scrollTo({
+          left:
+            activeEl.offsetLeft - scrollContainerRef.current.offsetLeft - 16,
+          behavior: 'smooth',
+        })
+      }
+    }
+  }, [currentMonth]) // deliberately only scroll on mount/month change, not every tap
 
   // Selected Order details overlay state
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null)
@@ -224,8 +244,8 @@ export const RentalsCalendar = () => {
             </div>
           ) : null}
 
-          {/* Date Month Selector */}
-          <div className="flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
+          {/* Date Month Selector (Desktop) */}
+          <div className="hidden md:flex items-center gap-2 bg-card px-3 py-2 rounded-2xl border border-border/30 shadow-sm">
             <Button
               variant="ghost"
               size="icon"
@@ -249,8 +269,8 @@ export const RentalsCalendar = () => {
         </div>
       </motion.div>
 
-      {/* FILTERS CONTAINER */}
-      <motion.div variants={fadeUp}>
+      {/* FILTERS CONTAINER (Desktop) */}
+      <motion.div variants={fadeUp} className="hidden md:block">
         <CalendarFilters
           selectedProduct={selectedProduct}
           setSelectedProduct={setSelectedProduct}
@@ -260,10 +280,10 @@ export const RentalsCalendar = () => {
         />
       </motion.div>
 
-      {/* CALENDAR VIEW GRID */}
+      {/* DESKTOP CALENDAR VIEW GRID */}
       <motion.div
         variants={fadeUp}
-        className="bg-card border border-border/30 rounded-[2rem] shadow-sm overflow-hidden font-sans"
+        className="hidden md:block bg-card border border-border/30 rounded-[2rem] shadow-sm overflow-hidden font-sans"
       >
         {/* Days of the Week headers */}
         <div className="grid grid-cols-7 border-b border-border/30 bg-muted-light/50 text-center py-4 text-[10px] font-black text-muted-dark uppercase tracking-widest">
@@ -340,6 +360,163 @@ export const RentalsCalendar = () => {
               </div>
             )
           })}
+        </div>
+      </motion.div>
+
+      {/* MOBILE AGENDA VIEW (Hidden on md/lg) */}
+      <motion.div variants={fadeUp} className="md:hidden space-y-4">
+        {/* Mobile Month Selector */}
+        <div className="flex items-center justify-between px-2 mb-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={prevMonth}
+            className="h-8 w-8 hover:bg-transparent"
+          >
+            <ChevronLeft
+              size={18}
+              className="text-dash-text"
+              strokeWidth={2.5}
+            />
+          </Button>
+          <span className="text-[17px] font-black text-dash-text font-display tracking-wide">
+            {formatDate(currentMonth, { month: 'long', year: 'numeric' })}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={nextMonth}
+            className="h-8 w-8 hover:bg-transparent"
+          >
+            <ChevronRight
+              size={18}
+              className="text-dash-text"
+              strokeWidth={2.5}
+            />
+          </Button>
+        </div>
+
+        {/* Horizontal scroll dates */}
+        <div
+          ref={scrollContainerRef}
+          className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-2 px-1 -mx-2"
+        >
+          {calendarDays.map((day, idx) => {
+            const isSelected = isSameDay(day, activeDate)
+            return (
+              <button
+                key={idx}
+                data-active={isSelected}
+                onClick={() => setActiveDate(day)}
+                className={cn(
+                  'flex flex-col items-center justify-center min-w-[62px] h-[72px] rounded-[18px] transition-all shrink-0',
+                  isSelected
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'bg-brand-beige text-dash-text hover:bg-brand-beige/80 dark:bg-muted/50 dark:hover:bg-muted',
+                )}
+              >
+                <span
+                  className={cn(
+                    'text-[9px] font-black uppercase mb-0.5 tracking-widest',
+                    isSelected
+                      ? 'text-primary-foreground/90'
+                      : 'text-dash-text/80',
+                  )}
+                >
+                  {format(day, 'EEE')}
+                </span>
+                <span className="text-[20px] font-black leading-none">
+                  {formatNumber(parseInt(format(day, 'd')))}
+                </span>
+                {getBookingsForDay(day).length > 0 && (
+                  <div
+                    className={cn(
+                      'w-1 h-1 rounded-full mt-1.5',
+                      isSelected ? 'bg-primary-foreground' : 'bg-primary',
+                    )}
+                  />
+                )}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Filters */}
+        <CalendarFilters
+          selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+          uniqueProducts={uniqueProducts}
+        />
+
+        {/* Selected Date Bookings */}
+        <div className="bg-card border border-border/40 border-dashed rounded-[2rem] p-6 min-h-[250px] flex flex-col justify-center">
+          {(() => {
+            const activeBookings = getBookingsForDay(activeDate)
+            if (activeBookings.length === 0) {
+              return (
+                <div className="flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-card border border-border/15 rounded-3xl mt-4 shadow-3xs max-w-sm mx-auto">
+                  <div className="w-14 h-14 bg-brand-beige/50 rounded-full flex items-center justify-center mb-4">
+                    <CalendarX className="w-6 h-6 text-foreground/50" />
+                  </div>
+                  <h4 className="text-[15px] font-black text-dash-text mb-1">
+                    {t('Nothing scheduled for {date}').replace(
+                      '{date}',
+                      format(activeDate, 'd MMM'),
+                    )}
+                  </h4>
+                  <p className="text-xs text-dash-text-muted">
+                    {t('Tap a date above to check its rentals.')}
+                  </p>
+                </div>
+              )
+            }
+            return (
+              <div className="space-y-3 w-full h-full flex flex-col justify-start">
+                <h4 className="text-xs font-black uppercase tracking-widest text-dash-text-muted mb-2">
+                  {t('Rentals on {date}').replace(
+                    '{date}',
+                    format(activeDate, 'MMM d, yyyy'),
+                  )}
+                </h4>
+                {activeBookings.map((booking: any) => (
+                  <div
+                    key={booking.id}
+                    onClick={() => setSelectedOrder(booking)}
+                    className="p-3 bg-muted-light/30 rounded-xl border border-border/30 flex items-center justify-between cursor-pointer active:scale-95 transition-transform"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={
+                          booking.product?.images?.[0] ||
+                          'https://placehold.co/100x100/png'
+                        }
+                        className="w-10 h-10 rounded-lg object-cover shrink-0"
+                        alt=""
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold text-dash-text truncate">
+                          {booking.product?.title}
+                        </p>
+                        <p className="text-[10px] text-dash-text-muted truncate">
+                          {booking.renter?.name}
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      className={cn(
+                        'text-[9px] font-black px-2 py-1 rounded-lg border uppercase shrink-0 ml-2',
+                        getStatusColor(booking.status),
+                      )}
+                    >
+                      {booking.status}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          })()}
         </div>
       </motion.div>
 

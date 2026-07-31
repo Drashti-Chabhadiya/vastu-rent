@@ -5,19 +5,17 @@ import {
   Home,
   Building2,
   CheckCircle2,
-  ShieldCheck,
-  CreditCard,
-  Lock,
-  Headphones,
+  ChevronRight,
 } from 'lucide-react'
 import { motion } from 'motion/react'
-import { EASE, fadeUp, stagger } from '#/lib/animations'
+import { fadeUp, stagger } from '#/lib/animations'
 import { Button } from '#/components/ui/button'
-import { Card, CardContent } from '#/components/ui/card'
-import { Switch } from '#/components/ui/switch'
 import { authClient } from '#/lib/auth/auth-client'
 import { useSettings, useCreateCheckoutSession } from '#/hook'
 import { useTranslation } from '#/context/TranslationContext'
+import { cn } from '#/lib/utils'
+import { Link } from '@tanstack/react-router'
+import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 
 export function PricingPage() {
   const { t, formatNumber } = useTranslation()
@@ -37,62 +35,21 @@ export function PricingPage() {
       ? settings.pricing.businessPrice
       : 999
 
-  // Calculate pricing based on billing toggle (20% off for yearly)
   const getProPrice = () =>
     isYearly ? Math.round(rawProPrice * 0.8) : rawProPrice
   const getBusinessPrice = () =>
     isYearly ? Math.round(rawBusinessPrice * 0.8) : rawBusinessPrice
-
-  const formatBilledText = (price: number, rawPrice: number) => {
-    if (isYearly) {
-      const yearlyPrice = price * 12
-      const yearlySavings = (rawPrice - price) * 12
-      return t('Billed annually as ₹{amount} (Save ₹{savings})')
-        .replace('{amount}', formatNumber(yearlyPrice))
-        .replace('{savings}', formatNumber(yearlySavings))
-    }
-    return t('Billed monthly as ₹{amount}').replace(
-      '{amount}',
-      formatNumber(price),
-    )
-  }
-
-  const starterFeatures: string[] = settings?.pricing?.starterFeatures || [
-    'List up to 5 items',
-    'Basic item insights',
-    'Standard support',
-    'Secure payments',
-  ]
-
-  const proFeatures: string[] = settings?.pricing?.proFeatures || [
-    'List up to 50 items',
-    'Advanced item insights',
-    'Priority support',
-    'Secure payments',
-    'Promoted listings',
-  ]
-
-  const businessFeatures: string[] = settings?.pricing?.businessFeatures || [
-    'Unlimited listings',
-    'Advanced analytics',
-    'Priority support',
-    'Secure payments',
-    'Promoted listings',
-    'Custom business profile',
-  ]
 
   const handleSelectPlan = async (planName: string) => {
     if (planName.toLowerCase() === 'starter') {
       toast.info('The Starter plan is free and active by default.')
       return
     }
-
     if (!session) {
       toast.error('Please sign in to upgrade your plan.')
       window.location.href = `/login?redirect=/pricing`
       return
     }
-
     const toastId = toast.loading(
       `Initiating checkout for the ${planName} plan...`,
     )
@@ -101,7 +58,6 @@ export function PricingPage() {
         planName,
         interval: isYearly ? 'yearly' : 'monthly',
       })
-
       if (res?.url) {
         toast.success('Redirecting to secure payment page...', { id: toastId })
         window.location.href = res.url
@@ -117,17 +73,86 @@ export function PricingPage() {
     }
   }
 
+  const starterFeatures: string[] = settings?.pricing?.starterFeatures || [
+    'List up to 5 items',
+    'Basic item insights',
+    'Standard support',
+    'Secure payments',
+  ]
+  const proFeatures: string[] = settings?.pricing?.proFeatures || [
+    'List up to 50 items',
+    'Priority support',
+    'Advanced item insights',
+    'Secure payments',
+    'Promoted listings',
+  ]
+  const businessFeatures: string[] = settings?.pricing?.businessFeatures || [
+    'Unlimited listings',
+    'Custom business profile',
+    'Advanced analytics',
+    'Priority support',
+    'Secure payments',
+    'Promoted listings',
+  ]
+
+  const plans = [
+    {
+      id: 'starter',
+      name: 'Starter',
+      icon: Sprout,
+      price: rawStarterPrice,
+      perMonthNote: t('No setup fees. No hidden charges.'),
+      tagline: t('Perfect for getting started.'),
+      badge: null,
+      features: starterFeatures,
+      actionLabel: t('Get Started'),
+      dark: false,
+    },
+    {
+      id: 'pro',
+      name: 'Pro',
+      icon: Home,
+      price: getProPrice(),
+      perMonthNote: isYearly
+        ? `${t('Billed yearly as ₹')}${formatNumber(rawProPrice * 0.8 * 12)}`
+        : `${t('Billed monthly as ₹')}${formatNumber(rawProPrice)}`,
+      tagline: t('For growing renters.'),
+      badge: t('MOST POPULAR'),
+      features: proFeatures,
+      actionLabel: t('Choose Pro'),
+      dark: true,
+    },
+    {
+      id: 'business',
+      name: 'Business',
+      icon: Building2,
+      price: getBusinessPrice(),
+      perMonthNote: isYearly
+        ? `${t('Billed yearly as ₹')}${formatNumber(rawBusinessPrice * 0.8 * 12)}`
+        : `${t('Billed monthly as ₹')}${formatNumber(rawBusinessPrice)}`,
+      tagline: t('For serious sellers & businesses.'),
+      badge: null,
+      features: businessFeatures,
+      actionLabel: t('Choose Business'),
+      dark: false,
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Hero Section */}
-      <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
-          {/* Left Hero Details */}
+    <div className="min-h-full bg-[#FBF9F4] dark:bg-background pb-28 lg:pb-20">
+      {/* ── HERO (desktop only) ── */}
+      {/* Mobile Top Header */}
+      <div className="md:hidden px-4 pt-2">
+        <MobileBackHeader title={t('Pricing')} />
+      </div>
+
+      <section className="hidden lg:block mx-auto max-w-[1400px] px-10 pt-12">
+        <div className="grid grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="show"
-            className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16"
+            className="col-span-7 flex flex-col justify-center px-16 py-16"
           >
             <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
@@ -143,311 +168,287 @@ export function PricingPage() {
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg"
+              className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground"
             >
               {t(
                 'Choose the perfect plan to rent your items and start earning with Vastu.',
               )}
             </motion.p>
           </motion.div>
-
-          {/* Right Hero Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: EASE }}
-            className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
+            transition={{ duration: 1 }}
+            className="col-span-5 relative min-h-[300px] overflow-hidden"
           >
             <img
               src="/assets/contact-hero.png"
-              alt="Beautiful Vastu Arched Room"
+              alt="Vastu Pricing"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
           </motion.div>
         </div>
       </section>
 
-      {/* Billing Switch Toggle */}
+      {/* ── MOBILE HERO ── */}
+      <section className="lg:hidden px-5 pt-6">
+        <p className="text-[10px] font-extrabold tracking-[0.12em] text-primary uppercase mb-2">
+          · {t('Pricing Plans')}
+        </p>
+        <h1 className="font-display text-[26px] font-medium leading-tight text-foreground tracking-tight">
+          {t('Simple, transparent')}
+          <br />
+          {t('pricing.')}
+        </h1>
+        <p className="text-[12px] text-muted-foreground mt-2 leading-relaxed">
+          {t('Choose a plan and start earning by lending what you own.')}
+        </p>
+      </section>
+
+      {/* ── BILLING TOGGLE ── */}
       <motion.section
         variants={fadeUp}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10 flex justify-center"
+        className="flex justify-center mt-6 lg:mt-12 px-5"
       >
-        <div className="flex items-center gap-4 bg-muted/30 p-2 px-5 rounded-full border border-border/40 shadow-sm">
+        {/* Desktop Switch style */}
+        <div className="hidden lg:flex items-center justify-center gap-4 mb-12">
           <span
-            className={`text-sm font-semibold transition-colors ${!isYearly ? 'text-brand-ink' : 'text-muted-foreground'}`}
+            className={cn(
+              'text-sm font-extrabold',
+              !isYearly ? 'text-foreground' : 'text-muted-foreground',
+            )}
           >
             {t('Monthly billing')}
           </span>
-
-          <Switch
-            checked={isYearly}
-            onCheckedChange={setIsYearly}
-            className="data-[state=checked]:bg-primary"
-          />
-
+          <button
+            onClick={() => setIsYearly(!isYearly)}
+            className={cn(
+              'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+              isYearly ? 'bg-primary' : 'bg-muted-dark/30',
+            )}
+          >
+            <span
+              className={cn(
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out',
+                isYearly ? 'translate-x-5' : 'translate-x-0',
+              )}
+            />
+          </button>
           <span
-            className={`text-sm font-semibold transition-colors ${isYearly ? 'text-brand-ink' : 'text-muted-foreground'}`}
+            className={cn(
+              'text-sm font-extrabold',
+              isYearly ? 'text-foreground' : 'text-muted-foreground',
+            )}
           >
             {t('Yearly billing')}
           </span>
-          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400">
             {t('Save up to 20%')}
           </span>
         </div>
+
+        {/* Mobile Pill-buttons style */}
+        <div className="flex lg:hidden bg-brand-beige/70 dark:bg-muted/30 rounded-full p-1 text-[11px] font-bold border border-border/30 shadow-xs">
+          <button
+            onClick={() => setIsYearly(false)}
+            className={cn(
+              'px-4 py-1.5 rounded-full transition-all cursor-pointer border-none',
+              !isYearly
+                ? 'bg-white dark:bg-card text-foreground shadow-xs'
+                : 'text-muted-foreground',
+            )}
+          >
+            {t('Monthly')}
+          </button>
+          <button
+            onClick={() => setIsYearly(true)}
+            className={cn(
+              'px-4 py-1.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 border-none',
+              isYearly
+                ? 'bg-primary text-white shadow-xs'
+                : 'text-muted-foreground',
+            )}
+          >
+            {t('Yearly')} · -20%
+          </button>
+        </div>
       </motion.section>
 
-      {/* Pricing Cards Grid */}
-      <section className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10">
+      {/* ── PLAN CARDS ── */}
+      <section className="mx-auto max-w-[1200px] px-5 lg:px-10 mt-5 lg:mt-10">
         <motion.div
           variants={stagger}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch"
+          className="flex flex-col gap-3.5 lg:grid lg:grid-cols-3 lg:gap-8 lg:items-stretch"
         >
-          {/* Starter Plan */}
-          <motion.div variants={fadeUp} className="flex flex-col h-full">
-            <Card className="border border-border/30 rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 h-full">
-              <CardContent className="p-0 flex flex-col h-full justify-between">
-                <div>
-                  {/* Header info */}
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
-                      <Sprout className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-brand-ink text-lg">
-                        {t('Starter')}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {t('Perfect for getting started.')}
-                      </p>
-                    </div>
-                  </div>
+          {plans.map((plan) => {
+            const Icon = plan.icon
+            const isPro = plan.id === 'pro'
+            return (
+              <motion.div
+                key={plan.id}
+                variants={fadeUp}
+                className={cn(
+                  'relative rounded-[20px] lg:rounded-[32px] border p-4 lg:p-8 flex flex-col bg-card shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-300',
+                  isPro
+                    ? 'border-2 border-primary shadow-md scale-100 lg:scale-[1.02] z-10'
+                    : 'border-border/25 hover:shadow-md',
+                )}
+              >
+                {/* Most Popular badge */}
+                {isPro && (
+                  <span className="absolute -top-3 left-4 lg:left-1/2 lg:-translate-x-1/2 rounded-full bg-primary text-white text-[9px] font-black tracking-widest uppercase px-3 py-1 lg:px-4.5 lg:py-1.5 shadow-sm whitespace-nowrap">
+                    {t('MOST POPULAR')}
+                  </span>
+                )}
 
-                  {/* Price */}
-                  <div className="mt-8">
-                    <div className="flex items-baseline text-brand-ink">
-                      <span className="text-4xl font-extrabold tracking-tight">
-                        ₹{formatNumber(rawStarterPrice)}
-                      </span>
-                      <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                        {t('/month')}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {t('No setup fees. No hidden charges.')}
+                {/* Header - Desktop (hidden on mobile) */}
+                <div className="hidden lg:flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary-soft/20 dark:bg-primary-soft/10 flex items-center justify-center shrink-0">
+                    <Icon
+                      size={22}
+                      strokeWidth={1.8}
+                      className="text-primary"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-black text-lg text-foreground leading-none">
+                      {t(plan.name)}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground mt-1 leading-none">
+                      {plan.tagline}
                     </p>
                   </div>
                 </div>
 
-                {/* Action */}
-                <div className="mt-8">
+                {/* Header - Mobile (hidden on desktop) */}
+                <div
+                  className={cn(
+                    'lg:hidden flex items-center gap-2.5',
+                    plan.badge && 'mt-1',
+                  )}
+                >
+                  <Icon
+                    size={16}
+                    strokeWidth={1.8}
+                    className="text-primary shrink-0"
+                  />
+                  <h3 className="font-bold text-[13px] text-foreground leading-none">
+                    {t(plan.name)}
+                  </h3>
+                </div>
+
+                {/* Price */}
+                <div className="mt-3 lg:mt-8 flex items-baseline gap-0.5">
+                  <span className="font-display text-[26px] lg:text-5xl font-semibold lg:font-black text-foreground">
+                    ₹{formatNumber(plan.price)}
+                  </span>
+                  <span className="text-[11px] lg:text-xs font-medium lg:font-semibold text-muted-foreground ml-1">
+                    {t('/month')}
+                  </span>
+                </div>
+                <p className="text-[10.5px] lg:text-[11px] font-bold text-muted-foreground mt-0.5 lg:mt-2">
+                  {plan.perMonthNote}
+                </p>
+
+                {/* CTA Button */}
+                {isPro ? (
+                  <button
+                    onClick={() => handleSelectPlan(plan.name)}
+                    className="mt-3.5 lg:mt-8 w-full bg-primary hover:bg-primary-hover text-white rounded-full font-black text-[12px] h-10 lg:h-12 shadow-md active:scale-[0.98] transition-all cursor-pointer border-none flex items-center justify-center"
+                  >
+                    {t(plan.actionLabel)}
+                  </button>
+                ) : (
                   <Button
-                    onClick={() => handleSelectPlan('Starter')}
+                    onClick={() => handleSelectPlan(plan.name)}
                     variant="outline"
-                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98]"
+                    className="mt-3.5 lg:mt-8 w-full rounded-full border-primary text-primary hover:bg-primary-soft/15 font-black text-[12px] h-10 lg:h-12 shadow-none active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center"
                   >
-                    {t('Get Started')}
+                    {t(plan.actionLabel)}
                   </Button>
+                )}
+
+                {/* Feature list — desktop only */}
+                <div className="hidden lg:block mt-10 pt-8 border-t border-border/15 flex-1">
+                  <ul className="space-y-4">
+                    {plan.features.map((f, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <CheckCircle2
+                          size={16}
+                          className="text-primary shrink-0 mt-0.5"
+                        />
+                        <span className="text-xs lg:text-sm font-semibold text-muted-foreground leading-tight">
+                          {t(f)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-
-                {/* Separator */}
-                <div className="my-8 border-t border-border/30" />
-
-                {/* Features */}
-                <ul className="space-y-4">
-                  {starterFeatures.map((f, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                      <span className="text-[13.5px] text-muted-foreground leading-relaxed">
-                        {t(f)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Pro Plan (MOST POPULAR) */}
-          <motion.div variants={fadeUp} className="flex flex-col h-full">
-            <Card className="relative border-2 border-primary rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-md flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 h-full">
-              {/* Most Popular Badge */}
-              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary-foreground shadow-sm">
-                {t('Most Popular')}
-              </span>
-
-              <CardContent className="p-0 flex flex-col h-full justify-between">
-                <div>
-                  {/* Header info */}
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
-                      <Home className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-brand-ink text-lg">
-                        {t('Pro')}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {t('For growing renters.')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Price */}
-                  <div className="mt-8">
-                    <div className="flex items-baseline text-brand-ink">
-                      <span className="text-4xl font-extrabold tracking-tight">
-                        ₹{formatNumber(getProPrice())}
-                      </span>
-                      <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                        {t('/month')}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {formatBilledText(getProPrice(), rawProPrice)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Action */}
-                <div className="mt-8">
-                  <Button
-                    // onClick={() => handleSelectPlan('Pro')}
-                    className="w-full rounded-full bg-primary py-6 text-sm font-bold text-primary-foreground hover:bg-primary/95 active:scale-[0.98]"
-                  >
-                    {t('Choose Pro')}
-                  </Button>
-                </div>
-
-                {/* Separator */}
-                <div className="my-8 border-t border-border/30" />
-
-                {/* Features */}
-                <ul className="space-y-4">
-                  {proFeatures.map((f, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                      <span className="text-[13.5px] text-brand-ink font-medium leading-relaxed">
-                        {t(f)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Business Plan */}
-          <motion.div variants={fadeUp} className="flex flex-col h-full">
-            <Card className="border border-border/30 rounded-[2.5rem] bg-card p-8 lg:p-10 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 h-full">
-              <CardContent className="p-0 flex flex-col h-full justify-between">
-                <div>
-                  {/* Header info */}
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/5 shrink-0">
-                      <Building2 className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-brand-ink text-lg">
-                        {t('Business')}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        {t('For serious sellers & businesses.')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Price */}
-                  <div className="mt-8">
-                    <div className="flex items-baseline text-brand-ink">
-                      <span className="text-4xl font-extrabold tracking-tight">
-                        ₹{formatNumber(getBusinessPrice())}
-                      </span>
-                      <span className="ml-1 text-sm font-semibold text-muted-foreground">
-                        {t('/month')}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {formatBilledText(getBusinessPrice(), rawBusinessPrice)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Action */}
-                <div className="mt-8">
-                  <Button
-                    // onClick={() => handleSelectPlan('Business')}
-                    variant="outline"
-                    className="w-full rounded-full border border-border py-6 text-sm font-bold text-brand-ink hover:bg-muted/10 active:scale-[0.98]"
-                  >
-                    {t('Choose Business')}
-                  </Button>
-                </div>
-
-                {/* Separator */}
-                <div className="my-8 border-t border-border/30" />
-
-                {/* Features */}
-                <ul className="space-y-4">
-                  {businessFeatures.map((f, i) => (
-                    <li key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="h-4.5 w-4.5 text-primary shrink-0" />
-                      <span className="text-[13.5px] text-muted-foreground leading-relaxed">
-                        {t(f)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </motion.div>
+            )
+          })}
         </motion.div>
       </section>
 
-      {/* Trust Panel Bottom */}
+      {/* ── CTA STICKY BOTTOM (mobile only) ── */}
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 px-4 pb-3 pt-3 bg-gradient-to-t from-[#FBF9F4] dark:from-background via-[#FBF9F4]/95 dark:via-background/95 to-transparent pointer-events-none">
+        {session ? (
+          <Link
+            to="/account/listings"
+            className="pointer-events-auto w-full flex items-center justify-center gap-2 bg-primary text-white rounded-full font-extrabold text-[13px] py-4 shadow-xl active:scale-[0.98] transition-all cursor-pointer"
+          >
+            {t('List your first item')}
+            <ChevronRight size={15} strokeWidth={2.5} />
+          </Link>
+        ) : (
+          <Link
+            to="/login"
+            search={{ redirect: '/pricing' }}
+            className="pointer-events-auto w-full flex items-center justify-center gap-2 bg-primary text-white rounded-full font-extrabold text-[13px] py-4 shadow-xl active:scale-[0.98] transition-all cursor-pointer"
+          >
+            {t('List your first item')}
+            <ChevronRight size={15} strokeWidth={2.5} />
+          </Link>
+        )}
+      </div>
+
+      {/* ── TRUST PANEL (desktop only) ── */}
       <motion.section
         variants={fadeUp}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        className="mx-auto max-w-[1400px] px-6 mt-16 md:px-10"
+        className="hidden lg:block mx-auto max-w-[1400px] px-10 mt-16"
       >
-        <div className="bg-brand-surface-warm border border-border/20 rounded-[2rem] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-          <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 border border-primary/10 shrink-0">
-              <ShieldCheck className="h-7 w-7 text-primary animate-pulse" />
-            </div>
-            <div>
-              <h3 className="font-bold text-brand-ink text-lg">
-                {t('Trusted. Secure. Hassle-free.')}
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {t(
-                  'Your data is protected and payments are 100% secure with Vastu.',
-                )}
-              </p>
-            </div>
+        <div className="bg-brand-surface-warm border border-border/20 rounded-[2rem] p-8 flex items-center justify-between gap-6 shadow-sm">
+          <div>
+            <h3 className="font-bold text-brand-ink text-lg">
+              {t('Trusted. Secure. Hassle-free.')}
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {t(
+                'Your data is protected and payments are 100% secure with Vastu.',
+              )}
+            </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 text-brand-ink text-sm font-semibold">
-            <div className="flex items-center gap-2">
-              <CreditCard className="h-4.5 w-4.5 text-primary" />
-              <span>{t('Secure Payments')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Lock className="h-4.5 w-4.5 text-primary" />
-              <span>{t('Data Protection')}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Headphones className="h-4.5 w-4.5 text-primary" />
-              <span>{t('24/7 Support')}</span>
-            </div>
-          </div>
+          <Button
+            asChild
+            className="rounded-full bg-primary px-8 h-11 font-bold text-sm text-primary-foreground hover:bg-primary/95 shrink-0 cursor-pointer"
+          >
+            {session ? (
+              <Link to="/account/listings">{t('Get Started Free')}</Link>
+            ) : (
+              <Link to="/login" search={{ redirect: '/pricing' }}>
+                {t('Get Started Free')}
+              </Link>
+            )}
+          </Button>
         </div>
       </motion.section>
     </div>

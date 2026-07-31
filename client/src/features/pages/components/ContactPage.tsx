@@ -20,8 +20,9 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { motion } from 'motion/react'
-import { EASE, fadeUp, stagger } from '#/lib/animations'
+import { fadeUp, stagger, EASE } from '#/lib/animations'
 import { authClient } from '#/lib/auth/auth-client'
+import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 import { useSettings, useSubmitContactMessage } from '#/hook'
 import { useTranslation } from '#/context/TranslationContext'
 
@@ -117,18 +118,23 @@ export function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-full bg-background pb-20">
+      {/* Mobile Top Header */}
+      <div className="md:hidden px-4 pt-2">
+        <MobileBackHeader title={t('Contact Us')} />
+      </div>
+
       {/* Hero Section Container */}
-      <section className="mx-auto max-w-[1400px] px-6 pt-12 md:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
+      <section className="mx-auto max-w-[1400px] px-0 sm:px-6 pt-0 md:pt-12 md:px-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-none sm:rounded-3xl md:rounded-[2.5rem] border-b sm:border border-border/20 shadow-none sm:shadow-sm">
           {/* Left Hero Details */}
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="show"
-            className="md:col-span-7 flex flex-col justify-center px-8 py-16 sm:p-12 lg:p-16"
+            className="md:col-span-7 flex flex-col justify-center px-6 pt-6 pb-10 sm:p-12 lg:p-16 relative"
           >
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUp} className="mt-2 sm:mt-0">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                 {t('Get in touch')}
@@ -136,7 +142,7 @@ export function ContactPage() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
+              className="mt-6 sm:mt-8 font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
             >
               {t('Contact Hero Title')}
             </motion.h1>
@@ -168,7 +174,7 @@ export function ContactPage() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: EASE }}
-            className="md:col-span-5 relative min-h-[380px] md:min-h-full overflow-hidden"
+            className="md:col-span-5 relative min-h-[280px] sm:min-h-[380px] md:min-h-full overflow-hidden"
           >
             <img
               src="/assets/contact-hero.png"
@@ -187,10 +193,10 @@ export function ContactPage() {
         whileInView="show"
         viewport={{ once: true }}
         id="contact-form"
-        className="mx-auto max-w-[1400px] px-6 mt-12 md:px-10"
+        className="mx-auto max-w-[1400px] px-4 sm:px-6 mt-8 md:mt-12 md:px-10"
       >
-        <div className="bg-card rounded-[2.5rem] p-8 sm:p-12 lg:p-16 border border-border/30 shadow-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        <div className="bg-card rounded-3xl md:rounded-[2.5rem] p-6 sm:p-12 lg:p-16 border border-border/30 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
             {/* Left side details */}
             <div className="lg:col-span-4">
               <h2 className="text-2xl font-bold text-brand-ink tracking-tight">
@@ -275,7 +281,7 @@ export function ContactPage() {
             </div>
 
             {/* Right side form */}
-            <div className="lg:col-span-8 lg:border-l lg:border-border/40 lg:pl-16">
+            <div className="lg:col-span-8 pt-8 mt-2 border-t border-border/40 lg:pt-0 lg:mt-0 lg:border-t-0 lg:border-l lg:border-border/40 lg:pl-16">
               <h2 className="text-2xl font-bold text-brand-ink tracking-tight">
                 {t('Send us a message')}
               </h2>

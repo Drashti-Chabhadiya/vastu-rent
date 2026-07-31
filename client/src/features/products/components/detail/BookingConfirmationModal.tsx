@@ -1,21 +1,20 @@
 import { Link } from '@tanstack/react-router'
-import {
-  CheckCircle2,
-  Calendar,
-  CreditCard,
-  Banknote,
-  ArrowRight,
-} from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { motion, AnimatePresence } from 'motion/react'
+import { cn } from '#/lib/utils'
 
 interface BookingConfirmationModalProps {
   isOpen: boolean
   onClose: () => void
   productTitle: string
+  productImage?: string
   startDate: Date | null
   endDate: Date | null
   totalPrice: number
+  basePrice?: number
+  securityDeposit?: number
+  discountAmount?: number
   paymentMethod?: string
 }
 
@@ -23,12 +22,29 @@ export const BookingConfirmationModal = ({
   isOpen,
   onClose,
   productTitle,
+  productImage,
   startDate,
   endDate,
   totalPrice,
+  basePrice,
+  securityDeposit,
+  discountAmount,
   paymentMethod = 'online',
 }: BookingConfirmationModalProps) => {
   const isCash = paymentMethod === 'cash'
+  const bookingId = `VR-${Math.floor(10000 + Math.random() * 90000)}`
+
+  const formattedDates =
+    startDate && endDate
+      ? `${startDate.toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+        })} - ${endDate.toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })}`
+      : ''
 
   return (
     <AnimatePresence>
@@ -37,121 +53,139 @@ export const BookingConfirmationModal = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          transition={{ duration: 0.25 }}
+          className="fixed inset-0 z-50 flex items-center justify-center"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-card rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden"
-          >
-            {/* Green header strip */}
-            <div className="bg-primary px-8 pt-10 pb-8 text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{
-                  delay: 0.15,
-                  duration: 0.4,
-                  type: 'spring',
-                  bounce: 0.5,
-                }}
-                className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4"
-              >
-                <CheckCircle2
-                  className="w-9 h-9 text-white"
-                  strokeWidth={2.5}
-                />
-              </motion.div>
-              <h3 className="text-xl font-black text-white leading-tight">
-                Booking Confirmed!
-              </h3>
-              <p className="text-white/75 text-sm mt-1 font-medium">
-                {isCash
-                  ? 'Your request has been sent to the lister.'
-                  : 'Payment received & booking confirmed.'}
-              </p>
-            </div>
+          {/* Backdrop on Desktop, Full screen on Mobile */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs hidden sm:block"
+            onClick={onClose}
+          />
 
-            {/* Details */}
-            <div className="px-7 py-6 space-y-4">
-              {/* Product name */}
-              <div className="text-center">
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                  Item Rented
-                </p>
-                <p className="text-base font-black text-foreground mt-1 leading-snug">
-                  {productTitle}
-                </p>
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className={cn(
+              'w-full h-full sm:h-auto sm:max-w-md bg-background sm:rounded-[32px] overflow-hidden flex flex-col justify-between p-6 sm:p-8 z-10 shadow-2xl border border-border/10',
+              'fixed inset-0 sm:relative sm:inset-auto',
+            )}
+          >
+            {/* Header Content */}
+            <div className="flex-1 flex flex-col justify-center sm:justify-start pt-8 sm:pt-2 pb-6">
+              {/* Checkmark Double Circle Frame */}
+              <div className="relative w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-dashed border-primary">
+                <div className="w-14 h-14 bg-white dark:bg-card rounded-full flex items-center justify-center shadow-xs">
+                  <CheckCircle2
+                    className="w-7 h-7 text-primary"
+                    strokeWidth={2.5}
+                  />
+                </div>
               </div>
 
-              <div className="h-px bg-border/40" />
+              {/* Title & Subtext */}
+              <h2 className="font-display text-2xl font-black text-center text-foreground leading-tight">
+                Booking confirmed!
+              </h2>
+              <p className="text-center text-xs text-muted-foreground mt-2.5 font-medium max-w-[290px] mx-auto leading-relaxed">
+                {isCash
+                  ? 'Your reservation request is set. The host will confirm pickup details shortly.'
+                  : 'Your reservation is set. The host has been notified and will prep the item for pickup.'}
+              </p>
 
-              {/* Dates */}
-              {startDate && endDate && (
-                <div className="flex items-center gap-3 bg-muted-light rounded-2xl px-4 py-3">
-                  <Calendar className="w-4 h-4 text-primary shrink-0" />
-                  <div className="text-xs font-bold text-foreground">
-                    {startDate.toLocaleDateString('en-IN', {
-                      day: '2-digit',
-                      month: 'short',
-                    })}
-                    {' → '}
-                    {endDate.toLocaleDateString('en-IN', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+              {/* Summary Card */}
+              <div className="bg-white dark:bg-card border border-border/15 rounded-[22px] p-5 mt-6 shadow-xs">
+                <div className="flex gap-4 items-center">
+                  <div className="w-12 h-12 rounded-xl bg-muted-light overflow-hidden shrink-0 border border-border/10">
+                    <img
+                      src={
+                        productImage ||
+                        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&q=80'
+                      }
+                      alt={productTitle}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-extrabold text-xs text-foreground truncate">
+                      {productTitle}
+                    </h4>
+                    {formattedDates && (
+                      <p className="text-[10px] font-bold text-muted-foreground mt-0.5">
+                        {formattedDates}
+                      </p>
+                    )}
                   </div>
                 </div>
-              )}
 
-              {/* Payment method & amount */}
-              <div className="flex items-center gap-3 bg-muted-light rounded-2xl px-4 py-3">
-                {isCash ? (
-                  <Banknote className="w-4 h-4 text-primary shrink-0" />
-                ) : (
-                  <CreditCard className="w-4 h-4 text-primary shrink-0" />
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-muted-foreground">
-                    {isCash ? 'Cash on Pickup' : 'Online Payment'}
-                  </p>
-                  <p className="text-sm font-black text-foreground">
-                    ₹{totalPrice.toLocaleString()}
-                  </p>
+                <div className="h-px bg-border/20 my-4" />
+
+                <div className="space-y-2.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9.5px] font-black text-muted-foreground uppercase tracking-widest">
+                      Booking ID
+                    </span>
+                    <span className="text-xs font-mono font-bold text-foreground">
+                      #{bookingId}
+                    </span>
+                  </div>
+                  {basePrice !== undefined && basePrice > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9.5px] font-black text-muted-foreground uppercase tracking-widest">
+                        Rental Cost
+                      </span>
+                      <span className="text-xs font-bold text-foreground">
+                        ₹{basePrice.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                  {securityDeposit !== undefined && securityDeposit > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9.5px] font-black text-muted-foreground uppercase tracking-widest">
+                        Security Deposit
+                      </span>
+                      <span className="text-xs font-bold text-foreground">
+                        ₹{securityDeposit.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                  {discountAmount !== undefined && discountAmount > 0 && (
+                    <div className="flex justify-between items-center text-emerald-600">
+                      <span className="text-[9.5px] font-black uppercase tracking-widest">
+                        Discount
+                      </span>
+                      <span className="text-xs font-bold">
+                        -₹{discountAmount.toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="h-px bg-border/20 my-1.5" />
+                  <div className="flex justify-between items-center pt-0.5">
+                    <span className="text-[9.5px] font-black text-muted-foreground uppercase tracking-widest">
+                      Amount paid
+                    </span>
+                    <span className="text-sm font-black text-foreground">
+                      ₹{totalPrice.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
-                <span
-                  className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${isCash ? 'bg-warning/20 text-warning-foreground' : 'bg-primary-soft text-primary'}`}
-                >
-                  {isCash ? 'Pay at pickup' : 'Paid'}
-                </span>
               </div>
-
-              {isCash && (
-                <p className="text-[11px] text-muted-foreground text-center leading-relaxed font-medium">
-                  The lister will confirm your request. You'll be notified once
-                  approved.
-                </p>
-              )}
             </div>
 
-            {/* Action buttons */}
-            <div className="px-7 pb-7 flex flex-col gap-2.5">
+            {/* Bottom Actions Buttons */}
+            <div className="flex flex-col gap-3 pb-4">
               <Link to="/account/bookings" className="w-full" onClick={onClose}>
-                <Button className="w-full h-11 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-sm flex items-center gap-2">
-                  View My Bookings
-                  <ArrowRight size={15} />
+                <Button className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center cursor-pointer transition-all active:scale-[0.98]">
+                  View booking
                 </Button>
               </Link>
               <Button
                 variant="outline"
-                className="w-full h-11 rounded-2xl border-border font-bold text-sm"
+                className="w-full h-11 rounded-full border-border/80 bg-transparent text-foreground text-xs font-black hover:bg-muted-light/20 cursor-pointer shadow-none"
                 onClick={onClose}
               >
-                Continue Browsing
+                Back to home
               </Button>
             </div>
           </motion.div>

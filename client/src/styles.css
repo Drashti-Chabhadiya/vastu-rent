@@ -68,6 +68,8 @@
   --color-brand-green-mid: var(--brand-green-mid);
   /* Extra light cream bg */
   --color-brand-cream-light: var(--brand-cream-light);
+  /* Brand beige */
+  --color-brand-beige: var(--brand-beige);
   /* Darker primary – deep hover state */
   --color-brand-primary-deep: var(--brand-primary-deep);
   /* Darkest primary – deepest hover */
@@ -221,6 +223,8 @@
   --brand-green-bubble: #eef6ec;
   /* #fafbfa – extra light cream / off-white bg */
   --brand-cream-light: #fafbfa;
+  /* #EBE3D1 - brand beige */
+  --brand-beige: #ebe3d1;
   /* #10b981 – emerald-500 accent for charts / icons */
   --brand-green-mid: #10b981;
   /* #0d4d38 – deep hover green (send buttons, active indicators) */
@@ -327,8 +331,9 @@
   --brand-surface-warm: oklch(0.14 0.018 152);
   --brand-green-tint: oklch(0.16 0.025 152);
   --brand-green-border: oklch(0.22 0.03 152);
-  --brand-green-bubble: oklch(0.17 0.03 152);
-  --brand-cream-light: oklch(0.13 0.015 152);
+  --brand-green-bubble: oklch(0.18 0.02 152);
+  --brand-cream-light: oklch(0.12 0.015 152);
+  --brand-beige: oklch(0.18 0.02 152);
   --brand-green-mid: #10b981;
   --brand-primary-deep: #10b981;
   --brand-primary-darker: #34d399;
@@ -553,4 +558,20 @@ iframe.goog-te-menu-frame {
 
 body {
   top: 0 !important;
+}
+
+/* Hide scrollbars for specific classes */
+.scrollbar-none::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.scrollbar-none,
+.scrollbar-hide,
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }

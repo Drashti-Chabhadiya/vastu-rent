@@ -21,7 +21,7 @@ export function Editorial() {
 
   return (
     <section className="bg-surface/70">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 py-24 md:px-10 md:py-32 lg:grid-cols-12 lg:gap-16">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 py-6 md:px-10 md:py-32 lg:grid-cols-12 lg:gap-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

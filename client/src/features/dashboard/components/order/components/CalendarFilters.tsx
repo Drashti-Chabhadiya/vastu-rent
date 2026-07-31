@@ -33,71 +33,73 @@ export const CalendarFilters = ({
         <Filter size={14} /> {t('Filter Bookings:')}
       </div>
 
-      {/* Product dropdown Filter */}
-      <div className="space-y-1">
-        <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-          <SelectTrigger className="h-10 rounded-xl bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none px-4 text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 w-[180px] transition-all">
-            <SelectValue placeholder={t('All Products')} />
-          </SelectTrigger>
-          <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200 max-h-[300px]">
-            <SelectItem
-              value="all"
-              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-            >
-              {t('All Products')}
-            </SelectItem>
-            {uniqueProducts.map((prod: string) => (
+      <div className="flex items-center gap-2 w-full md:w-auto">
+        {/* Product dropdown Filter */}
+        <div className="flex-1 md:flex-none space-y-1">
+          <Select value={selectedProduct} onValueChange={setSelectedProduct}>
+            <SelectTrigger className="h-10 rounded-xl bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none px-3 text-[11px] sm:text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 w-full md:w-[180px] transition-all">
+              <SelectValue placeholder={t('All Products')} />
+            </SelectTrigger>
+            <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200 max-h-[300px]">
               <SelectItem
-                key={prod}
-                value={prod}
+                value="all"
                 className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
               >
-                {prod}
+                {t('All Products')}
               </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+              {uniqueProducts.map((prod: string) => (
+                <SelectItem
+                  key={prod}
+                  value={prod}
+                  className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+                >
+                  {prod}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      {/* Status dropdown Filter */}
-      <div className="space-y-1">
-        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-          <SelectTrigger className="h-10 rounded-xl bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none px-4 text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 w-[160px] transition-all">
-            <SelectValue placeholder={t('All Statuses')} />
-          </SelectTrigger>
-          <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
-            <SelectItem
-              value="all"
-              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-            >
-              {t('All Statuses')}
-            </SelectItem>
-            <SelectItem
-              value="pending"
-              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-            >
-              {t('Pending Approval')}
-            </SelectItem>
-            <SelectItem
-              value="confirmed"
-              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-            >
-              {t('Confirmed / Active')}
-            </SelectItem>
-            <SelectItem
-              value="completed"
-              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-            >
-              {t('Completed')}
-            </SelectItem>
-            <SelectItem
-              value="rejected"
-              className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
-            >
-              {t('Rejected / Cancelled')}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Status dropdown Filter */}
+        <div className="flex-1 md:flex-none space-y-1">
+          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+            <SelectTrigger className="h-10 rounded-xl bg-dash-bg-soft hover:bg-dash-bg-soft/80 border-none px-3 text-[11px] sm:text-xs font-bold text-dash-text focus:ring-2 focus:ring-dash-brand/20 w-full md:w-[160px] transition-all">
+              <SelectValue placeholder={t('All Statuses')} />
+            </SelectTrigger>
+            <SelectContent className="bg-card rounded-xl shadow-2xl border-none p-1.5 animate-in fade-in zoom-in-95 duration-200">
+              <SelectItem
+                value="all"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                {t('All Statuses')}
+              </SelectItem>
+              <SelectItem
+                value="pending"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                {t('Pending Approval')}
+              </SelectItem>
+              <SelectItem
+                value="confirmed"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                {t('Confirmed / Active')}
+              </SelectItem>
+              <SelectItem
+                value="completed"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                {t('Completed')}
+              </SelectItem>
+              <SelectItem
+                value="rejected"
+                className="text-xs font-bold text-dash-text-soft rounded-lg focus:bg-dash-brand/10 focus:text-dash-brand cursor-pointer"
+              >
+                {t('Rejected / Cancelled')}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Clear Filters */}

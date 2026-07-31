@@ -35,7 +35,8 @@ export function ChatHeader() {
   if (!activeConversation) return null
 
   const otherParticipant = activeConversation.otherParticipant
-  const otherPersonOnline = otherParticipant.isOnline || checkOnline(otherParticipant.id)
+  const otherPersonOnline =
+    otherParticipant.isOnline || checkOnline(otherParticipant.id)
   const canSeeStatus =
     myShowOnline &&
     otherParticipant.lastActive !== null &&
@@ -137,47 +138,37 @@ export function ChatHeader() {
             <div className={cn('flex', 'items-center', 'mt-0.5')}>
               <span
                 className={cn(
-                  'text-[11px]',
-                  'font-semibold',
-                  'text-muted-dark',
+                  'text-[10.5px] font-bold text-muted-dark flex items-center gap-1',
                 )}
               >
-                {showOnlineStatus
-                  ? 'Online • Typically replies in a few minutes'
-                  : (() => {
-                      const formatted = formatLastActive(
-                        otherParticipant.lastActive,
-                      )
-                      return formatted === 'Offline'
-                        ? 'Offline'
-                        : `last seen ${formatted}`
-                    })()}
+                {showOnlineStatus ? (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                    <span className="text-emerald-600 font-black">
+                      Online now
+                    </span>
+                  </>
+                ) : (
+                  (() => {
+                    const formatted = formatLastActive(
+                      otherParticipant.lastActive,
+                    )
+                    return formatted === 'Offline'
+                      ? 'Offline'
+                      : `last seen ${formatted}`
+                  })()
+                )}
               </span>
               {isOtherPersonTyping && (
-                <span
-                  className={cn(
-                    'text-[11px]',
-                    'font-black',
-                    'text-primary',
-                    'animate-pulse',
-                    'ml-1.5',
-                  )}
-                >
+                <span className="text-[10.5px] font-black text-primary animate-pulse ml-1.5">
                   • typing...
                 </span>
               )}
             </div>
           ) : (
             isOtherPersonTyping && (
-              <div className={cn('flex', 'items-center', 'mt-0.5')}>
-                <span
-                  className={cn(
-                    'text-[11px]',
-                    'font-black',
-                    'text-primary',
-                    'animate-pulse',
-                  )}
-                >
+              <div className="flex items-center mt-0.5">
+                <span className="text-[10.5px] font-black text-primary animate-pulse">
                   typing...
                 </span>
               </div>
@@ -187,28 +178,6 @@ export function ChatHeader() {
       </div>
 
       <div className={cn('flex', 'items-center', 'gap-1')}>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() =>
-            toast.success(
-              `Starting video call with ${activeConversation.otherParticipant.name}...`,
-            )
-          }
-          className={cn(
-            'w-9',
-            'h-9',
-            'hover:bg-muted-light',
-            'rounded-xl',
-            'text-muted-dark',
-            'hover:text-muted-foreground',
-            'cursor-pointer',
-            'transition-colors',
-          )}
-        >
-          <Video size={16} />
-        </Button>
-
         <Button
           variant="ghost"
           size="icon"
@@ -231,29 +200,44 @@ export function ChatHeader() {
           <Phone size={16} />
         </Button>
 
-        {/* Search Toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            setShowConversationSearch(!showConversationSearch)
-            if (showConversationSearch) {
-              setSearchText('')
-              setCurrentMatchIndex(0)
+        {/* Desktop only buttons */}
+        <div className="hidden sm:flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() =>
+              toast.success(
+                `Starting video call with ${activeConversation.otherParticipant.name}...`,
+              )
             }
-          }}
-          className={cn(
-            'w-9 h-9 hover:bg-muted-light rounded-xl cursor-pointer transition-colors',
-            showConversationSearch
-              ? 'text-primary bg-primary/10'
-              : 'text-muted-dark hover:text-muted-foreground',
-          )}
-          title="Search Messages"
-        >
-          <Search size={16} />
-        </Button>
+            className="w-9 h-9 hover:bg-muted-light rounded-xl text-muted-dark hover:text-muted-foreground cursor-pointer transition-colors"
+          >
+            <Video size={16} />
+          </Button>
 
-        <ConversationOptionsMenu />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setShowConversationSearch(!showConversationSearch)
+              if (showConversationSearch) {
+                setSearchText('')
+                setCurrentMatchIndex(0)
+              }
+            }}
+            className={cn(
+              'w-9 h-9 hover:bg-muted-light rounded-xl cursor-pointer transition-colors',
+              showConversationSearch
+                ? 'text-primary bg-primary/10'
+                : 'text-muted-dark hover:text-muted-foreground',
+            )}
+            title="Search Messages"
+          >
+            <Search size={16} />
+          </Button>
+
+          <ConversationOptionsMenu />
+        </div>
       </div>
     </div>
   )

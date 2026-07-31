@@ -98,10 +98,10 @@ export const RecentOrders = () => {
           orders.slice(0, 5).map((order: Order) => (
             <div
               key={order.id}
-              className="flex items-center justify-between group cursor-pointer"
+              className="flex items-center justify-between group cursor-pointer gap-2"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl overflow-hidden bg-muted/50">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-muted/50 shrink-0">
                   <img
                     src={
                       order.product.images?.[0] ||
@@ -112,37 +112,39 @@ export const RecentOrders = () => {
                   />
                 </div>
 
-                <div>
-                  <p className="text-sm font-bold text-dash-text line-clamp-1">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm font-bold text-dash-text truncate">
                     {order.product.title}
                   </p>
 
-                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                    <span className="text-[11px] text-dash-text-muted">
+                  <div className="flex items-center gap-1 sm:gap-2 mt-0.5 flex-wrap">
+                    <span className="text-[10px] sm:text-[11px] text-dash-text-muted shrink-0">
                       #{order.id.slice(0, 8)}
                     </span>
 
-                    <span className="w-1 h-1 bg-muted-dark/20 rounded-full"></span>
+                    <span className="w-1 h-1 bg-muted-dark/20 rounded-full shrink-0 hidden sm:block"></span>
 
-                    <span className="text-[11px] text-dash-text-muted">
+                    <span className="text-[10px] sm:text-[11px] text-dash-text-muted shrink-0">
                       {formatDate(order.createdAt)}
                     </span>
                   </div>
 
                   {order.renter?.name && (
-                    <p className="text-[11px] text-dash-text-muted mt-1">
+                    <p className="text-[10px] sm:text-[11px] text-dash-text-muted mt-0.5 truncate">
                       {t('By {name}').replace('{name}', order.renter.name)}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="text-right">
-                <p className="text-sm font-bold text-dash-text mb-1">
+              <div className="text-right shrink-0 pl-1">
+                <p className="text-xs sm:text-sm font-bold text-dash-text mb-1">
                   {formatCurrency(order.totalPrice)}
                 </p>
 
-                <StatusBadge status={order.status} />
+                <div className="scale-90 sm:scale-100 origin-right">
+                  <StatusBadge status={order.status} />
+                </div>
               </div>
             </div>
           ))

@@ -19,8 +19,7 @@ export function useImageZoom(
 
   const getConstraints = useCallback(
     (currentScale: number) => {
-      if (!containerRef.current)
-        return { minX: 0, maxX: 0, minY: 0, maxY: 0 }
+      if (!containerRef.current) return { minX: 0, maxX: 0, minY: 0, maxY: 0 }
       const rect = containerRef.current.getBoundingClientRect()
       const maxX = Math.max(0, (rect.width * (currentScale - 1)) / 2)
       const maxY = Math.max(0, (rect.height * (currentScale - 1)) / 2)

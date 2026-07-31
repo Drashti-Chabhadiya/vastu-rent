@@ -17,11 +17,7 @@ export function WishlistListItem({ product, onRemove }: WishlistListItemProps) {
       variants={fadeUp}
       className="bg-card border border-border/30 rounded-2xl shadow-sm flex items-center gap-4 p-4 hover:shadow-md hover:border-primary/20 transition-all group"
     >
-      <Link
-        to="/products/$id"
-        params={{ id: product.id }}
-        className="shrink-0"
-      >
+      <Link to="/products/$id" params={{ id: product.id }} className="shrink-0">
         <img
           src={
             product.images?.[0] ||
@@ -55,10 +51,7 @@ export function WishlistListItem({ product, onRemove }: WishlistListItemProps) {
         </p>
         <div className="flex gap-2">
           <Link to="/products/$id" params={{ id: product.id }}>
-            <Button
-              size="sm"
-              className="h-7 px-3 text-[11px] rounded-lg"
-            >
+            <Button size="sm" className="h-7 px-3 text-[11px] rounded-lg">
               {t('View')}
             </Button>
           </Link>

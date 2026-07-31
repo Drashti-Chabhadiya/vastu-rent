@@ -38,7 +38,7 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="mx-auto max-w-[1400px] px-6 py-24 md:px-10 md:py-32"
+      className="mx-auto max-w-[1400px] px-6 py-6 md:px-10 md:py-32"
     >
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-4">

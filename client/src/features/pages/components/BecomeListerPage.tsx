@@ -15,13 +15,16 @@ import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { authClient } from '#/lib/auth/auth-client'
 import { useTranslation } from '#/context/TranslationContext'
+
 export function BecomeListerPage() {
   const { t } = useTranslation()
   const { data: session } = authClient.useSession()
   const user = session?.user as any
   const isLoggedIn = !!user
   const mainAddress = user?.address || user?.addresses?.[0]
-  const isProfileComplete = Boolean(mainAddress?.addressLine1 && mainAddress?.city)
+  const isProfileComplete = Boolean(
+    mainAddress?.addressLine1 && mainAddress?.city,
+  )
 
   let targetTo: any = '/signup'
   let targetSearch: any = undefined
@@ -67,7 +70,7 @@ export function BecomeListerPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-card pb-20">
+    <div className="min-h-full bg-card pb-20">
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center overflow-hidden bg-foreground text-primary-foreground">
         <motion.div

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { ProductImageViewer } from './ProductImageViewer'
 
 interface ProductImageGalleryProps {
@@ -35,6 +35,56 @@ export const ProductImageGallery = ({
   const [isViewerOpen, setIsViewerOpen] = useState(false)
   const [hoverPos, setHoverPos] = useState({ x: 50, y: 50 })
   const [isHovered, setIsHovered] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const isProgrammaticScroll = useRef(false)
+  const programmaticScrollTimeout = useRef<any>(null)
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (isProgrammaticScroll.current) {
+      return
+    }
+    const container = e.currentTarget
+    const scrollLeft = container.scrollLeft
+    const width = container.clientWidth
+    if (width > 0) {
+      const activeIdx = Math.round(scrollLeft / width)
+      if (
+        activeIdx !== selectedImage &&
+        activeIdx >= 0 &&
+        activeIdx < images.length
+      ) {
+        setSelectedImage(activeIdx)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      const container = scrollRef.current
+      const targetScrollLeft = selectedImage * container.clientWidth
+      if (Math.abs(container.scrollLeft - targetScrollLeft) > 5) {
+        isProgrammaticScroll.current = true
+        if (programmaticScrollTimeout.current) {
+          clearTimeout(programmaticScrollTimeout.current)
+        }
+        container.scrollTo({
+          left: targetScrollLeft,
+          behavior: 'smooth',
+        })
+        programmaticScrollTimeout.current = setTimeout(() => {
+          isProgrammaticScroll.current = false
+        }, 500)
+      }
+    }
+  }, [selectedImage])
+
+  useEffect(() => {
+    return () => {
+      if (programmaticScrollTimeout.current) {
+        clearTimeout(programmaticScrollTimeout.current)
+      }
+    }
+  }, [])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -45,26 +95,68 @@ export const ProductImageGallery = ({
 
   return (
     <div className="space-y-4">
-      <div
-        className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card border border-border/30 shadow-sm group cursor-zoom-in"
-        onClick={() => setIsViewerOpen(true)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onMouseMove={handleMouseMove}
-      >
-        <img
-          src={images[selectedImage]}
-          alt={title}
-          style={{
-            transformOrigin: isHovered
-              ? `${hoverPos.x}% ${hoverPos.y}%`
-              : 'center',
+      <div className="relative aspect-[4/3] rounded-none rounded-b-[30px] md:rounded-2xl overflow-hidden bg-card border-x-0 border-t-0 md:border border-border/30 md:shadow-sm group">
+        {/* Back button on mobile */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            window.history.back()
           }}
-          className={cn(
-            'w-full h-full object-cover transition-transform duration-300 ease-out pointer-events-none',
-            isHovered ? 'scale-175' : 'scale-100',
-          )}
-        />
+          className="absolute top-4 left-4 z-20 w-9 h-9 rounded-full bg-card/95 backdrop-blur-md border-none flex items-center justify-center cursor-pointer text-foreground hover:bg-card shrink-0 transition-all md:hidden shadow-md active:scale-95"
+        >
+          <ChevronLeft size={18} strokeWidth={2.5} />
+        </button>
+
+        {/* Scrollable Swipe Container */}
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          onClick={() => setIsViewerOpen(true)}
+          className="flex w-full h-full overflow-x-auto overflow-y-hidden scrollbar-none snap-x snap-mandatory cursor-zoom-in"
+        >
+          {images.map((img, idx) => (
+            <div
+              key={idx}
+              className="w-full h-full shrink-0 snap-center relative"
+              onMouseEnter={() => idx === selectedImage && setIsHovered(true)}
+              onMouseLeave={() => idx === selectedImage && setIsHovered(false)}
+              onMouseMove={idx === selectedImage ? handleMouseMove : undefined}
+            >
+              <img
+                src={img}
+                alt={`${title} ${idx + 1}`}
+                style={{
+                  transformOrigin:
+                    isHovered && idx === selectedImage
+                      ? `${hoverPos.x}% ${hoverPos.y}%`
+                      : 'center',
+                }}
+                className={cn(
+                  'w-full h-full object-cover transition-transform duration-300 ease-out pointer-events-none',
+                  isHovered && idx === selectedImage
+                    ? 'scale-175'
+                    : 'scale-100',
+                )}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile dot pagination overlay */}
+        {images.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 md:hidden">
+            {images.map((_, idx) => (
+              <div
+                key={idx}
+                className={cn(
+                  'h-1.5 rounded-full transition-all duration-300',
+                  selectedImage === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/60',
+                )}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Zoom Overlay Indicator */}
         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
@@ -106,23 +198,8 @@ export const ProductImageGallery = ({
           </>
         )}
 
-        <div className="absolute top-4 right-4 flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleLike()
-            }}
-            className={cn(
-              'w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all active:scale-[0.98]',
-              liked
-                ? 'bg-danger text-destructive hover:bg-danger hover:text-destructive'
-                : 'bg-card/90 backdrop-blur-sm text-muted-foreground hover:text-destructive hover:bg-card',
-            )}
-          >
-            <Heart size={18} className={liked ? 'fill-current' : ''} />
-          </Button>
+        <div className="absolute top-4 right-4 z-20 flex gap-2">
+          {/* Share button */}
           <Button
             variant="outline"
             size="icon"
@@ -130,7 +207,7 @@ export const ProductImageGallery = ({
               e.stopPropagation()
               handleShare()
             }}
-            className="w-10 h-10 rounded-full bg-card/90 backdrop-blur-sm text-muted-foreground hover:text-primary hover:bg-card shadow-lg flex items-center justify-center transition-all active:scale-[0.98]"
+            className="w-9 h-9 rounded-full bg-card/95 backdrop-blur-md border-none text-muted-foreground hover:text-primary hover:bg-card shadow-md flex items-center justify-center transition-all active:scale-[0.98]"
             title="Copy link"
           >
             {copied ? (
@@ -139,12 +216,30 @@ export const ProductImageGallery = ({
               <Share2 size={16} />
             )}
           </Button>
+
+          {/* Heart button */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleLike()
+            }}
+            className={cn(
+              'w-9 h-9 rounded-full border-none flex items-center justify-center shadow-md transition-all active:scale-[0.98]',
+              liked
+                ? 'bg-danger text-destructive hover:bg-danger hover:text-destructive'
+                : 'bg-card/95 backdrop-blur-md text-muted-foreground hover:text-destructive hover:bg-card',
+            )}
+          >
+            <Heart size={18} className={liked ? 'fill-current' : ''} />
+          </Button>
         </div>
       </div>
 
-      {/* Thumbnails (only show if more than 1 image) */}
+      {/* Thumbnails (only show if more than 1 image and on desktop) */}
       {images.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="hidden md:flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {images.map((img, idx) => (
             <Button
               key={idx}

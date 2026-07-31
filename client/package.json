@@ -19,6 +19,9 @@
     "mobile:sync": "npm run build && npx cap sync",
     "mobile:open:android": "npx cap open android",
     "mobile:run:android": "npx cap run android",
+    "mobile:run:android:live": "npx cap run android --live-reload",
+    "mobile:run:ios:live": "npx cap run ios --live-reload",
+    "mobile:dev": "vite dev --port 3000 --host",
     "apk:update": "./update-apk.sh",
     "apk:build": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug && cd .. && ./update-apk.sh"
   },

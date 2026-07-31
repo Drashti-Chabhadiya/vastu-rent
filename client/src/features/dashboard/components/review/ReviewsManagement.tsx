@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from '#/context/TranslationContext'
-import { Star, Leaf, Filter as FilterIcon } from 'lucide-react'
+import { Star, Leaf, Filter as FilterIcon, ArrowLeft } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Button } from '#/components/ui/button'
 import { useAdminReviews, useDeleteReview, useReplyToReview } from '#/hook'
@@ -29,7 +29,9 @@ export const ReviewsManagement = () => {
   const { data: sessionData } = authClient.useSession()
   const currentUserId = sessionData?.user?.id
   const [search] = useState('')
-  const [activeTab, setActiveTab] = useState<'all' | 'listings' | 'hosts'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'listings' | 'hosts'>(
+    'all',
+  )
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
   const [role, setRole] = useState<string | null>(null)
 
@@ -77,30 +79,30 @@ export const ReviewsManagement = () => {
 
   const reviews = serverReviews
     ? serverReviews.map((r: any) => ({
-      id: r.id,
-      productId: r.product?.id,
-      title: r.product?.title || 'Rental Item',
-      location: r.product?.location || 'India',
-      rating: r.rating || 5,
-      dates: formatStayDates(r.createdAt),
-      comment: r.comment || 'Perfect rental experience!',
-      host: {
-        name: r.product?.user?.name || 'Vastu Lister',
-        avatar:
-          r.product?.user?.image ||
-          'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
-      },
-      reviewer: {
-        id: r.user?.id,
-        name: r.user?.name || 'Vastu Renter',
-        avatar: r.user?.image,
-      },
-      postedDate: formatPostedDate(r.createdAt),
-      type: r.product ? 'listings' : 'hosts',
-      image:
-        r.product?.images?.[0] ||
-        'https://images.unsplash.com/photo-1545241047-6083a3684587',
-    }))
+        id: r.id,
+        productId: r.product?.id,
+        title: r.product?.title || 'Rental Item',
+        location: r.product?.location || 'India',
+        rating: r.rating || 5,
+        dates: formatStayDates(r.createdAt),
+        comment: r.comment || 'Perfect rental experience!',
+        host: {
+          name: r.product?.user?.name || 'Vastu Lister',
+          avatar:
+            r.product?.user?.image ||
+            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+        },
+        reviewer: {
+          id: r.user?.id,
+          name: r.user?.name || 'Vastu Renter',
+          avatar: r.user?.image,
+        },
+        postedDate: formatPostedDate(r.createdAt),
+        type: r.product ? 'listings' : 'hosts',
+        image:
+          r.product?.images?.[0] ||
+          'https://images.unsplash.com/photo-1545241047-6083a3684587',
+      }))
     : []
 
   const searchedReviews = reviews.filter((r: any) => {
@@ -146,9 +148,18 @@ export const ReviewsManagement = () => {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
-            {t('Reviews')}
-          </h1>
+          <div className="flex items-center gap-3">
+            {/* Mobile inline back button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-9 h-9 rounded-full bg-brand-beige/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-brand-beige/75 shrink-0 transition-colors lg:hidden"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <h1 className="text-3xl font-black text-foreground tracking-tight">
+              {t('Reviews')}
+            </h1>
+          </div>
           <p className="text-sm text-muted-foreground/70 font-bold">
             {t("Reviews you've written for your stays and hosts.")}
           </p>

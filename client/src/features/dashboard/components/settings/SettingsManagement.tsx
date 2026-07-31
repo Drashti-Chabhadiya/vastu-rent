@@ -8,7 +8,6 @@ import {
   ShieldCheck,
   Settings,
   Lock,
-  Cpu,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
@@ -76,8 +75,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            err.message ||
-            'Failed to save bank details',
+              err.message ||
+              'Failed to save bank details',
           )
         },
       },
@@ -108,8 +107,8 @@ export const SettingsManagement = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            err.message ||
-            'Failed to update notification settings',
+              err.message ||
+              'Failed to update notification settings',
           )
         },
       },
@@ -151,13 +150,13 @@ export const SettingsManagement = () => {
     },
     ...(isAdmin
       ? [
-        {
-          id: 'site-content',
-          label: t('Site Content Settings'),
-          desc: t('Customize contact, pricing, trust, and terms'),
-          icon: Settings,
-        },
-      ]
+          {
+            id: 'site-content',
+            label: t('Site Content Settings'),
+            desc: t('Customize contact, pricing, trust, and terms'),
+            icon: Settings,
+          },
+        ]
       : []),
     {
       id: 'security',
@@ -210,16 +209,18 @@ export const SettingsManagement = () => {
               key={item.id}
               variant="ghost"
               onClick={() => setActiveSubTab(item.id)}
-              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${activeSubTab === item.id
+              className={`w-full flex items-center justify-start gap-3.5 p-3.5 h-auto rounded-2xl transition-all text-left group cursor-pointer active:scale-[0.98] ${
+                activeSubTab === item.id
                   ? 'bg-brand-green-bubble text-brand-primary-deep hover:bg-brand-green-bubble hover:text-brand-primary-deep'
                   : 'text-slate-600 hover:bg-slate-50'
-                }`}
+              }`}
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${activeSubTab === item.id
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border transition-all ${
+                  activeSubTab === item.id
                     ? 'bg-white text-brand-primary-deep border-brand-green-border shadow-sm'
                     : 'bg-slate-100 border-slate-100 text-slate-500 group-hover:bg-white group-hover:shadow-sm'
-                  }`}
+                }`}
               >
                 <item.icon
                   size={18}
@@ -228,18 +229,20 @@ export const SettingsManagement = () => {
               </div>
               <div className="min-w-0 text-left">
                 <p
-                  className={`font-sans text-[13px] leading-snug font-bold ${activeSubTab === item.id
+                  className={`font-sans text-[13px] leading-snug font-bold ${
+                    activeSubTab === item.id
                       ? 'text-brand-primary-deep'
                       : 'text-slate-800'
-                    }`}
+                  }`}
                 >
                   {item.label}
                 </p>
                 <p
-                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${activeSubTab === item.id
+                  className={`font-sans text-[10px] font-medium leading-normal mt-0.5 truncate ${
+                    activeSubTab === item.id
                       ? 'text-brand-primary-deep/80'
                       : 'text-slate-400'
-                    }`}
+                  }`}
                 >
                   {item.desc}
                 </p>
@@ -301,7 +304,6 @@ export const SettingsManagement = () => {
               </Link>
             </div>
           )}
-
         </div>
 
         {/* Right Column: Account Summary Info */}

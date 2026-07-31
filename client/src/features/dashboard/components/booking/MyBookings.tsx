@@ -21,6 +21,8 @@ import { MyBookingsTabs } from './components/MyBookingsTabs'
 import { MyBookingsEmptyState } from './components/MyBookingsEmptyState'
 import { HelpBanner } from './components/HelpBanner'
 import { MyBookingsSkeleton } from '#/components/skeletons'
+import { format } from 'date-fns'
+import { ArrowLeft } from 'lucide-react'
 
 export const MyBookings = () => {
   const { data: rentals, isLoading, refetch } = useMyRentals()
@@ -67,7 +69,7 @@ export const MyBookings = () => {
           console.error('Booking session verification failed:', error)
           toast.error(
             error.response?.data?.message ||
-            t('Booking payment verification failed.'),
+              t('Booking payment verification failed.'),
             { id: toastId },
           )
         } finally {
@@ -115,7 +117,7 @@ export const MyBookings = () => {
         onError: (err: any) => {
           toast.error(
             err.response?.data?.message ||
-            t('Failed to submit dispute. Try again.'),
+              t('Failed to submit dispute. Try again.'),
           )
         },
       },
@@ -149,12 +151,23 @@ export const MyBookings = () => {
       return true
     }) || []
 
+  // Group bookings by month for mobile display
+  const groupedByMonth = filteredRentals.reduce(
+    (acc: Record<string, any[]>, rental: any) => {
+      const monthKey = format(new Date(rental.startDate), 'MMMM yyyy')
+      if (!acc[monthKey]) acc[monthKey] = []
+      acc[monthKey].push(rental)
+      return acc
+    },
+    {} as Record<string, any[]>,
+  )
+
   return (
     <motion.div
       variants={stagger}
       initial="hidden"
       animate="show"
-      className="space-y-8 relative"
+      className="space-y-6 md:space-y-8 relative"
     >
       {isVerifying && (
         <LoadingOverlay
@@ -164,15 +177,24 @@ export const MyBookings = () => {
       )}
       <motion.div
         variants={fadeUp}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        className="flex flex-row justify-between items-center gap-4"
       >
-        <div className="space-y-1">
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
-            {t('My Bookings')}
-          </h1>
-          <p className="text-sm text-muted-foreground/70 font-bold">
-            {t('Manage your upcoming and past bookings.')}
-          </p>
+        <div className="flex items-center gap-3">
+          {/* Mobile inline back button */}
+          <button
+            onClick={() => window.history.back()}
+            className="w-9 h-9 rounded-full bg-brand-beige/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-brand-beige/75 shrink-0 transition-colors lg:hidden"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-display font-medium text-foreground tracking-tight">
+              {t('My Bookings')}
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground/70 font-bold hidden sm:block">
+              {t('Manage your upcoming and past bookings.')}
+            </p>
+          </div>
         </div>
         <MyBookingsFilterDropdown
           paymentFilter={paymentFilter}
@@ -189,45 +211,108 @@ export const MyBookings = () => {
       {filteredRentals.length === 0 ? (
         <MyBookingsEmptyState activeTab={activeTab} />
       ) : (
-        <motion.div
-          key={activeTab}
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="grid gap-5"
-        >
-          {filteredRentals.map((rental: any) => (
-            <motion.div key={rental.id} variants={fadeUp}>
-              <BookingCard
-                rental={rental}
-                onOpenReview={(r) => {
-                  setSelectedRental(r)
-                  const existingReview = r.product?.reviews?.[0]
-                  if (existingReview) {
-                    setRating(existingReview.rating)
-                    setComment(
-                      existingReview.comment
-                        ? existingReview.comment.split('\n\n[Images:')[0]
-                        : '',
-                    )
-                  } else {
-                    setRating(5)
-                    setComment('')
-                  }
-                  setIsReviewDialogOpen(true)
-                }}
-                onOpenDispute={(r) => {
-                  setSelectedRental(r)
-                  setIsDisputeDialogOpen(true)
-                }}
-                onOpenDetails={(r) => {
-                  setSelectedDetailsRental(r)
-                  setIsDetailsDialogOpen(true)
-                }}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+        <>
+          {/* MOBILE: grouped by month */}
+          <motion.div
+            key={`mobile-${activeTab}`}
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="flex flex-col gap-0 md:hidden"
+          >
+            {Object.entries(groupedByMonth).map(([month, monthItems]) => {
+              const monthRentals = monthItems as any[]
+              return (
+                <motion.div key={month} variants={fadeUp} className="mb-4">
+                  {/* Month header */}
+                  <p className="text-[10px] font-black text-muted-foreground/70 uppercase tracking-widest mb-3 px-0.5">
+                    {month.toUpperCase()}
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    {monthRentals.map((rental: any) => (
+                      <BookingCard
+                        key={rental.id}
+                        rental={rental}
+                        onOpenReview={(r) => {
+                          setSelectedRental(r)
+                          const existingReview = r.product?.reviews?.[0]
+                          if (existingReview) {
+                            setRating(existingReview.rating)
+                            setComment(
+                              existingReview.comment
+                                ? existingReview.comment.split(
+                                    '\n\n[Images:',
+                                  )[0]
+                                : '',
+                            )
+                          } else {
+                            setRating(5)
+                            setComment('')
+                          }
+                          setIsReviewDialogOpen(true)
+                        }}
+                        onOpenDispute={(r) => {
+                          setSelectedRental(r)
+                          setIsDisputeDialogOpen(true)
+                        }}
+                        onOpenDetails={(r) => {
+                          setSelectedDetailsRental(r)
+                          setIsDetailsDialogOpen(true)
+                        }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+              )
+            })}
+
+            {/* Footer label */}
+            <div className="text-center py-4 text-[10px] text-muted-foreground/50 font-black">
+              — {t("that's all for now")} —
+            </div>
+          </motion.div>
+
+          {/* DESKTOP: flat grid */}
+          <motion.div
+            key={`desktop-${activeTab}`}
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="hidden md:grid gap-5"
+          >
+            {filteredRentals.map((rental: any) => (
+              <motion.div key={rental.id} variants={fadeUp}>
+                <BookingCard
+                  rental={rental}
+                  onOpenReview={(r) => {
+                    setSelectedRental(r)
+                    const existingReview = r.product?.reviews?.[0]
+                    if (existingReview) {
+                      setRating(existingReview.rating)
+                      setComment(
+                        existingReview.comment
+                          ? existingReview.comment.split('\n\n[Images:')[0]
+                          : '',
+                      )
+                    } else {
+                      setRating(5)
+                      setComment('')
+                    }
+                    setIsReviewDialogOpen(true)
+                  }}
+                  onOpenDispute={(r) => {
+                    setSelectedRental(r)
+                    setIsDisputeDialogOpen(true)
+                  }}
+                  onOpenDetails={(r) => {
+                    setSelectedDetailsRental(r)
+                    setIsDetailsDialogOpen(true)
+                  }}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </>
       )}
 
       <HelpBanner />

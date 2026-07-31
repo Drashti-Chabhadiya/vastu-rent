@@ -20,10 +20,7 @@ interface ProductUserCardProps {
   session?: any
 }
 
-export const ProductUserCard = ({
-  user,
-  session,
-}: ProductUserCardProps) => {
+export const ProductUserCard = ({ user, session }: ProductUserCardProps) => {
   const { t, formatDate } = useTranslation()
   const navigate = useNavigate()
   const [isStartingChat, setIsStartingChat] = useState(false)
@@ -55,7 +52,7 @@ export const ProductUserCard = ({
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message ||
-        'Could not start conversation. Try again.',
+          'Could not start conversation. Try again.',
       )
     } finally {
       setIsStartingChat(false)
@@ -103,9 +100,9 @@ export const ProductUserCard = ({
           {t('Member since')}{' '}
           {user.createdAt
             ? formatDate(user.createdAt, {
-              month: 'long',
-              year: 'numeric',
-            })
+                month: 'long',
+                year: 'numeric',
+              })
             : 'May 2022'}
         </div>
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">

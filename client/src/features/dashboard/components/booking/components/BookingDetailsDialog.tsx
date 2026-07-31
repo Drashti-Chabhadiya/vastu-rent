@@ -26,14 +26,17 @@ export function BookingDetailsDialog({
           'p-0',
           'border-none',
           'bg-muted-light',
-          'rounded-[2.5rem]',
+          'rounded-[24px] md:rounded-[2.5rem]',
           'shadow-2xl',
           'font-sans',
           'overflow-hidden',
+          'flex',
+          'flex-col',
+          'max-h-[90vh]',
         )}
       >
         {/* Top Product Banner */}
-        <div className={cn('relative', 'h-44', 'bg-foreground')}>
+        <div className={cn('relative', 'h-44', 'shrink-0', 'bg-foreground')}>
           {rental.product?.images?.[0] && (
             <img
               src={rental.product.images[0]}
@@ -101,7 +104,7 @@ export function BookingDetailsDialog({
           className={cn(
             'p-6',
             'space-y-5',
-            'max-h-[80vh]',
+            'flex-1',
             'overflow-y-auto',
             'custom-scrollbar',
           )}

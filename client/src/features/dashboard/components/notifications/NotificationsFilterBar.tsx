@@ -39,12 +39,7 @@ export const NotificationsFilterBar = ({
       <div className={cn('relative', 'flex-1')}>
         <Search
           size={13}
-          className={cn(
-            'absolute',
-            'left-3',
-            'top-[11px]',
-            'text-muted-dark',
-          )}
+          className={cn('absolute', 'left-3', 'top-[11px]', 'text-muted-dark')}
         />
         <Input
           placeholder={t('Search listings...')}
@@ -84,12 +79,7 @@ export const NotificationsFilterBar = ({
           <SelectValue placeholder={t('All Statuses')} />
         </SelectTrigger>
         <SelectContent
-          className={cn(
-            'rounded-xl',
-            'border-border/30',
-            'shadow-lg',
-            'p-1',
-          )}
+          className={cn('rounded-xl', 'border-border/30', 'shadow-lg', 'p-1')}
         >
           <SelectItem
             value="all"

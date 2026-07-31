@@ -9,6 +9,7 @@ import {
   Mic,
   Send,
   Loader2,
+  Plus,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
@@ -287,52 +288,71 @@ export function ChatInputDock() {
               onChange={handleFileSelect}
             />
 
-            {/* Text Input Container */}
-            <div className="flex-1 relative flex items-center bg-card border border-border rounded-full px-4 h-11 gap-1.5 shadow-sm">
-              {/* Emoji trigger inside left */}
+            {/* MOBILE LAYOUT (Screen 13 mockup style) */}
+            <div className="flex md:hidden items-center gap-2.5 w-full">
               <Button
+                type="button"
                 variant="ghost"
                 size="icon"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="w-8 h-8 rounded-full text-muted-dark hover:text-foreground hover:bg-muted-light cursor-pointer shrink-0 border-none outline-none p-0"
-                title="Emoji Picker"
-              >
-                <Smile size={18} />
-              </Button>
-
-              <input
-                ref={inputRef}
-                placeholder={
-                  isConnected
-                    ? replyTarget
-                      ? `Reply to ${replyTarget.senderName}...`
-                      : 'Type a message...'
-                    : 'Connecting...'
-                }
-                value={inputText}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                disabled={!isConnected}
-                className="w-full bg-transparent border-none outline-none text-[13px] placeholder:text-muted-dark h-full flex-1 text-foreground"
-              />
-
-              {/* Attachment trigger inside right */}
-              <Button
-                variant="ghost"
-                size="icon"
-                disabled={!isConnected || pendingFiles.length >= 5}
                 onClick={() => fileInputRef.current?.click()}
-                className={cn(
-                  'w-8 h-8 rounded-full text-muted-dark hover:text-foreground hover:bg-muted-light cursor-pointer shrink-0 border-none outline-none p-0',
-                  pendingFiles.length > 0 && 'text-emerald-600 bg-emerald-50',
-                )}
-                title={`Attach files (${pendingFiles.length}/5)`}
+                className="w-9 h-9 rounded-full bg-brand-beige/60 border border-border/20 text-muted-foreground flex items-center justify-center shrink-0 hover:bg-brand-beige transition-colors p-0 cursor-pointer shadow-none"
               >
-                <Paperclip size={18} className="rotate-45" />
+                <Plus size={16} strokeWidth={3} />
               </Button>
+
+              <div className="flex-1 relative flex items-center bg-brand-beige/30 border border-border/10 rounded-full px-3.5 h-9 gap-1.5 shadow-none">
+                <input
+                  ref={inputRef}
+                  placeholder={
+                    isConnected
+                      ? replyTarget
+                        ? `Reply to ${replyTarget.senderName}...`
+                        : 'Type a message...'
+                      : 'Connecting...'
+                  }
+                  value={inputText}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  disabled={!isConnected}
+                  className="w-full bg-transparent border-none outline-none text-xs placeholder:text-muted-dark/70 h-full flex-1 text-foreground"
+                />
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className="w-7 h-7 rounded-full text-muted-dark hover:text-foreground p-0 border-none shrink-0"
+                >
+                  <Smile size={16} />
+                </Button>
+              </div>
+
+              {inputText.trim().length > 0 || pendingFiles.length > 0 ? (
+                <Button
+                  size="icon"
+                  onClick={handleSend}
+                  disabled={!isConnected || isUploading}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white cursor-pointer active:scale-95 shrink-0 bg-primary hover:bg-primary-hover border-none outline-none p-0 shadow-xs"
+                >
+                  {isUploading ? (
+                    <Loader2 size={13} className="animate-spin" />
+                  ) : (
+                    <Send size={13} className="ml-0.5" />
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  size="icon"
+                  onClick={handleStartRecording}
+                  disabled={!isConnected || isUploading}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white cursor-pointer active:scale-95 shrink-0 bg-primary hover:bg-primary-hover border-none outline-none p-0 shadow-xs"
+                >
+                  <Mic size={14} />
+                </Button>
+              )}
 
               {showEmojiPicker && (
-                <div className="absolute bottom-14 left-0 z-50 shadow-2xl rounded-2xl overflow-hidden bg-card animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <div className="absolute bottom-12 left-0 z-50 shadow-2xl rounded-2xl overflow-hidden bg-card animate-in fade-in slide-in-from-bottom-2 duration-200">
                   <EmojiPicker
                     onEmojiClick={(emojiData) => {
                       setInputText(inputText + emojiData.emoji)
@@ -348,40 +368,104 @@ export function ChatInputDock() {
               )}
             </div>
 
-            {/* Action Button: Dynamic Mic/Send outside the text field */}
-            {inputText.trim().length > 0 || pendingFiles.length > 0 ? (
-              <Button
-                size="icon"
-                onClick={handleSend}
-                disabled={!isConnected || isUploading}
-                className={cn(
-                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-brand-primary-deep hover:bg-brand-primary-darker border-none outline-none',
-                  (!isConnected || isUploading) &&
-                    'bg-muted text-muted-dark cursor-not-allowed shadow-none',
+            {/* DESKTOP LAYOUT (Original) */}
+            <div className="hidden md:flex items-center gap-3 w-full">
+              {/* Text Input Container */}
+              <div className="flex-1 relative flex items-center bg-card border border-border rounded-full px-4 h-11 gap-1.5 shadow-sm">
+                {/* Emoji trigger inside left */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className="w-8 h-8 rounded-full text-muted-dark hover:text-foreground hover:bg-muted-light cursor-pointer shrink-0 border-none outline-none p-0"
+                  title="Emoji Picker"
+                >
+                  <Smile size={18} />
+                </Button>
+
+                <input
+                  ref={inputRef}
+                  placeholder={
+                    isConnected
+                      ? replyTarget
+                        ? `Reply to ${replyTarget.senderName}...`
+                        : 'Type a message...'
+                      : 'Connecting...'
+                  }
+                  value={inputText}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  disabled={!isConnected}
+                  className="w-full bg-transparent border-none outline-none text-[13px] placeholder:text-muted-dark h-full flex-1 text-foreground"
+                />
+
+                {/* Attachment trigger inside right */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  disabled={!isConnected || pendingFiles.length >= 5}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={cn(
+                    'w-8 h-8 rounded-full text-muted-dark hover:text-foreground hover:bg-muted-light cursor-pointer shrink-0 border-none outline-none p-0',
+                    pendingFiles.length > 0 && 'text-emerald-600 bg-emerald-50',
+                  )}
+                  title={`Attach files (${pendingFiles.length}/5)`}
+                >
+                  <Paperclip size={18} className="rotate-45" />
+                </Button>
+
+                {showEmojiPicker && (
+                  <div className="absolute bottom-14 left-0 z-50 shadow-2xl rounded-2xl overflow-hidden bg-card animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <EmojiPicker
+                      onEmojiClick={(emojiData) => {
+                        setInputText(inputText + emojiData.emoji)
+                      }}
+                      width={280}
+                      height={320}
+                      previewConfig={{ showPreview: false }}
+                      searchDisabled={false}
+                      skinTonesDisabled={true}
+                      emojiStyle={EmojiStyle.APPLE}
+                    />
+                  </div>
                 )}
-                title="Send Message"
-              >
-                {isUploading ? (
-                  <Loader2 size={15} className="animate-spin" />
-                ) : (
-                  <Send size={15} className="ml-0.5" />
-                )}
-              </Button>
-            ) : (
-              <Button
-                size="icon"
-                onClick={handleStartRecording}
-                disabled={!isConnected || isUploading}
-                className={cn(
-                  'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-brand-primary-deep hover:bg-brand-primary-darker border-none outline-none',
-                  (!isConnected || isUploading) &&
-                    'bg-muted text-muted-dark cursor-not-allowed shadow-none',
-                )}
-                title="Record Voice Message"
-              >
-                <Mic size={18} />
-              </Button>
-            )}
+              </div>
+
+              {/* Action Button: Dynamic Mic/Send outside the text field */}
+              {inputText.trim().length > 0 || pendingFiles.length > 0 ? (
+                <Button
+                  size="icon"
+                  onClick={handleSend}
+                  disabled={!isConnected || isUploading}
+                  className={cn(
+                    'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-brand-primary-deep hover:bg-brand-primary-darker border-none outline-none',
+                    (!isConnected || isUploading) &&
+                      'bg-muted text-muted-dark cursor-not-allowed shadow-none',
+                  )}
+                  title="Send Message"
+                >
+                  {isUploading ? (
+                    <Loader2 size={15} className="animate-spin" />
+                  ) : (
+                    <Send size={15} className="ml-0.5" />
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  size="icon"
+                  onClick={handleStartRecording}
+                  disabled={!isConnected || isUploading}
+                  className={cn(
+                    'w-11 h-11 rounded-full flex items-center justify-center text-white cursor-pointer transition-all shadow-sm active:scale-95 shrink-0 bg-brand-primary-deep hover:bg-brand-primary-darker border-none outline-none',
+                    (!isConnected || isUploading) &&
+                      'bg-muted text-muted-dark cursor-not-allowed shadow-none',
+                  )}
+                  title="Record Voice Message"
+                >
+                  <Mic size={18} />
+                </Button>
+              )}
+            </div>
           </>
         )}
       </div>

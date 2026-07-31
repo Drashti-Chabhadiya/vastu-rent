@@ -39,7 +39,7 @@ export function Journal() {
           'mx-auto',
           'max-w-[1400px]',
           'px-6',
-          'py-24',
+          'py-6',
           'md:px-10',
           'md:py-32',
         )}
@@ -160,10 +160,10 @@ export function Journal() {
                       <Calendar className={cn('h-3', 'w-3')} />
                       {p.createdAt
                         ? new Date(p.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })
                         : p.date}
                     </span>
                     <span className={cn('h-px', 'w-6', 'bg-border')} />

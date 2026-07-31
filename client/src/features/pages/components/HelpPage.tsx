@@ -63,7 +63,7 @@ export function HelpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-full bg-background pb-20">
       {/* Search Header */}
       <section className="bg-primary py-20 px-4">
         <motion.div
@@ -219,51 +219,53 @@ export function HelpPage() {
         viewport={{ once: true }}
         className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8"
       >
-        <div className="bg-primary/5 border border-brand/10 rounded-[40px] p-10 sm:p-16 text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
+        <div className="bg-primary/5 border border-brand/10 rounded-3xl sm:rounded-[40px] p-8 sm:p-10 lg:p-16 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
             {t('Still need help?')}
           </h2>
-          <p className="text-muted-foreground mb-12 max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground mb-8 sm:mb-12 max-w-xl mx-auto px-2">
             {t(
               'Our support team is available 24/7 to help you with any questions or issues you might have.',
             )}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-8">
+          <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-center gap-6 sm:gap-8 mx-auto w-fit">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <Mail className="text-primary" />
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   {t('Email us')}
                 </p>
-                <p className="font-bold text-foreground">
+                <p className="font-bold text-foreground text-sm sm:text-base">
                   support@vastu-rent.com
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <MessageCircle className="text-primary" />
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   {t('Live Chat')}
                 </p>
-                <p className="font-bold text-foreground">
+                <p className="font-bold text-foreground text-sm sm:text-base">
                   {t('Start a conversation')}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center shadow-sm">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <Phone className="text-primary" />
               </div>
               <div className="text-left">
                 <p className="text-[10px] text-muted-foreground/70 uppercase font-bold tracking-widest">
                   {t('Call us')}
                 </p>
-                <p className="font-bold text-foreground">+91 79 4000 0000</p>
+                <p className="font-bold text-foreground text-sm sm:text-base">
+                  +91 79 4000 0000
+                </p>
               </div>
             </div>
           </div>

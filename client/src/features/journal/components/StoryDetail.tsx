@@ -198,7 +198,7 @@ export function StoryDetail({ id }: { id: string }) {
   /* ── Loading ── */
   if (isLoading && !isFallback) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-full items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     )
@@ -207,7 +207,7 @@ export function StoryDetail({ id }: { id: string }) {
   /* ── Not found ── */
   if (!story) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6 text-center">
+      <div className="flex min-h-full flex-col items-center justify-center bg-background p-6 text-center">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-surface">
           <BookOpen className="h-8 w-8 text-muted-foreground" />
         </div>
@@ -228,7 +228,7 @@ export function StoryDetail({ id }: { id: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-full bg-background">
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="relative h-[70vh] min-h-[480px] w-full overflow-hidden bg-surface">
         <img

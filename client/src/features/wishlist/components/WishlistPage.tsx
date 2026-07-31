@@ -10,6 +10,7 @@ import { WishlistGridItem } from './WishlistGridItem'
 import { WishlistListItem } from './WishlistListItem'
 import { WishlistEmptySearch } from './WishlistEmptySearch'
 import { WishlistEmptyState } from './WishlistEmptyState'
+import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 
 export function WishlistPage() {
   const { t, formatNumber } = useTranslation()
@@ -64,13 +65,15 @@ export function WishlistPage() {
   const isPageLoading = isLoading || wishlistLoading
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-16 font-sans">
+    <div className="min-h-full bg-background pt-6 md:pt-24 pb-16 font-sans">
       <motion.div
         variants={stagger}
         initial="hidden"
         animate="show"
         className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8"
       >
+        <MobileBackHeader title={t('My Wishlist')} />
+
         <WishlistHeroHeader
           isPageLoading={isPageLoading}
           wishlistLength={wishlist.length}
@@ -91,7 +94,7 @@ export function WishlistPage() {
         )}
 
         {isPageLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}
@@ -111,7 +114,7 @@ export function WishlistPage() {
                 variants={stagger}
                 initial="hidden"
                 animate="show"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
               >
                 {filteredProducts.map((product: any) => (
                   <WishlistGridItem

@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_authenticated/account/notifications')({
     return (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* Page header */}
-        <div className="mb-5 px-1">
+        <div className="hidden md:block mb-5 px-1">
           <h1 className="text-2xl font-extrabold text-foreground tracking-tight leading-none">
             {t('My Notifications')}
           </h1>

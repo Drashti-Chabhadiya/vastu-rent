@@ -221,8 +221,12 @@ export const ProductForm = ({
               </div>
               <p className="text-sm text-muted-foreground/80 font-medium leading-relaxed">
                 {(() => {
-                  const userAddress = currentUser?.address || currentUser?.addresses?.[0]
-                  if (!userAddress) return t('No address provided in profile. Please update your profile.')
+                  const userAddress =
+                    currentUser?.address || currentUser?.addresses?.[0]
+                  if (!userAddress)
+                    return t(
+                      'No address provided in profile. Please update your profile.',
+                    )
                   return [
                     userAddress.addressLine1,
                     userAddress.addressLine2,
@@ -423,8 +427,6 @@ export const ProductForm = ({
             </FormItem>
           )}
         />
-
-
       </div>
     </div>
   )

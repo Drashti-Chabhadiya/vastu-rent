@@ -229,7 +229,11 @@ export const ListingsManagement = ({
       return
     }
 
-    if (!mainAddr?.addressLine1 || !mainAddr?.city || completenessPercent < 80) {
+    if (
+      !mainAddr?.addressLine1 ||
+      !mainAddr?.city ||
+      completenessPercent < 80
+    ) {
       toast.error(
         t('Please complete your profile first before creating a listing.'),
         { duration: 4000 },
@@ -255,8 +259,8 @@ export const ListingsManagement = ({
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div className="space-y-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
-            <PackagePlus className="text-dash-brand" size={32} />
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-dash-text flex items-center gap-3">
+            <PackagePlus className="text-dash-brand shrink-0" size={32} />
             {t('Marketplace Management')}
           </h1>
           <p className="text-dash-text-soft font-medium text-sm ml-1">
@@ -346,7 +350,8 @@ export const ListingsManagement = ({
               },
               onError: (err: any) => {
                 toast.error(
-                  err.response?.data?.message || t('Failed to update featured product'),
+                  err.response?.data?.message ||
+                    t('Failed to update featured product'),
                 )
               },
             })

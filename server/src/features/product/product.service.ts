@@ -496,25 +496,11 @@ export class ProductService {
     const product = await prisma.product.findUnique({ where: { id } })
     if (!product) throw new Error('Product not found')
 
-    // If it's already featured, just unfeature it (toggle off)
-    if (product.isFeatured) {
-      await prisma.product.update({
-        where: { id },
-        data: { isFeatured: false },
-      })
-    } else {
-      // Otherwise, unfeature all, then feature the requested one
-      await prisma.$transaction([
-        prisma.product.updateMany({
-          where: { isFeatured: true },
-          data: { isFeatured: false },
-        }),
-        prisma.product.update({
-          where: { id },
-          data: { isFeatured: true },
-        }),
-      ])
-    }
+    // Just toggle the isFeatured state of this product individually
+    await prisma.product.update({
+      where: { id },
+      data: { isFeatured: !product.isFeatured },
+    })
 
     // Invalidate product list cache so hero section re-fetches
     await cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN)

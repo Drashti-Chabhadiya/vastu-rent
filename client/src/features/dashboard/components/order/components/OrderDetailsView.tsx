@@ -154,7 +154,7 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
     <div className="space-y-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-muted-light/60 -m-8 p-10 min-h-screen">
       {/* Breadcrumbs & Header */}
       <div className="flex flex-col gap-1 mb-4">
-        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
+        <div className="hidden md:flex items-center gap-1.5 text-[10px] font-bold text-muted-dark">
           <span
             className="cursor-pointer hover:text-dash-brand"
             onClick={onBack}
@@ -171,19 +171,22 @@ export const OrderDetailsView = ({ order, onBack }: OrderDetailsViewProps) => {
           <ChevronRight size={10} className="text-muted-dark" />
           <span className="text-dash-brand font-extrabold">Order Details</span>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h1 className="text-xl font-black text-foreground">Order Details</h1>
-          <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border/30 shadow-sm">
+          <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border/30 shadow-sm self-start sm:self-auto">
             <div className="flex items-center gap-2 px-4 py-1.5 border-r border-border/30">
-              <Calendar size={14} className="text-dash-brand" />
-              <span className="text-[11px] font-bold text-muted-foreground">
+              <Calendar size={14} className="text-dash-brand shrink-0" />
+              <span className="text-[11px] font-bold text-muted-foreground whitespace-nowrap">
                 {format(new Date(order.startDate), 'dd MMM')} -{' '}
                 {format(new Date(order.endDate), 'dd MMM yyyy')}
               </span>
-              <ChevronRight size={12} className="rotate-90 text-muted-dark" />
+              <ChevronRight
+                size={12}
+                className="rotate-90 text-muted-dark shrink-0"
+              />
             </div>
             <div className="p-1.5 px-2">
-              <div className="w-6 h-6 rounded-lg bg-dash-brand/5 flex items-center justify-center text-dash-brand">
+              <div className="w-6 h-6 rounded-lg bg-dash-brand/5 flex items-center justify-center text-dash-brand shrink-0">
                 <AlertCircle size={14} />
               </div>
             </div>

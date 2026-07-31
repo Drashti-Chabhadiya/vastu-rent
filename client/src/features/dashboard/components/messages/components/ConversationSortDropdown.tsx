@@ -110,8 +110,7 @@ export function ConversationSortDropdown({
         <DropdownMenuSeparator className="my-1 border-border/10" />
         <DropdownMenuItem
           onClick={() => {
-            const isOpening =
-              activePanel !== 'settings' || !showDetailsPanel
+            const isOpening = activePanel !== 'settings' || !showDetailsPanel
             setActivePanel(isOpening ? 'settings' : 'about')
             setShowDetailsPanel(isOpening)
           }}

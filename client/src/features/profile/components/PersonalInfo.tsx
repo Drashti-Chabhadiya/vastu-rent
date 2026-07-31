@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { ChevronRight, Leaf } from 'lucide-react'
+import { ChevronRight, Leaf, ChevronLeft } from 'lucide-react'
 import { useMyListings, useProfileData, useVerifyCheckoutSession } from '#/hook'
 import { LoadingOverlay } from '#/components/ui/loader'
 import { ProfileSkeleton } from '#/components/skeletons'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { SecurityDialogs } from './SecurityDialogs'
 import { useTranslation } from '#/context/TranslationContext'
@@ -24,6 +24,21 @@ import {
 } from '#/components/ui/dialog'
 
 export function PersonalInfo() {
+  const routerState = useRouterState()
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 1023px)').matches
+      : false,
+  )
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 1023px)')
+    setIsMobile(media.matches)
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    media.addEventListener('change', listener)
+    return () => media.removeEventListener('change', listener)
+  }, [])
+
   const {
     currency,
     emailNotifications,
@@ -51,7 +66,8 @@ export function PersonalInfo() {
   const { data: myListings, isLoading: isListingsLoading } = useMyListings()
   const verifyCheckoutSession = useVerifyCheckoutSession()
 
-  const mainAddr = (session?.user as any)?.address || (session?.user as any)?.addresses?.[0]
+  const mainAddr =
+    (session?.user as any)?.address || (session?.user as any)?.addresses?.[0]
   const isProfileComplete = Boolean(mainAddr?.addressLine1 && mainAddr?.city)
 
   const [completeProfileModalOpen, setCompleteProfileModalOpen] = useState(
@@ -68,7 +84,10 @@ export function PersonalInfo() {
   useEffect(() => {
     if (isProfileComplete) {
       setCompleteProfileModalOpen(false)
-      if (typeof window !== 'undefined' && window.location.search.includes('completeProfile=true')) {
+      if (
+        typeof window !== 'undefined' &&
+        window.location.search.includes('completeProfile=true')
+      ) {
         const newUrl = window.location.pathname + window.location.hash
         window.history.replaceState(null, '', newUrl)
       }
@@ -95,6 +114,14 @@ export function PersonalInfo() {
     setActiveTab(tab)
     window.history.replaceState(null, '', `#${tab}`)
   }
+
+  const hashVal = routerState.location.hash.replace('#', '')
+
+  useEffect(() => {
+    if (['personal', 'address', 'security', 'subscription'].includes(hashVal)) {
+      setActiveTab(hashVal as ProfileTab)
+    }
+  }, [hashVal])
 
   // Verify Stripe Checkout session on mount/redirect
   useEffect(() => {
@@ -172,20 +199,57 @@ export function PersonalInfo() {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className="font-sans"
+      className="font-sans pb-0 md:pb-0"
     >
       {/* Page Title Header */}
-      <motion.div variants={fadeUp} className="mb-4 p-1">
-        <h1 className="text-2xl font-extrabold text-foreground font-display tracking-tight leading-none">
-          {t('My Profile')}
-        </h1>
-        <p className="text-[13px] text-muted-foreground/85 mt-2 font-medium">
-          {t('Manage your personal information and account preferences.')}
-        </p>
-      </motion.div>
+      {isMobile ? (
+        <div className="mb-6 px-1">
+          <div className="flex items-center gap-3">
+            {/* Mobile inline back button */}
+            <Link
+              to="/account"
+              className="w-9 h-9 rounded-full bg-brand-beige/50 dark:bg-muted/40 border border-border/30 flex items-center justify-center cursor-pointer text-foreground hover:bg-brand-beige/75 shrink-0 transition-colors"
+            >
+              <ChevronLeft size={16} />
+            </Link>
+            {/* Specific Section Title */}
+            <h1 className="text-2xl font-extrabold text-foreground font-display tracking-tight leading-none">
+              {activeTab === 'personal'
+                ? t('Personal Details')
+                : activeTab === 'address'
+                  ? t('Rental Address')
+                  : activeTab === 'security'
+                    ? t('Security & Preferences')
+                    : t('Subscription Plan')}
+            </h1>
+          </div>
+          <p className="text-[13px] text-muted-foreground/85 mt-2 font-medium">
+            {activeTab === 'personal'
+              ? t('Manage your account identity and contact information.')
+              : activeTab === 'address'
+                ? t(
+                    'Manage your primary rental address for bookings and items.',
+                  )
+                : activeTab === 'security'
+                  ? t('Manage your passwords and application preferences.')
+                  : t('Manage your subscription tier and system quotas.')}
+          </p>
+        </div>
+      ) : (
+        <motion.div variants={fadeUp} className="mb-4 p-1">
+          <h1 className="text-2xl font-extrabold text-foreground font-display tracking-tight leading-none">
+            {t('My Profile')}
+          </h1>
+          <p className="text-[13px] text-muted-foreground/85 mt-2 font-medium">
+            {t('Manage your personal information and account preferences.')}
+          </p>
+        </motion.div>
+      )}
 
       {/* ─── Modular Underline Tab Navigation Bar ─── */}
-      <ProfileTabBar activeTab={activeTab} onTabChange={handleTabChange} />
+      {!isMobile && (
+        <ProfileTabBar activeTab={activeTab} onTabChange={handleTabChange} />
+      )}
 
       <div className="relative">
         {isVerifying && (
@@ -205,7 +269,10 @@ export function PersonalInfo() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <UserProfileSettingsCard viewSection="personal" />
+              <UserProfileSettingsCard
+                viewSection="personal"
+                hideLeftSummary={isMobile}
+              />
             </motion.div>
           )}
 
@@ -218,7 +285,10 @@ export function PersonalInfo() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <UserProfileSettingsCard viewSection="address" />
+              <UserProfileSettingsCard
+                viewSection="address"
+                hideLeftSummary={isMobile}
+              />
             </motion.div>
           )}
 

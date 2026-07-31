@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
 import {
@@ -9,13 +9,20 @@ import {
   Star,
   Search,
   Sparkles,
+  Bell,
+  Heart,
 } from 'lucide-react'
 import heroImg from '../../../../public/assets/hero-living.jpg'
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/context/TranslationContext'
 import { useNavigate, Link } from '@tanstack/react-router'
-import { useProducts } from '#/hook'
+import { useProducts, useWishlist } from '#/hook'
 import { HeroSkeleton } from '#/components/skeletons'
+import { LanguageSelector } from '@/components/ui/language-selector'
+import { useSessionContext } from '#/context/SessionContext'
+import { UserAvatar } from '#/components/common/UserAvatar'
+import useEmblaCarousel from 'embla-carousel-react'
+import { cn } from '#/lib/utils'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -31,18 +38,98 @@ const stagger: Variants = {
 
 export function HeroSection() {
   const { t, formatDigits, formatCurrency } = useTranslation()
+  const { data: session } = useSessionContext()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
-  const { data: products, isPending } = useProducts({ status: 'active', isFeatured: true })
+  const { data: products, isPending } = useProducts({
+    status: 'active',
+    isFeatured: true,
+  })
+  const { count: wishlistCount } = useWishlist()
 
-  const featuredProduct = products?.find((p: any) => p.images && p.images.length > 0)
+  const featuredProduct = products?.find(
+    (p: any) => p.images && p.images.length > 0,
+  )
   const displayImg = featuredProduct ? featuredProduct.images[0] : heroImg
-  const displayTitle = featuredProduct ? featuredProduct.title : 'Mira Lounge Chair'
+  const displayTitle = featuredProduct
+    ? featuredProduct.title
+    : 'Mira Lounge Chair'
   const displayPrice = featuredProduct ? featuredProduct.price : 1250
   const displayRating = featuredProduct?.rating || '4.96'
   const displayHost = featuredProduct?.user?.name || 'Drashti'
   const displayCategory = featuredProduct?.category?.name || 'Living'
   const displayLocation = featuredProduct?.city || 'Surat'
+
+  const [emblaMobileRef, emblaMobileApi] = useEmblaCarousel({ loop: true })
+  const [emblaDesktopRef, emblaDesktopApi] = useEmblaCarousel({ loop: true })
+  const [selectedMobileIndex, setSelectedMobileIndex] = useState(0)
+  const [selectedDesktopIndex, setSelectedDesktopIndex] = useState(0)
+
+  useEffect(() => {
+    if (!emblaMobileApi) return
+    const onSelect = () => {
+      setSelectedMobileIndex(emblaMobileApi.selectedScrollSnap())
+    }
+    emblaMobileApi.on('select', onSelect)
+    const interval = setInterval(() => {
+      emblaMobileApi.scrollNext()
+    }, 4500)
+    return () => {
+      clearInterval(interval)
+      emblaMobileApi.off('select', onSelect)
+    }
+  }, [emblaMobileApi])
+
+  useEffect(() => {
+    if (!emblaDesktopApi) return
+    const onSelect = () => {
+      setSelectedDesktopIndex(emblaDesktopApi.selectedScrollSnap())
+    }
+    emblaDesktopApi.on('select', onSelect)
+    const interval = setInterval(() => {
+      emblaDesktopApi.scrollNext()
+    }, 4500)
+    return () => {
+      clearInterval(interval)
+      emblaDesktopApi.off('select', onSelect)
+    }
+  }, [emblaDesktopApi])
+
+  const banners =
+    products && products.length > 0
+      ? products
+          .filter((p: any) => p.images && p.images.length > 0)
+          .slice(0, 6)
+          .map((p: any) => ({
+            id: p.id,
+            tag: t('Featured product'),
+            title: p.title || p.name,
+            subtitle: `${p.category?.name || t('Rent')} · ${p.city || p.location || 'Surat'}`,
+            image: p.images[0],
+            link: `/products/${p.id}`,
+            price: p.price,
+            rating: p.rating || '4.96',
+            host: p.user?.name || 'Drashti',
+            category: p.category?.name || 'Living',
+            location: p.city || 'Surat',
+          }))
+      : [
+          {
+            id: 'featured-default',
+            tag: t('Featured this week'),
+            title: displayTitle,
+            subtitle: `${displayCategory} · ${displayLocation}`,
+            image: displayImg,
+            link: featuredProduct
+              ? `/products/${featuredProduct.id}`
+              : '/products',
+            price: displayPrice,
+            rating: displayRating,
+            host: displayHost,
+            category: displayCategory,
+            location: displayLocation,
+          },
+        ]
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,13 +146,62 @@ export function HeroSection() {
     ) ||
     'A quietly curated marketplace for the things you need, only when you need them. Quality lent between neighbors — gentler on your home, kinder to the planet.'
 
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return 'Good morning'
+    if (hour < 17) return 'Good afternoon'
+    return 'Good evening'
+  }
+
   return (
-    <section className="relative overflow-hidden bg-background pt-6 lg:pt-10">
+    <section className="relative overflow-hidden bg-background pt-3 md:pt-6 lg:pt-10">
+      {/* Mobile Welcome Header */}
+      <div className="flex md:hidden items-center justify-between px-6 pt-3 pb-4 bg-background">
+        <div>
+          <span className="text-[10px] text-muted-foreground font-bold tracking-wide uppercase">
+            {t(getGreeting())}
+          </span>
+          <h2 className="font-display text-base font-black text-foreground mt-0.5 leading-tight">
+            {session?.user?.name || t('Guest')}
+          </h2>
+        </div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSelector className="bg-[#faf9f5] dark:bg-[#152019] border-border/40" />
+          <Link
+            to="/wishlist"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
+          >
+            <Heart size={16} strokeWidth={2} />
+            {wishlistCount > 0 && (
+              <span className="absolute top-1.5 right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#c97a45] text-[7.5px] font-black text-white border-2 border-[#faf9f5] dark:border-[#152019]">
+                {wishlistCount > 9 ? '9+' : wishlistCount}
+              </span>
+            )}
+          </Link>
+          <Link
+            to="/account/notifications"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
+          >
+            <Bell size={16} strokeWidth={2} />
+            <span className="absolute top-1.5 right-1.5 h-2 w-2.5 rounded-full bg-[#c97a45] border border-[#faf9f5] dark:border-[#152019]" />
+          </Link>
+          <Link to="/account">
+            <UserAvatar
+              image={session?.user?.image}
+              name={session?.user?.name || 'Guest'}
+              size="trigger"
+              avatarClassName="border border-border/40 shadow-xs h-9 w-9"
+            />
+          </Link>
+        </div>
+      </div>
+
       {/* Background ambient lighting */}
       <div className="absolute top-0 right-1/4 -z-10 h-[450px] w-[450px] rounded-full bg-primary/5 blur-3xl" />
       <div className="absolute top-1/3 left-10 -z-10 h-[350px] w-[350px] rounded-full bg-emerald-500/5 blur-3xl" />
 
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-6 pb-16 pt-4 md:px-10 lg:grid-cols-12 lg:gap-14 lg:pb-20">
+      {/* Desktop Layout */}
+      <div className="hidden md:grid mx-auto max-w-[1400px] grid-cols-1 gap-10 px-6 pb-16 pt-4 md:px-10 lg:grid-cols-12 lg:gap-14 lg:pb-20">
         {/* Left column */}
         <motion.div
           variants={stagger}
@@ -172,7 +308,7 @@ export function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right column — editorial image showcase */}
+        {/* Right column — editorial image showcase slider */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -183,59 +319,168 @@ export function HeroSection() {
             <HeroSkeleton />
           ) : (
             <div className="relative w-full max-w-[540px] overflow-hidden rounded-[2.5rem] bg-card border border-border/30 shadow-2xl">
-              <img
-                src={displayImg}
-                alt={displayTitle}
-                className="aspect-[4/5] h-full w-full object-cover"
-              />
-              {/* Top featured tag */}
-              <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-background/90 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-foreground backdrop-blur-md border border-border/40 shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                {t(`Featured · ${displayTitle}`)}
+              <div
+                className="overflow-hidden rounded-[2.5rem]"
+                ref={emblaDesktopRef}
+              >
+                <div className="flex">
+                  {banners.map((b: any) => (
+                    <div
+                      key={b.id}
+                      className="relative flex-[0_0_100%] min-w-0"
+                    >
+                      <img
+                        src={b.image}
+                        alt={b.title}
+                        className="aspect-[4/5] h-full w-full object-cover"
+                      />
+                      {/* Bottom floating product details */}
+                      <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-card/95 p-4 backdrop-blur-md border border-border/40 shadow-lg">
+                        <div className="flex-1 overflow-hidden pr-2 text-left">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground truncate">
+                            {b.category} · {b.location}
+                          </div>
+                          <div className="mt-0.5 font-bold text-base text-foreground truncate">
+                            {b.title}
+                          </div>
+                          <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-medium truncate">
+                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 shrink-0" />{' '}
+                            {formatDigits(b.rating)} · {t('Hosted by')} {b.host}
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <div className="font-extrabold text-lg text-primary">
+                            {formatCurrency(b.price)}
+                            <span className="text-xs font-normal text-muted-foreground">
+                              /day
+                            </span>
+                          </div>
+                          <Link
+                            to={b.link}
+                            className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
+                          >
+                            {t('Reserve') || 'Reserve'}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* Bottom floating product details */}
-              <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between gap-3 rounded-2xl bg-card/95 p-4 backdrop-blur-md border border-border/40 shadow-lg">
-                <div className="flex-1 overflow-hidden pr-2">
-                  <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground truncate">
-                    {displayCategory} · {displayLocation}
-                  </div>
-                  <div className="mt-0.5 font-bold text-base text-foreground truncate">
-                    {displayTitle}
-                  </div>
-                  <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground/90 font-medium truncate">
-                    <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 shrink-0" />{' '}
-                    {formatDigits(displayRating)} · {t('Hosted by')} {displayHost}
-                  </div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="font-extrabold text-lg text-primary">
-                    {formatCurrency(displayPrice)}
-                    <span className="text-xs font-normal text-muted-foreground">
-                      /day
-                    </span>
-                  </div>
-                  {featuredProduct ? (
-                    <Link
-                      to="/products/$id"
-                      params={{ id: featuredProduct.id }}
-                      className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
-                    >
-                      {t('Reserve') || 'Reserve'}
-                    </Link>
-                  ) : (
-                    <Link
-                      to="/products"
-                      className="mt-1 inline-block text-[11px] font-bold uppercase tracking-[0.14em] text-primary hover:underline"
-                    >
-                      {t('Reserve') || 'Reserve'}
-                    </Link>
-                  )}
-                </div>
+              {/* Sliding Dots Indicators for Desktop */}
+              <div className="absolute top-5 right-5 z-30 flex gap-1 bg-black/45 backdrop-blur-xs py-1.5 px-3 rounded-full">
+                {banners.map((_: any, index: number) => (
+                  <button
+                    key={index}
+                    onClick={() => emblaDesktopApi?.scrollTo(index)}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all duration-300 border-none cursor-pointer',
+                      index === selectedDesktopIndex
+                        ? 'w-3.5 bg-white'
+                        : 'w-1.5 bg-white/40',
+                    )}
+                    aria-label={`Slide ${index + 1}`}
+                  />
+                ))}
               </div>
             </div>
           )}
         </motion.div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="flex md:hidden flex-col gap-4 px-6 pb-6 pt-2">
+        {/* Compact Mobile Search Bar */}
+        <form
+          onSubmit={handleSearch}
+          className="flex w-full items-center rounded-2xl border border-border/40 bg-card p-1 shadow-sm transition-all focus-within:border-primary"
+        >
+          <div className="relative flex-1 flex items-center pl-2">
+            <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('Search listings…')}
+              className="w-full bg-transparent px-2 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
+            />
+          </div>
+          <Button
+            type="submit"
+            className="rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold px-3 py-1.5 text-xs shrink-0 shadow-xs h-8 border-none cursor-pointer"
+          >
+            {t('Search')}
+          </Button>
+        </form>
+
+        {/* Mobile Promo Slider */}
+        {isPending ? (
+          <div className="h-[180px] rounded-[1.5rem] bg-muted animate-pulse" />
+        ) : (
+          <div className="relative">
+            <div
+              className="overflow-hidden rounded-[1.5rem] border border-border/30 shadow-lg"
+              ref={emblaMobileRef}
+            >
+              <div className="flex">
+                {banners.map((b: any) => (
+                  <div
+                    key={b.id}
+                    className="relative flex-[0_0_100%] min-w-0 h-[180px]"
+                  >
+                    <Link to={b.link} className="absolute inset-0 z-20" />
+                    <img
+                      src={b.image}
+                      alt={b.title}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+
+                    {/* Bottom floating details */}
+                    <div className="absolute bottom-3.5 left-3.5 right-3.5 z-30 flex items-end justify-between text-white">
+                      <div className="overflow-hidden pr-2">
+                        <span className="text-[8.5px] font-bold uppercase tracking-wider opacity-85">
+                          {b.subtitle}
+                        </span>
+                        <h3 className="font-display font-black text-sm truncate mt-0.5">
+                          {b.title}
+                        </h3>
+                      </div>
+                      {b.price && (
+                        <div className="text-right shrink-0">
+                          <span className="font-black text-sm">
+                            {formatCurrency(b.price)}
+                            <small className="text-[8.5px] font-normal opacity-85">
+                              /day
+                            </small>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Sliding Dots Indicators */}
+            <div className="absolute bottom-3 right-3 z-30 flex gap-1 bg-black/45 backdrop-blur-xs py-1 px-2 rounded-full">
+              {banners.map((_: any, index: number) => (
+                <button
+                  key={index}
+                  onClick={() => emblaMobileApi?.scrollTo(index)}
+                  className={cn(
+                    'h-1.5 rounded-full transition-all duration-300 border-none cursor-pointer',
+                    index === selectedMobileIndex
+                      ? 'w-3.5 bg-white'
+                      : 'w-1.5 bg-white/40',
+                  )}
+                  aria-label={`Slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Trust strip */}
