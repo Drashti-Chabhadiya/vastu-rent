@@ -1,4 +1,11 @@
 #!/usr/bin/env sh
+
+# Check if any files in the server directory are staged for commit
+if ! git diff --cached --name-only | grep -q "^server/"; then
+  echo "⏭️ No server files changed, skipping Server (Backend) pre-commit checks..."
+  exit 0
+fi
+
 echo "🔍 Running Server (Backend) pre-commit checks..."
 
 CD_DIR="$(cd "$(dirname "$0")/.." && pwd)"
