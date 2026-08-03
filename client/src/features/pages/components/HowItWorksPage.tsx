@@ -181,7 +181,7 @@ export function HowItWorksPage() {
             </div>
             <motion.div variants={fadeUp} className="lg:w-1/2">
               <img
-                src="/assets/trust-safety.png"
+                src="/assets/trust-and-safety.jpeg"
                 alt="Safety"
                 className="rounded-[24px] sm:rounded-[32px] shadow-2xl bg-card w-full"
                 onError={(e) => {

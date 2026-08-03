@@ -151,7 +151,7 @@ export function CategoryDetail() {
               <motion.div
                 key={product.id}
                 variants={fadeUp}
-                className="flex h-full"
+                className="flex h-full w-full"
               >
                 <ProductCard
                   product={product}

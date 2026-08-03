@@ -37,6 +37,7 @@ export const ProductImageGallery = ({
   const [isHovered, setIsHovered] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const isProgrammaticScroll = useRef(false)
+  const isScrollInitiated = useRef(false)
   const programmaticScrollTimeout = useRef<any>(null)
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -53,12 +54,17 @@ export const ProductImageGallery = ({
         activeIdx >= 0 &&
         activeIdx < images.length
       ) {
+        isScrollInitiated.current = true
         setSelectedImage(activeIdx)
       }
     }
   }
 
   useEffect(() => {
+    if (isScrollInitiated.current) {
+      isScrollInitiated.current = false
+      return
+    }
     if (scrollRef.current) {
       const container = scrollRef.current
       const targetScrollLeft = selectedImage * container.clientWidth

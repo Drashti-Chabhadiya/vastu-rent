@@ -30,7 +30,7 @@ export function ProductCardSkeleton({
   }
 
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 flex flex-col h-full">
+    <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 flex flex-col h-full w-full">
       {/* Image Area Skeleton */}
       <Skeleton className="w-full h-[220px] rounded-xl mb-4 shrink-0" />
 

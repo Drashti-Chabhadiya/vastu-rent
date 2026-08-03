@@ -155,9 +155,9 @@ export function ProductCard({
     <Link
       to="/products/$id"
       params={{ id: product.id }}
-      className="block group h-full"
+      className="block group h-full w-full"
     >
-      <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 group-hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
+      <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 group-hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full w-full">
         <div className="relative w-full h-[220px] rounded-xl bg-muted/50 mb-4 overflow-hidden shrink-0 flex items-center justify-center">
           {mainImage && !imageError ? (
             <img

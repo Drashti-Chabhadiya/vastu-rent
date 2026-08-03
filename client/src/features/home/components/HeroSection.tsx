@@ -16,7 +16,7 @@ import heroImg from '../../../../public/assets/hero-living.jpg'
 import { Button } from '#/components/ui/button'
 import { useTranslation } from '#/context/TranslationContext'
 import { useNavigate, Link } from '@tanstack/react-router'
-import { useProducts, useWishlist } from '#/hook'
+import { useProducts, useWishlist, useNotifications } from '#/hook'
 import { HeroSkeleton } from '#/components/skeletons'
 import { LanguageSelector } from '@/components/ui/language-selector'
 import { useSessionContext } from '#/context/SessionContext'
@@ -46,6 +46,10 @@ export function HeroSection() {
     isFeatured: true,
   })
   const { count: wishlistCount } = useWishlist()
+  const { data: notifications = [] } = useNotifications()
+  const unreadNotificationsCount = notifications.filter(
+    (n: any) => !n.isRead,
+  ).length
 
   const featuredProduct = products?.find(
     (p: any) => p.images && p.images.length > 0,
@@ -183,7 +187,9 @@ export function HeroSection() {
             className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
           >
             <Bell size={16} strokeWidth={2} />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2.5 rounded-full bg-[#c97a45] border border-[#faf9f5] dark:border-[#152019]" />
+            {unreadNotificationsCount > 0 && (
+              <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#c97a45] border border-[#faf9f5] dark:border-[#152019]" />
+            )}
           </Link>
           <Link to="/account">
             <UserAvatar
