@@ -133,3 +133,94 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
     console.error('FCM sendPushToUser error:', err)
   }
 }
+
+/**
+ * Send a push notification to an arbitrary list of FCM tokens.
+ * Useful for broadcasting to guest users or all devices.
+ */
+export async function sendPushToTokens(tokens: string[], payload: PushPayload) {
+  initAdmin()
+  if (!initialized || tokens.length === 0) return
+
+  try {
+    const message: admin.messaging.MulticastMessage = {
+      tokens,
+      notification: {
+        title: payload.title,
+        body: payload.body,
+        image: payload.image,
+      } as any,
+      data: {
+        ...(payload.data ?? {}),
+        url: payload.url ?? '/notifications',
+        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+      },
+      android: {
+        priority: 'high',
+        notification: {
+          channelId: 'vastu_rent_default_v2',
+          sound: 'default',
+          color: '#0e623b',
+          icon: 'ic_stat_name',
+          imageUrl: payload.image || undefined,
+          clickAction: 'OPEN_ACTIVITY_1',
+        },
+      },
+      apns: {
+        headers: {
+          'apns-priority': '10',
+          'apns-push-type': 'alert',
+        },
+        payload: {
+          aps: {
+            alert: {
+              title: payload.title,
+              body: payload.body,
+            },
+            sound: 'default',
+            badge: 1,
+          },
+        },
+      },
+      webpush: {
+        notification: {
+          title: payload.title,
+          body: payload.body,
+          icon: '/logo192.png',
+          image: payload.image,
+        },
+        fcmOptions: {
+          link: payload.url ?? '/notifications',
+        },
+      },
+    }
+
+    const MAX_BATCH_SIZE = 500
+    for (let i = 0; i < tokens.length; i += MAX_BATCH_SIZE) {
+      const batchTokens = tokens.slice(i, i + MAX_BATCH_SIZE)
+      const batchMessage = { ...message, tokens: batchTokens }
+      const response = await admin.messaging().sendEachForMulticast(batchMessage)
+      
+      const staleTokens: string[] = []
+      response.responses.forEach((r, idx) => {
+        if (!r.success) {
+          const code = r.error?.code
+          if (
+            code === 'messaging/invalid-registration-token' ||
+            code === 'messaging/registration-token-not-registered' ||
+            code === 'messaging/invalid-argument'
+          ) {
+            staleTokens.push(batchTokens[idx])
+          }
+        }
+      })
+      if (staleTokens.length > 0) {
+        await prisma.deviceToken.deleteMany({
+          where: { token: { in: staleTokens } },
+        })
+      }
+    }
+  } catch (err) {
+    console.error('FCM sendPushToTokens error:', err)
+  }
+}

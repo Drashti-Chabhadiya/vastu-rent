@@ -52,7 +52,9 @@ export function initSocket(httpServer: any) {
         socket.handshake.auth?.token || socket.handshake.query?.token
 
       if (!token || typeof token !== 'string') {
-        return next(new Error('Authentication token missing'))
+        // Guest user connection allowed for global real-time events
+        socket.data.isGuest = true
+        return next()
       }
 
       // Look up session in the database
@@ -61,12 +63,9 @@ export function initSocket(httpServer: any) {
         include: { user: true },
       })
 
-      if (!session) {
-        return next(new Error('Invalid session'))
-      }
-
-      if (new Date(session.expiresAt) < new Date()) {
-        return next(new Error('Session expired'))
+      if (!session || new Date(session.expiresAt) < new Date()) {
+        socket.data.isGuest = true
+        return next()
       }
 
       // Attach user details to socket data
@@ -74,11 +73,17 @@ export function initSocket(httpServer: any) {
       next()
     } catch (error) {
       console.error('Socket authentication error:', error)
-      next(new Error('Internal server error'))
+      socket.data.isGuest = true
+      next()
     }
   })
 
   io.on('connection', (socket) => {
+    if (socket.data.isGuest || !socket.data.user) {
+      console.log(`🔌 Socket connected: Guest - Socket ${socket.id}`)
+      return // Guests receive global broadcasts but don't participate in chat/presence
+    }
+
     const user = socket.data.user
     const userId = user.id
 
@@ -103,58 +108,58 @@ export function initSocket(httpServer: any) {
     // Join user's personal room for direct notifications
     socket.join(`user_${userId}`)
 
-    // Offline-to-Online Delivery updates
-    ;(async () => {
-      try {
-        const undeliveredMessages = await prisma.message.findMany({
-          where: {
-            conversation: {
-              OR: [{ participantOneId: userId }, { participantTwoId: userId }],
-            },
-            senderId: { not: userId },
-            deliveredAt: null,
-            readAt: null,
-          },
-          select: {
-            id: true,
-            conversationId: true,
-            senderId: true,
-          },
-        })
-
-        if (undeliveredMessages.length > 0) {
-          const now = new Date()
-          await prisma.message.updateMany({
+      // Offline-to-Online Delivery updates
+      ; (async () => {
+        try {
+          const undeliveredMessages = await prisma.message.findMany({
             where: {
-              id: { in: undeliveredMessages.map((m) => m.id) },
+              conversation: {
+                OR: [{ participantOneId: userId }, { participantTwoId: userId }],
+              },
+              senderId: { not: userId },
+              deliveredAt: null,
+              readAt: null,
             },
-            data: {
-              deliveredAt: now,
+            select: {
+              id: true,
+              conversationId: true,
+              senderId: true,
             },
           })
 
-          // Group by sender and notify them
-          const sendersToNotify = new Set(
-            undeliveredMessages.map((m) => m.senderId),
-          )
-          sendersToNotify.forEach((senderId) => {
-            const senderMsgs = undeliveredMessages
-              .filter((m) => m.senderId === senderId)
-              .map((m) => m.id)
-            io?.to(`user_${senderId}`).emit('messages_delivered', {
-              recipientId: userId,
-              messageIds: senderMsgs,
-              deliveredAt: now.toISOString(),
+          if (undeliveredMessages.length > 0) {
+            const now = new Date()
+            await prisma.message.updateMany({
+              where: {
+                id: { in: undeliveredMessages.map((m) => m.id) },
+              },
+              data: {
+                deliveredAt: now,
+              },
             })
-          })
+
+            // Group by sender and notify them
+            const sendersToNotify = new Set(
+              undeliveredMessages.map((m) => m.senderId),
+            )
+            sendersToNotify.forEach((senderId) => {
+              const senderMsgs = undeliveredMessages
+                .filter((m) => m.senderId === senderId)
+                .map((m) => m.id)
+              io?.to(`user_${senderId}`).emit('messages_delivered', {
+                recipientId: userId,
+                messageIds: senderMsgs,
+                deliveredAt: now.toISOString(),
+              })
+            })
+          }
+        } catch (err) {
+          console.error(
+            'Error setting delivered status for pending messages:',
+            err,
+          )
         }
-      } catch (err) {
-        console.error(
-          'Error setting delivered status for pending messages:',
-          err,
-        )
-      }
-    })()
+      })()
 
     // --- SOCKET ROOM / CONVERSATION CHAT EVENTS ---
 
