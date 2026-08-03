@@ -65,6 +65,8 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
           channelId: 'vastu_rent_default_v2',
           sound: 'default',
           color: '#0e623b',
+          icon: 'ic_stat_name',
+          imageUrl: payload.image || undefined,
           clickAction: 'OPEN_ACTIVITY_1',
         },
       },
