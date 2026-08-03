@@ -13,10 +13,26 @@ export async function notificationRoutes(fastify: FastifyInstance) {
     }
   }
 
-  fastify.get('/', { preHandler: [authHandler] }, notificationController.getNotifications)
-  fastify.put('/:id/read', { preHandler: [authHandler] }, notificationController.markAsRead)
-  fastify.put('/read-all', { preHandler: [authHandler] }, notificationController.markAllAsRead)
-  fastify.post('/announcement', { preHandler: [authHandler] }, notificationController.sendAnnouncement)
+  fastify.get(
+    '/',
+    { preHandler: [authHandler] },
+    notificationController.getNotifications,
+  )
+  fastify.put(
+    '/:id/read',
+    { preHandler: [authHandler] },
+    notificationController.markAsRead,
+  )
+  fastify.put(
+    '/read-all',
+    { preHandler: [authHandler] },
+    notificationController.markAllAsRead,
+  )
+  fastify.post(
+    '/announcement',
+    { preHandler: [authHandler] },
+    notificationController.sendAnnouncement,
+  )
 
   // Device token management for push notifications (some routes allow guests)
   fastify.register(deviceRoutes, { prefix: '/device' })

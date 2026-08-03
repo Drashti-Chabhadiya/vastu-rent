@@ -108,58 +108,58 @@ export function initSocket(httpServer: any) {
     // Join user's personal room for direct notifications
     socket.join(`user_${userId}`)
 
-      // Offline-to-Online Delivery updates
-      ; (async () => {
-        try {
-          const undeliveredMessages = await prisma.message.findMany({
-            where: {
-              conversation: {
-                OR: [{ participantOneId: userId }, { participantTwoId: userId }],
-              },
-              senderId: { not: userId },
-              deliveredAt: null,
-              readAt: null,
+    // Offline-to-Online Delivery updates
+    ;(async () => {
+      try {
+        const undeliveredMessages = await prisma.message.findMany({
+          where: {
+            conversation: {
+              OR: [{ participantOneId: userId }, { participantTwoId: userId }],
             },
-            select: {
-              id: true,
-              conversationId: true,
-              senderId: true,
+            senderId: { not: userId },
+            deliveredAt: null,
+            readAt: null,
+          },
+          select: {
+            id: true,
+            conversationId: true,
+            senderId: true,
+          },
+        })
+
+        if (undeliveredMessages.length > 0) {
+          const now = new Date()
+          await prisma.message.updateMany({
+            where: {
+              id: { in: undeliveredMessages.map((m) => m.id) },
+            },
+            data: {
+              deliveredAt: now,
             },
           })
 
-          if (undeliveredMessages.length > 0) {
-            const now = new Date()
-            await prisma.message.updateMany({
-              where: {
-                id: { in: undeliveredMessages.map((m) => m.id) },
-              },
-              data: {
-                deliveredAt: now,
-              },
-            })
-
-            // Group by sender and notify them
-            const sendersToNotify = new Set(
-              undeliveredMessages.map((m) => m.senderId),
-            )
-            sendersToNotify.forEach((senderId) => {
-              const senderMsgs = undeliveredMessages
-                .filter((m) => m.senderId === senderId)
-                .map((m) => m.id)
-              io?.to(`user_${senderId}`).emit('messages_delivered', {
-                recipientId: userId,
-                messageIds: senderMsgs,
-                deliveredAt: now.toISOString(),
-              })
-            })
-          }
-        } catch (err) {
-          console.error(
-            'Error setting delivered status for pending messages:',
-            err,
+          // Group by sender and notify them
+          const sendersToNotify = new Set(
+            undeliveredMessages.map((m) => m.senderId),
           )
+          sendersToNotify.forEach((senderId) => {
+            const senderMsgs = undeliveredMessages
+              .filter((m) => m.senderId === senderId)
+              .map((m) => m.id)
+            io?.to(`user_${senderId}`).emit('messages_delivered', {
+              recipientId: userId,
+              messageIds: senderMsgs,
+              deliveredAt: now.toISOString(),
+            })
+          })
         }
-      })()
+      } catch (err) {
+        console.error(
+          'Error setting delivered status for pending messages:',
+          err,
+        )
+      }
+    })()
 
     // --- SOCKET ROOM / CONVERSATION CHAT EVENTS ---
 

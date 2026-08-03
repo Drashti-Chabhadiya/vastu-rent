@@ -199,8 +199,10 @@ export async function sendPushToTokens(tokens: string[], payload: PushPayload) {
     for (let i = 0; i < tokens.length; i += MAX_BATCH_SIZE) {
       const batchTokens = tokens.slice(i, i + MAX_BATCH_SIZE)
       const batchMessage = { ...message, tokens: batchTokens }
-      const response = await admin.messaging().sendEachForMulticast(batchMessage)
-      
+      const response = await admin
+        .messaging()
+        .sendEachForMulticast(batchMessage)
+
       const staleTokens: string[] = []
       response.responses.forEach((r, idx) => {
         if (!r.success) {
