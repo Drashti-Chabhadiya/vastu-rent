@@ -198,6 +198,15 @@ export function initSocket(httpServer: any) {
       }
     })
 
+    // Leave a conversation room
+    socket.on('leave_conversation', ({ conversationId }) => {
+      if (!conversationId) return
+      socket.leave(`conversation_${conversationId}`)
+      console.log(
+        `💬 Socket ${socket.id} left conversation: ${conversationId}`,
+      )
+    })
+
     // Send a message
     socket.on(
       'send_message',
