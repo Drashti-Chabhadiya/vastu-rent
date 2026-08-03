@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { useProducts, useCategories } from '#/hook'
 import { ProductCard } from '#/components/common/ProductCard'
-import { ProductCardSkeleton } from '#/components/skeletons'
+import {
+  ProductCardSkeleton,
+  CategoryIconSkeleton,
+} from '#/components/skeletons'
 import { Search, SlidersHorizontal, ArrowLeft, LayoutGrid } from 'lucide-react'
 import { Input } from '#/components/ui/input'
 import { Button } from '#/components/ui/button'
@@ -67,7 +70,7 @@ export function ProductsExplorePage() {
   const [isDesktopFilterOpen, setIsDesktopFilterOpen] = useState(false)
 
   // Fetch categories & wishlist
-  const { data: categories } = useCategories()
+  const { data: categories, isLoading: isLoadingCategories } = useCategories()
 
   // Fetch active products with price range filters sent to server
   const { data: rawProducts, isLoading } = useProducts({
@@ -339,59 +342,63 @@ export function ProductsExplorePage() {
           </button>
 
           {/* Dynamic Categories */}
-          {categories?.map((cat: any) => {
-            const Icon = getIcon(cat.icon)
-            const isSelected = cat.id === selectedCategoryId
+          {isLoadingCategories
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <CategoryIconSkeleton key={i} variant="mini" />
+              ))
+            : categories?.map((cat: any) => {
+                const Icon = getIcon(cat.icon)
+                const isSelected = cat.id === selectedCategoryId
 
-            return (
-              <button
-                key={cat.id}
-                onClick={() =>
-                  setSelectedCategoryId(isSelected ? null : cat.id)
-                }
-                className="flex flex-col items-center gap-2 shrink-0 w-[72px] cursor-pointer group"
-              >
-                <div
-                  className={cn(
-                    'w-[64px] h-[64px] rounded-[24px] flex items-center justify-center transition-all border border-border/10',
-                    isSelected
-                      ? 'shadow-md scale-105'
-                      : 'hover:bg-muted-light/35',
-                  )}
-                  style={{
-                    backgroundColor: isSelected
-                      ? cat.color || 'var(--color-primary)'
-                      : cat.color
-                        ? `color-mix(in srgb, ${cat.color} 12%, var(--color-card))`
-                        : 'var(--color-muted-light)',
-                    boxShadow: isSelected
-                      ? `0 0 0 2px var(--color-background), 0 0 0 4px ${cat.color || 'var(--color-primary)'}, 0 4px 6px -1px rgba(0, 0, 0, 0.1)`
-                      : undefined,
-                  }}
-                >
-                  <Icon
-                    size={24}
-                    style={{
-                      color: isSelected
-                        ? 'var(--color-background)'
-                        : cat.color || 'var(--color-primary)',
-                    }}
-                    strokeWidth={isSelected ? 2.5 : 2}
-                  />
-                </div>
-                <span
-                  className={cn(
-                    'text-[10px] font-black text-center leading-tight truncate w-full px-1',
-                    isSelected
-                      ? 'text-foreground font-black'
-                      : 'text-muted-foreground/80',
-                  )}
-                >
-                  {cat.name}
-                </span>
-              </button>
-            )
-          })}
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() =>
+                      setSelectedCategoryId(isSelected ? null : cat.id)
+                    }
+                    className="flex flex-col items-center gap-2 shrink-0 w-[72px] cursor-pointer group"
+                  >
+                    <div
+                      className={cn(
+                        'w-[64px] h-[64px] rounded-[24px] flex items-center justify-center transition-all border border-border/10',
+                        isSelected
+                          ? 'shadow-md scale-105'
+                          : 'hover:bg-muted-light/35',
+                      )}
+                      style={{
+                        backgroundColor: isSelected
+                          ? cat.color || 'var(--color-primary)'
+                          : cat.color
+                            ? `color-mix(in srgb, ${cat.color} 12%, var(--color-card))`
+                            : 'var(--color-muted-light)',
+                        boxShadow: isSelected
+                          ? `0 0 0 2px var(--color-background), 0 0 0 4px ${cat.color || 'var(--color-primary)'}, 0 4px 6px -1px rgba(0, 0, 0, 0.1)`
+                          : undefined,
+                      }}
+                    >
+                      <Icon
+                        size={24}
+                        style={{
+                          color: isSelected
+                            ? 'var(--color-background)'
+                            : cat.color || 'var(--color-primary)',
+                        }}
+                        strokeWidth={isSelected ? 2.5 : 2}
+                      />
+                    </div>
+                    <span
+                      className={cn(
+                        'text-[10px] font-black text-center leading-tight truncate w-full px-1',
+                        isSelected
+                          ? 'text-foreground font-black'
+                          : 'text-muted-foreground/80',
+                      )}
+                    >
+                      {cat.name}
+                    </span>
+                  </button>
+                )
+              })}
         </div>
 
         {/* DESKTOP SEARCH BAR */}
@@ -553,11 +560,21 @@ export function ProductsExplorePage() {
         {/* RESULTS CONTAINER */}
         <div>
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <ProductCardSkeleton key={i} />
-              ))}
-            </div>
+            <>
+              {/* MOBILE SKELETON */}
+              <div className="grid lg:hidden grid-cols-2 gap-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} variant="mini" />
+                ))}
+              </div>
+
+              {/* DESKTOP SKELETON */}
+              <div className="hidden lg:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
+              </div>
+            </>
           ) : sortedProducts.length > 0 ? (
             <>
               {/* MOBILE RESULTS VIEW: 2-COLUMN GRID (Common Mobile Card) */}

@@ -16,6 +16,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as OauthCallbackRouteImport } from './routes/oauth-callback'
 import { Route as LoginRouteImport } from './routes/login'
@@ -91,6 +92,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -325,6 +331,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/oauth-callback': typeof OauthCallbackRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
@@ -371,6 +378,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/oauth-callback': typeof OauthCallbackRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
@@ -417,6 +425,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/oauth-callback': typeof OauthCallbackRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/products': typeof ProductsRouteWithChildren
   '/profile': typeof ProfileRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
@@ -468,6 +477,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/oauth-callback'
     | '/pricing'
+    | '/privacy'
     | '/products'
     | '/profile'
     | '/reset-password'
@@ -514,6 +524,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/oauth-callback'
     | '/pricing'
+    | '/privacy'
     | '/profile'
     | '/reset-password'
     | '/signup'
@@ -559,6 +570,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/oauth-callback'
     | '/pricing'
+    | '/privacy'
     | '/products'
     | '/profile'
     | '/reset-password'
@@ -610,6 +622,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OauthCallbackRoute: typeof OauthCallbackRoute
   PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProductsRoute: typeof ProductsRouteWithChildren
   ProfileRoute: typeof ProfileRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -669,6 +682,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -1123,6 +1143,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OauthCallbackRoute: OauthCallbackRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
   ProductsRoute: ProductsRouteWithChildren,
   ProfileRoute: ProfileRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,

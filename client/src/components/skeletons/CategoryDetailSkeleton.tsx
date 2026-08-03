@@ -1,7 +1,9 @@
 import { Skeleton } from '#/components/ui/skeleton'
 import { ProductCardSkeleton } from './ProductCardSkeleton'
+import { useIsMobile } from '#/hook'
 
 export function CategoryDetailSkeleton() {
+  const isMobile = useIsMobile()
   return (
     <div className="min-h-full bg-background">
       {/* Category Header Skeleton */}
@@ -41,9 +43,12 @@ export function CategoryDetailSkeleton() {
         </div>
 
         {/* Product Cards Grid Skeleton */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
-            <ProductCardSkeleton key={i} />
+            <ProductCardSkeleton
+              key={i}
+              variant={isMobile ? 'mini' : 'default'}
+            />
           ))}
         </div>
       </div>

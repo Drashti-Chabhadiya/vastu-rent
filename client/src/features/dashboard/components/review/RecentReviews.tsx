@@ -83,7 +83,7 @@ export const RecentReviews = () => {
                 <img
                   src={
                     review.product?.images?.[0] ||
-                    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
+                    '/assets/product-placeholder.png'
                   }
                   alt={review.product?.title}
                   className="w-8 h-8 rounded-md object-cover bg-muted/50"

@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { productService } from './product.service.js'
 import { auth } from '../../config/auth.js'
 import { notifyAllUsers } from '../../lib/notification.js'
+import { io } from '../../lib/socket.js'
 
 export class ProductController {
   async getAllProducts(request: FastifyRequest, _reply: FastifyReply) {
@@ -112,6 +113,12 @@ export class ProductController {
         console.error('Failed to notify users of new product:', err)
       }
 
+      try {
+        io?.emit('product_added', { product })
+      } catch (err) {
+        console.error('Socket emit product_added failed:', err)
+      }
+
       return { product }
     } catch (error: any) {
       if (
@@ -136,6 +143,13 @@ export class ProductController {
         user?.id,
         user?.role,
       )
+
+      try {
+        io?.emit('product_updated', { productId: id, product })
+      } catch (err) {
+        console.error('Socket emit product_updated failed:', err)
+      }
+
       return { product }
     } catch (error: any) {
       if (error.message.includes('Forbidden'))
@@ -151,6 +165,13 @@ export class ProductController {
       const { id } = request.params as any
       const user = (request as any).user
       await productService.deleteProduct(id, user?.id, user?.role)
+
+      try {
+        io?.emit('product_deleted', { productId: id })
+      } catch (err) {
+        console.error('Socket emit product_deleted failed:', err)
+      }
+
       return { success: true }
     } catch (error: any) {
       if (error.message.includes('Forbidden'))

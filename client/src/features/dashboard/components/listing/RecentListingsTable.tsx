@@ -82,8 +82,7 @@ export const RecentListingsTable = ({
                     <div className="flex items-center gap-3">
                       <img
                         src={
-                          item.images?.[0] ||
-                          'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
+                          item.images?.[0] || '/assets/product-placeholder.png'
                         }
                         alt={item.title}
                         className="w-8 h-8 rounded-lg object-cover shrink-0"

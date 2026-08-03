@@ -2,6 +2,7 @@ import { prisma } from '../config/prisma.js'
 import { io } from './socket.js'
 import { notificationQueue } from '../queues/queues.js'
 import { JOB_NAMES } from '../constants/queue-keys.js'
+import { sendPushToTokens } from './fcm.js'
 
 export interface NotificationOptions {
   userId: string
@@ -135,6 +136,28 @@ export async function notifyAllUsers({
         ),
       ),
     )
+
+    // Send to guest devices (userId = null)
+    try {
+      const guestTokens = await prisma.deviceToken.findMany({
+        where: { userId: null },
+        select: { token: true },
+      })
+      if (guestTokens.length > 0) {
+        await sendPushToTokens(
+          guestTokens.map((t) => t.token),
+          {
+            title,
+            body: message,
+            url,
+            image,
+            data: { type, url, image: image || '' },
+          },
+        )
+      }
+    } catch (err) {
+      console.error('Failed to notify guest users:', err)
+    }
   } catch (err) {
     console.error('Failed to notify all users:', err)
   }

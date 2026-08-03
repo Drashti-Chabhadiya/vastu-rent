@@ -14,6 +14,13 @@ import { Capacitor } from '@capacitor/core'
 import { useTranslation } from '#/context/TranslationContext'
 import { LanguageSelector } from '@/components/ui/language-selector'
 import {
+  checkBiometry,
+  getBiometryType,
+  setBiometricCredentials,
+  getBiometricCredentials,
+  authenticateBiometric,
+} from '#/lib/biometrics'
+import {
   Form,
   FormControl,
   FormField,
@@ -27,6 +34,12 @@ export function LoginForm() {
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
+
+  // Biometrics state
+  const [isBiometryAvailable, setIsBiometryAvailable] = useState(false)
+  const [biometryType, setBiometryType] = useState<string | null>(null)
+  const [hasStoredCredentials, setHasStoredCredentials] = useState(false)
+  const [biometricLoading, setBiometricLoading] = useState(false)
 
   // Verification-related states
   const [isUnverified, setIsUnverified] = useState(false)
@@ -51,6 +64,27 @@ export function LoginForm() {
     }, 1000)
     return () => clearInterval(interval)
   }, [resendCooldown])
+
+  // Initialize Biometrics
+  useEffect(() => {
+    const initBiometrics = async () => {
+      if (Capacitor.isNativePlatform()) {
+        const available = await checkBiometry()
+        setIsBiometryAvailable(available)
+        if (available) {
+          const type = await getBiometryType()
+          setBiometryType(type)
+
+          // Check if we have credentials stored
+          const creds = await getBiometricCredentials()
+          if (creds && creds.username && creds.password) {
+            setHasStoredCredentials(true)
+          }
+        }
+      }
+    }
+    initBiometrics()
+  }, [])
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -119,6 +153,10 @@ export function LoginForm() {
       return
     }
 
+    if (rememberMe && isBiometryAvailable) {
+      await setBiometricCredentials(values.email, values.password)
+    }
+
     if (Capacitor.isNativePlatform()) {
       const searchParams = new URLSearchParams(window.location.search)
       const targetRedirect = searchParams.get('redirect') || '/'
@@ -127,6 +165,39 @@ export function LoginForm() {
       const searchParams = new URLSearchParams(window.location.search)
       const targetRedirect = searchParams.get('redirect') || '/'
       window.location.href = targetRedirect
+    }
+  }
+
+  const handleBiometricLogin = async () => {
+    setServerError(null)
+    setBiometricLoading(true)
+
+    const isAuthenticated = await authenticateBiometric(
+      `Log in with ${biometryType || 'Biometrics'}`,
+    )
+    if (isAuthenticated) {
+      const creds = await getBiometricCredentials()
+      if (creds && creds.username && creds.password) {
+        const { error } = await authClient.signIn.email({
+          email: creds.username,
+          password: creds.password,
+        })
+
+        if (error) {
+          setServerError(error.message ?? 'Biometric login failed.')
+          setBiometricLoading(false)
+        } else {
+          // Success
+          const searchParams = new URLSearchParams(window.location.search)
+          const targetRedirect = searchParams.get('redirect') || '/'
+          window.location.replace(targetRedirect)
+        }
+      } else {
+        setServerError('No stored credentials found.')
+        setBiometricLoading(false)
+      }
+    } else {
+      setBiometricLoading(false)
     }
   }
 
@@ -248,7 +319,7 @@ export function LoginForm() {
       {/* Mobile Mockup Hero Card */}
       <div className="relative h-[160px] rounded-[24px] overflow-hidden mb-6 block lg:hidden border border-border/20 shadow-sm">
         <img
-          src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&q=80&auto=format&fit=crop"
+          src="/assets/hero-rental.png"
           alt="Hero"
           className="w-full h-full object-cover"
         />
@@ -422,7 +493,9 @@ export function LoginForm() {
                   )}
                 </div>
                 <span className="text-[11px] font-bold text-foreground">
-                  {t('Remember me')}
+                  {isBiometryAvailable && biometryType
+                    ? t(`Remember me with ${biometryType}`)
+                    : t('Remember me')}
                 </span>
               </Button>
             </div>
@@ -522,6 +595,40 @@ export function LoginForm() {
                 </>
               )}
             </Button>
+
+            {/* Biometric Login Button */}
+            {isBiometryAvailable && hasStoredCredentials && (
+              <Button
+                type="button"
+                variant="outline"
+                disabled={biometricLoading}
+                onClick={handleBiometricLogin}
+                className="w-full h-11 rounded-full text-xs font-black shadow-sm border border-border/80 flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.98] transition-all"
+              >
+                {biometricLoading ? (
+                  <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      className="opacity-70"
+                    >
+                      {/* Fingerprint icon simple representation */}
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+                      <path d="M12 6c-3.31 0-6 2.69-6 6 0 1.66.67 3.16 1.76 4.24l1.41-1.41C8.45 14.07 8 13.09 8 12c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.09-.45 2.07-1.17 2.83l1.41 1.41C17.33 15.16 18 13.66 18 12c0-3.31-2.69-6-6-6z" />
+                    </svg>
+                    <span>
+                      {t(`Login with ${biometryType || 'Biometrics'}`)}
+                    </span>
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </form>
       </Form>
@@ -539,14 +646,14 @@ export function LoginForm() {
       <SocialAuth />
 
       <p className="text-center text-[12px] text-muted-foreground/85 max-w-[340px] mx-auto leading-relaxed">
-        By continuing, you agree to our{' '}
-        <a href="#" className="font-bold bg-primary-light hover:underline">
-          Terms & Conditions
-        </a>{' '}
-        and{' '}
-        <a href="#" className="font-bold bg-primary-light hover:underline">
-          Privacy Policy
-        </a>
+        {t('By continuing, you agree to our')}{' '}
+        <Link to="/terms" className="font-bold text-primary hover:underline">
+          {t('Terms & Conditions')}
+        </Link>{' '}
+        {t('and')}{' '}
+        <Link to="/privacy" className="font-bold text-primary hover:underline">
+          {t('Privacy Policy')}
+        </Link>
         .
       </p>
     </div>

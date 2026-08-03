@@ -13,6 +13,7 @@ dependencies {
     implementation project(':capacitor-browser')
     implementation project(':capacitor-push-notifications')
     implementation project(':capawesome-capacitor-google-sign-in')
+    implementation project(':capgo-capacitor-native-biometric')
     implementation project(':capgo-capacitor-updater')
     implementation project(':capacitor-secure-storage-plugin')
 

@@ -223,7 +223,7 @@ export function ChatWindow() {
             <img
               src={
                 activeRental.product?.images?.[0] ||
-                'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&q=80'
+                '/assets/avatar-placeholder.png'
               }
               alt={activeRental.product?.title}
               className="w-full h-full object-cover"

@@ -4,21 +4,36 @@ import { auth } from '../../config/auth.js'
 import { deviceRoutes } from './device.routes.js'
 
 export async function notificationRoutes(fastify: FastifyInstance) {
-  // Pre-handler check to ensure the user is logged in
-  fastify.addHook('preHandler', async (request, reply) => {
+  const authHandler = async (request: any, reply: any) => {
     const session = await auth.api.getSession({
       headers: request.headers as any,
     })
     if (!session) {
       return reply.status(401).send({ message: 'Unauthorized' })
     }
-  })
+  }
 
-  fastify.get('/', notificationController.getNotifications)
-  fastify.put('/:id/read', notificationController.markAsRead)
-  fastify.put('/read-all', notificationController.markAllAsRead)
-  fastify.post('/announcement', notificationController.sendAnnouncement)
+  fastify.get(
+    '/',
+    { preHandler: [authHandler] },
+    notificationController.getNotifications,
+  )
+  fastify.put(
+    '/:id/read',
+    { preHandler: [authHandler] },
+    notificationController.markAsRead,
+  )
+  fastify.put(
+    '/read-all',
+    { preHandler: [authHandler] },
+    notificationController.markAllAsRead,
+  )
+  fastify.post(
+    '/announcement',
+    { preHandler: [authHandler] },
+    notificationController.sendAnnouncement,
+  )
 
-  // Device token management for push notifications
+  // Device token management for push notifications (some routes allow guests)
   fastify.register(deviceRoutes, { prefix: '/device' })
 }

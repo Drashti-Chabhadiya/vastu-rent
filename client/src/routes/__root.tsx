@@ -79,10 +79,8 @@ function NotificationListener() {
 
   useAppResumeRefresh()
 
-  // Register device token for push notifications on login
+  // Register device token for push notifications (works for both logged in and guest users)
   useEffect(() => {
-    if (!token) return
-
     if (isNative) {
       initNativePush((url) => {
         navigate({ to: url as any }).catch(() => {
@@ -112,8 +110,6 @@ function NotificationListener() {
 
   // 1. Global Socket.IO Real-Time Notifications Listener
   useEffect(() => {
-    if (!token) return
-
     const SOCKET_URL = getSocketUrl()
     const socket = io(SOCKET_URL, {
       auth: { token },
@@ -197,6 +193,16 @@ function NotificationListener() {
         }
       }
     })
+
+    const handleProductChange = () => {
+      rqClient.invalidateQueries({ queryKey: ['products'] })
+      rqClient.invalidateQueries({ queryKey: ['recent-products'] })
+      rqClient.invalidateQueries({ queryKey: ['admin-products'] })
+    }
+
+    socket.on('product_added', handleProductChange)
+    socket.on('product_updated', handleProductChange)
+    socket.on('product_deleted', handleProductChange)
 
     return () => {
       socket.disconnect()

@@ -99,10 +99,7 @@ export const BookingConfirmationModal = ({
                 <div className="flex gap-4 items-center">
                   <div className="w-12 h-12 rounded-xl bg-muted-light overflow-hidden shrink-0 border border-border/10">
                     <img
-                      src={
-                        productImage ||
-                        'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&q=80'
-                      }
+                      src={productImage || '/assets/avatar-placeholder.png'}
                       alt={productTitle}
                       className="w-full h-full object-cover"
                     />

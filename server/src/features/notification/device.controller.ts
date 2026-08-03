@@ -7,7 +7,7 @@ export class DeviceController {
     const session = await auth.api.getSession({
       headers: request.headers as any,
     })
-    if (!session) return reply.status(401).send({ message: 'Unauthorized' })
+    const userId = session?.user?.id || null
 
     const { token, platform } = request.body as any
     if (!token) return reply.status(400).send({ message: 'Token required' })
@@ -15,8 +15,8 @@ export class DeviceController {
     try {
       await prisma.deviceToken.upsert({
         where: { token },
-        create: { token, platform, userId: session.user.id },
-        update: { platform, userId: session.user.id },
+        create: { token, platform, userId },
+        update: { platform, userId },
       })
       return { success: true }
     } catch (err) {
@@ -35,8 +35,9 @@ export class DeviceController {
     if (!token) return reply.status(400).send({ message: 'Token required' })
 
     try {
-      await prisma.deviceToken.deleteMany({
+      await prisma.deviceToken.updateMany({
         where: { token, userId: session.user.id },
+        data: { userId: null },
       })
       return { success: true }
     } catch (err) {

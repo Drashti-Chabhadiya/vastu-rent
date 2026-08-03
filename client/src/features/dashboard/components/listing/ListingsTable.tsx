@@ -119,7 +119,7 @@ export const ListingsTable = ({
                         <img
                           src={
                             item.images?.[0] ||
-                            'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
+                            '/assets/product-placeholder.png'
                           }
                           alt={item.title}
                           className="w-full h-full object-cover transition-transform group-hover:scale-110"
@@ -298,10 +298,7 @@ export const ListingsTable = ({
               <div className="flex items-start gap-4">
                 <div className="relative w-16 h-16 rounded-xl overflow-hidden shadow-sm border border-border/30 shrink-0">
                   <img
-                    src={
-                      item.images?.[0] ||
-                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=100&q=80'
-                    }
+                    src={item.images?.[0] || '/assets/product-placeholder.png'}
                     alt={item.title}
                     className="w-full h-full object-cover"
                   />

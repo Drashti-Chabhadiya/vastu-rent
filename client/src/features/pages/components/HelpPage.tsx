@@ -63,9 +63,9 @@ export function HelpPage() {
   }
 
   return (
-    <div className="min-h-full bg-background pb-20">
+    <div className="min-h-full bg-background pb-12 sm:pb-20">
       {/* Search Header */}
-      <section className="bg-primary py-20 px-4">
+      <section className="bg-primary py-12 pt-16 sm:py-20 px-4">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -74,7 +74,7 @@ export function HelpPage() {
         >
           <motion.h1
             variants={fadeUp}
-            className="text-3xl sm:text-4xl font-extrabold text-primary-foreground mb-8"
+            className="text-2xl sm:text-4xl font-extrabold text-primary-foreground mb-6 sm:mb-8"
           >
             {t('How can we help you today?')}
           </motion.h1>
@@ -89,7 +89,7 @@ export function HelpPage() {
             <Input
               type="text"
               placeholder={t('Search for answers...')}
-              className="w-full h-16 pl-16 pr-8 bg-card rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-lg shadow-xl"
+              className="w-full h-14 sm:h-16 pl-14 sm:pl-16 pr-6 sm:pr-8 bg-card rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-base sm:text-lg shadow-xl"
             />
           </motion.div>
         </motion.div>
@@ -101,7 +101,7 @@ export function HelpPage() {
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6"
         >
           {[
             {
@@ -128,15 +128,19 @@ export function HelpPage() {
             <motion.div
               variants={fadeUp}
               key={i}
-              className="bg-card p-6 rounded-3xl shadow-sm border border-border/30 hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
+              className="bg-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-border/30 hover:shadow-lg transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
-                <div className="w-12 h-12 rounded-2xl bg-muted-light flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-muted-light flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
                   {item.icon}
                 </div>
-                <h3 className="font-bold text-foreground mb-1">{item.title}</h3>
+                <h3 className="font-bold text-foreground mb-1 text-sm sm:text-base leading-tight sm:leading-normal">
+                  {item.title}
+                </h3>
               </div>
-              <p className="text-sm text-muted-foreground/85">{item.count}</p>
+              <p className="text-[11px] sm:text-sm text-muted-foreground/85 mt-2 sm:mt-0">
+                {item.count}
+              </p>
             </motion.div>
           ))}
         </motion.div>
@@ -149,7 +153,7 @@ export function HelpPage() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="text-2xl font-bold text-foreground mb-8 px-2"
+          className="text-xl sm:text-2xl font-bold text-foreground mb-6 sm:mb-8 px-2"
         >
           {t('Frequently Asked Questions')}
         </motion.h2>
@@ -162,10 +166,10 @@ export function HelpPage() {
         >
           {faqs.map((cat, catIdx) => (
             <motion.div variants={fadeUp} key={catIdx}>
-              <h3 className="text-lg font-bold text-muted-foreground/70 uppercase tracking-widest mb-6 px-2">
+              <h3 className="text-base sm:text-lg font-bold text-muted-foreground/70 uppercase tracking-widest mb-4 sm:mb-6 px-2">
                 {cat.category}
               </h3>
-              <div className="bg-card rounded-[32px] border border-border/30 shadow-sm overflow-hidden">
+              <div className="bg-card rounded-2xl sm:rounded-[32px] border border-border/30 shadow-sm overflow-hidden">
                 {cat.questions.map((faq, faqIdx) => {
                   const id = `${catIdx}-${faqIdx}`
                   const isOpen = openIndex === id
@@ -180,9 +184,9 @@ export function HelpPage() {
                       <Button
                         variant="ghost"
                         onClick={() => toggleFaq(id)}
-                        className="h-auto w-full flex items-center justify-between p-6 sm:p-8 text-left hover:bg-muted-light transition-colors rounded-none font-normal justify-between [&_svg]:size-6"
+                        className="h-auto w-full flex items-center justify-between p-4 sm:p-6 md:p-8 text-left hover:bg-muted-light transition-colors rounded-none font-normal [&_svg]:size-5 sm:[&_svg]:size-6"
                       >
-                        <span className="text-lg font-bold text-foreground pr-8 text-left whitespace-normal">
+                        <span className="text-base sm:text-lg font-bold text-foreground pr-4 sm:pr-8 text-left whitespace-normal leading-snug">
                           {faq.q}
                         </span>
                         <ChevronDown
@@ -198,7 +202,7 @@ export function HelpPage() {
                           isOpen ? 'max-h-96' : 'max-h-0',
                         )}
                       >
-                        <div className="px-6 sm:px-8 pb-8 text-muted-foreground leading-relaxed">
+                        <div className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 text-sm sm:text-base text-muted-foreground leading-relaxed">
                           {faq.a}
                         </div>
                       </div>
@@ -219,8 +223,8 @@ export function HelpPage() {
         viewport={{ once: true }}
         className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8"
       >
-        <div className="bg-primary/5 border border-brand/10 rounded-3xl sm:rounded-[40px] p-8 sm:p-10 lg:p-16 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
+        <div className="bg-primary/5 border border-brand/10 rounded-2xl sm:rounded-[40px] p-6 sm:p-10 lg:p-16 text-center">
+          <h2 className="text-xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
             {t('Still need help?')}
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground mb-8 sm:mb-12 max-w-xl mx-auto px-2">
@@ -228,8 +232,8 @@ export function HelpPage() {
               'Our support team is available 24/7 to help you with any questions or issues you might have.',
             )}
           </p>
-          <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-center gap-6 sm:gap-8 mx-auto w-fit">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-center gap-5 sm:gap-8 mx-auto w-fit">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <Mail className="text-primary" />
               </div>
@@ -242,8 +246,8 @@ export function HelpPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <MessageCircle className="text-primary" />
               </div>
               <div className="text-left">
@@ -255,8 +259,8 @@ export function HelpPage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="w-11 h-11 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-full bg-card flex items-center justify-center shadow-sm">
                 <Phone className="text-primary" />
               </div>
               <div className="text-left">

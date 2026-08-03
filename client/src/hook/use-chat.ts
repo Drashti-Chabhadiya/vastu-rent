@@ -367,6 +367,11 @@ export function useChat() {
     )
 
     return () => {
+      if (activeConversationIdRef.current && socketRef.current?.connected) {
+        socketRef.current.emit('leave_conversation', {
+          conversationId: activeConversationIdRef.current,
+        })
+      }
       socket.disconnect()
       socketRef.current = null
     }
@@ -396,6 +401,13 @@ export function useChat() {
   const switchConversation = useCallback(
     async (conversationId: string) => {
       if (activeConversationIdRef.current === conversationId) return
+
+      const prevConvId = activeConversationIdRef.current
+      if (prevConvId && socketRef.current?.connected) {
+        socketRef.current.emit('leave_conversation', {
+          conversationId: prevConvId,
+        })
+      }
 
       setActiveConversationId(conversationId)
       activeConversationIdRef.current = conversationId

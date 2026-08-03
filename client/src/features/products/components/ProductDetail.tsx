@@ -342,9 +342,7 @@ export function ProductDetail({ id }: { id: string }) {
   const images =
     product.images?.length > 0
       ? product.images
-      : [
-          'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=800&q=80',
-        ]
+      : ['/assets/product-placeholder.png']
   const liked = isLiked(product.id)
 
   const address = product.user?.address

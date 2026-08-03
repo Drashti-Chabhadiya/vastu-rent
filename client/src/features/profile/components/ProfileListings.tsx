@@ -266,7 +266,7 @@ export function ProfileListings() {
           {/* Onboarding Hero Image Container */}
           <div className="relative h-64 w-full rounded-[24px] overflow-hidden shadow-xs border border-border/10 bg-muted-light">
             <img
-              src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=80"
+              src="/assets/product-placeholder.png"
               alt="Become a Host"
               className="w-full h-full object-cover brightness-[0.82]"
             />

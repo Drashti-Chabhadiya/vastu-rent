@@ -52,7 +52,9 @@ export function initSocket(httpServer: any) {
         socket.handshake.auth?.token || socket.handshake.query?.token
 
       if (!token || typeof token !== 'string') {
-        return next(new Error('Authentication token missing'))
+        // Guest user connection allowed for global real-time events
+        socket.data.isGuest = true
+        return next()
       }
 
       // Look up session in the database
@@ -61,12 +63,9 @@ export function initSocket(httpServer: any) {
         include: { user: true },
       })
 
-      if (!session) {
-        return next(new Error('Invalid session'))
-      }
-
-      if (new Date(session.expiresAt) < new Date()) {
-        return next(new Error('Session expired'))
+      if (!session || new Date(session.expiresAt) < new Date()) {
+        socket.data.isGuest = true
+        return next()
       }
 
       // Attach user details to socket data
@@ -74,11 +73,17 @@ export function initSocket(httpServer: any) {
       next()
     } catch (error) {
       console.error('Socket authentication error:', error)
-      next(new Error('Internal server error'))
+      socket.data.isGuest = true
+      next()
     }
   })
 
   io.on('connection', (socket) => {
+    if (socket.data.isGuest || !socket.data.user) {
+      console.log(`🔌 Socket connected: Guest - Socket ${socket.id}`)
+      return // Guests receive global broadcasts but don't participate in chat/presence
+    }
+
     const user = socket.data.user
     const userId = user.id
 
@@ -191,6 +196,15 @@ export function initSocket(httpServer: any) {
       } catch (err) {
         console.error('Error marking messages as read on join:', err)
       }
+    })
+
+    // Leave a conversation room
+    socket.on('leave_conversation', ({ conversationId }) => {
+      if (!conversationId) return
+      socket.leave(`conversation_${conversationId}`)
+      console.log(
+        `💬 Socket ${socket.id} left conversation: ${conversationId}`,
+      )
     })
 
     // Send a message
