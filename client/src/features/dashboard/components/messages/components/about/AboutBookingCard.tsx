@@ -40,9 +40,7 @@ export function AboutBookingCard({
     category: realRental.product?.category?.name || 'Vastu Rent',
     dates: `${format(sDate, 'dd MMM')} - ${format(eDate, 'dd MMM yyyy')}`,
     days: `${diffDays} ${diffDays === 1 ? 'day' : 'days'}`,
-    image:
-      realRental.product?.images?.[0] ||
-      'https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?w=200&q=80',
+    image: realRental.product?.images?.[0] || '/assets/product-placeholder.png',
   }
 
   const handleViewBooking = () => {

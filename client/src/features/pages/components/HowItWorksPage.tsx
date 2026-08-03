@@ -56,9 +56,9 @@ const benefits = [
 
 export function HowItWorksPage() {
   return (
-    <div className="min-h-full bg-background pb-20">
+    <div className="min-h-full bg-background pb-10 sm:pb-20 pt-6 lg:pt-24">
       {/* Hero Section */}
-      <section className="bg-card py-20 border-b border-border/30 overflow-hidden">
+      <section className="bg-card py-10 sm:py-20 border-b border-border/30 overflow-hidden">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -67,7 +67,7 @@ export function HowItWorksPage() {
         >
           <motion.h1
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight mb-6"
+            className="text-3xl sm:text-5xl font-extrabold text-foreground tracking-tight mb-4 sm:mb-6"
           >
             Renting Made Simple
           </motion.h1>
@@ -82,7 +82,7 @@ export function HowItWorksPage() {
       </section>
 
       {/* Steps Grid */}
-      <section className="py-20 overflow-hidden">
+      <section className="py-10 sm:py-20 overflow-hidden">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={stagger}
@@ -93,7 +93,7 @@ export function HowItWorksPage() {
           >
             <motion.h2
               variants={fadeUp}
-              className="text-3xl font-bold text-foreground mb-4"
+              className="text-2xl sm:text-3xl font-bold text-foreground mb-4"
             >
               How it works for Renters
             </motion.h2>
@@ -141,12 +141,12 @@ export function HowItWorksPage() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="bg-primary/5 rounded-[40px] p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center gap-12"
+            className="bg-primary/5 rounded-[24px] sm:rounded-[40px] p-6 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center gap-8 sm:gap-12"
           >
             <div className="lg:w-1/2">
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl sm:text-4xl font-bold text-foreground mb-6"
+                className="text-2xl sm:text-4xl font-bold text-foreground mb-4 sm:mb-6"
               >
                 Built on Trust and Safety
               </motion.h2>
@@ -181,9 +181,9 @@ export function HowItWorksPage() {
             </div>
             <motion.div variants={fadeUp} className="lg:w-1/2">
               <img
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+                src="/assets/trust-safety.png"
                 alt="Safety"
-                className="rounded-[32px] shadow-2xl bg-card"
+                className="rounded-[24px] sm:rounded-[32px] shadow-2xl bg-card w-full"
                 onError={(e) => {
                   ;(e.target as any).src =
                     'https://placehold.co/800x600/166534/FFFFFF/png?text=Trust+and+Safety'
@@ -195,7 +195,7 @@ export function HowItWorksPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 text-center overflow-hidden">
+      <section className="py-10 sm:py-20 text-center overflow-hidden">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -205,7 +205,7 @@ export function HowItWorksPage() {
         >
           <motion.h2
             variants={fadeUp}
-            className="text-3xl font-bold text-foreground mb-6"
+            className="text-2xl sm:text-3xl font-bold text-foreground mb-6"
           >
             Ready to start renting?
           </motion.h2>

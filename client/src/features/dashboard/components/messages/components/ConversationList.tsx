@@ -440,7 +440,9 @@ export function ConversationList() {
                       )}
 
                       {conv.unreadCount > 0 && (
-                        <span className="w-2.5 h-2.5 bg-warning rounded-full shrink-0 ml-2 animate-pulse" />
+                        <div className="flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-emerald-600 text-white text-[10px] font-bold rounded-full shrink-0 ml-2 shadow-sm">
+                          {conv.unreadCount > 99 ? '99+' : conv.unreadCount}
+                        </div>
                       )}
 
                       <DropdownMenu>

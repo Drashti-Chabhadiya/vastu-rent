@@ -110,7 +110,7 @@ export function UserProfilePage() {
       {/* Mobile Banner Background Image */}
       <div className="md:hidden absolute top-0 left-0 right-0 h-56 z-0 overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80"
+          src="/assets/hero-rental.png"
           className="w-full h-full object-cover"
           alt="Banner"
         />
@@ -132,7 +132,7 @@ export function UserProfilePage() {
         {/* Desktop Cover Banner Header */}
         <div className="hidden md:block h-64 lg:h-72 w-full rounded-[32px] overflow-hidden relative mb-[-72px] z-0 shadow-xs border border-border/40">
           <img
-            src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1600&q=80"
+            src="/assets/hero-rental.png"
             className="w-full h-full object-cover"
             alt="Desktop Cover Banner"
           />

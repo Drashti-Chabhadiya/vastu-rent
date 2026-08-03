@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Star,
   LayoutDashboard,
+  Quote,
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
@@ -80,7 +81,7 @@ export function BecomeListerPage() {
           className="absolute inset-0"
         >
           <img
-            src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=1600&q=80"
+            src="/assets/lister-hero.png"
             alt="Hero Background"
             className="w-full h-full object-cover"
           />
@@ -188,43 +189,50 @@ export function BecomeListerPage() {
       </section>
 
       {/* Testimonial Section */}
-      <section className="py-24">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-24">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={fadeUp}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="bg-primary/5 rounded-[40px] overflow-hidden flex flex-col lg:flex-row border border-brand/10"
+            className="relative bg-gradient-to-br from-card to-primary/5 rounded-[2.5rem] p-10 sm:p-16 border border-border/40 shadow-xl text-center overflow-hidden"
           >
-            <div className="lg:w-1/2 bg-muted/50">
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"
-                alt="Happy Lister"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  ;(e.target as any).src =
-                    'https://placehold.co/800x800/166534/FFFFFF/png?text=Happy+Lister'
-                }}
-              />
+            {/* Decorative Quote Icon */}
+            <div className="absolute top-6 left-6 text-primary/10 rotate-180">
+              <Quote size={80} strokeWidth={1} fill="currentColor" />
             </div>
-            <div className="lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center">
-              <div className="flex gap-1 mb-8">
+
+            <div className="relative z-10 flex flex-col items-center">
+              <div className="flex gap-1.5 mb-8">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className="w-6 h-6 text-yellow-500 fill-yellow-500"
+                    className="w-5 h-5 text-yellow-500 fill-yellow-500"
                   />
                 ))}
               </div>
-              <h3 className="text-3xl font-bold text-foreground mb-8 italic leading-snug">
+
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-10 italic leading-snug tracking-tight max-w-3xl">
                 {t('Lister Quote')}
               </h3>
-              <div>
-                <p className="text-xl font-bold text-primary">Rahul Sharma</p>
-                <p className="text-muted-foreground/85">
-                  {t('Professional Photographer, Surat')}
-                </p>
+
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 shadow-sm shrink-0">
+                  <img
+                    src="/assets/avatar-placeholder.png"
+                    alt="Rahul Sharma"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="text-left">
+                  <p className="text-lg font-black text-foreground">
+                    Rahul Sharma
+                  </p>
+                  <p className="text-sm font-bold text-primary">
+                    {t('Professional Photographer, Surat')}
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>

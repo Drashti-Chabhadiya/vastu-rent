@@ -88,7 +88,7 @@ export const ActiveRentalsTable = ({ myRentals, rentalsLoading }: Props) => {
                       <img
                         src={
                           rental.product?.images?.[0] ||
-                          'https://images.unsplash.com/photo-1564013799919-ab600027ffc6'
+                          '/assets/product-placeholder.png'
                         }
                         alt={rental.product?.title}
                         className={cn(

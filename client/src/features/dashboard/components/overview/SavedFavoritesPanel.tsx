@@ -82,8 +82,7 @@ export const SavedFavoritesPanel = ({ likedProducts, likedLoading }: Props) => {
                 >
                   <img
                     src={
-                      listing.images?.[0] ||
-                      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6'
+                      listing.images?.[0] || '/assets/product-placeholder.png'
                     }
                     alt={listing.title}
                     className={cn(

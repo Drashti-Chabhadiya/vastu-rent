@@ -37,10 +37,7 @@ export function MobileProductRowCard({
       {/* Thumbnail + Dynamic Badges */}
       <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-muted shrink-0">
         <img
-          src={
-            product.images?.[0] ||
-            'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&auto=format&fit=crop&q=60'
-          }
+          src={product.images?.[0] || '/assets/product-placeholder.png'}
           alt={product.title}
           className="w-full h-full object-cover"
         />

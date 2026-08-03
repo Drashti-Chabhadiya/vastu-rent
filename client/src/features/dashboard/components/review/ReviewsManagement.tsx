@@ -88,9 +88,7 @@ export const ReviewsManagement = () => {
         comment: r.comment || 'Perfect rental experience!',
         host: {
           name: r.product?.user?.name || 'Vastu Lister',
-          avatar:
-            r.product?.user?.image ||
-            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+          avatar: r.product?.user?.image || '/assets/avatar-placeholder.png',
         },
         reviewer: {
           id: r.user?.id,
@@ -99,9 +97,7 @@ export const ReviewsManagement = () => {
         },
         postedDate: formatPostedDate(r.createdAt),
         type: r.product ? 'listings' : 'hosts',
-        image:
-          r.product?.images?.[0] ||
-          'https://images.unsplash.com/photo-1545241047-6083a3684587',
+        image: r.product?.images?.[0] || '/assets/avatar-placeholder.png',
       }))
     : []
 

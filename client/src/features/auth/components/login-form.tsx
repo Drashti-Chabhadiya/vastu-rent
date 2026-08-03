@@ -248,7 +248,7 @@ export function LoginForm() {
       {/* Mobile Mockup Hero Card */}
       <div className="relative h-[160px] rounded-[24px] overflow-hidden mb-6 block lg:hidden border border-border/20 shadow-sm">
         <img
-          src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&q=80&auto=format&fit=crop"
+          src="/assets/hero-rental.png"
           alt="Hero"
           className="w-full h-full object-cover"
         />
@@ -539,14 +539,14 @@ export function LoginForm() {
       <SocialAuth />
 
       <p className="text-center text-[12px] text-muted-foreground/85 max-w-[340px] mx-auto leading-relaxed">
-        By continuing, you agree to our{' '}
-        <a href="#" className="font-bold bg-primary-light hover:underline">
-          Terms & Conditions
-        </a>{' '}
-        and{' '}
-        <a href="#" className="font-bold bg-primary-light hover:underline">
-          Privacy Policy
-        </a>
+        {t('By continuing, you agree to our')}{' '}
+        <Link to="/terms" className="font-bold text-primary hover:underline">
+          {t('Terms & Conditions')}
+        </Link>{' '}
+        {t('and')}{' '}
+        <Link to="/privacy" className="font-bold text-primary hover:underline">
+          {t('Privacy Policy')}
+        </Link>
         .
       </p>
     </div>
