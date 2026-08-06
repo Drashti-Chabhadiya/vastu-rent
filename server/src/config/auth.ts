@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { prisma } from './prisma.js'
 import { admin, bearer } from 'better-auth/plugins'
-import { sendVerificationEmail, sendResetPasswordEmail } from '../lib/mail.js'
+import { sendVerificationEmailDirect, sendResetPasswordEmail } from '../lib/mail.js'
 
 const getHostName = (urlStr?: string) => {
   if (!urlStr) return ''
@@ -97,11 +97,13 @@ export const auth = betterAuth({
 
   /**
    * Hook up email verification sending logic.
+   * NOTE: Using Direct SMTP (not BullMQ queue) for instant delivery on signup.
+   * Queue-based sending added ~3-4 min delay due to remote Redis latency + retry backoff.
    */
   emailVerification: {
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url, token }) => {
-      await sendVerificationEmail({
+      await sendVerificationEmailDirect({
         email: user.email,
         name: user.name || '',
         url,

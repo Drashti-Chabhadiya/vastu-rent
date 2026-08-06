@@ -10,6 +10,40 @@ import {
 import { notificationQueue } from '../queues/queues.js'
 import { JOB_NAMES } from '../constants/queue-keys.js'
 
+// ─── Shared Transporter (Connection Pool) ────────────────────────────────────
+// Created once at module load. Reuses TCP/TLS connections across all email
+// sends, avoiding the 1-2 second handshake overhead per email.
+let _transporter: nodemailer.Transporter | null = null
+
+function getTransporter(): nodemailer.Transporter | null {
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+
+  if (!smtpHost || !smtpUser || !smtpPass) return null
+
+  if (!_transporter) {
+    _transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      pool: true,         // keep TCP connections alive
+      maxConnections: 3,  // up to 3 concurrent SMTP connections
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
+    })
+    console.log('📬  [Mail] SMTP transporter initialized (connection pool ready)')
+  }
+
+  return _transporter
+}
+
+
 interface SendVerificationEmailOptions {
   email: string
   name: string
@@ -28,64 +62,33 @@ export async function sendVerificationEmailDirect({
   url: _url,
   token,
 }: SendVerificationEmailOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST
-  const smtpPort = process.env.SMTP_PORT
-    ? parseInt(process.env.SMTP_PORT, 10)
-    : 587
-  const smtpUser = process.env.SMTP_USER
-  const smtpPass = process.env.SMTP_PASS
   const smtpFrom =
     process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
-
   const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
-  // Propose a cleaner client-side URL for email verification
   const clientVerificationUrl = `${clientUrl}/verify-email?token=${token}`
-
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
-
   const subject = 'Verify your email address - VastuRent'
+  const htmlContent = getVerificationTemplate({ name, clientVerificationUrl })
 
-  // Load cleanly from template file
-  const htmlContent = getVerificationTemplate({
-    name,
-    clientVerificationUrl,
-  })
+  const transporter = getTransporter()
 
-  if (!hasSmtpConfig) {
-    // Elegant and high-visibility debug output in console
+  if (!transporter) {
+    // No SMTP config — log to console for local dev
     console.log('\n' + '='.repeat(75))
     console.log('📧  [VastuRent Email Simulator] - VERIFICATION LINK GENERATED')
     console.log('='.repeat(75))
     console.log(`👤  To Name:    ${name}`)
     console.log(`✉️  To Email:   ${email}`)
     console.log(`📋  Subject:    ${subject}`)
-    console.log(
-      `🔗  Verify URL: \x1b[36m\x1b[4m${clientVerificationUrl}\x1b[0m`,
-    )
+    console.log(`🔗  Verify URL: \x1b[36m\x1b[4m${clientVerificationUrl}\x1b[0m`)
     console.log(`🎫  Token:      ${token}`)
     console.log('-'.repeat(75))
-    console.log(
-      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
-    )
-    console.log(
-      '    in your server/.env file. Proceeding with simulated success.',
-    )
+    console.log('💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS')
+    console.log('    in your server/.env file. Proceeding with simulated success.')
     console.log('='.repeat(75) + '\n')
     return
   }
 
-  // Real email sending
   try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465, // true for port 465, false for other ports
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    })
-
     await transporter.sendMail({
       from: smtpFrom,
       to: email,
@@ -93,11 +96,9 @@ export async function sendVerificationEmailDirect({
       html: htmlContent,
       text: `Confirm Your Email Address - Welcome to VastuRent!\n\nPlease visit the following link to verify your email: ${clientVerificationUrl}`,
     })
-
     console.log(`📧  Email verification sent successfully to ${email}`)
   } catch (error) {
     console.error('❌  Error sending email verification email:', error)
-    // Throw error so Better Auth knows verification mail failed to send
     throw error
   }
 }
@@ -120,73 +121,39 @@ export async function sendResetPasswordEmailDirect({
   url: _url,
   token,
 }: SendResetPasswordEmailOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST
-  const smtpPort = process.env.SMTP_PORT
-    ? parseInt(process.env.SMTP_PORT, 10)
-    : 587
-  const smtpUser = process.env.SMTP_USER
-  const smtpPass = process.env.SMTP_PASS
   const smtpFrom =
     process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
-
   const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000'
   const clientResetPasswordUrl = `${clientUrl}/reset-password?token=${token}`
-
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
-
   const subject = 'Reset your password - VastuRent'
+  const htmlContent = getResetPasswordTemplate({ name, clientResetPasswordUrl })
 
-  // Load cleanly from template file
-  const htmlContent = getResetPasswordTemplate({
-    name,
-    clientResetPasswordUrl,
-  })
+  const transporter = getTransporter()
 
-  if (!hasSmtpConfig) {
-    // Elegant and high-visibility debug output in console
+  if (!transporter) {
     console.log('\n' + '='.repeat(75))
-    console.log(
-      '📧  [VastuRent Email Simulator] - PASSWORD RESET LINK GENERATED',
-    )
+    console.log('📧  [VastuRent Email Simulator] - PASSWORD RESET LINK GENERATED')
     console.log('='.repeat(75))
     console.log(`👤  To Name:    ${name}`)
     console.log(`✉️  To Email:   ${email}`)
     console.log(`📋  Subject:    ${subject}`)
-    console.log(
-      `🔗  Reset URL:  \\x1b[36m\\x1b[4m${clientResetPasswordUrl}\\x1b[0m`,
-    )
+    console.log(`🔗  Reset URL:  ${clientResetPasswordUrl}`)
     console.log(`🎫  Token:      ${token}`)
     console.log('-'.repeat(75))
-    console.log(
-      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
-    )
-    console.log(
-      '    in your server/.env file. Proceeding with simulated success.',
-    )
-    console.log('='.repeat(75) + '\\n')
+    console.log('💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS')
+    console.log('    in your server/.env file. Proceeding with simulated success.')
+    console.log('='.repeat(75) + '\n')
     return
   }
 
-  // Real email sending
   try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    })
-
     await transporter.sendMail({
       from: smtpFrom,
       to: email,
       subject,
       html: htmlContent,
-      text: `Reset Your Password - VastuRent\\n\\nPlease visit the following link to reset your password: ${clientResetPasswordUrl}`,
+      text: `Reset Your Password - VastuRent\n\nPlease visit the following link to reset your password: ${clientResetPasswordUrl}`,
     })
-
     console.log(`📧  Password reset email sent successfully to ${email}`)
   } catch (error) {
     console.error('❌  Error sending password reset email:', error)
@@ -209,26 +176,14 @@ export async function sendBookingAlertEmailDirect({
   message,
   type: _type,
 }: SendBookingAlertOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST
-  const smtpPort = process.env.SMTP_PORT
-    ? parseInt(process.env.SMTP_PORT, 10)
-    : 587
-  const smtpUser = process.env.SMTP_USER
-  const smtpPass = process.env.SMTP_PASS
   const smtpFrom =
     process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
-
-  const hasSmtpConfig = smtpHost && smtpUser && smtpPass
   const subject = `${title} - VastuRent`
+  const htmlContent = getBookingAlertTemplate({ title, name, message })
 
-  // Load cleanly from template file
-  const htmlContent = getBookingAlertTemplate({
-    title,
-    name,
-    message,
-  })
+  const transporter = getTransporter()
 
-  if (!hasSmtpConfig) {
+  if (!transporter) {
     console.log('\n' + '='.repeat(75))
     console.log(`📧  [VastuRent Email Simulator] - ${title.toUpperCase()}`)
     console.log('='.repeat(75))
@@ -237,24 +192,13 @@ export async function sendBookingAlertEmailDirect({
     console.log(`📋  Subject:    ${subject}`)
     console.log(`💬  Message:    ${message}`)
     console.log('-'.repeat(75))
-    console.log(
-      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
-    )
-    console.log(
-      '    in your server/.env file. Proceeding with simulated success.',
-    )
+    console.log('💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS')
+    console.log('    in your server/.env file. Proceeding with simulated success.')
     console.log('='.repeat(75) + '\n')
     return
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      auth: { user: smtpUser, pass: smtpPass },
-    })
-
     await transporter.sendMail({
       from: smtpFrom,
       to: email,
