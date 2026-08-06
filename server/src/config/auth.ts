@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { prisma } from './prisma.js'
 import { admin, bearer } from 'better-auth/plugins'
-import { sendVerificationEmailDirect, sendResetPasswordEmail } from '../lib/mail.js'
+import { sendVerificationEmail, sendResetPasswordEmail } from '../lib/mail.js'
 
 const getHostName = (urlStr?: string) => {
   if (!urlStr) return ''
@@ -103,7 +103,9 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url, token }) => {
-      await sendVerificationEmailDirect({
+      // Use queue-based (non-blocking) sending so signup responds instantly.
+      // Direct SMTP blocks the request and times out on Render (port 587 restricted).
+      await sendVerificationEmail({
         email: user.email,
         name: user.name || '',
         url,

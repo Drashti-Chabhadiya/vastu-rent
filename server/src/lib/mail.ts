@@ -32,6 +32,8 @@ function getTransporter(): nodemailer.Transporter | null {
       secure: smtpPort === 465,
       pool: true,         // keep TCP connections alive
       maxConnections: 3,  // up to 3 concurrent SMTP connections
+      connectionTimeout: 15_000,  // fail fast if SMTP port is blocked (e.g. Render)
+      socketTimeout: 15_000,      // fail fast if socket stalls mid-send
       auth: {
         user: smtpUser,
         pass: smtpPass,
