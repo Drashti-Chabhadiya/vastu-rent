@@ -10,6 +10,7 @@ import {
 } from '../templates/index.js'
 import { notificationQueue } from '../queues/queues.js'
 import { JOB_NAMES } from '../constants/queue-keys.js'
+import { getRedisStatus } from '../config/redis.js'
 
 // ─── Shared Transporter (Connection Pool) ────────────────────────────────────
 // Created once at module load. Reuses TCP/TLS connections across all email
@@ -500,10 +501,28 @@ export async function sendVerificationEmail(
   options: SendVerificationEmailOptions,
 ): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
-      type: 'verification',
-      emailData: options,
-    })
+    if (!getRedisStatus()) {
+      console.warn(
+        '⚠️ Redis not connected, sending verification email directly.',
+      )
+      await sendVerificationEmailDirect(options)
+      return
+    }
+
+    const addPromise = notificationQueue.add(
+      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
+      {
+        type: 'verification',
+        emailData: options,
+      },
+    )
+
+    await Promise.race([
+      addPromise,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Queue timeout')), 3000),
+      ),
+    ])
   } catch (err) {
     console.error('Failed to queue verification email:', err)
     await sendVerificationEmailDirect(options)
@@ -514,10 +533,29 @@ export async function sendOtpEmail(
   options: SendOtpEmailOptions,
 ): Promise<void> {
   try {
-    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
-      type: 'otp',
-      emailData: options,
-    })
+    // Fallback to direct sending if Redis is not connected (e.g. serverless environments)
+    if (!getRedisStatus()) {
+      console.warn('⚠️ Redis not connected, sending OTP email directly.')
+      await sendOtpEmailDirect(options)
+      return
+    }
+
+    // Add a timeout to the queue addition so it doesn't hang forever if Redis is reconnecting
+    const addPromise = notificationQueue.add(
+      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
+      {
+        type: 'otp',
+        emailData: options,
+      },
+    )
+
+    // 3 second timeout for queue addition
+    await Promise.race([
+      addPromise,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Queue timeout')), 3000),
+      ),
+    ])
   } catch (err) {
     console.error('Failed to queue OTP email:', err)
     await sendOtpEmailDirect(options)
