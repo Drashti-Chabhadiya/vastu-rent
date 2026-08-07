@@ -6,8 +6,6 @@ import {
   cacheDelPattern,
 } from '../../lib/redis-cache.js'
 import { CACHE_KEYS, CACHE_TTLS } from '../../constants/cache-keys.js'
-import { imageQueue } from '../../queues/queues.js'
-import { JOB_NAMES } from '../../constants/queue-keys.js'
 import { syncGreenMemberStatus } from '../../lib/green-member.helper.js'
 import { cloudinaryService } from '../upload/cloudinary.service.js'
 
@@ -306,22 +304,6 @@ export class ProductService {
       cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN),
     ])
 
-    // Dispatch background image optimization
-    if (product.images && product.images.length > 0) {
-      try {
-        await imageQueue.add(JOB_NAMES.IMAGE.OPTIMIZE_IMAGE, {
-          entityId: product.id,
-          entityType: 'product',
-          imageUrls: product.images,
-        })
-      } catch (err) {
-        console.error(
-          'Failed to queue product image optimization on create:',
-          err,
-        )
-      }
-    }
-
     try {
       await syncGreenMemberStatus(data.userId)
     } catch (err) {
@@ -364,22 +346,6 @@ export class ProductService {
       ]),
       cacheDelPattern(CACHE_KEYS.PRODUCTS_LIST_PATTERN),
     ])
-
-    // Dispatch background image optimization for newly updated images
-    if (updatedProduct.images && updatedProduct.images.length > 0) {
-      try {
-        await imageQueue.add(JOB_NAMES.IMAGE.OPTIMIZE_IMAGE, {
-          entityId: updatedProduct.id,
-          entityType: 'product',
-          imageUrls: updatedProduct.images,
-        })
-      } catch (err) {
-        console.error(
-          'Failed to queue product image optimization on update:',
-          err,
-        )
-      }
-    }
 
     return updatedProduct
   }

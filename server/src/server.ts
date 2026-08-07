@@ -1,11 +1,8 @@
 import url from 'node:url'
 import { app } from './app.js'
 import { connectPrisma, prisma } from './config/prisma.js'
-import { redis } from './config/redis.js'
 import { initSocket } from './lib/socket.js'
 import awsLambdaFastify from '@fastify/aws-lambda'
-import { initWorkers, closeWorkers } from './queues/workers.js'
-import { closeQueues } from './queues/queues.js'
 
 let proxy: any
 
@@ -23,9 +20,6 @@ const isDirectExecution =
 const startServer = async () => {
   try {
     await connectPrisma()
-
-    // Start BullMQ background workers
-    await initWorkers()
 
     await app.listen({
       port: Number(process.env.PORT) || 4000,
@@ -45,9 +39,6 @@ const startServer = async () => {
 const gracefulShutdown = async (signal: string) => {
   console.log(`\n🛑 Received ${signal}. Initiating graceful shutdown...`)
   try {
-    await closeWorkers()
-    await closeQueues()
-    await redis.quit()
     await prisma.$disconnect()
     await app.close()
     console.log('👋 Graceful shutdown completed. Exiting process.')

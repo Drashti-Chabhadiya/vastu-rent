@@ -8,9 +8,6 @@ import {
   getContactSupportTemplate,
   getOtpTemplate,
 } from '../templates/index.js'
-import { notificationQueue } from '../queues/queues.js'
-import { JOB_NAMES } from '../constants/queue-keys.js'
-import { getRedisStatus } from '../config/redis.js'
 
 // ─── Shared Transporter (Nodemailer Connection Pool) ─────────────────────────
 let _transporter: nodemailer.Transporter | null = null
@@ -310,207 +307,46 @@ export async function sendContactSupportEmailDirect({
   })
 }
 
-// ─── Queue-based Non-blocking Wrappers ───────────────────────────────────────
+// ─── Direct Exported Wrappers ────────────────────────────────────────────────
 
 export async function sendVerificationEmail(
   options: SendVerificationEmailOptions,
 ): Promise<void> {
-  try {
-    if (!getRedisStatus()) {
-      await sendVerificationEmailDirect(options)
-      return
-    }
-
-    const addPromise = notificationQueue.add(
-      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
-      {
-        type: 'verification',
-        emailData: options,
-      },
-    )
-
-    await Promise.race([
-      addPromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Queue timeout')), 3000),
-      ),
-    ])
-  } catch (err) {
-    console.error('Failed to queue verification email:', err)
-    await sendVerificationEmailDirect(options)
-  }
+  await sendVerificationEmailDirect(options)
 }
 
 export async function sendOtpEmail(
   options: SendOtpEmailOptions,
 ): Promise<void> {
-  try {
-    if (!getRedisStatus()) {
-      await sendOtpEmailDirect(options)
-      return
-    }
-
-    const addPromise = notificationQueue.add(
-      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
-      {
-        type: 'otp',
-        emailData: options,
-      },
-    )
-
-    await Promise.race([
-      addPromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Queue timeout')), 3000),
-      ),
-    ])
-  } catch (err) {
-    console.error('Failed to queue OTP email:', err)
-    await sendOtpEmailDirect(options)
-  }
+  await sendOtpEmailDirect(options)
 }
 
 export async function sendResetPasswordEmail(
   options: SendResetPasswordEmailOptions,
 ): Promise<void> {
-  try {
-    if (!getRedisStatus()) {
-      await sendResetPasswordEmailDirect(options)
-      return
-    }
-
-    const addPromise = notificationQueue.add(
-      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
-      {
-        type: 'reset-password',
-        emailData: options,
-      },
-    )
-
-    await Promise.race([
-      addPromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Queue timeout')), 3000),
-      ),
-    ])
-  } catch (err) {
-    console.error('Failed to queue reset password email:', err)
-    await sendResetPasswordEmailDirect(options)
-  }
+  await sendResetPasswordEmailDirect(options)
 }
 
 export async function sendBookingAlertEmail(
   options: SendBookingAlertOptions,
 ): Promise<void> {
-  try {
-    if (!getRedisStatus()) {
-      await sendBookingAlertEmailDirect(options)
-      return
-    }
-
-    const addPromise = notificationQueue.add(
-      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
-      {
-        type: 'booking-alert',
-        emailData: options,
-      },
-    )
-
-    await Promise.race([
-      addPromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Queue timeout')), 3000),
-      ),
-    ])
-  } catch (err) {
-    console.error('Failed to queue booking alert email:', err)
-    await sendBookingAlertEmailDirect(options)
-  }
+  await sendBookingAlertEmailDirect(options)
 }
 
 export async function sendEmailNotificationsConfirmationEmail(
   options: SendPreferenceConfirmationOptions,
 ): Promise<void> {
-  try {
-    if (!getRedisStatus()) {
-      await sendEmailNotificationsConfirmationEmailDirect(options)
-      return
-    }
-
-    const addPromise = notificationQueue.add(
-      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
-      {
-        type: 'preference-confirmation',
-        emailData: options,
-      },
-    )
-
-    await Promise.race([
-      addPromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Queue timeout')), 3000),
-      ),
-    ])
-  } catch (err) {
-    console.error('Failed to queue preference confirmation email:', err)
-    await sendEmailNotificationsConfirmationEmailDirect(options)
-  }
+  await sendEmailNotificationsConfirmationEmailDirect(options)
 }
 
 export async function sendMarketingWelcomeEmail(
   options: SendPreferenceConfirmationOptions,
 ): Promise<void> {
-  try {
-    if (!getRedisStatus()) {
-      await sendMarketingWelcomeEmailDirect(options)
-      return
-    }
-
-    const addPromise = notificationQueue.add(
-      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
-      {
-        type: 'welcome',
-        emailData: options,
-      },
-    )
-
-    await Promise.race([
-      addPromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Queue timeout')), 3000),
-      ),
-    ])
-  } catch (err) {
-    console.error('Failed to queue welcome email:', err)
-    await sendMarketingWelcomeEmailDirect(options)
-  }
+  await sendMarketingWelcomeEmailDirect(options)
 }
 
 export async function sendContactSupportEmail(
   options: SendContactSupportOptions,
 ): Promise<void> {
-  try {
-    if (!getRedisStatus()) {
-      await sendContactSupportEmailDirect(options)
-      return
-    }
-
-    const addPromise = notificationQueue.add(
-      JOB_NAMES.NOTIFICATION.SEND_EMAIL,
-      {
-        type: 'support',
-        emailData: options,
-      },
-    )
-
-    await Promise.race([
-      addPromise,
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Queue timeout')), 3000),
-      ),
-    ])
-  } catch (err) {
-    console.error('Failed to queue support email:', err)
-    await sendContactSupportEmailDirect(options)
-  }
+  await sendContactSupportEmailDirect(options)
 }

@@ -1,8 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { paymentService } from './payment.service.js'
 import { rentalService } from '../rental/rental.service.js'
-import { paymentQueue } from '../../queues/queues.js'
-import { JOB_NAMES } from '../../constants/queue-keys.js'
 
 export class PaymentController {
   /**
@@ -35,13 +33,6 @@ export class PaymentController {
         'paid',
         transactionId,
       )
-
-      // Offload notification dispatch & invoice generation to background queue
-      try {
-        await paymentQueue.add(JOB_NAMES.PAYMENT.GENERATE_INVOICE, { rentalId })
-      } catch (err) {
-        console.error('Failed to queue invoice generation:', err)
-      }
 
       return { success: true, rental: updatedRental, transactionId }
     } catch (error: any) {
@@ -88,16 +79,13 @@ export class PaymentController {
     }
 
     try {
-      await paymentQueue.add(JOB_NAMES.PAYMENT.VERIFY_PAYMENT, {
+      const result = await paymentService.verifyBookingSession(
         userId,
         sessionId,
         rentalId,
-      })
+      )
 
-      return {
-        success: true,
-        message: 'Payment verification has been queued in the background.',
-      }
+      return result
     } catch (error: any) {
       return reply.status(500).send({ message: error.message })
     }

@@ -1,7 +1,6 @@
 import { Server as SocketIOServer } from 'socket.io'
 import { prisma } from '../config/prisma.js'
-import { chatQueue } from '../queues/queues.js'
-import { JOB_NAMES } from '../constants/queue-keys.js'
+import { createAndDeliverNotification } from './notification.js'
 
 // Store online users mapping: userId -> array of socketIds
 export const onlineUsers = new Map<string, string[]>()
@@ -352,18 +351,21 @@ export function initSocket(httpServer: any) {
             lastMessage: payloadMessage,
           })
 
-          // Offload chat notification dispatch and unread count recalculation to background queue
+          // Direct chat notification dispatch
           try {
-            await chatQueue.add(JOB_NAMES.CHAT.MESSAGE_NOTIFICATION, {
-              messageId: message.id,
-              recipientId: otherParticipantId,
-            })
-
-            await chatQueue.add(JOB_NAMES.CHAT.UNREAD_COUNT, {
+            const senderName =
+              (updatedConv.participantOneId === userId
+                ? updatedConv.participantOne?.name
+                : updatedConv.participantTwo?.name) || 'Someone'
+            await createAndDeliverNotification({
               userId: otherParticipantId,
+              title: `New message from ${senderName}`,
+              message: message.content || 'Sent an attachment',
+              type: 'chat',
+              url: `/chat/${conversationId}`,
             })
           } catch (err) {
-            console.error('Failed to queue chat processing jobs:', err)
+            console.error('Failed to send chat notification:', err)
           }
         } catch (err) {
           console.error('Error storing and broadcasting message:', err)

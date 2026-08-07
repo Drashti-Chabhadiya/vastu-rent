@@ -1,8 +1,6 @@
 import { prisma } from '../config/prisma.js'
 import { io } from './socket.js'
-import { notificationQueue } from '../queues/queues.js'
-import { JOB_NAMES } from '../constants/queue-keys.js'
-import { sendPushToTokens } from './fcm.js'
+import { sendPushToUser, sendPushToTokens } from './fcm.js'
 
 export interface NotificationOptions {
   userId: string
@@ -46,14 +44,13 @@ export async function createAndDeliverNotification({
       console.error('Socket emit failed for notification:', err)
     }
 
-    // Offload FCM push notification to background queue
+    // Direct FCM push notification
     try {
-      await notificationQueue.add(JOB_NAMES.NOTIFICATION.PUSH_NOTIFICATION, {
-        userId,
+      await sendPushToUser(userId, {
         title,
         body: message,
         url,
-        image,
+        image: image || '',
         data: {
           id: notif.id,
           type,
@@ -62,7 +59,7 @@ export async function createAndDeliverNotification({
         },
       })
     } catch (err) {
-      console.error('FCM send queuing failed for notification:', err)
+      console.error('FCM send failed for notification:', err)
     }
 
     return notif

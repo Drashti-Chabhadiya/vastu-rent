@@ -2,8 +2,6 @@ import { prisma } from '../../config/prisma.js'
 import { createAndDeliverNotification } from '../../lib/notification.js'
 import { sendBookingAlertEmail } from '../../lib/mail.js'
 import { syncGreenMemberStatus } from '../../lib/green-member.helper.js'
-import { rentalQueue } from '../../queues/queues.js'
-import { JOB_NAMES } from '../../constants/queue-keys.js'
 import { cacheDel, cacheDelPattern } from '../../lib/redis-cache.js'
 import { CACHE_KEYS } from '../../constants/cache-keys.js'
 
@@ -348,72 +346,6 @@ export class RentalService {
           type: 'booking',
           url: `/journal`,
         })
-
-        // Schedule delayed pickup reminder 24 hours before startDate
-        if (status === 'confirmed') {
-          try {
-            const startDate = new Date(updatedRental.startDate)
-            const reminderTime = startDate.getTime() - 24 * 60 * 60 * 1000 // 24 hours before
-            const delay = reminderTime - Date.now()
-
-            if (delay > 0) {
-              await rentalQueue.add(
-                JOB_NAMES.RENTAL.PICKUP_REMINDER,
-                { rentalId: updatedRental.id },
-                {
-                  delay,
-                  jobId: `pickup-reminder-${updatedRental.id}`,
-                  removeOnComplete: true,
-                },
-              )
-              console.log(
-                `[Rental Service] Scheduled delayed pickup reminder for booking ${updatedRental.id} in ${delay}ms`,
-              )
-            } else {
-              console.log(
-                `[Rental Service] Booking starts in less than 24 hours. Skipping pickup reminder schedule.`,
-              )
-            }
-          } catch (err) {
-            console.error(
-              '[Rental Service] Failed to schedule pickup reminder:',
-              err,
-            )
-          }
-        }
-      }
-
-      // Schedule delayed return reminder 24 hours before endDate
-      if (status === 'picked_up') {
-        try {
-          const endDate = new Date(updatedRental.endDate)
-          const reminderTime = endDate.getTime() - 24 * 60 * 60 * 1000 // 24 hours before
-          const delay = reminderTime - Date.now()
-
-          if (delay > 0) {
-            await rentalQueue.add(
-              JOB_NAMES.RENTAL.RETURN_REMINDER,
-              { rentalId: updatedRental.id },
-              {
-                delay,
-                jobId: `return-reminder-${updatedRental.id}`,
-                removeOnComplete: true,
-              },
-            )
-            console.log(
-              `[Rental Service] Scheduled delayed return reminder for booking ${updatedRental.id} in ${delay}ms`,
-            )
-          } else {
-            console.log(
-              `[Rental Service] Rental ends in less than 24 hours. Skipping return reminder schedule.`,
-            )
-          }
-        } catch (err) {
-          console.error(
-            '[Rental Service] Failed to schedule return reminder:',
-            err,
-          )
-        }
       }
 
       if (status === 'cancelled' || status === 'rejected') {
