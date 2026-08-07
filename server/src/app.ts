@@ -3,7 +3,7 @@ import Fastify from 'fastify'
 import cookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import multipart from '@fastify/multipart'
-
+import rateLimit from '@fastify/rate-limit'
 // ─── Feature Routes ───────────────────────────────────────────────────────────
 import { authRoutes } from './features/auth/auth.routes.js'
 import { userRoutes } from './features/user/user.routes.js'
@@ -39,6 +39,12 @@ app.register(multipart, {
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB
   },
+})
+
+app.register(rateLimit, {
+  global: false, // Don't rate limit everything by default
+  max: 100,
+  timeWindow: '1 minute',
 })
 
 app.register(cors, {

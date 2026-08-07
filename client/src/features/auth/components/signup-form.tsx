@@ -2,14 +2,16 @@ import { signupSchema } from '#/schema'
 import type { SignupSchema } from '#/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Mail, Lock, EyeOff, User, Eye } from 'lucide-react'
 import { authClient } from '#/lib/auth/auth-client'
+import { getDeviceFingerprint } from '#/utils/fingerprint'
 import { SocialAuth } from './social-auth'
 import { toast } from 'sonner'
+import { authApi } from '../api/auth'
 import { useTranslation } from '#/context/TranslationContext'
 import { LanguageSelector } from '@/components/ui/language-selector'
 import {
@@ -20,9 +22,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Route as SignupRoute } from '../../../routes/signup'
 
 export function SignupForm() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const searchParams = SignupRoute.useSearch()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -30,8 +35,8 @@ export function SignupForm() {
     resolver: zodResolver(signupSchema),
     mode: 'onChange',
     defaultValues: {
-      name: '',
-      email: '',
+      name: searchParams?.name || '',
+      email: searchParams?.email || '',
       password: '',
       confirmPassword: '',
     },
@@ -40,145 +45,99 @@ export function SignupForm() {
     formState: { isSubmitting },
   } = form
 
-  // Verification-related states
-  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null)
-  const [resendLoading, setResendLoading] = useState(false)
-  const [resendSuccess, setResendSuccess] = useState(false)
-  const [resendError, setResendError] = useState<string | null>(null)
-  const [resendCooldown, setResendCooldown] = useState(0)
-
-  // Countdown timer for resending verification email
-  useEffect(() => {
-    if (resendCooldown === 0) return
-    const interval = setInterval(() => {
-      setResendCooldown((prev) => prev - 1)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [resendCooldown])
-
   const onSubmit = async (values: SignupSchema) => {
     setServerError(null)
 
-    const { error } = await authClient.signUp.email({
-      email: values.email,
-      password: values.password,
-      name: values.name,
-      callbackURL: '/',
-    })
-
-    if (error) {
-      const errMsg = error.message ?? 'Registration failed. Please try again.'
+    // Check if device has already used the free trial
+    const hasUsedTrial = localStorage.getItem('vasturent_free_trial_used')
+    if (hasUsedTrial === 'true') {
+      const errMsg =
+        t(
+          'An account has already been created on this device. Please log in using your existing account.',
+        ) ||
+        'An account has already been created on this device. Please log in using your existing account.'
       setServerError(errMsg)
       toast.error(errMsg)
       return
     }
 
-    // Set the email to switch to the premium verification success view
-    setRegisteredEmail(values.email)
-  }
+    let visitorId = ''
+    try {
+      visitorId = await getDeviceFingerprint()
+      localStorage.setItem('vasturent_device_fp', visitorId)
+    } catch (e) {
+      console.error('Failed to get fingerprint', e)
+    }
 
-  const handleResend = async () => {
-    if (!registeredEmail || resendCooldown > 0) return
+    // Check if email is already registered (backend DB check)
+    try {
+      const emailExists = await authApi.checkEmailExists(values.email)
+      if (emailExists) {
+        const errMsg =
+          t(
+            'This email is already registered. Please use a different email or log in.',
+          ) ||
+          'This email is already registered. Please use a different email or log in.'
+        form.setError('email', { type: 'manual', message: errMsg })
+        return
+      }
+    } catch (e) {
+      // If check fails, proceed – the backend will reject it anyway
+      console.error('Email check failed:', e)
+    }
 
-    setResendLoading(true)
-    setResendError(null)
-
-    const { error } = await authClient.sendVerificationEmail({
-      email: registeredEmail,
+    const { error } = await authClient.signUp.email({
+      email: values.email,
+      password: values.password,
+      name: values.name,
+      deviceFingerprint: visitorId || undefined,
       callbackURL: '/',
+    } as Parameters<typeof authClient.signUp.email>[0] & {
+      deviceFingerprint?: string
     })
 
-    setResendLoading(false)
-
     if (error) {
-      setResendError(error.message ?? 'Failed to resend. Please try again.')
-    } else {
-      setResendSuccess(true)
-      setResendCooldown(60)
-      setTimeout(() => setResendSuccess(false), 5000)
+      let errMsg = error.message ?? 'Registration failed. Please try again.'
+
+      // Provide a clean, user-friendly error message for duplicate devices
+      if (errMsg.includes('Device already registered')) {
+        errMsg =
+          'This device has already been used to register an account. Multiple accounts from the same device are not permitted.'
+        setServerError(errMsg)
+        toast.error(errMsg)
+      } else if (
+        errMsg.toLowerCase().includes('already exists') ||
+        errMsg.toLowerCase().includes('already registered')
+      ) {
+        errMsg =
+          t(
+            'This email is already registered. Please use a different email or log in.',
+          ) ||
+          'This email is already registered. Please use a different email or log in.'
+        form.setError('email', { type: 'manual', message: errMsg })
+      } else {
+        setServerError(errMsg)
+        toast.error(errMsg)
+      }
+
+      return
     }
+
+    // Mark trial as used upon successful signup
+    localStorage.setItem('vasturent_free_trial_used', 'true')
+
+    // Call /api/auth/send-otp
+    try {
+      await authApi.sendOtp(values.email, values.name)
+    } catch (err) {
+      console.error('Failed to send initial OTP:', err)
+    }
+
+    // Redirect to Verify Email page
+    navigate({ to: '/verify-email', search: { email: values.email } })
   }
 
-  if (registeredEmail) {
-    return (
-      <div className="w-full relative py-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
-        <div className="mb-8">
-          <h1 className="text-[32px] font-bold text-text-dark tracking-tight font-display">
-            Verify Your Email
-          </h1>
-          <p className="mt-2 text-[15px] text-muted-foreground/85 font-medium">
-            We've sent a verification link to your inbox.
-          </p>
-        </div>
-
-        <div className="bg-primary-soft/50 border border-primary/20 rounded-2xl p-6 sm:p-8 mb-6 flex flex-col items-center text-center shadow-soft">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-5 animate-pulse">
-            <Mail className="h-8 w-8 text-primary" strokeWidth={1.5} />
-          </div>
-
-          <h3 className="text-lg font-bold text-foreground mb-2">
-            Check your inbox
-          </h3>
-          <p className="text-[14px] text-muted-foreground max-w-[340px] leading-relaxed mb-4">
-            A confirmation link was sent to{' '}
-            <strong className="text-foreground break-all">
-              {registeredEmail}
-            </strong>
-            . Please click the link to activate your account.
-          </p>
-
-          {resendSuccess && (
-            <p className="text-sm text-primary font-bold mb-4 bg-primary/10 px-3 py-1.5 rounded-lg animate-in fade-in duration-200">
-              Verification email resent successfully!
-            </p>
-          )}
-
-          {resendError && (
-            <p className="text-sm text-destructive font-semibold mb-4 bg-danger px-3 py-1.5 rounded-lg">
-              {resendError}
-            </p>
-          )}
-
-          <Button
-            type="button"
-            disabled={resendLoading || resendCooldown > 0}
-            onClick={handleResend}
-            className="w-full h-12 rounded-xl bg-primary text-primary-foreground text-[14px] font-bold hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {resendLoading ? (
-              <span className="flex items-center gap-1.5">
-                <span className="w-4 h-4 border-2 border-card border-t-transparent rounded-full animate-spin"></span>
-                Resending...
-              </span>
-            ) : resendCooldown > 0 ? (
-              `Resend email in ${resendCooldown}s`
-            ) : (
-              'Resend Verification Email'
-            )}
-          </Button>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setRegisteredEmail(null)}
-            className="w-full"
-          >
-            Back to Sign Up
-          </Button>
-
-          <Button
-            asChild
-            variant="ghost"
-            className="w-full h-11 rounded-xl bg-muted/50 hover:bg-muted text-foreground/90 text-[14px] font-bold transition-colors flex items-center justify-center cursor-pointer"
-          >
-            <Link to="/login">Go to Login</Link>
-          </Button>
-        </div>
-      </div>
-    )
-  }
+  // The resend UI is now inside verify-email route
 
   return (
     <div className="w-full relative">

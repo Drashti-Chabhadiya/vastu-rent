@@ -8,6 +8,7 @@ import {
   sendEmailNotificationsConfirmationEmailDirect,
   sendMarketingWelcomeEmailDirect,
   sendContactSupportEmailDirect,
+  sendOtpEmailDirect,
 } from '../../lib/mail.js'
 import { QUEUE_NAMES, JOB_NAMES } from '../../constants/queue-keys.js'
 
@@ -63,6 +64,9 @@ export const notificationWorker = new Worker(
             break
           case 'support':
             await sendContactSupportEmailDirect(emailData)
+            break
+          case 'otp':
+            await sendOtpEmailDirect(emailData)
             break
           default:
             throw new Error(`Unsupported email type: ${type}`)

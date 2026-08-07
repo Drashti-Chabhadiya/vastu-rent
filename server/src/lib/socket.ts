@@ -202,9 +202,7 @@ export function initSocket(httpServer: any) {
     socket.on('leave_conversation', ({ conversationId }) => {
       if (!conversationId) return
       socket.leave(`conversation_${conversationId}`)
-      console.log(
-        `💬 Socket ${socket.id} left conversation: ${conversationId}`,
-      )
+      console.log(`💬 Socket ${socket.id} left conversation: ${conversationId}`)
     })
 
     // Send a message

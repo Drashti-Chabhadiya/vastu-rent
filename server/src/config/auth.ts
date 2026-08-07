@@ -1,4 +1,4 @@
-import { betterAuth } from 'better-auth'
+import { betterAuth, APIError } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { prisma } from './prisma.js'
 import { admin, bearer } from 'better-auth/plugins'
@@ -76,6 +76,27 @@ export const auth = betterAuth({
       isGreenMember: { type: 'boolean', required: false },
       instagramUrl: { type: 'string', required: false },
       facebookUrl: { type: 'string', required: false },
+      deviceFingerprint: { type: 'string', required: false },
+    },
+  },
+
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          if (user.deviceFingerprint) {
+            const existing = await prisma.user.findFirst({
+              where: { deviceFingerprint: user.deviceFingerprint },
+            })
+            if (existing) {
+              throw new APIError('BAD_REQUEST', {
+                message: 'Device already registered.',
+              })
+            }
+          }
+          return { data: user }
+        },
+      },
     },
   },
 
@@ -101,7 +122,7 @@ export const auth = betterAuth({
    * Queue-based sending added ~3-4 min delay due to remote Redis latency + retry backoff.
    */
   emailVerification: {
-    sendOnSignUp: true,
+    sendOnSignUp: false, // Disabled: We use custom OTP flow
     sendVerificationEmail: async ({ user, url, token }) => {
       // Use queue-based (non-blocking) sending so signup responds instantly.
       // Direct SMTP blocks the request and times out on Render (port 587 restricted).
