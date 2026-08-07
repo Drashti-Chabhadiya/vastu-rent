@@ -1,4 +1,4 @@
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import {
   getVerificationTemplate,
   getResetPasswordTemplate,
@@ -12,19 +12,42 @@ import { notificationQueue } from '../queues/queues.js'
 import { JOB_NAMES } from '../constants/queue-keys.js'
 import { getRedisStatus } from '../config/redis.js'
 
-// ─── Resend Client Singleton ─────────────────────────────────────────────────
-let _resendClient: Resend | null = null
+// ─── Shared Transporter (Nodemailer Connection Pool) ─────────────────────────
+let _transporter: nodemailer.Transporter | null = null
 
-function getResendClient(): Resend | null {
-  const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) return null
-  if (!_resendClient) {
-    _resendClient = new Resend(apiKey)
+function getTransporter(): nodemailer.Transporter | null {
+  const smtpHost = process.env.SMTP_HOST
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
+  const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
+
+  if (!smtpHost || !smtpUser || !smtpPass) return null
+
+  if (!_transporter) {
+    _transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      pool: true,
+      maxConnections: 3,
+      connectionTimeout: 15_000,
+      socketTimeout: 15_000,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
+    })
+    console.log(
+      '📬  [Mail] SMTP transporter initialized (connection pool ready)',
+    )
   }
-  return _resendClient
+
+  return _transporter
 }
 
-// ─── Helper function to send email via Resend > Simulator ─────────────────────
+// ─── Helper function to send email via Nodemailer SMTP or Simulator ───────────
 
 interface SendMailHelperOptions {
   to: string
@@ -45,40 +68,29 @@ async function sendMailHelper({
   simulatedTitle,
   simulatedLogLines,
 }: SendMailHelperOptions): Promise<void> {
-  const defaultFrom = 'VastuRent <onboarding@resend.dev>'
-  const from = process.env.RESEND_FROM || defaultFrom
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
-  const resend = getResendClient()
-  if (resend) {
+  const transporter = getTransporter()
+  if (transporter) {
     try {
-      const res = await resend.emails.send({
-        from,
+      await transporter.sendMail({
+        from: smtpFrom,
         to,
+        replyTo,
         subject,
         html,
         text,
-        replyTo,
       })
-
-      if (res.error) {
-        console.error('❌  [Resend] API Error:', res.error)
-        throw new Error(res.error.message)
-      }
-
-      console.log(
-        `📧  [Resend] Email sent successfully to ${to} (ID: ${res.data?.id})`,
-      )
+      console.log(`📧  [SMTP] Email sent successfully to ${to}`)
       return
     } catch (err: any) {
-      console.error(
-        '❌  [Resend] Failed sending email via Resend API:',
-        err?.message || err,
-      )
+      console.error('❌  [SMTP] Error sending email:', err?.message || err)
       throw err
     }
   }
 
-  // Fallback to Local Email Simulator when RESEND_API_KEY is not defined
+  // Fallback to Local Email Simulator when SMTP is not configured
   console.log('\n' + '='.repeat(75))
   console.log(`📧  [VastuRent Email Simulator] - ${simulatedTitle}`)
   console.log('='.repeat(75))
@@ -91,7 +103,7 @@ async function sendMailHelper({
   }
   console.log('-'.repeat(75))
   console.log(
-    '💡  Note: Define RESEND_API_KEY in server/.env to send real emails via Resend.',
+    '💡  Note: Define SMTP_HOST, SMTP_USER, and SMTP_PASS in server/.env to send real emails.',
   )
   console.log('='.repeat(75) + '\n')
 }
@@ -281,7 +293,10 @@ export async function sendContactSupportEmailDirect({
   })
 
   await sendMailHelper({
-    to: process.env.CONTACT_EMAIL || 'support@vasturent.com',
+    to:
+      process.env.CONTACT_EMAIL ||
+      process.env.SMTP_USER ||
+      'support@vasturent.com',
     replyTo: email,
     subject: emailSubject,
     html: htmlContent,
