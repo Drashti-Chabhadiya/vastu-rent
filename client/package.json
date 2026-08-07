@@ -66,7 +66,6 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/vite": "^4.1.18",
-    "@tanstack/react-devtools": "^5.67.0",
     "@tanstack/react-query": "^5.100.9",
     "@tanstack/react-router": "^1.132.0",
     "@tanstack/react-router-devtools": "^1.132.0",
@@ -104,7 +103,6 @@
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
     "@tailwindcss/typography": "^0.5.16",
-    "@tanstack/devtools-vite": "^5.67.0",
     "@tanstack/eslint-config": "^0.4.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
