@@ -18,7 +18,7 @@ const getApiBaseUrl = (): string => {
   if (Capacitor.isNativePlatform()) {
     url =
       import.meta.env.VITE_API_BASE_URL ||
-      'https://new-vastu-rent.onrender.com/api'
+      'https://new-vastu-rent-zyap.onrender.com/api'
   } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&

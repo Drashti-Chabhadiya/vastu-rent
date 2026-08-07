@@ -152,7 +152,7 @@ export const auth = betterAuth({
     // Production web app (Vercel)
     'https://new-vastu-rent-client.vercel.app',
     // Production backend (Render) — needed when Render itself is the callbackURL origin
-    'https://new-vastu-rent.onrender.com',
+    'https://new-vastu-rent-zyap.onrender.com',
     // Dynamic env-configured origins
     process.env.CLIENT_URL,
     process.env.BETTER_AUTH_URL,
