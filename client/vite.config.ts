@@ -111,6 +111,14 @@ const config = defineConfig(async ({ mode }) => {
   return {
     resolve: { tsconfigPaths: true },
     plugins,
+    optimizeDeps: {
+      include: ['react-is'],
+    },
+    build: {
+      commonjsOptions: {
+        include: [/react-is/, /node_modules/],
+      },
+    },
     server: {
       host: '0.0.0.0',
       port: 3000,
