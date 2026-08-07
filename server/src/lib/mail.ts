@@ -1,4 +1,3 @@
-import nodemailer from 'nodemailer'
 import { Resend } from 'resend'
 import {
   getVerificationTemplate,
@@ -25,42 +24,7 @@ function getResendClient(): Resend | null {
   return _resendClient
 }
 
-// ─── Shared Transporter (Connection Pool) ────────────────────────────────────
-let _transporter: nodemailer.Transporter | null = null
-
-function getTransporter(): nodemailer.Transporter | null {
-  const smtpHost = process.env.SMTP_HOST
-  const smtpPort = process.env.SMTP_PORT
-    ? parseInt(process.env.SMTP_PORT, 10)
-    : 587
-  const smtpUser = process.env.SMTP_USER
-  const smtpPass = process.env.SMTP_PASS
-
-  if (!smtpHost || !smtpUser || !smtpPass) return null
-
-  if (!_transporter) {
-    _transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      pool: true,
-      maxConnections: 3,
-      connectionTimeout: 15_000,
-      socketTimeout: 15_000,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    })
-    console.log(
-      '📬  [Mail] SMTP transporter initialized (connection pool ready)',
-    )
-  }
-
-  return _transporter
-}
-
-// ─── Helper function to send email via Resend > SMTP > Simulator ─────────────
+// ─── Helper function to send email via Resend > Simulator ─────────────────────
 
 interface SendMailHelperOptions {
   to: string
@@ -82,9 +46,8 @@ async function sendMailHelper({
   simulatedLogLines,
 }: SendMailHelperOptions): Promise<void> {
   const defaultFrom = 'VastuRent <onboarding@resend.dev>'
-  const from = process.env.RESEND_FROM || process.env.SMTP_FROM || defaultFrom
+  const from = process.env.RESEND_FROM || defaultFrom
 
-  // 1. Try Resend API first (works seamlessly on Vercel / Render without port blocking)
   const resend = getResendClient()
   if (resend) {
     try {
@@ -111,31 +74,11 @@ async function sendMailHelper({
         '❌  [Resend] Failed sending email via Resend API:',
         err?.message || err,
       )
-      // Fallback to Nodemailer if SMTP configured below
-    }
-  }
-
-  // 2. Try Nodemailer SMTP second
-  const transporter = getTransporter()
-  if (transporter) {
-    try {
-      await transporter.sendMail({
-        from: process.env.SMTP_FROM || from,
-        to,
-        replyTo,
-        subject,
-        html,
-        text,
-      })
-      console.log(`📧  [SMTP] Email sent successfully to ${to}`)
-      return
-    } catch (err) {
-      console.error('❌  [SMTP] Error sending email via SMTP:', err)
       throw err
     }
   }
 
-  // 3. Fallback to Local Email Simulator
+  // Fallback to Local Email Simulator when RESEND_API_KEY is not defined
   console.log('\n' + '='.repeat(75))
   console.log(`📧  [VastuRent Email Simulator] - ${simulatedTitle}`)
   console.log('='.repeat(75))
@@ -148,7 +91,7 @@ async function sendMailHelper({
   }
   console.log('-'.repeat(75))
   console.log(
-    '💡  Note: Define RESEND_API_KEY or SMTP_HOST/SMTP_USER/SMTP_PASS in server/.env to send real emails.',
+    '💡  Note: Define RESEND_API_KEY in server/.env to send real emails via Resend.',
   )
   console.log('='.repeat(75) + '\n')
 }
@@ -338,10 +281,7 @@ export async function sendContactSupportEmailDirect({
   })
 
   await sendMailHelper({
-    to:
-      process.env.CONTACT_EMAIL ||
-      process.env.SMTP_USER ||
-      'support@vasturent.com',
+    to: process.env.CONTACT_EMAIL || 'support@vasturent.com',
     replyTo: email,
     subject: emailSubject,
     html: htmlContent,
