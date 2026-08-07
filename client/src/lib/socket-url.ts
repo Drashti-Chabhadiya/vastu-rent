@@ -11,7 +11,8 @@ export function getSocketUrl(): string {
   let url = ''
   if (Capacitor.isNativePlatform()) {
     url =
-      import.meta.env.VITE_SOCKET_URL || 'https://new-vastu-rent-zyap.onrender.com'
+      import.meta.env.VITE_SOCKET_URL ||
+      'https://new-vastu-rent-zyap.onrender.com'
   } else {
     // ── Web browser — explicit env var wins if set ────────────────────────────
     const envSocketUrl = import.meta.env.VITE_SOCKET_URL
