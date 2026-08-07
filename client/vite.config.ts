@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
 import type { Plugin } from 'vite'
-import { devtools } from '@tanstack/devtools-vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -55,39 +54,46 @@ function firebaseSwPlugin(env: Record<string, string>): Plugin[] {
   ]
 }
 
-const config = defineConfig(({ mode }) => {
+const config = defineConfig(async ({ mode }) => {
   // Load .env for the current mode (development / production)
   const env = loadEnv(mode, process.cwd(), '')
 
+  const plugins: (Plugin | Plugin[])[] = [
+    TanStackRouterVite(),
+    viteReact(),
+    tailwindcss(),
+    // ── Firebase SW injection ──────────────────────────────────────────────
+    ...firebaseSwPlugin(env),
+    // ── APK MIME type for dev server ──────────────────────────────────────
+    {
+      name: 'apk-mime-type',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url?.endsWith('.apk')) {
+            res.setHeader('Content-Type', 'application/vnd.android.package-archive')
+            res.setHeader('Content-Disposition', 'attachment; filename="VastuRent.apk"')
+          }
+          next()
+        })
+      },
+    },
+  ]
+
+  // Try to load the TanStack devtools plugin only in development and only if installed.
+  try {
+    if (mode === 'development') {
+      // dynamic import avoids hard dependency during install/build on CI
+      const mod = await import('@tanstack/devtools-vite')
+      // insert after viteReact()
+      plugins.splice(2, 0, (mod.devtools as () => Plugin)())
+    }
+  } catch {
+    // devtools not available; continue without it
+  }
+
   return {
     resolve: { tsconfigPaths: true },
-    plugins: [
-      TanStackRouterVite(),
-      viteReact(),
-      devtools(),
-      tailwindcss(),
-      // ── Firebase SW injection ──────────────────────────────────────────────
-      ...firebaseSwPlugin(env),
-      // ── APK MIME type for dev server ──────────────────────────────────────
-      {
-        name: 'apk-mime-type',
-        configureServer(server) {
-          server.middlewares.use((req, res, next) => {
-            if (req.url?.endsWith('.apk')) {
-              res.setHeader(
-                'Content-Type',
-                'application/vnd.android.package-archive',
-              )
-              res.setHeader(
-                'Content-Disposition',
-                'attachment; filename="VastuRent.apk"',
-              )
-            }
-            next()
-          })
-        },
-      },
-    ],
+    plugins,
     server: {
       host: '0.0.0.0',
       port: 3000,
