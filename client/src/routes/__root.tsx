@@ -20,6 +20,7 @@ import type { Socket } from 'socket.io-client'
 import { toast } from 'sonner'
 import { getSocketUrl } from '#/lib/socket-url'
 import { Capacitor } from '@capacitor/core'
+import { authApi } from '#/features/auth/api/auth'
 import { App as CapacitorApp } from '@capacitor/app'
 import { TranslationProvider } from '#/context/TranslationContext'
 import { cn } from '#/lib/utils'
@@ -284,6 +285,51 @@ function NotificationListener() {
 
 function RootDocument() {
   const routerState = useRouterState()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkVerification = async () => {
+      const currentPath = routerState.location.pathname
+      const isAuthRoute =
+        currentPath.startsWith('/login') || currentPath.startsWith('/signup')
+
+      if (isAuthRoute) {
+        const pendingData = await authApi.getPendingVerification()
+        if (pendingData?.pending) {
+          navigate({
+            to: '/verify-email',
+            search: { email: pendingData.email },
+          })
+        }
+      }
+    }
+
+    // Check on route changes or component mount
+    checkVerification()
+
+    // Listen for Capacitor app resume (native)
+    let capHandle: { remove: () => void } | null = null
+    if (Capacitor.isNativePlatform()) {
+      CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) checkVerification()
+      }).then((handle) => {
+        capHandle = handle
+      })
+    }
+
+    // Listen for web browser visibility changes
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        checkVerification()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    return () => {
+      capHandle?.remove()
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
+  }, [routerState.location.pathname, navigate])
   const isAuthPage =
     routerState.location.pathname.startsWith('/login') ||
     routerState.location.pathname.startsWith('/signup')

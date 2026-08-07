@@ -6,6 +6,7 @@ import {
   getNotificationsConfirmationTemplate,
   getMarketingWelcomeTemplate,
   getContactSupportTemplate,
+  getOtpTemplate,
 } from '../templates/index.js'
 import { notificationQueue } from '../queues/queues.js'
 import { JOB_NAMES } from '../constants/queue-keys.js'
@@ -30,21 +31,22 @@ function getTransporter(): nodemailer.Transporter | null {
       host: smtpHost,
       port: smtpPort,
       secure: smtpPort === 465,
-      pool: true,         // keep TCP connections alive
-      maxConnections: 3,  // up to 3 concurrent SMTP connections
-      connectionTimeout: 15_000,  // fail fast if SMTP port is blocked (e.g. Render)
-      socketTimeout: 15_000,      // fail fast if socket stalls mid-send
+      pool: true, // keep TCP connections alive
+      maxConnections: 3, // up to 3 concurrent SMTP connections
+      connectionTimeout: 15_000, // fail fast if SMTP port is blocked (e.g. Render)
+      socketTimeout: 15_000, // fail fast if socket stalls mid-send
       auth: {
         user: smtpUser,
         pass: smtpPass,
       },
     })
-    console.log('📬  [Mail] SMTP transporter initialized (connection pool ready)')
+    console.log(
+      '📬  [Mail] SMTP transporter initialized (connection pool ready)',
+    )
   }
 
   return _transporter
 }
-
 
 interface SendVerificationEmailOptions {
   email: string
@@ -81,11 +83,17 @@ export async function sendVerificationEmailDirect({
     console.log(`👤  To Name:    ${name}`)
     console.log(`✉️  To Email:   ${email}`)
     console.log(`📋  Subject:    ${subject}`)
-    console.log(`🔗  Verify URL: \x1b[36m\x1b[4m${clientVerificationUrl}\x1b[0m`)
+    console.log(
+      `🔗  Verify URL: \x1b[36m\x1b[4m${clientVerificationUrl}\x1b[0m`,
+    )
     console.log(`🎫  Token:      ${token}`)
     console.log('-'.repeat(75))
-    console.log('💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS')
-    console.log('    in your server/.env file. Proceeding with simulated success.')
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
     console.log('='.repeat(75) + '\n')
     return
   }
@@ -101,6 +109,58 @@ export async function sendVerificationEmailDirect({
     console.log(`📧  Email verification sent successfully to ${email}`)
   } catch (error) {
     console.error('❌  Error sending email verification email:', error)
+    throw error
+  }
+}
+
+interface SendOtpEmailOptions {
+  email: string
+  name: string
+  otp: string
+}
+
+export async function sendOtpEmailDirect({
+  email,
+  name,
+  otp,
+}: SendOtpEmailOptions): Promise<void> {
+  const smtpFrom =
+    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
+  const subject = 'Your VastuRent Verification Code'
+  const htmlContent = getOtpTemplate({ name, otp })
+
+  const transporter = getTransporter()
+
+  if (!transporter) {
+    console.log('\n' + '='.repeat(75))
+    console.log('📧  [VastuRent Email Simulator] - OTP GENERATED')
+    console.log('='.repeat(75))
+    console.log(`👤  To Name:    ${name}`)
+    console.log(`✉️  To Email:   ${email}`)
+    console.log(`📋  Subject:    ${subject}`)
+    console.log(`🔑  OTP Code:   \x1b[36m\x1b[1m${otp}\x1b[0m`)
+    console.log('-'.repeat(75))
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
+    console.log('='.repeat(75) + '\n')
+    return
+  }
+
+  try {
+    await transporter.sendMail({
+      from: smtpFrom,
+      to: email,
+      subject,
+      html: htmlContent,
+      text: `Your VastuRent Verification Code is: ${otp}`,
+    })
+    console.log(`📧  OTP email sent successfully to ${email}`)
+  } catch (error) {
+    console.error('❌  Error sending OTP email:', error)
     throw error
   }
 }
@@ -134,7 +194,9 @@ export async function sendResetPasswordEmailDirect({
 
   if (!transporter) {
     console.log('\n' + '='.repeat(75))
-    console.log('📧  [VastuRent Email Simulator] - PASSWORD RESET LINK GENERATED')
+    console.log(
+      '📧  [VastuRent Email Simulator] - PASSWORD RESET LINK GENERATED',
+    )
     console.log('='.repeat(75))
     console.log(`👤  To Name:    ${name}`)
     console.log(`✉️  To Email:   ${email}`)
@@ -142,8 +204,12 @@ export async function sendResetPasswordEmailDirect({
     console.log(`🔗  Reset URL:  ${clientResetPasswordUrl}`)
     console.log(`🎫  Token:      ${token}`)
     console.log('-'.repeat(75))
-    console.log('💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS')
-    console.log('    in your server/.env file. Proceeding with simulated success.')
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
     console.log('='.repeat(75) + '\n')
     return
   }
@@ -194,8 +260,12 @@ export async function sendBookingAlertEmailDirect({
     console.log(`📋  Subject:    ${subject}`)
     console.log(`💬  Message:    ${message}`)
     console.log('-'.repeat(75))
-    console.log('💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS')
-    console.log('    in your server/.env file. Proceeding with simulated success.')
+    console.log(
+      '💡  Note: To send real emails, define SMTP_HOST, SMTP_USER, and SMTP_PASS',
+    )
+    console.log(
+      '    in your server/.env file. Proceeding with simulated success.',
+    )
     console.log('='.repeat(75) + '\n')
     return
   }
@@ -437,6 +507,20 @@ export async function sendVerificationEmail(
   } catch (err) {
     console.error('Failed to queue verification email:', err)
     await sendVerificationEmailDirect(options)
+  }
+}
+
+export async function sendOtpEmail(
+  options: SendOtpEmailOptions,
+): Promise<void> {
+  try {
+    await notificationQueue.add(JOB_NAMES.NOTIFICATION.SEND_EMAIL, {
+      type: 'otp',
+      emailData: options,
+    })
+  } catch (err) {
+    console.error('Failed to queue OTP email:', err)
+    await sendOtpEmailDirect(options)
   }
 }
 

@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authClient } from '#/lib/auth/auth-client'
+import { authApi } from '../api/auth'
 import { useState, useEffect } from 'react'
 import { Mail, Lock, EyeOff, Check, Eye } from 'lucide-react'
 import { loginSchema } from '#/schema'
@@ -31,6 +32,7 @@ import {
 
 export function LoginForm() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(true)
@@ -42,11 +44,6 @@ export function LoginForm() {
   const [biometricLoading, setBiometricLoading] = useState(false)
 
   // Verification-related states
-  const [isUnverified, setIsUnverified] = useState(false)
-  const [unverifiedEmail, setUnverifiedEmail] = useState('')
-  const [resendLoading, setResendLoading] = useState(false)
-  const [resendSuccess, setResendSuccess] = useState(false)
-  const [resendError, setResendError] = useState<string | null>(null)
   const [resendCooldown, setResendCooldown] = useState(0)
 
   // Forgot password states
@@ -129,8 +126,6 @@ export function LoginForm() {
 
   const onSubmit = async (values: LoginSchema) => {
     setServerError(null)
-    setIsUnverified(false)
-    setResendError(null)
 
     const { error } = await authClient.signIn.email({
       email: values.email,
@@ -143,8 +138,13 @@ export function LoginForm() {
         error.code === 'EMAIL_NOT_VERIFIED' ||
         error.message?.toLowerCase().includes('verify')
       ) {
-        setIsUnverified(true)
-        setUnverifiedEmail(values.email)
+        // Send a new OTP and navigate to the verify-email page step-by-step flow
+        try {
+          await authApi.sendOtp(values.email)
+        } catch (err) {
+          console.error('Failed to send OTP:', err)
+        }
+        navigate({ to: '/verify-email', search: { email: values.email } })
       } else {
         const errMsg = error.message ?? 'Login failed. Please try again.'
         setServerError(errMsg)
@@ -198,28 +198,6 @@ export function LoginForm() {
       }
     } else {
       setBiometricLoading(false)
-    }
-  }
-
-  const handleResend = async () => {
-    if (!unverifiedEmail || resendCooldown > 0) return
-
-    setResendLoading(true)
-    setResendError(null)
-
-    const { error } = await authClient.sendVerificationEmail({
-      email: unverifiedEmail,
-      callbackURL: '/',
-    })
-
-    setResendLoading(false)
-
-    if (error) {
-      setResendError(error.message ?? 'Failed to resend. Please try again.')
-    } else {
-      setResendSuccess(true)
-      setResendCooldown(60)
-      setTimeout(() => setResendSuccess(false), 5000)
     }
   }
 
@@ -504,71 +482,6 @@ export function LoginForm() {
               <p className="text-center text-xs text-destructive font-medium">
                 {serverError}
               </p>
-            )}
-
-            {isUnverified && (
-              <div className="bg-warning/30 border border-warning-foreground/20 rounded-xl p-4 text-center sm:text-left animate-in fade-in duration-300">
-                <div className="flex gap-2.5 items-start">
-                  <div className="text-warning-foreground mt-0.5 shrink-0">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <h4 className="text-[14px] font-bold text-warning-foreground font-sans">
-                      Verification Required
-                    </h4>
-                    <p className="mt-1 text-[13px] text-warning-foreground/90 leading-relaxed font-medium">
-                      Your email is not verified yet. Please check your inbox
-                      for the verification link sent to{' '}
-                      <strong className="text-foreground break-all">
-                        {unverifiedEmail}
-                      </strong>
-                      .
-                    </p>
-
-                    {resendSuccess && (
-                      <p className="mt-2 text-xs text-primary font-bold bg-primary/10 px-2 py-1 rounded inline-block animate-in fade-in duration-200">
-                        Verification link resent successfully!
-                      </p>
-                    )}
-                    {resendError && (
-                      <p className="mt-2 text-xs text-destructive font-semibold bg-danger px-2 py-1 rounded inline-block">
-                        {resendError}
-                      </p>
-                    )}
-
-                    <Button
-                      type="button"
-                      variant="link"
-                      disabled={resendLoading || resendCooldown > 0}
-                      onClick={handleResend}
-                      className="mt-3 text-[13px] font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1 p-0 h-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {resendLoading ? (
-                        <span className="flex items-center gap-1">
-                          <span className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
-                          Resending...
-                        </span>
-                      ) : resendCooldown > 0 ? (
-                        `Resend email in ${resendCooldown}s`
-                      ) : (
-                        'Resend verification email'
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
             )}
 
             {/* Login Button */}
