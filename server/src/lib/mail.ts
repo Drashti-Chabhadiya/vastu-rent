@@ -31,16 +31,17 @@ function getTransporter(): nodemailer.Transporter | null {
   // We default to SSL Port 465 for Gmail / cloud deployment unless explicitly configured otherwise.
   const rawPort = process.env.SMTP_PORT
     ? parseInt(process.env.SMTP_PORT, 10)
-    : 465
+    : 587
   const smtpPort =
     rawPort === 587 && smtpHost.includes('gmail') ? 465 : rawPort
 
   if (!_transporter) {
-    const isSecure = smtpPort === 465
+    const isSecure = smtpPort === 587
     _transporter = nodemailer.createTransport({
       host: smtpHost,
-      port: smtpPort,
-      secure: isSecure,
+      port: rawPort,
+      secure: true,
+      // secure: isSecure,
       family: 4, // Force IPv4 socket connection to prevent ENETUNREACH IPv6 error on Render
       // Connection pooling can cause socket hangs on cloud platforms like Render when idle sockets are severed by firewall.
       // Pool is disabled by default unless explicitly enabled via SMTP_POOL=true.
@@ -123,7 +124,7 @@ async function sendMailHelper({
         console.log('🔄  [SMTP] Attempting fallback send via Gmail SSL Port 465...')
         const fallbackTransporter = nodemailer.createTransport({
           host: smtpHost.includes('gmail') ? 'smtp.gmail.com' : smtpHost,
-          port: 465,
+          port: 587,
           secure: true,
           family: 4,
           connectionTimeout: 10_000,
