@@ -29,6 +29,7 @@ import { deleteRequestRoutes } from './features/delete-request/delete-request.ro
 import { categoryDeleteRequestRoutes } from './features/category-delete-request/category-delete-request.routes.js'
 import locationRoutes from './features/location/location.routes.js'
 import { addressRoutes } from './features/address/address.routes.js'
+import { cronRoutes } from './features/cron/cron.routes.js'
 
 export const app = Fastify({ logger: true, trustProxy: true })
 
@@ -120,6 +121,8 @@ app.register(categoryDeleteRequestRoutes, {
 app.register(locationRoutes, { prefix: '/api/locations' })
 app.register(addressRoutes, { prefix: '/api/addresses' })
 
+// ─── Cron Routes (Serverless) ────────────────────────────────────────────────
+app.register(cronRoutes, { prefix: '/api/cron' })
 // Aliases for backward compatibility with the frontend
 app.register(productRoutes, { prefix: '/api/admin/products' })
 app.register(categoryRoutes, { prefix: '/api/admin/categories' })
