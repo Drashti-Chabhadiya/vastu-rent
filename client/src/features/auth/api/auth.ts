@@ -1,65 +1,49 @@
-import { getApiUrl } from '#/lib/utils'
+import { apiClient } from '#/lib/api'
 
 export const authApi = {
   sendOtp: async (email: string, name?: string) => {
-    const res = await fetch(getApiUrl('/api/auth/send-otp'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, name }),
-    })
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      throw new Error(data.error || 'Failed to send OTP')
+    try {
+      const res = await apiClient.post('/auth/send-otp', { email, name })
+      return res.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to send OTP')
     }
-    return res.json()
   },
 
   verifyOtp: async (email: string, otp: string, visitorId?: string) => {
-    const res = await fetch(getApiUrl('/api/auth/verify-otp'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, otp, visitorId }),
-    })
-
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
-      throw new Error(data.error || 'Verification failed')
+    try {
+      const res = await apiClient.post('/auth/verify-otp', { email, otp, visitorId })
+      return res.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Verification failed')
     }
-    return res.json()
   },
 
   getPendingVerification: async () => {
-    const res = await fetch(getApiUrl('/api/auth/pending-verification'), {
-      method: 'GET',
-      credentials: 'include',
-    })
-
-    if (res.status === 204) return null
-    if (!res.ok) return null
-
-    return res.json()
+    try {
+      const res = await apiClient.get('/auth/pending-verification')
+      if (res.status === 204) return null
+      return res.data
+    } catch (error) {
+      return null
+    }
   },
 
   cancelPendingVerification: async () => {
-    const res = await fetch(getApiUrl('/api/auth/pending-verification'), {
-      method: 'DELETE',
-      credentials: 'include',
-    })
-
-    if (!res.ok) return false
-    return true
+    try {
+      const res = await apiClient.delete('/auth/pending-verification')
+      return res.status >= 200 && res.status < 300
+    } catch (error) {
+      return false
+    }
   },
 
   checkEmailExists: async (email: string): Promise<boolean> => {
-    const res = await fetch(
-      getApiUrl(`/api/auth/check-email?email=${encodeURIComponent(email)}`),
-      { credentials: 'include' },
-    )
-    if (!res.ok) return false
-    const data = await res.json()
-    return data.exists === true
+    try {
+      const res = await apiClient.get(`/auth/check-email?email=${encodeURIComponent(email)}`)
+      return res.data.exists === true
+    } catch (error) {
+      return false
+    }
   },
 }
