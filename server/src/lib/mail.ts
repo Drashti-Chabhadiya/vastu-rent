@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import type SMTPTransport from 'nodemailer/lib/smtp-transport/index.js'
 import {
   getVerificationTemplate,
   getResetPasswordTemplate,
@@ -31,14 +32,12 @@ function getTransporter(): nodemailer.Transporter | null {
       host: smtpHost,
       port: smtpPort,
       secure: isSecure,
+      family: 4,
       auth: {
         user: smtpUser,
         pass: smtpPass,
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    })
+    } as SMTPTransport.Options)
     console.log(
       `📬 [Mail] SMTP transporter initialized (${smtpHost}:${smtpPort}, secure: ${isSecure})`,
     )
