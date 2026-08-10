@@ -101,7 +101,11 @@ export function useChat() {
       .on(
         'broadcast',
         { event: 'user_status' },
-        ({ payload }: { payload: { userId: string; status: 'online' | 'offline' } }) => {
+        ({
+          payload,
+        }: {
+          payload: { userId: string; status: 'online' | 'offline' }
+        }) => {
           setOnlineUsers((prev) => {
             const next = new Set(prev)
             if (payload.status === 'online') next.add(payload.userId)
@@ -155,120 +159,155 @@ export function useChat() {
 
     const convChannel = supabase
       .channel(`conversation_${activeConversationId}`)
-      .on('broadcast', { event: 'new_message' }, ({ payload: msg }: { payload: Message }) => {
-        const currentConvId = activeConversationIdRef.current
-        setMessages((prev) => {
-          if (msg.conversationId !== currentConvId) return prev
-          if (prev.some((m) => m.id === msg.id)) return prev
-          return [...prev, msg]
-        })
-        queryClient.setQueryData<Conversation[]>(['conversations'], (old) => {
-          const updated =
-            old?.map((conv) => {
-              if (conv.id !== msg.conversationId) return conv
-              const isActiveConv = msg.conversationId === currentConvId
-              return {
-                ...conv,
-                updatedAt: msg.createdAt,
-                lastMessage: {
-                  id: msg.id,
-                  content: msg.content,
-                  senderId: msg.senderId,
-                  isRead: msg.isRead,
-                  deliveredAt: msg.deliveredAt,
-                  readAt: msg.readAt,
-                  createdAt: msg.createdAt,
-                },
-                unreadCount: isActiveConv
-                  ? 0
-                  : conv.unreadCount + (msg.senderId !== userId ? 1 : 0),
-              }
-            }) ?? []
-          return [...updated].sort(
-            (a, b) =>
-              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      .on(
+        'broadcast',
+        { event: 'new_message' },
+        ({ payload: msg }: { payload: Message }) => {
+          const currentConvId = activeConversationIdRef.current
+          setMessages((prev) => {
+            if (msg.conversationId !== currentConvId) return prev
+            if (prev.some((m) => m.id === msg.id)) return prev
+            return [...prev, msg]
+          })
+          queryClient.setQueryData<Conversation[]>(['conversations'], (old) => {
+            const updated =
+              old?.map((conv) => {
+                if (conv.id !== msg.conversationId) return conv
+                const isActiveConv = msg.conversationId === currentConvId
+                return {
+                  ...conv,
+                  updatedAt: msg.createdAt,
+                  lastMessage: {
+                    id: msg.id,
+                    content: msg.content,
+                    senderId: msg.senderId,
+                    isRead: msg.isRead,
+                    deliveredAt: msg.deliveredAt,
+                    readAt: msg.readAt,
+                    createdAt: msg.createdAt,
+                  },
+                  unreadCount: isActiveConv
+                    ? 0
+                    : conv.unreadCount + (msg.senderId !== userId ? 1 : 0),
+                }
+              }) ?? []
+            return [...updated].sort(
+              (a, b) =>
+                new Date(b.updatedAt).getTime() -
+                new Date(a.updatedAt).getTime(),
+            )
+          })
+        },
+      )
+      .on(
+        'broadcast',
+        { event: 'message_edited' },
+        ({ payload: msg }: { payload: Message }) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === msg.id
+                ? {
+                    ...m,
+                    content: msg.content,
+                    isEdited: true,
+                    updatedAt: msg.updatedAt,
+                  }
+                : m,
+            ),
           )
-        })
-      })
-      .on('broadcast', { event: 'message_edited' }, ({ payload: msg }: { payload: Message }) => {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === msg.id
-              ? {
-                  ...m,
-                  content: msg.content,
-                  isEdited: true,
-                  updatedAt: msg.updatedAt,
-                }
-              : m,
-          ),
-        )
-        queryClient.setQueryData<Conversation[]>(
-          ['conversations'],
-          (old) =>
-            old?.map((conv) =>
-              conv.id === msg.conversationId && conv.lastMessage && conv.lastMessage.id === msg.id
+          queryClient.setQueryData<Conversation[]>(
+            ['conversations'],
+            (old) =>
+              old?.map((conv) =>
+                conv.id === msg.conversationId &&
+                conv.lastMessage &&
+                conv.lastMessage.id === msg.id
+                  ? {
+                      ...conv,
+                      lastMessage: {
+                        ...conv.lastMessage,
+                        content: msg.content,
+                      },
+                    }
+                  : conv,
+              ) ?? [],
+          )
+        },
+      )
+      .on(
+        'broadcast',
+        { event: 'message_deleted' },
+        ({ payload: msg }: { payload: any }) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === msg.id
                 ? {
-                    ...conv,
-                    lastMessage: { ...conv.lastMessage, content: msg.content },
+                    ...m,
+                    content: msg.content,
+                    attachments: msg.attachments,
+                    isDeleted: msg.isDeleted,
+                    updatedAt: msg.updatedAt,
                   }
-                : conv,
-            ) ?? [],
-        )
-      })
-      .on('broadcast', { event: 'message_deleted' }, ({ payload: msg }: { payload: any }) => {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === msg.id
-              ? {
-                  ...m,
-                  content: msg.content,
-                  attachments: msg.attachments,
-                  isDeleted: msg.isDeleted,
-                  updatedAt: msg.updatedAt,
-                }
-              : m,
-          ),
-        )
-        queryClient.setQueryData<Conversation[]>(
-          ['conversations'],
-          (old) =>
-            old?.map((conv) =>
-              conv.id === msg.conversationId && conv.lastMessage && conv.lastMessage.id === msg.id
+                : m,
+            ),
+          )
+          queryClient.setQueryData<Conversation[]>(
+            ['conversations'],
+            (old) =>
+              old?.map((conv) =>
+                conv.id === msg.conversationId &&
+                conv.lastMessage &&
+                conv.lastMessage.id === msg.id
+                  ? {
+                      ...conv,
+                      lastMessage: {
+                        ...conv.lastMessage,
+                        content: msg.content,
+                      },
+                    }
+                  : conv,
+              ) ?? [],
+          )
+        },
+      )
+      .on(
+        'broadcast',
+        { event: 'messages_delivered' },
+        ({ payload }: { payload: any }) => {
+          const { messageIds, deliveredAt } = payload || {}
+          if (!Array.isArray(messageIds)) return
+          setMessages((prev) =>
+            prev.map((m) =>
+              messageIds.includes(m.id) ? { ...m, deliveredAt } : m,
+            ),
+          )
+        },
+      )
+      .on(
+        'broadcast',
+        { event: 'messages_read' },
+        ({ payload }: { payload: any }) => {
+          const { conversationId: convId, readAt } = payload || {}
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.conversationId === convId && m.senderId === userId
                 ? {
-                    ...conv,
-                    lastMessage: { ...conv.lastMessage, content: msg.content },
+                    ...m,
+                    isRead: true,
+                    readAt,
+                    deliveredAt: m.deliveredAt || readAt,
                   }
-                : conv,
-            ) ?? [],
-        )
-      })
-      .on('broadcast', { event: 'messages_delivered' }, ({ payload }: { payload: any }) => {
-        const { messageIds, deliveredAt } = payload || {}
-        if (!Array.isArray(messageIds)) return
-        setMessages((prev) =>
-          prev.map((m) =>
-            messageIds.includes(m.id) ? { ...m, deliveredAt } : m,
-          ),
-        )
-      })
-      .on('broadcast', { event: 'messages_read' }, ({ payload }: { payload: any }) => {
-        const { conversationId: convId, readAt } = payload || {}
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.conversationId === convId && m.senderId === userId
-              ? {
-                  ...m,
-                  isRead: true,
-                  readAt,
-                  deliveredAt: m.deliveredAt || readAt,
-                }
-              : m,
-          ),
-        )
-      })
+                : m,
+            ),
+          )
+        },
+      )
       .on('broadcast', { event: 'typing' }, ({ payload }: { payload: any }) => {
-        const { conversationId: convId, userId: typingUid, isTyping } = payload || {}
+        const {
+          conversationId: convId,
+          userId: typingUid,
+          isTyping,
+        } = payload || {}
         if (typingUid === userId) return
         setTypingUsers((prev) => {
           const updated = new Map(prev)
@@ -277,38 +316,54 @@ export function useChat() {
           return updated
         })
       })
-      .on('broadcast', { event: 'message_starred_updated' }, ({ payload }: { payload: any }) => {
-        const { id, starredBy } = payload || {}
-        setMessages((prev) =>
-          prev.map((m) => (m.id === id ? { ...m, starredBy } : m)),
-        )
-      })
-      .on('broadcast', { event: 'message_pinned_updated' }, ({ payload }: { payload: any }) => {
-        const { id, pinnedBy } = payload || {}
-        setMessages((prev) =>
-          prev.map((m) => (m.id === id ? { ...m, pinnedBy } : m)),
-        )
-      })
-      .on('broadcast', { event: 'message_reactions_updated' }, ({ payload }: { payload: any }) => {
-        const { id, reactions } = payload || {}
-        setMessages((prev) =>
-          prev.map((m) => (m.id === id ? { ...m, reactions } : m)),
-        )
-      })
+      .on(
+        'broadcast',
+        { event: 'message_starred_updated' },
+        ({ payload }: { payload: any }) => {
+          const { id, starredBy } = payload || {}
+          setMessages((prev) =>
+            prev.map((m) => (m.id === id ? { ...m, starredBy } : m)),
+          )
+        },
+      )
+      .on(
+        'broadcast',
+        { event: 'message_pinned_updated' },
+        ({ payload }: { payload: any }) => {
+          const { id, pinnedBy } = payload || {}
+          setMessages((prev) =>
+            prev.map((m) => (m.id === id ? { ...m, pinnedBy } : m)),
+          )
+        },
+      )
+      .on(
+        'broadcast',
+        { event: 'message_reactions_updated' },
+        ({ payload }: { payload: any }) => {
+          const { id, reactions } = payload || {}
+          setMessages((prev) =>
+            prev.map((m) => (m.id === id ? { ...m, reactions } : m)),
+          )
+        },
+      )
       .on('broadcast', { event: 'conversation_settings_updated' }, () => {
         queryClient.invalidateQueries({ queryKey: ['conversations'] })
       })
-      .on('broadcast', { event: 'conversation_blocked_updated' }, ({ payload }: { payload: any }) => {
-        const { id, blockedBy } = payload || {}
-        queryClient.setQueryData<Conversation[]>(
-          ['conversations'],
-          (old) =>
-            old?.map((conv) =>
-              conv.id === id ? { ...conv, blockedBy } : conv,
-            ) ?? [],
-        )
-        queryClient.invalidateQueries({ queryKey: ['conversations'] })
-      })
+      .on(
+        'broadcast',
+        { event: 'conversation_blocked_updated' },
+        ({ payload }: { payload: any }) => {
+          const { id, blockedBy } = payload || {}
+          queryClient.setQueryData<Conversation[]>(
+            ['conversations'],
+            (old) =>
+              old?.map((conv) =>
+                conv.id === id ? { ...conv, blockedBy } : conv,
+              ) ?? [],
+          )
+          queryClient.invalidateQueries({ queryKey: ['conversations'] })
+        },
+      )
       .subscribe()
 
     return () => {
@@ -376,10 +431,13 @@ export function useChat() {
       if (!content.trim() && (!attachments || attachments.length === 0)) return
 
       try {
-        const res = await apiClient.post(`/chat/conversations/${convId}/messages`, {
-          content: content.trim(),
-          attachments: attachments ?? [],
-        })
+        const res = await apiClient.post(
+          `/chat/conversations/${convId}/messages`,
+          {
+            content: content.trim(),
+            attachments: attachments ?? [],
+          },
+        )
         const newMsg = res.data as Message
         setMessages((prev) => {
           if (prev.some((m) => m.id === newMsg.id)) return prev

@@ -29,8 +29,7 @@ const getAuthBaseUrl = (): string => {
   let url = ''
   // Native Capacitor app — use the Vercel server directly
   if (Capacitor.isNativePlatform()) {
-    url =
-      import.meta.env.VITE_AUTH_URL
+    url = import.meta.env.VITE_AUTH_URL
   } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&

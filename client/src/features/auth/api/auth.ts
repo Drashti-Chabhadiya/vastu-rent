@@ -12,7 +12,11 @@ export const authApi = {
 
   verifyOtp: async (email: string, otp: string, visitorId?: string) => {
     try {
-      const res = await apiClient.post('/auth/verify-otp', { email, otp, visitorId })
+      const res = await apiClient.post('/auth/verify-otp', {
+        email,
+        otp,
+        visitorId,
+      })
       return res.data
     } catch (error: any) {
       throw new Error(error.response?.data?.error || 'Verification failed')
@@ -40,7 +44,9 @@ export const authApi = {
 
   checkEmailExists: async (email: string): Promise<boolean> => {
     try {
-      const res = await apiClient.get(`/auth/check-email?email=${encodeURIComponent(email)}`)
+      const res = await apiClient.get(
+        `/auth/check-email?email=${encodeURIComponent(email)}`,
+      )
       return res.data.exists === true
     } catch (error) {
       return false

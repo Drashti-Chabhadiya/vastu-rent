@@ -16,8 +16,7 @@ import { getBearerToken } from '#/lib/auth/token-storage'
 const getApiBaseUrl = (): string => {
   let url = ''
   if (Capacitor.isNativePlatform()) {
-    url =
-      import.meta.env.VITE_API_BASE_URL
+    url = import.meta.env.VITE_API_BASE_URL
   } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
