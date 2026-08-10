@@ -34,7 +34,6 @@ export const auth = betterAuth({
       '10.0.2.2:3000',
       '10.0.2.2',
       '*.vercel.app',
-      getHostName(process.env.BETTER_AUTH_URL),
       getHostName(process.env.CLIENT_URL),
     ].filter(Boolean) as string[],
   },
@@ -150,7 +149,6 @@ export const auth = betterAuth({
     // Production web app (Vercel)
     'https://vastu-rent.vercel.app',
     process.env.CLIENT_URL,
-    process.env.BETTER_AUTH_URL,
   ].filter(Boolean) as string[],
 
   /**

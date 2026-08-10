@@ -225,7 +225,7 @@ export async function authRoutes(app: FastifyInstance) {
     // This ensures Better Auth generates correct session tokens and callback URLs
     // using the canonical server origin, regardless of what host header arrives.
     const baseUrl =
-      process.env.BETTER_AUTH_URL || `${request.protocol}://${request.hostname}`
+      process.env.CLIENT_URL || `${request.protocol}://${request.hostname}`
     const url = `${baseUrl}${request.url}`
 
     // Serialize body for POST/PUT/PATCH requests
