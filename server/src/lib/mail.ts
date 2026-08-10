@@ -9,7 +9,7 @@ import {
   getOtpTemplate,
 } from '../templates/index.js'
 
-// ─── Shared Transporter (Nodemailer Connection Pool) ─────────────────────────
+// ─── Shared Transporter (Nodemailer Connection) ─────────────────────────────
 let _transporter: nodemailer.Transporter | null = null
 
 function getTransporter(): nodemailer.Transporter | null {
@@ -23,21 +23,26 @@ function getTransporter(): nodemailer.Transporter | null {
   if (!smtpHost || !smtpUser || !smtpPass) return null
 
   if (!_transporter) {
+    const isSecure = smtpPort === 465
     _transporter = nodemailer.createTransport({
       host: smtpHost,
       port: smtpPort,
-      secure: smtpPort === 465,
-      pool: true,
-      maxConnections: 3,
+      secure: isSecure,
+      // Connection pooling can cause socket hangs on cloud platforms like Render when idle sockets are severed by firewall.
+      // Pool is disabled by default unless explicitly enabled via SMTP_POOL=true.
+      pool: process.env.SMTP_POOL === 'true',
       connectionTimeout: 15_000,
       socketTimeout: 15_000,
+      tls: {
+        rejectUnauthorized: false,
+      },
       auth: {
         user: smtpUser,
         pass: smtpPass,
       },
-    })
+    } as any)
     console.log(
-      '📬  [Mail] SMTP transporter initialized (connection pool ready)',
+      '📬  [Mail] SMTP transporter initialized (ready)',
     )
   }
 
@@ -65,39 +70,34 @@ async function sendMailHelper({
   simulatedTitle,
   simulatedLogLines,
 }: SendMailHelperOptions): Promise<void> {
-  const smtpFrom =
-    process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
+  const smtpUser = process.env.SMTP_USER
+  const defaultFrom = smtpUser
+    ? `"VastuRent" <${smtpUser}>`
+    : '"VastuRent" <noreply@vasturent.com>'
+  const smtpFrom = process.env.SMTP_FROM || defaultFrom
 
   const transporter = getTransporter()
-  console.log('transporter', transporter)
   if (transporter) {
     try {
-      console.log('smtpFrom', smtpFrom)
-      console.log('to', to)
-      console.log('replyTo', replyTo)
-      console.log('subject', subject)
-      console.log('html', html)
-      console.log('text', text)
+      console.log(`📧  [SMTP] Attempting to send email to ${to}...`)
+      console.log(`   From: ${smtpFrom}`)
+      console.log(`   Subject: ${subject}`)
+      if (replyTo) {
+        console.log(`   Reply-To: ${replyTo}`)
+      }
 
-      const sendPromise = transporter.sendMail({
+      const mailOptions: nodemailer.SendMailOptions = {
         from: smtpFrom,
         to,
-        replyTo,
         subject,
         html,
         text,
-      })
+      }
+      if (replyTo) {
+        mailOptions.replyTo = replyTo
+      }
 
-      // Timeout after 6 seconds so user UI never hangs on Render cloud host
-      await Promise.race([
-        sendPromise,
-        new Promise((_, reject) =>
-          setTimeout(
-            () => reject(new Error('SMTP connection timeout on Render')),
-            6000,
-          ),
-        ),
-      ])
+      await transporter.sendMail(mailOptions)
       console.log(`📧  [SMTP] Email sent successfully to ${to}`)
       return
     } catch (err: any) {
