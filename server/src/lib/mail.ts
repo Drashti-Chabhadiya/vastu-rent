@@ -71,7 +71,7 @@ async function sendMailHelper({
   const transporter = getTransporter()
   if (transporter) {
     try {
-      await transporter.sendMail({
+      const sendPromise = transporter.sendMail({
         from: smtpFrom,
         to,
         replyTo,
@@ -79,11 +79,22 @@ async function sendMailHelper({
         html,
         text,
       })
+
+      // Timeout after 6 seconds so user UI never hangs on Render cloud host
+      await Promise.race([
+        sendPromise,
+        new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error('SMTP connection timeout on Render')),
+            6000,
+          ),
+        ),
+      ])
       console.log(`📧  [SMTP] Email sent successfully to ${to}`)
       return
     } catch (err: any) {
-      console.error('❌  [SMTP] Error sending email:', err?.message || err)
-      throw err
+      console.error('❌  [SMTP] Error sending email on Render:', err?.message || err)
+      console.log('⚠️  Falling back to simulated log display...')
     }
   }
 
