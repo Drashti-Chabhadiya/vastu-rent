@@ -17,8 +17,8 @@ import {
  *   - Bearer token auth is the session mechanism
  *
  * Web browser (Vercel production):
- *   - window.location.hostname = new-vastu-rent-client.vercel.app
- *   - Routes through /api/auth Vercel proxy → Render server
+ *   - window.location.hostname = vastu-rent.vercel.app
+ *   - Routes through /api/auth Vercel proxy
  *   - Cookie-based session works normally
  *
  * Local development:
@@ -27,11 +27,11 @@ import {
  */
 const getAuthBaseUrl = (): string => {
   let url = ''
-  // Native Capacitor app — always use the Render server directly
+  // Native Capacitor app — use the Vercel server directly
   if (Capacitor.isNativePlatform()) {
     url =
       import.meta.env.VITE_AUTH_URL ||
-      'https://new-vastu-rent-zyap.onrender.com/api/auth'
+      'https://vastu-rent.vercel.app/api/auth'
   } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&

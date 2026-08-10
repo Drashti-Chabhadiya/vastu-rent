@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '#/lib/api'
+import { useSessionContext } from '#/context/SessionContext'
 
 export interface Notification {
   id: string
@@ -11,12 +12,17 @@ export interface Notification {
 }
 
 export const useNotifications = () => {
+  const { data: session } = useSessionContext()
+  const isAuthenticated = Boolean(session?.user?.id || session?.session?.token)
+
   return useQuery<Notification[]>({
     queryKey: ['notifications'],
     queryFn: async () => {
       const res = await apiClient.get('/notifications')
       return res.data.notifications
     },
+    enabled: isAuthenticated,
+    retry: false,
   })
 }
 
