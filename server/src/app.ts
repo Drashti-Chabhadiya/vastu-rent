@@ -56,7 +56,6 @@ app.register(cors, {
 
     const allowed = [
       process.env.CLIENT_URL,
-      process.env.BETTER_AUTH_URL,
       'capacitor://localhost',
       'http://localhost',
     ].filter(Boolean) as string[]
