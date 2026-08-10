@@ -111,7 +111,9 @@ async function sendMail(options: SendMailOptions): Promise<void> {
     }
   }
   console.log('-'.repeat(75))
-  console.log('💡 Note: Define SMTP_HOST, SMTP_USER, and SMTP_PASS in server/.env to send real emails.')
+  console.log(
+    '💡 Note: Define SMTP_HOST, SMTP_USER, and SMTP_PASS in server/.env to send real emails.',
+  )
   console.log('='.repeat(75) + '\n')
 }
 
@@ -171,10 +173,7 @@ export async function sendOtpEmail({
     html: htmlContent,
     text: `Your VastuRent Verification Code is: ${otp}`,
     simulatedTitle: 'OTP GENERATED',
-    simulatedLogLines: [
-      `👤  To Name:    ${name}`,
-      `🔑  OTP Code:   ${otp}`,
-    ],
+    simulatedLogLines: [`👤  To Name:    ${name}`, `🔑  OTP Code:   ${otp}`],
   })
 }
 
@@ -331,4 +330,3 @@ export async function sendContactSupportEmail({
 }
 
 export const sendContactSupportEmailDirect = sendContactSupportEmail
-

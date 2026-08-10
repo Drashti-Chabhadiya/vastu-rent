@@ -9,16 +9,13 @@ import {
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { Footer, Navbar, Tabbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { SessionProvider, useSessionContext } from '#/context/SessionContext'
 import { queryClient } from '#/lib/query-client'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
 import { isNative, initNativePush } from '#/lib/push-notifications'
-// import { playNotificationSound } from '#/lib/sound'
-import { io } from 'socket.io-client'
-import type { Socket } from 'socket.io-client'
 import { toast } from 'sonner'
-import { getSocketUrl } from '#/lib/socket-url'
+import { supabase } from '#/lib/supabase'
 import { Capacitor } from '@capacitor/core'
 import { authApi } from '#/features/auth/api/auth'
 import { App as CapacitorApp } from '@capacitor/app'
@@ -75,8 +72,7 @@ function NotificationListener() {
   const navigate = useNavigate()
   const { data: session } = useSessionContext()
   const token = session?.session.token
-  const userRole = session?.user.role || 'user'
-  const socketRef = useRef<Socket | null>(null)
+  const userId = session?.user?.id
 
   useAppResumeRefresh()
 
@@ -109,107 +105,105 @@ function NotificationListener() {
     }
   }, [token, navigate])
 
-  // 1. Global Socket.IO Real-Time Notifications Listener
+  // 1. Global Supabase Realtime Notifications & Products Listener
   useEffect(() => {
-    const SOCKET_URL = getSocketUrl()
-    const socket = io(SOCKET_URL, {
-      auth: { token },
-      withCredentials: true,
-      transports: ['polling', 'websocket'],
-      // Robust reconnection so the socket recovers after phone sleep / network
-      // changes without requiring the user to restart the app.
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1_000,
-      reconnectionDelayMax: 10_000,
-      randomizationFactor: 0.5,
-      timeout: 20_000,
-    })
-
-    socketRef.current = socket
-
-    socket.on('connect', () => {
-      console.log('Global authenticated socket connected at root:', socket.id)
-    })
-
-    socket.on('disconnect', (reason) => {
-      console.warn('Global notification socket disconnected:', reason)
-      // Socket.IO auto-reconnects unless disconnect() was called manually.
-    })
-
-    socket.on('connect_error', (err) => {
-      console.error('Global notification socket error:', err.message)
-    })
-
-    socket.on('notification', (notif: any) => {
-      // Update react-query cache instantly
-      rqClient.setQueryData(['notifications'], (old: any) => {
-        if (!old) return [notif]
-        if (old.some((n: any) => n.id === notif.id)) return old
-        return [notif, ...old]
+    const globalChannel = supabase
+      .channel('global-broadcasts')
+      .on('broadcast', { event: 'product_added' }, () => {
+        rqClient.invalidateQueries({ queryKey: ['products'] })
+        rqClient.invalidateQueries({ queryKey: ['recent-products'] })
+        rqClient.invalidateQueries({ queryKey: ['admin-products'] })
       })
+      .on('broadcast', { event: 'product_updated' }, () => {
+        rqClient.invalidateQueries({ queryKey: ['products'] })
+        rqClient.invalidateQueries({ queryKey: ['recent-products'] })
+        rqClient.invalidateQueries({ queryKey: ['admin-products'] })
+      })
+      .on('broadcast', { event: 'product_deleted' }, () => {
+        rqClient.invalidateQueries({ queryKey: ['products'] })
+        rqClient.invalidateQueries({ queryKey: ['recent-products'] })
+        rqClient.invalidateQueries({ queryKey: ['admin-products'] })
+      })
+      .subscribe()
 
-      // Play alert chime
-      // playNotificationSound()
-
-      if (!isNative) {
-        if (
-          typeof window !== 'undefined' &&
-          'serviceWorker' in navigator &&
-          Notification.permission === 'granted'
-        ) {
-          navigator.serviceWorker.ready
-            .then((reg) => {
-              reg.showNotification(notif.title, {
-                body: notif.message,
-                icon: '/logo192.png',
-                badge: '/logo192.png',
-                image: notif.image,
-                data: {
-                  url: notif.url || '/account/notifications',
-                },
-              } as any)
+    let userChannel: any = null
+    if (userId) {
+      userChannel = supabase
+        .channel(`user_notifications_${userId}`)
+        .on(
+          'broadcast',
+          { event: 'notification' },
+          ({ payload: notif }: { payload: any }) => {
+            if (!notif) return
+            rqClient.setQueryData(['notifications'], (old: any) => {
+              if (!old) return [notif]
+              if (old.some((n: any) => n.id === notif.id)) return old
+              return [notif, ...old]
             })
-            .catch((err) => {
-              console.error(
-                'Failed to trigger native notification via service worker:',
-                err,
-              )
-              // Fallback to main thread Notification
-              try {
-                const notification = new Notification(notif.title, {
-                  body: notif.message,
-                  icon: '/logo192.png',
-                  image: notif.image,
-                } as any)
-                notification.onclick = (e) => {
-                  e.preventDefault()
-                  window.focus()
-                  navigate({ to: notif.url || '/account/notifications' })
-                }
-              } catch (fallbackErr) {
-                console.error('Fallback notification also failed:', fallbackErr)
+
+            if (!isNative) {
+              if (
+                typeof window !== 'undefined' &&
+                'serviceWorker' in navigator &&
+                Notification.permission === 'granted'
+              ) {
+                navigator.serviceWorker.ready
+                  .then((reg) => {
+                    reg.showNotification(notif.title, {
+                      body: notif.message,
+                      icon: '/logo192.png',
+                      badge: '/logo192.png',
+                      image: notif.image,
+                      data: {
+                        url: notif.url || '/account/notifications',
+                      },
+                    } as any)
+                  })
+                  .catch((err: any) => {
+                    console.error(
+                      'Failed to trigger native notification via service worker:',
+                      err,
+                    )
+                    try {
+                      const notification = new Notification(notif.title, {
+                        body: notif.message,
+                        icon: '/logo192.png',
+                        image: notif.image,
+                      } as any)
+                      notification.onclick = (e) => {
+                        e.preventDefault()
+                        window.focus()
+                        navigate({ to: notif.url || '/account/notifications' })
+                      }
+                    } catch (fallbackErr) {
+                      console.error(
+                        'Fallback notification also failed:',
+                        fallbackErr,
+                      )
+                    }
+                  })
               }
+            }
+
+            toast(notif.title, {
+              description: notif.message,
+              action: notif.url
+                ? {
+                    label: 'View',
+                    onClick: () => navigate({ to: notif.url }),
+                  }
+                : undefined,
             })
-        }
-      }
-    })
-
-    const handleProductChange = () => {
-      rqClient.invalidateQueries({ queryKey: ['products'] })
-      rqClient.invalidateQueries({ queryKey: ['recent-products'] })
-      rqClient.invalidateQueries({ queryKey: ['admin-products'] })
+          },
+        )
+        .subscribe()
     }
-
-    socket.on('product_added', handleProductChange)
-    socket.on('product_updated', handleProductChange)
-    socket.on('product_deleted', handleProductChange)
 
     return () => {
-      socket.disconnect()
-      socketRef.current = null
+      globalChannel.unsubscribe()
+      if (userChannel) userChannel.unsubscribe()
     }
-  }, [token, rqClient, userRole, navigate])
+  }, [userId, rqClient, navigate])
 
   // 2. Global Foreground FCM message listener
   useEffect(() => {

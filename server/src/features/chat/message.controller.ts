@@ -1,7 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { prisma } from '../../config/prisma.js'
 import { auth } from '../../config/auth.js'
-import { isUserOnline, io } from '../../lib/socket.js'
+import { isUserOnline } from '../user/user.controller.js'
+import { broadcastToConversation, broadcastToUser } from '../../lib/supabase.js'
+import { createAndDeliverNotification } from '../../lib/notification.js'
 
 export const messageController = {
   async getMessages(request: FastifyRequest, reply: FastifyReply) {
@@ -61,6 +63,207 @@ export const messageController = {
     })
   },
 
+  async sendMessage(request: FastifyRequest, reply: FastifyReply) {
+    const { id: conversationId } = request.params as any
+    const { content, attachments } = request.body as any
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
+    if (!session) {
+      return reply.status(401).send({ message: 'Unauthorized' })
+    }
+    const userId = session.user.id
+
+    const hasContent = content && content.trim()
+    const hasAttachments = Array.isArray(attachments) && attachments.length > 0
+    if (!conversationId || (!hasContent && !hasAttachments)) {
+      return reply
+        .status(400)
+        .send({ message: 'Message content or attachments required' })
+    }
+
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+      include: {
+        participantOne: { select: { id: true, name: true, lastActive: true } },
+        participantTwo: { select: { id: true, name: true, lastActive: true } },
+      },
+    })
+
+    if (!conversation) {
+      return reply.status(404).send({ message: 'Conversation not found' })
+    }
+
+    if (
+      conversation.participantOneId !== userId &&
+      conversation.participantTwoId !== userId
+    ) {
+      return reply
+        .status(403)
+        .send({ message: 'Unauthorized in this conversation' })
+    }
+
+    if (conversation.blockedBy && conversation.blockedBy.length > 0) {
+      return reply
+        .status(400)
+        .send({ message: 'Cannot send messages in a blocked conversation' })
+    }
+
+    const otherParticipant =
+      conversation.participantOneId === userId
+        ? conversation.participantTwo
+        : conversation.participantOne
+    const otherParticipantId = otherParticipant.id
+
+    const isOtherOnline = isUserOnline(otherParticipant.lastActive)
+    const deliveredAt = isOtherOnline ? new Date() : null
+
+    const message = await prisma.message.create({
+      data: {
+        conversationId,
+        senderId: userId,
+        content: hasContent ? content.trim() : '',
+        attachments: hasAttachments ? attachments : [],
+        isRead: false,
+        readAt: null,
+        deliveredAt,
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            showProfile: true,
+          },
+        },
+      },
+    })
+
+    const updatedConv = await prisma.conversation.update({
+      where: { id: conversationId },
+      data: { updatedAt: new Date() },
+      include: {
+        participantOne: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            showProfile: true,
+          },
+        },
+        participantTwo: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            showProfile: true,
+          },
+        },
+      },
+    })
+
+    const payloadMessage = {
+      ...message,
+      sender: {
+        ...message.sender,
+        image:
+          message.sender.showProfile === false ? null : message.sender.image,
+      },
+    }
+
+    await broadcastToConversation(conversationId, 'new_message', payloadMessage)
+
+    const sanitizedConv = {
+      ...updatedConv,
+      participantOne: {
+        ...updatedConv.participantOne,
+        image:
+          (updatedConv.participantOne as any).showProfile === false
+            ? null
+            : updatedConv.participantOne.image,
+      },
+      participantTwo: {
+        ...updatedConv.participantTwo,
+        image:
+          (updatedConv.participantTwo as any).showProfile === false
+            ? null
+            : updatedConv.participantTwo.image,
+      },
+    }
+
+    await broadcastToUser(otherParticipantId, 'conversation_updated', {
+      conversation: sanitizedConv,
+      lastMessage: payloadMessage,
+    })
+
+    try {
+      const senderName =
+        (updatedConv.participantOneId === userId
+          ? updatedConv.participantOne?.name
+          : updatedConv.participantTwo?.name) || 'Someone'
+      await createAndDeliverNotification({
+        userId: otherParticipantId,
+        title: `New message from ${senderName}`,
+        message: message.content || 'Sent an attachment',
+        type: 'chat',
+        url: `/chat/${conversationId}`,
+      })
+    } catch (err) {
+      console.error('Failed to send chat notification:', err)
+    }
+
+    return payloadMessage
+  },
+
+  async sendTyping(request: FastifyRequest, reply: FastifyReply) {
+    const { id: conversationId } = request.params as any
+    const { isTyping } = request.body as any
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
+    if (!session) return reply.status(401).send({ message: 'Unauthorized' })
+    const userId = session.user.id
+
+    await broadcastToConversation(conversationId, 'typing', {
+      conversationId,
+      userId,
+      isTyping: !!isTyping,
+    })
+
+    return { success: true }
+  },
+
+  async markRead(request: FastifyRequest, reply: FastifyReply) {
+    const { id: conversationId } = request.params as any
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
+    if (!session) return reply.status(401).send({ message: 'Unauthorized' })
+    const userId = session.user.id
+
+    const now = new Date()
+    await prisma.message.updateMany({
+      where: {
+        conversationId,
+        senderId: { not: userId },
+        isRead: false,
+      },
+      data: {
+        isRead: true,
+        readAt: now,
+        deliveredAt: now,
+      },
+    })
+
+    await broadcastToConversation(conversationId, 'messages_read', {
+      conversationId,
+      readAt: now.toISOString(),
+    })
+
+    return { success: true }
+  },
+
   async editMessage(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as any
     const { content } = request.body as any
@@ -115,7 +318,9 @@ export const messageController = {
           updated.sender.showProfile === false ? null : updated.sender.image,
       },
     }
-    io?.to(`conversation_${updated.conversationId}`).emit(
+
+    await broadcastToConversation(
+      updated.conversationId,
       'message_edited',
       payload,
     )
@@ -191,7 +396,9 @@ export const messageController = {
         attachments: updated.attachments,
         updatedAt: updated.updatedAt,
       }
-      io?.to(`conversation_${updated.conversationId}`).emit(
+
+      await broadcastToConversation(
+        updated.conversationId,
         'message_deleted',
         payload,
       )
@@ -240,6 +447,10 @@ export const messageController = {
     for (const convId of targetConversationIds) {
       const conversation = await prisma.conversation.findUnique({
         where: { id: convId },
+        include: {
+          participantOne: { select: { id: true, lastActive: true } },
+          participantTwo: { select: { id: true, lastActive: true } },
+        },
       })
 
       if (!conversation) continue
@@ -249,29 +460,14 @@ export const messageController = {
       )
         continue
 
-      const otherParticipantId =
+      const otherParticipant =
         conversation.participantOneId === userId
-          ? conversation.participantTwoId
-          : conversation.participantOneId
+          ? conversation.participantTwo
+          : conversation.participantOne
+      const otherParticipantId = otherParticipant.id
 
-      const socketsInRoom = await io
-        ?.in(`conversation_${convId}`)
-        .fetchSockets()
-      const isOtherUserActiveInChat = socketsInRoom?.some(
-        (s) => s.data?.user?.id === otherParticipantId,
-      )
-
-      let isRead = false
-      let readAt: Date | null = null
-      let deliveredAt: Date | null = null
-
-      if (isOtherUserActiveInChat) {
-        isRead = true
-        readAt = new Date()
-        deliveredAt = new Date()
-      } else if (isUserOnline(otherParticipantId)) {
-        deliveredAt = new Date()
-      }
+      const isOtherOnline = isUserOnline(otherParticipant.lastActive)
+      const deliveredAt = isOtherOnline ? new Date() : null
 
       let contentToForward = message.content
       if (contentToForward.startsWith('>>REPLY_TO::')) {
@@ -289,8 +485,8 @@ export const messageController = {
           content: contentToForward,
           attachments: message.attachments,
           isForwarded: true,
-          isRead,
-          readAt,
+          isRead: false,
+          readAt: null,
           deliveredAt,
         },
         include: {
@@ -324,7 +520,7 @@ export const messageController = {
         },
       }
 
-      io?.to(`conversation_${convId}`).emit('new_message', payloadMessage)
+      await broadcastToConversation(convId, 'new_message', payloadMessage)
 
       const sanitizedConv = {
         ...updatedConv,
@@ -344,7 +540,7 @@ export const messageController = {
         },
       }
 
-      io?.to(`user_${otherParticipantId}`).emit('conversation_updated', {
+      await broadcastToUser(otherParticipantId, 'conversation_updated', {
         conversation: sanitizedConv,
         lastMessage: payloadMessage,
       })
@@ -381,7 +577,8 @@ export const messageController = {
       },
     })
 
-    io?.to(`conversation_${updated.conversationId}`).emit(
+    await broadcastToConversation(
+      updated.conversationId,
       'message_starred_updated',
       {
         id: updated.id,
@@ -419,7 +616,8 @@ export const messageController = {
       },
     })
 
-    io?.to(`conversation_${updated.conversationId}`).emit(
+    await broadcastToConversation(
+      updated.conversationId,
       'message_pinned_updated',
       {
         id: updated.id,
@@ -453,7 +651,6 @@ export const messageController = {
     }
 
     currentReactions = currentReactions.filter((r: any) => r.userId !== userId)
-
     currentReactions.push({ userId, name: userName, emoji })
 
     const updated = await prisma.message.update({
@@ -466,7 +663,8 @@ export const messageController = {
       },
     })
 
-    io?.to(`conversation_${updated.conversationId}`).emit(
+    await broadcastToConversation(
+      updated.conversationId,
       'message_reactions_updated',
       {
         id: updated.id,
@@ -507,7 +705,8 @@ export const messageController = {
       },
     })
 
-    io?.to(`conversation_${updated.conversationId}`).emit(
+    await broadcastToConversation(
+      updated.conversationId,
       'message_reactions_updated',
       {
         id: updated.id,

@@ -43,6 +43,8 @@ export async function connectPrisma() {
     )
   } catch (error) {
     console.error('❌ Database connection failed:', error)
-    process.exit(1)
+    if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+      process.exit(1)
+    }
   }
 }

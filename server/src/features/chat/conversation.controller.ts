@@ -1,7 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { prisma } from '../../config/prisma.js'
 import { auth } from '../../config/auth.js'
-import { isUserOnline, io } from '../../lib/socket.js'
+import { isUserOnline } from '../user/user.controller.js'
+import { broadcastToConversation, broadcastToUser } from '../../lib/supabase.js'
 
 export const conversationController = {
   async getConversations(request: FastifyRequest, reply: FastifyReply) {
@@ -96,7 +97,9 @@ export const conversationController = {
           !isBlockedByOther &&
           !isBlockedByMe
 
-        const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false
+        const isOnline = canSeeStatus
+          ? isUserOnline((otherUser as any).lastActive)
+          : false
         const lastActive = canSeeStatus ? (otherUser as any).lastActive : null
 
         return {
@@ -261,7 +264,9 @@ export const conversationController = {
       !isBlockedByOther &&
       !isBlockedByMe
 
-    const isOnline = canSeeStatus ? isUserOnline(otherUser.id) : false
+    const isOnline = canSeeStatus
+      ? isUserOnline((otherUser as any).lastActive)
+      : false
     const lastActive = canSeeStatus ? (otherUser as any).lastActive : null
 
     return {
@@ -476,7 +481,7 @@ export const conversationController = {
       data: { pinnedBy },
     })
 
-    io?.to(`user_${userId}`).emit('conversation_settings_updated', {
+    await broadcastToUser(userId, 'conversation_settings_updated', {
       id: updated.id,
       pinnedBy: updated.pinnedBy,
     })
@@ -505,7 +510,7 @@ export const conversationController = {
       data: { mutedBy },
     })
 
-    io?.to(`user_${userId}`).emit('conversation_settings_updated', {
+    await broadcastToUser(userId, 'conversation_settings_updated', {
       id: updated.id,
       mutedBy: updated.mutedBy,
     })
@@ -539,7 +544,7 @@ export const conversationController = {
       }
     }
 
-    io?.to(`user_${userId}`).emit('chat_cleared', { conversationId: id })
+    await broadcastToUser(userId, 'chat_cleared', { conversationId: id })
 
     return { message: 'Chat cleared successfully' }
   },
@@ -595,8 +600,8 @@ export const conversationController = {
       data: { updatedAt: new Date() },
     })
 
-    io?.to(`conversation_${id}`).emit('new_message', systemMessage)
-    io?.to(`conversation_${id}`).emit('conversation_settings_updated', {
+    await broadcastToConversation(id, 'new_message', systemMessage)
+    await broadcastToConversation(id, 'conversation_settings_updated', {
       id: updated.id,
       disappearingDuration: updated.disappearingDuration,
     })
@@ -606,7 +611,7 @@ export const conversationController = {
         ? conversation.participantTwoId
         : conversation.participantOneId
 
-    io?.to(`user_${otherParticipantId}`).emit('conversation_updated', {
+    await broadcastToUser(otherParticipantId, 'conversation_updated', {
       conversation: updated,
       lastMessage: systemMessage,
     })
@@ -642,7 +647,7 @@ export const conversationController = {
       data: { blockedBy },
     })
 
-    io?.to(`conversation_${id}`).emit('conversation_blocked_updated', {
+    await broadcastToConversation(id, 'conversation_blocked_updated', {
       id: updated.id,
       blockedBy: updated.blockedBy,
     })
@@ -678,7 +683,7 @@ export const conversationController = {
       data: { blockedBy },
     })
 
-    io?.to(`conversation_${id}`).emit('conversation_blocked_updated', {
+    await broadcastToConversation(id, 'conversation_blocked_updated', {
       id: updated.id,
       blockedBy: updated.blockedBy,
     })
