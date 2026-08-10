@@ -2,10 +2,16 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { userService } from './user.service.js'
 import { auth } from '../../config/auth.js'
 import { isAdminRole, isDashboardRole } from '../../config/roles.js'
-import { isUserOnline, io } from '../../lib/socket.js'
+import { broadcastToChannel } from '../../lib/supabase.js'
 import { syncGreenMemberStatus } from '../../lib/green-member.helper.js'
 import { v2 as cloudinary } from 'cloudinary'
 import { prisma } from '../../config/prisma.js'
+
+export function isUserOnline(lastActive?: Date | string | null): boolean {
+  if (!lastActive) return false
+  const time = new Date(lastActive).getTime()
+  return Date.now() - time < 3 * 60 * 1000
+}
 
 export class UserController {
   async getRecentUsers(_request: FastifyRequest, _reply: FastifyReply) {
@@ -19,7 +25,7 @@ export class UserController {
       const showOnline = u.showOnline !== false
       return {
         ...u,
-        isOnline: showOnline ? isUserOnline(u.id) : false,
+        isOnline: showOnline ? isUserOnline(u.lastActive) : false,
       }
     })
     return { users: usersWithOnlineStatus }
@@ -85,7 +91,9 @@ export class UserController {
     const canSeeStatus =
       isOwner || (loggedInUserShowOnline && otherUserShowOnline)
 
-    ;(profile as any).isOnline = canSeeStatus ? isUserOnline(id) : false
+    ;(profile as any).isOnline = canSeeStatus
+      ? isUserOnline((profile as any).lastActive)
+      : false
     if (!canSeeStatus) {
       ;(profile as any).lastActive = null
     }
@@ -117,14 +125,14 @@ export class UserController {
       // If showOnline was updated, broadcast presence update to other clients if user is online
       if (body.showOnline !== undefined) {
         try {
-          if (isUserOnline(session.user.id)) {
+          if (isUserOnline((user as any)?.lastActive)) {
             if (body.showOnline === false) {
-              io?.emit('user_status', {
+              await broadcastToChannel('online-presence', 'user_status', {
                 userId: session.user.id,
                 status: 'offline',
               })
             } else {
-              io?.emit('user_status', {
+              await broadcastToChannel('online-presence', 'user_status', {
                 userId: session.user.id,
                 status: 'online',
               })

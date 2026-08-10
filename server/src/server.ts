@@ -1,7 +1,6 @@
 import url from 'node:url'
 import { app } from './app.js'
 import { connectPrisma, prisma } from './config/prisma.js'
-import { initSocket } from './lib/socket.js'
 import awsLambdaFastify from '@fastify/aws-lambda'
 
 let proxy: any
@@ -25,8 +24,6 @@ const startServer = async () => {
       port: Number(process.env.PORT) || 4000,
       host: '0.0.0.0',
     })
-    // Initialize Socket.IO AFTER the server is listening so WebSocket upgrades work
-    initSocket(app.server)
     console.log(
       '🚀 Server running on http://localhost:' + (process.env.PORT || 4000),
     )

@@ -1,5 +1,5 @@
 import { prisma } from '../config/prisma.js'
-import { io } from './socket.js'
+import { broadcastToUser } from './supabase.js'
 import { sendPushToUser, sendPushToTokens } from './fcm.js'
 
 export interface NotificationOptions {
@@ -32,16 +32,19 @@ export async function createAndDeliverNotification({
       data: { userId, title, message, type, url },
     })
 
-    // Emit via socket.io to user's room (foreground real-time update)
+    // Emit via Supabase Realtime to user's channel (foreground real-time update)
     try {
-      console.log(`[Socket] Emitting notification to user_${userId}:`, {
-        ...notif,
-        url,
-        image,
-      })
-      io?.to(`user_${userId}`).emit('notification', { ...notif, url, image })
+      console.log(
+        `[Supabase Realtime] Emitting notification to user_${userId}:`,
+        {
+          ...notif,
+          url,
+          image,
+        },
+      )
+      await broadcastToUser(userId, 'notification', { ...notif, url, image })
     } catch (err) {
-      console.error('Socket emit failed for notification:', err)
+      console.error('Supabase broadcast failed for notification:', err)
     }
 
     // Direct FCM push notification

@@ -18,6 +18,9 @@ export async function chatRoutes(fastify: FastifyInstance) {
 
   fastify.get('/conversations', conversationController.getConversations)
   fastify.get('/conversations/:id/messages', messageController.getMessages)
+  fastify.post('/conversations/:id/messages', messageController.sendMessage)
+  fastify.post('/conversations/:id/typing', messageController.sendTyping)
+  fastify.post('/conversations/:id/read', messageController.markRead)
   fastify.post('/conversations', conversationController.getOrCreateConversation)
   fastify.delete(
     '/conversations/:id',

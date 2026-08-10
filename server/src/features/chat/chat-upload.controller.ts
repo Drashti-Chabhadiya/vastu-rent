@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { prisma } from '../../config/prisma.js'
 import { auth } from '../../config/auth.js'
-import { isUserOnline } from '../../lib/socket.js'
+import { isUserOnline } from '../user/user.controller.js'
 import { cloudinaryService } from '../upload/cloudinary.service.js'
 
 export const chatUploadController = {
@@ -45,7 +45,7 @@ export const chatUploadController = {
         name: u.name,
         role: u.role,
         image: u.showProfile === false ? null : u.image,
-        isOnline: canSeeStatus ? isUserOnline(u.id) : false,
+        isOnline: canSeeStatus ? isUserOnline(u.lastActive) : false,
         lastActive: canSeeStatus ? u.lastActive : null,
         isGreenMember: u.isGreenMember === true,
       }

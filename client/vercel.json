@@ -1,25 +1,5 @@
 {
-  "ignoreCommand": "git diff HEAD^ HEAD --quiet -- .",
-  "headers": [
-    {
-      "source": "/vastu-rent.apk",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/vnd.android.package-archive"
-        },
-        {
-          "key": "Content-Disposition",
-          "value": "attachment; filename=\"VastuRent.apk\""
-        }
-      ]
-    }
-  ],
   "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://new-vastu-rent-zyap.onrender.com/api/:path*"
-    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

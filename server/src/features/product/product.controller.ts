@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { productService } from './product.service.js'
 import { auth } from '../../config/auth.js'
 import { notifyAllUsers } from '../../lib/notification.js'
-import { io } from '../../lib/socket.js'
+import { broadcastToChannel } from '../../lib/supabase.js'
 
 export class ProductController {
   async getAllProducts(request: FastifyRequest, _reply: FastifyReply) {
@@ -32,74 +32,85 @@ export class ProductController {
   }
 
   async getProductById(request: FastifyRequest, reply: FastifyReply) {
-    const { id } = request.params as any
-    const session = await auth.api.getSession({
-      headers: request.headers as any,
-    })
-    const currentUserId = session?.user?.id
-
-    const product = await productService.getProductById(id)
-    if (!product)
-      return reply.status(404).send({ message: 'Product not found' })
-
-    // Hide product if not available, unless user is owner or admin
-    if (!product.isAvailable) {
-      if (!currentUserId) {
-        return reply
-          .status(404)
-          .send({ message: 'Product not found or unavailable' })
-      }
-
-      const isOwner =
-        product.userId === currentUserId || product.user?.id === currentUserId
-      const isAdmin = session?.user?.role === 'admin'
-
-      if (!isOwner && !isAdmin) {
-        return reply
-          .status(404)
-          .send({ message: 'Product not found or unavailable' })
-      }
-    }
-
-    // Sanitize listing owner's image
-    if (
-      product.user &&
-      product.user.showProfile === false &&
-      product.user.id !== currentUserId
-    ) {
-      product.user.image = null
-    }
-
-    // Sanitize reviews authors' images
-    if (product.reviews) {
-      product.reviews.forEach((r: any) => {
-        if (
-          r.user &&
-          r.user.showProfile === false &&
-          r.user.id !== currentUserId
-        ) {
-          r.user.image = null
-        }
+    try {
+      const { id } = request.params as any
+      const session = await auth.api.getSession({
+        headers: request.headers as any,
       })
-    }
+      const currentUserId = session?.user?.id
 
-    return { product }
+      const product = await productService.getProductById(id)
+      if (!product)
+        return reply.status(404).send({ message: 'Product not found' })
+
+      // Hide product if not available, unless user is owner or admin
+      if (!product.isAvailable) {
+        if (!currentUserId) {
+          return reply
+            .status(404)
+            .send({ message: 'Product not found or unavailable' })
+        }
+
+        const isOwner =
+          product.userId === currentUserId || product.user?.id === currentUserId
+        const isAdmin = session?.user?.role === 'admin'
+
+        if (!isOwner && !isAdmin) {
+          return reply
+            .status(404)
+            .send({ message: 'Product not found or unavailable' })
+        }
+      }
+
+      // Sanitize listing owner's image
+      if (
+        product.user &&
+        product.user.showProfile === false &&
+        product.user.id !== currentUserId
+      ) {
+        product.user.image = null
+      }
+
+      // Sanitize reviews authors' images
+      if (product.reviews) {
+        product.reviews.forEach((r: any) => {
+          if (
+            r.user &&
+            r.user.showProfile === false &&
+            r.user.id !== currentUserId
+          ) {
+            r.user.image = null
+          }
+        })
+      }
+
+      return { product }
+    } catch (error: any) {
+      if (error.message.includes('not found'))
+        return reply.status(404).send({ message: error.message })
+      return reply.status(500).send({ message: 'Internal server error' })
+    }
   }
 
   async createProduct(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const userId = (request as any).user?.id || (request.body as any).userId
+      const session = await auth.api.getSession({
+        headers: request.headers as any,
+      })
+      if (!session) return reply.status(401).send({ message: 'Unauthorized' })
+
+      const userId = session.user.id
+      const body = request.body as any
+
       const product = await productService.createProduct({
-        ...(request.body as any),
+        ...body,
         userId,
       })
 
       // Notify all users about new product listing
       try {
         const creatorName =
-          (request as any).user?.name ||
-          (request as any).user?.email ||
-          'Someone'
+          session.user?.name || session.user?.email || 'Someone'
         const productImage = product.images?.[0] || ''
         await notifyAllUsers({
           title: 'New Listing Added! 🚀',
@@ -114,9 +125,9 @@ export class ProductController {
       }
 
       try {
-        io?.emit('product_added', { product })
+        await broadcastToChannel('global', 'product_added', { product })
       } catch (err) {
-        console.error('Socket emit product_added failed:', err)
+        console.error('Supabase broadcast product_added failed:', err)
       }
 
       return { product }
@@ -145,9 +156,12 @@ export class ProductController {
       )
 
       try {
-        io?.emit('product_updated', { productId: id, product })
+        await broadcastToChannel('global', 'product_updated', {
+          productId: id,
+          product,
+        })
       } catch (err) {
-        console.error('Socket emit product_updated failed:', err)
+        console.error('Supabase broadcast product_updated failed:', err)
       }
 
       return { product }
@@ -167,9 +181,9 @@ export class ProductController {
       await productService.deleteProduct(id, user?.id, user?.role)
 
       try {
-        io?.emit('product_deleted', { productId: id })
+        await broadcastToChannel('global', 'product_deleted', { productId: id })
       } catch (err) {
-        console.error('Socket emit product_deleted failed:', err)
+        console.error('Supabase broadcast product_deleted failed:', err)
       }
 
       return { success: true }
