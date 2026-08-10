@@ -17,8 +17,7 @@ const getApiBaseUrl = (): string => {
   let url = ''
   if (Capacitor.isNativePlatform()) {
     url =
-      import.meta.env.VITE_API_BASE_URL ||
-      'https://vastu-rent.vercel.app/api'
+      import.meta.env.VITE_API_BASE_URL
   } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
@@ -27,7 +26,7 @@ const getApiBaseUrl = (): string => {
   ) {
     url = `${window.location.origin}/api`
   } else {
-    url = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'
+    url = import.meta.env.VITE_API_BASE_URL
   }
 
   // On Android emulator, 'localhost' refers to the emulator itself, so we must

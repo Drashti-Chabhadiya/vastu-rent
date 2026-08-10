@@ -30,8 +30,7 @@ const getAuthBaseUrl = (): string => {
   // Native Capacitor app — use the Vercel server directly
   if (Capacitor.isNativePlatform()) {
     url =
-      import.meta.env.VITE_AUTH_URL ||
-      'https://vastu-rent.vercel.app/api/auth'
+      import.meta.env.VITE_AUTH_URL
   } else if (
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
@@ -41,7 +40,7 @@ const getAuthBaseUrl = (): string => {
     url = `${window.location.origin}/api/auth`
   } else {
     // Local development
-    url = import.meta.env.VITE_AUTH_URL || 'http://localhost:4000/api/auth'
+    url = import.meta.env.VITE_AUTH_URL
   }
 
   // On Android emulator, rewrite localhost to 10.0.2.2 to connect to host dev server

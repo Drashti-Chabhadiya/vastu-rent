@@ -42,7 +42,7 @@ const getSessionTokenUrl = (): string => {
   // ── Local development ──────────────────────────────────────────────────
   return import.meta.env.VITE_AUTH_URL
     ? `${import.meta.env.VITE_AUTH_URL}/session-token`
-    : 'http://localhost:4000/api/auth/session-token'
+    : ''
 }
 
 function OAuthCallback() {
