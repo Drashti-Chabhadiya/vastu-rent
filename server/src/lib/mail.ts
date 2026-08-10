@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import dns from 'node:dns'
 import {
   getVerificationTemplate,
   getResetPasswordTemplate,
@@ -8,6 +9,13 @@ import {
   getContactSupportTemplate,
   getOtpTemplate,
 } from '../templates/index.js'
+
+// Force IPv4 first DNS lookup to prevent ENETUNREACH IPv6 errors on cloud hosts like Render
+try {
+  dns.setDefaultResultOrder('ipv4first')
+} catch {
+  // Ignore in environments where setDefaultResultOrder is unsupported
+}
 
 // ─── Shared Transporter (Nodemailer Connection) ─────────────────────────────
 let _transporter: nodemailer.Transporter | null = null
@@ -28,6 +36,7 @@ function getTransporter(): nodemailer.Transporter | null {
       host: smtpHost,
       port: smtpPort,
       secure: isSecure,
+      family: 4, // Force IPv4 socket connection to prevent ENETUNREACH IPv6 error on Render
       // Connection pooling can cause socket hangs on cloud platforms like Render when idle sockets are severed by firewall.
       // Pool is disabled by default unless explicitly enabled via SMTP_POOL=true.
       pool: process.env.SMTP_POOL === 'true',
