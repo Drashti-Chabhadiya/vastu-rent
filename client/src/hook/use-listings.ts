@@ -77,10 +77,10 @@ export const useCreateProduct = () => {
       await apiClient.post('/admin/products', data)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-      queryClient.invalidateQueries({ queryKey: ['recent-products'] })
-      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.resetQueries({ queryKey: ['admin-products'] })
+      queryClient.resetQueries({ queryKey: ['recent-products'] })
+      queryClient.resetQueries({ queryKey: ['my-listings'] })
+      queryClient.resetQueries({ queryKey: ['products'] })
     },
   })
 }
@@ -93,11 +93,11 @@ export const useUpdateProduct = () => {
       await apiClient.put(`/admin/products/${id}`, data)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-      queryClient.invalidateQueries({ queryKey: ['recent-products'] })
-      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-      queryClient.invalidateQueries({ queryKey: ['product'] })
+      queryClient.resetQueries({ queryKey: ['admin-products'] })
+      queryClient.resetQueries({ queryKey: ['recent-products'] })
+      queryClient.resetQueries({ queryKey: ['my-listings'] })
+      queryClient.resetQueries({ queryKey: ['products'] })
+      queryClient.resetQueries({ queryKey: ['product'] })
     },
   })
 }
@@ -116,11 +116,11 @@ export const useToggleProductStatus = () => {
       await apiClient.post(`/admin/products/${id}/available`, { isAvailable })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-      queryClient.invalidateQueries({ queryKey: ['recent-products'] })
-      queryClient.invalidateQueries({ queryKey: ['product'] })
+      queryClient.resetQueries({ queryKey: ['admin-products'] })
+      queryClient.resetQueries({ queryKey: ['my-listings'] })
+      queryClient.resetQueries({ queryKey: ['products'] })
+      queryClient.resetQueries({ queryKey: ['recent-products'] })
+      queryClient.resetQueries({ queryKey: ['product'] })
     },
   })
 }
@@ -133,9 +133,9 @@ export const useDeleteProduct = () => {
       await apiClient.delete(`/admin/products/${id}`)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-      queryClient.invalidateQueries({ queryKey: ['recent-products'] })
-      queryClient.invalidateQueries({ queryKey: ['my-listings'] })
+      queryClient.resetQueries({ queryKey: ['admin-products'] })
+      queryClient.resetQueries({ queryKey: ['recent-products'] })
+      queryClient.resetQueries({ queryKey: ['my-listings'] })
     },
   })
 }
@@ -148,9 +148,9 @@ export const useSetFeaturedProduct = () => {
       await apiClient.put(`/admin/products/${id}/featured`)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-      queryClient.invalidateQueries({ queryKey: ['product'] })
+      queryClient.resetQueries({ queryKey: ['admin-products'] })
+      queryClient.resetQueries({ queryKey: ['products'] })
+      queryClient.resetQueries({ queryKey: ['product'] })
     },
   })
 }
