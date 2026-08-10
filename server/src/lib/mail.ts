@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer'
-import dns from 'node:dns'
 import {
   getVerificationTemplate,
   getResetPasswordTemplate,
@@ -10,82 +9,67 @@ import {
   getOtpTemplate,
 } from '../templates/index.js'
 
-// Force IPv4 first DNS lookup to prevent ENETUNREACH IPv6 errors on cloud hosts like Render
-try {
-  dns.setDefaultResultOrder('ipv4first')
-} catch {
-  // Ignore in environments where setDefaultResultOrder is unsupported
-}
-
 // ─── Shared Transporter (Nodemailer Connection) ─────────────────────────────
 let _transporter: nodemailer.Transporter | null = null
 
 function getTransporter(): nodemailer.Transporter | null {
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com'
+  const smtpPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 587
   const smtpUser = process.env.SMTP_USER
   const smtpPass = process.env.SMTP_PASS
 
-  if (!smtpHost || !smtpUser || !smtpPass) return null
-
-  // Render cloud host blocks outgoing connections on port 587/25 by default.
-  // We default to SSL Port 465 for Gmail / cloud deployment unless explicitly configured otherwise.
-  const rawPort = process.env.SMTP_PORT
-    ? parseInt(process.env.SMTP_PORT, 10)
-    : 587
-  const smtpPort =
-    rawPort === 587 && smtpHost.includes('gmail') ? 465 : rawPort
+  if (!smtpUser || !smtpPass) {
+    return null
+  }
 
   if (!_transporter) {
-    const isSecure = smtpPort === 587
+    // Port 465 uses SSL (secure: true). Port 587 uses STARTTLS (secure: false).
+    const isSecure = smtpPort === 465
     _transporter = nodemailer.createTransport({
       host: smtpHost,
-      port: rawPort,
-      secure: true,
-      // secure: isSecure,
-      family: 4, // Force IPv4 socket connection to prevent ENETUNREACH IPv6 error on Render
-      // Connection pooling can cause socket hangs on cloud platforms like Render when idle sockets are severed by firewall.
-      // Pool is disabled by default unless explicitly enabled via SMTP_POOL=true.
-      pool: process.env.SMTP_POOL === 'true',
-      connectionTimeout: 10_000,
-      socketTimeout: 10_000,
-      tls: {
-        rejectUnauthorized: false,
-      },
+      port: smtpPort,
+      secure: isSecure,
       auth: {
         user: smtpUser,
         pass: smtpPass,
       },
-    } as any)
+      tls: {
+        rejectUnauthorized: false,
+      },
+    })
     console.log(
-      `📬  [Mail] SMTP transporter initialized (host: ${smtpHost}, port: ${smtpPort}, secure: ${isSecure})`,
+      `📬 [Mail] SMTP transporter initialized (${smtpHost}:${smtpPort}, secure: ${isSecure})`,
     )
   }
 
   return _transporter
 }
 
-// ─── Helper function to send email via Nodemailer SMTP or Simulator ───────────
+// ─── Core Email Sending Function ─────────────────────────────────────────────
 
-interface SendMailHelperOptions {
+interface SendMailOptions {
   to: string
   subject: string
   html: string
   text: string
   replyTo?: string
-  simulatedTitle: string
+  simulatedTitle?: string
   simulatedLogLines?: string[]
 }
 
-async function sendMailHelper({
-  to,
-  subject,
-  html,
-  text,
-  replyTo,
-  simulatedTitle,
-  simulatedLogLines,
-}: SendMailHelperOptions): Promise<void> {
-  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com'
+async function sendMail(options: SendMailOptions): Promise<void> {
+  const {
+    to,
+    subject,
+    html,
+    text,
+    replyTo,
+    simulatedTitle = 'EMAIL GENERATED',
+    simulatedLogLines,
+  } = options
+
   const smtpUser = process.env.SMTP_USER
   const smtpPass = process.env.SMTP_PASS
   const defaultFrom = smtpUser
@@ -94,62 +78,31 @@ async function sendMailHelper({
   const smtpFrom = process.env.SMTP_FROM || defaultFrom
 
   const transporter = getTransporter()
+
   if (transporter && smtpUser && smtpPass) {
     try {
-      console.log(`📧  [SMTP] Attempting to send email to ${to}...`)
+      console.log(`📧 [SMTP] Attempting to send email to ${to}...`)
       console.log(`   From: ${smtpFrom}`)
       console.log(`   Subject: ${subject}`)
-      if (replyTo) {
-        console.log(`   Reply-To: ${replyTo}`)
-      }
 
-      const mailOptions: nodemailer.SendMailOptions = {
+      await transporter.sendMail({
         from: smtpFrom,
         to,
         subject,
         html,
         text,
-      }
-      if (replyTo) {
-        mailOptions.replyTo = replyTo
-      }
-
-      try {
-        await transporter.sendMail(mailOptions)
-        console.log(`📧  [SMTP] Email sent successfully to ${to}`)
-        return
-      } catch (primaryErr: any) {
-        console.error('❌  [SMTP] Primary send failed:', primaryErr?.message || primaryErr)
-        // If primary attempt on port 587 timed out or failed, attempt direct SSL port 465 fallback
-        console.log('🔄  [SMTP] Attempting fallback send via Gmail SSL Port 465...')
-        const fallbackTransporter = nodemailer.createTransport({
-          host: smtpHost.includes('gmail') ? 'smtp.gmail.com' : smtpHost,
-          port: 587,
-          secure: true,
-          family: 4,
-          connectionTimeout: 10_000,
-          socketTimeout: 10_000,
-          tls: {
-            rejectUnauthorized: false,
-          },
-          auth: {
-            user: smtpUser,
-            pass: smtpPass,
-          },
-        } as any)
-        await fallbackTransporter.sendMail(mailOptions)
-        console.log(`📧  [SMTP] Fallback email sent successfully via SSL Port 465 to ${to}`)
-        return
-      }
+        replyTo,
+      })
+      console.log(`✅ [SMTP] Email sent successfully to ${to}`)
+      return
     } catch (err: any) {
-      console.error('❌  [SMTP] Error sending email on Render:', err?.message || err)
-      console.log('⚠️  Falling back to simulated log display...')
+      console.error('❌ [SMTP] Error sending email:', err?.message || err)
     }
   }
 
-  // Fallback to Local Email Simulator when SMTP is not configured
+  // Fallback to local Email Simulator if SMTP credentials are missing or send fails
   console.log('\n' + '='.repeat(75))
-  console.log(`📧  [VastuRent Email Simulator] - ${simulatedTitle}`)
+  console.log(`📧 [VastuRent Email Simulator] - ${simulatedTitle}`)
   console.log('='.repeat(75))
   console.log(`✉️  To Email:   ${to}`)
   console.log(`📋  Subject:    ${subject}`)
@@ -159,22 +112,20 @@ async function sendMailHelper({
     }
   }
   console.log('-'.repeat(75))
-  console.log(
-    '💡  Note: Define SMTP_HOST, SMTP_USER, and SMTP_PASS in server/.env to send real emails.',
-  )
+  console.log('💡 Note: Define SMTP_HOST, SMTP_USER, and SMTP_PASS in server/.env to send real emails.')
   console.log('='.repeat(75) + '\n')
 }
 
-// ─── Exported Direct Functions ────────────────────────────────────────────────
+// ─── Exported Functions ───────────────────────────────────────────────────────
 
-interface SendVerificationEmailOptions {
+export interface SendVerificationEmailOptions {
   email: string
   name: string
   url: string
   token: string
 }
 
-export async function sendVerificationEmailDirect({
+export async function sendVerificationEmail({
   email,
   name,
   url: _url,
@@ -185,7 +136,7 @@ export async function sendVerificationEmailDirect({
   const subject = 'Verify your email address - VastuRent'
   const htmlContent = getVerificationTemplate({ name, clientVerificationUrl })
 
-  await sendMailHelper({
+  await sendMail({
     to: email,
     subject,
     html: htmlContent,
@@ -193,19 +144,21 @@ export async function sendVerificationEmailDirect({
     simulatedTitle: 'VERIFICATION LINK GENERATED',
     simulatedLogLines: [
       `👤  To Name:    ${name}`,
-      `🔗  Verify URL: \x1b[36m\x1b[4m${clientVerificationUrl}\x1b[0m`,
+      `🔗  Verify URL: ${clientVerificationUrl}`,
       `🎫  Token:      ${token}`,
     ],
   })
 }
 
-interface SendOtpEmailOptions {
+export const sendVerificationEmailDirect = sendVerificationEmail
+
+export interface SendOtpEmailOptions {
   email: string
   name: string
   otp: string
 }
 
-export async function sendOtpEmailDirect({
+export async function sendOtpEmail({
   email,
   name,
   otp,
@@ -213,7 +166,7 @@ export async function sendOtpEmailDirect({
   const subject = 'Your VastuRent Verification Code'
   const htmlContent = getOtpTemplate({ name, otp })
 
-  await sendMailHelper({
+  await sendMail({
     to: email,
     subject,
     html: htmlContent,
@@ -221,19 +174,21 @@ export async function sendOtpEmailDirect({
     simulatedTitle: 'OTP GENERATED',
     simulatedLogLines: [
       `👤  To Name:    ${name}`,
-      `🔑  OTP Code:   \x1b[36m\x1b[1m${otp}\x1b[0m`,
+      `🔑  OTP Code:   ${otp}`,
     ],
   })
 }
 
-interface SendResetPasswordEmailOptions {
+export const sendOtpEmailDirect = sendOtpEmail
+
+export interface SendResetPasswordEmailOptions {
   email: string
   name: string
   url: string
   token: string
 }
 
-export async function sendResetPasswordEmailDirect({
+export async function sendResetPasswordEmail({
   email,
   name,
   url: _url,
@@ -244,7 +199,7 @@ export async function sendResetPasswordEmailDirect({
   const subject = 'Reset your password - VastuRent'
   const htmlContent = getResetPasswordTemplate({ name, clientResetPasswordUrl })
 
-  await sendMailHelper({
+  await sendMail({
     to: email,
     subject,
     html: htmlContent,
@@ -258,7 +213,9 @@ export async function sendResetPasswordEmailDirect({
   })
 }
 
-interface SendBookingAlertOptions {
+export const sendResetPasswordEmailDirect = sendResetPasswordEmail
+
+export interface SendBookingAlertOptions {
   email: string
   name: string
   title: string
@@ -266,7 +223,7 @@ interface SendBookingAlertOptions {
   type: string
 }
 
-export async function sendBookingAlertEmailDirect({
+export async function sendBookingAlertEmail({
   email,
   name,
   title,
@@ -276,7 +233,7 @@ export async function sendBookingAlertEmailDirect({
   const subject = `${title} - VastuRent`
   const htmlContent = getBookingAlertTemplate({ title, name, message })
 
-  await sendMailHelper({
+  await sendMail({
     to: email,
     subject,
     html: htmlContent,
@@ -289,19 +246,21 @@ export async function sendBookingAlertEmailDirect({
   })
 }
 
-interface SendPreferenceConfirmationOptions {
+export const sendBookingAlertEmailDirect = sendBookingAlertEmail
+
+export interface SendPreferenceConfirmationOptions {
   email: string
   name: string
 }
 
-export async function sendEmailNotificationsConfirmationEmailDirect({
+export async function sendEmailNotificationsConfirmationEmail({
   email,
   name,
 }: SendPreferenceConfirmationOptions): Promise<void> {
   const subject = '🔔 Email Notifications Activated! - VastuRent'
   const htmlContent = getNotificationsConfirmationTemplate({ name })
 
-  await sendMailHelper({
+  await sendMail({
     to: email,
     subject,
     html: htmlContent,
@@ -311,14 +270,17 @@ export async function sendEmailNotificationsConfirmationEmailDirect({
   })
 }
 
-export async function sendMarketingWelcomeEmailDirect({
+export const sendEmailNotificationsConfirmationEmailDirect =
+  sendEmailNotificationsConfirmationEmail
+
+export async function sendMarketingWelcomeEmail({
   email,
   name,
 }: SendPreferenceConfirmationOptions): Promise<void> {
   const subject = '🎉 Welcome to VastuRent Deals! Exclusive Offers Inside'
   const htmlContent = getMarketingWelcomeTemplate({ name })
 
-  await sendMailHelper({
+  await sendMail({
     to: email,
     subject,
     html: htmlContent,
@@ -328,14 +290,16 @@ export async function sendMarketingWelcomeEmailDirect({
   })
 }
 
-interface SendContactSupportOptions {
+export const sendMarketingWelcomeEmailDirect = sendMarketingWelcomeEmail
+
+export interface SendContactSupportOptions {
   email: string
   name: string
   subject: string
   message: string
 }
 
-export async function sendContactSupportEmailDirect({
+export async function sendContactSupportEmail({
   email,
   name,
   subject,
@@ -349,7 +313,7 @@ export async function sendContactSupportEmailDirect({
     message,
   })
 
-  await sendMailHelper({
+  await sendMail({
     to:
       process.env.CONTACT_EMAIL ||
       process.env.SMTP_USER ||
@@ -367,46 +331,5 @@ export async function sendContactSupportEmailDirect({
   })
 }
 
-// ─── Direct Exported Wrappers ────────────────────────────────────────────────
+export const sendContactSupportEmailDirect = sendContactSupportEmail
 
-export async function sendVerificationEmail(
-  options: SendVerificationEmailOptions,
-): Promise<void> {
-  await sendVerificationEmailDirect(options)
-}
-
-export async function sendOtpEmail(
-  options: SendOtpEmailOptions,
-): Promise<void> {
-  await sendOtpEmailDirect(options)
-}
-
-export async function sendResetPasswordEmail(
-  options: SendResetPasswordEmailOptions,
-): Promise<void> {
-  await sendResetPasswordEmailDirect(options)
-}
-
-export async function sendBookingAlertEmail(
-  options: SendBookingAlertOptions,
-): Promise<void> {
-  await sendBookingAlertEmailDirect(options)
-}
-
-export async function sendEmailNotificationsConfirmationEmail(
-  options: SendPreferenceConfirmationOptions,
-): Promise<void> {
-  await sendEmailNotificationsConfirmationEmailDirect(options)
-}
-
-export async function sendMarketingWelcomeEmail(
-  options: SendPreferenceConfirmationOptions,
-): Promise<void> {
-  await sendMarketingWelcomeEmailDirect(options)
-}
-
-export async function sendContactSupportEmail(
-  options: SendContactSupportOptions,
-): Promise<void> {
-  await sendContactSupportEmailDirect(options)
-}
