@@ -69,8 +69,16 @@ async function sendMailHelper({
     process.env.SMTP_FROM || '"VastuRent" <noreply@vasturent.com>'
 
   const transporter = getTransporter()
+  console.log('transporter', transporter)
   if (transporter) {
     try {
+      console.log('smtpFrom', smtpFrom)
+      console.log('to', to)
+      console.log('replyTo', replyTo)
+      console.log('subject', subject)
+      console.log('html', html)
+      console.log('text', text)
+
       const sendPromise = transporter.sendMail({
         from: smtpFrom,
         to,
