@@ -24,8 +24,7 @@ export const auth = betterAuth({
    */
   baseURL: {
     allowedHosts: [
-      'new-vastu-rent.onrender.com',
-      'new-vastu-rent-client.vercel.app',
+      'vastu-rent.vercel.app',
       'localhost:4000',
       'localhost:3000',
       '127.0.0.1:4000',
@@ -35,7 +34,6 @@ export const auth = betterAuth({
       '10.0.2.2:3000',
       '10.0.2.2',
       '*.vercel.app',
-      '*.onrender.com',
       getHostName(process.env.BETTER_AUTH_URL),
       getHostName(process.env.CLIENT_URL),
     ].filter(Boolean) as string[],
@@ -150,10 +148,7 @@ export const auth = betterAuth({
     // Capacitor WebView
     'capacitor://localhost',
     // Production web app (Vercel)
-    'https://new-vastu-rent-client.vercel.app',
-    // Production backend (Render) — needed when Render itself is the callbackURL origin
-    'https://new-vastu-rent-zyap.onrender.com',
-    // Dynamic env-configured origins
+    'https://vastu-rent.vercel.app',
     process.env.CLIENT_URL,
     process.env.BETTER_AUTH_URL,
   ].filter(Boolean) as string[],

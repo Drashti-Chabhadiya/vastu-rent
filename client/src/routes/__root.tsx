@@ -109,11 +109,52 @@ function NotificationListener() {
   useEffect(() => {
     const globalChannel = supabase
       .channel('global-broadcasts')
-      .on('broadcast', { event: 'product_added' }, () => {
-        rqClient.invalidateQueries({ queryKey: ['products'] })
-        rqClient.invalidateQueries({ queryKey: ['recent-products'] })
-        rqClient.invalidateQueries({ queryKey: ['admin-products'] })
-      })
+      .on(
+        'broadcast',
+        { event: 'product_added' },
+        ({ payload }: { payload?: any }) => {
+          rqClient.invalidateQueries({ queryKey: ['products'] })
+          rqClient.invalidateQueries({ queryKey: ['recent-products'] })
+          rqClient.invalidateQueries({ queryKey: ['admin-products'] })
+
+          const product = payload?.product
+          if (product) {
+            const title = 'New Listing Available! 🛍️'
+            const description = `"${product.title}" listed in ${product.city || 'your area'}`
+
+            toast(title, {
+              description,
+              action: {
+                label: 'View',
+                onClick: () =>
+                  navigate({ to: `/products/${product.id}` as any }),
+              },
+            })
+
+            if (
+              !isNative &&
+              typeof window !== 'undefined' &&
+              'Notification' in window &&
+              Notification.permission === 'granted'
+            ) {
+              try {
+                const notification = new Notification(title, {
+                  body: description,
+                  icon: '/logo192.png',
+                  image: product.images?.[0],
+                } as any)
+                notification.onclick = (e) => {
+                  e.preventDefault()
+                  window.focus()
+                  navigate({ to: `/products/${product.id}` as any })
+                }
+              } catch (err) {
+                console.error('Failed to trigger browser notification:', err)
+              }
+            }
+          }
+        },
+      )
       .on('broadcast', { event: 'product_updated' }, () => {
         rqClient.invalidateQueries({ queryKey: ['products'] })
         rqClient.invalidateQueries({ queryKey: ['recent-products'] })

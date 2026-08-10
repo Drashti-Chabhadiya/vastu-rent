@@ -63,6 +63,7 @@ app.register(cors, {
 
     const isLocalOrCapacitor =
       allowed.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
       origin.startsWith('capacitor://') ||
       origin.startsWith('http://localhost') ||
       origin.startsWith('https://localhost') ||
@@ -180,7 +181,7 @@ app.get('/oauth-callback', async (_req, reply) => {
     window.location.href = 'com.vasturent.app://auth-done';
     // Fallback: if not intercepted (web browser), go to the web client.
     setTimeout(function () {
-      window.location.replace('https://new-vastu-rent-client.vercel.app/');
+      window.location.replace('https://vastu-rent.vercel.app/');
     }, 1200);
   </script>
 </body>

@@ -26,7 +26,7 @@ const getSessionTokenUrl = (): string => {
   if (Capacitor.isNativePlatform()) {
     return import.meta.env.VITE_AUTH_URL
       ? `${import.meta.env.VITE_AUTH_URL}/session-token`
-      : 'https://new-vastu-rent-zyap.onrender.com/api/auth/session-token'
+      : 'https://vastu-rent.vercel.app/api/auth/session-token'
   }
 
   // ── Web browser — non-local origin (production / staging) ─────────────
