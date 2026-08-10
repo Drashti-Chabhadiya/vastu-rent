@@ -21,14 +21,19 @@ try {
 let _transporter: nodemailer.Transporter | null = null
 
 function getTransporter(): nodemailer.Transporter | null {
-  const smtpHost = process.env.SMTP_HOST
-  const smtpPort = process.env.SMTP_PORT
-    ? parseInt(process.env.SMTP_PORT, 10)
-    : 587
+  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com'
   const smtpUser = process.env.SMTP_USER
   const smtpPass = process.env.SMTP_PASS
 
   if (!smtpHost || !smtpUser || !smtpPass) return null
+
+  // Render cloud host blocks outgoing connections on port 587/25 by default.
+  // We default to SSL Port 465 for Gmail / cloud deployment unless explicitly configured otherwise.
+  const rawPort = process.env.SMTP_PORT
+    ? parseInt(process.env.SMTP_PORT, 10)
+    : 465
+  const smtpPort =
+    rawPort === 587 && smtpHost.includes('gmail') ? 465 : rawPort
 
   if (!_transporter) {
     const isSecure = smtpPort === 465
@@ -40,8 +45,8 @@ function getTransporter(): nodemailer.Transporter | null {
       // Connection pooling can cause socket hangs on cloud platforms like Render when idle sockets are severed by firewall.
       // Pool is disabled by default unless explicitly enabled via SMTP_POOL=true.
       pool: process.env.SMTP_POOL === 'true',
-      connectionTimeout: 15_000,
-      socketTimeout: 15_000,
+      connectionTimeout: 10_000,
+      socketTimeout: 10_000,
       tls: {
         rejectUnauthorized: false,
       },
@@ -51,7 +56,7 @@ function getTransporter(): nodemailer.Transporter | null {
       },
     } as any)
     console.log(
-      '📬  [Mail] SMTP transporter initialized (ready)',
+      `📬  [Mail] SMTP transporter initialized (host: ${smtpHost}, port: ${smtpPort}, secure: ${isSecure})`,
     )
   }
 
@@ -79,14 +84,16 @@ async function sendMailHelper({
   simulatedTitle,
   simulatedLogLines,
 }: SendMailHelperOptions): Promise<void> {
+  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com'
   const smtpUser = process.env.SMTP_USER
+  const smtpPass = process.env.SMTP_PASS
   const defaultFrom = smtpUser
     ? `"VastuRent" <${smtpUser}>`
     : '"VastuRent" <noreply@vasturent.com>'
   const smtpFrom = process.env.SMTP_FROM || defaultFrom
 
   const transporter = getTransporter()
-  if (transporter) {
+  if (transporter && smtpUser && smtpPass) {
     try {
       console.log(`📧  [SMTP] Attempting to send email to ${to}...`)
       console.log(`   From: ${smtpFrom}`)
@@ -106,9 +113,33 @@ async function sendMailHelper({
         mailOptions.replyTo = replyTo
       }
 
-      await transporter.sendMail(mailOptions)
-      console.log(`📧  [SMTP] Email sent successfully to ${to}`)
-      return
+      try {
+        await transporter.sendMail(mailOptions)
+        console.log(`📧  [SMTP] Email sent successfully to ${to}`)
+        return
+      } catch (primaryErr: any) {
+        console.error('❌  [SMTP] Primary send failed:', primaryErr?.message || primaryErr)
+        // If primary attempt on port 587 timed out or failed, attempt direct SSL port 465 fallback
+        console.log('🔄  [SMTP] Attempting fallback send via Gmail SSL Port 465...')
+        const fallbackTransporter = nodemailer.createTransport({
+          host: smtpHost.includes('gmail') ? 'smtp.gmail.com' : smtpHost,
+          port: 465,
+          secure: true,
+          family: 4,
+          connectionTimeout: 10_000,
+          socketTimeout: 10_000,
+          tls: {
+            rejectUnauthorized: false,
+          },
+          auth: {
+            user: smtpUser,
+            pass: smtpPass,
+          },
+        } as any)
+        await fallbackTransporter.sendMail(mailOptions)
+        console.log(`📧  [SMTP] Fallback email sent successfully via SSL Port 465 to ${to}`)
+        return
+      }
     } catch (err: any) {
       console.error('❌  [SMTP] Error sending email on Render:', err?.message || err)
       console.log('⚠️  Falling back to simulated log display...')
