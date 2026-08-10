@@ -23,7 +23,7 @@
       "dest": "client/assets/$1"
     },
     {
-      "src": "/(firebase-messaging-sw\\.js|manifest\\.json|robots\\.txt|sitemap\\.xml|favicon\\.svg|logo192\\.png|logo512\\.png|.*\\.apk)",
+      "src": "/(firebase-messaging-sw\\.js|manifest\\.json|robots\\.txt|sitemap\\.xml|favicon\\.svg|logo\\.png|logo192\\.png|logo512\\.png|.*\\.apk)",
       "dest": "client/$1"
     },
     {

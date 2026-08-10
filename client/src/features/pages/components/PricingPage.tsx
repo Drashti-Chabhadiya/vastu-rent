@@ -366,7 +366,7 @@ export function PricingPage() {
                   </button>
                 ) : (
                   <Button
-                    onClick={() => handleSelectPlan(plan.name)}
+                    // onClick={() => handleSelectPlan(plan.name)}
                     variant="outline"
                     className="mt-3.5 lg:mt-8 w-full rounded-full border-primary text-primary hover:bg-primary-soft/15 font-black text-[12px] h-10 lg:h-12 shadow-none active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center"
                   >
