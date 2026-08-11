@@ -17,6 +17,71 @@ const getHostName = (urlStr?: string) => {
   }
 }
 
+const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  'mailinator.com',
+  'yopmail.com',
+  'tempmail.org',
+  '10minutemail.com',
+  'guerrillamail.com',
+  'temp-mail.org',
+  'throwawaymail.com',
+  'getairmail.com',
+  'trashmail.com',
+])
+
+export async function validateEmailForAbuse(email: string | undefined | null) {
+  if (!email || typeof email !== 'string') return
+
+  const lowerEmail = email.trim().toLowerCase()
+
+  if (lowerEmail.includes('+')) {
+    throw new APIError('BAD_REQUEST', {
+      message: 'Email addresses with "+" aliases are not allowed.',
+    })
+  }
+
+  const parts = lowerEmail.split('@')
+  if (parts.length !== 2) return
+
+  const [localPart, domain] = parts
+
+  if (DISPOSABLE_EMAIL_DOMAINS.has(domain)) {
+    throw new APIError('BAD_REQUEST', {
+      message: 'Disposable or temporary email addresses are not allowed.',
+    })
+  }
+
+  // Dot normalization check for ALL domains
+  const normalizedLocal = localPart.replace(/\./g, '')
+
+  // Treat gmail.com and googlemail.com as the same domain family
+  const isGmail = domain === 'gmail.com' || domain === 'googlemail.com'
+
+  let existingUsers: any[] = []
+
+  if (isGmail) {
+    existingUsers = await prisma.$queryRaw<any[]>`
+      SELECT id FROM "user" 
+      WHERE REPLACE(SPLIT_PART(LOWER(email), '@', 1), '.', '') = ${normalizedLocal} 
+      AND SPLIT_PART(LOWER(email), '@', 2) IN ('gmail.com', 'googlemail.com')
+      LIMIT 1
+    `
+  } else {
+    existingUsers = await prisma.$queryRaw<any[]>`
+      SELECT id FROM "user" 
+      WHERE REPLACE(SPLIT_PART(LOWER(email), '@', 1), '.', '') = ${normalizedLocal} 
+      AND SPLIT_PART(LOWER(email), '@', 2) = ${domain}
+      LIMIT 1
+    `
+  }
+
+  if (existingUsers.length > 0) {
+    throw new APIError('BAD_REQUEST', {
+      message: 'An account with this email identity already exists.',
+    })
+  }
+}
+
 export const auth = betterAuth({
   /**
    * The base URL where the auth server is running.
@@ -81,11 +146,7 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          if (user.email && user.email.includes('+')) {
-            throw new APIError('BAD_REQUEST', {
-              message: 'Email addresses with "+" aliases are not allowed.',
-            })
-          }
+          await validateEmailForAbuse(user.email)
 
           if (user.deviceFingerprint) {
             const existing = await prisma.user.findFirst({
@@ -102,10 +163,8 @@ export const auth = betterAuth({
       },
       update: {
         before: async (user) => {
-          if (user.email && user.email.includes('+')) {
-            throw new APIError('BAD_REQUEST', {
-              message: 'Email addresses with "+" aliases are not allowed.',
-            })
+          if (user.email) {
+            await validateEmailForAbuse(user.email)
           }
           return { data: user }
         },

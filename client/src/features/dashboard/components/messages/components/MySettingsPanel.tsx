@@ -137,13 +137,13 @@ export function MySettingsPanel({
   return (
     <div
       className={cn(
-        'flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-[#FBF9F4] dark:bg-background lg:rounded-[2.5rem] lg:border lg:border-border/30 lg:shadow-sm',
+        'flex flex-col h-full overflow-hidden select-none animate-in slide-in-from-right duration-250 bg-brand-surface-warm lg:rounded-[2.5rem] lg:border lg:border-border/30 lg:shadow-sm',
         !isEmbedded && 'w-full lg:w-[360px] shrink-0',
       )}
     >
       {/* ── HEADER ── */}
       {(!isEmbedded || subScreen !== 'main') && (
-        <div className="bg-[#0d4d38] px-4 py-5 flex items-center gap-4 text-white shrink-0 shadow-sm">
+        <div className="bg-brand-primary-deep px-4 py-5 flex items-center gap-4 text-white shrink-0 shadow-sm">
           <Button
             variant="ghost"
             size="icon"
@@ -165,7 +165,7 @@ export function MySettingsPanel({
       )}
 
       {/* ── SCROLLABLE VIEWS ── */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4 bg-[#FBF9F4] dark:bg-background">
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4 bg-brand-surface-warm">
         {/* ── 1. MAIN SCREEN VIEW ── */}
         {subScreen === 'main' && (
           <div className="flex flex-col gap-4 animate-fade-in">

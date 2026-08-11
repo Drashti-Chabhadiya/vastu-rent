@@ -82,6 +82,50 @@ export class UserService {
     return prisma.user.delete({ where: { id } })
   }
 
+  async deleteMyAccount(id: string) {
+    const user = await prisma.user.findUnique({ where: { id } })
+    if (!user) throw new Error('User not found')
+
+    // 1. Delete user's image from cloudinary if it exists
+    if (user.image) {
+      const publicId = cloudinaryService.extractPublicId(user.image)
+      if (publicId) {
+        try {
+          await cloudinaryService.deleteImage(publicId, id)
+        } catch (e) {
+          console.error('Failed to delete avatar from Cloudinary', e)
+        }
+      }
+    }
+
+    // 2. Fetch all products owned by the user
+    const userProducts = await prisma.product.findMany({
+      where: { userId: id },
+      select: { id: true },
+    })
+    const productIds = userProducts.map((p) => p.id)
+
+    // 3. Delete Rentals
+    // We must delete rentals where the user is the renter, OR where the rental is for one of the user's products.
+    await prisma.rental.deleteMany({
+      where: {
+        OR: [{ renterId: id }, { productId: { in: productIds } }],
+      },
+    })
+
+    // 4. Delete user's products
+    if (productIds.length > 0) {
+      await prisma.product.deleteMany({
+        where: { userId: id },
+      })
+    }
+
+    // 5. Delete category deletion requests (since they reference category manually or wait, does category deletion request cascade? Yes, it cascades on user, but if the user has created categories, we should be careful. Actually category relation to user has onDelete: SetNull)
+
+    // 6. Delete the user
+    return prisma.user.delete({ where: { id } })
+  }
+
   async getUserById(id: string) {
     return prisma.user.findUnique({
       where: { id },

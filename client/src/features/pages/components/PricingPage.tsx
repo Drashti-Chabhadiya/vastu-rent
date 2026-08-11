@@ -139,7 +139,7 @@ export function PricingPage() {
   ]
 
   return (
-    <div className="min-h-full bg-[#FBF9F4] dark:bg-background pb-28 lg:pb-20">
+    <div className="min-h-full bg-brand-surface-warm pb-28 lg:pb-20">
       {/* ── HERO (desktop only) ── */}
       {/* Mobile Top Header */}
       <div className="md:hidden px-4 pt-2">
@@ -226,13 +226,13 @@ export function PricingPage() {
           <button
             onClick={() => setIsYearly(!isYearly)}
             className={cn(
-              'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+              'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none',
               isYearly ? 'bg-primary' : 'bg-muted-dark/30',
             )}
           >
             <span
               className={cn(
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#fff] shadow-lg ring-0 transition duration-200 ease-in-out mt-0.5 ml-0.5',
                 isYearly ? 'translate-x-5' : 'translate-x-0',
               )}
             />
@@ -397,7 +397,7 @@ export function PricingPage() {
       </section>
 
       {/* ── CTA STICKY BOTTOM (mobile only) ── */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 px-4 pb-3 pt-3 bg-gradient-to-t from-[#FBF9F4] dark:from-background via-[#FBF9F4]/95 dark:via-background/95 to-transparent pointer-events-none">
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 px-4 pb-3 pt-3 bg-gradient-to-t from-brand-surface-warm via-brand-surface-warm/95 to-transparent pointer-events-none">
         {session ? (
           <Link
             to="/account/listings"

@@ -247,11 +247,11 @@ export const useRevokeSession = () => {
   })
 }
 
-// Submit account deletion request mutation
-export const useDeleteAccountRequest = () => {
+// Delete my account mutation
+export const useDeleteAccount = () => {
   return useMutation({
     mutationFn: async () => {
-      await apiClient.post('/users/settings/delete-request')
+      await apiClient.delete('/users/account')
     },
   })
 }

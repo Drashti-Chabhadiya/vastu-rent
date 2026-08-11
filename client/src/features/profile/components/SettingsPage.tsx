@@ -29,7 +29,7 @@ import { PrivacySection } from './settings/PrivacySection'
 import { ConnectedAccountsSection } from './settings/ConnectedAccountsSection'
 import { DeleteAccountSection } from './settings/DeleteAccountSection'
 import { ThemeSection } from './settings/ThemeSection'
-import { useProfileData, useDeleteAccountRequest } from '#/hook'
+import { useProfileData, useDeleteAccount } from '#/hook'
 import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 
 const subNavItems = [
@@ -57,7 +57,7 @@ export function SettingsPage() {
     }
   }, [section])
 
-  const deleteAccountRequest = useDeleteAccountRequest()
+  const deleteAccount = useDeleteAccount()
 
   const {
     // name,
@@ -135,18 +135,14 @@ export function SettingsPage() {
     }
     setDelLoading(true)
     try {
-      await deleteAccountRequest.mutateAsync()
-      toast.success(
-        t(
-          'Account deletion request submitted. Our team will process it within 48 hours.',
-        ),
-      )
+      await deleteAccount.mutateAsync()
+      toast.success(t('Your account has been permanently deleted.'))
       setDelInput('')
+      await authClient.signOut()
+      window.location.href = '/'
     } catch {
       toast.error(
-        t(
-          'Failed to submit deletion request. Please contact support@vastu.com.',
-        ),
+        t('Failed to delete account. Please try again or contact support.'),
       )
     } finally {
       setDelLoading(false)

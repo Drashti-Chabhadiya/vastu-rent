@@ -10,6 +10,9 @@ export async function userRoutes(fastify: FastifyInstance) {
   // User Settings Route
   fastify.patch('/settings', userController.updateSettings)
 
+  // User Account Delete Route
+  fastify.delete('/account', userController.deleteMyAccount)
+
   // User Sessions Routes
   fastify.get('/settings/sessions', userController.getSessions)
   fastify.patch('/settings/sessions/:id', userController.renameSession)

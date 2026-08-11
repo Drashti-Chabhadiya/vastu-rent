@@ -1,4 +1,4 @@
-import { auth } from '../../config/auth.js'
+import { auth, validateEmailForAbuse } from '../../config/auth.js'
 import { FastifyInstance } from 'fastify'
 import { prisma } from '../../config/prisma.js'
 import { sendOtpEmail } from '../../lib/mail.js'
@@ -37,7 +37,7 @@ export async function authRoutes(app: FastifyInstance) {
     {
       config: {
         rateLimit: {
-          max: 5,
+          max: 3, // Very strict
           timeWindow: '1 minute',
         },
       },
@@ -46,6 +46,14 @@ export async function authRoutes(app: FastifyInstance) {
       const { email, name } = request.body as { email: string; name?: string }
       if (!email) {
         return reply.status(400).send({ error: 'Email is required' })
+      }
+
+      try {
+        await validateEmailForAbuse(email)
+      } catch (err: any) {
+        return reply
+          .status(400)
+          .send({ error: err?.message || 'Invalid email' })
       }
 
       // Generate 6-digit OTP
@@ -123,7 +131,7 @@ export async function authRoutes(app: FastifyInstance) {
     {
       config: {
         rateLimit: {
-          max: 10,
+          max: 5, // Strict
           timeWindow: '1 minute',
         },
       },
@@ -196,8 +204,26 @@ export async function authRoutes(app: FastifyInstance) {
           })
         }
 
-        // Device is new, eligible for free trial
+        // Device is new, eligible for free trial initially
         freeTrialEligible = true
+      } else {
+        // Strict enforcement: no visitorId = no free trial
+        freeTrialEligible = false
+      }
+
+      // IP check: prevent VPN/Script abuse by limiting free listings per IP
+      const clientIp = request.ip
+      if (clientIp && freeTrialEligible) {
+        const usersFromIp = await prisma.session.findMany({
+          where: { ipAddress: clientIp },
+          select: { userId: true },
+          distinct: ['userId'],
+        })
+
+        // If this IP has been associated with more than 2 distinct users, deny free trial
+        if (usersFromIp.length > 2) {
+          freeTrialEligible = false
+        }
       }
 
       // Update user as verified and give free listings ONLY if eligible
@@ -226,7 +252,7 @@ export async function authRoutes(app: FastifyInstance) {
     },
   )
 
-  app.all('/*', async (request, reply) => {
+  const betterAuthHandler = async (request: any, reply: any) => {
     // Use the configured BETTER_AUTH_URL as the base for the handler URL.
     // This ensures Better Auth generates correct session tokens and callback URLs
     // using the canonical server origin, regardless of what host header arrives.
@@ -277,5 +303,22 @@ export async function authRoutes(app: FastifyInstance) {
     }
 
     return reply.send(responseText)
-  })
+  }
+
+  const strictAuthRateLimit = {
+    config: {
+      rateLimit: {
+        max: 5,
+        timeWindow: '1 minute',
+      },
+    },
+  }
+
+  // Apply strict rate limits to Better Auth specific routes
+  app.post('/sign-up/email', strictAuthRateLimit, betterAuthHandler)
+  app.post('/sign-in/email', strictAuthRateLimit, betterAuthHandler)
+  app.post('/forget-password', strictAuthRateLimit, betterAuthHandler)
+
+  // Catch-all for other Better Auth routes
+  app.all('/*', betterAuthHandler)
 }

@@ -170,25 +170,25 @@ export function HeroSection() {
           </h2>
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
-          <LanguageSelector className="bg-[#faf9f5] dark:bg-[#152019] border-border/40" />
+          <LanguageSelector className="bg-brand-surface-warm border-border/40" />
           <Link
             to="/wishlist"
-            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-brand-surface-warm border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
           >
             <Heart size={16} strokeWidth={2} />
             {wishlistCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#c97a45] text-[7.5px] font-black text-white border-2 border-[#faf9f5] dark:border-[#152019]">
+              <span className="absolute top-1.5 right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-amber-600 text-[7.5px] font-black text-white border-2 border-brand-surface-warm">
                 {wishlistCount > 9 ? '9+' : wishlistCount}
               </span>
             )}
           </Link>
           <Link
             to="/account/notifications"
-            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#faf9f5] dark:bg-[#152019] border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full bg-brand-surface-warm border border-border/40 text-foreground transition-all hover:bg-muted-light active:scale-95 shadow-xs"
           >
             <Bell size={16} strokeWidth={2} />
             {unreadNotificationsCount > 0 && (
-              <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#c97a45] border border-[#faf9f5] dark:border-[#152019]" />
+              <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-amber-600 border border-brand-surface-warm" />
             )}
           </Link>
           <Link to="/account">
@@ -196,7 +196,7 @@ export function HeroSection() {
               image={session?.user?.image}
               name={session?.user?.name || 'Guest'}
               size="trigger"
-              avatarClassName="border border-border/40 shadow-xs h-9 w-9"
+              avatarClassName="shadow-xs h-9 w-9"
             />
           </Link>
         </div>

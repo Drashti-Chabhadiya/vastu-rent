@@ -62,7 +62,6 @@ export function NavUserDropdown({
             name={session.user.name}
             isOnline={true}
             showPing={false}
-            avatarClassName="border-2 border-border"
           />
           <ChevronDown
             className={cn(

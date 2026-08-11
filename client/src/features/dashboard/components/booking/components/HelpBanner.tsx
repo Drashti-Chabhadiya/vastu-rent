@@ -10,7 +10,7 @@ export const HelpBanner = () => {
   return (
     <motion.div variants={fadeUp}>
       {/* Mobile: compact row */}
-      <div className="md:hidden flex items-center gap-3 bg-[#EFF5EF] dark:bg-primary-soft/40 rounded-2xl px-4 py-3.5 border border-primary-border/30 shadow-xs">
+      <div className="md:hidden flex items-center gap-3 bg-brand-green-bubble dark:bg-primary-soft/40 rounded-2xl px-4 py-3.5 border border-primary-border/30 shadow-xs">
         <div className="w-9 h-9 rounded-full bg-white dark:bg-card flex items-center justify-center text-primary shrink-0 shadow-3xs border border-border/20">
           <HelpCircle size={17} className="stroke-[2.5]" />
         </div>

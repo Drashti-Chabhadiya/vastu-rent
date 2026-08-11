@@ -47,20 +47,20 @@ export function MobileProductRowCard({
           className={cn(
             'absolute bottom-1.5 left-1.5 backdrop-blur-md px-1.5 py-0.5 rounded-full text-[9px] font-extrabold flex items-center gap-1 shadow-xs border',
             isShop
-              ? 'bg-[#FAF5EC]/95 text-[#B45309] border-[#F3E5D0] dark:bg-amber-950/90 dark:text-amber-300 dark:border-amber-800/40'
-              : 'bg-[#EAF5EF]/95 text-[#0D6236] border-[#C6E9D5] dark:bg-emerald-950/90 dark:text-emerald-300 dark:border-emerald-800/40',
+              ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/90 dark:text-amber-300 dark:border-amber-800/40'
+              : 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/90 dark:text-emerald-300 dark:border-emerald-800/40',
           )}
         >
           {isShop ? (
             <Store
               size={10}
-              className="shrink-0 text-[#B45309] dark:text-amber-300"
+              className="shrink-0 text-amber-700 dark:text-amber-300"
               strokeWidth={2.5}
             />
           ) : (
             <Home
               size={10}
-              className="shrink-0 text-[#0D6236] dark:text-emerald-300"
+              className="shrink-0 text-emerald-700 dark:text-emerald-300"
               strokeWidth={2.5}
             />
           )}

@@ -60,7 +60,7 @@ export function BookingCard({
                 onError={() => setImgError(true)}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-[#E8F0EA]">
+              <div className="w-full h-full flex items-center justify-center bg-brand-green-tint">
                 <svg
                   width="28"
                   height="28"
@@ -186,7 +186,7 @@ export function BookingCard({
                 onError={() => setImgError(true)}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-[#E8F0EA]">
+              <div className="w-full h-full flex items-center justify-center bg-brand-green-tint">
                 <svg
                   width="36"
                   height="36"

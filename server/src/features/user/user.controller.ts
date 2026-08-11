@@ -69,6 +69,22 @@ export class UserController {
     return { success: true }
   }
 
+  async deleteMyAccount(request: FastifyRequest, reply: FastifyReply) {
+    const session = await auth.api.getSession({
+      headers: request.headers as any,
+    })
+    if (!session) return reply.status(401).send({ message: 'Unauthorized' })
+
+    try {
+      await userService.deleteMyAccount(session.user.id)
+      return { success: true }
+    } catch (error: any) {
+      return reply
+        .status(400)
+        .send({ message: error.message || 'Failed to delete account' })
+    }
+  }
+
   async getPublicProfile(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as any
     const session = await auth.api.getSession({
