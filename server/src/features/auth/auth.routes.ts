@@ -170,6 +170,8 @@ export async function authRoutes(app: FastifyInstance) {
       }
 
       // Check device fingerprint for free trial
+      let freeTrialEligible = false
+
       if (visitorId) {
         const existingDevice = await prisma.user.findFirst({
           where: { deviceFingerprint: visitorId, id: { not: user.id } },
@@ -177,7 +179,6 @@ export async function authRoutes(app: FastifyInstance) {
 
         if (existingDevice) {
           // Device already used for a free trial.
-          // Still verify email, but maybe revoke free listings or just update fingerprint.
           await prisma.user.update({
             where: { id: user.id },
             data: {
@@ -194,15 +195,18 @@ export async function authRoutes(app: FastifyInstance) {
               'An account has already been created on this device. Please log in using your existing account.',
           })
         }
+
+        // Device is new, eligible for free trial
+        freeTrialEligible = true
       }
 
-      // Update user as verified and give 5 free listings
+      // Update user as verified and give free listings ONLY if eligible
       await prisma.user.update({
         where: { id: user.id },
         data: {
           emailVerified: true,
-          deviceFingerprint: visitorId,
-          freeListings: 5,
+          deviceFingerprint: visitorId || null,
+          freeListings: freeTrialEligible ? 5 : 0,
         },
       })
 
@@ -214,8 +218,10 @@ export async function authRoutes(app: FastifyInstance) {
 
       return reply.send({
         success: true,
-        freeTrialEligible: true,
-        message: 'Email verified and free trial activated!',
+        freeTrialEligible: freeTrialEligible,
+        message: freeTrialEligible
+          ? 'Email verified and free trial activated!'
+          : 'Email verified successfully!',
       })
     },
   )

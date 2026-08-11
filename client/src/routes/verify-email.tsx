@@ -49,15 +49,24 @@ function VerifyEmailPage() {
   const [resendCooldown, setResendCooldown] = useState(0)
 
   useEffect(() => {
+    if (initialEmail) {
+      setEmail(initialEmail)
+      setStatus('idle')
+      setOtp('')
+      setErrorMessage(null)
+    }
+  }, [initialEmail])
+
+  useEffect(() => {
     async function loadPending() {
       const data = await authApi.getPendingVerification()
       if (data?.pending) {
-        if (!email) setEmail(data.email)
+        if (!initialEmail && !email) setEmail(data.email)
         setName(data.name || '')
       }
     }
     loadPending()
-  }, [])
+  }, [initialEmail])
 
   // Countdown timer for resending verification email
   useEffect(() => {

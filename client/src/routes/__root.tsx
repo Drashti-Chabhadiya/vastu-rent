@@ -103,7 +103,7 @@ function NotificationListener() {
         }
       }
     }
-  }, [token, navigate])
+  }, [userId, navigate])
 
   // 1. Global Supabase Realtime Notifications & Products Listener
   useEffect(() => {

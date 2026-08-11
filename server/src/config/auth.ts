@@ -81,6 +81,12 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
+          if (user.email && user.email.includes('+')) {
+            throw new APIError('BAD_REQUEST', {
+              message: 'Email addresses with "+" aliases are not allowed.',
+            })
+          }
+
           if (user.deviceFingerprint) {
             const existing = await prisma.user.findFirst({
               where: { deviceFingerprint: user.deviceFingerprint },
@@ -92,6 +98,27 @@ export const auth = betterAuth({
             }
           }
           return { data: user }
+        },
+      },
+      update: {
+        before: async (user) => {
+          if (user.email && user.email.includes('+')) {
+            throw new APIError('BAD_REQUEST', {
+              message: 'Email addresses with "+" aliases are not allowed.',
+            })
+          }
+          return { data: user }
+        },
+      },
+    },
+    session: {
+      create: {
+        before: async (session) => {
+          // Delete all other sessions for this user to ensure single active session
+          await prisma.session.deleteMany({
+            where: { userId: session.userId },
+          })
+          return { data: session }
         },
       },
     },
