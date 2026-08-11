@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Plus, Trash2, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
@@ -6,6 +6,7 @@ import { Button } from '#/components/ui/button'
 import { useUploadProductImages } from '#/hook'
 import { Loader } from '#/components/ui/loader'
 import { useTranslation } from '#/context/TranslationContext'
+import { FacePrivacyDialog } from './FacePrivacyDialog'
 
 interface ImageGalleryManagerProps {
   images: string[]
@@ -23,6 +24,12 @@ export const ImageGalleryManager = ({
   const { mutateAsync: uploadImages, isPending: uploading } =
     useUploadProductImages()
 
+  const [pendingFaces, setPendingFaces] = useState<
+    { url: string; faces: any[] }[]
+  >([])
+  const [processedUrls, setProcessedUrls] = useState<string[]>([])
+  const [currentFaceIndex, setCurrentFaceIndex] = useState(0)
+
   useEffect(() => {
     onUploadStatusChange?.(uploading)
   }, [uploading, onUploadStatusChange])
@@ -30,11 +37,46 @@ export const ImageGalleryManager = ({
   const handleUpload = async (files: FileList | null) => {
     if (!files) return
     try {
-      const newUrls = await uploadImages(files)
-      onChange([...images, ...newUrls])
+      const results = await uploadImages(files)
+
+      const noFaceUrls = results
+        .filter((r) => !r.faces || r.faces.length === 0)
+        .map((r) => r.url)
+      const faceResults = results.filter((r) => r.faces && r.faces.length > 0)
+
+      if (faceResults.length > 0) {
+        setProcessedUrls(noFaceUrls)
+        setPendingFaces(faceResults)
+        setCurrentFaceIndex(0)
+      } else {
+        onChange([...images, ...noFaceUrls])
+      }
     } catch (error) {
       console.error('Upload Error:', error)
       toast.error('Failed to upload one or more images. Please try again.')
+    }
+  }
+
+  const handleFaceConfirm = (finalUrl: string) => {
+    const nextProcessed = [...processedUrls, finalUrl]
+
+    if (currentFaceIndex < pendingFaces.length - 1) {
+      setProcessedUrls(nextProcessed)
+      setCurrentFaceIndex((prev) => prev + 1)
+    } else {
+      onChange([...images, ...nextProcessed])
+      setPendingFaces([])
+      setProcessedUrls([])
+      setCurrentFaceIndex(0)
+    }
+  }
+
+  const cancelFaceProcessing = (open: boolean) => {
+    if (!open) {
+      onChange([...images, ...processedUrls])
+      setPendingFaces([])
+      setProcessedUrls([])
+      setCurrentFaceIndex(0)
     }
   }
 
@@ -165,6 +207,16 @@ export const ImageGalleryManager = ({
         className="hidden"
         onChange={(e) => handleUpload(e.target.files)}
       />
+
+      {pendingFaces.length > 0 && (
+        <FacePrivacyDialog
+          open={true}
+          onOpenChange={cancelFaceProcessing}
+          imageUrl={pendingFaces[currentFaceIndex]?.url || ''}
+          faces={pendingFaces[currentFaceIndex]?.faces || []}
+          onConfirm={handleFaceConfirm}
+        />
+      )}
     </div>
   )
 }

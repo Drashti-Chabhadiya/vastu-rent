@@ -69,12 +69,12 @@ export class UploadController {
       const base64 = `data:${data.mimetype};base64,${buffer.toString('base64')}`
 
       // Upload using user's custom credentials
-      const { url } = await cloudinaryService.uploadImage(
+      const { url, faces } = await cloudinaryService.uploadImage(
         base64,
         'products',
         userId,
       )
-      return { url }
+      return { url, faces }
     } catch (error: any) {
       console.error('Product Image Upload Error:', error)
       return reply

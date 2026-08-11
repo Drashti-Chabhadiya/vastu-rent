@@ -47,6 +47,7 @@ import { AvailabilityCalendar } from './detail/AvailabilityCalendar'
 import { BookingConfirmationModal } from './detail/BookingConfirmationModal'
 import { useProductBookingStore } from '../../../store/useProductBookingStore'
 import { cn } from '#/lib/utils'
+import { ExploreLink } from '#/components/common/ExploreLink'
 
 export function ProductDetail({ id }: { id: string }) {
   const { t, formatDate, formatCurrency, formatDigits } = useTranslation()
@@ -638,12 +639,7 @@ export function ProductDetail({ id }: { id: string }) {
                 <h3 className="text-lg font-bold text-foreground">
                   {t('Similar Items')}
                 </h3>
-                <Link
-                  to="/products"
-                  className="text-sm font-bold text-primary hover:underline"
-                >
-                  {t('View all')}
-                </Link>
+                <ExploreLink to="/products">{t('View all')}</ExploreLink>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                 {similarProducts

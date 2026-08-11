@@ -35,16 +35,18 @@ export class CloudinaryService {
    * @param file The file buffer or base64 string
    * @param folder The folder to store the image in (e.g., 'products', 'profiles')
    * @param _userId The ID of the user uploading the image (ignored, kept for signature compatibility)
+   * @param hideFaces Whether to blur out faces in the image
    */
   async uploadImage(
     file: string,
     folder: string,
     _userId?: string,
-  ): Promise<{ url: string; publicId: string }> {
+  ): Promise<{ url: string; publicId: string; faces: any[] }> {
     try {
-      const options = {
+      const options: any = {
         folder: `vastu-rent/${folder}`,
         resource_type: 'auto' as const,
+        faces: true,
       }
 
       const result = await cloudinary.uploader.upload(file, options)
@@ -52,6 +54,7 @@ export class CloudinaryService {
       return {
         url: result.secure_url,
         publicId: result.public_id,
+        faces: result.faces || [],
       }
     } catch (error: any) {
       console.error('Cloudinary Upload Error:', error)
