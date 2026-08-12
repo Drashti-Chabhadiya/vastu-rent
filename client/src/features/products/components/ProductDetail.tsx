@@ -11,6 +11,7 @@ import {
   useCancelBookingSession,
 } from '#/hook'
 import { toast } from 'sonner'
+import { Share } from '@capacitor/share'
 import { useProductReviews, useCreateReview } from '#/hook/use-reviews'
 import { ProductCard } from '#/components/common/ProductCard'
 import { ProductDetailSkeleton } from '#/components/skeletons'
@@ -163,11 +164,34 @@ export function ProductDetail({ id }: { id: string }) {
     setCouponError('')
   }
 
-  const handleShare = useCallback(() => {
-    navigator.clipboard.writeText(window.location.href)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }, [])
+  const handleShare = useCallback(async () => {
+    const title = product?.title || 'Vastu Rent'
+    const text = `Check out this listing: ${product?.title || 'item'} on Vastu Rent!`
+    const url = window.location.href
+
+    try {
+      const canShare = await Share.canShare()
+      if (canShare.value) {
+        await Share.share({ title, text, url, dialogTitle: 'Share Product' })
+        return
+      }
+    } catch (e) {
+      console.warn('Capacitor Share failed, falling back to Web Share API', e)
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url })
+      } catch (err) {
+        console.warn('Web Share failed', err)
+      }
+    } else {
+      navigator.clipboard.writeText(url)
+      setCopied(true)
+      toast.success(t('Product link copied to clipboard!'))
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }, [product, t])
 
   const handleDayClick = (day: number) => {
     const clicked = new Date(calYear, calMonth, day)

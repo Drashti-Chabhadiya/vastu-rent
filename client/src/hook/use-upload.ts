@@ -19,8 +19,7 @@ export const useUploadProductImage = () => {
 export const useUploadProductImages = () => {
   return useMutation({
     mutationFn: async (files: FileList) => {
-      const results: { url: string; faces: any[] }[] = []
-      for (const file of Array.from(files)) {
+      const promises = Array.from(files).map(async (file) => {
         const formData = new FormData()
         formData.append('file', file)
 
@@ -28,12 +27,12 @@ export const useUploadProductImages = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         })
 
-        results.push({
+        return {
           url: res.data.url as string,
           faces: res.data.faces as any[],
-        })
-      }
-      return results
+        }
+      })
+      return Promise.all(promises)
     },
   })
 }

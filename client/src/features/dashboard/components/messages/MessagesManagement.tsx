@@ -25,6 +25,36 @@ export const MessagesManagement = () => {
   const activeConversationId = useChatStore(
     (state) => state.activeConversationId,
   )
+  const setShowMobileChat = useChatStore((state) => state.setShowMobileChat)
+
+  // Reset mobile chat view to list on mount (prevent mobile lock when navigating back to route)
+  useEffect(() => {
+    setShowMobileChat(false)
+  }, [setShowMobileChat])
+
+  // Reset mobile chat view to list when no active conversation is selected
+  useEffect(() => {
+    if (!activeConversationId) {
+      setShowMobileChat(false)
+    } else if (
+      chatData.conversations.length > 0 &&
+      !chatData.isLoadingConversations
+    ) {
+      const exists = chatData.conversations.some(
+        (c: any) => c.id === activeConversationId,
+      )
+      if (!exists) {
+        setShowMobileChat(false)
+        chatData.switchConversation(null)
+      }
+    }
+  }, [
+    activeConversationId,
+    chatData.conversations,
+    chatData.isLoadingConversations,
+    chatData.switchConversation,
+    setShowMobileChat,
+  ])
 
   // Sync useChat hook data with global Zustand store
   useEffect(() => {

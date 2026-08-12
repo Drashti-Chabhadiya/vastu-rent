@@ -196,9 +196,6 @@ export const ListingDialog = ({
           onSubmit={form.handleSubmit((values) => handleFormSubmit(values))}
           className="p-6 md:p-8 space-y-8 relative min-h-[300px]"
         >
-          {isUploadingImages && (
-            <LoadingOverlay message={t('Uploading listing photos...')} />
-          )}
           {isLoading && (
             <LoadingOverlay
               message={

@@ -29,13 +29,15 @@ export const ImageGalleryManager = ({
   >([])
   const [processedUrls, setProcessedUrls] = useState<string[]>([])
   const [currentFaceIndex, setCurrentFaceIndex] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
-    onUploadStatusChange?.(uploading)
-  }, [uploading, onUploadStatusChange])
+    onUploadStatusChange?.(uploading || isUploading || pendingFaces.length > 0)
+  }, [uploading, isUploading, pendingFaces.length, onUploadStatusChange])
 
   const handleUpload = async (files: FileList | null) => {
     if (!files) return
+    setIsUploading(true)
     try {
       const results = await uploadImages(files)
 
@@ -54,6 +56,8 @@ export const ImageGalleryManager = ({
     } catch (error) {
       console.error('Upload Error:', error)
       toast.error('Failed to upload one or more images. Please try again.')
+    } finally {
+      setIsUploading(false)
     }
   }
 

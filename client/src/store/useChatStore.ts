@@ -66,7 +66,7 @@ export interface ChatStoreState {
   currentUserId: string | null | undefined
 
   // useChat Synced Actions
-  switchConversation: (id: string) => void
+  switchConversation: (id: string | null) => void
   sendMessage: (content: string, attachments?: string[]) => void
   emitTyping: (isTyping: boolean) => void
   checkOnline: (id: string) => boolean
