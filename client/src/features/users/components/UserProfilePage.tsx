@@ -64,7 +64,7 @@ export function UserProfilePage() {
       onError: (err: any) => {
         toast.error(
           err?.response?.data?.message ||
-          'Could not start conversation. Try again.',
+            'Could not start conversation. Try again.',
         )
       },
     })
@@ -84,12 +84,10 @@ export function UserProfilePage() {
       }
     } else {
       if (navigator.share) {
-        navigator
-          .share({ title, text, url })
-          .catch(() => {
-            navigator.clipboard.writeText(url)
-            toast.success('Profile link copied to clipboard!')
-          })
+        navigator.share({ title, text, url }).catch(() => {
+          navigator.clipboard.writeText(url)
+          toast.success('Profile link copied to clipboard!')
+        })
       } else {
         navigator.clipboard.writeText(url)
         toast.success('Profile link copied to clipboard!')
@@ -229,7 +227,11 @@ export function UserProfilePage() {
               >
                 Share Profile
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground/5 transition-transform group-hover:translate-x-1 ml-1">
-                  <Share2 size={16} strokeWidth={2.5} className="text-foreground" />
+                  <Share2
+                    size={16}
+                    strokeWidth={2.5}
+                    className="text-foreground"
+                  />
                 </span>
               </Button>
               {/* Reusable Profile Options Menu */}
