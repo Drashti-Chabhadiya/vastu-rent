@@ -167,7 +167,7 @@ export const ReusableAlertDialog = ({
             <AlertDialogCancel
               onClick={onCancel}
               disabled={isPending}
-              className="rounded-xl font-bold h-12 border-none bg-muted/50 text-muted-foreground/85 hover:bg-muted hover:text-foreground/90 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer"
+              className="rounded-full font-bold h-12 border-none bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer"
             >
               {cancelText}
             </AlertDialogCancel>
