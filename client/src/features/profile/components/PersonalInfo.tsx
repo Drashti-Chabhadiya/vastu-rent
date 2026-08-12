@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ChevronRight, Leaf, ChevronLeft } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 import { useMyListings, useProfileData, useVerifyCheckoutSession } from '#/hook'
 import { LoadingOverlay } from '#/components/ui/loader'
 import { ProfileSkeleton } from '#/components/skeletons'
@@ -343,35 +343,6 @@ export function PersonalInfo() {
                 barColor={barColor}
                 limit={limit}
               />
-
-              {/* Green Member Banner */}
-              <div className="bg-primary-soft rounded-[32px] border border-primary-border p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4.5">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-border text-primary">
-                    <Leaf className="h-6 w-6" />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-sm font-extrabold text-primary font-display">
-                      {t('Green Member')}
-                    </span>
-                    <span className="text-xs text-muted-foreground/85 font-bold leading-none mt-1">
-                      {t("You're saving the planet!")}
-                    </span>
-                    <span className="text-[11px] text-muted-foreground/70 font-semibold mt-1">
-                      {t(
-                        'Thank you for being a part of our sustainable community.',
-                      )}
-                    </span>
-                  </div>
-                </div>
-                <Link
-                  to="/about"
-                  className="inline-flex items-center gap-1.5 text-xs font-extrabold text-primary hover:underline shrink-0 cursor-pointer"
-                >
-                  <span>{t('View Impact')}</span>
-                  <ChevronRight size={14} className="mt-0.5" />
-                </Link>
-              </div>
             </motion.div>
           )}
         </AnimatePresence>

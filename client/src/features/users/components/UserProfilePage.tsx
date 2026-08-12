@@ -17,7 +17,6 @@ import {
   MessageSquare,
   Share2,
   Package,
-  Leaf,
   ChevronDown,
   Clock,
   BadgeCheck,
@@ -178,13 +177,6 @@ export function UserProfilePage() {
                     <Badge className="bg-primary-soft hover:bg-primary-soft text-primary border-0 gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shrink-0">
                       <Check size={11} strokeWidth={3} />
                       Verified
-                    </Badge>
-                  )}
-                  {(profile.isGreenMember ||
-                    profile.isGreenMember === undefined) && (
-                    <Badge className="bg-primary-soft hover:bg-primary-soft text-primary border-0 gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shrink-0">
-                      <Leaf className="w-3 h-3 fill-current" />
-                      Green Member
                     </Badge>
                   )}
                 </div>

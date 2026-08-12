@@ -66,7 +66,6 @@ export function ConversationList() {
 
   const [sortBy, setSortBy] = useState<'recent' | 'unread' | 'name'>('recent')
   const [filterOnline, setFilterOnline] = useState(false)
-  const [filterGreen, setFilterGreen] = useState(false)
 
   // ── Filter & Sort conversations ───────────────────────────────────────────
   const filteredConversations = conversations
@@ -93,15 +92,8 @@ export function ConversationList() {
 
       const otherPersonOnline = checkOnline(conv.otherParticipant.id)
       const satisfiesOnlineFilter = !filterOnline || otherPersonOnline
-      const satisfiesGreenFilter =
-        !filterGreen || conv.otherParticipant.isGreenMember
 
-      return (
-        matchesSearch &&
-        matchesTab &&
-        satisfiesOnlineFilter &&
-        satisfiesGreenFilter
-      )
+      return matchesSearch && matchesTab && satisfiesOnlineFilter
     })
     .sort((a, b) => {
       const aPinned = a.pinnedBy?.includes(currentUserId || '') ? 1 : 0
@@ -238,8 +230,6 @@ export function ConversationList() {
             setSortBy={setSortBy}
             filterOnline={filterOnline}
             setFilterOnline={setFilterOnline}
-            filterGreen={filterGreen}
-            setFilterGreen={setFilterGreen}
             activePanel={activePanel}
             showDetailsPanel={showDetailsPanel}
             setActivePanel={setActivePanel}

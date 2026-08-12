@@ -9,8 +9,6 @@ import {
   Bell,
   HelpCircle,
   LogOut,
-  ChevronRight,
-  Leaf,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { Link, Outlet, useRouterState } from '@tanstack/react-router'
@@ -252,26 +250,7 @@ export function ProfileLayout() {
                 </nav>
               </div>
 
-              {/* Green Member Banner */}
-              <div className="bg-primary-soft rounded-xl p-3 flex gap-2 items-start border border-primary-border mt-4 mx-1">
-                <div className="w-7 h-7 rounded-full bg-primary-border flex items-center justify-center text-primary shrink-0 mt-0.5">
-                  <Leaf size={13} fill="currentColor" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h4 className="font-extrabold text-primary text-[11px]">
-                    {t('Green Member')}
-                  </h4>
-                  <p className="text-[10px] text-primary/80 font-semibold leading-normal mt-0.5">
-                    {t("You're saving the planet!")}
-                  </p>
-                  <Link
-                    to="/help"
-                    className="text-primary text-[10px] font-black flex items-center gap-0.5 mt-2 hover:underline"
-                  >
-                    {t('View impact')} <ChevronRight size={9} strokeWidth={3} />
-                  </Link>
-                </div>
-              </div>
+              {/* Removed Green Member Banner */}
             </aside>
 
             {/* Main Content */}

@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { cn } from '#/lib/utils'
 import { fadeUp } from '#/lib/animations'
@@ -39,7 +40,11 @@ export function ListingCard({
     <>
       {/* MOBILE LISTINGS CARDS (Screen 16 mockup style) */}
       <motion.div variants={fadeUp} className="block md:hidden">
-        <div className="flex flex-col bg-white dark:bg-card border border-border/15 rounded-[22px] p-4 gap-3 shadow-3xs hover:shadow-2xs transition-all duration-300">
+        <Link
+          to="/products/$id"
+          params={{ id: String(item.id) }}
+          className="flex flex-col bg-white dark:bg-card border border-border/15 rounded-[22px] p-4 gap-3 shadow-3xs hover:shadow-2xs transition-all duration-300"
+        >
           <div className="flex gap-4 items-center">
             {/* Thumbnail Image */}
             <div className="w-[68px] h-[68px] rounded-xl overflow-hidden shrink-0 border border-border/10 bg-muted-light">
@@ -83,7 +88,11 @@ export function ListingCard({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onEdit(item)}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onEdit(item)
+              }}
               className="rounded-full h-8 px-4.5 text-[10.5px] font-black border-border/75 text-foreground hover:bg-muted/50 cursor-pointer shadow-none"
             >
               {t('Edit')}
@@ -91,18 +100,26 @@ export function ListingCard({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onDelete(item)}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onDelete(item)
+              }}
               className="rounded-full h-8 px-4.5 text-[10.5px] font-black border-destructive/30 text-destructive hover:bg-destructive/10 cursor-pointer shadow-none"
             >
               {t('Delete')}
             </Button>
           </div>
-        </div>
+        </Link>
       </motion.div>
 
       {/* DESKTOP LISTINGS CARDS (Original) */}
       <motion.div variants={fadeUp} className="hidden md:block">
-        <div className="group bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row gap-6 items-start md:items-center relative">
+        <Link
+          to="/products/$id"
+          params={{ id: String(item.id) }}
+          className="group bg-card p-6 rounded-[2.5rem] border border-border/30 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row gap-6 items-start md:items-center relative"
+        >
           <div className="w-28 h-28 rounded-2xl overflow-hidden shrink-0 bg-muted-light shadow-inner relative">
             <img
               src={item.images?.[0] || 'https://placehold.co/128?text=Vastu'}
@@ -176,7 +193,11 @@ export function ListingCard({
                   variant="outline"
                   size="icon"
                   className="rounded-full border border-border text-muted-dark hover:text-foreground hover:bg-muted/50 h-9 w-9 flex items-center justify-center shadow-sm cursor-pointer"
-                  onClick={() => setOpenDropdownId(isOpen ? null : item.id)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setOpenDropdownId(isOpen ? null : item.id)
+                  }}
                 >
                   <MoreVertical size={16} />
                 </Button>
@@ -185,12 +206,18 @@ export function ListingCard({
                   <>
                     <div
                       className="fixed inset-0 z-40"
-                      onClick={() => setOpenDropdownId(null)}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setOpenDropdownId(null)
+                      }}
                     />
                     <div className="absolute right-0 bottom-11 md:bottom-auto md:top-11 bg-card rounded-2xl shadow-xl border border-border/40 p-1.5 z-50 min-w-[150px] animate-in fade-in slide-in-from-top-2 duration-200 space-y-1">
                       <Button
                         variant="ghost"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
                           setOpenDropdownId(null)
                           onEdit(item)
                         }}
@@ -201,7 +228,9 @@ export function ListingCard({
                       </Button>
                       <Button
                         variant="ghost"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
                           setOpenDropdownId(null)
                           onDelete(item)
                         }}
@@ -215,7 +244,7 @@ export function ListingCard({
               </div>
             </div>
           </div>
-        </div>
+        </Link>
       </motion.div>
     </>
   )

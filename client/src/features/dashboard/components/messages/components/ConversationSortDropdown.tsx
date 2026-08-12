@@ -19,8 +19,6 @@ export interface ConversationSortDropdownProps {
   setSortBy: (val: 'recent' | 'unread' | 'name') => void
   filterOnline: boolean
   setFilterOnline: (v: boolean) => void
-  filterGreen: boolean
-  setFilterGreen: (v: boolean) => void
   activePanel: 'about' | 'settings'
   showDetailsPanel: boolean
   setActivePanel: (panel: 'about' | 'settings') => void
@@ -32,8 +30,6 @@ export function ConversationSortDropdown({
   setSortBy,
   filterOnline,
   setFilterOnline,
-  filterGreen,
-  setFilterGreen,
   activePanel,
   showDetailsPanel,
   setActivePanel,
@@ -49,7 +45,7 @@ export function ConversationSortDropdown({
           size="icon"
           className={cn(
             'w-11 h-11 bg-muted-light/80 hover:bg-muted/50 rounded-full text-muted-foreground transition-all cursor-pointer shrink-0 border-none shadow-none',
-            (filterOnline || filterGreen || sortBy !== 'recent') &&
+            (filterOnline || sortBy !== 'recent') &&
               'text-brand-primary-deep bg-emerald-50 hover:bg-emerald-100',
           )}
         >
@@ -99,13 +95,6 @@ export function ConversationSortDropdown({
         >
           Online/Active Only
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={filterGreen}
-          onCheckedChange={setFilterGreen}
-          className="rounded-xl text-[11px] font-bold py-2 px-3 pl-8 cursor-pointer"
-        >
-          Green Members Only
-        </DropdownMenuCheckboxItem>
 
         <DropdownMenuSeparator className="my-1 border-border/10" />
         <DropdownMenuItem
@@ -120,14 +109,13 @@ export function ConversationSortDropdown({
           <span>{t('Chat Settings')}</span>
         </DropdownMenuItem>
 
-        {(filterOnline || filterGreen || sortBy !== 'recent') && (
+        {(filterOnline || sortBy !== 'recent') && (
           <>
             <DropdownMenuSeparator className="my-1 border-border/10" />
             <DropdownMenuItem
               onClick={() => {
                 setSortBy('recent')
                 setFilterOnline(false)
-                setFilterGreen(false)
               }}
               className="rounded-xl text-[11px] font-black py-2 px-3 justify-center text-primary hover:bg-primary-soft cursor-pointer text-center"
             >
