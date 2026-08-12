@@ -401,7 +401,7 @@ export function ContactPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group rounded-full bg-primary px-8 py-5 h-auto text-[14px] font-bold text-primary-foreground transition-all hover:bg-primary/95 active:scale-[0.98] cursor-pointer inline-flex items-center gap-3 [&_svg]:size-4"
+                    className="group rounded-full bg-primary px-8 py-5 h-auto min-w-[180px] justify-center text-[14px] font-bold text-primary-foreground transition-all hover:bg-primary/95 active:scale-[0.98] cursor-pointer inline-flex items-center gap-3 [&_svg]:size-4"
                   >
                     {isSubmitting ? (
                       <>

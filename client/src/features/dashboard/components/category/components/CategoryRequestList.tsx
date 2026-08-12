@@ -39,10 +39,12 @@ export const CategoryRequestList = ({
         {isUser && onRequestCreate && (
           <Button
             onClick={onRequestCreate}
-            className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-xl h-10 px-6 font-bold flex items-center gap-2 cursor-pointer"
+            className="group bg-primary hover:bg-primary/90 text-primary-foreground rounded-full h-10 px-6 font-bold flex items-center gap-2 cursor-pointer transition-all active:scale-[0.98] border-none"
           >
-            <FolderPlus size={16} />
             {t('Request Category')}
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+              <FolderPlus size={14} strokeWidth={3} />
+            </span>
           </Button>
         )}
       </div>

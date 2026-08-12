@@ -63,9 +63,12 @@ function EmptyListingsState({
       </p>
       <Button
         onClick={onAdd}
-        className="bg-primary hover:bg-primary-hover text-primary-foreground font-black text-xs px-6 h-10 rounded-full active:scale-95 transition-all mt-5 border-none shadow-sm cursor-pointer"
+        className="group bg-primary hover:bg-primary/90 text-primary-foreground font-black text-xs px-6 h-10 rounded-full active:scale-[0.98] transition-all mt-5 border-none shadow-sm cursor-pointer inline-flex items-center justify-center gap-2"
       >
         {t('Create First Listing')}
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+          <Plus size={14} strokeWidth={3} />
+        </span>
       </Button>
     </motion.div>
   )
@@ -351,9 +354,12 @@ export function ProfileListings() {
           <div className="pt-2 px-1">
             <Button
               onClick={handleAddListing}
-              className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center cursor-pointer transition-all active:scale-[0.98]"
+              className="group w-full h-11 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]"
             >
-              List your first item &nbsp;&rsaquo;
+              {t('List your first item')}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                <Plus size={14} strokeWidth={3} />
+              </span>
             </Button>
           </div>
         </div>
@@ -444,10 +450,12 @@ export function ProfileListings() {
           <div className="flex items-center gap-3">
             <Button
               onClick={handleAddListing}
-              className="bg-primary hover:bg-primary-hover text-primary-foreground font-black text-xs px-5 h-10 rounded-full flex items-center gap-1.5 active:scale-95 shadow-sm cursor-pointer border-none shadow-primary/15"
+              className="group bg-primary hover:bg-primary/90 text-primary-foreground font-black text-xs px-5 h-10 rounded-full inline-flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm cursor-pointer border-none shadow-primary/15 transition-all"
             >
-              <Plus size={15} strokeWidth={3} />
               {t('Add New Listing')}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                <Plus size={14} strokeWidth={3} />
+              </span>
             </Button>
             <Button
               variant="outline"

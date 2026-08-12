@@ -64,9 +64,12 @@ export function TermsSettingsTab() {
           <Button
             type="button"
             onClick={addTermsSection}
-            className="h-8 px-3.5 rounded-full bg-brand-green-bubble text-brand-primary-deep hover:bg-brand-green-bubble/80 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
+            className="group h-8 px-3.5 rounded-full bg-brand-green-bubble text-brand-primary-deep hover:bg-brand-green-bubble/80 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all duration-150 active:scale-[0.98] border-none"
           >
-            <Plus size={12} /> Add Section
+            Add Section
+            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-brand-primary-deep/10 transition-transform group-hover:translate-x-1 ml-1">
+              <Plus size={10} strokeWidth={3} />
+            </span>
           </Button>
         </div>
 

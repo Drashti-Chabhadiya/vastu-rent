@@ -11,6 +11,7 @@ import { PaymentsManagement } from './payments/PaymentsManagement'
 import { DisputesManagement } from './disputes/DisputesManagement'
 import { CouponsManagement } from './coupons/CouponsManagement'
 import { NotificationsManagement } from './notifications/NotificationsManagement'
+import { ContactsManagement } from './contacts/ContactsManagement'
 import { ReportsManagement } from './reports/ReportsManagement'
 import { SettingsManagement } from './settings/SettingsManagement'
 import { StoriesManagement } from './stories/StoriesManagement'
@@ -68,6 +69,8 @@ export const DashboardTabContent = () => {
         return <CouponsManagement />
       case 'notifications':
         return <NotificationsManagement />
+      case 'contacts':
+        return <ContactsManagement />
       case 'reports':
         return <ReportsManagement />
       case 'settings':

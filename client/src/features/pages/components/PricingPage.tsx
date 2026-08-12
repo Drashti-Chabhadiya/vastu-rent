@@ -6,6 +6,7 @@ import {
   Building2,
   CheckCircle2,
   ChevronRight,
+  ArrowRight,
 } from 'lucide-react'
 import { motion } from 'motion/react'
 import { fadeUp, stagger } from '#/lib/animations'
@@ -360,17 +361,23 @@ export function PricingPage() {
                 {isPro ? (
                   <button
                     onClick={() => handleSelectPlan(plan.name)}
-                    className="mt-3.5 lg:mt-8 w-full bg-primary hover:bg-primary-hover text-white rounded-full font-black text-[12px] h-10 lg:h-12 shadow-md active:scale-[0.98] transition-all cursor-pointer border-none flex items-center justify-center"
+                    className="group mt-3.5 lg:mt-8 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-black text-[12px] h-10 lg:h-12 shadow-md active:scale-[0.98] transition-all cursor-pointer border-none flex items-center justify-center gap-2"
                   >
                     {t(plan.actionLabel)}
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                      <ArrowRight size={14} strokeWidth={3} />
+                    </span>
                   </button>
                 ) : (
                   <Button
                     // onClick={() => handleSelectPlan(plan.name)}
                     variant="outline"
-                    className="mt-3.5 lg:mt-8 w-full rounded-full border-primary text-primary hover:bg-primary-soft/15 font-black text-[12px] h-10 lg:h-12 shadow-none active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center"
+                    className="group mt-3.5 lg:mt-8 w-full rounded-full border-primary text-primary hover:bg-primary/10 hover:text-primary font-black text-[12px] h-10 lg:h-12 shadow-none active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
                     {t(plan.actionLabel)}
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 transition-transform group-hover:translate-x-1">
+                      <ArrowRight size={14} strokeWidth={3} />
+                    </span>
                   </Button>
                 )}
 
@@ -401,19 +408,23 @@ export function PricingPage() {
         {session ? (
           <Link
             to="/account/listings"
-            className="pointer-events-auto w-full flex items-center justify-center gap-2 bg-primary text-white rounded-full font-extrabold text-[13px] py-4 shadow-xl active:scale-[0.98] transition-all cursor-pointer"
+            className="group pointer-events-auto w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-extrabold text-[13px] py-4 shadow-xl active:scale-[0.98] transition-all cursor-pointer"
           >
             {t('List your first item')}
-            <ChevronRight size={15} strokeWidth={2.5} />
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+              <ChevronRight size={15} strokeWidth={2.5} />
+            </span>
           </Link>
         ) : (
           <Link
             to="/login"
             search={{ redirect: '/pricing' }}
-            className="pointer-events-auto w-full flex items-center justify-center gap-2 bg-primary text-white rounded-full font-extrabold text-[13px] py-4 shadow-xl active:scale-[0.98] transition-all cursor-pointer"
+            className="group pointer-events-auto w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-extrabold text-[13px] py-4 shadow-xl active:scale-[0.98] transition-all cursor-pointer"
           >
             {t('List your first item')}
-            <ChevronRight size={15} strokeWidth={2.5} />
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+              <ChevronRight size={15} strokeWidth={2.5} />
+            </span>
           </Link>
         )}
       </div>
@@ -439,13 +450,25 @@ export function PricingPage() {
           </div>
           <Button
             asChild
-            className="rounded-full bg-primary px-8 h-11 font-bold text-sm text-primary-foreground hover:bg-primary/95 shrink-0 cursor-pointer"
+            className="group rounded-full bg-primary hover:bg-primary/90 px-8 h-11 font-bold text-sm text-primary-foreground shrink-0 cursor-pointer transition-all active:scale-[0.98]"
           >
             {session ? (
-              <Link to="/account/listings">{t('Get Started Free')}</Link>
-            ) : (
-              <Link to="/login" search={{ redirect: '/pricing' }}>
+              <Link to="/account/listings" className="flex items-center gap-2">
                 {t('Get Started Free')}
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                  <ArrowRight size={14} strokeWidth={3} />
+                </span>
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                search={{ redirect: '/pricing' }}
+                className="flex items-center gap-2"
+              >
+                {t('Get Started Free')}
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                  <ArrowRight size={14} strokeWidth={3} />
+                </span>
               </Link>
             )}
           </Button>

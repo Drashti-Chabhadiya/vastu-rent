@@ -5,7 +5,13 @@ import {
   useUpdateStory,
   useDeleteStory,
 } from '#/hook/use-stories'
-import { Plus, Edit2, Trash2, Image as ImageIcon } from 'lucide-react'
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Image as ImageIcon,
+  ArrowRight,
+} from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { Textarea } from '#/components/ui/textarea'
@@ -123,10 +129,12 @@ export function StoriesManagement() {
         </div>
         <Button
           onClick={() => handleOpenModal()}
-          className="rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-bold px-5 h-11 flex items-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-dash-brand/10"
+          className="group rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-bold px-5 h-11 flex items-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-dash-brand/10 border-none"
         >
-          <Plus size={16} strokeWidth={2.5} />
           {t('Create Story')}
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+            <Plus size={14} strokeWidth={3} />
+          </span>
         </Button>
       </motion.div>
 
@@ -321,11 +329,11 @@ export function StoriesManagement() {
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-border/30">
+              <div className="flex gap-3 sm:gap-3 pt-4 border-t border-border/30">
                 <Button
                   type="button"
                   onClick={handleCloseModal}
-                  className="rounded-full font-bold h-12 px-6 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none active:scale-[0.98] cursor-pointer"
+                  className="rounded-full font-bold h-12 px-6 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none active:scale-[0.98] cursor-pointer"
                 >
                   {t('Cancel')}
                 </Button>
@@ -336,7 +344,7 @@ export function StoriesManagement() {
                     updateStory.isPending ||
                     uploadImage.isPending
                   }
-                  className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="group bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2 border-none"
                 >
                   {createStory.isPending || updateStory.isPending ? (
                     <Loader variant="white" />
@@ -344,6 +352,11 @@ export function StoriesManagement() {
                     t('Save Changes')
                   ) : (
                     t('Publish Story')
+                  )}
+                  {!(createStory.isPending || updateStory.isPending) && (
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+                      <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                    </span>
                   )}
                 </Button>
               </div>

@@ -85,9 +85,12 @@ export function CouponsTable({
           {canManage && (
             <Button
               onClick={onCreateClick}
-              className="h-10 px-4 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center gap-2 active:scale-[0.98] transition-all shadow-md shadow-dash-brand/10"
+              className="group h-10 px-4 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center gap-2 active:scale-[0.98] transition-all shadow-md shadow-dash-brand/10 border-none"
             >
-              <Plus size={14} /> {t('Create Coupon')}
+              {t('Create Coupon')}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+                <Plus size={12} strokeWidth={3} />
+              </span>
             </Button>
           )}
         </div>

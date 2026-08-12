@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Settings,
   Lock,
+  ArrowRight,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
@@ -298,8 +299,11 @@ export const SettingsManagement = () => {
                 )}
               </p>
               <Link to="/account">
-                <Button className="mt-2 bg-brand-primary-deep hover:bg-brand-primary-darker text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm">
+                <Button className="group mt-2 bg-brand-primary-deep hover:bg-brand-primary-darker text-primary-foreground font-black text-[11px] px-6 h-10 rounded-full cursor-pointer shadow-sm flex items-center gap-2 border-none transition-all active:scale-[0.98]">
                   {t('Go to Profile Security')}
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+                    <ArrowRight size={12} strokeWidth={3} />
+                  </span>
                 </Button>
               </Link>
             </div>

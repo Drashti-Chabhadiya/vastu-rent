@@ -61,10 +61,14 @@ export const PayoutSettingsForm = ({
         <Button
           type="submit"
           disabled={!hasChanges || isSaving}
-          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand"
+          className="group bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-[12px] px-6 h-11 text-xs font-black flex items-center justify-center gap-2 shadow-md shadow-dash-brand/10 cursor-pointer transition-all active:scale-[0.98] shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-dash-brand border-none"
         >
-          <Save size={13} />
           {isSaving ? t('Saving...') : t('Save Changes')}
+          {!isSaving && (
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+              <Save size={12} strokeWidth={3} />
+            </span>
+          )}
         </Button>
       </div>
 

@@ -353,20 +353,24 @@ export const CategoryManagement = ({
             {isAdmin && (
               <Button
                 onClick={handleOpenAdd}
-                className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="group bg-primary hover:bg-primary/90 text-primary-foreground font-black text-sm px-8 h-12 rounded-full flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm cursor-pointer border-none shadow-primary/15 whitespace-nowrap transition-all"
               >
-                <Plus size={20} strokeWidth={2.5} />
                 {t('Add Category')}
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                  <Plus size={16} strokeWidth={3} />
+                </span>
               </Button>
             )}
 
             {isUser && (
               <Button
                 onClick={() => setIsRequestDialogOpen(true)}
-                className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 px-8 font-bold shadow-md shadow-primary/20 flex items-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                className="group bg-primary hover:bg-primary/90 text-primary-foreground font-black text-sm px-8 h-12 rounded-full flex items-center justify-center gap-2 active:scale-[0.98] shadow-sm cursor-pointer border-none shadow-primary/15 whitespace-nowrap transition-all"
               >
-                <FolderPlus size={20} />
-                {t('Propose Categories')}
+                {t('Propose Category')}
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                  <FolderPlus size={16} strokeWidth={2} />
+                </span>
               </Button>
             )}
           </div>

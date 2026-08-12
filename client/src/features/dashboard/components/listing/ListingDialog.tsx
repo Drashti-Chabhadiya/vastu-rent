@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PackagePlus, Plus, Pencil, Save } from 'lucide-react'
+import { PackagePlus, Pencil, Save, ArrowRight } from 'lucide-react'
 import { useIsMobile } from '#/hook'
 import { Drawer, DrawerContent, DrawerTitle } from '#/components/ui/drawer'
 import { Dialog, DialogContent, DialogTitle } from '#/components/ui/dialog'
@@ -169,7 +169,7 @@ export const ListingDialog = ({
 
   const isMobile = useIsMobile()
   const HeaderIcon = isEditMode ? Pencil : PackagePlus
-  const SubmitIcon = isEditMode ? Save : Plus
+  const SubmitIcon = isEditMode ? Save : ArrowRight
 
   const TitleComponent = isMobile ? DrawerTitle : DialogTitle
   const innerContent = (
@@ -227,14 +227,13 @@ export const ListingDialog = ({
               }}
               className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
             >
-              {isEditMode ? t('Cancel') : t('Discard')}
+              {t('Cancel')}
             </Button>
             <Button
               type="submit"
               disabled={isLoading || isUploadingImages}
-              className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              className="group bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2 border-none"
             >
-              <SubmitIcon size={18} strokeWidth={isEditMode ? 2 : 3} />
               {isEditMode
                 ? isLoading
                   ? t('Saving...')
@@ -242,6 +241,9 @@ export const ListingDialog = ({
                 : isLoading
                   ? t('Publishing...')
                   : t('Publish to Marketplace')}
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+                <SubmitIcon size={16} strokeWidth={isEditMode ? 2 : 3} />
+              </span>
             </Button>
           </div>
         </form>

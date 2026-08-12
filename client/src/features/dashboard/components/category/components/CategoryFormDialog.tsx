@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import { toast } from 'sonner'
 import * as LucideIcons from 'lucide-react'
 import {
-  Plus,
   Tag,
   Check,
   Image as ImageIcon,
@@ -482,24 +481,20 @@ export const CategoryFormDialog = ({
           <Button
             type="submit"
             disabled={isPending || isUploading}
-            className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-primary/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            className="group bg-primary hover:bg-primary/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-primary/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2 border-none"
           >
-            {isRequest ? (
-              <>
-                <Check size={18} strokeWidth={3} />
-                {t('Submit Proposal')}
-              </>
-            ) : editingCategory ? (
-              <>
-                <Check size={18} strokeWidth={3} />
-                {t('Save Changes')}
-              </>
-            ) : (
-              <>
-                <Plus size={18} strokeWidth={3} />
-                {t('Create Category')}
-              </>
-            )}
+            {isRequest
+              ? t('Submit Proposal')
+              : editingCategory
+                ? t('Save Changes')
+                : t('Create Category')}
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+              {isRequest || editingCategory ? (
+                <Check size={16} strokeWidth={3} />
+              ) : (
+                <ArrowRight className="h-3 w-3" />
+              )}
+            </span>
           </Button>
         </DialogFooter>
       </form>

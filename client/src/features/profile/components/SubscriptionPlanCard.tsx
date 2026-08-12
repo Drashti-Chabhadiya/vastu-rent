@@ -1,7 +1,7 @@
 import { Button } from '#/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { cn } from '#/lib/utils'
-import { CreditCard, Sparkles, AlertTriangle } from 'lucide-react'
+import { CreditCard, Sparkles, AlertTriangle, ArrowRight } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 
 interface SubscriptionPlanCardProps {
@@ -85,9 +85,12 @@ export function SubscriptionPlanCard({
         {/* Quick Upgrade Callout */}
         <div className="mt-8">
           <Link to="/pricing">
-            <Button className="rounded-xl h-10 px-5 text-xs font-bold bg-primary hover:bg-primary/95 text-primary-foreground flex items-center gap-1.5 shadow-md shadow-primary/10 cursor-pointer">
+            <Button className="group rounded-full h-10 px-6 text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center gap-2 shadow-md shadow-primary/10 cursor-pointer active:scale-[0.98] transition-all border-none">
               <Sparkles size={13} />
               {t('Upgrade Plan')}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                <ArrowRight size={14} strokeWidth={3} />
+              </span>
             </Button>
           </Link>
         </div>

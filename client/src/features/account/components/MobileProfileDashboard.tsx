@@ -89,10 +89,6 @@ export function MobileProfileDashboard({
             <p className="text-[10px] text-white/60 font-semibold mt-0.5">
               {t('Member since')} {joinDate}
             </p>
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/10 text-white text-[9px] font-extrabold px-2.5 py-0.5 mt-2 border border-white/10">
-              <Check size={8} className="text-white stroke-[3] shrink-0" />
-              {t('Verified member')}
-            </span>
           </div>
         </div>
 

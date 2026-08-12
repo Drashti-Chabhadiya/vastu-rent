@@ -297,10 +297,12 @@ export const ListingsManagement = ({
         ) : null}
         <Button
           onClick={handleCreateListingClick}
-          className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-2xl px-6 h-14 font-extrabold shadow-lg shadow-dash-brand/20 transition-all active:scale-95 flex items-center gap-2"
+          className="group bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full px-8 h-12 font-extrabold shadow-lg shadow-dash-brand/20 transition-all active:scale-[0.98] inline-flex items-center justify-center gap-3"
         >
-          <Plus size={20} strokeWidth={3} />
           {t('Create Listing')}
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+            <Plus size={16} strokeWidth={3} />
+          </span>
         </Button>
       </motion.div>
 
