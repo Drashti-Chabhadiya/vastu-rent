@@ -196,6 +196,7 @@ export const AdminPayoutApprovals = ({
               {/* Action Buttons */}
               <div className="flex gap-4">
                 <Button
+                  variant="ghost"
                   onClick={() => {
                     setSelectedAdminPayout(null)
                     setAdminNotes('')

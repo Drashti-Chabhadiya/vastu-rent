@@ -29,7 +29,10 @@ const DISPOSABLE_EMAIL_DOMAINS = new Set([
   'trashmail.com',
 ])
 
-export async function validateEmailForAbuse(email: string | undefined | null) {
+export async function validateEmailForAbuse(
+  email: string | undefined | null,
+  skipExistsCheck: boolean = false,
+) {
   if (!email || typeof email !== 'string') return
 
   const lowerEmail = email.trim().toLowerCase()
@@ -56,6 +59,8 @@ export async function validateEmailForAbuse(email: string | undefined | null) {
 
   // Treat gmail.com and googlemail.com as the same domain family
   const isGmail = domain === 'gmail.com' || domain === 'googlemail.com'
+
+  if (skipExistsCheck) return
 
   let existingUsers: any[] = []
 

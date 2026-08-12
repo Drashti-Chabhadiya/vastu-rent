@@ -6,7 +6,7 @@ import { cn } from '#/lib/utils'
 import { useTranslation } from '#/context/TranslationContext'
 import { usePincodeLookup, useStateSearch } from '#/hook'
 import { toast } from 'sonner'
-import { Pencil, Loader2 } from 'lucide-react'
+import { Pencil, Loader2, ArrowRight } from 'lucide-react'
 import { PersonalInfoSection } from './PersonalInfoSection'
 import { AddressSection } from './AddressSection'
 
@@ -150,20 +150,27 @@ export function PersonalInfoForm({
         <div className="mt-8 flex items-center gap-3 justify-end border-t border-border/30 pt-6">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={handleEditClick}
             disabled={isSaving}
-            className="rounded-xl font-bold h-11 px-6 shadow-none"
+            className="rounded-full font-bold h-11 px-6 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
           >
             {t('Cancel')}
           </Button>
           <Button
             type="submit"
             disabled={isSaving}
-            className="rounded-xl font-bold h-11 px-8 shadow-md"
+            className="group bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-11 px-8 rounded-full active:scale-[0.98] shadow-md transition-all inline-flex items-center justify-center gap-2 border-none"
           >
-            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSaving ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
             {t('Save Changes')}
+            {!isSaving && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                <ArrowRight size={14} strokeWidth={3} />
+              </span>
+            )}
           </Button>
         </div>
       )}

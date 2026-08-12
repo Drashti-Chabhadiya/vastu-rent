@@ -124,9 +124,9 @@ export const WithdrawalRequestModal = ({
           {/* Action buttons */}
           <div className="flex gap-4">
             <Button
-              type="button"
+              variant="ghost"
               onClick={() => onOpenChange(false)}
-              className="flex-1 h-12 rounded-full font-black text-[11px] uppercase tracking-wider bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
+              className="flex-1 rounded-full font-bold bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
             >
               Cancel
             </Button>

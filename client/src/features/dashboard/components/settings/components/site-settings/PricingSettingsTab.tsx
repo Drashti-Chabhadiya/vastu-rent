@@ -124,9 +124,12 @@ export function PricingSettingsTab() {
             <Button
               type="button"
               onClick={() => addFeature('starter')}
-              className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
+              className="group h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all duration-150 active:scale-[0.98] border-none"
             >
-              <Plus size={12} /> Add Feature
+              Add Feature
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-dash-brand/10 transition-transform group-hover:translate-x-1 ml-1">
+                <Plus size={10} strokeWidth={3} />
+              </span>
             </Button>
           </div>
 
@@ -175,9 +178,12 @@ export function PricingSettingsTab() {
             <Button
               type="button"
               onClick={() => addFeature('pro')}
-              className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
+              className="group h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all duration-150 active:scale-[0.98] border-none"
             >
-              <Plus size={12} /> Add Feature
+              Add Feature
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-dash-brand/10 transition-transform group-hover:translate-x-1 ml-1">
+                <Plus size={10} strokeWidth={3} />
+              </span>
             </Button>
           </div>
 
@@ -226,9 +232,12 @@ export function PricingSettingsTab() {
             <Button
               type="button"
               onClick={() => addFeature('business')}
-              className="h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-colors duration-150 active:scale-95"
+              className="group h-8 px-3.5 rounded-full bg-dash-brand-light text-dash-brand hover:bg-dash-brand-light/85 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 transition-all duration-150 active:scale-[0.98] border-none"
             >
-              <Plus size={12} /> Add Feature
+              Add Feature
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-dash-brand/10 transition-transform group-hover:translate-x-1 ml-1">
+                <Plus size={10} strokeWidth={3} />
+              </span>
             </Button>
           </div>
 

@@ -11,6 +11,8 @@ import {
   AlertDialogTitle,
 } from '#/components/ui/alert-dialog'
 import { cn } from '#/lib/utils'
+import { useIsMobile } from '#/hook'
+import { Drawer, DrawerContent } from '#/components/ui/drawer'
 
 export type AlertDialogVariant = 'danger' | 'success' | 'warning' | 'info'
 
@@ -80,6 +82,7 @@ export const ReusableAlertDialog = ({
   icon: CustomIcon,
   className,
 }: ReusableAlertDialogProps) => {
+  const isMobile = useIsMobile()
   const config = variantConfig[variant]
   const IconToRender = CustomIcon || config.defaultIcon
 
@@ -110,6 +113,87 @@ export const ReusableAlertDialog = ({
       default:
         return 'Processing...'
     }
+  }
+
+  if (isMobile) {
+    return (
+      <Drawer open={isOpen} onOpenChange={onOpenChange}>
+        <DrawerContent className="rounded-t-[2rem] border-none bg-card p-0 outline-none flex flex-col font-sans select-none">
+          <div className="p-8 pb-10">
+            {/* Pulsating Icon container */}
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto relative group">
+              <div
+                className={cn(
+                  'absolute inset-0 rounded-full animate-ping group-hover:animate-none',
+                  config.iconPing,
+                )}
+              />
+              <div
+                className={cn(
+                  'relative w-11 h-11 rounded-full bg-card shadow-sm border border-border/30 flex items-center justify-center',
+                  config.iconBg,
+                )}
+              >
+                <IconToRender
+                  className={config.iconColor}
+                  size={22}
+                  strokeWidth={2.5}
+                />
+              </div>
+            </div>
+
+            <h2 className="text-xl font-black text-foreground/90 text-center tracking-tight leading-tight">
+              {title}
+            </h2>
+
+            {description && (
+              <div className="text-muted-foreground/85 font-semibold text-[13px] leading-relaxed mt-4 px-2">
+                {typeof description === 'string' ? (
+                  <span className="text-center block">{description}</span>
+                ) : (
+                  description
+                )}
+              </div>
+            )}
+
+            {/* Dialog Action Buttons */}
+            <div className="grid grid-cols-2 gap-3 mt-8">
+              <button
+                onClick={() => {
+                  onCancel?.()
+                  onOpenChange(false)
+                }}
+                disabled={isPending}
+                className="rounded-full font-bold h-12 border-none bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer flex items-center justify-center"
+              >
+                {cancelText}
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  onConfirm()
+                }}
+                disabled={isPending}
+                className={cn(
+                  'rounded-xl font-bold h-12 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer flex items-center justify-center',
+                  config.confirmBtn,
+                )}
+              >
+                {isPending ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-card/30 border-t-white rounded-full animate-spin" />
+                    <span>{getPendingText()}</span>
+                  </div>
+                ) : (
+                  getConfirmText()
+                )}
+              </button>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    )
   }
 
   return (
@@ -167,7 +251,7 @@ export const ReusableAlertDialog = ({
             <AlertDialogCancel
               onClick={onCancel}
               disabled={isPending}
-              className="rounded-xl font-bold h-12 border-none bg-muted/50 text-muted-foreground/85 hover:bg-muted hover:text-foreground/90 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer"
+              className="rounded-full font-bold h-12 border-none bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer"
             >
               {cancelText}
             </AlertDialogCancel>

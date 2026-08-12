@@ -1,14 +1,6 @@
 import React, { useState } from 'react'
 import { cn } from '#/lib/utils'
-import {
-  Mail,
-  Calendar,
-  Camera,
-  Phone,
-  Pencil,
-  Sparkles,
-  Check,
-} from 'lucide-react'
+import { Mail, Calendar, Camera, Phone, Pencil, Sparkles } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 
 interface UserProfileSummaryCardProps {
@@ -95,10 +87,6 @@ export function UserProfileSummaryCard({
       <h4 className="font-extrabold text-foreground text-lg sm:text-xl mt-3 sm:mt-4 font-display">
         {session?.user?.name}
       </h4>
-      <span className="inline-flex items-center gap-1 rounded-full bg-primary-soft text-primary text-[10px] font-bold px-3 py-0.5 mt-1.5 border border-primary-border/40">
-        <Check className="h-3 w-3 text-primary shrink-0" />
-        {t('Verified Member')}
-      </span>
 
       {/* Profile Completeness Widget */}
       <div className="w-full max-w-md lg:max-w-none mt-5 bg-muted-light/30 border border-border/20 rounded-2xl p-3.5 sm:p-4 text-left">

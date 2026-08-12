@@ -84,10 +84,12 @@ export function CouponSidebar({
         {canCreate && (
           <Button
             onClick={onCreateClick}
-            className="w-full h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-dash-brand/20 active:scale-95 transition-all"
+            className="group w-full h-12 rounded-full bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 shadow-lg shadow-dash-brand/20 active:scale-95 transition-all border-none"
           >
-            <Ticket size={16} className="rotate-[-10deg]" />{' '}
             {t('Add New Coupon')}
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+              <Ticket size={14} strokeWidth={2} />
+            </span>
           </Button>
         )}
       </div>

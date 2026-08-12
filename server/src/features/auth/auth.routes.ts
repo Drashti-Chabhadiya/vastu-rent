@@ -49,7 +49,7 @@ export async function authRoutes(app: FastifyInstance) {
       }
 
       try {
-        await validateEmailForAbuse(email)
+        await validateEmailForAbuse(email, true)
       } catch (err: any) {
         return reply
           .status(400)

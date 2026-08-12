@@ -20,6 +20,7 @@ import { useTranslation } from '#/context/TranslationContext'
 export function HelpPage() {
   const { t } = useTranslation()
   const [openIndex, setOpenIndex] = useState<string | null>('General-0')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const faqs = [
     {
@@ -58,6 +59,17 @@ export function HelpPage() {
     },
   ]
 
+  const filteredFaqs = faqs
+    .map((cat, catIdx) => {
+      const questions = cat.questions.filter(
+        (faq) =>
+          faq.q.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          faq.a.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+      return { ...cat, catIdx, questions }
+    })
+    .filter((cat) => cat.questions.length > 0)
+
   const toggleFaq = (id: string) => {
     setOpenIndex(openIndex === id ? null : id)
   }
@@ -88,6 +100,8 @@ export function HelpPage() {
             />
             <Input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('Search for answers...')}
               className="w-full h-14 sm:h-16 pl-14 sm:pl-16 pr-6 sm:pr-8 bg-card rounded-2xl focus:outline-none focus:ring-4 focus:ring-white/20 text-base sm:text-lg shadow-xl"
             />
@@ -157,62 +171,77 @@ export function HelpPage() {
         >
           {t('Frequently Asked Questions')}
         </motion.h2>
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="space-y-12"
-        >
-          {faqs.map((cat, catIdx) => (
-            <motion.div variants={fadeUp} key={catIdx}>
-              <h3 className="text-base sm:text-lg font-bold text-muted-foreground/70 uppercase tracking-widest mb-4 sm:mb-6 px-2">
-                {cat.category}
-              </h3>
-              <div className="bg-card rounded-2xl sm:rounded-[32px] border border-border/30 shadow-sm overflow-hidden">
-                {cat.questions.map((faq, faqIdx) => {
-                  const id = `${catIdx}-${faqIdx}`
-                  const isOpen = openIndex === id
-                  return (
-                    <div
-                      key={faqIdx}
-                      className={cn(
-                        'border-b border-border/30 last:border-0',
-                        isOpen && 'bg-muted-light/50',
-                      )}
-                    >
-                      <Button
-                        variant="ghost"
-                        onClick={() => toggleFaq(id)}
-                        className="h-auto w-full flex items-center justify-between p-4 sm:p-6 md:p-8 text-left hover:bg-muted-light transition-colors rounded-none font-normal [&_svg]:size-5 sm:[&_svg]:size-6"
-                      >
-                        <span className="text-base sm:text-lg font-bold text-foreground pr-4 sm:pr-8 text-left whitespace-normal leading-snug">
-                          {faq.q}
-                        </span>
-                        <ChevronDown
-                          className={cn(
-                            'w-6 h-6 text-muted-foreground/70 transition-transform duration-300 shrink-0',
-                            isOpen && 'rotate-180',
-                          )}
-                        />
-                      </Button>
+        {filteredFaqs.length === 0 ? (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            className="text-center py-16 bg-card rounded-3xl border border-border/30 shadow-sm"
+          >
+            <p className="text-base sm:text-lg font-bold text-muted-foreground/80">
+              {t('No results found for') + ` "${searchQuery}"`}
+            </p>
+            <p className="text-xs sm:text-sm text-muted-foreground/50 mt-1">
+              {t('Try searching for different keywords or categories.')}
+            </p>
+          </motion.div>
+        ) : (
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="show"
+            className="space-y-12"
+          >
+            {filteredFaqs.map((cat) => (
+              <motion.div variants={fadeUp} key={cat.catIdx}>
+                <h3 className="text-base sm:text-lg font-bold text-muted-foreground/70 uppercase tracking-widest mb-4 sm:mb-6 px-2">
+                  {cat.category}
+                </h3>
+                <div className="bg-card rounded-2xl sm:rounded-[32px] border border-border/30 shadow-sm overflow-hidden">
+                  {cat.questions.map((faq, faqIdx) => {
+                    const id = `${cat.catIdx}-${faqIdx}`
+                    const isOpen = openIndex === id
+                    return (
                       <div
+                        key={faqIdx}
                         className={cn(
-                          'overflow-hidden transition-all duration-300 ease-in-out',
-                          isOpen ? 'max-h-96' : 'max-h-0',
+                          'border-b border-border/30 last:border-0',
+                          isOpen && 'bg-muted-light/50',
                         )}
                       >
-                        <div className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                          {faq.a}
+                        <Button
+                          variant="ghost"
+                          onClick={() => toggleFaq(id)}
+                          className="h-auto w-full flex items-center justify-between p-4 sm:p-6 md:p-8 text-left hover:bg-muted-light transition-colors rounded-none font-normal [&_svg]:size-5 sm:[&_svg]:size-6"
+                        >
+                          <span className="text-base sm:text-lg font-bold text-foreground pr-4 sm:pr-8 text-left whitespace-normal leading-snug">
+                            {faq.q}
+                          </span>
+                          <ChevronDown
+                            className={cn(
+                              'w-6 h-6 text-muted-foreground/70 transition-transform duration-300 shrink-0',
+                              isOpen && 'rotate-180',
+                            )}
+                          />
+                        </Button>
+                        <div
+                          className={cn(
+                            'overflow-hidden transition-all duration-300 ease-in-out',
+                            isOpen ? 'max-h-96' : 'max-h-0',
+                          )}
+                        >
+                          <div className="px-4 sm:px-6 md:px-8 pb-6 sm:pb-8 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                            {faq.a}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </section>
 
       {/* Contact Support */}

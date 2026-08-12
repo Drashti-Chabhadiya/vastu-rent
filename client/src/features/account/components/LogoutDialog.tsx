@@ -52,10 +52,9 @@ export function LogoutDialog({
         </Button>
 
         <Button
-          variant="outline"
+          variant="ghost"
           onClick={onCancel}
-          disabled={loading}
-          className="w-full h-11 rounded-xl border border-border bg-card hover:bg-muted-light text-sm font-semibold text-foreground/80 transition-colors cursor-pointer disabled:opacity-60"
+          className="w-full h-11 rounded-xl font-bold bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
         >
           {t('Cancel')}
         </Button>

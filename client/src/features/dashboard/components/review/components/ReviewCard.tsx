@@ -179,6 +179,13 @@ const ReviewCard = ({
                   <div className="absolute right-0 top-8 bg-card rounded-xl shadow-lg border border-border/30 p-1 z-50 min-w-[120px] animate-in fade-in slide-in-from-top-1 duration-150">
                     <Button
                       variant="ghost"
+                      onClick={onCancelReply}
+                      className="flex-1 rounded-full font-bold bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="ghost"
                       onClick={() => {
                         onToggleDropdown(review.id)
                         onDelete(review.id)

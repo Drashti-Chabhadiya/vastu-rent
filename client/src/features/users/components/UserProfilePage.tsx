@@ -9,6 +9,9 @@ import { Button } from '#/components/ui/button'
 import { authClient } from '#/lib/auth/auth-client'
 import { cn } from '#/lib/utils'
 import { toast } from 'sonner'
+import { Capacitor } from '@capacitor/core'
+import { Share } from '@capacitor/share'
+import { Clipboard } from '@capacitor/clipboard'
 import {
   Star,
   MapPin,
@@ -67,21 +70,28 @@ export function UserProfilePage() {
     })
   }
 
-  const handleShareProfile = () => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: `${profile?.name}'s Profile - Vastu Rent`,
-          text: `Check out ${profile?.name}'s rental profile on Vastu Rent!`,
-          url: window.location.href,
-        })
-        .catch(() => {
-          navigator.clipboard.writeText(window.location.href)
+  const handleShareProfile = async () => {
+    const url = window.location.href
+    const title = `${profile?.name}'s Profile - Vastu Rent`
+    const text = `Check out ${profile?.name}'s rental profile on Vastu Rent!`
+
+    if (Capacitor.isNativePlatform()) {
+      try {
+        await Share.share({ title, text, url, dialogTitle: 'Share Profile' })
+      } catch (error) {
+        await Clipboard.write({ string: url })
+        toast.success('Profile link copied to clipboard!')
+      }
+    } else {
+      if (navigator.share) {
+        navigator.share({ title, text, url }).catch(() => {
+          navigator.clipboard.writeText(url)
           toast.success('Profile link copied to clipboard!')
         })
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-      toast.success('Profile link copied to clipboard!')
+      } else {
+        navigator.clipboard.writeText(url)
+        toast.success('Profile link copied to clipboard!')
+      }
     }
   }
 
@@ -201,20 +211,28 @@ export function UserProfilePage() {
               <Button
                 onClick={handleMessageUser}
                 disabled={createConversation.isPending}
-                className="h-12 px-7 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-sm shadow-md transition-all active:scale-95 flex items-center gap-2"
+                className="group h-12 pl-6 pr-2 rounded-full bg-primary hover:bg-primary/95 text-primary-foreground font-bold text-sm shadow-md shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-2"
               >
-                <MessageSquare size={18} />
                 {createConversation.isPending
                   ? 'Connecting...'
                   : `Message ${firstName}`}
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+                  <MessageSquare size={16} strokeWidth={2.5} />
+                </span>
               </Button>
               <Button
                 onClick={handleShareProfile}
                 variant="outline"
-                className="h-12 px-5 rounded-full border border-border bg-card hover:bg-muted font-bold text-foreground text-sm flex items-center gap-2"
+                className="group h-12 pl-5 pr-2 rounded-full border border-border bg-card hover:bg-muted font-bold text-foreground text-sm flex items-center gap-2 transition-all active:scale-[0.98]"
               >
-                <Share2 size={18} />
                 Share Profile
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground/5 transition-transform group-hover:translate-x-1 ml-1">
+                  <Share2
+                    size={16}
+                    strokeWidth={2.5}
+                    className="text-foreground"
+                  />
+                </span>
               </Button>
               {/* Reusable Profile Options Menu */}
               <ProfileOptionsMenu
@@ -331,7 +349,7 @@ export function UserProfilePage() {
             <h2 className="text-lg md:text-2xl font-black text-foreground tracking-tight flex items-center gap-2 font-display">
               Active listings
             </h2>
-            <ExploreLink to="/products">{t('View all listings')}</ExploreLink>
+            <ExploreLink to="/products">{t('View all')}</ExploreLink>
           </div>
 
           {/* Listings Container */}
@@ -379,17 +397,21 @@ export function UserProfilePage() {
         <Button
           onClick={handleMessageUser}
           disabled={createConversation.isPending}
-          className="flex-1 h-14 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-base flex items-center justify-center gap-2 shadow-xl"
+          className="group flex-1 h-14 pl-6 pr-2 rounded-full bg-primary hover:bg-primary/95 text-primary-foreground font-bold text-base flex items-center justify-between shadow-xl transition-all active:scale-[0.98]"
         >
-          <MessageSquare size={20} />
-          {createConversation.isPending
-            ? 'Connecting...'
-            : `Message ${firstName}`}
+          <span className="flex-1 text-center">
+            {createConversation.isPending
+              ? 'Connecting...'
+              : `Message ${firstName}`}
+          </span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 shrink-0">
+            <MessageSquare size={18} strokeWidth={2.5} />
+          </span>
         </Button>
         <Button
           onClick={handleShareProfile}
           variant="outline"
-          className="w-14 h-14 rounded-full border border-border bg-card shadow-xl flex items-center justify-center shrink-0 hover:bg-muted"
+          className="w-14 h-14 rounded-full border border-border bg-card shadow-xl flex items-center justify-center shrink-0 hover:bg-muted transition-all active:scale-[0.98]"
         >
           <Share2 size={20} className="text-primary" />
         </Button>

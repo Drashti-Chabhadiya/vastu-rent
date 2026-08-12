@@ -201,8 +201,8 @@ export function TermsPage() {
             className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
           >
             <img
-              src="/assets/contact-hero.png"
-              alt="Beautiful Vastu Arched Room"
+              src="/images/fashion-dresses.png"
+              alt="Traditional wear and fashion items for rent"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />

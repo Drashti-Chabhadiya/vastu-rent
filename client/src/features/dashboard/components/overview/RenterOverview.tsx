@@ -68,6 +68,7 @@ export const RenterOverview = ({
         <Link to="/products">
           <Button
             className={cn(
+              'group',
               'bg-primary',
               'hover:bg-primary/95',
               'text-primary-foreground',
@@ -77,15 +78,19 @@ export const RenterOverview = ({
               'rounded-full',
               'flex',
               'items-center',
+              'justify-center',
               'gap-2',
               'shadow-lg',
               'shadow-primary/20',
               'transition-all',
-              'active:scale-95',
+              'active:scale-[0.98]',
+              'border-none',
             )}
           >
-            <Compass size={18} />
             {t('Browse Properties')}
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+              <Compass size={16} strokeWidth={2} />
+            </span>
           </Button>
         </Link>
       </div>

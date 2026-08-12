@@ -79,7 +79,7 @@ export function Footer() {
 
   const companyLinks = [
     { label: 'About Us', to: '/about' },
-    { label: 'Blog', to: '/journal' },
+    { label: 'Listings', to: '/products' },
     { label: 'Contact Us', to: '/contact' },
   ]
 
@@ -117,17 +117,19 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             <Link
               to="/help"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-brand-ink shadow-sm transition-all hover:bg-brand-surface-warm hover:border-primary active:scale-[0.98] w-full sm:w-auto"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 bg-background px-6 py-3.5 text-sm font-bold text-brand-ink shadow-sm transition-all hover:bg-brand-surface-warm hover:border-primary active:scale-[0.98] w-full sm:w-auto"
             >
               {t('Visit Help Center')}
-              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+              <ExternalLink className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary/95 px-6 py-3.5 text-sm font-bold text-primary-foreground active:scale-[0.98] transition-all w-full sm:w-auto"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary/95 px-6 py-3.5 text-sm font-bold text-primary-foreground active:scale-[0.98] transition-all w-full sm:w-auto"
             >
               {t('Contact Support')}
-              <Send className="h-3.5 w-3.5" />
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                <Send className="h-3.5 w-3.5" />
+              </span>
             </Link>
           </div>
         </div>

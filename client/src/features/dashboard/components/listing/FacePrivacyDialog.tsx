@@ -340,8 +340,7 @@ export const FacePrivacyDialog = ({
           <Button
             variant="ghost"
             onClick={() => onOpenChange(false)}
-            disabled={isUploading}
-            className="w-full sm:w-auto order-3 sm:order-1"
+            className="flex-1 rounded-full font-bold bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
           >
             {t('Cancel')}
           </Button>

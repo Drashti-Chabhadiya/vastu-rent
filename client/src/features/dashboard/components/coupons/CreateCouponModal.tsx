@@ -380,17 +380,21 @@ export function CreateCouponModal({
             onClick={handleClose}
             className="rounded-full font-bold h-12 flex-1 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
           >
-            {t('Discard')}
+            {t('Cancel')}
           </Button>
           <Button
             type="submit"
             disabled={createMutation.isPending}
-            className="bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            className="group bg-dash-brand hover:bg-dash-brand/90 text-primary-foreground rounded-full h-12 font-extrabold px-8 shadow-lg shadow-dash-brand/20 flex-1 transition-all active:scale-[0.98] flex items-center justify-center gap-2 border-none"
           >
-            <Plus size={18} strokeWidth={3} />
             {createMutation.isPending
               ? t('Generating...')
               : t('Generate Coupon')}
+            {!createMutation.isPending && (
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+                <Plus size={16} strokeWidth={3} />
+              </span>
+            )}
           </Button>
         </DialogFooter>
       </form>

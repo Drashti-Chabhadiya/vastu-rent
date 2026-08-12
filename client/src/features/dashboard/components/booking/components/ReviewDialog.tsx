@@ -224,9 +224,9 @@ export function ReviewDialog({
 
         <DialogFooter className={cn('flex', 'gap-2', 'sm:justify-end')}>
           <Button
-            variant="outline"
+            variant="ghost"
             onClick={onClose}
-            className={cn('rounded-xl', 'border-border', 'font-semibold')}
+            className="rounded-full font-bold h-11 bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all border-none"
           >
             Cancel
           </Button>

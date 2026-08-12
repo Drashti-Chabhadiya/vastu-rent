@@ -499,7 +499,7 @@ export function SettingsPage() {
             <Button
               onClick={handleLocalLogout}
               disabled={logoutLoading}
-              className="w-full h-10 bg-destructive hover:bg-destructive-hover text-white text-xs font-black rounded-xl mb-2 flex items-center justify-center cursor-pointer border-none shadow-sm shadow-danger/25"
+              className="w-full h-10 bg-destructive hover:bg-destructive/90 text-white text-xs font-black rounded-xl mb-2 flex items-center justify-center cursor-pointer border-none shadow-sm shadow-danger/25"
             >
               {logoutLoading ? t('Logging out...') : t('Log out')}
             </Button>

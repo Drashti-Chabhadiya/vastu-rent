@@ -15,4 +15,5 @@ export { NotificationsManagementWrapper as NotificationsManagement } from './com
 export * from './components/reports/ReportsManagement'
 export * from './components/settings/SettingsManagement'
 export * from './components/messages/MessagesManagement'
+export * from './components/contacts/ContactsManagement'
 export * from './components/DashboardTabContent'

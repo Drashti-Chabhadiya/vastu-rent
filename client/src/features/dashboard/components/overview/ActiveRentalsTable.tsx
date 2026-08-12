@@ -183,6 +183,7 @@ export const ActiveRentalsTable = ({ myRentals, rentalsLoading }: Props) => {
           <Link to="/products">
             <Button
               className={cn(
+                'group',
                 'bg-primary',
                 'hover:bg-primary/95',
                 'text-primary-foreground',
@@ -193,11 +194,17 @@ export const ActiveRentalsTable = ({ myRentals, rentalsLoading }: Props) => {
                 'text-xs',
                 'flex',
                 'items-center',
-                'gap-1',
+                'justify-center',
+                'gap-2',
+                'transition-all',
+                'active:scale-[0.98]',
+                'border-none',
               )}
             >
               {t('Explore Properties')}
-              <ArrowUpRight size={14} />
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1 ml-1">
+                <ArrowUpRight size={12} strokeWidth={3} />
+              </span>
             </Button>
           </Link>
         </div>

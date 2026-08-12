@@ -281,123 +281,125 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
         <div className="flex items-center gap-2 md:gap-4 z-10">
           {/* Desktop Date Picker */}
           {renderDatePicker(false)}
-        </div>
 
-        {/* Notifications Dropdown */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative h-10 w-10 hover:bg-muted-light rounded-2xl bg-brand-beige/50 lg:bg-transparent dark:bg-muted/40 lg:dark:bg-transparent text-foreground lg:text-muted-foreground/85 transition-all active:scale-[0.98] cursor-pointer"
-            >
-              <Bell size={20} />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive border-2 border-card rounded-full text-destructive-foreground text-[9px] font-black flex items-center justify-center animate-in zoom-in duration-200">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[calc(100vw-32px)] sm:w-80 p-0 rounded-2xl bg-card border border-border/30 shadow-2xl z-50 overflow-hidden">
-            {/* Popover Header */}
-            <div className="px-5 py-4 border-b border-border/30 flex items-center justify-between bg-muted-light/20">
-              <span className="text-xs font-black text-foreground/90 uppercase tracking-wider flex items-center gap-1.5">
-                <Bell size={13} className="text-primary" />{' '}
-                {t('Platform Alerts')}
-              </span>
-              {unreadCount > 0 && (
-                <Button
-                  variant="ghost"
-                  onClick={() => markAllReadMutation.mutate()}
-                  className="text-[10px] font-extrabold text-primary hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
-                  disabled={markAllReadMutation.isPending}
-                >
-                  {markAllReadMutation.isPending
-                    ? t('Marking...')
-                    : t('Mark all read')}
-                </Button>
-              )}
-            </div>
-
-            {/* Popover List */}
-            <div className="max-h-72 overflow-y-auto divide-y divide-border/30/70 scrollbar-thin">
-              {isLoadingNotifications ? (
-                <div className="divide-y divide-border/30">
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <div key={index} className="p-4 flex gap-3.5 items-start">
-                      <Skeleton className="w-8 h-8 rounded-lg shrink-0" />
-                      <div className="flex-1 min-w-0 space-y-1.5">
-                        <Skeleton className="h-2.5 w-1/3 rounded" />
-                        <Skeleton className="h-2 w-2/3 rounded" />
-                        <Skeleton className="h-1.5 w-12 rounded mt-1" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : notifications.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 gap-1.5 text-center px-4">
-                  <Bell size={22} className="text-muted-foreground/30" />
-                  <p className="text-[10px] font-bold text-muted-dark">
-                    {t('All caught up! No alerts.')}
-                  </p>
-                </div>
-              ) : (
-                notifications.slice(0, 5).map((notif) => {
-                  const Icon = getNotificationIcon(notif.type)
-                  const colorCls = getHeaderNotificationColorClasses(notif.type)
-                  return (
-                    <div
-                      key={notif.id}
-                      onClick={() => handleNotificationClick(notif)}
-                      className={cn(
-                        'p-4 flex gap-3.5 items-start cursor-pointer hover:bg-muted-light/60 transition-colors',
-                        !notif.isRead && 'bg-muted-light/30 font-semibold',
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm',
-                          colorCls,
-                        )}
-                      >
-                        <Icon size={14} strokeWidth={2.5} />
-                      </div>
-                      <div className="flex-1 min-w-0 leading-tight">
-                        <p className="text-[11px] font-black text-foreground/90 truncate">
-                          {notif.title}
-                        </p>
-                        <p className="text-[9px] font-bold text-muted-dark mt-0.5 leading-relaxed line-clamp-2">
-                          {notif.message}
-                        </p>
-                        <span className="text-[8px] font-black text-muted-dark block mt-1 uppercase tracking-wider">
-                          {formatMsgTime(notif.createdAt)}
-                        </span>
-                      </div>
-                      {!notif.isRead && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-info-foreground mt-1.5 shrink-0" />
-                      )}
-                    </div>
-                  )
-                })
-              )}
-            </div>
-
-            {/* Popover Footer */}
-            <div className="border-t border-border/30 p-3 bg-muted-light/10 text-center">
+          {/* Notifications Dropdown */}
+          <Popover>
+            <PopoverTrigger asChild>
               <Button
                 variant="ghost"
-                onClick={() => navigate({ to: '/account/notifications' })}
-                className="text-[10px] font-black text-primary hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
+                size="icon"
+                className="relative h-10 w-10 hover:bg-muted-light rounded-2xl bg-brand-beige/50 lg:bg-transparent dark:bg-muted/40 lg:dark:bg-transparent text-foreground lg:text-muted-foreground/85 transition-all active:scale-[0.98] cursor-pointer"
               >
-                {t('View all notifications ({count})').replace(
-                  '{count}',
-                  String(notifications.length),
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive border-2 border-card rounded-full text-destructive-foreground text-[9px] font-black flex items-center justify-center animate-in zoom-in duration-200">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
                 )}
               </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+            </PopoverTrigger>
+            <PopoverContent className="w-[calc(100vw-32px)] sm:w-80 p-0 rounded-2xl bg-card border border-border/30 shadow-2xl z-50 overflow-hidden">
+              {/* Popover Header */}
+              <div className="px-5 py-4 border-b border-border/30 flex items-center justify-between bg-muted-light/20">
+                <span className="text-xs font-black text-foreground/90 uppercase tracking-wider flex items-center gap-1.5">
+                  <Bell size={13} className="text-primary" />{' '}
+                  {t('Platform Alerts')}
+                </span>
+                {unreadCount > 0 && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => markAllReadMutation.mutate()}
+                    className="text-[10px] font-extrabold text-primary hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
+                    disabled={markAllReadMutation.isPending}
+                  >
+                    {markAllReadMutation.isPending
+                      ? t('Marking...')
+                      : t('Mark all read')}
+                  </Button>
+                )}
+              </div>
+
+              {/* Popover List */}
+              <div className="max-h-72 overflow-y-auto divide-y divide-border/30/70 scrollbar-thin">
+                {isLoadingNotifications ? (
+                  <div className="divide-y divide-border/30">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className="p-4 flex gap-3.5 items-start">
+                        <Skeleton className="w-8 h-8 rounded-lg shrink-0" />
+                        <div className="flex-1 min-w-0 space-y-1.5">
+                          <Skeleton className="h-2.5 w-1/3 rounded" />
+                          <Skeleton className="h-2 w-2/3 rounded" />
+                          <Skeleton className="h-1.5 w-12 rounded mt-1" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : notifications.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 gap-1.5 text-center px-4">
+                    <Bell size={22} className="text-muted-foreground/30" />
+                    <p className="text-[10px] font-bold text-muted-dark">
+                      {t('All caught up! No alerts.')}
+                    </p>
+                  </div>
+                ) : (
+                  notifications.slice(0, 5).map((notif) => {
+                    const Icon = getNotificationIcon(notif.type)
+                    const colorCls = getHeaderNotificationColorClasses(
+                      notif.type,
+                    )
+                    return (
+                      <div
+                        key={notif.id}
+                        onClick={() => handleNotificationClick(notif)}
+                        className={cn(
+                          'p-4 flex gap-3.5 items-start cursor-pointer hover:bg-muted-light/60 transition-colors',
+                          !notif.isRead && 'bg-muted-light/30 font-semibold',
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm',
+                            colorCls,
+                          )}
+                        >
+                          <Icon size={14} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 min-w-0 leading-tight">
+                          <p className="text-[11px] font-black text-foreground/90 truncate">
+                            {notif.title}
+                          </p>
+                          <p className="text-[9px] font-bold text-muted-dark mt-0.5 leading-relaxed line-clamp-2">
+                            {notif.message}
+                          </p>
+                          <span className="text-[8px] font-black text-muted-dark block mt-1 uppercase tracking-wider">
+                            {formatMsgTime(notif.createdAt)}
+                          </span>
+                        </div>
+                        {!notif.isRead && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-info-foreground mt-1.5 shrink-0" />
+                        )}
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+
+              {/* Popover Footer */}
+              <div className="border-t border-border/30 p-3 bg-muted-light/10 text-center">
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate({ to: '/account/notifications' })}
+                  className="text-[10px] font-black text-primary hover:underline cursor-pointer h-auto p-0 hover:bg-transparent"
+                >
+                  {t('View all notifications ({count})').replace(
+                    '{count}',
+                    String(notifications.length),
+                  )}
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       {/* Mobile Date Picker */}

@@ -20,6 +20,7 @@ import {
   Ticket,
   TrendingUp,
   Trash2,
+  MessageSquare,
 } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { authClient } from '#/lib/auth/auth-client'
@@ -49,7 +50,7 @@ const NavItem = ({
   <div
     onClick={onClick}
     className={cn(
-      'flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200 group active:scale-[0.98]',
+      'flex items-center justify-between px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200 group',
       active
         ? 'bg-dash-brand-soft text-dash-brand shadow-sm'
         : 'text-dash-text-soft hover:bg-muted-light hover:text-dash-text',
@@ -159,6 +160,7 @@ const SIDEBAR_MENU_CONFIG: Record<
     },
     { id: 'coupons', label: 'Manage Coupons', icon: Ticket },
     { id: 'notifications', label: 'Platform Alerts', icon: Bell },
+    { id: 'contacts', label: 'Contact Messages', icon: MessageSquare },
     { id: 'settings', label: 'Settings', icon: Settings },
   ],
 }

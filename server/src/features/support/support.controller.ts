@@ -1,4 +1,5 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
+import { prisma } from '../../config/prisma.js'
 import {
   sendContactSupportEmail,
   sendMarketingWelcomeEmail,
@@ -20,6 +21,16 @@ export const SupportController = {
           message: 'All fields are required (name, email, subject, message).',
         })
       }
+
+      // Save to database
+      await prisma.contactInquiry.create({
+        data: {
+          name,
+          email,
+          subject,
+          message,
+        },
+      })
 
       // Trigger asynchronous support email dispatch
       await sendContactSupportEmail({ name, email, subject, message })

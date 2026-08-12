@@ -391,12 +391,18 @@ export function useChat() {
   }, [userId, queryClient])
 
   const switchConversation = useCallback(
-    async (conversationId: string) => {
+    async (conversationId: string | null) => {
       if (activeConversationIdRef.current === conversationId) return
 
       setActiveConversationId(conversationId)
       activeConversationIdRef.current = conversationId
       setMessages([])
+
+      if (!conversationId) {
+        setIsLoadingMessages(false)
+        return
+      }
+
       setIsLoadingMessages(true)
 
       try {

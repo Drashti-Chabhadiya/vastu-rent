@@ -32,6 +32,8 @@ export function ConversationOptionsMenu() {
     setIsMultiSelectMode,
     setSelectedMsgIds,
     setShowMediaBrowser,
+    switchConversation,
+    setShowMobileChat,
   } = useChatStore()
 
   const activeConversation = conversations.find(
@@ -83,8 +85,11 @@ export function ConversationOptionsMenu() {
 
   const handleDelete = async () => {
     try {
-      await deleteConversation.mutateAsync(activeConversation.id)
+      const id = activeConversation.id
+      await deleteConversation.mutateAsync(id)
       toast.success('Conversation deleted')
+      setShowMobileChat(false)
+      switchConversation(null)
     } catch {
       toast.error('Failed to delete conversation')
     }
