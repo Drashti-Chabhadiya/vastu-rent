@@ -79,7 +79,7 @@ export function Footer() {
 
   const companyLinks = [
     { label: 'About Us', to: '/about' },
-    { label: 'Blog', to: '/journal' },
+    { label: 'Listings', to: '/products' },
     { label: 'Contact Us', to: '/contact' },
   ]
 

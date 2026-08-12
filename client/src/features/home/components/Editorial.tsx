@@ -1,8 +1,8 @@
 import { motion } from 'motion/react'
 import type { Variants } from 'motion/react'
-import featureKitchen from '../../../../public/assets/feature-kitchen.jpg'
 import { CreditCard, Leaf, ShieldCheck, Star } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
+// import featureKitchen from '../../../../public/assets/feature-kitchen.jpg'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -30,8 +30,8 @@ export function Editorial() {
           className="relative overflow-hidden rounded-[2.25rem] lg:col-span-7"
         >
           <img
-            src={featureKitchen}
-            alt="A calm Scandinavian kitchen with sage tile backsplash"
+            src="/images/living-room.png"
+            alt="A beautiful living room setup"
             width={1024}
             height={800}
             loading="lazy"

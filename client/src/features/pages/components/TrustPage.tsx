@@ -206,8 +206,8 @@ export function TrustPage() {
             className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
           >
             <img
-              src="/assets/contact-hero.png"
-              alt="Beautiful Vastu Arched Room"
+              src="/images/event-wedding.png"
+              alt="Community wedding and event setup"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />

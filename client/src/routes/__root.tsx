@@ -9,7 +9,7 @@ import {
 import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { Footer, Navbar, Tabbar } from '#/components/layout'
 import { Toaster } from '#/components/ui/sonner'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { SessionProvider, useSessionContext } from '#/context/SessionContext'
 import { queryClient } from '#/lib/query-client'
 import { registerDeviceForPush, onForegroundMessage } from '#/lib/fcm'
@@ -321,6 +321,33 @@ function NotificationListener() {
 function RootDocument() {
   const routerState = useRouterState()
   const navigate = useNavigate()
+  const mainRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const mainEl = mainRef.current
+    if (!mainEl) return
+
+    const handleScroll = () => {
+      mainEl.scrollTop = 0
+    }
+
+    // Scroll immediately
+    handleScroll()
+
+    // Defer scroll via requestAnimationFrame and multiple timeouts
+    // to override any layout reflow or router scroll restoration.
+    const rafId = requestAnimationFrame(handleScroll)
+    const t1 = setTimeout(handleScroll, 0)
+    const t2 = setTimeout(handleScroll, 50)
+    const t3 = setTimeout(handleScroll, 100)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      clearTimeout(t1)
+      clearTimeout(t2)
+      clearTimeout(t3)
+    }
+  }, [routerState.location.pathname])
 
   useEffect(() => {
     const checkVerification = async () => {
@@ -407,7 +434,10 @@ function RootDocument() {
             )}
 
             {/* Main Scrollable Viewport Container */}
-            <main className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 relative">
+            <main
+              ref={mainRef}
+              className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 relative"
+            >
               <div
                 className={cn(
                   'min-h-full flex flex-col justify-between',

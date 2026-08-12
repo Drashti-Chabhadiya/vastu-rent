@@ -147,46 +147,99 @@ export function PricingPage() {
         <MobileBackHeader title={t('Pricing')} />
       </div>
 
-      <section className="hidden lg:block mx-auto max-w-[1400px] px-10 pt-12">
-        <div className="grid grid-cols-12 overflow-hidden bg-brand-surface-warm rounded-[2.5rem] border border-border/20 shadow-sm">
+      <section className="hidden lg:block mx-auto max-w-[1400px] px-4 md:px-8 xl:px-12 pt-8">
+        <div className="relative overflow-hidden bg-[#FDFBF7] rounded-[2.5rem] border border-border/20 shadow-sm flex items-stretch min-h-[460px]">
+          {/* Background Image on Right */}
+          <div
+            className="absolute top-0 right-0 bottom-0 w-[60%] overflow-hidden z-0"
+            style={{
+              maskImage: 'linear-gradient(to right, transparent 0%, black 25%)',
+              WebkitMaskImage:
+                'linear-gradient(to right, transparent 0%, black 25%)',
+            }}
+          >
+            <img
+              src="/images/camping-gear.jpg"
+              alt="Camping gear and outdoor items for rent"
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+
+          {/* Left Content */}
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="show"
-            className="col-span-7 flex flex-col justify-center px-16 py-16"
+            className="relative z-10 w-[60%] flex flex-col justify-center px-12 py-14 lg:px-16 lg:py-16"
           >
             <motion.div variants={fadeUp}>
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {t('Pricing Plans')}
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-primary">
+                <Sprout size={14} />
+                {t('RENT ANYTHING, ANYTIME')}
               </div>
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight text-brand-ink"
+              className="mt-6 font-display text-[3.5rem] lg:text-[4.5rem] font-black leading-[1.05] tracking-tight text-brand-ink"
             >
-              {t('Simple, transparent pricing.')}
+              {t('Your Needs,')}
+              <br />
+              <span className="italic text-primary">{t('Our Rentals.')}</span>
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground"
+              className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground/90 font-medium"
             >
               {t(
-                'Choose the perfect plan to rent your items and start earning with Vastu.',
+                'From electronics to furniture, traditional wear to event essentials — find everything you need, when you need it. Rent smarter with Vastu.',
               )}
             </motion.p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-            className="col-span-5 relative min-h-[300px] overflow-hidden"
-          >
-            <img
-              src="/assets/contact-hero.png"
-              alt="Vastu Pricing"
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
+
+            {/* Features Row */}
+            <motion.div
+              variants={fadeUp}
+              className="mt-10 flex flex-wrap xl:flex-nowrap items-center gap-6 xl:gap-8"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Sprout className="text-primary" size={18} />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-foreground leading-tight">
+                    Save Money
+                  </p>
+                  <p className="text-[11px] font-medium text-muted-foreground mt-0.5 whitespace-nowrap">
+                    Rent instead of buy
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Sprout className="text-primary" size={18} />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-foreground leading-tight">
+                    Live Sustainably
+                  </p>
+                  <p className="text-[11px] font-medium text-muted-foreground mt-0.5 whitespace-nowrap">
+                    Reuse, reduce, protect
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="text-primary" size={18} />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-foreground leading-tight">
+                    Trusted Community
+                  </p>
+                  <p className="text-[11px] font-medium text-muted-foreground mt-0.5 whitespace-nowrap">
+                    Verified owners & safe rentals
+                  </p>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -194,15 +247,17 @@ export function PricingPage() {
       {/* ── MOBILE HERO ── */}
       <section className="lg:hidden px-5 pt-6">
         <p className="text-[10px] font-extrabold tracking-[0.12em] text-primary uppercase mb-2">
-          · {t('Pricing Plans')}
+          · {t('RENT ANYTHING, ANYTIME')}
         </p>
-        <h1 className="font-display text-[26px] font-medium leading-tight text-foreground tracking-tight">
-          {t('Simple, transparent')}
+        <h1 className="font-display text-[26px] font-black leading-tight text-brand-ink tracking-tight">
+          {t('Your Needs,')}
           <br />
-          {t('pricing.')}
+          <span className="italic text-primary">{t('Our Rentals.')}</span>
         </h1>
-        <p className="text-[12px] text-muted-foreground mt-2 leading-relaxed">
-          {t('Choose a plan and start earning by lending what you own.')}
+        <p className="text-[12px] text-muted-foreground mt-3 leading-relaxed font-medium">
+          {t(
+            'From electronics to furniture, traditional wear to event essentials — find everything you need, when you need it.',
+          )}
         </p>
       </section>
 
@@ -246,7 +301,7 @@ export function PricingPage() {
           >
             {t('Yearly billing')}
           </span>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-primary/10 text-primary">
             {t('Save up to 20%')}
           </span>
         </div>
@@ -310,7 +365,7 @@ export function PricingPage() {
 
                 {/* Header - Desktop (hidden on mobile) */}
                 <div className="hidden lg:flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary-soft/20 dark:bg-primary-soft/10 flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <Icon
                       size={22}
                       strokeWidth={1.8}

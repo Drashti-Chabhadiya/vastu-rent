@@ -1,5 +1,6 @@
 export * from './components/HowItWorksPage'
 export * from './components/BecomeListerPage'
+export * from './components/AboutPage'
 export * from './components/HelpPage'
 export * from './components/ContactPage'
 export * from './components/TrustPage'

@@ -177,8 +177,8 @@ export function ContactPage() {
             className="md:col-span-5 relative min-h-[280px] sm:min-h-[380px] md:min-h-full overflow-hidden"
           >
             <img
-              src="/assets/contact-hero.png"
-              alt="Beautiful Vastu Interior"
+              src="/images/tech-gadgets.png"
+              alt="Tech gadgets and laptops"
               className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-[4000ms] hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
