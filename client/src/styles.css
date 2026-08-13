@@ -590,3 +590,24 @@ body {
     height: 0 !important;
   }
 }
+
+/* ── WhatsApp-style reply-jump highlight ──────────────────────────────────── */
+@keyframes msg-highlight-flash {
+  0% {
+    background-color: transparent;
+  }
+  15% {
+    background-color: oklch(0.72 0.18 145 / 0.28);
+  } /* green-ish flash */
+  55% {
+    background-color: oklch(0.72 0.18 145 / 0.18);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.msg-highlight {
+  animation: msg-highlight-flash 1.8s ease forwards;
+  border-radius: 1rem;
+}

@@ -31,58 +31,69 @@ export function MessageReactions({
     <>
       {/* Quick Reactions Bar */}
       {!msg.isDeleted &&
-        (isHovered || activeReactMsgId === msg.id) &&
-        !isMultiSelectMode && (
-          <div
-            className={cn(
-              'flex items-center gap-1.5 bg-card border border-border/30 shadow-md rounded-full px-2 py-1.5 absolute -top-8 z-20 animate-in zoom-in-95 duration-100',
-              isMe ? 'right-2' : 'left-10',
-            )}
-          >
-            {['👍', '❤️', '😂', '😮', '😢'].map((emoji) => {
-              const userReacted = msg.reactions?.some(
-                (r: any) => r.userId === currentUserId && r.emoji === emoji,
-              )
-              return (
-                <button
-                  key={emoji}
-                  type="button"
-                  onClick={async (e) => {
-                    e.stopPropagation()
-                    if (userReacted) {
-                      await removeReaction(msg.id)
-                    } else {
-                      await reactToMessage({ messageId: msg.id, emoji })
-                    }
-                    setActiveReactMsgId(null)
-                  }}
-                  className={cn(
-                    'hover:scale-125 transition-transform duration-100 p-1 cursor-pointer hover:drop-shadow-sm flex items-center justify-center rounded-full',
-                    userReacted && 'bg-primary/10',
-                  )}
-                >
-                  <Emoji
-                    unified={getEmojiUnified(emoji)}
-                    emojiStyle={EmojiStyle.APPLE}
-                    size={18}
-                  />
-                </button>
-              )
-            })}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                setFullReactMsgId(msg.id)
-                setActiveReactMsgId(null)
-              }}
-              className="hover:scale-125 transition-transform duration-100 px-1 text-sm font-black text-muted-dark hover:text-foreground cursor-pointer flex items-center justify-center shrink-0"
-              title="Plus reaction picker"
+        !isMultiSelectMode &&
+        (() => {
+          // On touch/mobile: ONLY show when explicitly activated (long press)
+          // On desktop: also show on hover
+          const isTouchDevice =
+            typeof window !== 'undefined' &&
+            window.matchMedia('(pointer: coarse)').matches
+          const shouldShow =
+            activeReactMsgId === msg.id || (!isTouchDevice && isHovered)
+          if (!shouldShow) return null
+          return (
+            <div
+              data-reaction-bar
+              className={cn(
+                'flex items-center gap-1.5 bg-card border border-border/30 shadow-md rounded-full px-2 py-1.5 absolute -top-8 z-20 animate-in zoom-in-95 duration-100',
+                isMe ? 'right-2' : 'left-10',
+              )}
             >
-              +
-            </button>
-          </div>
-        )}
+              {['👍', '❤️', '😂', '😮', '😢'].map((emoji) => {
+                const userReacted = msg.reactions?.some(
+                  (r: any) => r.userId === currentUserId && r.emoji === emoji,
+                )
+                return (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={async (e) => {
+                      e.stopPropagation()
+                      if (userReacted) {
+                        await removeReaction(msg.id)
+                      } else {
+                        await reactToMessage({ messageId: msg.id, emoji })
+                      }
+                      setActiveReactMsgId(null)
+                    }}
+                    className={cn(
+                      'hover:scale-125 transition-transform duration-100 p-1 cursor-pointer hover:drop-shadow-sm flex items-center justify-center rounded-full',
+                      userReacted && 'bg-primary/10',
+                    )}
+                  >
+                    <Emoji
+                      unified={getEmojiUnified(emoji)}
+                      emojiStyle={EmojiStyle.APPLE}
+                      size={18}
+                    />
+                  </button>
+                )
+              })}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setFullReactMsgId(msg.id)
+                  setActiveReactMsgId(null)
+                }}
+                className="hover:scale-125 transition-transform duration-100 px-1 text-sm font-black text-muted-dark hover:text-foreground cursor-pointer flex items-center justify-center shrink-0"
+                title="Plus reaction picker"
+              >
+                +
+              </button>
+            </div>
+          )
+        })()}
 
       {/* Reaction badges */}
       {!msg.isDeleted && msg.reactions && msg.reactions.length > 0 && (

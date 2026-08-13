@@ -100,7 +100,12 @@ export function ChatInputDock() {
 
       // 2. Build final message content
       const finalContent = replyTarget
-        ? buildReplyContent(replyTarget.content, inputText.trim())
+        ? buildReplyContent(
+            replyTarget.content,
+            inputText.trim(),
+            replyTarget.attachments,
+            replyTarget.replyToId,
+          )
         : inputText.trim()
 
       // 3. Send via socket

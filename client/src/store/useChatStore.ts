@@ -3,9 +3,11 @@ import type { Conversation, Message } from '#/hook'
 
 export interface ReplyTarget {
   id: string
+  replyToId: string // original message's ID (for scroll-to)
   content: string
   senderName: string
   isMe: boolean
+  attachments?: string[]
 }
 
 export interface ChatStoreState {
@@ -16,6 +18,7 @@ export interface ChatStoreState {
   showMobileChat: boolean
   replyTarget: ReplyTarget | null
   hoveredMsgId: string | null
+  highlightedMsgId: string | null
 
   // Attachment state
   pendingFiles: File[]
@@ -109,6 +112,7 @@ export interface ChatStoreState {
   setShowMobileChat: (show: boolean) => void
   setReplyTarget: (target: ReplyTarget | null) => void
   setHoveredMsgId: (id: string | null) => void
+  setHighlightedMsgId: (id: string | null) => void
 
   // Attachment Actions
   setPendingFiles: (files: File[]) => void
@@ -164,6 +168,7 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   showMobileChat: false,
   replyTarget: null,
   hoveredMsgId: null,
+  highlightedMsgId: null,
 
   pendingFiles: [],
   pendingPreviews: [],
@@ -247,6 +252,7 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
   setShowMobileChat: (showMobileChat) => set({ showMobileChat }),
   setReplyTarget: (replyTarget) => set({ replyTarget }),
   setHoveredMsgId: (hoveredMsgId) => set({ hoveredMsgId }),
+  setHighlightedMsgId: (highlightedMsgId) => set({ highlightedMsgId }),
 
   setPendingFiles: (pendingFiles) => set({ pendingFiles }),
   setPendingPreviews: (pendingPreviews) => set({ pendingPreviews }),

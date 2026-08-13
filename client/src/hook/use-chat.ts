@@ -169,6 +169,13 @@ export function useChat() {
             if (prev.some((m) => m.id === msg.id)) return prev
             return [...prev, msg]
           })
+          if (msg.conversationId === currentConvId && msg.senderId !== userId) {
+            apiClient
+              .post(`/chat/conversations/${currentConvId}/read`)
+              .catch((err) => {
+                console.error('Failed to mark incoming message as read:', err)
+              })
+          }
           queryClient.setQueryData<Conversation[]>(['conversations'], (old) => {
             const updated =
               old?.map((conv) => {

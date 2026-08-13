@@ -6,10 +6,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '#/components/ui/dropdown-menu'
-import { MoreVertical } from 'lucide-react'
+import { MoreVertical, Search } from 'lucide-react'
 import { cn } from '#/lib/utils'
 import { useChatStore } from '../../../../../store/useChatStore'
-import { useDeleteConversation } from '#/hook'
+import { useDeleteConversation, useIsMobile } from '#/hook'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
@@ -19,6 +19,7 @@ import { toast } from 'sonner'
 export function ConversationOptionsMenu() {
   const navigate = useNavigate()
   const deleteConversation = useDeleteConversation()
+  const isMobile = useIsMobile()
 
   const {
     conversations,
@@ -34,6 +35,10 @@ export function ConversationOptionsMenu() {
     setShowMediaBrowser,
     switchConversation,
     setShowMobileChat,
+    showConversationSearch,
+    setShowConversationSearch,
+    setSearchText,
+    setCurrentMatchIndex,
   } = useChatStore()
 
   const activeConversation = conversations.find(
@@ -63,6 +68,14 @@ export function ConversationOptionsMenu() {
 
   const handleShowSharedMedia = () => {
     setShowMediaBrowser(true)
+  }
+
+  const handleSearch = () => {
+    setShowConversationSearch(!showConversationSearch)
+    if (showConversationSearch) {
+      setSearchText('')
+      setCurrentMatchIndex(0)
+    }
   }
 
   const handleArchive = async () => {
@@ -119,6 +132,12 @@ export function ConversationOptionsMenu() {
         <DropdownMenuItem onSelect={handleViewProfile}>
           View Profile
         </DropdownMenuItem>
+        {isMobile && (
+          <DropdownMenuItem onSelect={handleSearch}>
+            <Search size={14} className="mr-2" />
+            {showConversationSearch ? 'Close Search' : 'Search in Chat'}
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onSelect={handleToggleHideMedia}>
           {hideMedia ? 'Show Media' : 'Hide Media'}
         </DropdownMenuItem>
