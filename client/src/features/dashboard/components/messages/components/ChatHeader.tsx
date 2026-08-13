@@ -70,7 +70,7 @@ export function ChatHeader() {
             setShowDetailsPanel(false)
           }
         }}
-        className="flex items-center gap-3 cursor-pointer hover:opacity-90 select-none"
+        className="flex items-center gap-3 cursor-pointer hover:opacity-90 select-none min-w-0"
       >
         {/* Back on mobile */}
         <Button
@@ -102,14 +102,15 @@ export function ChatHeader() {
           showPing={false}
         />
 
-        <div>
-          <div className="flex items-center gap-1.5">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 min-w-0">
             <h3
               className={cn(
                 'text-[15px]',
                 'font-black',
                 'text-foreground',
                 'font-display',
+                'truncate',
               )}
             >
               {otherParticipant.name}
@@ -200,21 +201,21 @@ export function ChatHeader() {
           <Phone size={16} />
         </Button>
 
-        {/* Desktop only buttons */}
-        <div className="hidden sm:flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() =>
-              toast.success(
-                `Starting video call with ${activeConversation.otherParticipant.name}...`,
-              )
-            }
-            className="w-9 h-9 hover:bg-muted-light rounded-xl text-muted-dark hover:text-muted-foreground cursor-pointer transition-colors"
-          >
-            <Video size={16} />
-          </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() =>
+            toast.success(
+              `Starting video call with ${activeConversation.otherParticipant.name}...`,
+            )
+          }
+          className="w-9 h-9 hover:bg-muted-light rounded-xl text-muted-dark hover:text-muted-foreground cursor-pointer transition-colors"
+        >
+          <Video size={16} />
+        </Button>
 
+        {/* Search — desktop only; mobile uses 3-dot menu */}
+        <div className="hidden sm:block">
           <Button
             variant="ghost"
             size="icon"
@@ -235,9 +236,9 @@ export function ChatHeader() {
           >
             <Search size={16} />
           </Button>
-
-          <ConversationOptionsMenu />
         </div>
+
+        <ConversationOptionsMenu />
       </div>
     </div>
   )

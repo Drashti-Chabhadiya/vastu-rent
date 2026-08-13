@@ -92,7 +92,7 @@ export function MediaBrowserDialog() {
           {mediaItems.map((item, index) => (
             <div
               key={`${item.messageId}-${index}`}
-              className="group relative aspect-square rounded-2xl overflow-hidden border border-border/20 shadow-sm bg-muted-light"
+              className="group relative aspect-square rounded-xl overflow-hidden border border-border/20 shadow-sm bg-muted-light"
             >
               <img
                 src={item.url}

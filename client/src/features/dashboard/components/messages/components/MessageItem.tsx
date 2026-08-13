@@ -1,9 +1,9 @@
+import { useRef } from 'react'
 import {
   X,
   CheckSquare,
   Square,
   Reply,
-  CornerUpLeft,
   ArrowRightLeft,
   ZoomIn,
   ImagePlus,
@@ -70,7 +70,37 @@ export function MessageItem({ msg }: MessageItemProps) {
     setShowInfoDialog,
   } = useChatStore()
 
-  const { replyQuote, text: msgText } = parseMessage(msg.content)
+  const { replyQuote, replyToId, text: msgText } = parseMessage(msg.content)
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null)
+
+  const handleTouchStart = () => {
+    longPressTimer.current = setTimeout(() => {
+      setActiveReactMsgId(msg.id)
+      setHoveredMsgId(msg.id)
+      if (
+        typeof window !== 'undefined' &&
+        window.navigator &&
+        window.navigator.vibrate
+      ) {
+        window.navigator.vibrate(50)
+      }
+    }, 450)
+  }
+
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+  }
+
+  const handleTouchMove = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+  }
+
   const isHovered = hoveredMsgId === msg.id
   const isStarred = msg.starredBy?.includes(currentUserId || '')
   const isPinned = msg.pinnedBy?.includes(currentUserId || '')
@@ -92,12 +122,44 @@ export function MessageItem({ msg }: MessageItemProps) {
   }
   const isMe = msg.senderId === currentUserId
 
+  let replySenderName = 'Someone'
+  if (replyToId) {
+    const originalMsg = messages.find((m: any) => m.id === replyToId)
+    if (originalMsg) {
+      replySenderName =
+        originalMsg.senderId === currentUserId
+          ? 'You'
+          : (activeConversation?.otherParticipant.name ?? 'Them')
+    } else {
+      replySenderName = 'Previous message'
+    }
+  }
+
+  const handleScrollToOriginal = () => {
+    if (!replyToId) return
+    const el = document.getElementById(`msg-${replyToId}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('bg-primary/20', 'transition-colors', 'duration-500')
+      setTimeout(() => {
+        el.classList.remove('bg-primary/20')
+      }, 1500)
+    }
+  }
+
   const handleReplyInternal = (m: any, me: boolean) => {
     const { text } = parseMessage(m.content)
     const senderName = me
       ? 'You'
       : (activeConversation?.otherParticipant.name ?? 'Them')
-    setReplyTarget({ id: m.id, content: text, senderName, isMe: me })
+    setReplyTarget({
+      id: m.id,
+      replyToId: m.id,
+      content: text,
+      senderName,
+      isMe: me,
+      attachments: m.attachments,
+    })
     setTimeout(() => {
       document.querySelector('input')?.focus()
     }, 50)
@@ -159,6 +221,10 @@ export function MessageItem({ msg }: MessageItemProps) {
       )}
       onMouseEnter={() => setHoveredMsgId(msg.id)}
       onMouseLeave={() => setHoveredMsgId(null)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchMove={handleTouchMove}
+      onTouchCancel={handleTouchEnd}
     >
       {/* Multi-select check icon */}
       {isMultiSelectMode && (
@@ -261,6 +327,20 @@ export function MessageItem({ msg }: MessageItemProps) {
                         </Button>
                       ))
                     )}
+
+                    {/* Media-only Time and Tick Overlay */}
+                    {!msg.content && (
+                      <div className="absolute bottom-1.5 right-1.5 z-10 bg-black/40 px-2 rounded-full flex items-center justify-center backdrop-blur-[2px]">
+                        <div className="-mt-1">
+                          <MessageStatus
+                            msg={msg}
+                            isMe={isMe}
+                            isStarred={isStarred}
+                            forceWhite={true}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -335,57 +415,87 @@ export function MessageItem({ msg }: MessageItemProps) {
           msg.content && (
             <div
               className={cn(
-                'px-4 py-2.5 text-[12px] font-semibold leading-relaxed relative rounded-2xl shadow-none border max-w-md flex flex-wrap items-baseline justify-between gap-3',
+                'px-4 py-2.5 text-[12px] font-semibold leading-relaxed relative rounded-xl shadow-none border max-w-md flex flex-col',
                 isMe
                   ? 'bg-primary border-transparent text-white rounded-tr-xs'
                   : 'bg-white dark:bg-card text-foreground/90 border-border/15 rounded-tl-xs',
               )}
             >
-              <div className="flex-1 break-words min-w-[60px]">
-                {/* Forwarded label */}
-                {msg.isForwarded && (
-                  <div className="flex items-center gap-1 text-[8.5px] font-black text-muted-dark/85 uppercase tracking-wider mb-1">
-                    <ArrowRightLeft
-                      size={9}
-                      strokeWidth={3.5}
-                      className="text-muted-dark/75"
-                    />
-                    Forwarded
-                  </div>
-                )}
+              {/* Forwarded label */}
+              {msg.isForwarded && (
+                <div className="flex items-center gap-1 text-[8.5px] font-black text-muted-dark/85 uppercase tracking-wider mb-1">
+                  <ArrowRightLeft
+                    size={9}
+                    strokeWidth={3.5}
+                    className="text-muted-dark/75"
+                  />
+                  Forwarded
+                </div>
+              )}
 
-                {/* Quoted reply block */}
-                {replyQuote && (
+              {/* Quoted reply block — dictates minimum width of the bubble */}
+              {replyQuote && (
+                <div
+                  role="button"
+                  tabIndex={replyToId ? 0 : -1}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleScrollToOriginal()
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleScrollToOriginal()
+                    }
+                  }}
+                  className={cn(
+                    'relative w-full mb-1.5 rounded-lg overflow-hidden transition-opacity duration-100',
+                    replyToId
+                      ? 'cursor-pointer active:opacity-80'
+                      : 'cursor-default',
+                    isMe ? 'bg-black/20' : 'bg-black/5',
+                  )}
+                >
+                  {/* Straight colored indicator line on the left */}
                   <div
                     className={cn(
-                      'flex items-start gap-1.5 mb-2 px-2 py-1.5 rounded-lg text-[10px]',
-                      isMe
-                        ? 'bg-primary/10 border-l-2 border-primary/40'
-                        : 'bg-muted/40 border-l-2 border-muted-foreground/30',
+                      'absolute left-0 top-0 bottom-0 w-1',
+                      isMe ? 'bg-white/70' : 'bg-primary',
                     )}
-                  >
-                    <CornerUpLeft
-                      size={10}
+                  />
+
+                  <div className="pl-3.5 pr-2.5 py-1.5 flex flex-col gap-0.5">
+                    {/* Sender name */}
+                    <span
                       className={cn(
-                        'shrink-0 mt-0.5',
-                        isMe ? 'text-primary/60' : 'text-muted-dark',
+                        'text-[10.5px] font-extrabold truncate w-full',
+                        isMe ? 'text-white/90' : 'text-primary',
                       )}
-                    />
+                    >
+                      {replySenderName}
+                    </span>
+                    {/* Quoted text — single line */}
                     <p
                       className={cn(
-                        'text-[9.5px] leading-snug truncate',
-                        isMe ? 'text-primary/70' : 'text-muted-dark',
+                        'text-[10px] font-medium leading-snug truncate w-full',
+                        isMe ? 'text-white/75' : 'text-foreground/60',
                       )}
                     >
                       {replyQuote}
                     </p>
                   </div>
-                )}
+                </div>
+              )}
 
-                <span>{highlightText(msgText, searchText)}</span>
+              <div className="flex flex-wrap items-baseline justify-between gap-3 w-full">
+                <div className="break-words min-w-[60px] max-w-full">
+                  <span>{highlightText(msgText, searchText)}</span>
+                </div>
+
+                <div className="shrink-0 ml-auto self-end flex items-center h-full relative top-0.5">
+                  <MessageStatus msg={msg} isMe={isMe} isStarred={isStarred} />
+                </div>
               </div>
-
-              <MessageStatus msg={msg} isMe={isMe} isStarred={isStarred} />
             </div>
           )
         )}

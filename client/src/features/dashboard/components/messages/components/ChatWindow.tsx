@@ -107,17 +107,40 @@ export function ChatWindow() {
     }
   }, [setShowMediaBrowser])
 
+  // Close emoji bar when tapping/clicking outside any reaction button (mobile)
+  useEffect(() => {
+    const handleOutsideTap = (e: TouchEvent | MouseEvent) => {
+      const target = e.target as HTMLElement
+      // If the tap is not inside a reaction bar or its children, close it
+      if (
+        !target.closest('[data-reaction-bar]') &&
+        !target.closest('[data-msg-bubble]')
+      ) {
+        setActiveReactMsgId(null)
+      }
+    }
+    document.addEventListener('touchstart', handleOutsideTap, { passive: true })
+    return () => document.removeEventListener('touchstart', handleOutsideTap)
+  }, [setActiveReactMsgId])
+
   // Auto-scroll to bottom when messages change or conversation switches
   useEffect(() => {
-    const el = messagesContainerRef.current
-    if (el) {
-      const isSameConv = prevConversationIdRef.current === activeConversationId
-      el.scrollTo({
-        top: el.scrollHeight,
-        behavior: isSameConv ? 'smooth' : 'auto',
-      })
+    const scrollToBottom = () => {
+      const el = messagesContainerRef.current
+      if (el) {
+        const isSameConv =
+          prevConversationIdRef.current === activeConversationId
+        el.scrollTo({
+          top: el.scrollHeight,
+          behavior: isSameConv ? 'smooth' : 'auto',
+        })
+      }
+      prevConversationIdRef.current = activeConversationId
     }
-    prevConversationIdRef.current = activeConversationId
+
+    // Delay to let layout/images settle
+    const timer = setTimeout(scrollToBottom, 100)
+    return () => clearTimeout(timer)
   }, [messages, isOtherPersonTyping, activeConversationId])
 
   // Capacitor / Mobile: scroll to bottom when keyboard opens (visualViewport resize)
