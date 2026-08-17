@@ -39,6 +39,7 @@ import { useSettings } from '#/hook'
 import { motion } from 'motion/react'
 import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { useTranslation } from '#/context/TranslationContext'
+import eventWedding from '../../../../public/images/event-wedding.png'
 
 const getIcon = (name: string, className = 'h-6 w-6 text-primary') => {
   switch (name) {
@@ -206,7 +207,7 @@ export function TrustPage() {
             className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
           >
             <img
-              src="/images/event-wedding.png"
+              src={eventWedding}
               alt="Community wedding and event setup"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />

@@ -19,6 +19,7 @@ import { EASE, fadeUp, stagger } from '#/lib/animations'
 import { useSettings } from '#/hook'
 import { useTranslation } from '#/context/TranslationContext'
 import { MobileBackHeader } from '#/components/common/MobileBackHeader'
+import fashionDresses from '../../../../public/images/fashion-dresses.png'
 
 interface TermsNavSection {
   id: string
@@ -201,7 +202,7 @@ export function TermsPage() {
             className="md:col-span-5 relative min-h-[300px] md:min-h-full overflow-hidden"
           >
             <img
-              src="/images/fashion-dresses.png"
+              src={fashionDresses}
               alt="Traditional wear and fashion items for rent"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
