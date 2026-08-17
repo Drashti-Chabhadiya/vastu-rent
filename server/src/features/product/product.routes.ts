@@ -21,7 +21,10 @@ export async function productRoutes(fastify: FastifyInstance) {
   // User/Admin Management
   fastify.post(
     '/',
-    { preHandler: [authHandler] },
+    {
+      preHandler: [authHandler],
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+    },
     productController.createProduct,
   )
   fastify.get(
@@ -31,12 +34,18 @@ export async function productRoutes(fastify: FastifyInstance) {
   )
   fastify.put(
     '/:id',
-    { preHandler: [authHandler] },
+    {
+      preHandler: [authHandler],
+      config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
+    },
     productController.updateProduct,
   )
   fastify.delete(
     '/:id',
-    { preHandler: [authHandler] },
+    {
+      preHandler: [authHandler],
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+    },
     productController.deleteProduct,
   )
 

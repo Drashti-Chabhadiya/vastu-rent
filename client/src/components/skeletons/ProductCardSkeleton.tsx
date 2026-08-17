@@ -7,57 +7,61 @@ export function ProductCardSkeleton({
 }) {
   if (variant === 'mini') {
     return (
-      <div className="bg-card rounded-[20px] p-2.5 shadow-[0_4px_16px_rgb(0,0,0,0.03)] border border-border/20 flex flex-col h-full w-full overflow-hidden">
-        {/* Image Area Skeleton */}
-        <Skeleton className="w-full h-[120px] rounded-xl mb-3 shrink-0" />
-
-        {/* Title Skeleton */}
-        <Skeleton className="h-3 w-3/4 rounded-md mb-2" />
-
-        {/* Price Row Skeleton */}
-        <div className="flex items-center justify-between mb-2">
-          <Skeleton className="h-4 w-14 rounded-md" />
-          <Skeleton className="h-3 w-8 rounded-md" />
+      <div className="w-full h-full shrink-0 bg-card border border-border/15 rounded-[20px] overflow-hidden flex flex-col justify-between shadow-3xs">
+        <div className="relative h-[100px] w-full bg-muted">
+          <Skeleton className="w-full h-full rounded-none" />
+          <div className="absolute bottom-2 left-2 z-10">
+            <Skeleton className="h-4 w-16 rounded-md bg-foreground/20" />
+          </div>
+          <div className="absolute top-2 right-2 z-10">
+            <Skeleton className="h-6 w-6 rounded-full bg-foreground/20" />
+          </div>
         </div>
-
-        {/* Location Skeleton */}
-        <div className="flex items-center gap-1.5 mt-auto">
-          <Skeleton className="h-2 w-3 rounded-md" />
-          <Skeleton className="h-2 w-16 rounded-md" />
+        <div className="p-3 flex-1 flex flex-col justify-between">
+          <div className="space-y-1.5">
+            <Skeleton className="h-3 w-3/4 rounded-md" />
+            <div className="flex items-center gap-1">
+              <Skeleton className="h-2 w-2 rounded-full shrink-0" />
+              <Skeleton className="h-2 w-16 rounded-md" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <Skeleton className="h-3.5 w-12 rounded-md" />
+            <Skeleton className="h-2.5 w-6 rounded-md" />
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-[0_4px_20px_rgb(0,0,0,0.04)] border border-border/30 flex flex-col h-full w-full">
-      {/* Image Area Skeleton */}
-      <Skeleton className="w-full h-[220px] rounded-xl mb-4 shrink-0" />
-
-      {/* Title Skeleton */}
-      <div className="space-y-2 mb-4">
-        <Skeleton className="h-4 w-3/4 rounded-md" />
-        <Skeleton className="h-4 w-1/2 rounded-md" />
-      </div>
-
-      {/* Price & Rating Row Skeleton */}
-      <div className="flex items-center justify-between mb-4 mt-auto">
-        <div className="space-y-1">
-          <Skeleton className="h-5 w-20 rounded-md" />
+    <div className="bg-card rounded-[24px] md:rounded-[32px] p-3 md:p-4 border border-border/40 shadow-xs flex flex-col h-full">
+      <div className="relative w-full aspect-[4/3] rounded-[16px] md:rounded-[24px] overflow-hidden bg-muted shrink-0">
+        <Skeleton className="w-full h-full rounded-none" />
+        <div className="absolute bottom-3 left-3 z-10">
+          <Skeleton className="h-6 w-24 rounded-lg bg-foreground/20" />
         </div>
-        <div className="flex items-center gap-1">
-          <Skeleton className="h-4 w-12 rounded-md" />
+        <div className="absolute top-3 right-3 z-10">
+          <Skeleton className="h-9 w-9 rounded-full bg-foreground/20" />
         </div>
       </div>
 
-      {/* Location Skeleton */}
-      <div className="flex items-center gap-2 mb-4">
-        <Skeleton className="h-3 w-4 rounded-md" />
-        <Skeleton className="h-3 w-28 rounded-md" />
+      <div className="mt-3 md:mt-4 space-y-2 flex-1">
+        <Skeleton className="h-5 w-[85%] rounded-lg" />
+        <div className="flex items-center gap-1.5">
+          <Skeleton className="h-3.5 w-3.5 rounded-full" />
+          <Skeleton className="h-3.5 w-32 rounded-md" />
+        </div>
       </div>
 
-      {/* Rent Button Skeleton */}
-      <Skeleton className="w-full h-11 rounded-xl shrink-0" />
+      <div className="mt-3 md:mt-4 flex items-center justify-between">
+        <Skeleton className="h-6 w-24 rounded-lg" />
+        <Skeleton className="h-4 w-12 rounded-md" />
+      </div>
+
+      <div className="mt-4 shrink-0">
+        <Skeleton className="h-10 md:h-12 w-full rounded-xl md:rounded-2xl" />
+      </div>
     </div>
   )
 }

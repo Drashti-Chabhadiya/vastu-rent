@@ -229,13 +229,21 @@ export const ProductBookingSection = ({
             variant="outline"
             onClick={() => setPaymentMethod('online')}
             className={cn(
-              'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
+              'relative p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98] overflow-hidden',
               paymentMethod === 'online'
                 ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
                 : 'border-border/30 bg-muted-light text-muted-foreground/85 hover:border-border hover:text-muted-foreground/85 hover:bg-muted-light',
             )}
           >
-            <ShieldCheck size={18} />
+            {paymentMethod === 'online' && (
+              <div className="absolute top-2 right-2">
+                <CheckCircle2 className="w-4 h-4 text-primary" />
+              </div>
+            )}
+            <ShieldCheck
+              size={18}
+              className={paymentMethod === 'online' ? 'text-primary' : ''}
+            />
             <span className="text-[11px] font-black uppercase tracking-wider">
               {t('Online Pay')}
             </span>
@@ -245,13 +253,21 @@ export const ProductBookingSection = ({
             variant="outline"
             onClick={() => setPaymentMethod('cash')}
             className={cn(
-              'p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98]',
+              'relative p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98] overflow-hidden',
               paymentMethod === 'cash'
                 ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
                 : 'border-border/30 bg-muted-light text-muted-foreground/85 hover:border-border hover:text-muted-foreground/85 hover:bg-muted-light',
             )}
           >
-            <MessageCircle size={18} />
+            {paymentMethod === 'cash' && (
+              <div className="absolute top-2 right-2">
+                <CheckCircle2 className="w-4 h-4 text-primary" />
+              </div>
+            )}
+            <MessageCircle
+              size={18}
+              className={paymentMethod === 'cash' ? 'text-primary' : ''}
+            />
             <span className="text-[11px] font-black uppercase tracking-wider">
               {t('Cash on Pickup')}
             </span>
@@ -264,28 +280,38 @@ export const ProductBookingSection = ({
         <Button
           // onClick={handleRentNow}
           disabled={createRentalIsPending || isPaying}
-          className="w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all group"
+          className="group w-full h-12 rounded-full bg-primary hover:bg-primary/95 text-primary-foreground font-bold shadow-md shadow-brand/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
           {createRentalIsPending || isPaying ? (
-            <Loader2 size={16} className="animate-spin mr-2" />
+            <>
+              {t('Processing...')}
+              <Loader2 size={16} className="animate-spin" />
+            </>
           ) : (
-            <ArrowRight
-              size={16}
-              className="mr-2 transition-transform group-hover:translate-x-1"
-            />
+            <>
+              {t('Rent Now')}
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                <ArrowRight size={14} className="shrink-0" />
+              </span>
+            </>
           )}
-          {isPaying ? t('Processing...') : t('Rent Now')}
         </Button>
         <Button
           variant="outline"
-          className="w-full h-12 rounded-xl border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all gap-2"
+          className="group w-full h-12 rounded-full border-border font-bold text-foreground/80 hover:bg-muted-light active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           onClick={() =>
             window.open(
               `mailto:${product.user?.email || ''}?subject=Inquiry about ${product.title || product.name}`,
             )
           }
         >
-          <MessageCircle size={18} /> {t('Chat with User')}
+          {t('Chat with User')}
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted transition-transform group-hover:translate-x-1">
+            <MessageCircle
+              size={14}
+              className="shrink-0 text-muted-foreground"
+            />
+          </span>
         </Button>
       </div>
 

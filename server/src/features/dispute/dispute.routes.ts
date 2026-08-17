@@ -15,6 +15,7 @@ export async function disputeRoutes(fastify: FastifyInstance) {
           return reply.status(401).send({ message: 'Unauthorized' })
         }
       },
+      config: { rateLimit: { max: 5, timeWindow: '1 minute' } },
     },
     disputeController.createDispute,
   )

@@ -211,17 +211,22 @@ export async function authRoutes(app: FastifyInstance) {
         freeTrialEligible = false
       }
 
-      // IP check: prevent VPN/Script abuse by limiting free listings per IP
+      // IP check: prevent VPN/Bot farm abuse by limiting recent free trials per IP.
+      // We combine IP with Account History (time window) to prevent blocking legitimate
+      // offices, dorms, or CGNAT mobile networks that share IPs over long periods.
       const clientIp = request.ip
       if (clientIp && freeTrialEligible) {
-        const usersFromIp = await prisma.session.findMany({
-          where: { ipAddress: clientIp },
+        const recentUsersFromIp = await prisma.session.findMany({
+          where: {
+            ipAddress: clientIp,
+            createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }, // Last 24 hours only
+          },
           select: { userId: true },
           distinct: ['userId'],
         })
 
-        // If this IP has been associated with more than 2 distinct users, deny free trial
-        if (usersFromIp.length > 2) {
+        // If this IP has been associated with more than 2 distinct users IN THE LAST 24 HOURS, deny free trial
+        if (recentUsersFromIp.length > 2) {
           freeTrialEligible = false
         }
       }

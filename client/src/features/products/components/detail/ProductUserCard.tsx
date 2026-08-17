@@ -7,6 +7,7 @@ import {
   Instagram,
   Facebook,
   MapPin,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
@@ -176,10 +177,21 @@ export const ProductUserCard = ({ user, session }: ProductUserCardProps) => {
         <Button
           onClick={handleContactHost}
           disabled={isStartingChat}
-          className="w-full h-10 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold flex items-center justify-center gap-2 transition-colors"
+          className="group w-full h-10 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
         >
-          <MessageCircle size={15} />
-          {isStartingChat ? t('Opening Chat...') : t('Contact Lister')}
+          {isStartingChat ? (
+            <>
+              {t('Opening Chat...')}
+              <Loader2 size={16} className="animate-spin" />
+            </>
+          ) : (
+            <>
+              {t('Contact Lister')}
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                <MessageCircle size={12} className="shrink-0" />
+              </span>
+            </>
+          )}
         </Button>
       </div>
     </div>

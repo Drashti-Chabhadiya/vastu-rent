@@ -17,6 +17,7 @@ export async function reviewRoutes(fastify: FastifyInstance) {
         if (!session) return reply.status(401).send({ message: 'Unauthorized' })
         ;(request as any).user = session.user
       },
+      config: { rateLimit: { max: 5, timeWindow: '1 minute' } },
     },
     reviewController.createReview,
   )
@@ -31,6 +32,7 @@ export async function reviewRoutes(fastify: FastifyInstance) {
         if (!session) return reply.status(401).send({ message: 'Unauthorized' })
         ;(request as any).user = session.user
       },
+      config: { rateLimit: { max: 5, timeWindow: '1 minute' } },
     },
     reviewController.replyToReview,
   )

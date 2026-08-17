@@ -133,7 +133,12 @@ export class ReviewService {
     }
 
     const createdReview = await prisma.review.create({
-      data,
+      data: {
+        rating: data.rating,
+        comment: data.comment,
+        productId: data.productId,
+        userId: data.userId,
+      },
       include: {
         user: {
           select: { id: true, name: true, image: true, showProfile: true },

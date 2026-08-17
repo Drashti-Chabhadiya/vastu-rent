@@ -3,6 +3,7 @@
 import { ProductCard } from '#/components/common/ProductCard'
 import { motion } from 'motion/react'
 import { fadeUp } from '#/lib/animations'
+import { useIsMobile } from '#/hook/use-mobile'
 // import { useTranslation } from '#/context/TranslationContext'
 
 interface WishlistGridItemProps {
@@ -21,10 +22,11 @@ export function WishlistGridItem({
   // onCancelClear,
 }: WishlistGridItemProps) {
   // const { t } = useTranslation()
+  const isMobile = useIsMobile()
 
   return (
     <motion.div variants={fadeUp} className="relative group h-full">
-      <ProductCard product={product} variant="mini" />
+      <ProductCard product={product} variant={isMobile ? 'mini' : 'default'} />
     </motion.div>
   )
 }

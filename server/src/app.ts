@@ -4,6 +4,7 @@ import cookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
+import fastifyCsrfProtection from '@fastify/csrf-protection'
 // ─── Feature Routes ───────────────────────────────────────────────────────────
 import { authRoutes } from './features/auth/auth.routes.js'
 import { userRoutes } from './features/user/user.routes.js'
@@ -37,6 +38,9 @@ export const app = Fastify({ logger: true, trustProxy: true })
 // ─── Plugins ─────────────────────────────────────────────────────────────────
 
 app.register(cookie)
+app.register(fastifyCsrfProtection, {
+  cookieOpts: { signed: false },
+})
 app.register(multipart, {
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB
@@ -59,20 +63,21 @@ app.register(cors, {
     const allowed = [
       process.env.CLIENT_URL,
       'capacitor://localhost',
-      'http://localhost',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173',
     ].filter(Boolean) as string[]
 
-    const isLocalOrCapacitor =
+    const isAllowedOrigin =
       allowed.includes(origin) ||
       origin.endsWith('.vercel.app') ||
       origin.startsWith('capacitor://') ||
-      origin.startsWith('http://localhost') ||
-      origin.startsWith('https://localhost') ||
-      /\/\/(127\.0\.0\.1|10\.0\.2\.2|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(
+      /\/\/(10\.0\.2\.2|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(
         origin,
       )
 
-    if (isLocalOrCapacitor) {
+    if (isAllowedOrigin) {
       callback(null, true)
     } else {
       callback(new Error(`CORS: origin '${origin}' not allowed`), false)
@@ -85,8 +90,33 @@ app.register(cors, {
     'Authorization',
     'x-better-auth-session-token',
     'better-auth-session-token',
+    'x-csrf-token',
   ],
-  exposedHeaders: ['set-auth-token'],
+  exposedHeaders: ['set-auth-token', 'x-csrf-token'],
+})
+
+// ─── CSRF Protection Hook ────────────────────────────────────────────────────
+app.addHook('preValidation', async (request, reply) => {
+  const mutatingMethods = ['POST', 'PUT', 'PATCH', 'DELETE']
+  if (!mutatingMethods.includes(request.method)) return
+
+  // Whitelist routes that do not need CSRF
+  if (request.url.startsWith('/api/auth/')) return
+  if (request.url.startsWith('/api/billing/webhook')) return
+  if (request.url.startsWith('/api/cron/')) return
+
+  // Proceed with CSRF verification
+  return new Promise<void>((resolve, reject) => {
+    app.csrfProtection(request, reply, (err?: Error) => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+})
+
+app.get('/api/csrf-token', async (req, reply) => {
+  const token = await reply.generateCsrf()
+  return { token }
 })
 
 // ─── Routes ──────────────────────────────────────────────────────────────────

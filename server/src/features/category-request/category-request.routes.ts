@@ -15,6 +15,7 @@ export async function categoryRequestRoutes(fastify: FastifyInstance) {
           return reply.status(401).send({ message: 'Unauthorized' })
         }
       },
+      config: { rateLimit: { max: 5, timeWindow: '10 minutes' } },
     },
     categoryRequestController.createRequest,
   )

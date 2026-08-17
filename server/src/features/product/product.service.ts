@@ -288,7 +288,23 @@ export class ProductService {
 
     const product = await prisma.product.create({
       data: {
-        ...cleanData,
+        title: cleanData.title,
+        description: cleanData.description,
+        categoryId: cleanData.categoryId,
+        city: cleanData.city,
+        listingType: cleanData.listingType,
+        features: cleanData.features,
+        deliveryOptions: cleanData.deliveryOptions,
+        pickupReturnDetails: cleanData.pickupReturnDetails,
+        tags: cleanData.tags,
+        minDuration: cleanData.minDuration
+          ? parseInt(cleanData.minDuration)
+          : 1,
+        maxDuration: cleanData.maxDuration
+          ? parseInt(cleanData.maxDuration)
+          : null,
+        shopName: cleanData.shopName,
+        userId: cleanData.userId,
         price: parseFloat(data.price),
         securityDeposit: data.securityDeposit
           ? parseFloat(data.securityDeposit)
@@ -320,7 +336,10 @@ export class ProductService {
     const product = await prisma.product.findUnique({ where: { id } })
     if (!product) throw new Error('Product not found')
 
-    if (userId && role && product.userId !== userId && role !== 'admin') {
+    const isCreator = userId && product.userId === userId
+    const isAdmin = role === 'admin'
+
+    if (!isCreator && !isAdmin) {
       throw new Error('Forbidden: You do not own this listing')
     }
 
@@ -332,8 +351,61 @@ export class ProductService {
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
-        ...cleanUpdateData,
+        title:
+          cleanUpdateData.title !== undefined
+            ? cleanUpdateData.title
+            : undefined,
+        description:
+          cleanUpdateData.description !== undefined
+            ? cleanUpdateData.description
+            : undefined,
+        categoryId:
+          cleanUpdateData.categoryId !== undefined
+            ? cleanUpdateData.categoryId
+            : undefined,
+        city:
+          cleanUpdateData.city !== undefined ? cleanUpdateData.city : undefined,
+        listingType:
+          cleanUpdateData.listingType !== undefined
+            ? cleanUpdateData.listingType
+            : undefined,
+        features:
+          cleanUpdateData.features !== undefined
+            ? cleanUpdateData.features
+            : undefined,
+        deliveryOptions:
+          cleanUpdateData.deliveryOptions !== undefined
+            ? cleanUpdateData.deliveryOptions
+            : undefined,
+        pickupReturnDetails:
+          cleanUpdateData.pickupReturnDetails !== undefined
+            ? cleanUpdateData.pickupReturnDetails
+            : undefined,
+        tags:
+          cleanUpdateData.tags !== undefined ? cleanUpdateData.tags : undefined,
+        minDuration:
+          cleanUpdateData.minDuration !== undefined
+            ? parseInt(cleanUpdateData.minDuration)
+            : undefined,
+        maxDuration:
+          cleanUpdateData.maxDuration !== undefined
+            ? cleanUpdateData.maxDuration
+              ? parseInt(cleanUpdateData.maxDuration)
+              : null
+            : undefined,
+        shopName:
+          cleanUpdateData.shopName !== undefined
+            ? cleanUpdateData.shopName
+            : undefined,
+        isAvailable:
+          cleanUpdateData.isAvailable !== undefined
+            ? cleanUpdateData.isAvailable
+            : undefined,
         price: data.price ? parseFloat(data.price) : undefined,
+        securityDeposit: data.securityDeposit
+          ? parseFloat(data.securityDeposit)
+          : undefined,
+        images: data.images !== undefined ? data.images : undefined,
       },
     })
 

@@ -45,6 +45,30 @@ export const apiClient = axios.create({
 })
 
 // Attach bearer token for native mobile requests to authenticate correctly
+
+let csrfToken: string | null = null
+let csrfTokenPromise: Promise<string | null> | null = null
+
+const getCsrfToken = async () => {
+  if (csrfToken) return csrfToken
+  if (csrfTokenPromise) return csrfTokenPromise
+
+  csrfTokenPromise = apiClient
+    .get('/csrf-token')
+    .then((res) => {
+      csrfToken = res.data.token
+      csrfTokenPromise = null
+      return csrfToken
+    })
+    .catch((err) => {
+      console.error('Failed to fetch CSRF token:', err)
+      csrfTokenPromise = null
+      return null
+    })
+
+  return csrfTokenPromise
+}
+
 apiClient.interceptors.request.use(async (config) => {
   if (Capacitor.isNativePlatform()) {
     const token = await getBearerToken()
@@ -52,6 +76,16 @@ apiClient.interceptors.request.use(async (config) => {
       config.headers.Authorization = `Bearer ${token}`
     }
   }
+
+  // Attach CSRF token for mutating requests
+  const mutatingMethods = ['post', 'put', 'patch', 'delete']
+  if (config.method && mutatingMethods.includes(config.method.toLowerCase())) {
+    const token = await getCsrfToken()
+    if (token) {
+      config.headers['x-csrf-token'] = token
+    }
+  }
+
   return config
 })
 

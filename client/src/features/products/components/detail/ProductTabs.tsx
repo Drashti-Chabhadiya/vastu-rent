@@ -270,14 +270,21 @@ export const ProductTabs = ({
               <Button
                 onClick={handleSubmitReview}
                 disabled={createReviewIsPending}
-                className="w-full h-10 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold gap-2"
+                className="group w-full h-10 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
               >
                 {createReviewIsPending ? (
-                  <Loader2 size={16} className="animate-spin" />
+                  <>
+                    {t('Submitting...')}
+                    <Loader2 size={16} className="animate-spin" />
+                  </>
                 ) : (
-                  <Send size={16} />
+                  <>
+                    {t('Submit Review')}
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                      <Send size={5} className="shrink-0" />
+                    </span>
+                  </>
                 )}
-                {t('Submit Review')}
               </Button>
             </div>
           </div>

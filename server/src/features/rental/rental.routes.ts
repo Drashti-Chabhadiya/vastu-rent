@@ -20,6 +20,14 @@ export async function rentalRoutes(fastify: FastifyInstance) {
   fastify.get('/orders', rentalController.getOrders)
   fastify.get('/all', rentalController.getAllRentals)
   fastify.patch('/:id/status', rentalController.updateStatus)
-  fastify.patch('/:id/verify-pickup', rentalController.verifyPickupOTP)
-  fastify.patch('/:id/verify-return', rentalController.verifyReturnOTP)
+  fastify.patch(
+    '/:id/verify-pickup',
+    { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } },
+    rentalController.verifyPickupOTP,
+  )
+  fastify.patch(
+    '/:id/verify-return',
+    { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } },
+    rentalController.verifyReturnOTP,
+  )
 }
