@@ -25,6 +25,7 @@ import { authClient } from '#/lib/auth/auth-client'
 import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 import { useSettings, useSubmitContactMessage } from '#/hook'
 import { useTranslation } from '#/context/TranslationContext'
+import techGadgets from '../../../../public/images/tech-gadgets.png'
 
 export function ContactPage() {
   const { t } = useTranslation()
@@ -177,7 +178,7 @@ export function ContactPage() {
             className="md:col-span-5 relative min-h-[280px] sm:min-h-[380px] md:min-h-full overflow-hidden"
           >
             <img
-              src="/images/tech-gadgets.png"
+              src={techGadgets}
               alt="Tech gadgets and laptops"
               className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-[4000ms] hover:scale-105"
             />

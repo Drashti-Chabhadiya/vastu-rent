@@ -17,6 +17,7 @@ import { useTranslation } from '#/context/TranslationContext'
 import { cn } from '#/lib/utils'
 import { Link } from '@tanstack/react-router'
 import { MobileBackHeader } from '#/components/common/MobileBackHeader'
+import campingGear from '../../../../public/images/camping-gear.jpg'
 
 export function PricingPage() {
   const { t, formatNumber } = useTranslation()
@@ -159,7 +160,7 @@ export function PricingPage() {
             }}
           >
             <img
-              src="/images/camping-gear.jpg"
+              src={campingGear}
               alt="Camping gear and outdoor items for rent"
               className="w-full h-full object-cover object-center"
             />

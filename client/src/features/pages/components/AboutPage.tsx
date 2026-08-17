@@ -30,6 +30,8 @@ import {
   Globe,
   Quote,
 } from 'lucide-react'
+import aboutHero from '../../../../public/images/about_hero_generated.png'
+import aboutMission from '../../../../public/images/about_mission_generated.png'
 
 export const AboutPage = () => {
   const [isStoryOpen, setIsStoryOpen] = useState(false)
@@ -261,7 +263,7 @@ export const AboutPage = () => {
           {/* Right Image (Arch Mask) */}
           <div className="relative w-full aspect-square lg:aspect-[4/3] rounded-3xl lg:rounded-tl-[120px] lg:rounded-bl-[40px] lg:rounded-tr-[40px] lg:rounded-br-[120px] overflow-hidden shadow-2xl">
             <img
-              src="/images/about_hero_generated.png"
+              src={aboutHero}
               alt="Cozy interior with plants"
               className="w-full h-full object-cover"
             />
@@ -399,7 +401,7 @@ export const AboutPage = () => {
             <div className="flex flex-col">
               <div className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden aspect-[4/3] shadow-xl">
                 <img
-                  src="/images/about_mission_generated.png"
+                  src={aboutMission}
                   alt="Sustainable renting"
                   className="w-full h-full object-cover"
                 />
