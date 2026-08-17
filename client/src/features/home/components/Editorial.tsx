@@ -3,6 +3,7 @@ import type { Variants } from 'motion/react'
 import { CreditCard, Leaf, ShieldCheck, Star } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 // import featureKitchen from '../../../../public/assets/feature-kitchen.jpg'
+import livingRoom from '../../../../public/images/living-room.png'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -30,7 +31,7 @@ export function Editorial() {
           className="relative overflow-hidden rounded-2xl lg:col-span-7"
         >
           <img
-            src="/images/living-room.png"
+            src={livingRoom}
             alt="A beautiful living room setup"
             width={1024}
             height={800}
