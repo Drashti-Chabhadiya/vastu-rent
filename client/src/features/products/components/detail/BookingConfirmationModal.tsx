@@ -173,7 +173,7 @@ export const BookingConfirmationModal = ({
             {/* Bottom Actions Buttons */}
             <div className="flex flex-col gap-3 pb-4">
               <Link to="/account/bookings" className="w-full" onClick={onClose}>
-                <Button className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center cursor-pointer transition-all active:scale-[0.98]">
+                <Button className="w-full h-11 rounded-full bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center cursor-pointer transition-all active:scale-[0.98]">
                   View booking
                 </Button>
               </Link>

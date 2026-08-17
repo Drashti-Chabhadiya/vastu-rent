@@ -1,4 +1,5 @@
 import { Logo } from '#/components/layout'
+import { Link } from '@tanstack/react-router'
 import { ShieldCheck, CreditCard, Headphones } from 'lucide-react'
 
 export function AuthLeftSection() {
@@ -16,7 +17,9 @@ export function AuthLeftSection() {
 
       <div className="relative z-10 flex w-full flex-col">
         {/* Logo */}
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
 
         {/* Hero */}
         <div className="mt-12">
@@ -33,10 +36,10 @@ export function AuthLeftSection() {
 
         {/* Visual stage (Single High-Fidelity Product Card) */}
         <div className="relative mt-8 h-[460px] w-full flex items-center justify-center">
-          <div className="w-[340px] bg-white rounded-3xl overflow-hidden shadow-lift border border-border/20 transition-transform duration-500 hover:scale-[1.02] cursor-pointer">
+          <div className="w-[340px] bg-white dark:bg-card rounded-3xl overflow-hidden shadow-lift border border-border/20 transition-transform duration-500 hover:scale-[1.02] cursor-pointer">
             {/* Product Image Section */}
-            <div className="h-[210px] bg-slate-50 flex items-center justify-center relative p-6">
-              <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold text-emerald-700 tracking-wider uppercase">
+            <div className="h-[210px] bg-slate-50 dark:bg-muted/30 flex items-center justify-center relative p-6">
+              <span className="absolute top-4 left-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold text-emerald-700 tracking-wider uppercase">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 AVAILABLE NEARBY
               </span>
@@ -60,7 +63,7 @@ export function AuthLeftSection() {
               </div>
 
               <div>
-                <h3 className="font-display text-[20px] font-semibold text-brand-ink leading-tight">
+                <h3 className="font-display text-[20px] font-semibold text-brand-ink dark:text-foreground leading-tight">
                   Stockholm Lounge Chair
                 </h3>
                 <p className="text-[11px] text-muted-foreground/80 mt-1">
@@ -75,7 +78,7 @@ export function AuthLeftSection() {
                   <div className="text-[10px] text-muted-foreground/80 font-medium">
                     Weekly Rent
                   </div>
-                  <div className="font-display text-[18px] font-bold text-brand-ink mt-0.5">
+                  <div className="font-display text-[18px] font-bold text-brand-ink dark:text-foreground mt-0.5">
                     ₹800
                     <span className="text-xs text-muted-foreground/80 font-normal">
                       /wk
@@ -83,7 +86,7 @@ export function AuthLeftSection() {
                   </div>
                 </div>
 
-                <button className="bg-primary text-white text-xs px-5 py-2.5 rounded-full font-bold hover:bg-primary-hover shadow-soft hover:shadow-lift transition-all active:scale-95 duration-200">
+                <button className="bg-primary text-primary-foreground text-xs px-5 py-2.5 rounded-full font-bold hover:bg-primary/90 shadow-soft hover:shadow-lift transition-all active:scale-95 duration-200">
                   Reserve Item
                 </button>
               </div>

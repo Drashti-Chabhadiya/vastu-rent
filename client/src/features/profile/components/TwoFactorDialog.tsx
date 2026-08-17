@@ -138,7 +138,7 @@ export function TwoFactorDialog({
               ) : (
                 <Button
                   onClick={handleEnable2fa}
-                  className="w-full rounded-xl h-11 font-bold bg-primary hover:bg-primary-hover text-primary-foreground flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 cursor-pointer border-none"
+                  className="w-full rounded-xl h-11 font-bold bg-primary hover:bg-primary/95 text-primary-foreground flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 cursor-pointer border-none"
                 >
                   Set Up 2FA App
                 </Button>
@@ -235,7 +235,7 @@ export function TwoFactorDialog({
                 type="button"
                 disabled={isVerifying2fa}
                 onClick={handleVerify2fa}
-                className="flex-1 rounded-xl h-11 font-bold bg-primary hover:bg-primary-hover text-primary-foreground flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 cursor-pointer border-none"
+                className="flex-1 rounded-xl h-11 font-bold bg-primary hover:bg-primary/95 text-primary-foreground flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 cursor-pointer border-none"
               >
                 {isVerifying2fa ? <Loader variant="white" size={14} /> : null}
                 Verify & Activate
@@ -286,7 +286,7 @@ export function TwoFactorDialog({
               <Button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="flex-1 rounded-xl h-11 font-bold bg-primary hover:bg-primary-hover text-primary-foreground cursor-pointer shadow-lg shadow-primary/10 border-none"
+                className="flex-1 rounded-xl h-11 font-bold bg-primary hover:bg-primary/95 text-primary-foreground cursor-pointer shadow-lg shadow-primary/10 border-none"
               >
                 Done
               </Button>

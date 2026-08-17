@@ -6,7 +6,9 @@ import {
   CheckCircle2,
   ArrowRight,
   Loader2,
-  IndianRupee,
+  Eye,
+  MessageSquare,
+  CreditCard,
 } from 'lucide-react'
 import { Badge } from '#/components/ui/badge'
 import { Button } from '#/components/ui/button'
@@ -34,9 +36,13 @@ export const ProductHeaderSection = ({
           <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight">
             {product.title || product.name}
           </h1>
-          <Badge className="bg-primary-soft text-primary-hover border border-primary-border px-2.5 py-1 rounded-md flex items-center gap-1 font-bold text-[10px] uppercase shrink-0">
-            <CheckCircle2 size={12} /> {t('Verified')}
-          </Badge>
+
+          {product?.user?.emailVerified !== false && (
+            <Badge className="bg-muted text-primary hover:bg-primary-soft/90 border-0 gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shrink-0">
+              <CheckCircle2 size={11} strokeWidth={2.5} />
+              {t('Verified')}
+            </Badge>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
@@ -49,6 +55,13 @@ export const ProductHeaderSection = ({
           <span className="text-muted-foreground/85 text-sm font-medium">
             ({formatDigits(product.reviewsCount || '0')} {t('Reviews')})
           </span>
+          <div className="w-1 h-1 rounded-full bg-border" />
+          <div className="flex items-center gap-1 text-muted-foreground/85 text-sm font-medium">
+            <Eye className="w-4 h-4" />
+            <span>
+              {formatDigits(product.views || '0')} {t('Views')}
+            </span>
+          </div>
         </div>
 
         <div className="flex items-baseline gap-1.5 pt-1">
@@ -219,9 +232,8 @@ export const ProductBookingSection = ({
 
       {/* Payment Method Selection */}
       <div className="space-y-3">
-        <div className="text-[13px] font-bold text-foreground flex items-center gap-2">
-          <IndianRupee size={14} className="text-primary" />
-          {t('Payment Method')}
+        <div className="text-[11px] font-extrabold text-muted-foreground/80 uppercase tracking-wider">
+          {t('PAYMENT METHOD')}
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Button
@@ -229,10 +241,10 @@ export const ProductBookingSection = ({
             variant="outline"
             onClick={() => setPaymentMethod('online')}
             className={cn(
-              'relative p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98] overflow-hidden',
+              'relative p-4 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-2 hover:bg-transparent active:scale-[0.98] cursor-pointer overflow-hidden',
               paymentMethod === 'online'
-                ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
-                : 'border-border/30 bg-muted-light text-muted-foreground/85 hover:border-border hover:text-muted-foreground/85 hover:bg-muted-light',
+                ? 'border-primary bg-primary/5 text-primary hover:text-primary hover:bg-primary/10'
+                : 'border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground',
             )}
           >
             {paymentMethod === 'online' && (
@@ -240,11 +252,11 @@ export const ProductBookingSection = ({
                 <CheckCircle2 className="w-4 h-4 text-primary" />
               </div>
             )}
-            <ShieldCheck
+            <CreditCard
               size={18}
               className={paymentMethod === 'online' ? 'text-primary' : ''}
             />
-            <span className="text-[11px] font-black uppercase tracking-wider">
+            <span className="text-[12px] font-bold tracking-wider">
               {t('Online Pay')}
             </span>
           </Button>
@@ -253,10 +265,10 @@ export const ProductBookingSection = ({
             variant="outline"
             onClick={() => setPaymentMethod('cash')}
             className={cn(
-              'relative p-3 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-1 hover:bg-transparent active:scale-[0.98] overflow-hidden',
+              'relative p-4 h-auto rounded-xl border-2 transition-all flex flex-col items-center gap-2 hover:bg-transparent active:scale-[0.98] cursor-pointer overflow-hidden',
               paymentMethod === 'cash'
-                ? 'border-brand bg-primary/5 text-primary hover:text-primary hover:bg-primary/5'
-                : 'border-border/30 bg-muted-light text-muted-foreground/85 hover:border-border hover:text-muted-foreground/85 hover:bg-muted-light',
+                ? 'border-primary bg-primary/5 text-primary hover:text-primary hover:bg-primary/10'
+                : 'border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground',
             )}
           >
             {paymentMethod === 'cash' && (
@@ -264,12 +276,12 @@ export const ProductBookingSection = ({
                 <CheckCircle2 className="w-4 h-4 text-primary" />
               </div>
             )}
-            <MessageCircle
+            <MessageSquare
               size={18}
               className={paymentMethod === 'cash' ? 'text-primary' : ''}
             />
-            <span className="text-[11px] font-black uppercase tracking-wider">
-              {t('Cash on Pickup')}
+            <span className="text-[12px] font-bold tracking-wider">
+              {t('Cash on pickup')}
             </span>
           </Button>
         </div>

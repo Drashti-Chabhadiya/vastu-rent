@@ -168,7 +168,7 @@ export function SocialAuth() {
       </Button>
 
       {/* Apple */}
-      <Button
+      {/* <Button
         type="button"
         variant="outline"
         className="w-11 h-11 rounded-full border border-border/80 p-0 flex items-center justify-center cursor-pointer hover:bg-muted-light/25 active:scale-95 transition-all shadow-none"
@@ -187,10 +187,10 @@ export function SocialAuth() {
             fill="#000000"
           />
         </svg>
-      </Button>
+      </Button> */}
 
       {/* Facebook */}
-      <Button
+      {/* <Button
         type="button"
         variant="outline"
         className="w-11 h-11 rounded-full border border-border/80 p-0 flex items-center justify-center cursor-pointer hover:bg-muted-light/25 active:scale-95 transition-all shadow-none"
@@ -209,7 +209,7 @@ export function SocialAuth() {
             fill="#1877F2"
           />
         </svg>
-      </Button>
+      </Button> */}
     </div>
   )
 }

@@ -27,7 +27,7 @@ export function Editorial() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: EASE }}
-          className="relative overflow-hidden rounded-[2.25rem] lg:col-span-7"
+          className="relative overflow-hidden rounded-2xl lg:col-span-7"
         >
           <img
             src="/images/living-room.png"

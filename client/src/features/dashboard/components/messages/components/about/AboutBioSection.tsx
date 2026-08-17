@@ -62,7 +62,7 @@ export function AboutBioSection({ otherParticipant }: AboutBioSectionProps) {
               <Button
                 size="sm"
                 onClick={handleSaveAbout}
-                className="h-6 px-2.5 text-[9px] font-black text-white bg-primary hover:bg-primary-hover rounded-md shadow-sm cursor-pointer"
+                className="h-6 px-2.5 text-[9px] font-black text-white bg-primary hover:bg-primary/95 rounded-md shadow-sm cursor-pointer"
               >
                 Save
               </Button>

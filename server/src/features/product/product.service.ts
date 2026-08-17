@@ -103,7 +103,7 @@ export class ProductService {
               p.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) /
               p.reviews.length
             ).toFixed(1)
-          : '5.0',
+          : '0.0',
     }))
 
     await cacheSet(cacheKey, result, CACHE_TTLS.PRODUCTS) // cache list for 1 hour
@@ -210,7 +210,7 @@ export class ProductService {
     const userRating =
       userReviewCount > 0
         ? (userTotalRating / userReviewCount).toFixed(1)
-        : '5.0'
+        : '0.0'
 
     const sellerAddress = (product.user as any).addresses?.[0]
 
@@ -225,7 +225,7 @@ export class ProductService {
                 0,
               ) / product.reviews.length
             ).toFixed(1)
-          : '5.0',
+          : '0.0',
       user: {
         id: product.user.id,
         name: product.user.name,
@@ -233,6 +233,7 @@ export class ProductService {
         createdAt: product.user.createdAt,
         rating: userRating,
         listingsCount: product.user._count.products,
+        emailVerified: product.user.emailVerified,
         showProfile: product.user.showProfile,
         instagramUrl: product.user.instagramUrl,
         facebookUrl: product.user.facebookUrl,

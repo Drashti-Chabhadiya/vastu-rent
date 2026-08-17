@@ -94,7 +94,7 @@ export function BecomeListerPage() {
             className="max-w-2xl"
           >
             <motion.div variants={fadeUp}>
-              <Badge className="mb-6 bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-1.5 rounded-full font-bold text-sm">
+              <Badge className="mb-6 bg-primary hover:bg-primary/95 text-primary-foreground px-4 py-1.5 rounded-full font-bold text-sm">
                 {t('JOIN 5,000+ LISTERS')}
               </Badge>
             </motion.div>

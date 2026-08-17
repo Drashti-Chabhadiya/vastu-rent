@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { cn } from '#/lib/utils'
 import { Mail, Calendar, Camera, Phone, Pencil, Sparkles } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
+import { UserAvatar } from '#/components/common/UserAvatar'
 
 interface UserProfileSummaryCardProps {
   session: any
@@ -29,29 +30,18 @@ export function UserProfileSummaryCard({
   joinDate,
 }: UserProfileSummaryCardProps) {
   const { t } = useTranslation()
-  const [imageError, setImageError] = useState(false)
 
   return (
     <div className="w-full lg:border-r lg:border-border/30 lg:pr-8 border-b lg:border-b-0 border-border/30 pb-6 lg:pb-0 flex flex-col items-center text-center">
       {/* Profile Photo Avatar */}
       <div className="relative group shrink-0">
-        <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full bg-primary/5 border border-border/30 shadow-sm flex items-center justify-center text-3xl sm:text-4xl font-extrabold text-primary overflow-hidden relative">
-          {imagePreview ? (
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-full h-full object-cover animate-fade-in"
-            />
-          ) : session?.user?.image && !imageError ? (
-            <img
-              src={session.user.image}
-              alt="Profile"
-              className="w-full h-full object-cover"
-              onError={() => setImageError(true)}
-            />
-          ) : (
-            session?.user?.name?.charAt(0).toUpperCase() || 'U'
-          )}
+        <div className="relative group shrink-0 rounded-full overflow-hidden">
+          <UserAvatar
+            image={imagePreview || session?.user?.image || null}
+            name={session?.user?.name || 'User'}
+            avatarClassName="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 border border-border/30 shadow-sm"
+            fallbackClassName="text-3xl sm:text-4xl"
+          />
           {isEditing && (
             <div
               onClick={handleImageClick}

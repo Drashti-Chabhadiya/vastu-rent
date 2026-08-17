@@ -16,13 +16,13 @@ import {
   Star,
   MapPin,
   Calendar,
-  Check,
   MessageSquare,
   Share2,
   Package,
   ChevronDown,
   Clock,
   BadgeCheck,
+  CheckCircle2,
 } from 'lucide-react'
 
 import { UserAvatar } from '#/features/dashboard/components/messages/components/UserAvatar'
@@ -110,9 +110,7 @@ export function UserProfilePage() {
   }
 
   const firstName = profile.name ? profile.name.split(' ')[0] : 'User'
-  const userLocation = profile.location
-    ? profile.location.split(',')[0]
-    : 'Surat'
+  const userLocation = `${profile.address.city}, ${profile.address.state}, ${profile.address.country}`
 
   return (
     <div className="min-h-full bg-background md:bg-surface pt-0 md:pt-20 md:pb-16 relative w-full font-sans">
@@ -163,7 +161,7 @@ export function UserProfilePage() {
                   size="lg"
                   className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36"
                   avatarClassName="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 border-4 border-card shadow-md object-cover"
-                  fallbackClassName="bg-primary text-primary-foreground text-3xl md:text-5xl font-black"
+                  fallbackClassName="text-3xl md:text-5xl font-black"
                 />
                 {(profile.isOnline || profile.isOnline === undefined) && (
                   <span className="absolute bottom-1 right-1 md:bottom-2 md:right-2 w-4.5 h-4.5 md:w-5 md:h-5 rounded-full bg-brand-green-mid border-2 border-card shadow-xs z-10" />
@@ -184,9 +182,13 @@ export function UserProfilePage() {
                 {/* Badges Row */}
                 <div className="flex flex-wrap items-center gap-2 mt-1.5 md:mt-2">
                   {profile.emailVerified !== false && (
-                    <Badge className="bg-primary-soft hover:bg-primary-soft text-primary border-0 gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shrink-0">
-                      <Check size={11} strokeWidth={3} />
-                      Verified
+                    // <Badge className="bg-primary-soft hover:bg-primary-soft text-primary border-0 gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shrink-0">
+                    //   <CheckCircle2 size={11} strokeWidth={2.5} />
+                    //   Verified
+                    // </Badge>
+                    <Badge className="bg-muted text-primary hover:bg-primary-soft/90 border-0 gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shrink-0">
+                      <CheckCircle2 size={11} strokeWidth={2.5} />
+                      {t('Verified')}
                     </Badge>
                   )}
                 </div>
@@ -197,11 +199,11 @@ export function UserProfilePage() {
                   <span className="font-extrabold text-foreground">
                     {profile.averageRating
                       ? Number(profile.averageRating).toFixed(1)
-                      : '5.0'}
+                      : '0.0'}
                   </span>
-                  <span>({profile.reviewCount || 25} reviews)</span>
+                  <span>({profile.reviewCount || 0} reviews)</span>
                   <span className="text-muted-foreground/60">•</span>
-                  <span>{userLocation}, Gujarat, India</span>
+                  <span>{userLocation}</span>
                 </div>
               </div>
             </div>

@@ -167,7 +167,7 @@ export class UserService {
     })
 
     const averageRating =
-      reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : '5.0'
+      reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : '0.0'
 
     const mainAddress = user.addresses?.[0]
 

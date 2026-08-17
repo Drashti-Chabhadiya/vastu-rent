@@ -325,7 +325,7 @@ export function NavMobileMenu({
             </div>
           ) : (
             <Link to="/login" onClick={onClose} className="block">
-              <Button className="w-full h-10 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs flex items-center justify-center gap-2">
+              <Button className="w-full h-10 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2">
                 <User size={14} /> {t('Sign In')}
               </Button>
             </Link>

@@ -6,7 +6,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { Mail, Lock, EyeOff, User, Eye } from 'lucide-react'
+import { Mail, Lock, EyeOff, User, Eye, ArrowRight } from 'lucide-react'
 import { authClient } from '#/lib/auth/auth-client'
 import { getDeviceFingerprint } from '#/utils/fingerprint'
 import { SocialAuth } from './social-auth'
@@ -357,23 +357,16 @@ export function SignupForm() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-white font-black text-xs shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-3 active:scale-[0.98] transition-all"
+              className="group w-full h-11 rounded-full bg-primary hover:bg-primary/95 text-white font-black text-xs shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-3 active:scale-[0.98] transition-all"
             >
               {isSubmitting ? (
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   <span>{t('Create Account')}</span>
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#fff"
-                    strokeWidth={3}
-                  >
-                    <path d="M9 6l6 6-6 6" />
-                  </svg>
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
                 </>
               )}
             </Button>

@@ -7,6 +7,7 @@ import { useListingDraftStore } from '#/store/useListingDraftStore'
 // Sub-components
 import { ListingsTable } from './ListingsTable'
 import { ListingDialog } from './ListingDialog'
+import { checkProfileCompleteness } from '#/lib/profile-utils'
 import { ListingsFilters } from './ListingsFilters'
 import { ReusableAlertDialog } from '#/components/common/ReusableAlertDialog'
 import { Textarea } from '#/components/ui/textarea'
@@ -199,29 +200,7 @@ export const ListingsManagement = ({
     </div>
   )
 
-  // Profile Completeness Check
   const u = currentUser as any
-  const mainAddr = u?.address || u?.addresses?.[0]
-  const fields = [
-    { key: 'name', value: u?.name },
-    { key: 'email', value: u?.email },
-    { key: 'image', value: u?.image },
-    { key: 'phone', value: u?.phone },
-    { key: 'gender', value: u?.gender },
-    { key: 'language', value: u?.language },
-    { key: 'dob', value: u?.dob },
-    { key: 'addressLine1', value: mainAddr?.addressLine1 },
-    { key: 'street', value: mainAddr?.street },
-    { key: 'city', value: mainAddr?.city },
-    { key: 'state', value: mainAddr?.state },
-    { key: 'pincode', value: mainAddr?.pincode },
-  ]
-  const filledFields = fields.filter(
-    (f) => f.value && String(f.value).trim() !== '',
-  )
-  const completenessPercent = Math.round(
-    (filledFields.length / fields.length) * 100,
-  )
 
   const handleCreateListingClick = () => {
     if (u?.role === 'admin') {
@@ -229,17 +208,16 @@ export const ListingsManagement = ({
       return
     }
 
-    if (
-      !mainAddr?.addressLine1 ||
-      !mainAddr?.city ||
-      completenessPercent < 80
-    ) {
+    const { hasPersonal, isProfileComplete } = checkProfileCompleteness(u)
+
+    if (!isProfileComplete) {
+      const hash = !hasPersonal ? '#personal' : '#address'
       toast.error(
         t('Please complete your profile first before creating a listing.'),
         { duration: 4000 },
       )
       setTimeout(() => {
-        window.location.href = '/account?completeProfile=true#address'
+        window.location.href = `/account?completeProfile=true${hash}`
       }, 400)
       return
     }

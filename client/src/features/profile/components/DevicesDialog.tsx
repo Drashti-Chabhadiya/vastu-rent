@@ -274,7 +274,7 @@ export function DevicesDialog({ open, onOpenChange }: DevicesDialogProps) {
         <div className="pt-3 border-t border-border/30 flex justify-end">
           <Button
             onClick={() => onOpenChange(false)}
-            className="rounded-xl h-10 px-6 font-bold bg-primary hover:bg-primary-hover text-primary-foreground border-none cursor-pointer"
+            className="rounded-xl h-10 px-6 font-bold bg-primary hover:bg-primary/95 text-primary-foreground border-none cursor-pointer"
           >
             Done
           </Button>

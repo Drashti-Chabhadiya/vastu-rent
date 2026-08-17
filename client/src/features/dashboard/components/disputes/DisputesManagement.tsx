@@ -286,7 +286,7 @@ export const DisputesManagement = () => {
                       setResolveType('resolved')
                       setIsResolveModalOpen(true)
                     }}
-                    className="w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer"
+                    className="w-full h-12 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground font-black text-[11px] flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer"
                   >
                     <CheckCircle2 size={16} /> {t('Resolve Dispute')}
                   </Button>
@@ -366,7 +366,7 @@ export const DisputesManagement = () => {
               disabled={resolveMutation.isPending}
               className={`w-full text-primary-foreground rounded-xl h-12 font-bold mt-2 active:scale-[0.98] transition-all cursor-pointer border-none ${
                 resolveType === 'resolved'
-                  ? 'bg-primary hover:bg-primary-hover'
+                  ? 'bg-primary hover:bg-primary/95'
                   : 'bg-destructive/90 hover:bg-destructive/90'
               }`}
             >

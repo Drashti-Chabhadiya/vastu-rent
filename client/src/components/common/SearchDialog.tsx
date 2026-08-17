@@ -282,7 +282,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                     onOpenChange(false)
                     setSearchQuery('')
                   }}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-3 font-bold transition-all active:scale-95 h-11 text-xs cursor-pointer shadow-sm"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground px-4 py-3 font-bold transition-all active:scale-95 h-11 text-xs cursor-pointer shadow-sm"
                 >
                   {t('View All Results ({count})', {
                     count: formatDigits(filteredProducts.length),

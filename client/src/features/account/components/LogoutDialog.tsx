@@ -39,7 +39,7 @@ export function LogoutDialog({
         <Button
           onClick={onConfirm}
           disabled={loading}
-          className="w-full h-11 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-sm font-bold mb-3 transition-colors cursor-pointer disabled:opacity-60 flex items-center justify-center gap-2"
+          className="w-full h-11 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground text-sm font-bold mb-3 transition-colors cursor-pointer disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>

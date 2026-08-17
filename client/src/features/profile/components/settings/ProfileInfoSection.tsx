@@ -340,7 +340,7 @@ export function ProfileInfoSection({
           'px-8',
           'rounded-xl',
           'bg-primary',
-          'hover:bg-primary-hover',
+          'hover:bg-primary/95',
           'text-primary-foreground',
           'text-sm',
           'font-bold',

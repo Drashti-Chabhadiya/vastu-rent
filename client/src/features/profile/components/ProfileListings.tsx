@@ -35,6 +35,7 @@ import { useListingDraftStore } from '#/store/useListingDraftStore'
 import { ListingCard } from './ListingCard'
 import { ListingsStatsRow } from './ListingsStatsRow'
 import { ProfileListingsSkeleton } from '#/components/skeletons'
+import { checkProfileCompleteness } from '#/lib/profile-utils'
 import { Link } from '@tanstack/react-router'
 
 function EmptyListingsState({
@@ -239,16 +240,18 @@ export function ProfileListings() {
 
   const handleAddListing = () => {
     const u = session?.user
-    const mainAddr = u?.address || u?.addresses?.[0]
-    const hasAddress = Boolean(mainAddr?.addressLine1 && mainAddr?.city)
-    if (u && (!u.name || !u.phone || !hasAddress)) {
+    const { hasPersonal, isProfileComplete } = checkProfileCompleteness(u)
+    if (u && !isProfileComplete) {
+      const hash = !hasPersonal ? '#personal' : '#address'
       toast.error(
         t(
           'Please complete your profile and rental address first before creating a listing.',
         ),
         { duration: 4000 },
       )
-      window.location.href = '/account?completeProfile=true#address'
+      setTimeout(() => {
+        window.location.href = `/account?completeProfile=true${hash}`
+      }, 400)
       return
     }
     setIsAddOpen(true)
@@ -267,7 +270,7 @@ export function ProfileListings() {
       {showMobileOnboarding && (
         <div className="block md:hidden space-y-6 select-none">
           {/* Onboarding Hero Image Container */}
-          <div className="relative h-64 w-full rounded-[24px] overflow-hidden shadow-xs border border-border/10 bg-muted-light">
+          <div className="relative h-64 w-full rounded-2xl overflow-hidden shadow-xs border border-border/10 bg-muted-light">
             <img
               src="/assets/product-placeholder.png"
               alt="Become a Host"
@@ -391,7 +394,7 @@ export function ProfileListings() {
           <Button
             onClick={handleAddListing}
             size="icon"
-            className="w-9 h-9 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground flex items-center justify-center cursor-pointer shadow-xs shrink-0"
+            className="w-9 h-9 rounded-full bg-primary hover:bg-primary/95 text-primary-foreground flex items-center justify-center cursor-pointer shadow-xs shrink-0"
           >
             <Plus size={16} strokeWidth={3} />
           </Button>

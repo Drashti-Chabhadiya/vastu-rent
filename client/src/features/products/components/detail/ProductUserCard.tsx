@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Button } from '#/components/ui/button'
 import { Badge } from '#/components/ui/badge'
+import { UserAvatar } from '#/components/common/UserAvatar'
 import { useCreateConversation } from '#/hook'
 import { toast } from 'sonner'
 import { useState } from 'react'
@@ -64,19 +65,12 @@ export const ProductUserCard = ({ user, session }: ProductUserCardProps) => {
     <div className="bg-card rounded-2xl p-4 lg:p-4 xl:p-6 border border-border/30 shadow-sm space-y-5">
       <h3 className="text-base font-bold text-foreground">{t('Listed by')}</h3>
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full bg-muted/50 overflow-hidden shrink-0">
-          {user.image ? (
-            <img
-              src={user.image}
-              alt={user.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-primary text-primary-foreground font-bold text-lg">
-              {user.name?.[0] || 'U'}
-            </div>
-          )}
-        </div>
+        <UserAvatar
+          image={user.image}
+          name={user.name}
+          size="lg"
+          fallbackClassName="text-lg"
+        />
         <div>
           <p className="font-bold text-foreground text-sm">
             {user.name || t('Verified Lister')}
@@ -89,9 +83,12 @@ export const ProductUserCard = ({ user, session }: ProductUserCardProps) => {
             <span className="text-xs text-muted-foreground/85">
               ({user.listingsCount || 0} {t('Listings')})
             </span>
-            <Badge className="bg-primary-soft text-primary-hover border-none px-1 py-0 rounded flex items-center gap-0.5 font-bold text-[8px] uppercase ml-1">
-              <CheckCircle2 size={8} /> {t('Verified')}
-            </Badge>
+            {user.emailVerified !== false && (
+              <Badge className="bg-muted text-primary hover:bg-primary-soft/90 border-0 gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold shrink-0">
+                <CheckCircle2 size={9} strokeWidth={2.5} />
+                {t('Verified')}
+              </Badge>
+            )}
           </div>
         </div>
       </div>
@@ -104,7 +101,7 @@ export const ProductUserCard = ({ user, session }: ProductUserCardProps) => {
                 month: 'long',
                 year: 'numeric',
               })
-            : 'May 2022'}
+            : '-'}
         </div>
         <div className="flex items-center gap-2 text-muted-foreground/85 text-xs">
           <MessageCircle size={14} className="shrink-0" />
