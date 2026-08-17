@@ -7,27 +7,29 @@ export async function rentalRoutes(fastify: FastifyInstance) {
   fastify.get('/product/:productId', rentalController.getProductRentals)
 
   // Protected Routes (Session check)
-  fastify.addHook('preHandler', async (request, reply) => {
-    const session = await auth.api.getSession({
-      headers: request.headers as any,
+  fastify.register(async (protectedFastify) => {
+    protectedFastify.addHook('preHandler', async (request, reply) => {
+      const session = await auth.api.getSession({
+        headers: request.headers as any,
+      })
+      if (!session) return reply.status(401).send({ message: 'Unauthorized' })
+      ;(request as any).user = session.user
     })
-    if (!session) return reply.status(401).send({ message: 'Unauthorized' })
-    ;(request as any).user = session.user
-  })
 
-  fastify.post('/', rentalController.createRental)
-  fastify.get('/my', rentalController.getMyRentals)
-  fastify.get('/orders', rentalController.getOrders)
-  fastify.get('/all', rentalController.getAllRentals)
-  fastify.patch('/:id/status', rentalController.updateStatus)
-  fastify.patch(
-    '/:id/verify-pickup',
-    { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } },
-    rentalController.verifyPickupOTP,
-  )
-  fastify.patch(
-    '/:id/verify-return',
-    { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } },
-    rentalController.verifyReturnOTP,
-  )
+    protectedFastify.post('/', rentalController.createRental)
+    protectedFastify.get('/my', rentalController.getMyRentals)
+    protectedFastify.get('/orders', rentalController.getOrders)
+    protectedFastify.get('/all', rentalController.getAllRentals)
+    protectedFastify.patch('/:id/status', rentalController.updateStatus)
+    protectedFastify.patch(
+      '/:id/verify-pickup',
+      { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } },
+      rentalController.verifyPickupOTP,
+    )
+    protectedFastify.patch(
+      '/:id/verify-return',
+      { config: { rateLimit: { max: 5, timeWindow: '1 minute' } } },
+      rentalController.verifyReturnOTP,
+    )
+  })
 }
