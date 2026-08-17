@@ -14,6 +14,10 @@ export default [
       '@typescript-eslint/no-unnecessary-condition': 'off',
       '@typescript-eslint/no-unnecessary-optional-chain': 'off',
       'pnpm/json-enforce-catalog': 'off',
+      'max-lines': [
+        'warn',
+        { max: 700, skipBlankLines: true, skipComments: true },
+      ],
     },
   },
   {

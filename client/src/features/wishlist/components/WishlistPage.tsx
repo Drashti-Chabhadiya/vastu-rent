@@ -1,4 +1,4 @@
-import { useWishlist, useWishlistProducts } from '#/hook'
+import { useWishlist, useWishlistProducts, useIsMobile } from '#/hook'
 import { ProductCardSkeleton } from '#/components/skeletons'
 import { useState, useMemo } from 'react'
 import { motion } from 'motion/react'
@@ -14,6 +14,7 @@ import { MobileBackHeader } from '#/components/common/MobileBackHeader'
 
 export function WishlistPage() {
   const { t, formatNumber } = useTranslation()
+  const isMobile = useIsMobile()
   const { wishlist, dislike, isLoading: wishlistLoading } = useWishlist()
   const {
     data: products,
@@ -65,7 +66,7 @@ export function WishlistPage() {
   const isPageLoading = isLoading || wishlistLoading
 
   return (
-    <div className="min-h-full bg-background pt-6 md:pt-24 pb-16 font-sans">
+    <div className="min-h-full bg-background pt-6 pb-16 font-sans">
       <motion.div
         variants={stagger}
         initial="hidden"
@@ -96,7 +97,10 @@ export function WishlistPage() {
         {isPageLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <ProductCardSkeleton key={i} />
+              <ProductCardSkeleton
+                key={i}
+                variant={isMobile ? 'mini' : 'default'}
+              />
             ))}
           </div>
         ) : filteredProducts.length > 0 ? (

@@ -14,7 +14,11 @@ export async function payoutRoutes(fastify: FastifyInstance) {
 
   // User Routes
   fastify.get('/dashboard', payoutController.getEarningsDashboard)
-  fastify.post('/request', payoutController.createPayoutRequest)
+  fastify.post(
+    '/request',
+    { config: { rateLimit: { max: 3, timeWindow: '5 minutes' } } },
+    payoutController.createPayoutRequest,
+  )
 
   // Admin Routes
   fastify.get('/requests', payoutController.getAllPayoutRequests)
