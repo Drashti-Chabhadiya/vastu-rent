@@ -475,7 +475,7 @@ export function BookingDetailsDialog({
               'h-11',
               'rounded-2xl',
               'bg-primary',
-              'hover:bg-primary-hover',
+              'hover:bg-primary/95',
               'text-primary-foreground',
               'font-extrabold',
               'text-xs',

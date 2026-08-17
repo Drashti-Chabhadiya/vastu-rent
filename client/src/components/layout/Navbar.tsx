@@ -230,6 +230,7 @@ export function Navbar() {
                 <Link to="/login" className={cn('hidden', 'sm:block')}>
                   <Button
                     className={cn(
+                      'group',
                       'gap-2',
                       'rounded-full',
                       'bg-primary',
@@ -240,12 +241,14 @@ export function Navbar() {
                       'font-semibold',
                       'text-primary-foreground',
                       'transition-all',
-                      'hover:bg-primary-hover',
+                      'hover:bg-primary/95',
                       'active:scale-95',
                     )}
                   >
                     {t('Sign in')}
-                    <ArrowUpRight className={cn('h-4', 'w-4')} />
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                      <ArrowUpRight className="h-3 w-3" />
+                    </span>
                   </Button>
                 </Link>
 
@@ -259,7 +262,7 @@ export function Navbar() {
                       'rounded-full',
                       'bg-primary',
                       'text-primary-foreground',
-                      'hover:bg-primary-hover',
+                      'hover:bg-primary/95',
                       'active:scale-95',
                       'transition-all',
                     )}

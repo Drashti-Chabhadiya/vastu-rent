@@ -66,7 +66,7 @@ export const MobileBookingDrawer = ({
         </div>
         <Button
           onClick={() => setIsBookingOpen(true)}
-          className="h-10 px-5 bg-primary hover:bg-primary-hover text-white text-xs font-black rounded-full flex items-center gap-1 shadow-md border-none cursor-pointer"
+          className="h-10 px-5 bg-primary hover:bg-primary/95 text-white text-xs font-black rounded-full flex items-center gap-1 shadow-md border-none cursor-pointer"
         >
           {t('Check availability')} &nbsp;&rsaquo;
         </Button>

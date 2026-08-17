@@ -47,7 +47,7 @@ const variantConfig = {
     iconPing: 'bg-primary/10',
     iconColor: 'text-primary',
     confirmBtn:
-      'bg-primary hover:bg-primary-hover text-primary-foreground shadow-lg shadow-primary/20 border-none',
+      'bg-primary hover:bg-primary/95 text-primary-foreground shadow-lg shadow-primary/20 border-none',
   },
   warning: {
     defaultIcon: AlertCircle,
@@ -164,7 +164,7 @@ export const ReusableAlertDialog = ({
                   onOpenChange(false)
                 }}
                 disabled={isPending}
-                className="rounded-full font-bold h-12 border-none bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer flex items-center justify-center"
+                className="rounded-full font-bold h-12 border-none bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all active:scale-[0.98] text-[12px] tracking-wider cursor-pointer flex items-center justify-center"
               >
                 {cancelText}
               </button>
@@ -176,7 +176,7 @@ export const ReusableAlertDialog = ({
                 }}
                 disabled={isPending}
                 className={cn(
-                  'rounded-xl font-bold h-12 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer flex items-center justify-center',
+                  'rounded-xl font-bold h-12 transition-all active:scale-[0.98] text-[12px] tracking-wider cursor-pointer flex items-center justify-center',
                   config.confirmBtn,
                 )}
               >
@@ -251,7 +251,7 @@ export const ReusableAlertDialog = ({
             <AlertDialogCancel
               onClick={onCancel}
               disabled={isPending}
-              className="rounded-full font-bold h-12 border-none bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer"
+              className="rounded-full font-bold h-12 border-none bg-muted text-muted-foreground hover:bg-muted-dark/20 transition-all active:scale-[0.98] text-[12px] tracking-wider cursor-pointer"
             >
               {cancelText}
             </AlertDialogCancel>
@@ -263,7 +263,7 @@ export const ReusableAlertDialog = ({
               }}
               disabled={isPending}
               className={cn(
-                'rounded-xl font-bold h-12 transition-all active:scale-[0.98] text-[12px] uppercase tracking-wider cursor-pointer',
+                'rounded-xl font-bold h-12 transition-all active:scale-[0.98] text-[12px] tracking-wider cursor-pointer',
                 config.confirmBtn,
               )}
             >

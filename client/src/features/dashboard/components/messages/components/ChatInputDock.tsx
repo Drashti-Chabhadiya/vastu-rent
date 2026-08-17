@@ -337,7 +337,7 @@ export function ChatInputDock() {
                   size="icon"
                   onClick={handleSend}
                   disabled={!isConnected || isUploading}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white cursor-pointer active:scale-95 shrink-0 bg-primary hover:bg-primary-hover border-none outline-none p-0 shadow-xs"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white cursor-pointer active:scale-95 shrink-0 bg-primary hover:bg-primary/95 border-none outline-none p-0 shadow-xs"
                 >
                   {isUploading ? (
                     <Loader2 size={13} className="animate-spin" />
@@ -350,7 +350,7 @@ export function ChatInputDock() {
                   size="icon"
                   onClick={handleStartRecording}
                   disabled={!isConnected || isUploading}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white cursor-pointer active:scale-95 shrink-0 bg-primary hover:bg-primary-hover border-none outline-none p-0 shadow-xs"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white cursor-pointer active:scale-95 shrink-0 bg-primary hover:bg-primary/95 border-none outline-none p-0 shadow-xs"
                 >
                   <Mic size={14} />
                 </Button>

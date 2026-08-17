@@ -517,7 +517,7 @@ export function ProductDetail({ id }: { id: string }) {
           <AlertDialogFooter>
             <AlertDialogAction
               onClick={() => setAlertOpen(false)}
-              className="rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary-hover"
+              className="rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary/95"
             >
               OK
             </AlertDialogAction>

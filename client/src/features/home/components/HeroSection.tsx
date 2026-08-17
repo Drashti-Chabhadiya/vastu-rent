@@ -414,7 +414,7 @@ export function HeroSection() {
           </div>
           <Button
             type="submit"
-            className="rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold px-3 py-1.5 text-xs shrink-0 shadow-xs h-8 border-none cursor-pointer"
+            className="rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground font-bold px-3 py-1.5 text-xs shrink-0 shadow-xs h-8 border-none cursor-pointer"
           >
             {t('Search')}
           </Button>

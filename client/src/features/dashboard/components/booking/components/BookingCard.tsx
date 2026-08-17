@@ -404,7 +404,7 @@ export function BookingCard({
                     className={cn(
                       'rounded-full',
                       'bg-primary',
-                      'hover:bg-primary-hover',
+                      'hover:bg-primary/95',
                       'text-primary-foreground',
                       'font-extrabold',
                       'text-xs',

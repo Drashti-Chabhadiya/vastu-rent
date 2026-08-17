@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { authClient } from '#/lib/auth/auth-client'
 import { authApi } from '../api/auth'
 import { useState, useEffect } from 'react'
-import { Mail, Lock, EyeOff, Check, Eye } from 'lucide-react'
+import { Mail, Lock, EyeOff, Check, Eye, ArrowRight } from 'lucide-react'
 import { loginSchema } from '#/schema'
 import type { LoginSchema } from '#/schema'
 import { toast } from 'sonner'
@@ -258,7 +258,7 @@ export function LoginForm() {
               <Button
                 type="submit"
                 disabled={resetLoading}
-                className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded-xl shadow-md transition-all active:scale-[0.98] border-none flex items-center justify-center gap-2"
+                className="group w-full h-12 bg-primary hover:bg-primary/95 text-primary-foreground font-bold rounded-xl shadow-md transition-all active:scale-[0.98] border-none flex items-center justify-center gap-1.5"
               >
                 {resetLoading ? (
                   <>
@@ -266,7 +266,12 @@ export function LoginForm() {
                     <span>Sending Reset Link...</span>
                   </>
                 ) : (
-                  'Send Reset Link'
+                  <>
+                    <span>Send Reset Link</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                      <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </>
                 )}
               </Button>
             </div>
@@ -488,23 +493,16 @@ export function LoginForm() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-white font-black text-xs shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-3 active:scale-[0.98] transition-all"
+              className="group w-full h-11 rounded-full bg-primary hover:bg-primary/95 text-white font-black text-xs shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-3 active:scale-[0.98] transition-all"
             >
               {isSubmitting ? (
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   <span>{t('Sign in')}</span>
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#fff"
-                    strokeWidth={3}
-                  >
-                    <path d="M9 6l6 6-6 6" />
-                  </svg>
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-foreground/20 transition-transform group-hover:translate-x-1">
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
                 </>
               )}
             </Button>

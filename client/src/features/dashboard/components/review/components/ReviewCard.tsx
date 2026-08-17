@@ -242,7 +242,7 @@ const ReviewCard = ({
                   <Button
                     onClick={() => onReplySubmit(review.id)}
                     disabled={isSubmittingReply}
-                    className="rounded-lg bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-[10px] h-7 px-3 flex-1 flex items-center justify-center cursor-pointer shadow-sm"
+                    className="rounded-lg bg-primary hover:bg-primary/95 text-primary-foreground font-bold text-[10px] h-7 px-3 flex-1 flex items-center justify-center cursor-pointer shadow-sm"
                   >
                     {isSubmittingReply ? '...' : 'Submit'}
                   </Button>

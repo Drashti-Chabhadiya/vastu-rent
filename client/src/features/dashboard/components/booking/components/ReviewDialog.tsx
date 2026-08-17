@@ -236,7 +236,7 @@ export function ReviewDialog({
             className={cn(
               'rounded-xl',
               'bg-primary',
-              'hover:bg-primary-hover',
+              'hover:bg-primary/95',
               'text-primary-foreground',
               'font-semibold',
             )}

@@ -5,6 +5,7 @@ import { LoadingOverlay } from '#/components/ui/loader'
 import { ProfileSkeleton } from '#/components/skeletons'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { toast } from 'sonner'
+import { checkProfileCompleteness } from '#/lib/profile-utils'
 import { SecurityDialogs } from './SecurityDialogs'
 import { useTranslation } from '#/context/TranslationContext'
 import { AccountSecurityCard } from './AccountSecurityCard'
@@ -66,9 +67,8 @@ export function PersonalInfo() {
   const { data: myListings, isLoading: isListingsLoading } = useMyListings()
   const verifyCheckoutSession = useVerifyCheckoutSession()
 
-  const mainAddr =
-    (session?.user as any)?.address || (session?.user as any)?.addresses?.[0]
-  const isProfileComplete = Boolean(mainAddr?.addressLine1 && mainAddr?.city)
+  const u = session?.user as any
+  const { hasPersonal, isProfileComplete } = checkProfileCompleteness(u)
 
   const [completeProfileModalOpen, setCompleteProfileModalOpen] = useState(
     () => {
@@ -99,13 +99,6 @@ export function PersonalInfo() {
     const hash = window.location.hash.replace('#', '')
     if (['personal', 'address', 'security', 'subscription'].includes(hash)) {
       return hash as ProfileTab
-    }
-    if (
-      typeof window !== 'undefined' &&
-      (window.location.search.includes('completeProfile=true') ||
-        window.location.search.includes('fromListing=true'))
-    ) {
-      return 'address'
     }
     return 'personal'
   })
@@ -384,9 +377,9 @@ export function PersonalInfo() {
             <Button
               onClick={() => {
                 setCompleteProfileModalOpen(false)
-                handleTabChange('address')
+                handleTabChange(!hasPersonal ? 'personal' : 'address')
               }}
-              className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded-xl h-11 active:scale-98 transition-all cursor-pointer border-none shadow-md"
+              className="w-full bg-primary hover:bg-primary/95 text-primary-foreground font-bold rounded-xl h-11 active:scale-98 transition-all cursor-pointer border-none shadow-md"
             >
               {t('Complete Profile Now')}
             </Button>

@@ -92,7 +92,7 @@ export function ProductsExplorePage() {
 
         // 2. Rating filter (e.g. ★ 4.5+)
         if (minRating !== null) {
-          const rating = parseFloat(product.rating || '5.0')
+          const rating = parseFloat(product.rating || '0.0')
           if (rating < minRating) return false
         }
 
@@ -284,7 +284,7 @@ export function ProductsExplorePage() {
 
                 <Button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
+                  className="w-full h-11 rounded-full bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
                 >
                   {t('Show {count} results').replace(
                     '{count}',
@@ -544,7 +544,7 @@ export function ProductsExplorePage() {
 
                   <Button
                     onClick={() => setIsDesktopFilterOpen(false)}
-                    className="w-full h-11 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
+                    className="w-full h-11 rounded-full bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-black shadow-md border-none flex items-center justify-center gap-1.5 cursor-pointer mt-6 active:scale-[0.98] transition-all"
                   >
                     {t('Show {count} results').replace(
                       '{count}',

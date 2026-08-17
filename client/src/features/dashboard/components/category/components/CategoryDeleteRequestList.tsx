@@ -276,7 +276,7 @@ export const CategoryDeleteRequestList = ({
                     <div className="flex items-center gap-2">
                       <Button
                         onClick={() => onApproveRequest(req)}
-                        className="bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl h-9 w-9 p-0 flex items-center justify-center shadow-sm cursor-pointer"
+                        className="bg-primary hover:bg-primary/95 text-primary-foreground rounded-xl h-9 w-9 p-0 flex items-center justify-center shadow-sm cursor-pointer"
                         title={t('Approve & Grant Permission to Delete')}
                       >
                         <Check size={18} />

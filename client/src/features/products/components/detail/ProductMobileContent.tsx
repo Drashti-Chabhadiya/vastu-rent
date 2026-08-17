@@ -1,8 +1,9 @@
 import { Link } from '@tanstack/react-router'
-import { MapPin } from 'lucide-react'
+import { MapPin, Eye, CheckCircle2 } from 'lucide-react'
 import { useTranslation } from '#/context/TranslationContext'
 import { ProductImageGallery } from './ProductImageGallery'
 import { ProductTabs } from './ProductTabs'
+import { Badge } from '#/components/ui/badge'
 
 interface ProductMobileContentProps {
   product: any
@@ -71,9 +72,12 @@ export const ProductMobileContent = ({
       <div className="px-5 py-6 space-y-6">
         {/* Verified Host Badge */}
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted text-primary text-[10px] font-black uppercase tracking-wider">
-            ✓ {t('VERIFIED HOST')}
-          </span>
+          {product?.user?.emailVerified !== false && (
+            <Badge className="bg-muted text-primary hover:bg-primary-soft/90 border-0 gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold shrink-0">
+              <CheckCircle2 size={11} strokeWidth={2.5} />
+              {t('Verified')}
+            </Badge>
+          )}
         </div>
 
         {/* Product Title */}
@@ -84,11 +88,16 @@ export const ProductMobileContent = ({
         {/* Rating, Reviews, Location */}
         <div className="flex items-center gap-1 text-[11px] font-bold text-muted-foreground/90">
           <span className="text-amber-600 font-black flex items-center gap-0.5">
-            ★ {formatDigits(product.rating || '5.0')}
+            ★ {formatDigits(product.rating || '0.0')}
           </span>
           <span>·</span>
           <span>
             ({formatDigits(product.reviewsCount || '0')} {t('reviews')})
+          </span>
+          <span>·</span>
+          <span className="flex items-center gap-0.5">
+            <Eye className="w-3.5 h-3.5" />
+            <span>{formatDigits(product.views || '0')}</span>
           </span>
           <span>·</span>
           <span>{formatDigits(conciseLocation)}</span>

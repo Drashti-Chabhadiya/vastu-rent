@@ -94,7 +94,7 @@ export function MobileProductRowCard({
             {product.title}
           </h4>
           <div className="text-sm font-extrabold text-foreground mt-0.5">
-            ₹{product.price?.toLocaleString('en-IN') || '2,000'}
+            ₹{product.price?.toLocaleString('en-IN') || product.price || '0'}
             <small className="text-[10px] text-muted-foreground font-normal">
               /day
             </small>
@@ -113,8 +113,8 @@ export function MobileProductRowCard({
                 className="fill-amber-500 text-amber-500 shrink-0"
               />
               <span>
-                {product.averageRating || product.rating || '5.0'} (
-                {product.reviewCount || '20'})
+                {product.averageRating || product.rating || '0.0'} (
+                {product.reviewCount || '0'})
               </span>
             </div>
           </div>

@@ -9,6 +9,26 @@ function getInitials(name: string) {
   return isLower ? first.toLowerCase() : first.toUpperCase()
 }
 
+const AVATAR_COLORS = [
+  'bg-primary-soft text-primary',
+  'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-400',
+  'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
+  'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
+  'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400',
+]
+
+function getAvatarColor(name: string) {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const index = Math.abs(hash) % AVATAR_COLORS.length
+  return AVATAR_COLORS[index]
+}
+
 export interface UserAvatarProps {
   image?: string | null
   name?: string
@@ -67,7 +87,9 @@ export function UserAvatar({
         <AvatarImage src={image || ''} alt={name} className="object-cover" />
         <AvatarFallback
           className={cn(
-            'bg-primary-soft text-primary font-bold',
+            // 'bg-primary-soft text-primary font-bold',
+            getAvatarColor(name),
+            'font-bold',
             size === 'xl' ? 'font-black text-4xl' : '',
             fallbackClassName,
           )}

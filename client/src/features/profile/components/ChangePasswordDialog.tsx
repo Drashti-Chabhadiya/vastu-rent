@@ -243,7 +243,7 @@ export function ChangePasswordDialog({
             <Button
               type="submit"
               disabled={isChangingPassword}
-              className="flex-1 rounded-xl h-11 font-bold bg-primary hover:bg-primary-hover text-primary-foreground flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 cursor-pointer border-none"
+              className="flex-1 rounded-xl h-11 font-bold bg-primary hover:bg-primary/95 text-primary-foreground flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 cursor-pointer border-none"
             >
               {isChangingPassword ? <Loader variant="white" size={14} /> : null}
               {isChangingPassword ? 'Updating...' : 'Save Password'}
