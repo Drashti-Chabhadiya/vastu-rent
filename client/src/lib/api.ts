@@ -75,9 +75,6 @@ apiClient.interceptors.request.use(async (config) => {
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    // Native apps do not use ambient cookies, so they are not vulnerable to CSRF.
-    // Send a custom header to tell the backend to bypass CSRF verification.
-    config.headers['x-capacitor-native'] = 'true'
   }
 
   // Attach CSRF token for mutating requests (only required for web browsers)
@@ -98,6 +95,17 @@ apiClient.interceptors.request.use(async (config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // Intercept unverified users and redirect them to the OTP verification screen
+    if (
+      error.response?.status === 403 &&
+      error.response?.data?.error === 'EMAIL_NOT_VERIFIED'
+    ) {
+      if (!window.location.pathname.includes('/verify-email')) {
+        window.location.href = '/verify-email'
+      }
+      return Promise.reject(error)
+    }
+
     const config = error.config
 
     // Only retry once, only for network-level failures (no response received)

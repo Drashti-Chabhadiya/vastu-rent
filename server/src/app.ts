@@ -5,6 +5,7 @@ import cors from '@fastify/cors'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import fastifyCsrfProtection from '@fastify/csrf-protection'
+import { auth } from './config/auth.js'
 // ─── Feature Routes ───────────────────────────────────────────────────────────
 import { authRoutes } from './features/auth/auth.routes.js'
 import { userRoutes } from './features/user/user.routes.js'
@@ -70,7 +71,6 @@ app.register(cors, {
 
     const isAllowedOrigin =
       allowed.includes(origin) ||
-      origin.endsWith('.vercel.app') ||
       origin.startsWith('capacitor://') ||
       /\/\/(10\.0\.2\.2|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?$/.test(
         origin,
@@ -105,10 +105,10 @@ app.addHook('preValidation', async (request, reply) => {
   if (request.url.startsWith('/api/billing/webhook')) return
   if (request.url.startsWith('/api/cron/')) return
 
-  // Mobile apps do not use cookies for ambient auth, so they are not
-  // vulnerable to CSRF. We bypass CSRF checks if the request comes
-  // from our Capacitor app (indicated by a custom header).
-  if (request.headers['x-capacitor-native'] === 'true') {
+  // Mobile apps using Capacitor send an explicit Bearer token in the
+  // Authorization header instead of relying on ambient cookies.
+  // Bearer tokens are immune to CSRF, so we bypass the check here.
+  if (request.headers.authorization?.startsWith('Bearer ')) {
     return
   }
 
@@ -119,6 +119,37 @@ app.addHook('preValidation', async (request, reply) => {
       resolve()
     })
   })
+})
+
+// ─── Global OTP Verification Enforcement ─────────────────────────────────────
+app.addHook('preHandler', async (request, reply) => {
+  // Only protect /api routes
+  if (!request.url.startsWith('/api/')) return
+
+  // Whitelist routes that unverified users must access
+  if (
+    request.url.startsWith('/api/auth/') ||
+    request.url.startsWith('/api/send-otp') ||
+    request.url.startsWith('/api/verify-otp') ||
+    request.url.startsWith('/api/check-email') ||
+    request.url.startsWith('/api/pending-verification') ||
+    request.url === '/api/health'
+  ) {
+    return
+  }
+
+  // Fetch session to check if the user is logged in
+  const session = await auth.api.getSession({
+    headers: request.headers as any,
+  })
+
+  // If user is logged in but hasn't verified their email, block access
+  if (session && !session.user.emailVerified) {
+    return reply.status(403).send({
+      error: 'EMAIL_NOT_VERIFIED',
+      message: 'Please verify your email address to continue.',
+    })
+  }
 })
 
 app.get('/api/csrf-token', async (req, reply) => {
