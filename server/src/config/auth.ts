@@ -219,9 +219,12 @@ export const auth = betterAuth({
    * Allow cross-origin requests from the client dev server.
    * Better Auth will set the correct CORS headers automatically.
    */
-  trustedOrigins: ['capacitor://localhost', process.env.CLIENT_URL].filter(
-    Boolean,
-  ) as string[],
+  trustedOrigins: [
+    'capacitor://localhost',
+    'http://localhost',
+    'http://localhost:3000',
+    process.env.CLIENT_URL,
+  ].filter(Boolean) as string[],
 
   /**
    * Enable social authentication providers.

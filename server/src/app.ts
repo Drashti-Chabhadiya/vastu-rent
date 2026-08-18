@@ -61,9 +61,11 @@ app.register(cors, {
       return
     }
 
-    const allowed = [process.env.CLIENT_URL, 'capacitor://localhost'].filter(
-      Boolean,
-    ) as string[]
+    const allowed = [
+      process.env.CLIENT_URL,
+      'capacitor://localhost',
+      'http://localhost',
+    ].filter(Boolean) as string[]
 
     const isAllowedOrigin =
       allowed.includes(origin) ||
