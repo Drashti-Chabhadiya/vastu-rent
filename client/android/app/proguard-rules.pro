@@ -1,21 +1,24 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Aggressive R8 / ProGuard Obfuscation Rules for Vastu Rent Mobile APK
+# Hinders decompilation tools (apktool, JADX, Bytecode Viewers)
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Obfuscate all non-public classes and repackage into root
+-repackageclasses ''
+-allowaccessmodification
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Remove debugging logs, line numbers, and original source attributes
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Preserve Capacitor Bridge & Native Plugin interfaces
+-keep public class com.getcapacitor.** { *; }
+-keep public class * extends com.getcapacitor.BridgeActivity
+-keep public class * extends com.getcapacitor.Plugin
+
+# Obfuscate internal MainActivity fields and security methods
+-keepclassmembers class com.vasturent.app.MainActivity {
+    protected void onCreate(android.os.Bundle);
+}
