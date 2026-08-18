@@ -29,7 +29,7 @@ export function Tabbar() {
     enabled: isLoggedIn,
   })
 
-  const unreadMessagesCount = conversations
+  const unreadMessagesCount = Array.isArray(conversations)
     ? conversations.reduce(
         (sum: number, conv: any) => sum + (conv.unreadCount || 0),
         0,

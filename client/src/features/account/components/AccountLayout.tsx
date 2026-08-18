@@ -63,7 +63,7 @@ export function AccountLayout() {
   const unreadCount = notifications
     ? notifications.filter((n: any) => !n.isRead).length
     : 0
-  const unreadMessagesCount = conversations
+  const unreadMessagesCount = Array.isArray(conversations)
     ? conversations.reduce(
         (sum: number, conv: any) => sum + (conv.unreadCount || 0),
         0,

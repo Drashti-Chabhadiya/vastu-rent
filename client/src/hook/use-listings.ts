@@ -13,7 +13,7 @@ export const useProducts = (params?: {
     queryKey: ['products', params],
     queryFn: async () => {
       const res = await apiClient.get('/products', { params })
-      return res.data.products
+      return res.data?.products ?? []
     },
   })
 }
@@ -25,7 +25,7 @@ export const useWishlistProducts = () => {
     queryKey: ['wishlist-products'],
     queryFn: async () => {
       const res = await apiClient.get('/likes')
-      return res.data.products
+      return res.data?.products ?? []
     },
   })
 }

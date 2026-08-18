@@ -45,7 +45,8 @@ export function useConversations(options?: { enabled?: boolean }) {
     queryKey: ['conversations'],
     queryFn: async () => {
       const res = await apiClient.get('/chat/conversations')
-      return res.data
+      const data = res.data
+      return (Array.isArray(data) ? data : data?.conversations || []) as any[]
     },
     staleTime: 10_000,
     ...options,

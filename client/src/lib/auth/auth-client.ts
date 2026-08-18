@@ -24,23 +24,18 @@ import {
  *   - window.location.hostname = localhost
  */
 const getAuthBaseUrl = (): string => {
-  let url = ''
-  // Native Capacitor app — use the Vercel server directly
-  if (Capacitor.isNativePlatform()) {
-    url = import.meta.env.VITE_AUTH_URL
-  } else if (
+  let url = import.meta.env.VITE_AUTH_URL || ''
+
+  if (
+    !Capacitor.isNativePlatform() &&
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1' &&
     !window.location.hostname.startsWith('192.168.')
   ) {
     url = `${window.location.origin}/api/auth`
-  } else {
-    // Local development
-    url = import.meta.env.VITE_AUTH_URL
   }
 
-  // On Android emulator, rewrite localhost to 10.0.2.2 to connect to host dev server
   if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
     url = url.replace('localhost', '10.0.2.2').replace('127.0.0.1', '10.0.2.2')
   }

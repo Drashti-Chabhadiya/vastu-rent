@@ -14,18 +14,15 @@ import { getBearerToken } from '#/lib/auth/token-storage'
  *  3. Everything else (local dev) falls back to the env var or localhost.
  */
 const getApiBaseUrl = (): string => {
-  let url = ''
-  if (Capacitor.isNativePlatform()) {
-    url = import.meta.env.VITE_API_BASE_URL
-  } else if (
+  let url = import.meta.env.VITE_API_BASE_URL || ''
+  if (
+    !Capacitor.isNativePlatform() &&
     typeof window !== 'undefined' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1' &&
     !window.location.hostname.startsWith('192.168.')
   ) {
     url = `${window.location.origin}/api`
-  } else {
-    url = import.meta.env.VITE_API_BASE_URL
   }
 
   // On Android emulator, 'localhost' refers to the emulator itself, so we must

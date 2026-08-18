@@ -19,7 +19,7 @@ export const useNotifications = () => {
     queryKey: ['notifications'],
     queryFn: async () => {
       const res = await apiClient.get('/notifications')
-      return res.data.notifications
+      return res.data?.notifications ?? []
     },
     enabled: isAuthenticated,
     retry: false,

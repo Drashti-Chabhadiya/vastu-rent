@@ -10,7 +10,7 @@ export function useWishlist() {
     queryFn: async () => {
       try {
         const res = await apiClient.get('/likes/ids')
-        return res.data.productIds as string[]
+        return (res.data?.productIds || []) as string[]
       } catch (error) {
         return []
       }

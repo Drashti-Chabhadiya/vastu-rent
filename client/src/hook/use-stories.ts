@@ -6,7 +6,7 @@ export const useStories = () => {
     queryKey: ['stories'],
     queryFn: async () => {
       const res = await apiClient.get('/stories')
-      return res.data.stories
+      return res.data?.stories ?? []
     },
   })
 }

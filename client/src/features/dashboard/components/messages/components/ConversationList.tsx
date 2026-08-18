@@ -112,7 +112,9 @@ export function ConversationList() {
     })
 
   // Total unread across all conversations
-  const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
+  const totalUnread = Array.isArray(conversations)
+    ? conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0)
+    : 0
 
   const handleSelectConversation = (conv: Conversation) => {
     switchConversation(conv.id)
