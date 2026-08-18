@@ -9,10 +9,10 @@ import { Capacitor } from '@capacitor/core'
  * Custom Tab to THIS page (an HTTPS URL that Chrome can navigate to).
  *
  * This page then immediately JS-redirects to the custom app URL scheme
- * `com.vasturent.app://auth-done`. Chrome Custom Tab cannot follow
+ * `xxxxx`. Chrome Custom Tab cannot follow
  * server-side HTTP redirects to custom schemes, but CAN follow JS navigation.
  *
- * Android intercepts `com.vasturent.app://auth-done`, brings the Capacitor
+ * Android intercepts `xxxxx`, brings the Capacitor
  * app to the foreground (firing `appUrlOpen`), and the Chrome Custom Tab
  * closes automatically.
  *
@@ -26,7 +26,7 @@ const getSessionTokenUrl = (): string => {
   if (Capacitor.isNativePlatform()) {
     return import.meta.env.VITE_AUTH_URL
       ? `${import.meta.env.VITE_AUTH_URL}/session-token`
-      : 'https://vastu-rent.vercel.app/api/auth/session-token'
+      : ''
   }
 
   // ── Web browser — non-local origin (production / staging) ─────────────
@@ -50,7 +50,8 @@ function OAuthCallback() {
     let active = true
 
     async function handleCallback() {
-      let redirectUrl = 'com.vasturent.app://auth-done'
+      const packageName = import.meta.env.VITE_EXPECTED_PACKAGE_NAME || ''
+      let redirectUrl = `${packageName}://auth-done`
       try {
         const response = await fetch(getSessionTokenUrl(), {
           credentials: 'include',
@@ -58,7 +59,7 @@ function OAuthCallback() {
         if (response.ok) {
           const data = await response.json()
           if (data.sessionToken) {
-            redirectUrl = `com.vasturent.app://auth-done?token=${encodeURIComponent(data.sessionToken)}`
+            redirectUrl = `${packageName}://auth-done?token=${encodeURIComponent(data.sessionToken)}`
           }
         }
       } catch (err) {

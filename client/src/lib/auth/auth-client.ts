@@ -17,13 +17,11 @@ import {
  *   - Bearer token auth is the session mechanism
  *
  * Web browser (Vercel production):
- *   - window.location.hostname = vastu-rent.vercel.app
  *   - Routes through /api/auth Vercel proxy
  *   - Cookie-based session works normally
  *
  * Local development:
  *   - window.location.hostname = localhost
- *   - Uses VITE_AUTH_URL which points to http://localhost:4000/api/auth
  */
 const getAuthBaseUrl = (): string => {
   let url = ''
