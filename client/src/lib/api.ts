@@ -75,11 +75,14 @@ apiClient.interceptors.request.use(async (config) => {
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+    // Native apps do not use ambient cookies, so they are not vulnerable to CSRF.
+    // Send a custom header to tell the backend to bypass CSRF verification.
+    config.headers['x-capacitor-native'] = 'true'
   }
 
-  // Attach CSRF token for mutating requests
+  // Attach CSRF token for mutating requests (only required for web browsers)
   const mutatingMethods = ['post', 'put', 'patch', 'delete']
-  if (config.method && mutatingMethods.includes(config.method.toLowerCase())) {
+  if (!Capacitor.isNativePlatform() && config.method && mutatingMethods.includes(config.method.toLowerCase())) {
     const token = await getCsrfToken()
     if (token) {
       config.headers['x-csrf-token'] = token

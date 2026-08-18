@@ -90,6 +90,7 @@ app.register(cors, {
     'x-better-auth-session-token',
     'better-auth-session-token',
     'x-csrf-token',
+    'x-capacitor-native',
   ],
   exposedHeaders: ['set-auth-token', 'x-csrf-token'],
 })
@@ -103,6 +104,13 @@ app.addHook('preValidation', async (request, reply) => {
   if (request.url.startsWith('/api/auth/')) return
   if (request.url.startsWith('/api/billing/webhook')) return
   if (request.url.startsWith('/api/cron/')) return
+
+  // Mobile apps do not use cookies for ambient auth, so they are not
+  // vulnerable to CSRF. We bypass CSRF checks if the request comes
+  // from our Capacitor app (indicated by a custom header).
+  if (request.headers['x-capacitor-native'] === 'true') {
+    return
+  }
 
   // Proceed with CSRF verification
   return new Promise<void>((resolve, reject) => {
