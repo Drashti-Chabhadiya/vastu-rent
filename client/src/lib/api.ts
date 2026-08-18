@@ -79,7 +79,11 @@ apiClient.interceptors.request.use(async (config) => {
 
   // Attach CSRF token for mutating requests (only required for web browsers)
   const mutatingMethods = ['post', 'put', 'patch', 'delete']
-  if (!Capacitor.isNativePlatform() && config.method && mutatingMethods.includes(config.method.toLowerCase())) {
+  if (
+    !Capacitor.isNativePlatform() &&
+    config.method &&
+    mutatingMethods.includes(config.method.toLowerCase())
+  ) {
     const token = await getCsrfToken()
     if (token) {
       config.headers['x-csrf-token'] = token

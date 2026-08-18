@@ -94,16 +94,8 @@ export const auth = betterAuth({
    */
   baseURL: {
     allowedHosts: [
-      'vastu-rent.vercel.app',
       'localhost:4000',
       'localhost:3000',
-      '127.0.0.1:4000',
-      '127.0.0.1:3000',
-      '127.0.0.1',
-      '10.0.2.2:4000',
-      '10.0.2.2:3000',
-      '10.0.2.2',
-      '*.vercel.app',
       getHostName(process.env.CLIENT_URL),
     ].filter(Boolean) as string[],
   },
@@ -227,20 +219,9 @@ export const auth = betterAuth({
    * Allow cross-origin requests from the client dev server.
    * Better Auth will set the correct CORS headers automatically.
    */
-  trustedOrigins: [
-    // Local development
-    'http://localhost:3000',
-    'http://localhost',
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:4000',
-    'http://10.0.2.2:3000',
-    'http://10.0.2.2:4000',
-    // Capacitor WebView
-    'capacitor://localhost',
-    // Production web app (Vercel)
-    'https://vastu-rent.vercel.app',
-    process.env.CLIENT_URL,
-  ].filter(Boolean) as string[],
+  trustedOrigins: ['capacitor://localhost', process.env.CLIENT_URL].filter(
+    Boolean,
+  ) as string[],
 
   /**
    * Enable social authentication providers.

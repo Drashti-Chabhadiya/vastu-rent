@@ -61,13 +61,9 @@ app.register(cors, {
       return
     }
 
-    const allowed = [
-      process.env.CLIENT_URL,
-      'capacitor://localhost',
-      'http://localhost',
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-    ].filter(Boolean) as string[]
+    const allowed = [process.env.CLIENT_URL, 'capacitor://localhost'].filter(
+      Boolean,
+    ) as string[]
 
     const isAllowedOrigin =
       allowed.includes(origin) ||
@@ -220,13 +216,16 @@ app.get('/', async () => ({ message: 'Vastu-Rent API is running' }))
  * sets the session cookie on `new-vastu-rent.onrender.com` and redirects
  * to the `callbackURL` — which for the native app is this endpoint.
  *
- * This page immediately JS-redirects to `com.vasturent.app://auth-done`.
+ * This page immediately JS-redirects to `xxx`.
  * Android intercepts the custom scheme, brings the Capacitor app to the
  * foreground (firing `appUrlOpen`), and Chrome Custom Tab closes automatically.
  *
  * On web (non-mobile) the page falls back to redirecting to the Vercel client.
  */
 app.get('/oauth-callback', async (_req, reply) => {
+  const packageName = process.env.EXPECTED_PACKAGE_NAME || ''
+  const clientUrl = process.env.CLIENT_URL || ''
+
   reply.type('text/html').send(`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -250,10 +249,10 @@ app.get('/oauth-callback', async (_req, reply) => {
   <p>Login Successful — returning to app…</p>
   <script>
     // Redirect to custom scheme — Android intercepts and fires appUrlOpen.
-    window.location.href = 'com.vasturent.app://auth-done';
+    window.location.href = '${packageName}://auth-done';
     // Fallback: if not intercepted (web browser), go to the web client.
     setTimeout(function () {
-      window.location.replace('https://vastu-rent.vercel.app/');
+      window.location.replace('${clientUrl}');
     }, 1200);
   </script>
 </body>
