@@ -1,13 +1,16 @@
 package com.vasturent.app;
 
 import android.app.AlertDialog;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -19,7 +22,7 @@ public class MainActivity extends BridgeActivity {
     private static final String EXPECTED_PACKAGE_NAME = "com.vasturent.app";
     private static final String TAG = "AppIntegrityCheck";
 
-    // Set to true to enforce strict SHA-256 signature verification in production/builds
+    // Enforce strict SHA-256 signature verification in production/builds
     private static final boolean STRICT_MODE = true;
 
     // Allowed SHA-256 signing key certificate fingerprints (without colons, uppercase)
@@ -31,26 +34,40 @@ public class MainActivity extends BridgeActivity {
     private static final String MASTER_PASSCODE_HASH =
         "9B5DF1807D9B9A67A0A09E0783424AD47DF83C9CD022D4F291079D863BF02542";
 
+    private boolean isSecurityVerified = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        verifyAppIntegrity();
+        performMultiLayerSecurityCheck();
     }
 
-    private void verifyAppIntegrity() {
-        // 1. Verify Package Name
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Secondary re-verification to prevent Smali bypass of onCreate
+        if (!isSecurityVerified) {
+            performMultiLayerSecurityCheck();
+        }
+    }
+
+    private void performMultiLayerSecurityCheck() {
+        // 1. Detect Debugger / Hooking Tools
+        if (isBeingDebugged() || isTestKeysBuild()) {
+            Log.w(TAG, "Debugger or untrusted environment detected.");
+        }
+
+        // 2. Verify Package Name (Anti-Rebranding)
         String currentPackageName = getPackageName();
         if (!EXPECTED_PACKAGE_NAME.equals(currentPackageName)) {
-            showSecurityViolationError(
-                "Package Name Mismatch! Expected " + EXPECTED_PACKAGE_NAME + " but found " + currentPackageName
-            );
+            triggerHardSecurityLock("Package Name Tampered! Expected: " + EXPECTED_PACKAGE_NAME + " | Found: " + currentPackageName);
             return;
         }
 
-        // 2. Verify Signing Certificate Hash
+        // 3. Verify Hardware SHA-256 Signing Certificate
         try {
             String currentHash = getAppSignatureHash();
-            Log.d(TAG, "[INTEGRITY CHECK] Current App Signature SHA-256: " + currentHash);
+            Log.d(TAG, "[INTEGRITY CHECK] Current Signature: " + currentHash);
 
             if (STRICT_MODE && ALLOWED_SIGNATURE_HASHES.length > 0) {
                 boolean isMatch = false;
@@ -61,14 +78,73 @@ public class MainActivity extends BridgeActivity {
                     }
                 }
                 if (!isMatch) {
-                    showSecurityViolationError(
-                        "Signing Certificate Verification Failed! App signature does not match original key."
-                    );
+                    triggerHardSecurityLock("Tampered / Unofficial APK Detected! Certificate fingerprint mismatch.");
+                    return;
                 }
             }
+            isSecurityVerified = true;
         } catch (Exception e) {
-            Log.e(TAG, "Error calculating app signature hash", e);
+            Log.e(TAG, "Failed to inspect app signature", e);
+            terminateAppProcess();
         }
+    }
+
+    private void triggerHardSecurityLock(String violationDetails) {
+        isSecurityVerified = false;
+        Log.e(TAG, "[CRITICAL SECURITY VIOLATION] " + violationDetails);
+
+        // Immediately hide/blank out app view so no WebView or background code runs
+        setContentView(new View(this));
+
+        final EditText input = new EditText(this);
+        input.setHint("Enter Master Passcode");
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        container.setPadding(padding, padding, padding, padding);
+        container.addView(input);
+
+        new AlertDialog.Builder(this)
+            .setTitle("🔒 Security Verification Required")
+            .setMessage("Unofficial APK modification detected.\n\nEnter Master Activation Passcode to unlock execution:")
+            .setView(container)
+            .setCancelable(false)
+            .setPositiveButton("Unlock", (dialog, which) -> {
+                String passcode = input.getText().toString().trim();
+                try {
+                    String enteredHash = calculateSHA256(passcode.getBytes("UTF-8"));
+                    if (MASTER_PASSCODE_HASH.equalsIgnoreCase(enteredHash)) {
+                        isSecurityVerified = true;
+                        Toast.makeText(this, "Master Passcode Verified. Launching...", Toast.LENGTH_SHORT).show();
+                        recreate();
+                    } else {
+                        Toast.makeText(this, "Invalid Security Passcode! Access Denied.", Toast.LENGTH_LONG).show();
+                        terminateAppProcess();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error hashing passcode", e);
+                    terminateAppProcess();
+                }
+            })
+            .setNegativeButton("Exit", (dialog, which) -> terminateAppProcess())
+            .show();
+    }
+
+    private void terminateAppProcess() {
+        finishAffinity();
+        Process.killProcess(Process.myPid());
+        System.exit(0);
+    }
+
+    private boolean isBeingDebugged() {
+        return android.os.Debug.isDebuggerConnected() || (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    }
+
+    private boolean isTestKeysBuild() {
+        String buildTags = Build.TAGS;
+        return buildTags != null && buildTags.contains("test-keys");
     }
 
     private String getAppSignatureHash() throws Exception {
@@ -91,43 +167,5 @@ public class MainActivity extends BridgeActivity {
             sb.append(String.format("%02X", b));
         }
         return sb.toString();
-    }
-
-    private void showSecurityViolationError(String message) {
-        Log.e(TAG, "[SECURITY VIOLATION] " + message);
-
-        final EditText input = new EditText(this);
-        input.setHint("Enter Master Passcode");
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-        LinearLayout container = new LinearLayout(this);
-        container.setOrientation(LinearLayout.VERTICAL);
-        int padding = (int) (16 * getResources().getDisplayMetrics().density);
-        container.setPadding(padding, padding, padding, padding);
-        container.addView(input);
-
-        new AlertDialog.Builder(this)
-            .setTitle("🔒 Security Verification Required")
-            .setMessage("Unofficial or modified APK detected. Enter Master Activation Passcode to unlock execution:")
-            .setView(container)
-            .setCancelable(false)
-            .setPositiveButton("Unlock", (dialog, which) -> {
-                String passcode = input.getText().toString().trim();
-                try {
-                    String enteredHash = calculateSHA256(passcode.getBytes("UTF-8"));
-                    if (MASTER_PASSCODE_HASH.equalsIgnoreCase(enteredHash)) {
-                        Toast.makeText(this, "Master Passcode Verified. Access Granted.", Toast.LENGTH_SHORT).show();
-                        Log.i(TAG, "Master Passcode Verified successfully.");
-                    } else {
-                        Toast.makeText(this, "Invalid Security Passcode! Access Denied.", Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error hashing passcode", e);
-                    finish();
-                }
-            })
-            .setNegativeButton("Exit", (dialog, which) -> finish())
-            .show();
     }
 }
