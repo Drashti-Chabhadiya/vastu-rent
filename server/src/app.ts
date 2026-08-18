@@ -63,10 +63,9 @@ app.register(cors, {
     const allowed = [
       process.env.CLIENT_URL,
       'capacitor://localhost',
+      'http://localhost',
       'http://localhost:3000',
-      'http://localhost:5173',
       'http://127.0.0.1:3000',
-      'http://127.0.0.1:5173',
     ].filter(Boolean) as string[]
 
     const isAllowedOrigin =
