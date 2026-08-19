@@ -29,6 +29,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { queryClient } from '#/lib/query-client'
+import { setCachedSession, SESSION_QUERY_KEY } from '#/context/SessionContext'
 
 export function LoginForm() {
   const { t } = useTranslation()
@@ -124,10 +126,44 @@ export function LoginForm() {
     formState: { isSubmitting },
   } = form
 
+  const handleAuthSuccess = async (signInData?: any) => {
+    if (signInData?.user && signInData?.session) {
+      setCachedSession(signInData)
+    }
+    try {
+      const sessionRes = await authClient.getSession()
+      if (sessionRes?.data) {
+        setCachedSession(sessionRes.data as any)
+      }
+    } catch (e) {
+      console.error('Failed to update session state after login:', e)
+    }
+    await queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY })
+
+    const searchParams = new URLSearchParams(window.location.search)
+    const rawRedirect = searchParams.get('redirect') || '/'
+    let targetRedirect = rawRedirect
+
+    if (rawRedirect.startsWith('http://') || rawRedirect.startsWith('https://')) {
+      try {
+        const url = new URL(rawRedirect)
+        if (url.origin === window.location.origin) {
+          targetRedirect = url.pathname + url.search + url.hash
+        } else {
+          targetRedirect = '/'
+        }
+      } catch {
+        targetRedirect = '/'
+      }
+    }
+
+    navigate({ to: targetRedirect as any, replace: true })
+  }
+
   const onSubmit = async (values: LoginSchema) => {
     setServerError(null)
 
-    const { error } = await authClient.signIn.email({
+    const { data: signInData, error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
       // No callbackURL — would cause a redirect response instead of JSON on the server
@@ -157,15 +193,7 @@ export function LoginForm() {
       await setBiometricCredentials(values.email, values.password)
     }
 
-    if (Capacitor.isNativePlatform()) {
-      const searchParams = new URLSearchParams(window.location.search)
-      const targetRedirect = searchParams.get('redirect') || '/'
-      window.location.replace(targetRedirect)
-    } else {
-      const searchParams = new URLSearchParams(window.location.search)
-      const targetRedirect = searchParams.get('redirect') || '/'
-      window.location.href = targetRedirect
-    }
+    await handleAuthSuccess(signInData)
   }
 
   const handleBiometricLogin = async () => {
@@ -178,7 +206,7 @@ export function LoginForm() {
     if (isAuthenticated) {
       const creds = await getBiometricCredentials()
       if (creds && creds.username && creds.password) {
-        const { error } = await authClient.signIn.email({
+        const { data: signInData, error } = await authClient.signIn.email({
           email: creds.username,
           password: creds.password,
         })
@@ -188,9 +216,7 @@ export function LoginForm() {
           setBiometricLoading(false)
         } else {
           // Success
-          const searchParams = new URLSearchParams(window.location.search)
-          const targetRedirect = searchParams.get('redirect') || '/'
-          window.location.replace(targetRedirect)
+          await handleAuthSuccess(signInData)
         }
       } else {
         setServerError('No stored credentials found.')

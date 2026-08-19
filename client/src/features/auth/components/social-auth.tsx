@@ -6,6 +6,9 @@ import { toast } from 'sonner'
 import { Capacitor } from '@capacitor/core'
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in'
 import { getBearerTokenSync } from '#/lib/auth/token-storage'
+import { useNavigate } from '@tanstack/react-router'
+import { queryClient } from '#/lib/query-client'
+import { setCachedSession, SESSION_QUERY_KEY } from '#/context/SessionContext'
 
 /**
  * Polls Better Auth's getSession() until a valid session is returned.
@@ -22,7 +25,21 @@ async function waitForSession(retries = 8, delayMs = 500): Promise<boolean> {
 }
 
 export function SocialAuth() {
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState<string | null>(null) // 'google' | null
+
+  const handleAuthSuccess = async () => {
+    try {
+      const sessionRes = await authClient.getSession()
+      if (sessionRes?.data) {
+        setCachedSession(sessionRes.data as any)
+      }
+    } catch (e) {
+      console.error('Failed to update session state after social login:', e)
+    }
+    await queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY })
+    navigate({ to: '/', replace: true })
+  }
 
   const handleSocialSignIn = async (
     provider: 'google' | 'facebook' | 'apple',
@@ -42,7 +59,7 @@ export function SocialAuth() {
         // Better Auth's server-side idToken verification uses the Web Client ID.
         const clientId =
           import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-          '210609431288-52nch7o4q4jlvf8bsmc4fn1q1hk2rtsc.apps.googleusercontent.com'
+          ''
 
         await GoogleSignIn.initialize({ clientId })
 
@@ -82,13 +99,13 @@ export function SocialAuth() {
         const ok = await waitForSession(8, 500)
         if (ok) {
           console.log('[GoogleSignIn] Session confirmed, navigating...')
-          window.location.replace('/')
+          await handleAuthSuccess()
         } else if (getBearerTokenSync()) {
           // Token exists but getSession timed out — navigate anyway (slow server)
           console.warn(
             '[GoogleSignIn] Session poll timed out but token exists, navigating...',
           )
-          window.location.replace('/')
+          await handleAuthSuccess()
         } else {
           toast.error(
             'Sign-in failed: could not establish session. Please try again.',
